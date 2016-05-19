@@ -104,14 +104,12 @@ End Function";
          * - When the return value is a reference - the return assignment is Set initially implement with return values returned as ByRef */
 
 
-        [TestClass]
         //[TestClass]
         public class when_local_variable_is_only_used_before_the_selection : ExtractMethodModelTests
         {
             /* When a local variable/constant is only used before the selection, 
              * its declaration remains where it was */
-            [TestMethod]
-
+            //[TestMethod]
             public void should_leave_declaration_in_source_method()
             {
             }
@@ -121,7 +119,7 @@ End Function";
         {
             /* When a local variable/constant is only used after the selection, 
              * its declaration remains where it was */
-            [TestMethod]
+            //[TestMethod]
             public void should_leave_declaration_in_source_method()
             {
 
@@ -133,7 +131,7 @@ End Function";
         {
             /* When a local variable is used before and within the selction, 
              * it's considered an input */
-            [TestMethod]
+            //[TestMethod]
             public void should_be_passed_as_a_byref_parameter()
             {
             }
@@ -143,7 +141,7 @@ End Function";
         {
             /* When a local variable is used after and within the selection, 
              * it's considered an output */
-            [TestMethod]
+            //[TestMethod]
             public void should_be_passed_as_a_byref_parameter()
             {
             }
@@ -154,6 +152,7 @@ End Function";
         //[TestClass]
         public class when_multiple_values_are_updated_within_selection : ExtractMethodModelTests    
         {
+            
             public void should_add_byref_param_for_each()
             {
             }

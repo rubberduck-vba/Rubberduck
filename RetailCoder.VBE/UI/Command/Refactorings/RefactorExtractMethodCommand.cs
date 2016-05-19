@@ -43,13 +43,20 @@ namespace Rubberduck.UI.Command.Refactorings
 
             var code = Vbe.ActiveCodePane.CodeModule.Lines[selection.StartLine, selection.LineCount];
 
-            var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(qualifiedSelection.Value, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+            var allDeclarations = _state.AllDeclarations;
+            var extractMethodValidation = new ExtractMethodSelectionValidation(allDeclarations);
+            //var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(qualifiedSelection.Value, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+            var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
+
+                
+            /*
             var canExecute = parentProcedure != null
                 && selection.StartColumn != selection.EndColumn
                 && selection.LineCount > 0
                 && !string.IsNullOrWhiteSpace(code);
+            */
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            Debug.Print("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 
