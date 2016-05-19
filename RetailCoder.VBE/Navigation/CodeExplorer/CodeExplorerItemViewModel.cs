@@ -28,6 +28,21 @@ namespace Rubberduck.Navigation.CodeExplorer
 
     public class CompareByType : Comparer<CodeExplorerItemViewModel>
     {
+        private static Dictionary<DeclarationType, int> _sortOrder = new Dictionary<DeclarationType, int>
+        {
+            {DeclarationType.LibraryFunction, 0},
+            {DeclarationType.LibraryProcedure, 1},
+            {DeclarationType.UserDefinedType, 2},
+            {DeclarationType.Enumeration, 3},
+            {DeclarationType.Event, 4},
+            {DeclarationType.Variable, 5},
+            {DeclarationType.PropertyGet, 6},
+            {DeclarationType.PropertyLet, 7},
+            {DeclarationType.PropertySet, 8},
+            {DeclarationType.Function, 9},
+            {DeclarationType.Procedure, 10}
+        };
+
         public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
             if (x == y)
@@ -54,7 +69,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             // keep separate types separate
             if (xNode.Declaration.DeclarationType != yNode.Declaration.DeclarationType)
             {
-                return xNode.Declaration.DeclarationType < yNode.Declaration.DeclarationType ? -1 : 1;
+                return _sortOrder[xNode.Declaration.DeclarationType] < _sortOrder[yNode.Declaration.DeclarationType] ? -1 : 1;
             }
 
             // keep types with different icons and the same declaration type (document/class module) separate
