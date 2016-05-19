@@ -28,19 +28,20 @@ namespace Rubberduck.Navigation.CodeExplorer
 
     public class CompareByType : Comparer<CodeExplorerItemViewModel>
     {
-        private static Dictionary<DeclarationType, int> _sortOrder = new Dictionary<DeclarationType, int>
+        private static readonly Dictionary<DeclarationType, int> SortOrder = new Dictionary<DeclarationType, int>
         {
             {DeclarationType.LibraryFunction, 0},
             {DeclarationType.LibraryProcedure, 1},
             {DeclarationType.UserDefinedType, 2},
             {DeclarationType.Enumeration, 3},
             {DeclarationType.Event, 4},
-            {DeclarationType.Variable, 5},
-            {DeclarationType.PropertyGet, 6},
-            {DeclarationType.PropertyLet, 7},
-            {DeclarationType.PropertySet, 8},
-            {DeclarationType.Function, 9},
-            {DeclarationType.Procedure, 10}
+            {DeclarationType.Constant, 5},
+            {DeclarationType.Variable, 6},
+            {DeclarationType.PropertyGet, 7},
+            {DeclarationType.PropertyLet, 8},
+            {DeclarationType.PropertySet, 9},
+            {DeclarationType.Function, 10},
+            {DeclarationType.Procedure, 11}
         };
 
         public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
@@ -69,7 +70,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             // keep separate types separate
             if (xNode.Declaration.DeclarationType != yNode.Declaration.DeclarationType)
             {
-                return _sortOrder[xNode.Declaration.DeclarationType] < _sortOrder[yNode.Declaration.DeclarationType] ? -1 : 1;
+                int xValue, yValue;
+
+                if (SortOrder.TryGetValue(xNode.Declaration.DeclarationType, out xValue) &&
+                    SortOrder.TryGetValue(yNode.Declaration.DeclarationType, out yValue))
+                {
+                    return xValue < yValue ? -1 : 1;
+                }
+
+                return xNode.Declaration.DeclarationType < yNode.Declaration.DeclarationType ? -1 : 1;
             }
 
             // keep types with different icons and the same declaration type (document/class module) separate
