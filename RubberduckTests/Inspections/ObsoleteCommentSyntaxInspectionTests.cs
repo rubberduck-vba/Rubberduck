@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ObsoleteCommentSyntaxInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCommentSyntax_ReturnsResult()
         {
             const string inputCode = @"Rem test";
@@ -36,6 +37,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCommentSyntax_DoesNotReturnResult()
         {
             const string inputCode = @"' test";
@@ -58,6 +60,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCommentSyntax_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -82,6 +85,7 @@ Rem test2";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCommentSyntax_ReturnsResults_SomeObsoleteCommentSyntax()
         {
             const string inputCode =
@@ -106,6 +110,7 @@ Rem test2";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment()
         {
             const string inputCode =
@@ -136,6 +141,7 @@ Rem test2";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCommentSyntax_QuickFixWorks_RemoveComment()
         {
             const string inputCode =
@@ -166,6 +172,7 @@ Rem test2";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ObsoleteCommentSyntaxInspection(null);
@@ -173,6 +180,7 @@ Rem test2";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteCommentSyntaxInspection";

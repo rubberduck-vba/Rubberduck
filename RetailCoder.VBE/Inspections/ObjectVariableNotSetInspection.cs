@@ -88,14 +88,16 @@ namespace Rubberduck.Inspections
         {
             return State.AllUserDeclarations
                 .Where(item => !ValueTypes.Contains(item.AsTypeName)
+                    && (item.AsTypeDeclaration != null && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
                     && !item.IsSelfAssigned
-                               && (item.DeclarationType == DeclarationType.Variable
-                                   || item.DeclarationType == DeclarationType.Parameter))
+                    && (item.DeclarationType == DeclarationType.Variable
+                        || item.DeclarationType == DeclarationType.Parameter))
                 .SelectMany(declaration =>
                     declaration.References.Where(reference =>
                     {
                         var k = reference.Context.parent.GetType();
-                        var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+                        var setStmtContext =
+                            ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
                         return setStmtContext != null && setStmtContext.LET() == null;
                     }))
                 .Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));

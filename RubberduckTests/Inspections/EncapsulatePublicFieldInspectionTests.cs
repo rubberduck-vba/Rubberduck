@@ -13,6 +13,7 @@ namespace RubberduckTests.Inspections
     public class EncapsulatePublicFieldInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void PublicField_ReturnsResult()
         {
             const string inputCode =
@@ -36,6 +37,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultiplePublicFields_ReturnMultipleResult()
         {
             const string inputCode =
@@ -61,6 +63,7 @@ Public buzz As Integer, _
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void PrivateField_DoesNotReturnResult()
         {
             const string inputCode =
@@ -84,6 +87,7 @@ Public buzz As Integer, _
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void PublicNonField_DoesNotReturnResult()
         {
             const string inputCode =
@@ -108,6 +112,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new EncapsulatePublicFieldInspection(null);
@@ -115,6 +120,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "EncapsulatePublicFieldInspection";

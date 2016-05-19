@@ -17,6 +17,7 @@ namespace RubberduckTests.Inspections
     public class ObsoleteCallStatementInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_ReturnsResult()
         {
             const string inputCode =
@@ -48,6 +49,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_DoesNotReturnResult()
         {
             const string inputCode =
@@ -79,6 +81,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -114,6 +117,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_ReturnsResults_SomeObsoleteCallStatements()
         {
             const string inputCode =
@@ -149,6 +153,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_RemoveCallStatement()
         {
             const string inputCode =
@@ -201,6 +206,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ObsoleteCallStatementInspection(null);
@@ -208,6 +214,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteCallStatementInspection";

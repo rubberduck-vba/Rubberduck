@@ -13,6 +13,7 @@ namespace RubberduckTests.Inspections
     public class UseMeaningfulNameInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameWithoutVowels()
         {
             const string inputCode = 
@@ -40,6 +41,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameUnderThreeLetters()
         {
             const string inputCode =
@@ -67,6 +69,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameEndsWithDigit()
         {
             const string inputCode =
@@ -94,6 +97,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UseMeaningfulName_DoesNotReturnsResult_GoodName_LowerCaseVowels()
         {
             const string inputCode =
@@ -121,6 +125,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UseMeaningfulName_DoesNotReturnsResult_GoodName_UpperCaseVowels()
         {
             const string inputCode =
@@ -148,6 +153,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UseMeaningfulName_DoesNotReturnsResult_OptionBase()
         {
             const string inputCode =
@@ -174,6 +180,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new UseMeaningfulNameInspection(null, null);
@@ -181,6 +188,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "UseMeaningfulNameInspection";

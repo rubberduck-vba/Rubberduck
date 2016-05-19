@@ -15,6 +15,7 @@ namespace RubberduckTests.Inspections
     public class ImplicitActiveSheetReferenceInspectionTests
     {
         [TestMethod, Ignore]    // doesn't pick up the reference to "Range".
+        [TestCategory("Inspections")]
         public void ReportsRange()
         {
             const string inputCode =
