@@ -4243,6 +4243,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total Duration.
+        /// </summary>
+        public static string UnitTest_TotalDuration {
+            get {
+                return ResourceManager.GetString("UnitTest_TotalDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type safety:.
         /// </summary>
         public static string UnitTestSettings_AssertMode {

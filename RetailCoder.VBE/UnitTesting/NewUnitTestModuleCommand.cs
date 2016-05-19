@@ -10,13 +10,11 @@ namespace Rubberduck.UnitTesting
 {
     public class NewUnitTestModuleCommand
     {
-        private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly ConfigurationLoader _configLoader;
 
-        public NewUnitTestModuleCommand(VBE vbe, RubberduckParserState state, ConfigurationLoader configLoader)
+        public NewUnitTestModuleCommand(RubberduckParserState state, ConfigurationLoader configLoader)
         {
-            _vbe = vbe;
             _state = state;
             _configLoader = configLoader;
         }
@@ -49,8 +47,6 @@ namespace Rubberduck.UnitTesting
             , "End Sub\n\n"
         );
 
-        private UnitTestSettings _settings;
-
         private const string TestModuleBaseName = "TestModule";
 
         private string GetTestModule(UnitTestSettings settings)
@@ -80,7 +76,7 @@ namespace Rubberduck.UnitTesting
 
         public void NewUnitTestModule(VBProject project)
         {
-            _settings = _configLoader.LoadConfiguration().UserSettings.UnitTestSettings;
+            var settings = _configLoader.LoadConfiguration().UserSettings.UnitTestSettings;
             VBComponent component;
             
             try
@@ -98,7 +94,14 @@ namespace Rubberduck.UnitTesting
 
                 var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
 
-                component.CodeModule.AddFromString(options + GetTestModule(_settings));
+                var defaultTestMethod = string.Empty;
+                if (settings.DefaultTestStubInNewModule)
+                {
+                    defaultTestMethod = NewTestMethodCommand.TestMethodTemplate.Replace(
+                        NewTestMethodCommand.NamePlaceholder, "TestMethod1");
+                }
+                
+                component.CodeModule.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
                 component.Activate();
             }
             catch (Exception)
@@ -107,20 +110,7 @@ namespace Rubberduck.UnitTesting
                 return;
             }
 
-            _state.StateChanged += StateChanged;
-
             _state.OnParseRequested(this, component);
-        }
-
-        private void StateChanged(object sender, ParserStateEventArgs e)
-        {
-            if (e.State == ParserState.Ready && _settings.DefaultTestStubInNewModule)
-            {
-                var newTestMethodCommand = new NewTestMethodCommand(_vbe, _state);
-                newTestMethodCommand.NewTestMethod();
-
-                _state.StateChanged -= StateChanged;
-            }
         }
 
         private string GetNextTestModuleName(VBProject project)

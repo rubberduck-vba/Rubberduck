@@ -44,7 +44,7 @@ namespace Rubberduck.UnitTesting
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                duration = _hostApp.TimedMethodCall(QualifiedMemberName);
+                _hostApp.Run(QualifiedMemberName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 
                 result = EvaluateResults();

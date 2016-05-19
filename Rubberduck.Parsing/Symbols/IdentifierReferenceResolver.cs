@@ -167,7 +167,10 @@ namespace Rubberduck.Parsing.Symbols
                 _boundExpressionVisitor.AddIdentifierReferences(boundExpression,
                     (exprCtx, identifier, declaration) =>
                         CreateReference(context, identifier, declaration,
-                            RubberduckParserState.CreateBindingSelection(context, exprCtx), isAssignmentTarget,
+                            RubberduckParserState.CreateBindingSelection(context, exprCtx),
+                            boundExpression is MemberAccessExpression
+                                ? isAssignmentTarget && boundExpression.Context.children.Last() == exprCtx
+                                : isAssignmentTarget,
                             hasExplicitLetStatement));
             }
             else
