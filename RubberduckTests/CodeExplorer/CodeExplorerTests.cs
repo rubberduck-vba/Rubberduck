@@ -126,7 +126,7 @@ namespace RubberduckTests.CodeExplorer
             var state = new RubberduckParserState();
             var commands = new List<ICommand>
             {
-                new CodeExplorer_AddTestModuleCommand(new NewUnitTestModuleCommand(vbe.Object, state, configLoader.Object))
+                new CodeExplorer_AddTestModuleCommand(new NewUnitTestModuleCommand(state, configLoader.Object))
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);

@@ -32,18 +32,20 @@ namespace Rubberduck.Inspections
     public class UntypedFunctionUsageQuickFix : CodeInspectionQuickFix
     {
         public UntypedFunctionUsageQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, string.Format(InspectionsUI.QuickFixUseTypedFunction_, context.GetText(), context.GetText() + "$"))
+            : base(context, selection,
+                  string.Format(InspectionsUI.QuickFixUseTypedFunction_,
+                      context.GetText(), context.GetText().Insert(context.GetText().IndexOf('('), "$")))
         {
         }
 
         public override void Fix()
         {
             var originalInstruction = Context.GetText();
-            var newInstruction = originalInstruction + "$";
+            var newInstruction = originalInstruction.Insert(originalInstruction.IndexOf('('), "$");
             var selection = Selection.Selection;
 
             var module = Selection.QualifiedName.Component.CodeModule;
-            var lines = module.get_Lines(selection.StartLine, selection.LineCount);
+            var lines = module.Lines[selection.StartLine, selection.LineCount];
 
             var result = lines.Replace(originalInstruction, newInstruction);
             module.ReplaceLine(selection.StartLine, result);

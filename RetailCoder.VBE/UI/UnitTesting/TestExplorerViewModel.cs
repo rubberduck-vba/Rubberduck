@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
@@ -12,14 +13,21 @@ using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public class TestExplorerViewModel : ViewModelBase, INavigateSelection
+    public class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly ITestEngine _testEngine;
         private readonly TestExplorerModel _model;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
 
-        public TestExplorerViewModel(VBE vbe, RubberduckParserState state, ITestEngine testEngine, TestExplorerModel model, IClipboardWriter clipboard, NewUnitTestModuleCommand newTestModuleCommand, NewTestMethodCommand newTestMethodCommand, IGeneralConfigService configService)
+        public TestExplorerViewModel(VBE vbe,
+             RubberduckParserState state,
+             ITestEngine testEngine,
+             TestExplorerModel model,
+             IClipboardWriter clipboard,
+             NewUnitTestModuleCommand newTestModuleCommand,
+             NewTestMethodCommand newTestMethodCommand,
+             IGeneralConfigService configService)
         {
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
@@ -29,10 +37,12 @@ namespace Rubberduck.UI.UnitTesting
 
             _navigateCommand = new NavigateCommand();
 
-            _runAllTestsCommand = new RunAllTestsCommand(testEngine, model, state);
-            _addTestModuleCommand = new AddTestModuleCommand(vbe, newTestModuleCommand);
-            _addTestMethodCommand = new AddTestMethodCommand(newTestMethodCommand);
-            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(newTestMethodCommand);
+            _runAllTestsCommand = new RunAllTestsCommand(state, testEngine, model);
+            _runAllTestsCommand.RunCompleted += RunCompleted;
+
+            _addTestModuleCommand = new AddTestModuleCommand(vbe, state, newTestModuleCommand);
+            _addTestMethodCommand = new AddTestMethodCommand(vbe, state, newTestMethodCommand);
+            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, state, newTestMethodCommand);
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommand, CanExecuteRefreshCommand);
             _repeatLastRunCommand = new DelegateCommand(ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
@@ -44,6 +54,11 @@ namespace Rubberduck.UI.UnitTesting
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
 
             _openTestSettingsCommand = new DelegateCommand(OpenSettings);
+        }
+
+        private void RunCompleted(object sender, TestRunEventArgs e)
+        {
+            TotalDuration = e.Duration;
         }
 
         private bool CanExecuteRunPassedTestsCommand(object obj)
@@ -102,9 +117,11 @@ namespace Rubberduck.UI.UnitTesting
                 }
             }
         }
+        
+        public long TotalDuration { get; private set; }
 
-        private readonly ICommand _runAllTestsCommand;
-        public ICommand RunAllTestsCommand { get { return _runAllTestsCommand; } }
+        private readonly RunAllTestsCommand _runAllTestsCommand;
+        public RunAllTestsCommand RunAllTestsCommand { get { return _runAllTestsCommand; } }
 
         private readonly ICommand _addTestModuleCommand;
         public ICommand AddTestModuleCommand { get { return _addTestModuleCommand; } }
@@ -173,36 +190,60 @@ namespace Rubberduck.UI.UnitTesting
             var tests = _model.LastRun.ToList();
             _model.ClearLastRun();
 
+            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
+
+            stopwatch.Start();
             _testEngine.Run(tests);
+            stopwatch.Stop();
+
             Model.IsBusy = false;
+            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private void ExecuteRunNotExecutedTestsCommand(object parameter)
         {
             _model.ClearLastRun();
 
+            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
+
+            stopwatch.Start();
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
+            stopwatch.Stop();
+            
             Model.IsBusy = false;
+            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private void ExecuteRunFailedTestsCommand(object parameter)
         {
             _model.ClearLastRun();
 
+            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
+
+            stopwatch.Start();
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed));
+            stopwatch.Stop();
+
             Model.IsBusy = false;
+            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private void ExecuteRunPassedTestsCommand(object parameter)
         {
             _model.ClearLastRun();
 
+            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
+
+            stopwatch.Start();
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
+            stopwatch.Stop();
+
             Model.IsBusy = false;
+            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private bool CanExecuteSelectedTestCommand(object obj)
@@ -219,22 +260,37 @@ namespace Rubberduck.UI.UnitTesting
 
             _model.ClearLastRun();
 
+            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
+
+            stopwatch.Start();
             _testEngine.Run(new[] { SelectedTest });
+            stopwatch.Stop();
+
             Model.IsBusy = false;
+            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
-            var results = string.Join("\n", _model.LastRun.Select(test => test.ToString()));
+            var results = string.Join(Environment.NewLine, _model.LastRun.Select(test => test.ToString()));
+
             var passed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Succeeded) + " " + TestOutcome.Succeeded;
             var failed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Failed) + " " + TestOutcome.Failed;
             var inconclusive = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Inconclusive) + " " + TestOutcome.Inconclusive;
             var ignored = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Ignored) + " " + TestOutcome.Ignored;
-            var resource = "Rubberduck Unit Tests - {0}\n{1} | {2} | {3}\n";
-            var text = string.Format(resource, DateTime.Now, passed, failed, inconclusive, ignored) + results;
+
+            var duration = RubberduckUI.UnitTest_TotalDuration + " - " + TotalDuration;
+
+            var resource = "Rubberduck Unit Tests - {0}{6}{1} | {2} | {3} | {4}{6}{5} ms{6}";
+            var text = string.Format(resource, DateTime.Now, passed, failed, inconclusive, ignored, duration, Environment.NewLine) + results;
 
             _clipboard.Write(text);
+        }
+
+        public void Dispose()
+        {
+            _runAllTestsCommand.RunCompleted -= RunCompleted;
         }
     }
 }
