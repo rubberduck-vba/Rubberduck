@@ -1038,13 +1038,11 @@ End Sub";
         }
 
         [TestMethod]
-        public void CompareByType_ReturnsFieldBelowSub()
+        public void CompareByType_ReturnsEventAboveConst()
         {
             var inputCode =
-@"Public Foo As Boolean
-
-Sub Bar()
-End Sub";
+@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+Public Const Bar = 0";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
@@ -1060,10 +1058,191 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse();
 
-            var subNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Bar");
-            var fieldNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo");
+            var eventNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo");
+            var constNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Bar = 0");
 
-            Assert.AreEqual(-1, new CompareByType().Compare(subNode, fieldNode));
+            Assert.AreEqual(-1, new CompareByType().Compare(eventNode, constNode));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsConstAboveField()
+        {
+            var inputCode =
+@"Public Const Foo = 0
+Public Bar As Boolean";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+
+            var constNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo = 0");
+            var fieldNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Bar");
+
+            Assert.AreEqual(-1, new CompareByType().Compare(constNode, fieldNode));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsFieldAbovePropertyGet()
+        {
+            var inputCode =
+@"Private Bar As Boolean
+
+Public Property Get Foo() As Variant
+End Property
+";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+
+            var fieldNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Bar");
+            var propertyGetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Get)");
+
+            Assert.AreEqual(-1, new CompareByType().Compare(fieldNode, propertyGetNode));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsPropertyGetAbovePropertyLet()
+        {
+            var inputCode =
+@"Public Property Get Foo() As Variant
+End Property
+
+Public Property Let Foo(ByVal Value As Variant)
+End Property
+";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+
+            var propertyGetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Get)");
+            var propertyLetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Let)");
+
+            Assert.AreEqual(-1, new CompareByType().Compare(propertyGetNode, propertyLetNode));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsPropertyLetAbovePropertySet()
+        {
+            var inputCode =
+@"Public Property Let Foo(ByVal Value As Variant)
+End Property
+
+Public Property Set Foo(ByVal Value As Variant)
+End Property
+";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+
+            var propertyLetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Let)");
+            var propertySetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Set)");
+
+            Assert.AreEqual(-1, new CompareByType().Compare(propertyLetNode, propertySetNode));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsPropertySetAboveFunction()
+        {
+            var inputCode =
+@"Public Property Set Foo(ByVal Value As Variant)
+End Property
+
+Public Function Bar() As Boolean
+End Function
+";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+
+            var propertySetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Set)");
+            var functionNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Bar");
+
+            Assert.AreEqual(-1, new CompareByType().Compare(propertySetNode, functionNode));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsFunctionAboveSub()
+        {
+            var inputCode =
+@"Public Function Foo() As Boolean
+End Function
+
+Public Sub Bar()
+End Sub
+";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+
+            var functionNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo");
+            var subNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Bar");
+
+            Assert.AreEqual(-1, new CompareByType().Compare(functionNode, subNode));
         }
 
         [TestMethod]
