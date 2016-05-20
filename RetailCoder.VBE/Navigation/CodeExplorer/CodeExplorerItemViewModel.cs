@@ -28,6 +28,22 @@ namespace Rubberduck.Navigation.CodeExplorer
 
     public class CompareByType : Comparer<CodeExplorerItemViewModel>
     {
+        private static readonly Dictionary<DeclarationType, int> SortOrder = new Dictionary<DeclarationType, int>
+        {
+            {DeclarationType.LibraryFunction, 0},
+            {DeclarationType.LibraryProcedure, 1},
+            {DeclarationType.UserDefinedType, 2},
+            {DeclarationType.Enumeration, 3},
+            {DeclarationType.Event, 4},
+            {DeclarationType.Constant, 5},
+            {DeclarationType.Variable, 6},
+            {DeclarationType.PropertyGet, 7},
+            {DeclarationType.PropertyLet, 8},
+            {DeclarationType.PropertySet, 9},
+            {DeclarationType.Function, 10},
+            {DeclarationType.Procedure, 11}
+        };
+
         public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
             if (x == y)
@@ -54,6 +70,14 @@ namespace Rubberduck.Navigation.CodeExplorer
             // keep separate types separate
             if (xNode.Declaration.DeclarationType != yNode.Declaration.DeclarationType)
             {
+                int xValue, yValue;
+
+                if (SortOrder.TryGetValue(xNode.Declaration.DeclarationType, out xValue) &&
+                    SortOrder.TryGetValue(yNode.Declaration.DeclarationType, out yValue))
+                {
+                    return xValue < yValue ? -1 : 1;
+                }
+
                 return xNode.Declaration.DeclarationType < yNode.Declaration.DeclarationType ? -1 : 1;
             }
 
