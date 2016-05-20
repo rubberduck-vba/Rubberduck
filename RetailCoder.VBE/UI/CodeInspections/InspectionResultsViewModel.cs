@@ -8,13 +8,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor.Extensions;
@@ -32,8 +32,6 @@ namespace Rubberduck.UI.CodeInspections
         public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
                                           IGeneralConfigService configService)
         {
-            _dispatcher = Dispatcher.CurrentDispatcher;
-
             _state = state;
             _inspector = inspector;
             _vbe = vbe;
@@ -47,6 +45,18 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             _openSettingsCommand = new DelegateCommand(OpenSettings);
+
+            _setInspectionTypeGroupingCommand = new DelegateCommand(param =>
+            {
+                GroupByInspectionType = (bool)param;
+                GroupByLocation = !(bool)param;
+            });
+
+            _setLocationGroupingCommand = new DelegateCommand(param =>
+            {
+                GroupByLocation = (bool)param;
+                GroupByInspectionType = !(bool)param;
+            });
 
             _state.StateChanged += _state_StateChanged;
         }
@@ -109,13 +119,31 @@ namespace Rubberduck.UI.CodeInspections
             get { return _groupByInspectionType; }
             set
             {
-                if (_groupByInspectionType != value)
-                {
-                    _groupByInspectionType = value;
-                    OnPropertyChanged();
-                }
+                if (_groupByInspectionType == value) { return; }
+                
+                _groupByInspectionType = value;
+                OnPropertyChanged();
             }
         }
+
+        private bool _groupByLocation;
+        public bool GroupByLocation
+        {
+            get { return _groupByLocation; }
+            set
+            {
+                if (_groupByLocation == value) { return; }
+                
+                _groupByLocation = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private readonly ICommand _setInspectionTypeGroupingCommand;
+        public ICommand SetInspectionTypeGroupingCommand { get { return _setInspectionTypeGroupingCommand; } }
+
+        private readonly ICommand _setLocationGroupingCommand;
+        public ICommand SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
 
         private readonly INavigateCommand _navigateCommand;
         public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
@@ -200,7 +228,7 @@ namespace Rubberduck.UI.CodeInspections
 
             var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();
 
-            _dispatcher.Invoke(() =>
+            UiDispatcher.Invoke(() =>
             {
                 Results = new ObservableCollection<ICodeInspectionResult>(results);
 
@@ -304,7 +332,6 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private bool _canDisableInspection;
-        private readonly Dispatcher _dispatcher;
 
         public bool CanDisableInspection
         {

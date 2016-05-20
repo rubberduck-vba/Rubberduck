@@ -494,15 +494,19 @@
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center" 
                                   Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByMarker}"
-                                  IsChecked="{Binding GroupByMarker, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  IsChecked="{Binding GroupByMarker, UpdateSourceTrigger=PropertyChanged}" 
                                   IsCheckable="True"
+                                  Command="{Binding SetMarkerGroupingCommand}"
+                                  CommandParameter="{Binding ElementName=GroupByMarker, Path=IsChecked}"
                                   controls:MenuItemGroup.GroupName="ToDoExplorer_GroupingStyle" />
                         <MenuItem x:Name="GroupByLocation"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center" 
                                   Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
-                                  IsChecked="{Binding GroupByMarker, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBoolValue}}" 
+                                  IsChecked="{Binding GroupByLocation, UpdateSourceTrigger=PropertyChanged}" 
                                   IsCheckable="True"
+                                  Command="{Binding SetLocationGroupingCommand}"
+                                  CommandParameter="{Binding ElementName=GroupByLocation, Path=IsChecked}"
                                   controls:MenuItemGroup.GroupName="ToDoExplorer_GroupingStyle" />
                     </MenuItem>
                 </Menu>
