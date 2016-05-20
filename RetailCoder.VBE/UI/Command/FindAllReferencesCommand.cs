@@ -44,7 +44,6 @@ namespace Rubberduck.UI.Command
             var target = FindTarget(parameter);
             var canExecute = target != null;
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 

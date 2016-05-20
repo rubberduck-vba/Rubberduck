@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
@@ -11,38 +10,37 @@ namespace Rubberduck.Inspections
 {
     public sealed class ImplicitActiveWorkbookReferenceInspection : InspectionBase
     {
-        private readonly Lazy<IHostApplication> _hostApp;
+        private readonly IHostApplication _hostApp;
 
         public ImplicitActiveWorkbookReferenceInspection(VBE vbe, RubberduckParserState state)
             : base(state)
         {
-            _hostApp = new Lazy<IHostApplication>(vbe.HostApplication);
+            _hostApp = vbe.HostApplication();
         }
 
         public override string Meta { get { return InspectionsUI.ImplicitActiveWorkbookReferenceInspectionMeta; } }
         public override string Description { get { return InspectionsUI.ImplicitActiveWorkbookReferenceInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        private static readonly string[] Targets = 
+        private static readonly string[] Targets =
         {
-            "Worksheets", "Sheets", "Names", 
+            "Worksheets", "Sheets", "Names",
         };
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            if (!_hostApp.IsValueCreated || _hostApp.Value == null || _hostApp.Value.ApplicationName != "Excel")
+            if (_hostApp == null || _hostApp.ApplicationName != "Excel")
             {
-                return new InspectionResultBase[] {};
+                return new InspectionResultBase[] { };
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
-            var issues = Declarations.Where(item => item.IsBuiltIn 
-                                            && item.ParentScope == "Excel.Global"
+            var issues = BuiltInDeclarations.Where(item => item.ParentScope.StartsWith("EXCEL.EXE;")
                                             && Targets.Contains(item.IdentifierName)
                                             && item.References.Any())
                 .SelectMany(declaration => declaration.References);
 
-            return issues.Select(issue => 
+            return issues.Select(issue =>
                 new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
         }
     }
@@ -58,7 +56,7 @@ namespace Rubberduck.Inspections
             _reference = reference;
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new IgnoreOnceQuickFix(reference.Context, QualifiedSelection, Inspection.AnnotationName), 
+                new IgnoreOnceQuickFix(reference.Context, QualifiedSelection, Inspection.AnnotationName),
             };
         }
 

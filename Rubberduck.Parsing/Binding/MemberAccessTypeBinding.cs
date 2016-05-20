@@ -50,6 +50,14 @@ namespace Rubberduck.Parsing.Binding
             _unrestrictedNameContext = unrestrictedNameContext;
         }
 
+        public IExpressionBinding LExpressionBinding
+        {
+            get
+            {
+                return _lExpressionBinding;
+            }
+        }
+
         private ParserRuleContext GetExpressionContext()
         {
             if (_memberAccessExpression != null)
@@ -211,7 +219,7 @@ namespace Rubberduck.Parsing.Binding
              */
             if (lExpressionIsEnclosingProject)
             {
-                var foundType = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, memberType);
+                var foundType = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, memberType);
                 if (foundType != null)
                 {
                     return new MemberAccessExpression(foundType, ExpressionClassification.Type, GetExpressionContext(), _unrestrictedNameContext, lExpression);

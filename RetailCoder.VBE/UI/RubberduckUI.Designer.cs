@@ -245,6 +245,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commit....
+        /// </summary>
+        public static string CodeExplorer_Commit {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Commit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         public static string CodeExplorer_DisplayMemberNamesText {
@@ -308,15 +317,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Inspect.
-        /// </summary>
-        public static string CodeExplorer_Inspect {
-            get {
-                return ResourceManager.GetString("CodeExplorer_Inspect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Na&amp;vigate.
         /// </summary>
         public static string CodeExplorer_Navigate {
@@ -362,6 +362,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh component.
+        /// </summary>
+        public static string CodeExplorer_RefreshComponent {
+            get {
+                return ResourceManager.GetString("CodeExplorer_RefreshComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove....
         /// </summary>
         public static string CodeExplorer_Remove {
@@ -403,6 +412,24 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_ShowSignaturesToolTip {
             get {
                 return ResourceManager.GetString("CodeExplorer_ShowSignaturesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort.
+        /// </summary>
+        public static string CodeExplorer_Sort {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Sort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo....
+        /// </summary>
+        public static string CodeExplorer_Undo {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Undo", resourceCulture);
             }
         }
         
@@ -1950,6 +1977,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add &apos;@NoIndent.
+        /// </summary>
+        public static string NoIndentAnnotation {
+            get {
+                return ResourceManager.GetString("NoIndentAnnotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Offline.
         /// </summary>
         public static string Offline {
@@ -3010,6 +3046,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By name.
+        /// </summary>
+        public static string SortStyle_ByName {
+            get {
+                return ResourceManager.GetString("SortStyle_ByName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By selection.
+        /// </summary>
+        public static string SortStyle_BySelection {
+            get {
+                return ResourceManager.GetString("SortStyle_BySelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By type.
+        /// </summary>
+        public static string SortStyle_ByType {
+            get {
+                return ResourceManager.GetString("SortStyle_ByType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;.gitattributes&apos; File.
         /// </summary>
         public static string SourceControl_AttributesFile {
@@ -3658,6 +3721,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to undo your changes to {0}?.
+        /// </summary>
+        public static string SourceControl_UndoPrompt {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source Control - Undo.
+        /// </summary>
+        public static string SourceControl_UndoTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unpublish.
         /// </summary>
         public static string SourceControl_UnpublishBranchButton {
@@ -3955,6 +4036,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignored.
+        /// </summary>
+        public static string TestOutcome_Ignored {
+            get {
+                return ResourceManager.GetString("TestOutcome_Ignored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inconclusive.
         /// </summary>
         public static string TestOutcome_Inconclusive {
@@ -4149,6 +4239,15 @@ namespace Rubberduck.UI {
         public static string UnitTest_NewModule_RunOnce {
             get {
                 return ResourceManager.GetString("UnitTest_NewModule_RunOnce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Duration.
+        /// </summary>
+        public static string UnitTest_TotalDuration {
+            get {
+                return ResourceManager.GetString("UnitTest_TotalDuration", resourceCulture);
             }
         }
         

@@ -104,12 +104,12 @@ namespace Rubberduck.Parsing.Symbols
             _resolver.ExitWithBlock();
         }
 
-        public override void EnterBlockIfThenElse(VBAParser.BlockIfThenElseContext context)
+        public override void EnterIfStmt(VBAParser.IfStmtContext context)
         {
             _resolver.Resolve(context);
         }
 
-        public override void EnterInlineIfThenElse(VBAParser.InlineIfThenElseContext context)
+        public override void EnterSingleLineIfStmt(VBAParser.SingleLineIfStmtContext context)
         {
             _resolver.Resolve(context);
         }
@@ -295,6 +295,16 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public override void EnterResumeStmt(VBAParser.ResumeStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterCircleSpecialForm(VBAParser.CircleSpecialFormContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterScaleSpecialForm(VBAParser.ScaleSpecialFormContext context)
         {
             _resolver.Resolve(context);
         }

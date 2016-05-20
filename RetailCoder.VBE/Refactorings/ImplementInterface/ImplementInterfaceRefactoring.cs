@@ -14,6 +14,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
     public class ImplementInterfaceRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
         private List<Declaration> _declarations;
@@ -25,6 +26,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         public ImplementInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
             _vbe = vbe;
+            _state = state;
             _declarations = state.AllUserDeclarations.ToList();
             _messageBox = messageBox;
         }
@@ -65,6 +67,8 @@ namespace Rubberduck.Refactorings.ImplementInterface
             }
 
             ImplementMissingMembers();
+
+            _state.OnParseRequested(this);
         }
 
         public void Refactor(Declaration target)

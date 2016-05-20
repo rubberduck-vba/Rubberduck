@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class TypeAnnotationPass
+    public sealed class TypeAnnotationPass : ICompilationPass
     {
         private readonly DeclarationFinder _declarationFinder;
         private readonly BindingService _bindingService;
@@ -23,7 +23,7 @@ namespace Rubberduck.Parsing.Symbols
             _boundExpressionVisitor = new BoundExpressionVisitor();
         }
 
-        public void Annotate()
+        public void Execute()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             foreach (var declaration in _declarationFinder.FindDeclarationsWithNonBaseAsType())
@@ -42,7 +42,6 @@ namespace Rubberduck.Parsing.Symbols
                 declarationWithAsType.AsTypeDeclaration = declarationWithAsType;
                 return;
             }
-
             string typeExpression;
             if (declarationWithAsType.IsTypeSpecified())
             {

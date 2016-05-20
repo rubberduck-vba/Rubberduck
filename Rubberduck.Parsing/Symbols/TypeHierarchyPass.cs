@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class TypeHierarchyPass
+    public sealed class TypeHierarchyPass : ICompilationPass
     {
         private readonly DeclarationFinder _declarationFinder;
         private readonly BindingService _bindingService;
@@ -23,7 +23,7 @@ namespace Rubberduck.Parsing.Symbols
             _boundExpressionVisitor = new BoundExpressionVisitor();
         }
 
-        public void Annotate()
+        public void Execute()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             foreach (var declaration in _declarationFinder.FindClasses())

@@ -48,7 +48,6 @@ namespace Rubberduck.UI.Command.Refactorings
             //var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(qualifiedSelection.Value, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
             var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
 
-                
             /*
             var canExecute = parentProcedure != null
                 && selection.StartColumn != selection.EndColumn
@@ -63,8 +62,16 @@ namespace Rubberduck.UI.Command.Refactorings
         public override void Execute(object parameter)
         {
             var declarations = _state.AllDeclarations;
-            ICodeModuleWrapper codeModuleWrapper = new CodeModuleWrapper(Vbe.ActiveCodePane.CodeModule);
             var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();
+
+            var extractMethodValidation = new ExtractMethodSelectionValidation(declarations);
+            var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
+            if (!canExecute)
+            {
+                return;
+            }
+            ICodeModuleWrapper codeModuleWrapper = new CodeModuleWrapper(Vbe.ActiveCodePane.CodeModule);
+            VBComponent vbComponent = Vbe.SelectedVBComponent;
 
             Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = ( qs, code) =>
             {
@@ -73,6 +80,7 @@ namespace Rubberduck.UI.Command.Refactorings
                     return null;
                 }
                 //TODO: Pull these even further back;
+                //      and implement with IProvider<IExtractMethodRule>
                 var rules = new List<IExtractMethodRule>(){ 
                     new ExtractMethodRuleInSelection(),
                     new ExtractMethodRuleIsAssignedInSelection(),
@@ -86,7 +94,9 @@ namespace Rubberduck.UI.Command.Refactorings
             };
 
             var extraction = new ExtractMethodExtraction();
-            var refactoring = new ExtractMethodRefactoring(codeModuleWrapper, createMethodModel, extraction);
+            Action<Object> parseRequest = (obj) => _state.OnParseRequested(obj, vbComponent);
+
+            var refactoring = new ExtractMethodRefactoring(codeModuleWrapper, parseRequest , createMethodModel, extraction);
             refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }

@@ -24,10 +24,21 @@ namespace Rubberduck.Parsing.Binding
             _expression = expression;
         }
 
+        public bool PreferProjectOverUdt { get; set; }
+
         public IBoundExpression Resolve()
         {
-            IBoundExpression boundExpression = null;
             string name = ExpressionName.GetName(_expression.name());
+            if (PreferProjectOverUdt)
+            {
+                return ResolvePreferProject(name);
+            }
+            return ResolvePreferUdt(name);
+        }
+
+        private IBoundExpression ResolvePreferUdt(string name)
+        {
+            IBoundExpression boundExpression = null;
             boundExpression = ResolveEnclosingModule(name);
             if (boundExpression != null)
             {
@@ -52,18 +63,46 @@ namespace Rubberduck.Parsing.Binding
             return boundExpression;
         }
 
+        private IBoundExpression ResolvePreferProject(string name)
+        {
+            IBoundExpression boundExpression = null;
+            // EnclosingProject and EnclosingModule have been switched.
+            boundExpression = ResolveEnclosingProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveEnclosingModule(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveOtherModuleInEnclosingProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveReferencedProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveModuleInReferencedProject(name);
+            return boundExpression;
+        }
+
         private IBoundExpression ResolveEnclosingModule(string name)
         {
             /*  Namespace tier 1:
                 Enclosing Module namespace: A UDT or Enum type defined at the module-level in the 
                 enclosing module.
             */
-            var udt = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.UserDefinedType);
+            var udt = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.UserDefinedType);
             if (udt != null)
             {
                 return new SimpleNameExpression(udt, ExpressionClassification.Type, _expression);
             }
-            var enumType = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Enumeration);
+            var enumType = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Enumeration);
             if (enumType != null)
             {
                 return new SimpleNameExpression(enumType, ExpressionClassification.Type, _expression);

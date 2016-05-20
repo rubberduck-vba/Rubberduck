@@ -17,6 +17,67 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
     [TestClass]
+    public class ExtractMethodRefactoringTests
+    {
+        [TestClass]
+        public class WhenRefactorIsCalled
+        {
+            [TestMethod]
+            public void shouldCallParseRequest()
+            {
+
+                const string inputCode = @"
+    Public Sub ChangeMeIntoDecs()
+        Dim x As Integer
+        x = 1
+        x = 1 + 2
+    End Sub
+";
+                const string newMethod = @"
+Private Sub Bar(ByRef x as integer)
+    x = 1
+End Function";
+                const string extractCode = "x = 1 + 2";
+
+                QualifiedModuleName qualifiedModuleName;
+                RubberduckParserState state;
+                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+
+                var declarations = state.AllDeclarations;
+                var selection = new Selection(4, 4, 4, 14);
+                QualifiedSelection? qualifiedSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                var codeModule = new Mock<ICodeModuleWrapper>();
+
+                var emRules = new List<IExtractMethodRule>() { 
+                    new ExtractMethodRuleUsedAfter(), new ExtractMethodRuleUsedBefore(), new ExtractMethodRuleInSelection(), new ExtractMethodRuleIsAssignedInSelection()};
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var wasParsed = false;
+                Action<object> onParseRequest = (obj) => { wasParsed = true; };
+                extractedMethod.Setup(em => em.MethodName).Returns("Bar");
+                IExtractMethodModel model = new ExtractMethodModel(emRules, extractedMethod.Object);
+                model.extract(declarations, qualifiedSelection.Value, extractCode);
+                var insertCode = "Bar x";
+
+                Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = (q, s) => { return model; };
+
+                codeModule.SetupGet(cm => cm.QualifiedSelection).Returns(qualifiedSelection);
+                codeModule.Setup(cm => cm.GetLines(selection)).Returns(extractCode);
+                codeModule.Setup(cm => cm.DeleteLines(It.IsAny<Selection>()));
+                codeModule.Setup(cm => cm.InsertLines(It.IsAny<int>(), It.IsAny<String>()));
+
+                var extraction = new Mock<IExtractMethodExtraction>();
+
+                var SUT = new ExtractMethodRefactoring(codeModule.Object, onParseRequest,createMethodModel,  extraction.Object);
+
+                SUT.Refactor();
+
+                Assert.AreEqual(true,wasParsed);
+
+            }
+
+        }
+    }
+    [TestClass]
     public class Example
     {
 
@@ -67,6 +128,7 @@ End Function";
                 var emRules = new List<IExtractMethodRule>() { 
                     new ExtractMethodRuleUsedAfter(), new ExtractMethodRuleUsedBefore(), new ExtractMethodRuleInSelection(), new ExtractMethodRuleIsAssignedInSelection()};
                 var extractedMethod = new Mock<IExtractedMethod>();
+                Action<object> onParseRequest = (obj) => { };
                 extractedMethod.Setup(em => em.MethodName).Returns("Bar");
                 IExtractMethodModel model = new ExtractMethodModel(emRules, extractedMethod.Object);
                 model.extract(declarations, qualifiedSelection.Value, extractCode);
@@ -79,17 +141,14 @@ End Function";
                 codeModule.Setup(cm => cm.DeleteLines(It.IsAny<Selection>()));
                 codeModule.Setup(cm => cm.InsertLines(It.IsAny<int>(), It.IsAny<String>()));
 
-
                 var extraction = new Mock<IExtractMethodExtraction>();
 
-                var SUT = new ExtractMethodRefactoring(codeModule.Object, createMethodModel,  extraction.Object);
+                var SUT = new ExtractMethodRefactoring(codeModule.Object, onParseRequest,createMethodModel,  extraction.Object);
 
                 SUT.Refactor();
 
                 extraction.Verify(ext => ext.apply(codeModule.Object, It.IsAny<IExtractMethodModel>(), selection));
             }
-
-
         }
 
 

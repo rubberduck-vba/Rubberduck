@@ -52,7 +52,6 @@ namespace Rubberduck.UI.Command.Refactorings
             // true if active code pane is for a class/document/form module
             var canExecute = ModuleTypes.Contains(Vbe.ActiveCodePane.CodeModule.Parent.Type) && target != null && hasMembers;
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 

@@ -20,7 +20,7 @@ using System.IO;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParser : IRubberduckParser
+    public class RubberduckParser : IRubberduckParser, IDisposable
     {
         public RubberduckParserState State
         {
@@ -139,6 +139,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (!toParse.Any())
             {
+                State.SetStatusAndFireStateChanged(ParserState.Ready);
                 return;
             }
 
@@ -219,13 +220,11 @@ namespace Rubberduck.Parsing.VBA
             var informationModule = finder.FindStdModule("Information", vba, true);
             Debug.Assert(informationModule != null);
             var arrayFunction = new FunctionDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Array"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            var circleFunction = new FunctionDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Circle"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            // INPUT is treated as an inputstmt in the grammar thus does not have a declaration created for it.
-            //var inputFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Input"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            //var numberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputFunction, "Integer", false, false);
-            //var filenumberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputFunction, "Integer", false, false);
-            //inputFunction.AddParameter(numberParam);
-            //inputFunction.AddParameter(filenumberParam);
+            var inputFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Input"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
+            var numberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputFunction, "Integer", false, false);
+            var filenumberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputFunction, "Integer", false, false);
+            inputFunction.AddParameter(numberParam);
+            inputFunction.AddParameter(filenumberParam);
             var inputBFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "InputB"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
             var numberBParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputBFunction, "Integer", false, false);
             var filenumberBParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputBFunction, "Integer", false, false);
@@ -236,17 +235,6 @@ namespace Rubberduck.Parsing.VBA
             var dimensionParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Dimension"), lboundFunction, "Integer", true, false);
             lboundFunction.AddParameter(arrayNameParam);
             lboundFunction.AddParameter(dimensionParam);
-            var scaleFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Scale"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            var flagsParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Flags"), scaleFunction, "Integer", false, false);
-            var x1Param = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "X1"), scaleFunction, "Single", false, false);
-            var y1Param = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Y1"), scaleFunction, "Single", false, false);
-            var x2Param = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "X2"), scaleFunction, "Single", false, false);
-            var y2Param = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Y2"), scaleFunction, "Single", false, false);
-            scaleFunction.AddParameter(flagsParam);
-            scaleFunction.AddParameter(x1Param);
-            scaleFunction.AddParameter(y1Param);
-            scaleFunction.AddParameter(x2Param);
-            scaleFunction.AddParameter(y2Param);
             var uboundFunction = new FunctionDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "UBound"), informationModule, informationModule, "Integer", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
             var arrayParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Array"), uboundFunction, "Variant", false, false, true);
             var rankParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Rank"), uboundFunction, "Integer", true, false);
@@ -255,10 +243,9 @@ namespace Rubberduck.Parsing.VBA
             lock (_state)
             {
                 _state.AddDeclaration(arrayFunction);
-                _state.AddDeclaration(circleFunction);
+                _state.AddDeclaration(inputFunction);
                 _state.AddDeclaration(inputBFunction);
                 _state.AddDeclaration(lboundFunction);
-                _state.AddDeclaration(scaleFunction);
                 _state.AddDeclaration(uboundFunction);
             }
         }
@@ -480,8 +467,14 @@ namespace Rubberduck.Parsing.VBA
 
             // walk all parse trees (modified or not) for identifier references
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
-            new TypeAnnotationPass(finder).Annotate();
-            new TypeHierarchyPass(finder).Annotate();
+            var passes = new List<ICompilationPass>
+            {
+                // This pass has to come first because the type binding resolution depends on it.
+                new ProjectReferencePass(finder),
+                new TypeHierarchyPass(finder),
+                new TypeAnnotationPass(finder)
+            };
+            passes.ForEach(p => p.Execute());
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;
@@ -492,31 +485,12 @@ namespace Rubberduck.Parsing.VBA
         private readonly Dictionary<string, Declaration> _projectDeclarations = new Dictionary<string, Declaration>(); 
         private void ResolveDeclarations(VBComponent component, IParseTree tree)
         {
-            var qualifiedModuleName = new QualifiedModuleName(component);
+            if (component == null) { return; }
 
-            var obsoleteCallStatementListener = new ObsoleteCallStatementListener();
-            var obsoleteLetStatementListener = new ObsoleteLetStatementListener();
-            var emptyStringLiteralListener = new EmptyStringLiteralListener();
-            var argListWithOneByRefParamListener = new ArgListWithOneByRefParamListener();
+            var qualifiedModuleName = new QualifiedModuleName(component);
             
             try
             {
-                ParseTreeWalker.Default.Walk(new CombinedParseTreeListener(new IParseTreeListener[]{
-                    obsoleteCallStatementListener,
-                    obsoleteLetStatementListener,
-                    emptyStringLiteralListener,
-                    argListWithOneByRefParamListener,
-                }), tree);
-                // TODO: these are actually (almost) inspection results.. we should handle them as such
-                lock (_state)
-                lock (component)
-                {
-                    _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                    _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                    _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                    _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                }
-
                 var project = component.Collection.Parent;
                 var projectQualifiedName = new QualifiedModuleName(project);
                 Declaration projectDeclaration;
@@ -551,7 +525,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
             var projectId = qualifiedName.QualifiedModuleName.ProjectId;
-            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name);
+            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name, isBuiltIn: false);
             var references = _projectReferences.Where(projectContainingReference => projectContainingReference.ContainsKey(projectId));
             foreach (var reference in references)
             {
@@ -592,61 +566,21 @@ namespace Rubberduck.Parsing.VBA
             Debug.WriteLine("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
         }
 
-        #region Listener classes
-        private class ObsoleteCallStatementListener : VBAParserBaseListener
+        public void Dispose()
         {
-            private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
-            public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
+            State.ParseRequest -= ReparseRequested;
+            State.StateChanged -= StateOnStateChanged;
 
-            public override void ExitExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
+            if (_resolverTokenSource != null)
             {
-                _contexts.Add(context);
+                _resolverTokenSource.Dispose();
+            }
+
+            if (_central != null)
+            {
+                _central.Cancel();
+                _central.Dispose();
             }
         }
-
-        private class ObsoleteLetStatementListener : VBAParserBaseListener
-        {
-            private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
-            public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
-
-            public override void ExitLetStmt(VBAParser.LetStmtContext context)
-            {
-                if (context.LET() != null)
-                {
-                    _contexts.Add(context);
-                }
-            }
-        }
-
-        private class EmptyStringLiteralListener : VBAParserBaseListener
-        {
-            private readonly IList<VBAParser.LiteralContext> _contexts = new List<VBAParser.LiteralContext>();
-            public IEnumerable<VBAParser.LiteralContext> Contexts { get { return _contexts; } }
-
-            public override void ExitLiteral(VBAParser.LiteralContext context)
-            {
-                var literal = context.STRINGLITERAL();
-                if (literal != null && literal.GetText() == "\"\"")
-                {
-                    _contexts.Add(context);
-                }
-            }
-        }
-
-        private class ArgListWithOneByRefParamListener : VBAParserBaseListener
-        {
-            private readonly IList<VBAParser.ArgListContext> _contexts = new List<VBAParser.ArgListContext>();
-            public IEnumerable<VBAParser.ArgListContext> Contexts { get { return _contexts; } }
-
-            public override void ExitArgList(VBAParser.ArgListContext context)
-            {
-                if (context.arg() != null && context.arg().Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)
-                {
-                    _contexts.Add(context);
-                }
-            }
-        }
-
-        #endregion
     }
 }

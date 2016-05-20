@@ -11,10 +11,13 @@ using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel
+    public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
     {
         private readonly Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }
+
+        private readonly CodeExplorerItemViewModel _parent;
+        public override CodeExplorerItemViewModel Parent { get { return _parent; } }
 
         private static readonly DeclarationType[] MemberTypes =
         {
@@ -32,8 +35,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.Variable, 
         };
 
-        public CodeExplorerComponentViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
+        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations)
         {
+            _parent = parent;
             _declaration = declaration;
             _icon = Icons[DeclarationType];
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
@@ -41,9 +45,55 @@ namespace Rubberduck.Navigation.CodeExplorer
                                                 && item.ParentScope == declaration.Scope
                                                 && MemberTypes.Contains(item.DeclarationType))
                                 .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
-                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
+                                .Select(item => new CodeExplorerMemberViewModel(this, item, grouping)))
                                 .ToList<CodeExplorerItemViewModel>();
-            
+
+            _name = _declaration.IdentifierName;
+
+            var component = declaration.QualifiedName.QualifiedModuleName.Component;
+            if (component.Type == vbext_ComponentType.vbext_ct_Document)
+            {
+                try
+                {
+                    var parenthesizedName = component.Properties.Item("Name").Value.ToString();
+
+                    if (ContainsBuiltinDocumentPropertiesProperty())
+                    {
+                        CodeExplorerItemViewModel node = this;
+                        while (node.Parent != null)
+                        {
+                            node = node.Parent;
+                        }
+
+                        ((CodeExplorerProjectViewModel) node).SetParenthesizedName(parenthesizedName);
+                    }
+                    else
+                    {
+                        _name += " (" + parenthesizedName + ")";
+                    }
+                }
+                catch
+                {
+                    // gotcha! (this means that the property either doesn't exist or we weren't able to get it for some reason)
+                }
+            }
+        }
+
+        private bool ContainsBuiltinDocumentPropertiesProperty()
+        {
+            var component = _declaration.QualifiedName.QualifiedModuleName.Component;
+
+            try
+            {
+                component.Properties.Item("BuiltinDocumentProperties");
+            }
+            catch
+            {
+                // gotcha! (this means that the property either doesn't exist or we weren't able to get it for some reason)
+                return false;
+            }
+
+            return true;
         }
 
         private bool _isErrorState;
@@ -58,8 +108,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public override string Name { get { return _declaration.IdentifierName; } }
-        public override string NameWithSignature { get { return Name; } }
+        private readonly string _name;
+        public override string Name { get { return _name; } }
+        public override string NameWithSignature { get { return _name; } }
 
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 

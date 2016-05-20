@@ -6,10 +6,14 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerErrorNodeViewModel : CodeExplorerItemViewModel
     {
-        public CodeExplorerErrorNodeViewModel(string name)
+        public CodeExplorerErrorNodeViewModel(CodeExplorerItemViewModel parent, string name)
         {
+            _parent = parent;
             _name = name;
         }
+
+        private readonly CodeExplorerItemViewModel _parent;
+        public override CodeExplorerItemViewModel Parent { get { return _parent; } }
 
         private readonly string _name;
         public override string Name { get { return _name; } }

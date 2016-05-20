@@ -33,9 +33,9 @@ name : untypedName | typedName;
 reservedIdentifierName : reservedUntypedName | reservedTypedName;
 reservedUntypedName : reservedIdentifier;
 reservedTypedName : reservedIdentifier typeSuffix;
-untypedName : IDENTIFIER | FOREIGNNAME | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR;
+untypedName : IDENTIFIER | FOREIGNNAME | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR | reservedTypeIdentifier;
 typedName : typedNameValue typeSuffix;
-typedNameValue : IDENTIFIER | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR;
+typedNameValue : IDENTIFIER | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR | reservedTypeIdentifier;
 typeSuffix : PERCENT | AMPERSAND | POW | EXCLAMATIONPOINT | HASH | AT | DOLLAR;
 
 optionCompareArgument : BINARY | TEXT | DATABASE;
@@ -69,6 +69,9 @@ expression :
 	| expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
 	| expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
     | literalExpression                                                                             # literalExpr
+    // This has been added so that we can deal with legacy functions that allow file numbers as arguments which are usually not allowed
+    // e.g. Input(file1, #file1)
+    | HASH expression                                                                               # markedFileNumberExpr 
 ;
 
 // 5.6.5 Literal Expressions
@@ -168,7 +171,6 @@ reservedIdentifier :
 statementKeyword :
     CALL
     | CASE
-    | CLOSE
     | CONST
     | DECLARE
     | DEFBOOL
@@ -188,7 +190,6 @@ statementKeyword :
     | DO
     | ELSE
     | ELSEIF
-    | END
     | END_IF
     | ENUM
     | ERASE
@@ -197,67 +198,34 @@ statementKeyword :
     | FOR
     | FRIEND
     | FUNCTION
-    | GET
     | GLOBAL
     | GOSUB
     | GOTO
     | IF
     | IMPLEMENTS
-    | INPUT
     | LET
-    | LOCK
     | LOOP
     | LSET
     | NEXT
     | ON
-    | OPEN
     | OPTION
     | PRINT
     | PRIVATE
     | PUBLIC
-    | PUT
     | RAISEEVENT
     | REDIM
     | RESUME
     | RETURN
     | RSET
-    | SEEK
     | SELECT
     | SET
     | STATIC
     | STOP
     | SUB
     | TYPE
-    | UNLOCK
     | WEND
     | WHILE
     | WITH
-    | WRITE
-    | STEP
-    | EXIT_DO 
-    | EXIT_FOR 
-    | EXIT_FUNCTION 
-    | EXIT_PROPERTY 
-    | EXIT_SUB
-    | END_SELECT
-    | END_WITH
-    | ON_ERROR
-    | ERROR
-    | APPEND
-    | BINARY
-    | OUTPUT
-    | RANDOM
-    | ACCESS
-    | READ
-    | WRITE
-    | READ_WRITE
-    | SHARED
-    | LOCK_READ
-    | LOCK_WRITE
-    | LOCK_READ_WRITE
-    | RESET
-    | LINE_INPUT
-    | WIDTH
 ;
 remKeyword : REM;
 markerKeyword :
@@ -329,6 +297,41 @@ reservedProcedureName :
     | MIDB 
     | MIDTYPESUFFIX 
     | MIDBTYPESUFFIX
+    | STEP
+    | EXIT_DO 
+    | EXIT_FOR 
+    | EXIT_FUNCTION 
+    | EXIT_PROPERTY 
+    | EXIT_SUB
+    | END_SELECT
+    | END_WITH
+    | ON_ERROR
+    | ERROR
+    | APPEND
+    | BINARY
+    | OUTPUT
+    | RANDOM
+    | ACCESS
+    | READ
+    | WRITE
+    | READ_WRITE
+    | SHARED
+    | LOCK_READ
+    | LOCK_WRITE
+    | LOCK_READ_WRITE
+    | RESET
+    | LINE_INPUT
+    | WIDTH
+    | END
+    | CLOSE
+    | GET
+    | INPUT
+    | LOCK
+    | OPEN
+    | PUT
+    | SEEK
+    | UNLOCK
+    | WRITE
 ;
 specialForm :
     ARRAY
@@ -352,6 +355,7 @@ reservedTypeIdentifier :
     | SINGLE
     | STRING
     | VARIANT
+    | ANY
 ;
 
 uncategorizedKeyword : 

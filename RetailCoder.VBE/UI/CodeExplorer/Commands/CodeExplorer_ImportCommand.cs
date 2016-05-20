@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -18,7 +17,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _openFileDialog.AddExtension = true;
             _openFileDialog.AutoUpgradeEnabled = true;
             _openFileDialog.CheckFileExists = true;
-            _openFileDialog.Multiselect = false;
+            _openFileDialog.Multiselect = true;
             _openFileDialog.ShowHelp = false;   // we don't want 1996's file picker.
             _openFileDialog.Filter = @"VB Files|*.cls;*.bas;*.frm";
             _openFileDialog.CheckFileExists = true;
@@ -26,46 +25,29 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override bool CanExecute(object parameter)
         {
-            return parameter is CodeExplorerProjectViewModel ||
-                   parameter is CodeExplorerComponentViewModel ||
-                   parameter is CodeExplorerMemberViewModel;
+            // I could import to a folder as well, if I had a
+            // MoveToFolder refactoring to call
+            return parameter is ICodeExplorerDeclarationViewModel;
         }
 
         public override void Execute(object parameter)
         {
             // I know this will never be null because of the CanExecute
-            var project = GetSelectedDeclaration((CodeExplorerItemViewModel)parameter).QualifiedName.QualifiedModuleName.Project;
+            var project = ((ICodeExplorerDeclarationViewModel)parameter).Declaration.QualifiedName.QualifiedModuleName.Project;
 
             if (_openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                var fileExt = _openFileDialog.FileName.Split('.').Last();
-                if (!new[]{"bas", "cls", "frm"}.Contains(fileExt))
+                var fileExts = _openFileDialog.FileNames.Select(s => s.Split('.').Last());
+                if (fileExts.Any(fileExt => !new[] {"bas", "cls", "frm"}.Contains(fileExt)))
                 {
                     return;
                 }
 
-                project.VBComponents.Import(_openFileDialog.FileName);
+                foreach (var filename in _openFileDialog.FileNames)
+                {
+                    project.VBComponents.Import(filename);
+                }
             }
-        }
-
-        private Declaration GetSelectedDeclaration(CodeExplorerItemViewModel node)
-        {
-            if (node is CodeExplorerProjectViewModel)
-            {
-                return ((CodeExplorerProjectViewModel)node).Declaration;
-            }
-
-            if (node is CodeExplorerComponentViewModel)
-            {
-                return ((CodeExplorerComponentViewModel)node).Declaration;
-            }
-
-            if (node is CodeExplorerMemberViewModel)
-            {
-                return ((CodeExplorerMemberViewModel)node).Declaration;
-            }
-
-            return null;
         }
 
         public void Dispose()

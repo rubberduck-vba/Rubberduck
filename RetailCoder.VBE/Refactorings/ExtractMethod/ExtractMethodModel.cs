@@ -75,8 +75,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             }
 
-            selectionToRemove.Add(selection.Selection);
             _declarationsToMove.ForEach(d => selectionToRemove.Add(d.Selection));
+            selectionToRemove.Add(selection.Selection);
 
             var methodCallPositionStartLine = selectionStartLine - selectionToRemove.Count(s => s.StartLine < selectionStartLine);
             _positionForMethodCall = new Selection(methodCallPositionStartLine, 1, methodCallPositionStartLine, 1);

@@ -11,13 +11,6 @@ namespace Rubberduck.VBEditor.VBEHost
         void Run(QualifiedMemberName qualifiedMemberName);
 
         /// <summary>
-        /// Timed call to Application.Run
-        /// </summary>
-        /// <param name="qualifiedMemberName">The method to be executed.</param>
-        /// <returns>A TimeSpan object representing the time elapsed during the method call.</returns>
-        TimeSpan TimedMethodCall(QualifiedMemberName qualifiedMemberName);
-
-        /// <summary>
         /// Gets the name of the application.
         /// </summary>
         /// <remarks>

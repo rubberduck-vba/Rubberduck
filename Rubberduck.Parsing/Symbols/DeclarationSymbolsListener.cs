@@ -97,15 +97,23 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
-            var annotationAbove = _annotations.SingleOrDefault(annotation => annotation.QualifiedSelection.Selection.EndLine == line - 1);
-            if (annotationAbove == null)
+
+            var annotations = new List<IAnnotation>();
+
+            // VBE 1-based indexing
+            for (var i = line - 1; i >= 1; i--)
             {
-                return new List<IAnnotation>();
+                var annotation = _annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i);
+
+                if (annotation == null)
+                {
+                    break;
+                }
+
+                annotations.Add(annotation);
             }
-            return new List<IAnnotation>()
-            {
-                annotationAbove
-            };
+
+            return annotations;
         }
 
         public void CreateModuleDeclarations()
@@ -149,7 +157,8 @@ namespace Rubberduck.Parsing.Symbols
             // "using dynamic typing here, because not only MSForms could have a Controls collection (e.g. MS-Access forms are 'document' modules)."
             // Note: Dynamic doesn't seem to support explicit interfaces that's why we cast it anyway, MS Access forms apparently have to be treated specially anyway.
             var userForm = (UserForm)designer;
-            foreach (Control control in userForm.Controls)
+            // Not all objects in the Controls collection are Control, some are Images.
+            foreach (dynamic control in userForm.Controls)
             {
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(_qualifiedName.QualifyMemberName(control.Name), _parentDeclaration, _currentScopeDeclaration, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home, false);
@@ -480,9 +489,9 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public override void EnterLineLabel(VBAParser.LineLabelContext context)
+        public override void EnterStatementLabelDefinition(VBAParser.StatementLabelDefinitionContext context)
         {
-            OnNewDeclaration(CreateDeclaration(context.identifier().GetText(), null, Accessibility.Private, DeclarationType.LineLabel, context, context.identifier().GetSelection(), true));
+            OnNewDeclaration(CreateDeclaration(context.statementLabel().GetText(), null, Accessibility.Private, DeclarationType.LineLabel, context, context.statementLabel().GetSelection(), true));
         }
 
         public override void EnterVariableSubStmt(VBAParser.VariableSubStmtContext context)

@@ -24,9 +24,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
 
             var selection = qualifiedSelection.Selection;
-            Func<int, dynamic> ProcOfLine = (sl) => _declarations
-                        .Where(d => (DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)))
-                        .FirstOrDefault(d => d.Context.Start.Line < sl && d.Context.Stop.Line > sl);
+            IEnumerable<Declaration> procedures = _declarations.Where(d => !(d.IsBuiltIn) && (DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)));
+            Func<int, dynamic> ProcOfLine = (sl) => procedures.FirstOrDefault(d => d.Context.Start.Line < sl && d.Context.Stop.Line > sl);
 
             var startLine = selection.StartLine;
             var endLine = selection.EndLine;

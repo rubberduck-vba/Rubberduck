@@ -1,26 +1,27 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Reflection;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.UnitTesting
 {
     public class NewTestMethodCommand
     {
         private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
 
-        public NewTestMethodCommand(VBE vbe)
+        public NewTestMethodCommand(VBE vbe, RubberduckParserState state)
         {
             _vbe = vbe;
+            _state = state;
         }
 
-        private static readonly string NamePlaceholder = "%METHODNAME%";
-        private readonly string _testMethodBaseName = "TestMethod";
+        public const string NamePlaceholder = "%METHODNAME%";
+        private const string TestMethodBaseName = "TestMethod";
 
-        private readonly string _testMethodTemplate = string.Concat(
+        public static readonly string TestMethodTemplate = string.Concat(
             "'@TestMethod\n",
             "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\n",
             "    On Error GoTo TestFail\n",
@@ -36,7 +37,7 @@ namespace Rubberduck.UnitTesting
             "End Sub\n"
             );
 
-        private readonly string _testMethodExpectedErrorTemplate = string.Concat(
+        public static readonly string TestMethodExpectedErrorTemplate = string.Concat(
             "'@TestMethod\n",
             "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\n",
             "    Const ExpectedError As Long = 0 'TODO ", RubberduckUI.UnitTest_NewMethod_ChangeErrorNo, "\n",
@@ -57,66 +58,68 @@ namespace Rubberduck.UnitTesting
             "End Sub\n"
             );
 
-        public TestMethod NewTestMethod()
+        public void NewTestMethod()
         {
             if (_vbe.ActiveCodePane == null)
             {
-                return null;
+                return;
             }
 
             try
             {
-                if (_vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+                var declaration = _state.AllUserDeclarations.First(f =>
+                            f.DeclarationType == Parsing.Symbols.DeclarationType.ProceduralModule &&
+                            f.QualifiedName.QualifiedModuleName.Component.CodeModule == _vbe.ActiveCodePane.CodeModule);
+
+                if (declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule))
                 {
                     var module = _vbe.ActiveCodePane.CodeModule;
                     var name = GetNextTestMethodName(module.Parent);
-                    var body = _testMethodTemplate.Replace(NamePlaceholder, name);
+                    var body = TestMethodTemplate.Replace(NamePlaceholder, name);
                     module.InsertLines(module.CountOfLines, body);
-
-                    var qualifiedModuleName = new QualifiedModuleName(module.Parent);
-                    return new TestMethod(new QualifiedMemberName(qualifiedModuleName, name), _vbe);
                 }
             }
             catch (COMException)
             {
             }
 
-            return null;
+            _state.OnParseRequested(this, _vbe.SelectedVBComponent);
         }
     
-        public TestMethod NewExpectedErrorTestMethod()
+        public void NewExpectedErrorTestMethod()
         {
             if (_vbe.ActiveCodePane == null)
             {
-                return null;
+                return;
             }
 
             try
             {
-                if (_vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+                var declaration = _state.AllUserDeclarations.First(f =>
+                            f.DeclarationType == Parsing.Symbols.DeclarationType.ProceduralModule &&
+                            f.QualifiedName.QualifiedModuleName.Component.CodeModule == _vbe.ActiveCodePane.CodeModule);
+
+                if (declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule))
                 {
                     var module = _vbe.ActiveCodePane.CodeModule;
                     var name = GetNextTestMethodName(module.Parent);
-                    var body = _testMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
+                    var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
                     module.InsertLines(module.CountOfLines, body);
-
-                    var qualifiedModuleName = new QualifiedModuleName(module.Parent);
-                    return new TestMethod(new QualifiedMemberName(qualifiedModuleName, name), _vbe);
                 }
             }
             catch (COMException)
             {
             }
 
-            return null;
+            _state.OnParseRequested(this, _vbe.SelectedVBComponent);
         }
 
         private string GetNextTestMethodName(VBComponent component)
         {
-            var names = component.TestMethods().Select(test => test.QualifiedMemberName.MemberName);
-            var index = names.Count(n => n.StartsWith(_testMethodBaseName)) + 1;
+            var names = component.GetTests(_vbe, _state).Select(test => test.QualifiedMemberName.MemberName);
+            var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;
 
-            return string.Concat(_testMethodBaseName, index);
+            return string.Concat(TestMethodBaseName, index);
         }
     }
 }

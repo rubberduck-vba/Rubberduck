@@ -11,7 +11,7 @@ using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public class RubberduckCommandBar
+    public class RubberduckCommandBar : IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly VBE _vbe;
@@ -20,6 +20,7 @@ namespace Rubberduck.UI.Command.MenuItems
         private CommandBarButton _refreshButton;
         private CommandBarButton _statusButton;
         private CommandBarButton _selectionButton;
+        private CommandBar _commandbar;
 
         public RubberduckCommandBar(RubberduckParserState state, VBE vbe, IShowParserErrorsCommand command)
         {
@@ -105,31 +106,49 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public void Initialize()
         {
-            var commandbar = _vbe.CommandBars.Add("Rubberduck", MsoBarPosition.msoBarTop, false, true);
+            _commandbar = _vbe.CommandBars.Add("Rubberduck", MsoBarPosition.msoBarTop, false, true);
 
-            _refreshButton = (CommandBarButton)commandbar.Controls.Add(MsoControlType.msoControlButton);
+            _refreshButton = (CommandBarButton)_commandbar.Controls.Add(MsoControlType.msoControlButton);
             ParentMenuItemBase.SetButtonImage(_refreshButton, Resources.arrow_circle_double, Resources.arrow_circle_double_mask);
             _refreshButton.Style = MsoButtonStyle.msoButtonIcon;
             _refreshButton.Tag = "Refresh";
             _refreshButton.TooltipText =RubberduckUI.RubberduckCommandbarRefreshButtonTooltip;
             _refreshButton.Click += refreshButton_Click;
 
-            _statusButton = (CommandBarButton)commandbar.Controls.Add(MsoControlType.msoControlButton);
+            _statusButton = (CommandBarButton)_commandbar.Controls.Add(MsoControlType.msoControlButton);
             _statusButton.Style = MsoButtonStyle.msoButtonCaption;
             _statusButton.Tag = "Status";
             _statusButton.Click += _statusButton_Click;
 
-            _selectionButton = (CommandBarButton)commandbar.Controls.Add(MsoControlType.msoControlButton);
+            _selectionButton = (CommandBarButton)_commandbar.Controls.Add(MsoControlType.msoControlButton);
             _selectionButton.Style = MsoButtonStyle.msoButtonCaption;
             _selectionButton.BeginGroup = true;
             _selectionButton.Enabled = false;
 
-            commandbar.Visible = true;
+            _commandbar.Visible = true;
         }
 
         private void refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             OnRefresh();
+        }
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            _state.StateChanged -= State_StateChanged;
+
+            _refreshButton.Delete();
+            _selectionButton.Delete();
+            _statusButton.Delete();
+            _commandbar.Delete();
+
+            _isDisposed = true;
         }
     }
 }

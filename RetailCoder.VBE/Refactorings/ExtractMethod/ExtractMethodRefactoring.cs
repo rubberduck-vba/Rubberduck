@@ -5,6 +5,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
@@ -21,16 +22,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private readonly ICodeModuleWrapper _codeModule;
         private Func<QualifiedSelection?, string, IExtractMethodModel> _createMethodModel;
         private IExtractMethodExtraction _extraction;
-
+        private Action<Object> _onParseRequest;
+        
         public ExtractMethodRefactoring(
             ICodeModuleWrapper codeModule,
+            Action<Object> onParseRequest,
             Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
             IExtractMethodExtraction extraction)
         {
             _codeModule = codeModule;
             _createMethodModel = createMethodModel;
             _extraction = extraction;
-
+            _onParseRequest = onParseRequest;
         }
 
         public void Refactor()
@@ -68,6 +71,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
             */
 
             _extraction.apply(_codeModule, model, selection);
+
+            _onParseRequest(this);
         }
 
         public void Refactor(QualifiedSelection target)

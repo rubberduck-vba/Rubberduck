@@ -21,8 +21,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserForm, 
         };
 
-        public CodeExplorerCustomFolderViewModel(string name, string fullPath)
+        public CodeExplorerCustomFolderViewModel(CodeExplorerItemViewModel parent, string name, string fullPath)
         {
+            _parent = parent;
             _fullPath = fullPath;
             _name = name.Replace("\"", string.Empty);
             _folderAttribute = string.Format("@Folder(\"{0}\")", fullPath.Replace("\"", string.Empty));
@@ -44,7 +45,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     var members = declarations.Where(item =>
                         !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
 
-                    AddChild(new CodeExplorerComponentViewModel(parent, members));
+                    AddChild(new CodeExplorerComponentViewModel(this, parent, members));
                 }
                 catch (InvalidOperationException exception)
                 {
@@ -67,5 +68,15 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly BitmapImage _expandedIcon;
         public override BitmapImage ExpandedIcon { get { return _expandedIcon; } }
+
+        // I have to set the parent from a different location than
+        // the node is created because of the folder helper
+        internal void SetParent(CodeExplorerItemViewModel parent)
+        {
+            _parent = parent;
+        }
+
+        private CodeExplorerItemViewModel _parent;
+        public override CodeExplorerItemViewModel Parent { get { return _parent; } }
     }
 }

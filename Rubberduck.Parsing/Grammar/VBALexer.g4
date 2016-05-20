@@ -297,7 +297,7 @@ SINGLEQUOTE : '\'';
 UNDERSCORE : '_';
 WS : [ \t];
 GUIDLITERAL : '{' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '}';
-IDENTIFIER :  ~[\[\]\(\)\r\n\t.,'"|!@#$%^&*-+:=; 0-9-/\\] ~[\[\]\(\)\r\n\t.,'"|!@#$%^&*-+:=; ]* | L_SQUARE_BRACKET (~[!\]\r\n])+ R_SQUARE_BRACKET;
+IDENTIFIER :  ~[\[\]\(\)\r\n\t.,'"|!@#$%^&*\-+:=; 0-9-/\\] ~[\[\]\(\)\r\n\t.,'"|!@#$%^&*\-+:=; ]* | L_SQUARE_BRACKET ~[\r\n\u2028\u2029]* R_SQUARE_BRACKET;
 LINE_CONTINUATION : [ \t]* UNDERSCORE [ \t]* '\r'? '\n';
 fragment LETTER : [a-zA-Z_‰ˆ¸ƒ÷‹];
 fragment DIGIT : [0-9];

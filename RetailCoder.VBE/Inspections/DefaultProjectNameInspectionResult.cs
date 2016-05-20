@@ -16,12 +16,12 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
-        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
+        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory)
             : base(inspection, target)
         {
             _quickFixes = new[]
             {
-                new RenameProjectQuickFix(target.Context, target.QualifiedSelection, target, parseResult, wrapperFactory),
+                new RenameProjectQuickFix(target.Context, target.QualifiedSelection, target, state, wrapperFactory),
             };
         }
 

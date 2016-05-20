@@ -133,7 +133,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
             var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
-            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName);
+            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName, isBuiltIn: true);
             yield return projectDeclaration;
 
             var typeCount = typeLibrary.GetTypeInfoCount();
@@ -174,6 +174,7 @@ namespace Rubberduck.Parsing.Symbols
                 info.GetTypeAttr(out typeAttributesPointer);
 
                 var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
+                info.ReleaseTypeAttr(typeAttributesPointer);
 
                 var attributes = new Attributes();
                 if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID))
@@ -243,6 +244,7 @@ namespace Rubberduck.Parsing.Symbols
             IntPtr memberDescriptorPointer;
             info.GetFuncDesc(memberIndex, out memberDescriptorPointer);
             memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
+            info.ReleaseFuncDesc(memberDescriptorPointer);
 
             if (memberDescriptor.callconv != CALLCONV.CC_STDCALL)
             {
@@ -390,6 +392,7 @@ namespace Rubberduck.Parsing.Symbols
             info.GetVarDesc(fieldIndex, out ppVarDesc);
 
             var varDesc = (VARDESC)Marshal.PtrToStructure(ppVarDesc, typeof(VARDESC));
+            info.ReleaseVarDesc(ppVarDesc);
 
             var names = new string[255];
             int namesArrayLength;

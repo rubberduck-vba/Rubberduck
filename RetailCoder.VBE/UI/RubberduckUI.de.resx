@@ -495,13 +495,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>&amp;Klassenmodul (.cls)</value>
   </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>Nutzer&amp;formular</value>
+    <value>Benutzerdefiniertes Formular</value>
   </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>&amp;Standardmodul (.bas)</value>
+    <value>Standardmodul (.bas)</value>
   </data>
   <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>&amp;Testmodul</value>
+    <value>Testmodul</value>
   </data>
   <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
     <value>Member&amp;namen anzeigen</value>
@@ -510,10 +510,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Volle &amp;Signaturen anzeigen</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>&amp;Alle Implementierungen finden...</value>
+    <value>Alle Implementierungen finden...</value>
   </data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Alle Referenzen &amp;finden...</value>
+    <value>Alle Referenzen finden...</value>
   </data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspizieren</value>
@@ -1512,5 +1512,53 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>Slash (/)</value>
+  </data>
+  <data name="SourceControl_MissingCredentials" xml:space="preserve">
+    <value>Fehlende Zugangsdaten</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess" xml:space="preserve">
+    <value>Commit und Synchronisation erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitSuccess" xml:space="preserve">
+    <value>Commit erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndPushSuccess" xml:space="preserve">
+    <value>Commit und Push erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus" xml:space="preserve">
+    <value>Commit Status.</value>
+  </data>
+  <data name="SortStyle_BySelection" xml:space="preserve">
+    <value>Nach Auswahl</value>
+  </data>
+  <data name="SortStyle_ByType" xml:space="preserve">
+    <value>Nach Typ</value>
+  </data>
+  <data name="SortStyle_ByName" xml:space="preserve">
+    <value>Nach Name</value>
+  </data>
+  <data name="CodeExplorer_Sort" xml:space="preserve">
+    <value>Sortieren</value>
+  </data>
+  <data name="NoIndentAnnotation" xml:space="preserve">
+    <value>Füge '@NoIndent hinzu</value>
+  </data>
+  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
+    <value>Aktualisiere Komponente</value>
+  </data>
+  <data name="SourceControl_UndoTitle" xml:space="preserve">
+    <value>Versionskontrolle - Rückgänig</value>
+  </data>
+  <data name="SourceControl_UndoPrompt" xml:space="preserve">
+    <value>Sollen die Änderungen in {0} rückgängig gemacht werden?</value>
+  </data>
+  <data name="CodeExplorer_Undo" xml:space="preserve">
+    <value>Rückgängig ...</value>
+  </data>
+  <data name="CodeExplorer_Commit" xml:space="preserve">
+    <value>Commit...</value>
+  </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ingoriert</value>
   </data>
 </root>

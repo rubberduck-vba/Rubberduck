@@ -587,6 +587,9 @@ public partial class VBAExpressionParser : Parser {
 		public OptionCompareArgumentContext optionCompareArgument() {
 			return GetRuleContext<OptionCompareArgumentContext>(0);
 		}
+		public ReservedTypeIdentifierContext reservedTypeIdentifier() {
+			return GetRuleContext<ReservedTypeIdentifierContext>(0);
+		}
 		public ITerminalNode IDENTIFIER() { return GetToken(VBAExpressionParser.IDENTIFIER, 0); }
 		public ReservedProcedureNameContext reservedProcedureName() {
 			return GetRuleContext<ReservedProcedureNameContext>(0);
@@ -616,7 +619,7 @@ public partial class VBAExpressionParser : Parser {
 		UntypedNameContext _localctx = new UntypedNameContext(_ctx, State);
 		EnterRule(_localctx, 14, RULE_untypedName);
 		try {
-			State = 151;
+			State = 152;
 			switch ( Interpreter.AdaptivePredict(_input,6,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
@@ -673,6 +676,13 @@ public partial class VBAExpressionParser : Parser {
 				State = 150; Match(ERROR);
 				}
 				break;
+
+			case 9:
+				EnterOuterAlt(_localctx, 9);
+				{
+				State = 151; reservedTypeIdentifier();
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -720,8 +730,8 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 153; typedNameValue();
-			State = 154; typeSuffix();
+			State = 154; typedNameValue();
+			State = 155; typeSuffix();
 			}
 		}
 		catch (RecognitionException re) {
@@ -746,6 +756,9 @@ public partial class VBAExpressionParser : Parser {
 		public ITerminalNode ERROR() { return GetToken(VBAExpressionParser.ERROR, 0); }
 		public OptionCompareArgumentContext optionCompareArgument() {
 			return GetRuleContext<OptionCompareArgumentContext>(0);
+		}
+		public ReservedTypeIdentifierContext reservedTypeIdentifier() {
+			return GetRuleContext<ReservedTypeIdentifierContext>(0);
 		}
 		public ITerminalNode IDENTIFIER() { return GetToken(VBAExpressionParser.IDENTIFIER, 0); }
 		public ReservedProcedureNameContext reservedProcedureName() {
@@ -776,54 +789,61 @@ public partial class VBAExpressionParser : Parser {
 		TypedNameValueContext _localctx = new TypedNameValueContext(_ctx, State);
 		EnterRule(_localctx, 18, RULE_typedNameValue);
 		try {
-			State = 163;
+			State = 165;
 			switch ( Interpreter.AdaptivePredict(_input,7,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 156; Match(IDENTIFIER);
+				State = 157; Match(IDENTIFIER);
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 157; reservedProcedureName();
+				State = 158; reservedProcedureName();
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 158; specialForm();
+				State = 159; specialForm();
 				}
 				break;
 
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 159; optionCompareArgument();
+				State = 160; optionCompareArgument();
 				}
 				break;
 
 			case 5:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 160; Match(OBJECT);
+				State = 161; Match(OBJECT);
 				}
 				break;
 
 			case 6:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 161; uncategorizedKeyword();
+				State = 162; uncategorizedKeyword();
 				}
 				break;
 
 			case 7:
 				EnterOuterAlt(_localctx, 7);
 				{
-				State = 162; Match(ERROR);
+				State = 163; Match(ERROR);
+				}
+				break;
+
+			case 8:
+				EnterOuterAlt(_localctx, 8);
+				{
+				State = 164; reservedTypeIdentifier();
 				}
 				break;
 			}
@@ -875,7 +895,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 165;
+			State = 167;
 			_la = _input.La(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << HASH) | (1L << AT) | (1L << PERCENT) | (1L << DOLLAR) | (1L << AMPERSAND))) != 0) || _la==POW) ) {
 			_errHandler.RecoverInline(this);
@@ -926,7 +946,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 167;
+			State = 169;
 			_la = _input.La(1);
 			if ( !(_la==BINARY || _la==DATABASE || _la==TEXT) ) {
 			_errHandler.RecoverInline(this);
@@ -984,69 +1004,69 @@ public partial class VBAExpressionParser : Parser {
 		EnterRule(_localctx, 24, RULE_builtInType);
 		int _la;
 		try {
-			State = 190;
+			State = 192;
 			switch ( Interpreter.AdaptivePredict(_input,12,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 169; reservedTypeIdentifier();
+				State = 171; reservedTypeIdentifier();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 170; Match(L_SQUARE_BRACKET);
-				State = 172;
+				State = 172; Match(L_SQUARE_BRACKET);
+				State = 174;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 171; whiteSpace();
+					State = 173; whiteSpace();
 					}
 				}
 
-				State = 174; reservedTypeIdentifier();
-				State = 176;
+				State = 176; reservedTypeIdentifier();
+				State = 178;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 175; whiteSpace();
+					State = 177; whiteSpace();
 					}
 				}
 
-				State = 178; Match(R_SQUARE_BRACKET);
+				State = 180; Match(R_SQUARE_BRACKET);
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 180; Match(OBJECT);
+				State = 182; Match(OBJECT);
 				}
 				break;
 
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 181; Match(L_SQUARE_BRACKET);
-				State = 183;
+				State = 183; Match(L_SQUARE_BRACKET);
+				State = 185;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 182; whiteSpace();
+					State = 184; whiteSpace();
 					}
 				}
 
-				State = 185; Match(OBJECT);
-				State = 187;
+				State = 187; Match(OBJECT);
+				State = 189;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 186; whiteSpace();
+					State = 188; whiteSpace();
 					}
 				}
 
-				State = 189; Match(R_SQUARE_BRACKET);
+				State = 191; Match(R_SQUARE_BRACKET);
 				}
 				break;
 			}
@@ -1278,6 +1298,26 @@ public partial class VBAExpressionParser : Parser {
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IVBAExpressionParserVisitor<TResult> typedVisitor = visitor as IVBAExpressionParserVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitConcatOp(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class MarkedFileNumberExprContext : ExpressionContext {
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public ITerminalNode HASH() { return GetToken(VBAExpressionParser.HASH, 0); }
+		public MarkedFileNumberExprContext(ExpressionContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAExpressionParserListener typedListener = listener as IVBAExpressionParserListener;
+			if (typedListener != null) typedListener.EnterMarkedFileNumberExpr(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAExpressionParserListener typedListener = listener as IVBAExpressionParserListener;
+			if (typedListener != null) typedListener.ExitMarkedFileNumberExpr(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAExpressionParserVisitor<TResult> typedVisitor = visitor as IVBAExpressionParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitMarkedFileNumberExpr(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -1598,7 +1638,7 @@ public partial class VBAExpressionParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 217;
+			State = 221;
 			switch (_input.La(1)) {
 			case MINUS:
 				{
@@ -1606,16 +1646,16 @@ public partial class VBAExpressionParser : Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				State = 193; Match(MINUS);
-				State = 195;
+				State = 195; Match(MINUS);
+				State = 197;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 194; whiteSpace();
+					State = 196; whiteSpace();
 					}
 				}
 
-				State = 197; expression(14);
+				State = 199; expression(15);
 				}
 				break;
 			case NOT:
@@ -1623,19 +1663,29 @@ public partial class VBAExpressionParser : Parser {
 				_localctx = new LogicalNotOpContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 198; Match(NOT);
-				State = 200;
+				State = 200; Match(NOT);
+				State = 202;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 199; whiteSpace();
+					State = 201; whiteSpace();
 					}
 				}
 
-				State = 202; expression(7);
+				State = 204; expression(8);
+				}
+				break;
+			case HASH:
+				{
+				_localctx = new MarkedFileNumberExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				State = 205; Match(HASH);
+				State = 206; expression(1);
 				}
 				break;
 			case ABS:
+			case ANY:
 			case ARRAY:
 			case CBOOL:
 			case CBYTE:
@@ -1650,6 +1700,7 @@ public partial class VBAExpressionParser : Parser {
 			case CLNGPTR:
 			case CSNG:
 			case CSTR:
+			case CURRENCY:
 			case CVAR:
 			case CVERR:
 			case DEBUG:
@@ -1660,6 +1711,8 @@ public partial class VBAExpressionParser : Parser {
 			case LBOUND:
 			case LEN:
 			case LENB:
+			case LONGLONG:
+			case LONGPTR:
 			case MIDB:
 			case MIDBTYPESUFFIX:
 			case MIDTYPESUFFIX:
@@ -1669,21 +1722,61 @@ public partial class VBAExpressionParser : Parser {
 			case UBOUND:
 			case EXCLAMATIONPOINT:
 			case DOT:
+			case ACCESS:
 			case ALIAS:
 			case ATTRIBUTE:
+			case APPEND:
 			case BEGIN:
 			case BINARY:
+			case BOOLEAN:
+			case BYTE:
 			case CLASS:
+			case CLOSE:
 			case DATABASE:
+			case DATE:
+			case DOUBLE:
+			case END_SELECT:
+			case END_WITH:
+			case END:
 			case ERROR:
+			case EXIT_DO:
+			case EXIT_FOR:
+			case EXIT_FUNCTION:
+			case EXIT_PROPERTY:
+			case EXIT_SUB:
+			case GET:
 			case INPUT:
+			case INTEGER:
+			case LOCK:
+			case LONG:
 			case LIB:
+			case LINE_INPUT:
+			case LOCK_READ:
+			case LOCK_WRITE:
+			case LOCK_READ_WRITE:
 			case ME:
 			case MID:
 			case ON:
+			case ON_ERROR:
+			case OPEN:
+			case OUTPUT:
+			case PUT:
+			case RANDOM:
+			case READ:
+			case READ_WRITE:
+			case RESET:
+			case SEEK:
+			case SHARED:
+			case SINGLE:
+			case STEP:
+			case STRING:
 			case TAB:
 			case TEXT:
+			case UNLOCK:
+			case VARIANT:
 			case VERSION:
+			case WIDTH:
+			case WRITE:
 			case IDENTIFIER:
 			case FOREIGNNAME:
 			case OBJECT:
@@ -1692,7 +1785,7 @@ public partial class VBAExpressionParser : Parser {
 				_localctx = new LExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 203; lExpression(0);
+				State = 207; lExpression(0);
 				}
 				break;
 			case LPAREN:
@@ -1700,16 +1793,7 @@ public partial class VBAExpressionParser : Parser {
 				_localctx = new ParenthesizedExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 204; Match(LPAREN);
-				State = 206;
-				_la = _input.La(1);
-				if (_la==WS || _la==LINE_CONTINUATION) {
-					{
-					State = 205; whiteSpace();
-					}
-				}
-
-				State = 208; expression(0);
+				State = 208; Match(LPAREN);
 				State = 210;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
@@ -1718,7 +1802,16 @@ public partial class VBAExpressionParser : Parser {
 					}
 				}
 
-				State = 212; Match(RPAREN);
+				State = 212; expression(0);
+				State = 214;
+				_la = _input.La(1);
+				if (_la==WS || _la==LINE_CONTINUATION) {
+					{
+					State = 213; whiteSpace();
+					}
+				}
+
+				State = 216; Match(RPAREN);
 				}
 				break;
 			case TYPEOF:
@@ -1726,7 +1819,7 @@ public partial class VBAExpressionParser : Parser {
 				_localctx = new TypeOfIsExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 214; typeOfIsExpression();
+				State = 218; typeOfIsExpression();
 				}
 				break;
 			case NEW:
@@ -1734,7 +1827,7 @@ public partial class VBAExpressionParser : Parser {
 				_localctx = new NewExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 215; newExpression();
+				State = 219; newExpression();
 				}
 				break;
 			case EMPTY:
@@ -1752,14 +1845,14 @@ public partial class VBAExpressionParser : Parser {
 				_localctx = new LiteralExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 216; literalExpression();
+				State = 220; literalExpression();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.Lt(-1);
-			State = 329;
+			State = 333;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,43,_ctx);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
@@ -1767,23 +1860,14 @@ public partial class VBAExpressionParser : Parser {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					State = 327;
+					State = 331;
 					switch ( Interpreter.AdaptivePredict(_input,42,_ctx) ) {
 					case 1:
 						{
 						_localctx = new PowOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 219;
-						if (!(Precpred(_ctx, 15))) throw new FailedPredicateException(this, "Precpred(_ctx, 15)");
-						State = 221;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 220; whiteSpace();
-							}
-						}
-
-						State = 223; Match(POW);
+						State = 223;
+						if (!(Precpred(_ctx, 16))) throw new FailedPredicateException(this, "Precpred(_ctx, 16)");
 						State = 225;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -1792,7 +1876,16 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 227; expression(16);
+						State = 227; Match(POW);
+						State = 229;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 228; whiteSpace();
+							}
+						}
+
+						State = 231; expression(17);
 						}
 						break;
 
@@ -1800,22 +1893,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new MultOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 228;
-						if (!(Precpred(_ctx, 13))) throw new FailedPredicateException(this, "Precpred(_ctx, 13)");
-						State = 230;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 229; whiteSpace();
-							}
-						}
-
 						State = 232;
-						_la = _input.La(1);
-						if ( !(_la==DIV || _la==MULT) ) {
-						_errHandler.RecoverInline(this);
-						}
-						Consume();
+						if (!(Precpred(_ctx, 14))) throw new FailedPredicateException(this, "Precpred(_ctx, 14)");
 						State = 234;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -1824,7 +1903,21 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 236; expression(14);
+						State = 236;
+						_la = _input.La(1);
+						if ( !(_la==DIV || _la==MULT) ) {
+						_errHandler.RecoverInline(this);
+						}
+						Consume();
+						State = 238;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 237; whiteSpace();
+							}
+						}
+
+						State = 240; expression(15);
 						}
 						break;
 
@@ -1832,17 +1925,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new IntDivOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 237;
-						if (!(Precpred(_ctx, 12))) throw new FailedPredicateException(this, "Precpred(_ctx, 12)");
-						State = 239;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 238; whiteSpace();
-							}
-						}
-
-						State = 241; Match(INTDIV);
+						State = 241;
+						if (!(Precpred(_ctx, 13))) throw new FailedPredicateException(this, "Precpred(_ctx, 13)");
 						State = 243;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -1851,7 +1935,16 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 245; expression(13);
+						State = 245; Match(INTDIV);
+						State = 247;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 246; whiteSpace();
+							}
+						}
+
+						State = 249; expression(14);
 						}
 						break;
 
@@ -1859,17 +1952,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new ModOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 246;
-						if (!(Precpred(_ctx, 11))) throw new FailedPredicateException(this, "Precpred(_ctx, 11)");
-						State = 248;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 247; whiteSpace();
-							}
-						}
-
-						State = 250; Match(MOD);
+						State = 250;
+						if (!(Precpred(_ctx, 12))) throw new FailedPredicateException(this, "Precpred(_ctx, 12)");
 						State = 252;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -1878,7 +1962,16 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 254; expression(12);
+						State = 254; Match(MOD);
+						State = 256;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 255; whiteSpace();
+							}
+						}
+
+						State = 258; expression(13);
 						}
 						break;
 
@@ -1886,22 +1979,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new AddOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 255;
-						if (!(Precpred(_ctx, 10))) throw new FailedPredicateException(this, "Precpred(_ctx, 10)");
-						State = 257;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 256; whiteSpace();
-							}
-						}
-
 						State = 259;
-						_la = _input.La(1);
-						if ( !(_la==MINUS || _la==PLUS) ) {
-						_errHandler.RecoverInline(this);
-						}
-						Consume();
+						if (!(Precpred(_ctx, 11))) throw new FailedPredicateException(this, "Precpred(_ctx, 11)");
 						State = 261;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -1910,7 +1989,21 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 263; expression(11);
+						State = 263;
+						_la = _input.La(1);
+						if ( !(_la==MINUS || _la==PLUS) ) {
+						_errHandler.RecoverInline(this);
+						}
+						Consume();
+						State = 265;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 264; whiteSpace();
+							}
+						}
+
+						State = 267; expression(12);
 						}
 						break;
 
@@ -1918,17 +2011,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new ConcatOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 264;
-						if (!(Precpred(_ctx, 9))) throw new FailedPredicateException(this, "Precpred(_ctx, 9)");
-						State = 266;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 265; whiteSpace();
-							}
-						}
-
-						State = 268; Match(AMPERSAND);
+						State = 268;
+						if (!(Precpred(_ctx, 10))) throw new FailedPredicateException(this, "Precpred(_ctx, 10)");
 						State = 270;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -1937,7 +2021,16 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 272; expression(10);
+						State = 272; Match(AMPERSAND);
+						State = 274;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 273; whiteSpace();
+							}
+						}
+
+						State = 276; expression(11);
 						}
 						break;
 
@@ -1945,22 +2038,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new RelationalOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 273;
-						if (!(Precpred(_ctx, 8))) throw new FailedPredicateException(this, "Precpred(_ctx, 8)");
-						State = 275;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 274; whiteSpace();
-							}
-						}
-
 						State = 277;
-						_la = _input.La(1);
-						if ( !(_la==IS || _la==LIKE || ((((_la - 206)) & ~0x3f) == 0 && ((1L << (_la - 206)) & ((1L << (EQ - 206)) | (1L << (GEQ - 206)) | (1L << (GT - 206)) | (1L << (LEQ - 206)) | (1L << (LT - 206)) | (1L << (NEQ - 206)))) != 0)) ) {
-						_errHandler.RecoverInline(this);
-						}
-						Consume();
+						if (!(Precpred(_ctx, 9))) throw new FailedPredicateException(this, "Precpred(_ctx, 9)");
 						State = 279;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -1969,7 +2048,21 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 281; expression(9);
+						State = 281;
+						_la = _input.La(1);
+						if ( !(_la==IS || _la==LIKE || ((((_la - 206)) & ~0x3f) == 0 && ((1L << (_la - 206)) & ((1L << (EQ - 206)) | (1L << (GEQ - 206)) | (1L << (GT - 206)) | (1L << (LEQ - 206)) | (1L << (LT - 206)) | (1L << (NEQ - 206)))) != 0)) ) {
+						_errHandler.RecoverInline(this);
+						}
+						Consume();
+						State = 283;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 282; whiteSpace();
+							}
+						}
+
+						State = 285; expression(10);
 						}
 						break;
 
@@ -1977,17 +2070,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new LogicalAndOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 282;
-						if (!(Precpred(_ctx, 6))) throw new FailedPredicateException(this, "Precpred(_ctx, 6)");
-						State = 284;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 283; whiteSpace();
-							}
-						}
-
-						State = 286; Match(AND);
+						State = 286;
+						if (!(Precpred(_ctx, 7))) throw new FailedPredicateException(this, "Precpred(_ctx, 7)");
 						State = 288;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -1996,7 +2080,16 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 290; expression(7);
+						State = 290; Match(AND);
+						State = 292;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 291; whiteSpace();
+							}
+						}
+
+						State = 294; expression(8);
 						}
 						break;
 
@@ -2004,17 +2097,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new LogicalOrOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 291;
-						if (!(Precpred(_ctx, 5))) throw new FailedPredicateException(this, "Precpred(_ctx, 5)");
-						State = 293;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 292; whiteSpace();
-							}
-						}
-
-						State = 295; Match(OR);
+						State = 295;
+						if (!(Precpred(_ctx, 6))) throw new FailedPredicateException(this, "Precpred(_ctx, 6)");
 						State = 297;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -2023,7 +2107,16 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 299; expression(6);
+						State = 299; Match(OR);
+						State = 301;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 300; whiteSpace();
+							}
+						}
+
+						State = 303; expression(7);
 						}
 						break;
 
@@ -2031,17 +2124,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new LogicalXorOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 300;
-						if (!(Precpred(_ctx, 4))) throw new FailedPredicateException(this, "Precpred(_ctx, 4)");
-						State = 302;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 301; whiteSpace();
-							}
-						}
-
-						State = 304; Match(XOR);
+						State = 304;
+						if (!(Precpred(_ctx, 5))) throw new FailedPredicateException(this, "Precpred(_ctx, 5)");
 						State = 306;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -2050,7 +2134,16 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 308; expression(5);
+						State = 308; Match(XOR);
+						State = 310;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 309; whiteSpace();
+							}
+						}
+
+						State = 312; expression(6);
 						}
 						break;
 
@@ -2058,17 +2151,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new LogicalEqvOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 309;
-						if (!(Precpred(_ctx, 3))) throw new FailedPredicateException(this, "Precpred(_ctx, 3)");
-						State = 311;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 310; whiteSpace();
-							}
-						}
-
-						State = 313; Match(EQV);
+						State = 313;
+						if (!(Precpred(_ctx, 4))) throw new FailedPredicateException(this, "Precpred(_ctx, 4)");
 						State = 315;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -2077,7 +2161,16 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 317; expression(4);
+						State = 317; Match(EQV);
+						State = 319;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 318; whiteSpace();
+							}
+						}
+
+						State = 321; expression(5);
 						}
 						break;
 
@@ -2085,17 +2178,8 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new LogicalImpOpContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 318;
-						if (!(Precpred(_ctx, 2))) throw new FailedPredicateException(this, "Precpred(_ctx, 2)");
-						State = 320;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 319; whiteSpace();
-							}
-						}
-
-						State = 322; Match(IMP);
+						State = 322;
+						if (!(Precpred(_ctx, 3))) throw new FailedPredicateException(this, "Precpred(_ctx, 3)");
 						State = 324;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
@@ -2104,13 +2188,22 @@ public partial class VBAExpressionParser : Parser {
 							}
 						}
 
-						State = 326; expression(3);
+						State = 326; Match(IMP);
+						State = 328;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 327; whiteSpace();
+							}
+						}
+
+						State = 330; expression(4);
 						}
 						break;
 					}
 					} 
 				}
-				State = 331;
+				State = 335;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,43,_ctx);
 			}
@@ -2164,7 +2257,7 @@ public partial class VBAExpressionParser : Parser {
 		LiteralExpressionContext _localctx = new LiteralExpressionContext(_ctx, State);
 		EnterRule(_localctx, 28, RULE_literalExpression);
 		try {
-			State = 339;
+			State = 343;
 			switch (_input.La(1)) {
 			case OCTLITERAL:
 			case HEXLITERAL:
@@ -2172,19 +2265,19 @@ public partial class VBAExpressionParser : Parser {
 			case INTEGERLITERAL:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 332; numberLiteral();
+				State = 336; numberLiteral();
 				}
 				break;
 			case DATELITERAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 333; Match(DATELITERAL);
+				State = 337; Match(DATELITERAL);
 				}
 				break;
 			case STRINGLITERAL:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 334; Match(STRINGLITERAL);
+				State = 338; Match(STRINGLITERAL);
 				}
 				break;
 			case EMPTY:
@@ -2194,12 +2287,12 @@ public partial class VBAExpressionParser : Parser {
 			case TRUE:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 335; literalIdentifier();
-				State = 337;
+				State = 339; literalIdentifier();
+				State = 341;
 				switch ( Interpreter.AdaptivePredict(_input,44,_ctx) ) {
 				case 1:
 					{
-					State = 336; typeSuffix();
+					State = 340; typeSuffix();
 					}
 					break;
 				}
@@ -2253,7 +2346,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 341;
+			State = 345;
 			_la = _input.La(1);
 			if ( !(((((_la - 226)) & ~0x3f) == 0 && ((1L << (_la - 226)) & ((1L << (OCTLITERAL - 226)) | (1L << (HEXLITERAL - 226)) | (1L << (FLOATLITERAL - 226)) | (1L << (INTEGERLITERAL - 226)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
@@ -2312,16 +2405,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 343; Match(LPAREN);
-			State = 345;
-			_la = _input.La(1);
-			if (_la==WS || _la==LINE_CONTINUATION) {
-				{
-				State = 344; whiteSpace();
-				}
-			}
-
-			State = 347; expression(0);
+			State = 347; Match(LPAREN);
 			State = 349;
 			_la = _input.La(1);
 			if (_la==WS || _la==LINE_CONTINUATION) {
@@ -2330,7 +2414,16 @@ public partial class VBAExpressionParser : Parser {
 				}
 			}
 
-			State = 351; Match(RPAREN);
+			State = 351; expression(0);
+			State = 353;
+			_la = _input.La(1);
+			if (_la==WS || _la==LINE_CONTINUATION) {
+				{
+				State = 352; whiteSpace();
+				}
+			}
+
+			State = 355; Match(RPAREN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2386,13 +2479,13 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 353; Match(TYPEOF);
-			State = 354; whiteSpace();
-			State = 355; expression(0);
-			State = 356; whiteSpace();
-			State = 357; Match(IS);
+			State = 357; Match(TYPEOF);
 			State = 358; whiteSpace();
-			State = 359; typeExpression();
+			State = 359; expression(0);
+			State = 360; whiteSpace();
+			State = 361; Match(IS);
+			State = 362; whiteSpace();
+			State = 363; typeExpression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2441,9 +2534,9 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 361; Match(NEW);
-			State = 362; whiteSpace();
-			State = 363; typeExpression();
+			State = 365; Match(NEW);
+			State = 366; whiteSpace();
+			State = 367; typeExpression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2628,7 +2721,7 @@ public partial class VBAExpressionParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 369;
+			State = 373;
 			switch (_input.La(1)) {
 			case ME:
 				{
@@ -2636,10 +2729,11 @@ public partial class VBAExpressionParser : Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				State = 366; instanceExpression();
+				State = 370; instanceExpression();
 				}
 				break;
 			case ABS:
+			case ANY:
 			case ARRAY:
 			case CBOOL:
 			case CBYTE:
@@ -2654,6 +2748,7 @@ public partial class VBAExpressionParser : Parser {
 			case CLNGPTR:
 			case CSNG:
 			case CSTR:
+			case CURRENCY:
 			case CVAR:
 			case CVERR:
 			case DEBUG:
@@ -2664,6 +2759,8 @@ public partial class VBAExpressionParser : Parser {
 			case LBOUND:
 			case LEN:
 			case LENB:
+			case LONGLONG:
+			case LONGPTR:
 			case MIDB:
 			case MIDBTYPESUFFIX:
 			case MIDTYPESUFFIX:
@@ -2671,20 +2768,60 @@ public partial class VBAExpressionParser : Parser {
 			case SCALE:
 			case SGN:
 			case UBOUND:
+			case ACCESS:
 			case ALIAS:
 			case ATTRIBUTE:
+			case APPEND:
 			case BEGIN:
 			case BINARY:
+			case BOOLEAN:
+			case BYTE:
 			case CLASS:
+			case CLOSE:
 			case DATABASE:
+			case DATE:
+			case DOUBLE:
+			case END_SELECT:
+			case END_WITH:
+			case END:
 			case ERROR:
+			case EXIT_DO:
+			case EXIT_FOR:
+			case EXIT_FUNCTION:
+			case EXIT_PROPERTY:
+			case EXIT_SUB:
+			case GET:
 			case INPUT:
+			case INTEGER:
+			case LOCK:
+			case LONG:
 			case LIB:
+			case LINE_INPUT:
+			case LOCK_READ:
+			case LOCK_WRITE:
+			case LOCK_READ_WRITE:
 			case MID:
 			case ON:
+			case ON_ERROR:
+			case OPEN:
+			case OUTPUT:
+			case PUT:
+			case RANDOM:
+			case READ:
+			case READ_WRITE:
+			case RESET:
+			case SEEK:
+			case SHARED:
+			case SINGLE:
+			case STEP:
+			case STRING:
 			case TAB:
 			case TEXT:
+			case UNLOCK:
+			case VARIANT:
 			case VERSION:
+			case WIDTH:
+			case WRITE:
 			case IDENTIFIER:
 			case FOREIGNNAME:
 			case OBJECT:
@@ -2693,7 +2830,7 @@ public partial class VBAExpressionParser : Parser {
 				_localctx = new SimpleNameExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 367; simpleNameExpression();
+				State = 371; simpleNameExpression();
 				}
 				break;
 			case EXCLAMATIONPOINT:
@@ -2702,14 +2839,14 @@ public partial class VBAExpressionParser : Parser {
 				_localctx = new WithExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 368; withExpression();
+				State = 372; withExpression();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.Lt(-1);
-			State = 410;
+			State = 414;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,55,_ctx);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
@@ -2717,48 +2854,48 @@ public partial class VBAExpressionParser : Parser {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					State = 408;
+					State = 412;
 					switch ( Interpreter.AdaptivePredict(_input,54,_ctx) ) {
 					case 1:
 						{
 						_localctx = new IndexExprContext(new LExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lExpression);
-						State = 371;
+						State = 375;
 						if (!(Precpred(_ctx, 9))) throw new FailedPredicateException(this, "Precpred(_ctx, 9)");
-						State = 373;
+						State = 377;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 372; whiteSpace();
-							}
-						}
-
-						State = 375; Match(LPAREN);
-						State = 377;
-						switch ( Interpreter.AdaptivePredict(_input,50,_ctx) ) {
-						case 1:
 							{
 							State = 376; whiteSpace();
 							}
+						}
+
+						State = 379; Match(LPAREN);
+						State = 381;
+						switch ( Interpreter.AdaptivePredict(_input,50,_ctx) ) {
+						case 1:
+							{
+							State = 380; whiteSpace();
+							}
 							break;
 						}
-						State = 380;
+						State = 384;
 						switch ( Interpreter.AdaptivePredict(_input,51,_ctx) ) {
 						case 1:
 							{
-							State = 379; argumentList();
+							State = 383; argumentList();
 							}
 							break;
 						}
-						State = 383;
+						State = 387;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
 							{
-							State = 382; whiteSpace();
+							State = 386; whiteSpace();
 							}
 						}
 
-						State = 385; Match(RPAREN);
+						State = 389; Match(RPAREN);
 						}
 						break;
 
@@ -2766,10 +2903,10 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new MemberAccessExprContext(new LExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lExpression);
-						State = 386;
+						State = 390;
 						if (!(Precpred(_ctx, 8))) throw new FailedPredicateException(this, "Precpred(_ctx, 8)");
-						State = 387; Match(DOT);
-						State = 388; unrestrictedName();
+						State = 391; Match(DOT);
+						State = 392; unrestrictedName();
 						}
 						break;
 
@@ -2777,19 +2914,19 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new MemberAccessExprContext(new LExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lExpression);
-						State = 389;
+						State = 393;
 						if (!(Precpred(_ctx, 7))) throw new FailedPredicateException(this, "Precpred(_ctx, 7)");
-						State = 390; Match(LINE_CONTINUATION);
-						State = 392;
+						State = 394; Match(LINE_CONTINUATION);
+						State = 396;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
 							{
-							State = 391; whiteSpace();
+							State = 395; whiteSpace();
 							}
 						}
 
-						State = 394; Match(DOT);
-						State = 395; unrestrictedName();
+						State = 398; Match(DOT);
+						State = 399; unrestrictedName();
 						}
 						break;
 
@@ -2797,10 +2934,10 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new DictionaryAccessExprContext(new LExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lExpression);
-						State = 396;
+						State = 400;
 						if (!(Precpred(_ctx, 6))) throw new FailedPredicateException(this, "Precpred(_ctx, 6)");
-						State = 397; Match(EXCLAMATIONPOINT);
-						State = 398; unrestrictedName();
+						State = 401; Match(EXCLAMATIONPOINT);
+						State = 402; unrestrictedName();
 						}
 						break;
 
@@ -2808,11 +2945,11 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new DictionaryAccessExprContext(new LExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lExpression);
-						State = 399;
+						State = 403;
 						if (!(Precpred(_ctx, 5))) throw new FailedPredicateException(this, "Precpred(_ctx, 5)");
-						State = 400; Match(LINE_CONTINUATION);
-						State = 401; Match(EXCLAMATIONPOINT);
-						State = 402; unrestrictedName();
+						State = 404; Match(LINE_CONTINUATION);
+						State = 405; Match(EXCLAMATIONPOINT);
+						State = 406; unrestrictedName();
 						}
 						break;
 
@@ -2820,18 +2957,18 @@ public partial class VBAExpressionParser : Parser {
 						{
 						_localctx = new DictionaryAccessExprContext(new LExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lExpression);
-						State = 403;
+						State = 407;
 						if (!(Precpred(_ctx, 4))) throw new FailedPredicateException(this, "Precpred(_ctx, 4)");
-						State = 404; Match(LINE_CONTINUATION);
-						State = 405; Match(EXCLAMATIONPOINT);
-						State = 406; Match(LINE_CONTINUATION);
-						State = 407; unrestrictedName();
+						State = 408; Match(LINE_CONTINUATION);
+						State = 409; Match(EXCLAMATIONPOINT);
+						State = 410; Match(LINE_CONTINUATION);
+						State = 411; unrestrictedName();
 						}
 						break;
 					}
 					} 
 				}
-				State = 412;
+				State = 416;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,55,_ctx);
 			}
@@ -2886,32 +3023,32 @@ public partial class VBAExpressionParser : Parser {
 		EnterRule(_localctx, 40, RULE_memberAccessExpression);
 		int _la;
 		try {
-			State = 425;
+			State = 429;
 			switch ( Interpreter.AdaptivePredict(_input,57,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 413; lExpression(0);
-				State = 414; Match(DOT);
-				State = 415; unrestrictedName();
+				State = 417; lExpression(0);
+				State = 418; Match(DOT);
+				State = 419; unrestrictedName();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 417; lExpression(0);
-				State = 418; Match(LINE_CONTINUATION);
-				State = 420;
+				State = 421; lExpression(0);
+				State = 422; Match(LINE_CONTINUATION);
+				State = 424;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 419; whiteSpace();
+					State = 423; whiteSpace();
 					}
 				}
 
-				State = 422; Match(DOT);
-				State = 423; unrestrictedName();
+				State = 426; Match(DOT);
+				State = 427; unrestrictedName();
 				}
 				break;
 			}
@@ -2970,41 +3107,41 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 427; lExpression(0);
-			State = 429;
+			State = 431; lExpression(0);
+			State = 433;
 			_la = _input.La(1);
 			if (_la==WS || _la==LINE_CONTINUATION) {
-				{
-				State = 428; whiteSpace();
-				}
-			}
-
-			State = 431; Match(LPAREN);
-			State = 433;
-			switch ( Interpreter.AdaptivePredict(_input,59,_ctx) ) {
-			case 1:
 				{
 				State = 432; whiteSpace();
 				}
+			}
+
+			State = 435; Match(LPAREN);
+			State = 437;
+			switch ( Interpreter.AdaptivePredict(_input,59,_ctx) ) {
+			case 1:
+				{
+				State = 436; whiteSpace();
+				}
 				break;
 			}
-			State = 436;
+			State = 440;
 			switch ( Interpreter.AdaptivePredict(_input,60,_ctx) ) {
 			case 1:
 				{
-				State = 435; argumentList();
+				State = 439; argumentList();
 				}
 				break;
 			}
-			State = 439;
+			State = 443;
 			_la = _input.La(1);
 			if (_la==WS || _la==LINE_CONTINUATION) {
 				{
-				State = 438; whiteSpace();
+				State = 442; whiteSpace();
 				}
 			}
 
-			State = 441; Match(RPAREN);
+			State = 445; Match(RPAREN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3055,35 +3192,35 @@ public partial class VBAExpressionParser : Parser {
 		DictionaryAccessExpressionContext _localctx = new DictionaryAccessExpressionContext(_ctx, State);
 		EnterRule(_localctx, 44, RULE_dictionaryAccessExpression);
 		try {
-			State = 458;
+			State = 462;
 			switch ( Interpreter.AdaptivePredict(_input,62,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 443; lExpression(0);
-				State = 444; Match(EXCLAMATIONPOINT);
-				State = 445; unrestrictedName();
+				State = 447; lExpression(0);
+				State = 448; Match(EXCLAMATIONPOINT);
+				State = 449; unrestrictedName();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 447; lExpression(0);
-				State = 448; Match(LINE_CONTINUATION);
-				State = 449; Match(EXCLAMATIONPOINT);
-				State = 450; unrestrictedName();
+				State = 451; lExpression(0);
+				State = 452; Match(LINE_CONTINUATION);
+				State = 453; Match(EXCLAMATIONPOINT);
+				State = 454; unrestrictedName();
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 452; lExpression(0);
-				State = 453; Match(LINE_CONTINUATION);
-				State = 454; Match(EXCLAMATIONPOINT);
-				State = 455; Match(LINE_CONTINUATION);
-				State = 456; unrestrictedName();
+				State = 456; lExpression(0);
+				State = 457; Match(LINE_CONTINUATION);
+				State = 458; Match(EXCLAMATIONPOINT);
+				State = 459; Match(LINE_CONTINUATION);
+				State = 460; unrestrictedName();
 				}
 				break;
 			}
@@ -3130,7 +3267,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 460; positionalOrNamedArgumentList();
+			State = 464; positionalOrNamedArgumentList();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3194,97 +3331,97 @@ public partial class VBAExpressionParser : Parser {
 		int _la;
 		try {
 			int _alt;
-			State = 494;
+			State = 498;
 			switch ( Interpreter.AdaptivePredict(_input,71,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 474;
+				State = 478;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,66,_ctx);
 				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
 						{
-						State = 463;
+						State = 467;
 						_la = _input.La(1);
-						if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ARRAY) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CIRCLE) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SCALE) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << ATTRIBUTE) | (1L << BEGIN) | (1L << BINARY) | (1L << BYVAL))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLASS - 64)) | (1L << (DATABASE - 64)) | (1L << (EMPTY - 64)) | (1L << (ERROR - 64)) | (1L << (FALSE - 64)) | (1L << (INPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (LIB - 128)) | (1L << (ME - 128)) | (1L << (MID - 128)) | (1L << (NEW - 128)) | (1L << (NOT - 128)) | (1L << (NOTHING - 128)) | (1L << (NULL - 128)) | (1L << (ON - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (TRUE - 128)) | (1L << (TYPEOF - 128)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (VERSION - 195)) | (1L << (LPAREN - 195)) | (1L << (MINUS - 195)) | (1L << (STRINGLITERAL - 195)) | (1L << (OCTLITERAL - 195)) | (1L << (HEXLITERAL - 195)) | (1L << (FLOATLITERAL - 195)) | (1L << (INTEGERLITERAL - 195)) | (1L << (DATELITERAL - 195)) | (1L << (IDENTIFIER - 195)) | (1L << (FOREIGNNAME - 195)) | (1L << (OBJECT - 195)) | (1L << (COLLECTION - 195)))) != 0)) {
+						if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CIRCLE) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SCALE) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << HASH) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYTE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLASS - 64)) | (1L << (CLOSE - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DOUBLE - 64)) | (1L << (EMPTY - 64)) | (1L << (END_SELECT - 64)) | (1L << (END_WITH - 64)) | (1L << (END - 64)) | (1L << (ERROR - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (GET - 64)) | (1L << (INPUT - 64)) | (1L << (INTEGER - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (LIB - 128)) | (1L << (LINE_INPUT - 128)) | (1L << (LOCK_READ - 128)) | (1L << (LOCK_WRITE - 128)) | (1L << (LOCK_READ_WRITE - 128)) | (1L << (ME - 128)) | (1L << (MID - 128)) | (1L << (NEW - 128)) | (1L << (NOT - 128)) | (1L << (NOTHING - 128)) | (1L << (NULL - 128)) | (1L << (ON - 128)) | (1L << (ON_ERROR - 128)) | (1L << (OPEN - 128)) | (1L << (OUTPUT - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (READ - 128)) | (1L << (READ_WRITE - 128)) | (1L << (RESET - 128)) | (1L << (SEEK - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (STEP - 128)) | (1L << (STRING - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (TRUE - 128)) | (1L << (TYPEOF - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (UNLOCK - 192)) | (1L << (VARIANT - 192)) | (1L << (VERSION - 192)) | (1L << (WIDTH - 192)) | (1L << (WRITE - 192)) | (1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (OCTLITERAL - 192)) | (1L << (HEXLITERAL - 192)) | (1L << (FLOATLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (FOREIGNNAME - 192)) | (1L << (OBJECT - 192)) | (1L << (COLLECTION - 192)))) != 0)) {
 							{
-							State = 462; positionalArgument();
+							State = 466; positionalArgument();
 							}
 						}
 
-						State = 466;
+						State = 470;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
 							{
-							State = 465; whiteSpace();
+							State = 469; whiteSpace();
 							}
 						}
 
-						State = 468; Match(COMMA);
-						State = 470;
+						State = 472; Match(COMMA);
+						State = 474;
 						switch ( Interpreter.AdaptivePredict(_input,65,_ctx) ) {
 						case 1:
 							{
-							State = 469; whiteSpace();
+							State = 473; whiteSpace();
 							}
 							break;
 						}
 						}
 						} 
 					}
-					State = 476;
+					State = 480;
 					_errHandler.Sync(this);
 					_alt = Interpreter.AdaptivePredict(_input,66,_ctx);
 				}
-				State = 477; requiredPositionalArgument();
+				State = 481; requiredPositionalArgument();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 490;
+				State = 494;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,70,_ctx);
 				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
 						{
-						State = 479;
+						State = 483;
 						_la = _input.La(1);
-						if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ARRAY) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CIRCLE) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SCALE) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << ATTRIBUTE) | (1L << BEGIN) | (1L << BINARY) | (1L << BYVAL))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLASS - 64)) | (1L << (DATABASE - 64)) | (1L << (EMPTY - 64)) | (1L << (ERROR - 64)) | (1L << (FALSE - 64)) | (1L << (INPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (LIB - 128)) | (1L << (ME - 128)) | (1L << (MID - 128)) | (1L << (NEW - 128)) | (1L << (NOT - 128)) | (1L << (NOTHING - 128)) | (1L << (NULL - 128)) | (1L << (ON - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (TRUE - 128)) | (1L << (TYPEOF - 128)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (VERSION - 195)) | (1L << (LPAREN - 195)) | (1L << (MINUS - 195)) | (1L << (STRINGLITERAL - 195)) | (1L << (OCTLITERAL - 195)) | (1L << (HEXLITERAL - 195)) | (1L << (FLOATLITERAL - 195)) | (1L << (INTEGERLITERAL - 195)) | (1L << (DATELITERAL - 195)) | (1L << (IDENTIFIER - 195)) | (1L << (FOREIGNNAME - 195)) | (1L << (OBJECT - 195)) | (1L << (COLLECTION - 195)))) != 0)) {
+						if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CIRCLE) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SCALE) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << HASH) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYTE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLASS - 64)) | (1L << (CLOSE - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DOUBLE - 64)) | (1L << (EMPTY - 64)) | (1L << (END_SELECT - 64)) | (1L << (END_WITH - 64)) | (1L << (END - 64)) | (1L << (ERROR - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (GET - 64)) | (1L << (INPUT - 64)) | (1L << (INTEGER - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (LIB - 128)) | (1L << (LINE_INPUT - 128)) | (1L << (LOCK_READ - 128)) | (1L << (LOCK_WRITE - 128)) | (1L << (LOCK_READ_WRITE - 128)) | (1L << (ME - 128)) | (1L << (MID - 128)) | (1L << (NEW - 128)) | (1L << (NOT - 128)) | (1L << (NOTHING - 128)) | (1L << (NULL - 128)) | (1L << (ON - 128)) | (1L << (ON_ERROR - 128)) | (1L << (OPEN - 128)) | (1L << (OUTPUT - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (READ - 128)) | (1L << (READ_WRITE - 128)) | (1L << (RESET - 128)) | (1L << (SEEK - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (STEP - 128)) | (1L << (STRING - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (TRUE - 128)) | (1L << (TYPEOF - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (UNLOCK - 192)) | (1L << (VARIANT - 192)) | (1L << (VERSION - 192)) | (1L << (WIDTH - 192)) | (1L << (WRITE - 192)) | (1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (OCTLITERAL - 192)) | (1L << (HEXLITERAL - 192)) | (1L << (FLOATLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (FOREIGNNAME - 192)) | (1L << (OBJECT - 192)) | (1L << (COLLECTION - 192)))) != 0)) {
 							{
-							State = 478; positionalArgument();
+							State = 482; positionalArgument();
 							}
 						}
 
-						State = 482;
+						State = 486;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
 							{
-							State = 481; whiteSpace();
+							State = 485; whiteSpace();
 							}
 						}
 
-						State = 484; Match(COMMA);
-						State = 486;
+						State = 488; Match(COMMA);
+						State = 490;
 						switch ( Interpreter.AdaptivePredict(_input,69,_ctx) ) {
 						case 1:
 							{
-							State = 485; whiteSpace();
+							State = 489; whiteSpace();
 							}
 							break;
 						}
 						}
 						} 
 					}
-					State = 492;
+					State = 496;
 					_errHandler.Sync(this);
 					_alt = Interpreter.AdaptivePredict(_input,70,_ctx);
 				}
-				State = 493; namedArgumentList();
+				State = 497; namedArgumentList();
 				}
 				break;
 			}
@@ -3331,7 +3468,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 496; argumentExpression();
+			State = 500; argumentExpression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3376,7 +3513,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 498; argumentExpression();
+			State = 502; argumentExpression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3436,23 +3573,14 @@ public partial class VBAExpressionParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 500; namedArgument();
-			State = 511;
+			State = 504; namedArgument();
+			State = 515;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,74,_ctx);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 502;
-					_la = _input.La(1);
-					if (_la==WS || _la==LINE_CONTINUATION) {
-						{
-						State = 501; whiteSpace();
-						}
-					}
-
-					State = 504; Match(COMMA);
 					State = 506;
 					_la = _input.La(1);
 					if (_la==WS || _la==LINE_CONTINUATION) {
@@ -3461,11 +3589,20 @@ public partial class VBAExpressionParser : Parser {
 						}
 					}
 
-					State = 508; namedArgument();
+					State = 508; Match(COMMA);
+					State = 510;
+					_la = _input.La(1);
+					if (_la==WS || _la==LINE_CONTINUATION) {
+						{
+						State = 509; whiteSpace();
+						}
+					}
+
+					State = 512; namedArgument();
 					}
 					} 
 				}
-				State = 513;
+				State = 517;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,74,_ctx);
 			}
@@ -3524,16 +3661,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 514; unrestrictedName();
-			State = 516;
-			_la = _input.La(1);
-			if (_la==WS || _la==LINE_CONTINUATION) {
-				{
-				State = 515; whiteSpace();
-				}
-			}
-
-			State = 518; Match(ASSIGN);
+			State = 518; unrestrictedName();
 			State = 520;
 			_la = _input.La(1);
 			if (_la==WS || _la==LINE_CONTINUATION) {
@@ -3542,7 +3670,16 @@ public partial class VBAExpressionParser : Parser {
 				}
 			}
 
-			State = 522; argumentExpression();
+			State = 522; Match(ASSIGN);
+			State = 524;
+			_la = _input.La(1);
+			if (_la==WS || _la==LINE_CONTINUATION) {
+				{
+				State = 523; whiteSpace();
+				}
+			}
+
+			State = 526; argumentExpression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3593,9 +3730,10 @@ public partial class VBAExpressionParser : Parser {
 		EnterRule(_localctx, 58, RULE_argumentExpression);
 		int _la;
 		try {
-			State = 530;
+			State = 534;
 			switch (_input.La(1)) {
 			case ABS:
+			case ANY:
 			case ARRAY:
 			case CBOOL:
 			case CBYTE:
@@ -3610,6 +3748,7 @@ public partial class VBAExpressionParser : Parser {
 			case CLNGPTR:
 			case CSNG:
 			case CSTR:
+			case CURRENCY:
 			case CVAR:
 			case CVERR:
 			case DEBUG:
@@ -3620,6 +3759,8 @@ public partial class VBAExpressionParser : Parser {
 			case LBOUND:
 			case LEN:
 			case LENB:
+			case LONGLONG:
+			case LONGPTR:
 			case MIDB:
 			case MIDBTYPESUFFIX:
 			case MIDTYPESUFFIX:
@@ -3629,18 +3770,42 @@ public partial class VBAExpressionParser : Parser {
 			case UBOUND:
 			case EXCLAMATIONPOINT:
 			case DOT:
+			case HASH:
+			case ACCESS:
 			case ALIAS:
 			case ATTRIBUTE:
+			case APPEND:
 			case BEGIN:
 			case BINARY:
+			case BOOLEAN:
 			case BYVAL:
+			case BYTE:
 			case CLASS:
+			case CLOSE:
 			case DATABASE:
+			case DATE:
+			case DOUBLE:
 			case EMPTY:
+			case END_SELECT:
+			case END_WITH:
+			case END:
 			case ERROR:
+			case EXIT_DO:
+			case EXIT_FOR:
+			case EXIT_FUNCTION:
+			case EXIT_PROPERTY:
+			case EXIT_SUB:
 			case FALSE:
+			case GET:
 			case INPUT:
+			case INTEGER:
+			case LOCK:
+			case LONG:
 			case LIB:
+			case LINE_INPUT:
+			case LOCK_READ:
+			case LOCK_WRITE:
+			case LOCK_READ_WRITE:
 			case ME:
 			case MID:
 			case NEW:
@@ -3648,11 +3813,28 @@ public partial class VBAExpressionParser : Parser {
 			case NOTHING:
 			case NULL:
 			case ON:
+			case ON_ERROR:
+			case OPEN:
+			case OUTPUT:
+			case PUT:
+			case RANDOM:
+			case READ:
+			case READ_WRITE:
+			case RESET:
+			case SEEK:
+			case SHARED:
+			case SINGLE:
+			case STEP:
+			case STRING:
 			case TAB:
 			case TEXT:
 			case TRUE:
 			case TYPEOF:
+			case UNLOCK:
+			case VARIANT:
 			case VERSION:
+			case WIDTH:
+			case WRITE:
 			case LPAREN:
 			case MINUS:
 			case STRINGLITERAL:
@@ -3667,22 +3849,22 @@ public partial class VBAExpressionParser : Parser {
 			case COLLECTION:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 526;
+				State = 530;
 				_la = _input.La(1);
 				if (_la==BYVAL) {
 					{
-					State = 524; Match(BYVAL);
-					State = 525; whiteSpace();
+					State = 528; Match(BYVAL);
+					State = 529; whiteSpace();
 					}
 				}
 
-				State = 528; expression(0);
+				State = 532; expression(0);
 				}
 				break;
 			case ADDRESSOF:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 529; addressOfExpression();
+				State = 533; addressOfExpression();
 				}
 				break;
 			default:
@@ -3731,7 +3913,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 532; name();
+			State = 536; name();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3774,7 +3956,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 534; Match(ME);
+			State = 538; Match(ME);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3820,18 +4002,18 @@ public partial class VBAExpressionParser : Parser {
 		WithExpressionContext _localctx = new WithExpressionContext(_ctx, State);
 		EnterRule(_localctx, 64, RULE_withExpression);
 		try {
-			State = 538;
+			State = 542;
 			switch (_input.La(1)) {
 			case DOT:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 536; withMemberAccessExpression();
+				State = 540; withMemberAccessExpression();
 				}
 				break;
 			case EXCLAMATIONPOINT:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 537; withDictionaryAccessExpression();
+				State = 541; withDictionaryAccessExpression();
 				}
 				break;
 			default:
@@ -3881,8 +4063,8 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 540; Match(DOT);
-			State = 541; unrestrictedName();
+			State = 544; Match(DOT);
+			State = 545; unrestrictedName();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3928,8 +4110,8 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 543; Match(EXCLAMATIONPOINT);
-			State = 544; unrestrictedName();
+			State = 547; Match(EXCLAMATIONPOINT);
+			State = 548; unrestrictedName();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3974,7 +4156,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 546; expression(0);
+			State = 550; expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -4020,19 +4202,19 @@ public partial class VBAExpressionParser : Parser {
 		TypeExpressionContext _localctx = new TypeExpressionContext(_ctx, State);
 		EnterRule(_localctx, 72, RULE_typeExpression);
 		try {
-			State = 550;
+			State = 554;
 			switch ( Interpreter.AdaptivePredict(_input,80,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 548; builtInType();
+				State = 552; builtInType();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 549; definedTypeExpression();
+				State = 553; definedTypeExpression();
 				}
 				break;
 			}
@@ -4080,19 +4262,19 @@ public partial class VBAExpressionParser : Parser {
 		DefinedTypeExpressionContext _localctx = new DefinedTypeExpressionContext(_ctx, State);
 		EnterRule(_localctx, 74, RULE_definedTypeExpression);
 		try {
-			State = 554;
+			State = 558;
 			switch ( Interpreter.AdaptivePredict(_input,81,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 552; simpleNameExpression();
+				State = 556; simpleNameExpression();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 553; memberAccessExpression();
+				State = 557; memberAccessExpression();
 				}
 				break;
 			}
@@ -4143,9 +4325,9 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 556; Match(ADDRESSOF);
-			State = 557; whiteSpace();
-			State = 558; procedurePointerExpression();
+			State = 560; Match(ADDRESSOF);
+			State = 561; whiteSpace();
+			State = 562; procedurePointerExpression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -4191,19 +4373,19 @@ public partial class VBAExpressionParser : Parser {
 		ProcedurePointerExpressionContext _localctx = new ProcedurePointerExpressionContext(_ctx, State);
 		EnterRule(_localctx, 78, RULE_procedurePointerExpression);
 		try {
-			State = 562;
+			State = 566;
 			switch ( Interpreter.AdaptivePredict(_input,82,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 560; memberAccessExpression();
+				State = 564; memberAccessExpression();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 561; simpleNameExpression();
+				State = 565; simpleNameExpression();
 				}
 				break;
 			}
@@ -4269,61 +4451,61 @@ public partial class VBAExpressionParser : Parser {
 		ReservedIdentifierContext _localctx = new ReservedIdentifierContext(_ctx, State);
 		EnterRule(_localctx, 80, RULE_reservedIdentifier);
 		try {
-			State = 572;
+			State = 576;
 			switch ( Interpreter.AdaptivePredict(_input,83,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 564; statementKeyword();
+				State = 568; statementKeyword();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 565; markerKeyword();
+				State = 569; markerKeyword();
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 566; operatorIdentifier();
+				State = 570; operatorIdentifier();
 				}
 				break;
 
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 567; specialForm();
+				State = 571; specialForm();
 				}
 				break;
 
 			case 5:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 568; reservedName();
+				State = 572; reservedName();
 				}
 				break;
 
 			case 6:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 569; literalIdentifier();
+				State = 573; literalIdentifier();
 				}
 				break;
 
 			case 7:
 				EnterOuterAlt(_localctx, 7);
 				{
-				State = 570; remKeyword();
+				State = 574; remKeyword();
 				}
 				break;
 
 			case 8:
 				EnterOuterAlt(_localctx, 8);
 				{
-				State = 571; reservedTypeIdentifier();
+				State = 575; reservedTypeIdentifier();
 				}
 				break;
 			}
@@ -4343,33 +4525,22 @@ public partial class VBAExpressionParser : Parser {
 		public ITerminalNode CASE() { return GetToken(VBAExpressionParser.CASE, 0); }
 		public ITerminalNode DEFOBJ() { return GetToken(VBAExpressionParser.DEFOBJ, 0); }
 		public ITerminalNode ELSE() { return GetToken(VBAExpressionParser.ELSE, 0); }
-		public ITerminalNode LOCK_WRITE() { return GetToken(VBAExpressionParser.LOCK_WRITE, 0); }
 		public ITerminalNode IF() { return GetToken(VBAExpressionParser.IF, 0); }
-		public ITerminalNode RESET() { return GetToken(VBAExpressionParser.RESET, 0); }
 		public ITerminalNode ERASE() { return GetToken(VBAExpressionParser.ERASE, 0); }
-		public ITerminalNode WRITE(int i) {
-			return GetToken(VBAExpressionParser.WRITE, i);
-		}
-		public ITerminalNode END_SELECT() { return GetToken(VBAExpressionParser.END_SELECT, 0); }
-		public ITerminalNode ON_ERROR() { return GetToken(VBAExpressionParser.ON_ERROR, 0); }
 		public ITerminalNode END_IF() { return GetToken(VBAExpressionParser.END_IF, 0); }
 		public ITerminalNode RAISEEVENT() { return GetToken(VBAExpressionParser.RAISEEVENT, 0); }
 		public ITerminalNode STOP() { return GetToken(VBAExpressionParser.STOP, 0); }
-		public ITerminalNode SHARED() { return GetToken(VBAExpressionParser.SHARED, 0); }
-		public ITerminalNode APPEND() { return GetToken(VBAExpressionParser.APPEND, 0); }
 		public ITerminalNode PRIVATE() { return GetToken(VBAExpressionParser.PRIVATE, 0); }
 		public ITerminalNode DEFBYTE() { return GetToken(VBAExpressionParser.DEFBYTE, 0); }
 		public ITerminalNode DEFSNG() { return GetToken(VBAExpressionParser.DEFSNG, 0); }
 		public ITerminalNode GOSUB() { return GetToken(VBAExpressionParser.GOSUB, 0); }
 		public ITerminalNode RETURN() { return GetToken(VBAExpressionParser.RETURN, 0); }
 		public ITerminalNode ENUM() { return GetToken(VBAExpressionParser.ENUM, 0); }
-		public ITerminalNode LOCK() { return GetToken(VBAExpressionParser.LOCK, 0); }
 		public ITerminalNode GLOBAL() { return GetToken(VBAExpressionParser.GLOBAL, 0); }
 		public ITerminalNode WEND() { return GetToken(VBAExpressionParser.WEND, 0); }
 		public ITerminalNode DEFSTR() { return GetToken(VBAExpressionParser.DEFSTR, 0); }
 		public ITerminalNode DEFLNGLNG() { return GetToken(VBAExpressionParser.DEFLNGLNG, 0); }
 		public ITerminalNode DEFVAR() { return GetToken(VBAExpressionParser.DEFVAR, 0); }
-		public ITerminalNode EXIT_DO() { return GetToken(VBAExpressionParser.EXIT_DO, 0); }
 		public ITerminalNode EVENT() { return GetToken(VBAExpressionParser.EVENT, 0); }
 		public ITerminalNode CONST() { return GetToken(VBAExpressionParser.CONST, 0); }
 		public ITerminalNode ELSEIF() { return GetToken(VBAExpressionParser.ELSEIF, 0); }
@@ -4378,61 +4549,35 @@ public partial class VBAExpressionParser : Parser {
 		public ITerminalNode SUB() { return GetToken(VBAExpressionParser.SUB, 0); }
 		public ITerminalNode FOR() { return GetToken(VBAExpressionParser.FOR, 0); }
 		public ITerminalNode LSET() { return GetToken(VBAExpressionParser.LSET, 0); }
-		public ITerminalNode WIDTH() { return GetToken(VBAExpressionParser.WIDTH, 0); }
-		public ITerminalNode INPUT() { return GetToken(VBAExpressionParser.INPUT, 0); }
-		public ITerminalNode STEP() { return GetToken(VBAExpressionParser.STEP, 0); }
-		public ITerminalNode SEEK() { return GetToken(VBAExpressionParser.SEEK, 0); }
-		public ITerminalNode BINARY() { return GetToken(VBAExpressionParser.BINARY, 0); }
-		public ITerminalNode RANDOM() { return GetToken(VBAExpressionParser.RANDOM, 0); }
 		public ITerminalNode LOOP() { return GetToken(VBAExpressionParser.LOOP, 0); }
 		public ITerminalNode DEFCUR() { return GetToken(VBAExpressionParser.DEFCUR, 0); }
 		public ITerminalNode PUBLIC() { return GetToken(VBAExpressionParser.PUBLIC, 0); }
 		public ITerminalNode DEFDATE() { return GetToken(VBAExpressionParser.DEFDATE, 0); }
-		public ITerminalNode PUT() { return GetToken(VBAExpressionParser.PUT, 0); }
 		public ITerminalNode LET() { return GetToken(VBAExpressionParser.LET, 0); }
 		public ITerminalNode FRIEND() { return GetToken(VBAExpressionParser.FRIEND, 0); }
 		public ITerminalNode TYPE() { return GetToken(VBAExpressionParser.TYPE, 0); }
-		public ITerminalNode ERROR() { return GetToken(VBAExpressionParser.ERROR, 0); }
 		public ITerminalNode CALL() { return GetToken(VBAExpressionParser.CALL, 0); }
-		public ITerminalNode READ() { return GetToken(VBAExpressionParser.READ, 0); }
 		public ITerminalNode DEFBOOL() { return GetToken(VBAExpressionParser.DEFBOOL, 0); }
-		public ITerminalNode OPEN() { return GetToken(VBAExpressionParser.OPEN, 0); }
 		public ITerminalNode STATIC() { return GetToken(VBAExpressionParser.STATIC, 0); }
-		public ITerminalNode LOCK_READ() { return GetToken(VBAExpressionParser.LOCK_READ, 0); }
 		public ITerminalNode DO() { return GetToken(VBAExpressionParser.DO, 0); }
 		public ITerminalNode DIM() { return GetToken(VBAExpressionParser.DIM, 0); }
 		public ITerminalNode OPTION() { return GetToken(VBAExpressionParser.OPTION, 0); }
-		public ITerminalNode CLOSE() { return GetToken(VBAExpressionParser.CLOSE, 0); }
-		public ITerminalNode OUTPUT() { return GetToken(VBAExpressionParser.OUTPUT, 0); }
-		public ITerminalNode LINE_INPUT() { return GetToken(VBAExpressionParser.LINE_INPUT, 0); }
 		public ITerminalNode DEFLNG() { return GetToken(VBAExpressionParser.DEFLNG, 0); }
 		public ITerminalNode IMPLEMENTS() { return GetToken(VBAExpressionParser.IMPLEMENTS, 0); }
 		public ITerminalNode ON() { return GetToken(VBAExpressionParser.ON, 0); }
 		public ITerminalNode WITH() { return GetToken(VBAExpressionParser.WITH, 0); }
-		public ITerminalNode ACCESS() { return GetToken(VBAExpressionParser.ACCESS, 0); }
-		public ITerminalNode EXIT_SUB() { return GetToken(VBAExpressionParser.EXIT_SUB, 0); }
 		public ITerminalNode DECLARE() { return GetToken(VBAExpressionParser.DECLARE, 0); }
-		public ITerminalNode LOCK_READ_WRITE() { return GetToken(VBAExpressionParser.LOCK_READ_WRITE, 0); }
 		public ITerminalNode RESUME() { return GetToken(VBAExpressionParser.RESUME, 0); }
-		public IReadOnlyList<ITerminalNode> WRITE() { return GetTokens(VBAExpressionParser.WRITE); }
 		public ITerminalNode DEFLNGPTR() { return GetToken(VBAExpressionParser.DEFLNGPTR, 0); }
 		public ITerminalNode WHILE() { return GetToken(VBAExpressionParser.WHILE, 0); }
 		public ITerminalNode EXIT() { return GetToken(VBAExpressionParser.EXIT, 0); }
-		public ITerminalNode GET() { return GetToken(VBAExpressionParser.GET, 0); }
-		public ITerminalNode EXIT_FOR() { return GetToken(VBAExpressionParser.EXIT_FOR, 0); }
 		public ITerminalNode DEFDBL() { return GetToken(VBAExpressionParser.DEFDBL, 0); }
 		public ITerminalNode NEXT() { return GetToken(VBAExpressionParser.NEXT, 0); }
 		public ITerminalNode FUNCTION() { return GetToken(VBAExpressionParser.FUNCTION, 0); }
-		public ITerminalNode END_WITH() { return GetToken(VBAExpressionParser.END_WITH, 0); }
 		public ITerminalNode RSET() { return GetToken(VBAExpressionParser.RSET, 0); }
 		public ITerminalNode GOTO() { return GetToken(VBAExpressionParser.GOTO, 0); }
 		public ITerminalNode REDIM() { return GetToken(VBAExpressionParser.REDIM, 0); }
-		public ITerminalNode EXIT_PROPERTY() { return GetToken(VBAExpressionParser.EXIT_PROPERTY, 0); }
-		public ITerminalNode END() { return GetToken(VBAExpressionParser.END, 0); }
 		public ITerminalNode SELECT() { return GetToken(VBAExpressionParser.SELECT, 0); }
-		public ITerminalNode EXIT_FUNCTION() { return GetToken(VBAExpressionParser.EXIT_FUNCTION, 0); }
-		public ITerminalNode READ_WRITE() { return GetToken(VBAExpressionParser.READ_WRITE, 0); }
-		public ITerminalNode UNLOCK() { return GetToken(VBAExpressionParser.UNLOCK, 0); }
 		public ITerminalNode SET() { return GetToken(VBAExpressionParser.SET, 0); }
 		public StatementKeywordContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -4462,9 +4607,9 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 574;
+			State = 578;
 			_la = _input.La(1);
-			if ( !(((((_la - 22)) & ~0x3f) == 0 && ((1L << (_la - 22)) & ((1L << (EXIT - 22)) | (1L << (OPTION - 22)) | (1L << (ACCESS - 22)) | (1L << (APPEND - 22)) | (1L << (BINARY - 22)) | (1L << (CALL - 22)) | (1L << (CASE - 22)) | (1L << (CLOSE - 22)) | (1L << (CONST - 22)) | (1L << (DECLARE - 22)) | (1L << (DEFBOOL - 22)) | (1L << (DEFBYTE - 22)) | (1L << (DEFDATE - 22)) | (1L << (DEFDBL - 22)) | (1L << (DEFCUR - 22)) | (1L << (DEFINT - 22)) | (1L << (DEFLNG - 22)) | (1L << (DEFLNGLNG - 22)) | (1L << (DEFLNGPTR - 22)) | (1L << (DEFOBJ - 22)) | (1L << (DEFSNG - 22)) | (1L << (DEFSTR - 22)) | (1L << (DEFVAR - 22)) | (1L << (DIM - 22)) | (1L << (DO - 22)))) != 0) || ((((_la - 87)) & ~0x3f) == 0 && ((1L << (_la - 87)) & ((1L << (ELSE - 87)) | (1L << (ELSEIF - 87)) | (1L << (END_IF - 87)) | (1L << (END_SELECT - 87)) | (1L << (END_WITH - 87)) | (1L << (END - 87)) | (1L << (ENUM - 87)) | (1L << (ERASE - 87)) | (1L << (ERROR - 87)) | (1L << (EVENT - 87)) | (1L << (EXIT_DO - 87)) | (1L << (EXIT_FOR - 87)) | (1L << (EXIT_FUNCTION - 87)) | (1L << (EXIT_PROPERTY - 87)) | (1L << (EXIT_SUB - 87)) | (1L << (FRIEND - 87)) | (1L << (FOR - 87)) | (1L << (FUNCTION - 87)) | (1L << (GET - 87)) | (1L << (GLOBAL - 87)) | (1L << (GOSUB - 87)) | (1L << (GOTO - 87)) | (1L << (IF - 87)) | (1L << (IMPLEMENTS - 87)) | (1L << (INPUT - 87)) | (1L << (LOCK - 87)) | (1L << (LOOP - 87)) | (1L << (LET - 87)) | (1L << (LINE_INPUT - 87)) | (1L << (LOCK_READ - 87)) | (1L << (LOCK_WRITE - 87)) | (1L << (LOCK_READ_WRITE - 87)) | (1L << (LSET - 87)) | (1L << (NEXT - 87)) | (1L << (ON - 87)) | (1L << (ON_ERROR - 87)) | (1L << (OPEN - 87)))) != 0) || ((((_la - 153)) & ~0x3f) == 0 && ((1L << (_la - 153)) & ((1L << (OUTPUT - 153)) | (1L << (PRINT - 153)) | (1L << (PRIVATE - 153)) | (1L << (PUBLIC - 153)) | (1L << (PUT - 153)) | (1L << (RANDOM - 153)) | (1L << (RAISEEVENT - 153)) | (1L << (READ - 153)) | (1L << (READ_WRITE - 153)) | (1L << (REDIM - 153)) | (1L << (RESET - 153)) | (1L << (RESUME - 153)) | (1L << (RETURN - 153)) | (1L << (RSET - 153)) | (1L << (SEEK - 153)) | (1L << (SELECT - 153)) | (1L << (SET - 153)) | (1L << (SHARED - 153)) | (1L << (STATIC - 153)) | (1L << (STEP - 153)) | (1L << (STOP - 153)) | (1L << (SUB - 153)) | (1L << (TYPE - 153)) | (1L << (UNLOCK - 153)) | (1L << (WEND - 153)) | (1L << (WHILE - 153)) | (1L << (WIDTH - 153)) | (1L << (WITH - 153)) | (1L << (WRITE - 153)))) != 0)) ) {
+			if ( !(((((_la - 22)) & ~0x3f) == 0 && ((1L << (_la - 22)) & ((1L << (EXIT - 22)) | (1L << (OPTION - 22)) | (1L << (CALL - 22)) | (1L << (CASE - 22)) | (1L << (CONST - 22)) | (1L << (DECLARE - 22)) | (1L << (DEFBOOL - 22)) | (1L << (DEFBYTE - 22)) | (1L << (DEFDATE - 22)) | (1L << (DEFDBL - 22)) | (1L << (DEFCUR - 22)) | (1L << (DEFINT - 22)) | (1L << (DEFLNG - 22)) | (1L << (DEFLNGLNG - 22)) | (1L << (DEFLNGPTR - 22)) | (1L << (DEFOBJ - 22)) | (1L << (DEFSNG - 22)) | (1L << (DEFSTR - 22)) | (1L << (DEFVAR - 22)) | (1L << (DIM - 22)) | (1L << (DO - 22)))) != 0) || ((((_la - 87)) & ~0x3f) == 0 && ((1L << (_la - 87)) & ((1L << (ELSE - 87)) | (1L << (ELSEIF - 87)) | (1L << (END_IF - 87)) | (1L << (ENUM - 87)) | (1L << (ERASE - 87)) | (1L << (EVENT - 87)) | (1L << (FRIEND - 87)) | (1L << (FOR - 87)) | (1L << (FUNCTION - 87)) | (1L << (GLOBAL - 87)) | (1L << (GOSUB - 87)) | (1L << (GOTO - 87)) | (1L << (IF - 87)) | (1L << (IMPLEMENTS - 87)) | (1L << (LOOP - 87)) | (1L << (LET - 87)) | (1L << (LSET - 87)) | (1L << (NEXT - 87)) | (1L << (ON - 87)))) != 0) || ((((_la - 156)) & ~0x3f) == 0 && ((1L << (_la - 156)) & ((1L << (PRINT - 156)) | (1L << (PRIVATE - 156)) | (1L << (PUBLIC - 156)) | (1L << (RAISEEVENT - 156)) | (1L << (REDIM - 156)) | (1L << (RESUME - 156)) | (1L << (RETURN - 156)) | (1L << (RSET - 156)) | (1L << (SELECT - 156)) | (1L << (SET - 156)) | (1L << (STATIC - 156)) | (1L << (STOP - 156)) | (1L << (SUB - 156)) | (1L << (TYPE - 156)) | (1L << (WEND - 156)) | (1L << (WHILE - 156)) | (1L << (WITH - 156)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			}
 			Consume();
@@ -4510,7 +4655,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 576; Match(REM);
+			State = 580; Match(REM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -4573,7 +4718,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 578;
+			State = 582;
 			_la = _input.La(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ANY) | (1L << AS) | (1L << BYVAL) | (1L << BYREF) | (1L << CASE))) != 0) || ((((_la - 86)) & ~0x3f) == 0 && ((1L << (_la - 86)) & ((1L << (EACH - 86)) | (1L << (ELSE - 86)) | (1L << (IN - 86)) | (1L << (NEW - 86)) | (1L << (OPTIONAL - 86)))) != 0) || ((((_la - 154)) & ~0x3f) == 0 && ((1L << (_la - 154)) & ((1L << (PARAMARRAY - 154)) | (1L << (PRESERVE - 154)) | (1L << (SHARED - 154)) | (1L << (SPC - 154)) | (1L << (TAB - 154)) | (1L << (THEN - 154)) | (1L << (TO - 154)) | (1L << (UNTIL - 154)) | (1L << (WITHEVENTS - 154)) | (1L << (WRITE - 154)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
@@ -4633,7 +4778,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 580;
+			State = 584;
 			_la = _input.La(1);
 			if ( !(_la==ADDRESSOF || _la==AND || ((((_la - 100)) & ~0x3f) == 0 && ((1L << (_la - 100)) & ((1L << (EQV - 100)) | (1L << (IMP - 100)) | (1L << (IS - 100)) | (1L << (LIKE - 100)) | (1L << (MOD - 100)) | (1L << (NEW - 100)) | (1L << (NOT - 100)) | (1L << (OR - 100)))) != 0) || _la==TYPEOF || _la==XOR) ) {
 			_errHandler.RecoverInline(this);
@@ -4682,12 +4827,12 @@ public partial class VBAExpressionParser : Parser {
 		ReservedNameContext _localctx = new ReservedNameContext(_ctx, State);
 		EnterRule(_localctx, 90, RULE_reservedName);
 		try {
-			State = 584;
+			State = 588;
 			switch (_input.La(1)) {
 			case ME:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 582; Match(ME);
+				State = 586; Match(ME);
 				}
 				break;
 			case ABS:
@@ -4717,10 +4862,44 @@ public partial class VBAExpressionParser : Parser {
 			case PSET:
 			case SCALE:
 			case SGN:
+			case ACCESS:
+			case APPEND:
+			case BINARY:
+			case CLOSE:
+			case END_SELECT:
+			case END_WITH:
+			case END:
+			case ERROR:
+			case EXIT_DO:
+			case EXIT_FOR:
+			case EXIT_FUNCTION:
+			case EXIT_PROPERTY:
+			case EXIT_SUB:
+			case GET:
+			case INPUT:
+			case LOCK:
+			case LINE_INPUT:
+			case LOCK_READ:
+			case LOCK_WRITE:
+			case LOCK_READ_WRITE:
 			case MID:
+			case ON_ERROR:
+			case OPEN:
+			case OUTPUT:
+			case PUT:
+			case RANDOM:
+			case READ:
+			case READ_WRITE:
+			case RESET:
+			case SEEK:
+			case SHARED:
+			case STEP:
+			case UNLOCK:
+			case WIDTH:
+			case WRITE:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 583; reservedProcedureName();
+				State = 587; reservedProcedureName();
 				}
 				break;
 			default:
@@ -4739,33 +4918,70 @@ public partial class VBAExpressionParser : Parser {
 	}
 
 	public partial class ReservedProcedureNameContext : ParserRuleContext {
-		public ITerminalNode CSTR() { return GetToken(VBAExpressionParser.CSTR, 0); }
+		public ITerminalNode LOCK_WRITE() { return GetToken(VBAExpressionParser.LOCK_WRITE, 0); }
 		public ITerminalNode CLNGLNG() { return GetToken(VBAExpressionParser.CLNGLNG, 0); }
-		public ITerminalNode CDATE() { return GetToken(VBAExpressionParser.CDATE, 0); }
-		public ITerminalNode CINT() { return GetToken(VBAExpressionParser.CINT, 0); }
-		public ITerminalNode ABS() { return GetToken(VBAExpressionParser.ABS, 0); }
-		public ITerminalNode INT() { return GetToken(VBAExpressionParser.INT, 0); }
+		public ITerminalNode RESET() { return GetToken(VBAExpressionParser.RESET, 0); }
+		public ITerminalNode END_SELECT() { return GetToken(VBAExpressionParser.END_SELECT, 0); }
+		public ITerminalNode ON_ERROR() { return GetToken(VBAExpressionParser.ON_ERROR, 0); }
+		public ITerminalNode WRITE(int i) {
+			return GetToken(VBAExpressionParser.WRITE, i);
+		}
+		public ITerminalNode SHARED() { return GetToken(VBAExpressionParser.SHARED, 0); }
 		public ITerminalNode LENB() { return GetToken(VBAExpressionParser.LENB, 0); }
+		public ITerminalNode APPEND() { return GetToken(VBAExpressionParser.APPEND, 0); }
 		public ITerminalNode SCALE() { return GetToken(VBAExpressionParser.SCALE, 0); }
 		public ITerminalNode MIDTYPESUFFIX() { return GetToken(VBAExpressionParser.MIDTYPESUFFIX, 0); }
 		public ITerminalNode DEBUG() { return GetToken(VBAExpressionParser.DEBUG, 0); }
 		public ITerminalNode CLNGPTR() { return GetToken(VBAExpressionParser.CLNGPTR, 0); }
-		public ITerminalNode DOEVENTS() { return GetToken(VBAExpressionParser.DOEVENTS, 0); }
-		public ITerminalNode MID() { return GetToken(VBAExpressionParser.MID, 0); }
+		public ITerminalNode LOCK() { return GetToken(VBAExpressionParser.LOCK, 0); }
+		public ITerminalNode EXIT_DO() { return GetToken(VBAExpressionParser.EXIT_DO, 0); }
 		public ITerminalNode CDEC() { return GetToken(VBAExpressionParser.CDEC, 0); }
-		public ITerminalNode MIDB() { return GetToken(VBAExpressionParser.MIDB, 0); }
+		public ITerminalNode WIDTH() { return GetToken(VBAExpressionParser.WIDTH, 0); }
 		public ITerminalNode CSNG() { return GetToken(VBAExpressionParser.CSNG, 0); }
-		public ITerminalNode LEN() { return GetToken(VBAExpressionParser.LEN, 0); }
-		public ITerminalNode CCUR() { return GetToken(VBAExpressionParser.CCUR, 0); }
+		public ITerminalNode STEP() { return GetToken(VBAExpressionParser.STEP, 0); }
+		public ITerminalNode INPUT() { return GetToken(VBAExpressionParser.INPUT, 0); }
+		public ITerminalNode SEEK() { return GetToken(VBAExpressionParser.SEEK, 0); }
+		public ITerminalNode BINARY() { return GetToken(VBAExpressionParser.BINARY, 0); }
+		public ITerminalNode RANDOM() { return GetToken(VBAExpressionParser.RANDOM, 0); }
 		public ITerminalNode CBOOL() { return GetToken(VBAExpressionParser.CBOOL, 0); }
 		public ITerminalNode MIDBTYPESUFFIX() { return GetToken(VBAExpressionParser.MIDBTYPESUFFIX, 0); }
 		public ITerminalNode SGN() { return GetToken(VBAExpressionParser.SGN, 0); }
 		public ITerminalNode CBYTE() { return GetToken(VBAExpressionParser.CBYTE, 0); }
-		public ITerminalNode PSET() { return GetToken(VBAExpressionParser.PSET, 0); }
 		public ITerminalNode CVERR() { return GetToken(VBAExpressionParser.CVERR, 0); }
 		public ITerminalNode FIX() { return GetToken(VBAExpressionParser.FIX, 0); }
-		public ITerminalNode CDBL() { return GetToken(VBAExpressionParser.CDBL, 0); }
+		public ITerminalNode PUT() { return GetToken(VBAExpressionParser.PUT, 0); }
 		public ITerminalNode CVAR() { return GetToken(VBAExpressionParser.CVAR, 0); }
+		public ITerminalNode CSTR() { return GetToken(VBAExpressionParser.CSTR, 0); }
+		public ITerminalNode CDATE() { return GetToken(VBAExpressionParser.CDATE, 0); }
+		public ITerminalNode CINT() { return GetToken(VBAExpressionParser.CINT, 0); }
+		public ITerminalNode ERROR() { return GetToken(VBAExpressionParser.ERROR, 0); }
+		public ITerminalNode ABS() { return GetToken(VBAExpressionParser.ABS, 0); }
+		public ITerminalNode READ() { return GetToken(VBAExpressionParser.READ, 0); }
+		public ITerminalNode INT() { return GetToken(VBAExpressionParser.INT, 0); }
+		public ITerminalNode OPEN() { return GetToken(VBAExpressionParser.OPEN, 0); }
+		public ITerminalNode LOCK_READ() { return GetToken(VBAExpressionParser.LOCK_READ, 0); }
+		public ITerminalNode DOEVENTS() { return GetToken(VBAExpressionParser.DOEVENTS, 0); }
+		public ITerminalNode OUTPUT() { return GetToken(VBAExpressionParser.OUTPUT, 0); }
+		public ITerminalNode CLOSE() { return GetToken(VBAExpressionParser.CLOSE, 0); }
+		public ITerminalNode LINE_INPUT() { return GetToken(VBAExpressionParser.LINE_INPUT, 0); }
+		public ITerminalNode MID() { return GetToken(VBAExpressionParser.MID, 0); }
+		public ITerminalNode ACCESS() { return GetToken(VBAExpressionParser.ACCESS, 0); }
+		public ITerminalNode EXIT_SUB() { return GetToken(VBAExpressionParser.EXIT_SUB, 0); }
+		public ITerminalNode LOCK_READ_WRITE() { return GetToken(VBAExpressionParser.LOCK_READ_WRITE, 0); }
+		public ITerminalNode MIDB() { return GetToken(VBAExpressionParser.MIDB, 0); }
+		public IReadOnlyList<ITerminalNode> WRITE() { return GetTokens(VBAExpressionParser.WRITE); }
+		public ITerminalNode LEN() { return GetToken(VBAExpressionParser.LEN, 0); }
+		public ITerminalNode CCUR() { return GetToken(VBAExpressionParser.CCUR, 0); }
+		public ITerminalNode EXIT_FOR() { return GetToken(VBAExpressionParser.EXIT_FOR, 0); }
+		public ITerminalNode GET() { return GetToken(VBAExpressionParser.GET, 0); }
+		public ITerminalNode END_WITH() { return GetToken(VBAExpressionParser.END_WITH, 0); }
+		public ITerminalNode EXIT_PROPERTY() { return GetToken(VBAExpressionParser.EXIT_PROPERTY, 0); }
+		public ITerminalNode END() { return GetToken(VBAExpressionParser.END, 0); }
+		public ITerminalNode PSET() { return GetToken(VBAExpressionParser.PSET, 0); }
+		public ITerminalNode EXIT_FUNCTION() { return GetToken(VBAExpressionParser.EXIT_FUNCTION, 0); }
+		public ITerminalNode READ_WRITE() { return GetToken(VBAExpressionParser.READ_WRITE, 0); }
+		public ITerminalNode UNLOCK() { return GetToken(VBAExpressionParser.UNLOCK, 0); }
+		public ITerminalNode CDBL() { return GetToken(VBAExpressionParser.CDBL, 0); }
 		public ITerminalNode CLNG() { return GetToken(VBAExpressionParser.CLNG, 0); }
 		public ReservedProcedureNameContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -4795,9 +5011,9 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 586;
+			State = 590;
 			_la = _input.La(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INT) | (1L << LEN) | (1L << LENB) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SCALE) | (1L << SGN))) != 0) || _la==MID) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INT) | (1L << LEN) | (1L << LENB) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SCALE) | (1L << SGN) | (1L << ACCESS) | (1L << APPEND) | (1L << BINARY))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (CLOSE - 65)) | (1L << (END_SELECT - 65)) | (1L << (END_WITH - 65)) | (1L << (END - 65)) | (1L << (ERROR - 65)) | (1L << (EXIT_DO - 65)) | (1L << (EXIT_FOR - 65)) | (1L << (EXIT_FUNCTION - 65)) | (1L << (EXIT_PROPERTY - 65)) | (1L << (EXIT_SUB - 65)) | (1L << (GET - 65)) | (1L << (INPUT - 65)) | (1L << (LOCK - 65)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (MID - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OUTPUT - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (STEP - 130)) | (1L << (UNLOCK - 130)))) != 0) || _la==WIDTH || _la==WRITE) ) {
 			_errHandler.RecoverInline(this);
 			}
 			Consume();
@@ -4850,7 +5066,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 588;
+			State = 592;
 			_la = _input.La(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ARRAY) | (1L << CIRCLE) | (1L << INPUTB) | (1L << LBOUND) | (1L << SCALE) | (1L << UBOUND))) != 0) || _la==INPUT) ) {
 			_errHandler.RecoverInline(this);
@@ -4872,15 +5088,16 @@ public partial class VBAExpressionParser : Parser {
 	public partial class ReservedTypeIdentifierContext : ParserRuleContext {
 		public ITerminalNode INTEGER() { return GetToken(VBAExpressionParser.INTEGER, 0); }
 		public ITerminalNode LONGLONG() { return GetToken(VBAExpressionParser.LONGLONG, 0); }
-		public ITerminalNode LONG() { return GetToken(VBAExpressionParser.LONG, 0); }
 		public ITerminalNode VARIANT() { return GetToken(VBAExpressionParser.VARIANT, 0); }
 		public ITerminalNode LONGPTR() { return GetToken(VBAExpressionParser.LONGPTR, 0); }
 		public ITerminalNode BYTE() { return GetToken(VBAExpressionParser.BYTE, 0); }
 		public ITerminalNode STRING() { return GetToken(VBAExpressionParser.STRING, 0); }
 		public ITerminalNode BOOLEAN() { return GetToken(VBAExpressionParser.BOOLEAN, 0); }
-		public ITerminalNode DATE() { return GetToken(VBAExpressionParser.DATE, 0); }
 		public ITerminalNode CURRENCY() { return GetToken(VBAExpressionParser.CURRENCY, 0); }
 		public ITerminalNode DOUBLE() { return GetToken(VBAExpressionParser.DOUBLE, 0); }
+		public ITerminalNode ANY() { return GetToken(VBAExpressionParser.ANY, 0); }
+		public ITerminalNode LONG() { return GetToken(VBAExpressionParser.LONG, 0); }
+		public ITerminalNode DATE() { return GetToken(VBAExpressionParser.DATE, 0); }
 		public ITerminalNode SINGLE() { return GetToken(VBAExpressionParser.SINGLE, 0); }
 		public ReservedTypeIdentifierContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -4910,9 +5127,9 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 590;
+			State = 594;
 			_la = _input.La(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CURRENCY) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << BOOLEAN) | (1L << BYTE))) != 0) || ((((_la - 68)) & ~0x3f) == 0 && ((1L << (_la - 68)) & ((1L << (DATE - 68)) | (1L << (DOUBLE - 68)) | (1L << (INTEGER - 68)) | (1L << (LONG - 68)))) != 0) || ((((_la - 178)) & ~0x3f) == 0 && ((1L << (_la - 178)) & ((1L << (SINGLE - 178)) | (1L << (STRING - 178)) | (1L << (VARIANT - 178)))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ANY) | (1L << CURRENCY) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << BOOLEAN) | (1L << BYTE))) != 0) || ((((_la - 68)) & ~0x3f) == 0 && ((1L << (_la - 68)) & ((1L << (DATE - 68)) | (1L << (DOUBLE - 68)) | (1L << (INTEGER - 68)) | (1L << (LONG - 68)))) != 0) || ((((_la - 178)) & ~0x3f) == 0 && ((1L << (_la - 178)) & ((1L << (SINGLE - 178)) | (1L << (STRING - 178)) | (1L << (VARIANT - 178)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			}
 			Consume();
@@ -4967,7 +5184,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 592;
+			State = 596;
 			_la = _input.La(1);
 			if ( !(((((_la - 51)) & ~0x3f) == 0 && ((1L << (_la - 51)) & ((1L << (ALIAS - 51)) | (1L << (ATTRIBUTE - 51)) | (1L << (BEGIN - 51)) | (1L << (CLASS - 51)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (LIB - 128)) | (1L << (ON - 128)) | (1L << (TAB - 128)))) != 0) || _la==VERSION || _la==COLLECTION) ) {
 			_errHandler.RecoverInline(this);
@@ -5021,26 +5238,26 @@ public partial class VBAExpressionParser : Parser {
 		LiteralIdentifierContext _localctx = new LiteralIdentifierContext(_ctx, State);
 		EnterRule(_localctx, 100, RULE_literalIdentifier);
 		try {
-			State = 597;
+			State = 601;
 			switch (_input.La(1)) {
 			case FALSE:
 			case TRUE:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 594; booleanLiteralIdentifier();
+				State = 598; booleanLiteralIdentifier();
 				}
 				break;
 			case NOTHING:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 595; objectLiteralIdentifier();
+				State = 599; objectLiteralIdentifier();
 				}
 				break;
 			case EMPTY:
 			case NULL:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 596; variantLiteralIdentifier();
+				State = 600; variantLiteralIdentifier();
 				}
 				break;
 			default:
@@ -5089,7 +5306,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 599;
+			State = 603;
 			_la = _input.La(1);
 			if ( !(_la==FALSE || _la==TRUE) ) {
 			_errHandler.RecoverInline(this);
@@ -5137,7 +5354,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 601; Match(NOTHING);
+			State = 605; Match(NOTHING);
 			}
 		}
 		catch (RecognitionException re) {
@@ -5182,7 +5399,7 @@ public partial class VBAExpressionParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 603;
+			State = 607;
 			_la = _input.La(1);
 			if ( !(_la==EMPTY || _la==NULL) ) {
 			_errHandler.RecoverInline(this);
@@ -5239,7 +5456,7 @@ public partial class VBAExpressionParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 606;
+			State = 610;
 			_errHandler.Sync(this);
 			_alt = 1;
 			do {
@@ -5247,7 +5464,7 @@ public partial class VBAExpressionParser : Parser {
 				case 1:
 					{
 					{
-					State = 605;
+					State = 609;
 					_la = _input.La(1);
 					if ( !(_la==WS || _la==LINE_CONTINUATION) ) {
 					_errHandler.RecoverInline(this);
@@ -5259,7 +5476,7 @@ public partial class VBAExpressionParser : Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				State = 608;
+				State = 612;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,86,_ctx);
 			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
@@ -5286,29 +5503,29 @@ public partial class VBAExpressionParser : Parser {
 	}
 	private bool expression_sempred(ExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 0: return Precpred(_ctx, 15);
+		case 0: return Precpred(_ctx, 16);
 
-		case 1: return Precpred(_ctx, 13);
+		case 1: return Precpred(_ctx, 14);
 
-		case 2: return Precpred(_ctx, 12);
+		case 2: return Precpred(_ctx, 13);
 
-		case 3: return Precpred(_ctx, 11);
+		case 3: return Precpred(_ctx, 12);
 
-		case 4: return Precpred(_ctx, 10);
+		case 4: return Precpred(_ctx, 11);
 
-		case 5: return Precpred(_ctx, 9);
+		case 5: return Precpred(_ctx, 10);
 
-		case 6: return Precpred(_ctx, 8);
+		case 6: return Precpred(_ctx, 9);
 
-		case 7: return Precpred(_ctx, 6);
+		case 7: return Precpred(_ctx, 7);
 
-		case 8: return Precpred(_ctx, 5);
+		case 8: return Precpred(_ctx, 6);
 
-		case 9: return Precpred(_ctx, 4);
+		case 9: return Precpred(_ctx, 5);
 
-		case 10: return Precpred(_ctx, 3);
+		case 10: return Precpred(_ctx, 4);
 
-		case 11: return Precpred(_ctx, 2);
+		case 11: return Precpred(_ctx, 3);
 		}
 		return true;
 	}
@@ -5330,7 +5547,7 @@ public partial class VBAExpressionParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xF3\x265\x4\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xF3\x269\x4\x2"+
 		"\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4"+
 		"\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+
@@ -5342,274 +5559,279 @@ public partial class VBAExpressionParser : Parser {
 		"\x4\x38\t\x38\x3\x2\x3\x2\x5\x2s\n\x2\x3\x2\x3\x2\x3\x3\x3\x3\x3\x3\x5"+
 		"\x3z\n\x3\x3\x3\x3\x3\x3\x3\x5\x3\x7F\n\x3\x3\x4\x3\x4\x5\x4\x83\n\x4"+
 		"\x3\x5\x3\x5\x5\x5\x87\n\x5\x3\x6\x3\x6\x5\x6\x8B\n\x6\x3\a\x3\a\x3\b"+
-		"\x3\b\x3\b\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x5\t\x9A\n\t\x3\n\x3"+
-		"\n\x3\n\x3\v\x3\v\x3\v\x3\v\x3\v\x3\v\x3\v\x5\v\xA6\n\v\x3\f\x3\f\x3\r"+
-		"\x3\r\x3\xE\x3\xE\x3\xE\x5\xE\xAF\n\xE\x3\xE\x3\xE\x5\xE\xB3\n\xE\x3\xE"+
-		"\x3\xE\x3\xE\x3\xE\x3\xE\x5\xE\xBA\n\xE\x3\xE\x3\xE\x5\xE\xBE\n\xE\x3"+
-		"\xE\x5\xE\xC1\n\xE\x3\xF\x3\xF\x3\xF\x5\xF\xC6\n\xF\x3\xF\x3\xF\x3\xF"+
-		"\x5\xF\xCB\n\xF\x3\xF\x3\xF\x3\xF\x3\xF\x5\xF\xD1\n\xF\x3\xF\x3\xF\x5"+
-		"\xF\xD5\n\xF\x3\xF\x3\xF\x3\xF\x3\xF\x3\xF\x5\xF\xDC\n\xF\x3\xF\x3\xF"+
-		"\x5\xF\xE0\n\xF\x3\xF\x3\xF\x5\xF\xE4\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\xE9"+
-		"\n\xF\x3\xF\x3\xF\x5\xF\xED\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\xF2\n\xF\x3\xF"+
-		"\x3\xF\x5\xF\xF6\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\xFB\n\xF\x3\xF\x3\xF\x5"+
-		"\xF\xFF\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\x104\n\xF\x3\xF\x3\xF\x5\xF\x108"+
-		"\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\x10D\n\xF\x3\xF\x3\xF\x5\xF\x111\n\xF\x3"+
-		"\xF\x3\xF\x3\xF\x5\xF\x116\n\xF\x3\xF\x3\xF\x5\xF\x11A\n\xF\x3\xF\x3\xF"+
-		"\x3\xF\x5\xF\x11F\n\xF\x3\xF\x3\xF\x5\xF\x123\n\xF\x3\xF\x3\xF\x3\xF\x5"+
-		"\xF\x128\n\xF\x3\xF\x3\xF\x5\xF\x12C\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\x131"+
-		"\n\xF\x3\xF\x3\xF\x5\xF\x135\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\x13A\n\xF\x3"+
-		"\xF\x3\xF\x5\xF\x13E\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\x143\n\xF\x3\xF\x3\xF"+
-		"\x5\xF\x147\n\xF\x3\xF\a\xF\x14A\n\xF\f\xF\xE\xF\x14D\v\xF\x3\x10\x3\x10"+
-		"\x3\x10\x3\x10\x3\x10\x5\x10\x154\n\x10\x5\x10\x156\n\x10\x3\x11\x3\x11"+
-		"\x3\x12\x3\x12\x5\x12\x15C\n\x12\x3\x12\x3\x12\x5\x12\x160\n\x12\x3\x12"+
-		"\x3\x12\x3\x13\x3\x13\x3\x13\x3\x13\x3\x13\x3\x13\x3\x13\x3\x13\x3\x14"+
-		"\x3\x14\x3\x14\x3\x14\x3\x15\x3\x15\x3\x15\x3\x15\x5\x15\x174\n\x15\x3"+
-		"\x15\x3\x15\x5\x15\x178\n\x15\x3\x15\x3\x15\x5\x15\x17C\n\x15\x3\x15\x5"+
-		"\x15\x17F\n\x15\x3\x15\x5\x15\x182\n\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3"+
-		"\x15\x3\x15\x3\x15\x5\x15\x18B\n\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15"+
-		"\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\a\x15"+
-		"\x19B\n\x15\f\x15\xE\x15\x19E\v\x15\x3\x16\x3\x16\x3\x16\x3\x16\x3\x16"+
-		"\x3\x16\x3\x16\x5\x16\x1A7\n\x16\x3\x16\x3\x16\x3\x16\x5\x16\x1AC\n\x16"+
-		"\x3\x17\x3\x17\x5\x17\x1B0\n\x17\x3\x17\x3\x17\x5\x17\x1B4\n\x17\x3\x17"+
-		"\x5\x17\x1B7\n\x17\x3\x17\x5\x17\x1BA\n\x17\x3\x17\x3\x17\x3\x18\x3\x18"+
-		"\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18"+
-		"\x3\x18\x3\x18\x3\x18\x5\x18\x1CD\n\x18\x3\x19\x3\x19\x3\x1A\x5\x1A\x1D2"+
-		"\n\x1A\x3\x1A\x5\x1A\x1D5\n\x1A\x3\x1A\x3\x1A\x5\x1A\x1D9\n\x1A\a\x1A"+
-		"\x1DB\n\x1A\f\x1A\xE\x1A\x1DE\v\x1A\x3\x1A\x3\x1A\x5\x1A\x1E2\n\x1A\x3"+
-		"\x1A\x5\x1A\x1E5\n\x1A\x3\x1A\x3\x1A\x5\x1A\x1E9\n\x1A\a\x1A\x1EB\n\x1A"+
-		"\f\x1A\xE\x1A\x1EE\v\x1A\x3\x1A\x5\x1A\x1F1\n\x1A\x3\x1B\x3\x1B\x3\x1C"+
-		"\x3\x1C\x3\x1D\x3\x1D\x5\x1D\x1F9\n\x1D\x3\x1D\x3\x1D\x5\x1D\x1FD\n\x1D"+
-		"\x3\x1D\a\x1D\x200\n\x1D\f\x1D\xE\x1D\x203\v\x1D\x3\x1E\x3\x1E\x5\x1E"+
-		"\x207\n\x1E\x3\x1E\x3\x1E\x5\x1E\x20B\n\x1E\x3\x1E\x3\x1E\x3\x1F\x3\x1F"+
-		"\x5\x1F\x211\n\x1F\x3\x1F\x3\x1F\x5\x1F\x215\n\x1F\x3 \x3 \x3!\x3!\x3"+
-		"\"\x3\"\x5\"\x21D\n\"\x3#\x3#\x3#\x3$\x3$\x3$\x3%\x3%\x3&\x3&\x5&\x229"+
-		"\n&\x3\'\x3\'\x5\'\x22D\n\'\x3(\x3(\x3(\x3(\x3)\x3)\x5)\x235\n)\x3*\x3"+
-		"*\x3*\x3*\x3*\x3*\x3*\x3*\x5*\x23F\n*\x3+\x3+\x3,\x3,\x3-\x3-\x3.\x3."+
-		"\x3/\x3/\x5/\x24B\n/\x3\x30\x3\x30\x3\x31\x3\x31\x3\x32\x3\x32\x3\x33"+
-		"\x3\x33\x3\x34\x3\x34\x3\x34\x5\x34\x258\n\x34\x3\x35\x3\x35\x3\x36\x3"+
-		"\x36\x3\x37\x3\x37\x3\x38\x6\x38\x261\n\x38\r\x38\xE\x38\x262\x3\x38\x2"+
-		"\x2\x4\x1C(\x39\x2\x2\x4\x2\x6\x2\b\x2\n\x2\f\x2\xE\x2\x10\x2\x12\x2\x14"+
-		"\x2\x16\x2\x18\x2\x1A\x2\x1C\x2\x1E\x2 \x2\"\x2$\x2&\x2(\x2*\x2,\x2.\x2"+
-		"\x30\x2\x32\x2\x34\x2\x36\x2\x38\x2:\x2<\x2>\x2@\x2\x42\x2\x44\x2\x46"+
-		"\x2H\x2J\x2L\x2N\x2P\x2R\x2T\x2V\x2X\x2Z\x2\\\x2^\x2`\x2\x62\x2\x64\x2"+
-		"\x66\x2h\x2j\x2l\x2n\x2\x2\x12\x5\x2,,.\x32\xDA\xDA\x5\x2;;\x45\x45\xBC"+
-		"\xBC\x4\x2\xCE\xCE\xD7\xD7\x4\x2\xD6\xD6\xD9\xD9\a\x2||\x83\x83\xD0\xD3"+
-		"\xD5\xD5\xD8\xD8\x3\x2\xE4\xE7\"\x2\x18\x18$$\x33\x33\x38\x38;;@\x41\x43"+
-		"\x44GVYZ^^``\x63\x65gnpwyy{{~~\x80\x81\x84\x88\x8C\x8C\x91\x92\x94\x94"+
-		"\x9B\x9B\x9E\x9F\xA4\xAA\xAC\xB3\xB6\xB8\xBA\xBA\xC0\xC0\xC2\xC2\xC6\xC9"+
-		"\xCB\xCB\x11\x2\x4\x4\x39\x39=>\x41\x41XYzz\x8D\x8D\x95\x95\x9C\x9D\xB3"+
-		"\xB3\xB5\xB5\xBB\xBB\xBD\xBE\xC3\xC3\xCA\xCB\r\x2\x34\x34\x36\x36\x66"+
-		"\x66xx||\x83\x83\x8B\x8B\x8D\x8E\x9A\x9A\xC1\xC1\xCC\xCC\f\x2\x3\x3\x6"+
-		"\f\xE\x12\x14\x17\x19\x19\x1B\x1B\x1D\x1E!#%\'\x8A\x8A\t\x2\x5\x5\r\r"+
-		"\x1A\x1A\x1C\x1C&&(({{\r\x2\x13\x13\x1F <<??\x46\x46WW}}\x7F\x7F\xB4\xB4"+
-		"\xB9\xB9\xC4\xC4\v\x2\x35\x35\x37\x37::\x42\x42\x82\x82\x91\x91\xBB\xBB"+
-		"\xC5\xC5\xF3\xF3\x4\x2oo\xBF\xBF\x4\x2[[\x90\x90\x4\x2\xEC\xEC\xEF\xEF"+
-		"\x2B0\x2r\x3\x2\x2\x2\x4y\x3\x2\x2\x2\x6\x82\x3\x2\x2\x2\b\x86\x3\x2\x2"+
-		"\x2\n\x8A\x3\x2\x2\x2\f\x8C\x3\x2\x2\x2\xE\x8E\x3\x2\x2\x2\x10\x99\x3"+
-		"\x2\x2\x2\x12\x9B\x3\x2\x2\x2\x14\xA5\x3\x2\x2\x2\x16\xA7\x3\x2\x2\x2"+
-		"\x18\xA9\x3\x2\x2\x2\x1A\xC0\x3\x2\x2\x2\x1C\xDB\x3\x2\x2\x2\x1E\x155"+
-		"\x3\x2\x2\x2 \x157\x3\x2\x2\x2\"\x159\x3\x2\x2\x2$\x163\x3\x2\x2\x2&\x16B"+
-		"\x3\x2\x2\x2(\x173\x3\x2\x2\x2*\x1AB\x3\x2\x2\x2,\x1AD\x3\x2\x2\x2.\x1CC"+
-		"\x3\x2\x2\x2\x30\x1CE\x3\x2\x2\x2\x32\x1F0\x3\x2\x2\x2\x34\x1F2\x3\x2"+
-		"\x2\x2\x36\x1F4\x3\x2\x2\x2\x38\x1F6\x3\x2\x2\x2:\x204\x3\x2\x2\x2<\x214"+
-		"\x3\x2\x2\x2>\x216\x3\x2\x2\x2@\x218\x3\x2\x2\x2\x42\x21C\x3\x2\x2\x2"+
-		"\x44\x21E\x3\x2\x2\x2\x46\x221\x3\x2\x2\x2H\x224\x3\x2\x2\x2J\x228\x3"+
-		"\x2\x2\x2L\x22C\x3\x2\x2\x2N\x22E\x3\x2\x2\x2P\x234\x3\x2\x2\x2R\x23E"+
-		"\x3\x2\x2\x2T\x240\x3\x2\x2\x2V\x242\x3\x2\x2\x2X\x244\x3\x2\x2\x2Z\x246"+
-		"\x3\x2\x2\x2\\\x24A\x3\x2\x2\x2^\x24C\x3\x2\x2\x2`\x24E\x3\x2\x2\x2\x62"+
-		"\x250\x3\x2\x2\x2\x64\x252\x3\x2\x2\x2\x66\x257\x3\x2\x2\x2h\x259\x3\x2"+
-		"\x2\x2j\x25B\x3\x2\x2\x2l\x25D\x3\x2\x2\x2n\x260\x3\x2\x2\x2ps\x5\x1C"+
-		"\xF\x2qs\x5\x4\x3\x2rp\x3\x2\x2\x2rq\x3\x2\x2\x2st\x3\x2\x2\x2tu\a\x2"+
-		"\x2\x3u\x3\x3\x2\x2\x2vz\x5*\x16\x2wz\x5> \x2xz\x5\x42\"\x2yv\x3\x2\x2"+
-		"\x2yw\x3\x2\x2\x2yx\x3\x2\x2\x2z~\x3\x2\x2\x2{|\x5n\x38\x2|}\x5\x30\x19"+
-		"\x2}\x7F\x3\x2\x2\x2~{\x3\x2\x2\x2~\x7F\x3\x2\x2\x2\x7F\x5\x3\x2\x2\x2"+
-		"\x80\x83\x5\b\x5\x2\x81\x83\x5\n\x6\x2\x82\x80\x3\x2\x2\x2\x82\x81\x3"+
-		"\x2\x2\x2\x83\a\x3\x2\x2\x2\x84\x87\x5\x10\t\x2\x85\x87\x5\x12\n\x2\x86"+
-		"\x84\x3\x2\x2\x2\x86\x85\x3\x2\x2\x2\x87\t\x3\x2\x2\x2\x88\x8B\x5\f\a"+
-		"\x2\x89\x8B\x5\xE\b\x2\x8A\x88\x3\x2\x2\x2\x8A\x89\x3\x2\x2\x2\x8B\v\x3"+
-		"\x2\x2\x2\x8C\x8D\x5R*\x2\x8D\r\x3\x2\x2\x2\x8E\x8F\x5R*\x2\x8F\x90\x5"+
-		"\x16\f\x2\x90\xF\x3\x2\x2\x2\x91\x9A\a\xEE\x2\x2\x92\x9A\a\xF1\x2\x2\x93"+
-		"\x9A\x5^\x30\x2\x94\x9A\x5`\x31\x2\x95\x9A\x5\x18\r\x2\x96\x9A\a\xF2\x2"+
-		"\x2\x97\x9A\x5\x64\x33\x2\x98\x9A\ah\x2\x2\x99\x91\x3\x2\x2\x2\x99\x92"+
-		"\x3\x2\x2\x2\x99\x93\x3\x2\x2\x2\x99\x94\x3\x2\x2\x2\x99\x95\x3\x2\x2"+
-		"\x2\x99\x96\x3\x2\x2\x2\x99\x97\x3\x2\x2\x2\x99\x98\x3\x2\x2\x2\x9A\x11"+
-		"\x3\x2\x2\x2\x9B\x9C\x5\x14\v\x2\x9C\x9D\x5\x16\f\x2\x9D\x13\x3\x2\x2"+
-		"\x2\x9E\xA6\a\xEE\x2\x2\x9F\xA6\x5^\x30\x2\xA0\xA6\x5`\x31\x2\xA1\xA6"+
-		"\x5\x18\r\x2\xA2\xA6\a\xF2\x2\x2\xA3\xA6\x5\x64\x33\x2\xA4\xA6\ah\x2\x2"+
-		"\xA5\x9E\x3\x2\x2\x2\xA5\x9F\x3\x2\x2\x2\xA5\xA0\x3\x2\x2\x2\xA5\xA1\x3"+
-		"\x2\x2\x2\xA5\xA2\x3\x2\x2\x2\xA5\xA3\x3\x2\x2\x2\xA5\xA4\x3\x2\x2\x2"+
-		"\xA6\x15\x3\x2\x2\x2\xA7\xA8\t\x2\x2\x2\xA8\x17\x3\x2\x2\x2\xA9\xAA\t"+
-		"\x3\x2\x2\xAA\x19\x3\x2\x2\x2\xAB\xC1\x5\x62\x32\x2\xAC\xAE\a\xE1\x2\x2"+
-		"\xAD\xAF\x5n\x38\x2\xAE\xAD\x3\x2\x2\x2\xAE\xAF\x3\x2\x2\x2\xAF\xB0\x3"+
-		"\x2\x2\x2\xB0\xB2\x5\x62\x32\x2\xB1\xB3\x5n\x38\x2\xB2\xB1\x3\x2\x2\x2"+
-		"\xB2\xB3\x3\x2\x2\x2\xB3\xB4\x3\x2\x2\x2\xB4\xB5\a\xE2\x2\x2\xB5\xC1\x3"+
-		"\x2\x2\x2\xB6\xC1\a\xF2\x2\x2\xB7\xB9\a\xE1\x2\x2\xB8\xBA\x5n\x38\x2\xB9"+
-		"\xB8\x3\x2\x2\x2\xB9\xBA\x3\x2\x2\x2\xBA\xBB\x3\x2\x2\x2\xBB\xBD\a\xF2"+
-		"\x2\x2\xBC\xBE\x5n\x38\x2\xBD\xBC\x3\x2\x2\x2\xBD\xBE\x3\x2\x2\x2\xBE"+
-		"\xBF\x3\x2\x2\x2\xBF\xC1\a\xE2\x2\x2\xC0\xAB\x3\x2\x2\x2\xC0\xAC\x3\x2"+
-		"\x2\x2\xC0\xB6\x3\x2\x2\x2\xC0\xB7\x3\x2\x2\x2\xC1\x1B\x3\x2\x2\x2\xC2"+
-		"\xC3\b\xF\x1\x2\xC3\xC5\a\xD6\x2\x2\xC4\xC6\x5n\x38\x2\xC5\xC4\x3\x2\x2"+
-		"\x2\xC5\xC6\x3\x2\x2\x2\xC6\xC7\x3\x2\x2\x2\xC7\xDC\x5\x1C\xF\x10\xC8"+
-		"\xCA\a\x8E\x2\x2\xC9\xCB\x5n\x38\x2\xCA\xC9\x3\x2\x2\x2\xCA\xCB\x3\x2"+
-		"\x2\x2\xCB\xCC\x3\x2\x2\x2\xCC\xDC\x5\x1C\xF\t\xCD\xDC\x5(\x15\x2\xCE"+
-		"\xD0\a\xD4\x2\x2\xCF\xD1\x5n\x38\x2\xD0\xCF\x3\x2\x2\x2\xD0\xD1\x3\x2"+
-		"\x2\x2\xD1\xD2\x3\x2\x2\x2\xD2\xD4\x5\x1C\xF\x2\xD3\xD5\x5n\x38\x2\xD4"+
-		"\xD3\x3\x2\x2\x2\xD4\xD5\x3\x2\x2\x2\xD5\xD6\x3\x2\x2\x2\xD6\xD7\a\xDB"+
-		"\x2\x2\xD7\xDC\x3\x2\x2\x2\xD8\xDC\x5$\x13\x2\xD9\xDC\x5&\x14\x2\xDA\xDC"+
-		"\x5\x1E\x10\x2\xDB\xC2\x3\x2\x2\x2\xDB\xC8\x3\x2\x2\x2\xDB\xCD\x3\x2\x2"+
-		"\x2\xDB\xCE\x3\x2\x2\x2\xDB\xD8\x3\x2\x2\x2\xDB\xD9\x3\x2\x2\x2\xDB\xDA"+
-		"\x3\x2\x2\x2\xDC\x14B\x3\x2\x2\x2\xDD\xDF\f\x11\x2\x2\xDE\xE0\x5n\x38"+
-		"\x2\xDF\xDE\x3\x2\x2\x2\xDF\xE0\x3\x2\x2\x2\xE0\xE1\x3\x2\x2\x2\xE1\xE3"+
-		"\a\xDA\x2\x2\xE2\xE4\x5n\x38\x2\xE3\xE2\x3\x2\x2\x2\xE3\xE4\x3\x2\x2\x2"+
-		"\xE4\xE5\x3\x2\x2\x2\xE5\x14A\x5\x1C\xF\x12\xE6\xE8\f\xF\x2\x2\xE7\xE9"+
-		"\x5n\x38\x2\xE8\xE7\x3\x2\x2\x2\xE8\xE9\x3\x2\x2\x2\xE9\xEA\x3\x2\x2\x2"+
-		"\xEA\xEC\t\x4\x2\x2\xEB\xED\x5n\x38\x2\xEC\xEB\x3\x2\x2\x2\xEC\xED\x3"+
-		"\x2\x2\x2\xED\xEE\x3\x2\x2\x2\xEE\x14A\x5\x1C\xF\x10\xEF\xF1\f\xE\x2\x2"+
-		"\xF0\xF2\x5n\x38\x2\xF1\xF0\x3\x2\x2\x2\xF1\xF2\x3\x2\x2\x2\xF2\xF3\x3"+
-		"\x2\x2\x2\xF3\xF5\a\xCF\x2\x2\xF4\xF6\x5n\x38\x2\xF5\xF4\x3\x2\x2\x2\xF5"+
-		"\xF6\x3\x2\x2\x2\xF6\xF7\x3\x2\x2\x2\xF7\x14A\x5\x1C\xF\xF\xF8\xFA\f\r"+
-		"\x2\x2\xF9\xFB\x5n\x38\x2\xFA\xF9\x3\x2\x2\x2\xFA\xFB\x3\x2\x2\x2\xFB"+
-		"\xFC\x3\x2\x2\x2\xFC\xFE\a\x8B\x2\x2\xFD\xFF\x5n\x38\x2\xFE\xFD\x3\x2"+
-		"\x2\x2\xFE\xFF\x3\x2\x2\x2\xFF\x100\x3\x2\x2\x2\x100\x14A\x5\x1C\xF\xE"+
-		"\x101\x103\f\f\x2\x2\x102\x104\x5n\x38\x2\x103\x102\x3\x2\x2\x2\x103\x104"+
-		"\x3\x2\x2\x2\x104\x105\x3\x2\x2\x2\x105\x107\t\x5\x2\x2\x106\x108\x5n"+
-		"\x38\x2\x107\x106\x3\x2\x2\x2\x107\x108\x3\x2\x2\x2\x108\x109\x3\x2\x2"+
-		"\x2\x109\x14A\x5\x1C\xF\r\x10A\x10C\f\v\x2\x2\x10B\x10D\x5n\x38\x2\x10C"+
-		"\x10B\x3\x2\x2\x2\x10C\x10D\x3\x2\x2\x2\x10D\x10E\x3\x2\x2\x2\x10E\x110"+
-		"\a\x32\x2\x2\x10F\x111\x5n\x38\x2\x110\x10F\x3\x2\x2\x2\x110\x111\x3\x2"+
-		"\x2\x2\x111\x112\x3\x2\x2\x2\x112\x14A\x5\x1C\xF\f\x113\x115\f\n\x2\x2"+
-		"\x114\x116\x5n\x38\x2\x115\x114\x3\x2\x2\x2\x115\x116\x3\x2\x2\x2\x116"+
-		"\x117\x3\x2\x2\x2\x117\x119\t\x6\x2\x2\x118\x11A\x5n\x38\x2\x119\x118"+
-		"\x3\x2\x2\x2\x119\x11A\x3\x2\x2\x2\x11A\x11B\x3\x2\x2\x2\x11B\x14A\x5"+
-		"\x1C\xF\v\x11C\x11E\f\b\x2\x2\x11D\x11F\x5n\x38\x2\x11E\x11D\x3\x2\x2"+
-		"\x2\x11E\x11F\x3\x2\x2\x2\x11F\x120\x3\x2\x2\x2\x120\x122\a\x36\x2\x2"+
-		"\x121\x123\x5n\x38\x2\x122\x121\x3\x2\x2\x2\x122\x123\x3\x2\x2\x2\x123"+
-		"\x124\x3\x2\x2\x2\x124\x14A\x5\x1C\xF\t\x125\x127\f\a\x2\x2\x126\x128"+
-		"\x5n\x38\x2\x127\x126\x3\x2\x2\x2\x127\x128\x3\x2\x2\x2\x128\x129\x3\x2"+
-		"\x2\x2\x129\x12B\a\x9A\x2\x2\x12A\x12C\x5n\x38\x2\x12B\x12A\x3\x2\x2\x2"+
-		"\x12B\x12C\x3\x2\x2\x2\x12C\x12D\x3\x2\x2\x2\x12D\x14A\x5\x1C\xF\b\x12E"+
-		"\x130\f\x6\x2\x2\x12F\x131\x5n\x38\x2\x130\x12F\x3\x2\x2\x2\x130\x131"+
-		"\x3\x2\x2\x2\x131\x132\x3\x2\x2\x2\x132\x134\a\xCC\x2\x2\x133\x135\x5"+
-		"n\x38\x2\x134\x133\x3\x2\x2\x2\x134\x135\x3\x2\x2\x2\x135\x136\x3\x2\x2"+
-		"\x2\x136\x14A\x5\x1C\xF\a\x137\x139\f\x5\x2\x2\x138\x13A\x5n\x38\x2\x139"+
-		"\x138\x3\x2\x2\x2\x139\x13A\x3\x2\x2\x2\x13A\x13B\x3\x2\x2\x2\x13B\x13D"+
-		"\a\x66\x2\x2\x13C\x13E\x5n\x38\x2\x13D\x13C\x3\x2\x2\x2\x13D\x13E\x3\x2"+
-		"\x2\x2\x13E\x13F\x3\x2\x2\x2\x13F\x14A\x5\x1C\xF\x6\x140\x142\f\x4\x2"+
-		"\x2\x141\x143\x5n\x38\x2\x142\x141\x3\x2\x2\x2\x142\x143\x3\x2\x2\x2\x143"+
-		"\x144\x3\x2\x2\x2\x144\x146\ax\x2\x2\x145\x147\x5n\x38\x2\x146\x145\x3"+
-		"\x2\x2\x2\x146\x147\x3\x2\x2\x2\x147\x148\x3\x2\x2\x2\x148\x14A\x5\x1C"+
-		"\xF\x5\x149\xDD\x3\x2\x2\x2\x149\xE6\x3\x2\x2\x2\x149\xEF\x3\x2\x2\x2"+
-		"\x149\xF8\x3\x2\x2\x2\x149\x101\x3\x2\x2\x2\x149\x10A\x3\x2\x2\x2\x149"+
-		"\x113\x3\x2\x2\x2\x149\x11C\x3\x2\x2\x2\x149\x125\x3\x2\x2\x2\x149\x12E"+
-		"\x3\x2\x2\x2\x149\x137\x3\x2\x2\x2\x149\x140\x3\x2\x2\x2\x14A\x14D\x3"+
-		"\x2\x2\x2\x14B\x149\x3\x2\x2\x2\x14B\x14C\x3\x2\x2\x2\x14C\x1D\x3\x2\x2"+
-		"\x2\x14D\x14B\x3\x2\x2\x2\x14E\x156\x5 \x11\x2\x14F\x156\a\xE8\x2\x2\x150"+
-		"\x156\a\xE3\x2\x2\x151\x153\x5\x66\x34\x2\x152\x154\x5\x16\f\x2\x153\x152"+
-		"\x3\x2\x2\x2\x153\x154\x3\x2\x2\x2\x154\x156\x3\x2\x2\x2\x155\x14E\x3"+
-		"\x2\x2\x2\x155\x14F\x3\x2\x2\x2\x155\x150\x3\x2\x2\x2\x155\x151\x3\x2"+
-		"\x2\x2\x156\x1F\x3\x2\x2\x2\x157\x158\t\a\x2\x2\x158!\x3\x2\x2\x2\x159"+
-		"\x15B\a\xD4\x2\x2\x15A\x15C\x5n\x38\x2\x15B\x15A\x3\x2\x2\x2\x15B\x15C"+
-		"\x3\x2\x2\x2\x15C\x15D\x3\x2\x2\x2\x15D\x15F\x5\x1C\xF\x2\x15E\x160\x5"+
-		"n\x38\x2\x15F\x15E\x3\x2\x2\x2\x15F\x160\x3\x2\x2\x2\x160\x161\x3\x2\x2"+
-		"\x2\x161\x162\a\xDB\x2\x2\x162#\x3\x2\x2\x2\x163\x164\a\xC1\x2\x2\x164"+
-		"\x165\x5n\x38\x2\x165\x166\x5\x1C\xF\x2\x166\x167\x5n\x38\x2\x167\x168"+
-		"\a|\x2\x2\x168\x169\x5n\x38\x2\x169\x16A\x5J&\x2\x16A%\x3\x2\x2\x2\x16B"+
-		"\x16C\a\x8D\x2\x2\x16C\x16D\x5n\x38\x2\x16D\x16E\x5J&\x2\x16E\'\x3\x2"+
-		"\x2\x2\x16F\x170\b\x15\x1\x2\x170\x174\x5@!\x2\x171\x174\x5> \x2\x172"+
-		"\x174\x5\x42\"\x2\x173\x16F\x3\x2\x2\x2\x173\x171\x3\x2\x2\x2\x173\x172"+
-		"\x3\x2\x2\x2\x174\x19C\x3\x2\x2\x2\x175\x177\f\v\x2\x2\x176\x178\x5n\x38"+
-		"\x2\x177\x176\x3\x2\x2\x2\x177\x178\x3\x2\x2\x2\x178\x179\x3\x2\x2\x2"+
-		"\x179\x17B\a\xD4\x2\x2\x17A\x17C\x5n\x38\x2\x17B\x17A\x3\x2\x2\x2\x17B"+
-		"\x17C\x3\x2\x2\x2\x17C\x17E\x3\x2\x2\x2\x17D\x17F\x5\x30\x19\x2\x17E\x17D"+
-		"\x3\x2\x2\x2\x17E\x17F\x3\x2\x2\x2\x17F\x181\x3\x2\x2\x2\x180\x182\x5"+
-		"n\x38\x2\x181\x180\x3\x2\x2\x2\x181\x182\x3\x2\x2\x2\x182\x183\x3\x2\x2"+
-		"\x2\x183\x19B\a\xDB\x2\x2\x184\x185\f\n\x2\x2\x185\x186\a-\x2\x2\x186"+
-		"\x19B\x5\x6\x4\x2\x187\x188\f\t\x2\x2\x188\x18A\a\xEF\x2\x2\x189\x18B"+
-		"\x5n\x38\x2\x18A\x189\x3\x2\x2\x2\x18A\x18B\x3\x2\x2\x2\x18B\x18C\x3\x2"+
-		"\x2\x2\x18C\x18D\a-\x2\x2\x18D\x19B\x5\x6\x4\x2\x18E\x18F\f\b\x2\x2\x18F"+
-		"\x190\a,\x2\x2\x190\x19B\x5\x6\x4\x2\x191\x192\f\a\x2\x2\x192\x193\a\xEF"+
-		"\x2\x2\x193\x194\a,\x2\x2\x194\x19B\x5\x6\x4\x2\x195\x196\f\x6\x2\x2\x196"+
-		"\x197\a\xEF\x2\x2\x197\x198\a,\x2\x2\x198\x199\a\xEF\x2\x2\x199\x19B\x5"+
-		"\x6\x4\x2\x19A\x175\x3\x2\x2\x2\x19A\x184\x3\x2\x2\x2\x19A\x187\x3\x2"+
-		"\x2\x2\x19A\x18E\x3\x2\x2\x2\x19A\x191\x3\x2\x2\x2\x19A\x195\x3\x2\x2"+
-		"\x2\x19B\x19E\x3\x2\x2\x2\x19C\x19A\x3\x2\x2\x2\x19C\x19D\x3\x2\x2\x2"+
-		"\x19D)\x3\x2\x2\x2\x19E\x19C\x3\x2\x2\x2\x19F\x1A0\x5(\x15\x2\x1A0\x1A1"+
-		"\a-\x2\x2\x1A1\x1A2\x5\x6\x4\x2\x1A2\x1AC\x3\x2\x2\x2\x1A3\x1A4\x5(\x15"+
-		"\x2\x1A4\x1A6\a\xEF\x2\x2\x1A5\x1A7\x5n\x38\x2\x1A6\x1A5\x3\x2\x2\x2\x1A6"+
-		"\x1A7\x3\x2\x2\x2\x1A7\x1A8\x3\x2\x2\x2\x1A8\x1A9\a-\x2\x2\x1A9\x1AA\x5"+
-		"\x6\x4\x2\x1AA\x1AC\x3\x2\x2\x2\x1AB\x19F\x3\x2\x2\x2\x1AB\x1A3\x3\x2"+
-		"\x2\x2\x1AC+\x3\x2\x2\x2\x1AD\x1AF\x5(\x15\x2\x1AE\x1B0\x5n\x38\x2\x1AF"+
-		"\x1AE\x3\x2\x2\x2\x1AF\x1B0\x3\x2\x2\x2\x1B0\x1B1\x3\x2\x2\x2\x1B1\x1B3"+
-		"\a\xD4\x2\x2\x1B2\x1B4\x5n\x38\x2\x1B3\x1B2\x3\x2\x2\x2\x1B3\x1B4\x3\x2"+
-		"\x2\x2\x1B4\x1B6\x3\x2\x2\x2\x1B5\x1B7\x5\x30\x19\x2\x1B6\x1B5\x3\x2\x2"+
-		"\x2\x1B6\x1B7\x3\x2\x2\x2\x1B7\x1B9\x3\x2\x2\x2\x1B8\x1BA\x5n\x38\x2\x1B9"+
-		"\x1B8\x3\x2\x2\x2\x1B9\x1BA\x3\x2\x2\x2\x1BA\x1BB\x3\x2\x2\x2\x1BB\x1BC"+
-		"\a\xDB\x2\x2\x1BC-\x3\x2\x2\x2\x1BD\x1BE\x5(\x15\x2\x1BE\x1BF\a,\x2\x2"+
-		"\x1BF\x1C0\x5\x6\x4\x2\x1C0\x1CD\x3\x2\x2\x2\x1C1\x1C2\x5(\x15\x2\x1C2"+
-		"\x1C3\a\xEF\x2\x2\x1C3\x1C4\a,\x2\x2\x1C4\x1C5\x5\x6\x4\x2\x1C5\x1CD\x3"+
-		"\x2\x2\x2\x1C6\x1C7\x5(\x15\x2\x1C7\x1C8\a\xEF\x2\x2\x1C8\x1C9\a,\x2\x2"+
-		"\x1C9\x1CA\a\xEF\x2\x2\x1CA\x1CB\x5\x6\x4\x2\x1CB\x1CD\x3\x2\x2\x2\x1CC"+
-		"\x1BD\x3\x2\x2\x2\x1CC\x1C1\x3\x2\x2\x2\x1CC\x1C6\x3\x2\x2\x2\x1CD/\x3"+
-		"\x2\x2\x2\x1CE\x1CF\x5\x32\x1A\x2\x1CF\x31\x3\x2\x2\x2\x1D0\x1D2\x5\x34"+
-		"\x1B\x2\x1D1\x1D0\x3\x2\x2\x2\x1D1\x1D2\x3\x2\x2\x2\x1D2\x1D4\x3\x2\x2"+
-		"\x2\x1D3\x1D5\x5n\x38\x2\x1D4\x1D3\x3\x2\x2\x2\x1D4\x1D5\x3\x2\x2\x2\x1D5"+
-		"\x1D6\x3\x2\x2\x2\x1D6\x1D8\a)\x2\x2\x1D7\x1D9\x5n\x38\x2\x1D8\x1D7\x3"+
-		"\x2\x2\x2\x1D8\x1D9\x3\x2\x2\x2\x1D9\x1DB\x3\x2\x2\x2\x1DA\x1D1\x3\x2"+
-		"\x2\x2\x1DB\x1DE\x3\x2\x2\x2\x1DC\x1DA\x3\x2\x2\x2\x1DC\x1DD\x3\x2\x2"+
-		"\x2\x1DD\x1DF\x3\x2\x2\x2\x1DE\x1DC\x3\x2\x2\x2\x1DF\x1F1\x5\x36\x1C\x2"+
-		"\x1E0\x1E2\x5\x34\x1B\x2\x1E1\x1E0\x3\x2\x2\x2\x1E1\x1E2\x3\x2\x2\x2\x1E2"+
-		"\x1E4\x3\x2\x2\x2\x1E3\x1E5\x5n\x38\x2\x1E4\x1E3\x3\x2\x2\x2\x1E4\x1E5"+
-		"\x3\x2\x2\x2\x1E5\x1E6\x3\x2\x2\x2\x1E6\x1E8\a)\x2\x2\x1E7\x1E9\x5n\x38"+
-		"\x2\x1E8\x1E7\x3\x2\x2\x2\x1E8\x1E9\x3\x2\x2\x2\x1E9\x1EB\x3\x2\x2\x2"+
-		"\x1EA\x1E1\x3\x2\x2\x2\x1EB\x1EE\x3\x2\x2\x2\x1EC\x1EA\x3\x2\x2\x2\x1EC"+
-		"\x1ED\x3\x2\x2\x2\x1ED\x1EF\x3\x2\x2\x2\x1EE\x1EC\x3\x2\x2\x2\x1EF\x1F1"+
-		"\x5\x38\x1D\x2\x1F0\x1DC\x3\x2\x2\x2\x1F0\x1EC\x3\x2\x2\x2\x1F1\x33\x3"+
-		"\x2\x2\x2\x1F2\x1F3\x5<\x1F\x2\x1F3\x35\x3\x2\x2\x2\x1F4\x1F5\x5<\x1F"+
-		"\x2\x1F5\x37\x3\x2\x2\x2\x1F6\x201\x5:\x1E\x2\x1F7\x1F9\x5n\x38\x2\x1F8"+
-		"\x1F7\x3\x2\x2\x2\x1F8\x1F9\x3\x2\x2\x2\x1F9\x1FA\x3\x2\x2\x2\x1FA\x1FC"+
-		"\a)\x2\x2\x1FB\x1FD\x5n\x38\x2\x1FC\x1FB\x3\x2\x2\x2\x1FC\x1FD\x3\x2\x2"+
-		"\x2\x1FD\x1FE\x3\x2\x2\x2\x1FE\x200\x5:\x1E\x2\x1FF\x1F8\x3\x2\x2\x2\x200"+
-		"\x203\x3\x2\x2\x2\x201\x1FF\x3\x2\x2\x2\x201\x202\x3\x2\x2\x2\x202\x39"+
-		"\x3\x2\x2\x2\x203\x201\x3\x2\x2\x2\x204\x206\x5\x6\x4\x2\x205\x207\x5"+
-		"n\x38\x2\x206\x205\x3\x2\x2\x2\x206\x207\x3\x2\x2\x2\x207\x208\x3\x2\x2"+
-		"\x2\x208\x20A\a\xCD\x2\x2\x209\x20B\x5n\x38\x2\x20A\x209\x3\x2\x2\x2\x20A"+
-		"\x20B\x3\x2\x2\x2\x20B\x20C\x3\x2\x2\x2\x20C\x20D\x5<\x1F\x2\x20D;\x3"+
-		"\x2\x2\x2\x20E\x20F\a=\x2\x2\x20F\x211\x5n\x38\x2\x210\x20E\x3\x2\x2\x2"+
-		"\x210\x211\x3\x2\x2\x2\x211\x212\x3\x2\x2\x2\x212\x215\x5\x1C\xF\x2\x213"+
-		"\x215\x5N(\x2\x214\x210\x3\x2\x2\x2\x214\x213\x3\x2\x2\x2\x215=\x3\x2"+
-		"\x2\x2\x216\x217\x5\b\x5\x2\x217?\x3\x2\x2\x2\x218\x219\a\x89\x2\x2\x219"+
-		"\x41\x3\x2\x2\x2\x21A\x21D\x5\x44#\x2\x21B\x21D\x5\x46$\x2\x21C\x21A\x3"+
-		"\x2\x2\x2\x21C\x21B\x3\x2\x2\x2\x21D\x43\x3\x2\x2\x2\x21E\x21F\a-\x2\x2"+
-		"\x21F\x220\x5\x6\x4\x2\x220\x45\x3\x2\x2\x2\x221\x222\a,\x2\x2\x222\x223"+
-		"\x5\x6\x4\x2\x223G\x3\x2\x2\x2\x224\x225\x5\x1C\xF\x2\x225I\x3\x2\x2\x2"+
-		"\x226\x229\x5\x1A\xE\x2\x227\x229\x5L\'\x2\x228\x226\x3\x2\x2\x2\x228"+
-		"\x227\x3\x2\x2\x2\x229K\x3\x2\x2\x2\x22A\x22D\x5> \x2\x22B\x22D\x5*\x16"+
-		"\x2\x22C\x22A\x3\x2\x2\x2\x22C\x22B\x3\x2\x2\x2\x22DM\x3\x2\x2\x2\x22E"+
-		"\x22F\a\x34\x2\x2\x22F\x230\x5n\x38\x2\x230\x231\x5P)\x2\x231O\x3\x2\x2"+
-		"\x2\x232\x235\x5*\x16\x2\x233\x235\x5> \x2\x234\x232\x3\x2\x2\x2\x234"+
-		"\x233\x3\x2\x2\x2\x235Q\x3\x2\x2\x2\x236\x23F\x5T+\x2\x237\x23F\x5X-\x2"+
-		"\x238\x23F\x5Z.\x2\x239\x23F\x5`\x31\x2\x23A\x23F\x5\\/\x2\x23B\x23F\x5"+
-		"\x66\x34\x2\x23C\x23F\x5V,\x2\x23D\x23F\x5\x62\x32\x2\x23E\x236\x3\x2"+
-		"\x2\x2\x23E\x237\x3\x2\x2\x2\x23E\x238\x3\x2\x2\x2\x23E\x239\x3\x2\x2"+
-		"\x2\x23E\x23A\x3\x2\x2\x2\x23E\x23B\x3\x2\x2\x2\x23E\x23C\x3\x2\x2\x2"+
-		"\x23E\x23D\x3\x2\x2\x2\x23FS\x3\x2\x2\x2\x240\x241\t\b\x2\x2\x241U\x3"+
-		"\x2\x2\x2\x242\x243\a\xAB\x2\x2\x243W\x3\x2\x2\x2\x244\x245\t\t\x2\x2"+
-		"\x245Y\x3\x2\x2\x2\x246\x247\t\n\x2\x2\x247[\x3\x2\x2\x2\x248\x24B\a\x89"+
-		"\x2\x2\x249\x24B\x5^\x30\x2\x24A\x248\x3\x2\x2\x2\x24A\x249\x3\x2\x2\x2"+
-		"\x24B]\x3\x2\x2\x2\x24C\x24D\t\v\x2\x2\x24D_\x3\x2\x2\x2\x24E\x24F\t\f"+
-		"\x2\x2\x24F\x61\x3\x2\x2\x2\x250\x251\t\r\x2\x2\x251\x63\x3\x2\x2\x2\x252"+
-		"\x253\t\xE\x2\x2\x253\x65\x3\x2\x2\x2\x254\x258\x5h\x35\x2\x255\x258\x5"+
-		"j\x36\x2\x256\x258\x5l\x37\x2\x257\x254\x3\x2\x2\x2\x257\x255\x3\x2\x2"+
-		"\x2\x257\x256\x3\x2\x2\x2\x258g\x3\x2\x2\x2\x259\x25A\t\xF\x2\x2\x25A"+
-		"i\x3\x2\x2\x2\x25B\x25C\a\x8F\x2\x2\x25Ck\x3\x2\x2\x2\x25D\x25E\t\x10"+
-		"\x2\x2\x25Em\x3\x2\x2\x2\x25F\x261\t\x11\x2\x2\x260\x25F\x3\x2\x2\x2\x261"+
-		"\x262\x3\x2\x2\x2\x262\x260\x3\x2\x2\x2\x262\x263\x3\x2\x2\x2\x263o\x3"+
-		"\x2\x2\x2Yry~\x82\x86\x8A\x99\xA5\xAE\xB2\xB9\xBD\xC0\xC5\xCA\xD0\xD4"+
-		"\xDB\xDF\xE3\xE8\xEC\xF1\xF5\xFA\xFE\x103\x107\x10C\x110\x115\x119\x11E"+
-		"\x122\x127\x12B\x130\x134\x139\x13D\x142\x146\x149\x14B\x153\x155\x15B"+
-		"\x15F\x173\x177\x17B\x17E\x181\x18A\x19A\x19C\x1A6\x1AB\x1AF\x1B3\x1B6"+
-		"\x1B9\x1CC\x1D1\x1D4\x1D8\x1DC\x1E1\x1E4\x1E8\x1EC\x1F0\x1F8\x1FC\x201"+
-		"\x206\x20A\x210\x214\x21C\x228\x22C\x234\x23E\x24A\x257\x262";
+		"\x3\b\x3\b\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x5\t\x9B\n\t\x3"+
+		"\n\x3\n\x3\n\x3\v\x3\v\x3\v\x3\v\x3\v\x3\v\x3\v\x3\v\x5\v\xA8\n\v\x3\f"+
+		"\x3\f\x3\r\x3\r\x3\xE\x3\xE\x3\xE\x5\xE\xB1\n\xE\x3\xE\x3\xE\x5\xE\xB5"+
+		"\n\xE\x3\xE\x3\xE\x3\xE\x3\xE\x3\xE\x5\xE\xBC\n\xE\x3\xE\x3\xE\x5\xE\xC0"+
+		"\n\xE\x3\xE\x5\xE\xC3\n\xE\x3\xF\x3\xF\x3\xF\x5\xF\xC8\n\xF\x3\xF\x3\xF"+
+		"\x3\xF\x5\xF\xCD\n\xF\x3\xF\x3\xF\x3\xF\x3\xF\x3\xF\x3\xF\x5\xF\xD5\n"+
+		"\xF\x3\xF\x3\xF\x5\xF\xD9\n\xF\x3\xF\x3\xF\x3\xF\x3\xF\x3\xF\x5\xF\xE0"+
+		"\n\xF\x3\xF\x3\xF\x5\xF\xE4\n\xF\x3\xF\x3\xF\x5\xF\xE8\n\xF\x3\xF\x3\xF"+
+		"\x3\xF\x5\xF\xED\n\xF\x3\xF\x3\xF\x5\xF\xF1\n\xF\x3\xF\x3\xF\x3\xF\x5"+
+		"\xF\xF6\n\xF\x3\xF\x3\xF\x5\xF\xFA\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\xFF\n"+
+		"\xF\x3\xF\x3\xF\x5\xF\x103\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\x108\n\xF\x3\xF"+
+		"\x3\xF\x5\xF\x10C\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\x111\n\xF\x3\xF\x3\xF\x5"+
+		"\xF\x115\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\x11A\n\xF\x3\xF\x3\xF\x5\xF\x11E"+
+		"\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\x123\n\xF\x3\xF\x3\xF\x5\xF\x127\n\xF\x3"+
+		"\xF\x3\xF\x3\xF\x5\xF\x12C\n\xF\x3\xF\x3\xF\x5\xF\x130\n\xF\x3\xF\x3\xF"+
+		"\x3\xF\x5\xF\x135\n\xF\x3\xF\x3\xF\x5\xF\x139\n\xF\x3\xF\x3\xF\x3\xF\x5"+
+		"\xF\x13E\n\xF\x3\xF\x3\xF\x5\xF\x142\n\xF\x3\xF\x3\xF\x3\xF\x5\xF\x147"+
+		"\n\xF\x3\xF\x3\xF\x5\xF\x14B\n\xF\x3\xF\a\xF\x14E\n\xF\f\xF\xE\xF\x151"+
+		"\v\xF\x3\x10\x3\x10\x3\x10\x3\x10\x3\x10\x5\x10\x158\n\x10\x5\x10\x15A"+
+		"\n\x10\x3\x11\x3\x11\x3\x12\x3\x12\x5\x12\x160\n\x12\x3\x12\x3\x12\x5"+
+		"\x12\x164\n\x12\x3\x12\x3\x12\x3\x13\x3\x13\x3\x13\x3\x13\x3\x13\x3\x13"+
+		"\x3\x13\x3\x13\x3\x14\x3\x14\x3\x14\x3\x14\x3\x15\x3\x15\x3\x15\x3\x15"+
+		"\x5\x15\x178\n\x15\x3\x15\x3\x15\x5\x15\x17C\n\x15\x3\x15\x3\x15\x5\x15"+
+		"\x180\n\x15\x3\x15\x5\x15\x183\n\x15\x3\x15\x5\x15\x186\n\x15\x3\x15\x3"+
+		"\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\x5\x15\x18F\n\x15\x3\x15\x3\x15"+
+		"\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15\x3\x15"+
+		"\x3\x15\x3\x15\a\x15\x19F\n\x15\f\x15\xE\x15\x1A2\v\x15\x3\x16\x3\x16"+
+		"\x3\x16\x3\x16\x3\x16\x3\x16\x3\x16\x5\x16\x1AB\n\x16\x3\x16\x3\x16\x3"+
+		"\x16\x5\x16\x1B0\n\x16\x3\x17\x3\x17\x5\x17\x1B4\n\x17\x3\x17\x3\x17\x5"+
+		"\x17\x1B8\n\x17\x3\x17\x5\x17\x1BB\n\x17\x3\x17\x5\x17\x1BE\n\x17\x3\x17"+
+		"\x3\x17\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18"+
+		"\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x5\x18\x1D1\n\x18\x3\x19\x3"+
+		"\x19\x3\x1A\x5\x1A\x1D6\n\x1A\x3\x1A\x5\x1A\x1D9\n\x1A\x3\x1A\x3\x1A\x5"+
+		"\x1A\x1DD\n\x1A\a\x1A\x1DF\n\x1A\f\x1A\xE\x1A\x1E2\v\x1A\x3\x1A\x3\x1A"+
+		"\x5\x1A\x1E6\n\x1A\x3\x1A\x5\x1A\x1E9\n\x1A\x3\x1A\x3\x1A\x5\x1A\x1ED"+
+		"\n\x1A\a\x1A\x1EF\n\x1A\f\x1A\xE\x1A\x1F2\v\x1A\x3\x1A\x5\x1A\x1F5\n\x1A"+
+		"\x3\x1B\x3\x1B\x3\x1C\x3\x1C\x3\x1D\x3\x1D\x5\x1D\x1FD\n\x1D\x3\x1D\x3"+
+		"\x1D\x5\x1D\x201\n\x1D\x3\x1D\a\x1D\x204\n\x1D\f\x1D\xE\x1D\x207\v\x1D"+
+		"\x3\x1E\x3\x1E\x5\x1E\x20B\n\x1E\x3\x1E\x3\x1E\x5\x1E\x20F\n\x1E\x3\x1E"+
+		"\x3\x1E\x3\x1F\x3\x1F\x5\x1F\x215\n\x1F\x3\x1F\x3\x1F\x5\x1F\x219\n\x1F"+
+		"\x3 \x3 \x3!\x3!\x3\"\x3\"\x5\"\x221\n\"\x3#\x3#\x3#\x3$\x3$\x3$\x3%\x3"+
+		"%\x3&\x3&\x5&\x22D\n&\x3\'\x3\'\x5\'\x231\n\'\x3(\x3(\x3(\x3(\x3)\x3)"+
+		"\x5)\x239\n)\x3*\x3*\x3*\x3*\x3*\x3*\x3*\x3*\x5*\x243\n*\x3+\x3+\x3,\x3"+
+		",\x3-\x3-\x3.\x3.\x3/\x3/\x5/\x24F\n/\x3\x30\x3\x30\x3\x31\x3\x31\x3\x32"+
+		"\x3\x32\x3\x33\x3\x33\x3\x34\x3\x34\x3\x34\x5\x34\x25C\n\x34\x3\x35\x3"+
+		"\x35\x3\x36\x3\x36\x3\x37\x3\x37\x3\x38\x6\x38\x265\n\x38\r\x38\xE\x38"+
+		"\x266\x3\x38\x2\x2\x4\x1C(\x39\x2\x2\x4\x2\x6\x2\b\x2\n\x2\f\x2\xE\x2"+
+		"\x10\x2\x12\x2\x14\x2\x16\x2\x18\x2\x1A\x2\x1C\x2\x1E\x2 \x2\"\x2$\x2"+
+		"&\x2(\x2*\x2,\x2.\x2\x30\x2\x32\x2\x34\x2\x36\x2\x38\x2:\x2<\x2>\x2@\x2"+
+		"\x42\x2\x44\x2\x46\x2H\x2J\x2L\x2N\x2P\x2R\x2T\x2V\x2X\x2Z\x2\\\x2^\x2"+
+		"`\x2\x62\x2\x64\x2\x66\x2h\x2j\x2l\x2n\x2\x2\x12\x5\x2,,.\x32\xDA\xDA"+
+		"\x5\x2;;\x45\x45\xBC\xBC\x4\x2\xCE\xCE\xD7\xD7\x4\x2\xD6\xD6\xD9\xD9\a"+
+		"\x2||\x83\x83\xD0\xD3\xD5\xD5\xD8\xD8\x3\x2\xE4\xE7\x1F\x2\x18\x18$$@"+
+		"\x41\x44\x44GVYZ^^\x65\x65ggiiprtwyy\x80\x81\x88\x88\x8C\x8C\x91\x91\x9E"+
+		"\x9F\xA4\xA4\xA7\xA7\xAA\xAA\xAD\xAF\xB1\xB2\xB6\xB6\xB8\xB8\xBA\xBA\xC0"+
+		"\xC0\xC6\xC7\xC9\xC9\x11\x2\x4\x4\x39\x39=>\x41\x41XYzz\x8D\x8D\x95\x95"+
+		"\x9C\x9D\xB3\xB3\xB5\xB5\xBB\xBB\xBD\xBE\xC3\xC3\xCA\xCB\r\x2\x34\x34"+
+		"\x36\x36\x66\x66xx||\x83\x83\x8B\x8B\x8D\x8E\x9A\x9A\xC1\xC1\xCC\xCC$"+
+		"\x2\x3\x3\x6\f\xE\x12\x14\x17\x19\x19\x1B\x1B\x1D\x1E!#%\'\x33\x33\x38"+
+		"\x38;;\x43\x43``\x63\x64hhjnss{{~~\x84\x87\x8A\x8A\x92\x92\x94\x94\x9B"+
+		"\x9B\xA5\xA6\xA8\xA9\xAC\xAC\xB0\xB0\xB3\xB3\xB7\xB7\xC2\xC2\xC8\xC8\xCB"+
+		"\xCB\t\x2\x5\x5\r\r\x1A\x1A\x1C\x1C&&(({{\xE\x2\x4\x4\x13\x13\x1F <<?"+
+		"?\x46\x46WW}}\x7F\x7F\xB4\xB4\xB9\xB9\xC4\xC4\v\x2\x35\x35\x37\x37::\x42"+
+		"\x42\x82\x82\x91\x91\xBB\xBB\xC5\xC5\xF3\xF3\x4\x2oo\xBF\xBF\x4\x2[[\x90"+
+		"\x90\x4\x2\xEC\xEC\xEF\xEF\x2B7\x2r\x3\x2\x2\x2\x4y\x3\x2\x2\x2\x6\x82"+
+		"\x3\x2\x2\x2\b\x86\x3\x2\x2\x2\n\x8A\x3\x2\x2\x2\f\x8C\x3\x2\x2\x2\xE"+
+		"\x8E\x3\x2\x2\x2\x10\x9A\x3\x2\x2\x2\x12\x9C\x3\x2\x2\x2\x14\xA7\x3\x2"+
+		"\x2\x2\x16\xA9\x3\x2\x2\x2\x18\xAB\x3\x2\x2\x2\x1A\xC2\x3\x2\x2\x2\x1C"+
+		"\xDF\x3\x2\x2\x2\x1E\x159\x3\x2\x2\x2 \x15B\x3\x2\x2\x2\"\x15D\x3\x2\x2"+
+		"\x2$\x167\x3\x2\x2\x2&\x16F\x3\x2\x2\x2(\x177\x3\x2\x2\x2*\x1AF\x3\x2"+
+		"\x2\x2,\x1B1\x3\x2\x2\x2.\x1D0\x3\x2\x2\x2\x30\x1D2\x3\x2\x2\x2\x32\x1F4"+
+		"\x3\x2\x2\x2\x34\x1F6\x3\x2\x2\x2\x36\x1F8\x3\x2\x2\x2\x38\x1FA\x3\x2"+
+		"\x2\x2:\x208\x3\x2\x2\x2<\x218\x3\x2\x2\x2>\x21A\x3\x2\x2\x2@\x21C\x3"+
+		"\x2\x2\x2\x42\x220\x3\x2\x2\x2\x44\x222\x3\x2\x2\x2\x46\x225\x3\x2\x2"+
+		"\x2H\x228\x3\x2\x2\x2J\x22C\x3\x2\x2\x2L\x230\x3\x2\x2\x2N\x232\x3\x2"+
+		"\x2\x2P\x238\x3\x2\x2\x2R\x242\x3\x2\x2\x2T\x244\x3\x2\x2\x2V\x246\x3"+
+		"\x2\x2\x2X\x248\x3\x2\x2\x2Z\x24A\x3\x2\x2\x2\\\x24E\x3\x2\x2\x2^\x250"+
+		"\x3\x2\x2\x2`\x252\x3\x2\x2\x2\x62\x254\x3\x2\x2\x2\x64\x256\x3\x2\x2"+
+		"\x2\x66\x25B\x3\x2\x2\x2h\x25D\x3\x2\x2\x2j\x25F\x3\x2\x2\x2l\x261\x3"+
+		"\x2\x2\x2n\x264\x3\x2\x2\x2ps\x5\x1C\xF\x2qs\x5\x4\x3\x2rp\x3\x2\x2\x2"+
+		"rq\x3\x2\x2\x2st\x3\x2\x2\x2tu\a\x2\x2\x3u\x3\x3\x2\x2\x2vz\x5*\x16\x2"+
+		"wz\x5> \x2xz\x5\x42\"\x2yv\x3\x2\x2\x2yw\x3\x2\x2\x2yx\x3\x2\x2\x2z~\x3"+
+		"\x2\x2\x2{|\x5n\x38\x2|}\x5\x30\x19\x2}\x7F\x3\x2\x2\x2~{\x3\x2\x2\x2"+
+		"~\x7F\x3\x2\x2\x2\x7F\x5\x3\x2\x2\x2\x80\x83\x5\b\x5\x2\x81\x83\x5\n\x6"+
+		"\x2\x82\x80\x3\x2\x2\x2\x82\x81\x3\x2\x2\x2\x83\a\x3\x2\x2\x2\x84\x87"+
+		"\x5\x10\t\x2\x85\x87\x5\x12\n\x2\x86\x84\x3\x2\x2\x2\x86\x85\x3\x2\x2"+
+		"\x2\x87\t\x3\x2\x2\x2\x88\x8B\x5\f\a\x2\x89\x8B\x5\xE\b\x2\x8A\x88\x3"+
+		"\x2\x2\x2\x8A\x89\x3\x2\x2\x2\x8B\v\x3\x2\x2\x2\x8C\x8D\x5R*\x2\x8D\r"+
+		"\x3\x2\x2\x2\x8E\x8F\x5R*\x2\x8F\x90\x5\x16\f\x2\x90\xF\x3\x2\x2\x2\x91"+
+		"\x9B\a\xEE\x2\x2\x92\x9B\a\xF1\x2\x2\x93\x9B\x5^\x30\x2\x94\x9B\x5`\x31"+
+		"\x2\x95\x9B\x5\x18\r\x2\x96\x9B\a\xF2\x2\x2\x97\x9B\x5\x64\x33\x2\x98"+
+		"\x9B\ah\x2\x2\x99\x9B\x5\x62\x32\x2\x9A\x91\x3\x2\x2\x2\x9A\x92\x3\x2"+
+		"\x2\x2\x9A\x93\x3\x2\x2\x2\x9A\x94\x3\x2\x2\x2\x9A\x95\x3\x2\x2\x2\x9A"+
+		"\x96\x3\x2\x2\x2\x9A\x97\x3\x2\x2\x2\x9A\x98\x3\x2\x2\x2\x9A\x99\x3\x2"+
+		"\x2\x2\x9B\x11\x3\x2\x2\x2\x9C\x9D\x5\x14\v\x2\x9D\x9E\x5\x16\f\x2\x9E"+
+		"\x13\x3\x2\x2\x2\x9F\xA8\a\xEE\x2\x2\xA0\xA8\x5^\x30\x2\xA1\xA8\x5`\x31"+
+		"\x2\xA2\xA8\x5\x18\r\x2\xA3\xA8\a\xF2\x2\x2\xA4\xA8\x5\x64\x33\x2\xA5"+
+		"\xA8\ah\x2\x2\xA6\xA8\x5\x62\x32\x2\xA7\x9F\x3\x2\x2\x2\xA7\xA0\x3\x2"+
+		"\x2\x2\xA7\xA1\x3\x2\x2\x2\xA7\xA2\x3\x2\x2\x2\xA7\xA3\x3\x2\x2\x2\xA7"+
+		"\xA4\x3\x2\x2\x2\xA7\xA5\x3\x2\x2\x2\xA7\xA6\x3\x2\x2\x2\xA8\x15\x3\x2"+
+		"\x2\x2\xA9\xAA\t\x2\x2\x2\xAA\x17\x3\x2\x2\x2\xAB\xAC\t\x3\x2\x2\xAC\x19"+
+		"\x3\x2\x2\x2\xAD\xC3\x5\x62\x32\x2\xAE\xB0\a\xE1\x2\x2\xAF\xB1\x5n\x38"+
+		"\x2\xB0\xAF\x3\x2\x2\x2\xB0\xB1\x3\x2\x2\x2\xB1\xB2\x3\x2\x2\x2\xB2\xB4"+
+		"\x5\x62\x32\x2\xB3\xB5\x5n\x38\x2\xB4\xB3\x3\x2\x2\x2\xB4\xB5\x3\x2\x2"+
+		"\x2\xB5\xB6\x3\x2\x2\x2\xB6\xB7\a\xE2\x2\x2\xB7\xC3\x3\x2\x2\x2\xB8\xC3"+
+		"\a\xF2\x2\x2\xB9\xBB\a\xE1\x2\x2\xBA\xBC\x5n\x38\x2\xBB\xBA\x3\x2\x2\x2"+
+		"\xBB\xBC\x3\x2\x2\x2\xBC\xBD\x3\x2\x2\x2\xBD\xBF\a\xF2\x2\x2\xBE\xC0\x5"+
+		"n\x38\x2\xBF\xBE\x3\x2\x2\x2\xBF\xC0\x3\x2\x2\x2\xC0\xC1\x3\x2\x2\x2\xC1"+
+		"\xC3\a\xE2\x2\x2\xC2\xAD\x3\x2\x2\x2\xC2\xAE\x3\x2\x2\x2\xC2\xB8\x3\x2"+
+		"\x2\x2\xC2\xB9\x3\x2\x2\x2\xC3\x1B\x3\x2\x2\x2\xC4\xC5\b\xF\x1\x2\xC5"+
+		"\xC7\a\xD6\x2\x2\xC6\xC8\x5n\x38\x2\xC7\xC6\x3\x2\x2\x2\xC7\xC8\x3\x2"+
+		"\x2\x2\xC8\xC9\x3\x2\x2\x2\xC9\xE0\x5\x1C\xF\x11\xCA\xCC\a\x8E\x2\x2\xCB"+
+		"\xCD\x5n\x38\x2\xCC\xCB\x3\x2\x2\x2\xCC\xCD\x3\x2\x2\x2\xCD\xCE\x3\x2"+
+		"\x2\x2\xCE\xE0\x5\x1C\xF\n\xCF\xD0\a.\x2\x2\xD0\xE0\x5\x1C\xF\x3\xD1\xE0"+
+		"\x5(\x15\x2\xD2\xD4\a\xD4\x2\x2\xD3\xD5\x5n\x38\x2\xD4\xD3\x3\x2\x2\x2"+
+		"\xD4\xD5\x3\x2\x2\x2\xD5\xD6\x3\x2\x2\x2\xD6\xD8\x5\x1C\xF\x2\xD7\xD9"+
+		"\x5n\x38\x2\xD8\xD7\x3\x2\x2\x2\xD8\xD9\x3\x2\x2\x2\xD9\xDA\x3\x2\x2\x2"+
+		"\xDA\xDB\a\xDB\x2\x2\xDB\xE0\x3\x2\x2\x2\xDC\xE0\x5$\x13\x2\xDD\xE0\x5"+
+		"&\x14\x2\xDE\xE0\x5\x1E\x10\x2\xDF\xC4\x3\x2\x2\x2\xDF\xCA\x3\x2\x2\x2"+
+		"\xDF\xCF\x3\x2\x2\x2\xDF\xD1\x3\x2\x2\x2\xDF\xD2\x3\x2\x2\x2\xDF\xDC\x3"+
+		"\x2\x2\x2\xDF\xDD\x3\x2\x2\x2\xDF\xDE\x3\x2\x2\x2\xE0\x14F\x3\x2\x2\x2"+
+		"\xE1\xE3\f\x12\x2\x2\xE2\xE4\x5n\x38\x2\xE3\xE2\x3\x2\x2\x2\xE3\xE4\x3"+
+		"\x2\x2\x2\xE4\xE5\x3\x2\x2\x2\xE5\xE7\a\xDA\x2\x2\xE6\xE8\x5n\x38\x2\xE7"+
+		"\xE6\x3\x2\x2\x2\xE7\xE8\x3\x2\x2\x2\xE8\xE9\x3\x2\x2\x2\xE9\x14E\x5\x1C"+
+		"\xF\x13\xEA\xEC\f\x10\x2\x2\xEB\xED\x5n\x38\x2\xEC\xEB\x3\x2\x2\x2\xEC"+
+		"\xED\x3\x2\x2\x2\xED\xEE\x3\x2\x2\x2\xEE\xF0\t\x4\x2\x2\xEF\xF1\x5n\x38"+
+		"\x2\xF0\xEF\x3\x2\x2\x2\xF0\xF1\x3\x2\x2\x2\xF1\xF2\x3\x2\x2\x2\xF2\x14E"+
+		"\x5\x1C\xF\x11\xF3\xF5\f\xF\x2\x2\xF4\xF6\x5n\x38\x2\xF5\xF4\x3\x2\x2"+
+		"\x2\xF5\xF6\x3\x2\x2\x2\xF6\xF7\x3\x2\x2\x2\xF7\xF9\a\xCF\x2\x2\xF8\xFA"+
+		"\x5n\x38\x2\xF9\xF8\x3\x2\x2\x2\xF9\xFA\x3\x2\x2\x2\xFA\xFB\x3\x2\x2\x2"+
+		"\xFB\x14E\x5\x1C\xF\x10\xFC\xFE\f\xE\x2\x2\xFD\xFF\x5n\x38\x2\xFE\xFD"+
+		"\x3\x2\x2\x2\xFE\xFF\x3\x2\x2\x2\xFF\x100\x3\x2\x2\x2\x100\x102\a\x8B"+
+		"\x2\x2\x101\x103\x5n\x38\x2\x102\x101\x3\x2\x2\x2\x102\x103\x3\x2\x2\x2"+
+		"\x103\x104\x3\x2\x2\x2\x104\x14E\x5\x1C\xF\xF\x105\x107\f\r\x2\x2\x106"+
+		"\x108\x5n\x38\x2\x107\x106\x3\x2\x2\x2\x107\x108\x3\x2\x2\x2\x108\x109"+
+		"\x3\x2\x2\x2\x109\x10B\t\x5\x2\x2\x10A\x10C\x5n\x38\x2\x10B\x10A\x3\x2"+
+		"\x2\x2\x10B\x10C\x3\x2\x2\x2\x10C\x10D\x3\x2\x2\x2\x10D\x14E\x5\x1C\xF"+
+		"\xE\x10E\x110\f\f\x2\x2\x10F\x111\x5n\x38\x2\x110\x10F\x3\x2\x2\x2\x110"+
+		"\x111\x3\x2\x2\x2\x111\x112\x3\x2\x2\x2\x112\x114\a\x32\x2\x2\x113\x115"+
+		"\x5n\x38\x2\x114\x113\x3\x2\x2\x2\x114\x115\x3\x2\x2\x2\x115\x116\x3\x2"+
+		"\x2\x2\x116\x14E\x5\x1C\xF\r\x117\x119\f\v\x2\x2\x118\x11A\x5n\x38\x2"+
+		"\x119\x118\x3\x2\x2\x2\x119\x11A\x3\x2\x2\x2\x11A\x11B\x3\x2\x2\x2\x11B"+
+		"\x11D\t\x6\x2\x2\x11C\x11E\x5n\x38\x2\x11D\x11C\x3\x2\x2\x2\x11D\x11E"+
+		"\x3\x2\x2\x2\x11E\x11F\x3\x2\x2\x2\x11F\x14E\x5\x1C\xF\f\x120\x122\f\t"+
+		"\x2\x2\x121\x123\x5n\x38\x2\x122\x121\x3\x2\x2\x2\x122\x123\x3\x2\x2\x2"+
+		"\x123\x124\x3\x2\x2\x2\x124\x126\a\x36\x2\x2\x125\x127\x5n\x38\x2\x126"+
+		"\x125\x3\x2\x2\x2\x126\x127\x3\x2\x2\x2\x127\x128\x3\x2\x2\x2\x128\x14E"+
+		"\x5\x1C\xF\n\x129\x12B\f\b\x2\x2\x12A\x12C\x5n\x38\x2\x12B\x12A\x3\x2"+
+		"\x2\x2\x12B\x12C\x3\x2\x2\x2\x12C\x12D\x3\x2\x2\x2\x12D\x12F\a\x9A\x2"+
+		"\x2\x12E\x130\x5n\x38\x2\x12F\x12E\x3\x2\x2\x2\x12F\x130\x3\x2\x2\x2\x130"+
+		"\x131\x3\x2\x2\x2\x131\x14E\x5\x1C\xF\t\x132\x134\f\a\x2\x2\x133\x135"+
+		"\x5n\x38\x2\x134\x133\x3\x2\x2\x2\x134\x135\x3\x2\x2\x2\x135\x136\x3\x2"+
+		"\x2\x2\x136\x138\a\xCC\x2\x2\x137\x139\x5n\x38\x2\x138\x137\x3\x2\x2\x2"+
+		"\x138\x139\x3\x2\x2\x2\x139\x13A\x3\x2\x2\x2\x13A\x14E\x5\x1C\xF\b\x13B"+
+		"\x13D\f\x6\x2\x2\x13C\x13E\x5n\x38\x2\x13D\x13C\x3\x2\x2\x2\x13D\x13E"+
+		"\x3\x2\x2\x2\x13E\x13F\x3\x2\x2\x2\x13F\x141\a\x66\x2\x2\x140\x142\x5"+
+		"n\x38\x2\x141\x140\x3\x2\x2\x2\x141\x142\x3\x2\x2\x2\x142\x143\x3\x2\x2"+
+		"\x2\x143\x14E\x5\x1C\xF\a\x144\x146\f\x5\x2\x2\x145\x147\x5n\x38\x2\x146"+
+		"\x145\x3\x2\x2\x2\x146\x147\x3\x2\x2\x2\x147\x148\x3\x2\x2\x2\x148\x14A"+
+		"\ax\x2\x2\x149\x14B\x5n\x38\x2\x14A\x149\x3\x2\x2\x2\x14A\x14B\x3\x2\x2"+
+		"\x2\x14B\x14C\x3\x2\x2\x2\x14C\x14E\x5\x1C\xF\x6\x14D\xE1\x3\x2\x2\x2"+
+		"\x14D\xEA\x3\x2\x2\x2\x14D\xF3\x3\x2\x2\x2\x14D\xFC\x3\x2\x2\x2\x14D\x105"+
+		"\x3\x2\x2\x2\x14D\x10E\x3\x2\x2\x2\x14D\x117\x3\x2\x2\x2\x14D\x120\x3"+
+		"\x2\x2\x2\x14D\x129\x3\x2\x2\x2\x14D\x132\x3\x2\x2\x2\x14D\x13B\x3\x2"+
+		"\x2\x2\x14D\x144\x3\x2\x2\x2\x14E\x151\x3\x2\x2\x2\x14F\x14D\x3\x2\x2"+
+		"\x2\x14F\x150\x3\x2\x2\x2\x150\x1D\x3\x2\x2\x2\x151\x14F\x3\x2\x2\x2\x152"+
+		"\x15A\x5 \x11\x2\x153\x15A\a\xE8\x2\x2\x154\x15A\a\xE3\x2\x2\x155\x157"+
+		"\x5\x66\x34\x2\x156\x158\x5\x16\f\x2\x157\x156\x3\x2\x2\x2\x157\x158\x3"+
+		"\x2\x2\x2\x158\x15A\x3\x2\x2\x2\x159\x152\x3\x2\x2\x2\x159\x153\x3\x2"+
+		"\x2\x2\x159\x154\x3\x2\x2\x2\x159\x155\x3\x2\x2\x2\x15A\x1F\x3\x2\x2\x2"+
+		"\x15B\x15C\t\a\x2\x2\x15C!\x3\x2\x2\x2\x15D\x15F\a\xD4\x2\x2\x15E\x160"+
+		"\x5n\x38\x2\x15F\x15E\x3\x2\x2\x2\x15F\x160\x3\x2\x2\x2\x160\x161\x3\x2"+
+		"\x2\x2\x161\x163\x5\x1C\xF\x2\x162\x164\x5n\x38\x2\x163\x162\x3\x2\x2"+
+		"\x2\x163\x164\x3\x2\x2\x2\x164\x165\x3\x2\x2\x2\x165\x166\a\xDB\x2\x2"+
+		"\x166#\x3\x2\x2\x2\x167\x168\a\xC1\x2\x2\x168\x169\x5n\x38\x2\x169\x16A"+
+		"\x5\x1C\xF\x2\x16A\x16B\x5n\x38\x2\x16B\x16C\a|\x2\x2\x16C\x16D\x5n\x38"+
+		"\x2\x16D\x16E\x5J&\x2\x16E%\x3\x2\x2\x2\x16F\x170\a\x8D\x2\x2\x170\x171"+
+		"\x5n\x38\x2\x171\x172\x5J&\x2\x172\'\x3\x2\x2\x2\x173\x174\b\x15\x1\x2"+
+		"\x174\x178\x5@!\x2\x175\x178\x5> \x2\x176\x178\x5\x42\"\x2\x177\x173\x3"+
+		"\x2\x2\x2\x177\x175\x3\x2\x2\x2\x177\x176\x3\x2\x2\x2\x178\x1A0\x3\x2"+
+		"\x2\x2\x179\x17B\f\v\x2\x2\x17A\x17C\x5n\x38\x2\x17B\x17A\x3\x2\x2\x2"+
+		"\x17B\x17C\x3\x2\x2\x2\x17C\x17D\x3\x2\x2\x2\x17D\x17F\a\xD4\x2\x2\x17E"+
+		"\x180\x5n\x38\x2\x17F\x17E\x3\x2\x2\x2\x17F\x180\x3\x2\x2\x2\x180\x182"+
+		"\x3\x2\x2\x2\x181\x183\x5\x30\x19\x2\x182\x181\x3\x2\x2\x2\x182\x183\x3"+
+		"\x2\x2\x2\x183\x185\x3\x2\x2\x2\x184\x186\x5n\x38\x2\x185\x184\x3\x2\x2"+
+		"\x2\x185\x186\x3\x2\x2\x2\x186\x187\x3\x2\x2\x2\x187\x19F\a\xDB\x2\x2"+
+		"\x188\x189\f\n\x2\x2\x189\x18A\a-\x2\x2\x18A\x19F\x5\x6\x4\x2\x18B\x18C"+
+		"\f\t\x2\x2\x18C\x18E\a\xEF\x2\x2\x18D\x18F\x5n\x38\x2\x18E\x18D\x3\x2"+
+		"\x2\x2\x18E\x18F\x3\x2\x2\x2\x18F\x190\x3\x2\x2\x2\x190\x191\a-\x2\x2"+
+		"\x191\x19F\x5\x6\x4\x2\x192\x193\f\b\x2\x2\x193\x194\a,\x2\x2\x194\x19F"+
+		"\x5\x6\x4\x2\x195\x196\f\a\x2\x2\x196\x197\a\xEF\x2\x2\x197\x198\a,\x2"+
+		"\x2\x198\x19F\x5\x6\x4\x2\x199\x19A\f\x6\x2\x2\x19A\x19B\a\xEF\x2\x2\x19B"+
+		"\x19C\a,\x2\x2\x19C\x19D\a\xEF\x2\x2\x19D\x19F\x5\x6\x4\x2\x19E\x179\x3"+
+		"\x2\x2\x2\x19E\x188\x3\x2\x2\x2\x19E\x18B\x3\x2\x2\x2\x19E\x192\x3\x2"+
+		"\x2\x2\x19E\x195\x3\x2\x2\x2\x19E\x199\x3\x2\x2\x2\x19F\x1A2\x3\x2\x2"+
+		"\x2\x1A0\x19E\x3\x2\x2\x2\x1A0\x1A1\x3\x2\x2\x2\x1A1)\x3\x2\x2\x2\x1A2"+
+		"\x1A0\x3\x2\x2\x2\x1A3\x1A4\x5(\x15\x2\x1A4\x1A5\a-\x2\x2\x1A5\x1A6\x5"+
+		"\x6\x4\x2\x1A6\x1B0\x3\x2\x2\x2\x1A7\x1A8\x5(\x15\x2\x1A8\x1AA\a\xEF\x2"+
+		"\x2\x1A9\x1AB\x5n\x38\x2\x1AA\x1A9\x3\x2\x2\x2\x1AA\x1AB\x3\x2\x2\x2\x1AB"+
+		"\x1AC\x3\x2\x2\x2\x1AC\x1AD\a-\x2\x2\x1AD\x1AE\x5\x6\x4\x2\x1AE\x1B0\x3"+
+		"\x2\x2\x2\x1AF\x1A3\x3\x2\x2\x2\x1AF\x1A7\x3\x2\x2\x2\x1B0+\x3\x2\x2\x2"+
+		"\x1B1\x1B3\x5(\x15\x2\x1B2\x1B4\x5n\x38\x2\x1B3\x1B2\x3\x2\x2\x2\x1B3"+
+		"\x1B4\x3\x2\x2\x2\x1B4\x1B5\x3\x2\x2\x2\x1B5\x1B7\a\xD4\x2\x2\x1B6\x1B8"+
+		"\x5n\x38\x2\x1B7\x1B6\x3\x2\x2\x2\x1B7\x1B8\x3\x2\x2\x2\x1B8\x1BA\x3\x2"+
+		"\x2\x2\x1B9\x1BB\x5\x30\x19\x2\x1BA\x1B9\x3\x2\x2\x2\x1BA\x1BB\x3\x2\x2"+
+		"\x2\x1BB\x1BD\x3\x2\x2\x2\x1BC\x1BE\x5n\x38\x2\x1BD\x1BC\x3\x2\x2\x2\x1BD"+
+		"\x1BE\x3\x2\x2\x2\x1BE\x1BF\x3\x2\x2\x2\x1BF\x1C0\a\xDB\x2\x2\x1C0-\x3"+
+		"\x2\x2\x2\x1C1\x1C2\x5(\x15\x2\x1C2\x1C3\a,\x2\x2\x1C3\x1C4\x5\x6\x4\x2"+
+		"\x1C4\x1D1\x3\x2\x2\x2\x1C5\x1C6\x5(\x15\x2\x1C6\x1C7\a\xEF\x2\x2\x1C7"+
+		"\x1C8\a,\x2\x2\x1C8\x1C9\x5\x6\x4\x2\x1C9\x1D1\x3\x2\x2\x2\x1CA\x1CB\x5"+
+		"(\x15\x2\x1CB\x1CC\a\xEF\x2\x2\x1CC\x1CD\a,\x2\x2\x1CD\x1CE\a\xEF\x2\x2"+
+		"\x1CE\x1CF\x5\x6\x4\x2\x1CF\x1D1\x3\x2\x2\x2\x1D0\x1C1\x3\x2\x2\x2\x1D0"+
+		"\x1C5\x3\x2\x2\x2\x1D0\x1CA\x3\x2\x2\x2\x1D1/\x3\x2\x2\x2\x1D2\x1D3\x5"+
+		"\x32\x1A\x2\x1D3\x31\x3\x2\x2\x2\x1D4\x1D6\x5\x34\x1B\x2\x1D5\x1D4\x3"+
+		"\x2\x2\x2\x1D5\x1D6\x3\x2\x2\x2\x1D6\x1D8\x3\x2\x2\x2\x1D7\x1D9\x5n\x38"+
+		"\x2\x1D8\x1D7\x3\x2\x2\x2\x1D8\x1D9\x3\x2\x2\x2\x1D9\x1DA\x3\x2\x2\x2"+
+		"\x1DA\x1DC\a)\x2\x2\x1DB\x1DD\x5n\x38\x2\x1DC\x1DB\x3\x2\x2\x2\x1DC\x1DD"+
+		"\x3\x2\x2\x2\x1DD\x1DF\x3\x2\x2\x2\x1DE\x1D5\x3\x2\x2\x2\x1DF\x1E2\x3"+
+		"\x2\x2\x2\x1E0\x1DE\x3\x2\x2\x2\x1E0\x1E1\x3\x2\x2\x2\x1E1\x1E3\x3\x2"+
+		"\x2\x2\x1E2\x1E0\x3\x2\x2\x2\x1E3\x1F5\x5\x36\x1C\x2\x1E4\x1E6\x5\x34"+
+		"\x1B\x2\x1E5\x1E4\x3\x2\x2\x2\x1E5\x1E6\x3\x2\x2\x2\x1E6\x1E8\x3\x2\x2"+
+		"\x2\x1E7\x1E9\x5n\x38\x2\x1E8\x1E7\x3\x2\x2\x2\x1E8\x1E9\x3\x2\x2\x2\x1E9"+
+		"\x1EA\x3\x2\x2\x2\x1EA\x1EC\a)\x2\x2\x1EB\x1ED\x5n\x38\x2\x1EC\x1EB\x3"+
+		"\x2\x2\x2\x1EC\x1ED\x3\x2\x2\x2\x1ED\x1EF\x3\x2\x2\x2\x1EE\x1E5\x3\x2"+
+		"\x2\x2\x1EF\x1F2\x3\x2\x2\x2\x1F0\x1EE\x3\x2\x2\x2\x1F0\x1F1\x3\x2\x2"+
+		"\x2\x1F1\x1F3\x3\x2\x2\x2\x1F2\x1F0\x3\x2\x2\x2\x1F3\x1F5\x5\x38\x1D\x2"+
+		"\x1F4\x1E0\x3\x2\x2\x2\x1F4\x1F0\x3\x2\x2\x2\x1F5\x33\x3\x2\x2\x2\x1F6"+
+		"\x1F7\x5<\x1F\x2\x1F7\x35\x3\x2\x2\x2\x1F8\x1F9\x5<\x1F\x2\x1F9\x37\x3"+
+		"\x2\x2\x2\x1FA\x205\x5:\x1E\x2\x1FB\x1FD\x5n\x38\x2\x1FC\x1FB\x3\x2\x2"+
+		"\x2\x1FC\x1FD\x3\x2\x2\x2\x1FD\x1FE\x3\x2\x2\x2\x1FE\x200\a)\x2\x2\x1FF"+
+		"\x201\x5n\x38\x2\x200\x1FF\x3\x2\x2\x2\x200\x201\x3\x2\x2\x2\x201\x202"+
+		"\x3\x2\x2\x2\x202\x204\x5:\x1E\x2\x203\x1FC\x3\x2\x2\x2\x204\x207\x3\x2"+
+		"\x2\x2\x205\x203\x3\x2\x2\x2\x205\x206\x3\x2\x2\x2\x206\x39\x3\x2\x2\x2"+
+		"\x207\x205\x3\x2\x2\x2\x208\x20A\x5\x6\x4\x2\x209\x20B\x5n\x38\x2\x20A"+
+		"\x209\x3\x2\x2\x2\x20A\x20B\x3\x2\x2\x2\x20B\x20C\x3\x2\x2\x2\x20C\x20E"+
+		"\a\xCD\x2\x2\x20D\x20F\x5n\x38\x2\x20E\x20D\x3\x2\x2\x2\x20E\x20F\x3\x2"+
+		"\x2\x2\x20F\x210\x3\x2\x2\x2\x210\x211\x5<\x1F\x2\x211;\x3\x2\x2\x2\x212"+
+		"\x213\a=\x2\x2\x213\x215\x5n\x38\x2\x214\x212\x3\x2\x2\x2\x214\x215\x3"+
+		"\x2\x2\x2\x215\x216\x3\x2\x2\x2\x216\x219\x5\x1C\xF\x2\x217\x219\x5N("+
+		"\x2\x218\x214\x3\x2\x2\x2\x218\x217\x3\x2\x2\x2\x219=\x3\x2\x2\x2\x21A"+
+		"\x21B\x5\b\x5\x2\x21B?\x3\x2\x2\x2\x21C\x21D\a\x89\x2\x2\x21D\x41\x3\x2"+
+		"\x2\x2\x21E\x221\x5\x44#\x2\x21F\x221\x5\x46$\x2\x220\x21E\x3\x2\x2\x2"+
+		"\x220\x21F\x3\x2\x2\x2\x221\x43\x3\x2\x2\x2\x222\x223\a-\x2\x2\x223\x224"+
+		"\x5\x6\x4\x2\x224\x45\x3\x2\x2\x2\x225\x226\a,\x2\x2\x226\x227\x5\x6\x4"+
+		"\x2\x227G\x3\x2\x2\x2\x228\x229\x5\x1C\xF\x2\x229I\x3\x2\x2\x2\x22A\x22D"+
+		"\x5\x1A\xE\x2\x22B\x22D\x5L\'\x2\x22C\x22A\x3\x2\x2\x2\x22C\x22B\x3\x2"+
+		"\x2\x2\x22DK\x3\x2\x2\x2\x22E\x231\x5> \x2\x22F\x231\x5*\x16\x2\x230\x22E"+
+		"\x3\x2\x2\x2\x230\x22F\x3\x2\x2\x2\x231M\x3\x2\x2\x2\x232\x233\a\x34\x2"+
+		"\x2\x233\x234\x5n\x38\x2\x234\x235\x5P)\x2\x235O\x3\x2\x2\x2\x236\x239"+
+		"\x5*\x16\x2\x237\x239\x5> \x2\x238\x236\x3\x2\x2\x2\x238\x237\x3\x2\x2"+
+		"\x2\x239Q\x3\x2\x2\x2\x23A\x243\x5T+\x2\x23B\x243\x5X-\x2\x23C\x243\x5"+
+		"Z.\x2\x23D\x243\x5`\x31\x2\x23E\x243\x5\\/\x2\x23F\x243\x5\x66\x34\x2"+
+		"\x240\x243\x5V,\x2\x241\x243\x5\x62\x32\x2\x242\x23A\x3\x2\x2\x2\x242"+
+		"\x23B\x3\x2\x2\x2\x242\x23C\x3\x2\x2\x2\x242\x23D\x3\x2\x2\x2\x242\x23E"+
+		"\x3\x2\x2\x2\x242\x23F\x3\x2\x2\x2\x242\x240\x3\x2\x2\x2\x242\x241\x3"+
+		"\x2\x2\x2\x243S\x3\x2\x2\x2\x244\x245\t\b\x2\x2\x245U\x3\x2\x2\x2\x246"+
+		"\x247\a\xAB\x2\x2\x247W\x3\x2\x2\x2\x248\x249\t\t\x2\x2\x249Y\x3\x2\x2"+
+		"\x2\x24A\x24B\t\n\x2\x2\x24B[\x3\x2\x2\x2\x24C\x24F\a\x89\x2\x2\x24D\x24F"+
+		"\x5^\x30\x2\x24E\x24C\x3\x2\x2\x2\x24E\x24D\x3\x2\x2\x2\x24F]\x3\x2\x2"+
+		"\x2\x250\x251\t\v\x2\x2\x251_\x3\x2\x2\x2\x252\x253\t\f\x2\x2\x253\x61"+
+		"\x3\x2\x2\x2\x254\x255\t\r\x2\x2\x255\x63\x3\x2\x2\x2\x256\x257\t\xE\x2"+
+		"\x2\x257\x65\x3\x2\x2\x2\x258\x25C\x5h\x35\x2\x259\x25C\x5j\x36\x2\x25A"+
+		"\x25C\x5l\x37\x2\x25B\x258\x3\x2\x2\x2\x25B\x259\x3\x2\x2\x2\x25B\x25A"+
+		"\x3\x2\x2\x2\x25Cg\x3\x2\x2\x2\x25D\x25E\t\xF\x2\x2\x25Ei\x3\x2\x2\x2"+
+		"\x25F\x260\a\x8F\x2\x2\x260k\x3\x2\x2\x2\x261\x262\t\x10\x2\x2\x262m\x3"+
+		"\x2\x2\x2\x263\x265\t\x11\x2\x2\x264\x263\x3\x2\x2\x2\x265\x266\x3\x2"+
+		"\x2\x2\x266\x264\x3\x2\x2\x2\x266\x267\x3\x2\x2\x2\x267o\x3\x2\x2\x2Y"+
+		"ry~\x82\x86\x8A\x9A\xA7\xB0\xB4\xBB\xBF\xC2\xC7\xCC\xD4\xD8\xDF\xE3\xE7"+
+		"\xEC\xF0\xF5\xF9\xFE\x102\x107\x10B\x110\x114\x119\x11D\x122\x126\x12B"+
+		"\x12F\x134\x138\x13D\x141\x146\x14A\x14D\x14F\x157\x159\x15F\x163\x177"+
+		"\x17B\x17F\x182\x185\x18E\x19E\x1A0\x1AA\x1AF\x1B3\x1B7\x1BA\x1BD\x1D0"+
+		"\x1D5\x1D8\x1DC\x1E0\x1E5\x1E8\x1EC\x1F0\x1F4\x1FC\x200\x205\x20A\x20E"+
+		"\x214\x218\x220\x22C\x230\x238\x242\x24E\x25B\x266";
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }

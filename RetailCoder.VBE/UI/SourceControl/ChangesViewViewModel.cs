@@ -69,6 +69,8 @@ namespace Rubberduck.UI.SourceControl
                     Provider.Status().Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
         }
 
+        public SourceControlTab Tab { get { return SourceControlTab.Changes; } }
+
         private void Provider_BranchChanged(object sender, EventArgs e)
         {
             OnPropertyChanged("CurrentBranch");

@@ -33,7 +33,6 @@ namespace Rubberduck.UI.Command.Refactorings
                 && (target.DeclarationType == DeclarationType.Variable || target.DeclarationType == DeclarationType.Constant)
                 && target.References.Any();
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 

@@ -21,7 +21,7 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    public class InspectionResultsViewModel : ViewModelBase, INavigateSelection
+    public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
@@ -29,7 +29,8 @@ namespace Rubberduck.UI.CodeInspections
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
 
-        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
+        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
+                                          IGeneralConfigService configService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
 
@@ -50,10 +51,15 @@ namespace Rubberduck.UI.CodeInspections
             _state.StateChanged += _state_StateChanged;
         }
 
-        private readonly ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
+        private ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
         public ObservableCollection<ICodeInspectionResult> Results
         {
-            get { return _results; } 
+            get { return _results; }
+            private set
+            {
+                _results = value;
+                OnPropertyChanged();
+            }
         }
 
         private CodeInspectionQuickFix _defaultFix;
@@ -87,7 +93,6 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private IInspection _selectedInspection;
-
         public IInspection SelectedInspection
         {
             get { return _selectedInspection; }
@@ -95,6 +100,20 @@ namespace Rubberduck.UI.CodeInspections
             {
                 _selectedInspection = value;
                 OnPropertyChanged();
+            }
+        }
+
+        private bool _groupByInspectionType = true;
+        public bool GroupByInspectionType
+        {
+            get { return _groupByInspectionType; }
+            set
+            {
+                if (_groupByInspectionType != value)
+                {
+                    _groupByInspectionType = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -131,7 +150,6 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private bool _canRefresh = true;
-
         public bool CanRefresh
         {
             get { return _canRefresh; }
@@ -155,6 +173,7 @@ namespace Rubberduck.UI.CodeInspections
             {
                 return;
             }
+            await Task.Yield();
 
             IsBusy = true;
 
@@ -178,14 +197,13 @@ namespace Rubberduck.UI.CodeInspections
 
             Debug.WriteLine("Running code inspections...");
             IsBusy = true;
-            var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
+
+            var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();
+
             _dispatcher.Invoke(() =>
             {
-                Results.Clear();
-                foreach (var codeInspectionResult in results)
-                {
-                    Results.Add(codeInspectionResult);
-                }
+                Results = new ObservableCollection<ICodeInspectionResult>(results);
+
                 CanRefresh = true;
                 IsBusy = false;
                 SelectedItem = null;
@@ -339,6 +357,14 @@ namespace Rubberduck.UI.CodeInspections
         private bool CanExecuteCopyResultsCommand(object parameter)
         {
             return !IsBusy && _results != null && _results.Any();
+        }
+
+        public void Dispose()
+        {
+            if (_state != null)
+            {
+                _state.StateChanged -= _state_StateChanged;
+            }
         }
     }
 }

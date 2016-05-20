@@ -72,6 +72,8 @@
     <Compile Include="Annotations\InvalidAnnotationArgumentException.cs" />
     <Compile Include="Annotations\ModuleCleanupAnnotation.cs" />
     <Compile Include="Annotations\ModuleInitializeAnnotation.cs" />
+    <Compile Include="Annotations\IgnoreTestAnnotation.cs" />
+    <Compile Include="Annotations\NoIndentAnnotation.cs" />
     <Compile Include="Annotations\TestCleanupAnnotation.cs" />
     <Compile Include="Annotations\TestInitializeAnnotation.cs" />
     <Compile Include="Annotations\TestMethodAnnotation.cs" />
@@ -226,6 +228,7 @@
     <Compile Include="StaTaskScheduler.cs" />
     <Compile Include="Symbols\AccessibilityCheck.cs" />
     <Compile Include="Symbols\ExternalProcedureDeclaration.cs" />
+    <Compile Include="Symbols\ICompilationPass.cs" />
     <Compile Include="Symbols\ParserRuleContextHelper.cs" />
     <Compile Include="Symbols\BoundExpressionVisitor.cs" />
     <Compile Include="Symbols\ClassModuleDeclaration.cs" />
@@ -240,6 +243,7 @@
     <Compile Include="Symbols\PropertyGetDeclaration.cs" />
     <Compile Include="Symbols\FunctionDeclaration.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
+    <Compile Include="Symbols\ProjectReferencePass.cs" />
     <Compile Include="Symbols\TypeHierarchyPass.cs" />
     <Compile Include="Symbols\TypeAnnotationPass.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
@@ -254,8 +258,6 @@
     <Compile Include="ParserRuleContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QualifiedContext.cs" />
-    <Compile Include="Reflection\Attributes.cs" />
-    <Compile Include="Reflection\Member.cs" />
     <Compile Include="Symbols\Declaration.cs" />
     <Compile Include="Symbols\Accessibility.cs" />
     <Compile Include="Symbols\DeclarationSymbolsListener.cs" />
@@ -270,6 +272,7 @@
     <Compile Include="VBA\EnumerableExtensions.cs" />
     <Compile Include="VBA\IAttributeParser.cs" />
     <Compile Include="VBA\IModuleExporter.cs" />
+    <Compile Include="VBA\ModuleState.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
@@ -280,7 +283,6 @@
     <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
-    <Compile Include="VBComponentExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Binding\VBAExpressionParser.g4" />
