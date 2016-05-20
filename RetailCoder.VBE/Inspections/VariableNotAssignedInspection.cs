@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections
                 && !declaration.References.Any(reference => reference.IsAssignment));
 
             return declarations.Select(issue => 
-                new IdentifierNotAssignedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
+                new IdentifierNotAssignedInspectionResult(this, issue, issue.Context));
         }
     }
 }

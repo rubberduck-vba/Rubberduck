@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
@@ -9,16 +10,14 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Inspections
 {
-    public class IdentifierNotAssignedInspectionResult : IdentifierNotUsedInspectionResult
+    public class IdentifierNotAssignedInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
-        private readonly Declaration _target;
 
         public IdentifierNotAssignedInspectionResult(IInspection inspection, Declaration target,
-            ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, target, context, qualifiedName)
+            ParserRuleContext context)
+            : base(inspection, target)
         {
-            _target = target;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new RemoveUnassignedIdentifierQuickFix(Context, QualifiedSelection, target), 
@@ -28,7 +27,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.VariableNotAssignedInspectionResultFormat, _target.IdentifierName); }
+            get { return string.Format(InspectionsUI.VariableNotAssignedInspectionResultFormat, Target.IdentifierName); }
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
@@ -52,14 +51,14 @@ namespace Rubberduck.Inspections
         private void RemoveVariable(Declaration target)
         {
             Selection selection;
-            var declarationText = target.Context.GetText();
+            var declarationText = target.Context.GetText().Replace(" _" + Environment.NewLine, string.Empty);
             var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
 
             var variableStmtContext = target.GetVariableStmtContext();
 
             if (!multipleDeclarations)
             {
-                declarationText = variableStmtContext.GetText();
+                declarationText = variableStmtContext.GetText().Replace(" _" + Environment.NewLine, string.Empty);
                 selection = target.GetVariableStmtContextSelection();
             }
             else
@@ -101,9 +100,16 @@ namespace Rubberduck.Inspections
                 }
                 break;
             }
+
+            // remove all lines with only whitespace
+            newLinesWithoutExcessSpaces = newLinesWithoutExcessSpaces.Where(str => str.Any(c => !char.IsWhiteSpace(c))).ToArray();
             
             codeModule.DeleteLines(selection);
-            codeModule.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
+            if (newLinesWithoutExcessSpaces.Any())
+            {
+                codeModule.InsertLines(selection.StartLine,
+                    string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
+            }
         }
 
         private string RemoveExtraComma(string str, int numParams, int indexRemoved)
