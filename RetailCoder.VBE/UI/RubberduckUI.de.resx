@@ -1561,4 +1561,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ingoriert</value>
   </data>
+  <data name="UnitTest_TotalDuration" xml:space="preserve">
+    <value>Gesamtdauer</value>
+  </data>
 </root>
