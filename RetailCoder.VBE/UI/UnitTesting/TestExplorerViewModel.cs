@@ -54,6 +54,18 @@ namespace Rubberduck.UI.UnitTesting
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
 
             _openTestSettingsCommand = new DelegateCommand(OpenSettings);
+
+            _setOutcomeGroupingCommand = new DelegateCommand(param =>
+            {
+                GroupByOutcome = (bool)param;
+                GroupByLocation = !(bool)param;
+            });
+
+            _setLocationGroupingCommand = new DelegateCommand(param =>
+            {
+                GroupByLocation = (bool)param;
+                GroupByOutcome = !(bool)param;
+            });
         }
 
         private void RunCompleted(object sender, TestRunEventArgs e)
@@ -117,7 +129,27 @@ namespace Rubberduck.UI.UnitTesting
                 }
             }
         }
-        
+
+        private bool _groupByLocation;
+        public bool GroupByLocation
+        {
+            get { return _groupByLocation; }
+            set
+            {
+                if (_groupByLocation != value)
+                {
+                    _groupByLocation = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private readonly ICommand _setOutcomeGroupingCommand;
+        public ICommand SetOutcomeGroupingCommand { get { return _setOutcomeGroupingCommand; } }
+
+        private readonly ICommand _setLocationGroupingCommand;
+        public ICommand SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
+
         public long TotalDuration { get; private set; }
 
         private readonly RunAllTestsCommand _runAllTestsCommand;
