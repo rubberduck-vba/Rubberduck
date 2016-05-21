@@ -280,18 +280,6 @@ namespace Rubberduck.Parsing.Binding
             return new ParenthesizedDefaultBinding(expression, expressionBinding);
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.TypeofexprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            // To make the grammar we treat a type-of-is expression as a construct of the form "TYPEOF expression", where expression
-            // is always "expression IS expression".
-            var body = (VBAParser.RelationalOpContext)expression.expression();
-            dynamic booleanExpression = body.expression()[0];
-            var booleanExpressionBinding = Visit(module, parent, booleanExpression, withBlockVariable, StatementResolutionContext.Undefined);
-            dynamic typeExpression = body.expression()[1];
-            var typeExpressionBinding = VisitType(module, parent, typeExpression, withBlockVariable, StatementResolutionContext.Undefined);
-            return new TypeOfIsDefaultBinding(expression, booleanExpressionBinding, typeExpressionBinding);
-        }
-
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.PowOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
             return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
@@ -324,7 +312,21 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.RelationalOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
+            // To make the grammar we treat a type-of-is expression as a construct of the form "TYPEOF expression", where expression
+            // is always "expression IS expression".
+            if (expression.expression()[0] is VBAParser.TypeofexprContext)
+            {
+                return VisitTypeOf(module, parent, expression, (VBAParser.TypeofexprContext)expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+            }
             return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+        }
+
+        private IExpressionBinding VisitTypeOf(Declaration module, Declaration parent, VBAParser.RelationalOpContext typeOfExpression, VBAParser.TypeofexprContext typeOfLeftPartExpression, ParserRuleContext typeExpression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        {
+            dynamic booleanExpression = typeOfLeftPartExpression.expression();
+            var booleanExpressionBinding = Visit(module, parent, booleanExpression, withBlockVariable, StatementResolutionContext.Undefined);
+            var typeExpressionBinding = VisitType(module, parent, (dynamic)typeExpression, withBlockVariable, StatementResolutionContext.Undefined);
+            return new TypeOfIsDefaultBinding(typeOfExpression, booleanExpressionBinding, typeExpressionBinding);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LogicalAndOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
