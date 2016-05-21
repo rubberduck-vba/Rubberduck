@@ -31,12 +31,6 @@ namespace Rubberduck.Parsing.Binding
             return Visit(module, parent, dynamicExpression);
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.ExpressionContext expression)
-        {
-            // TODO: Is this method actually needed?
-            return Visit(module, parent, (dynamic)expression);
-        }
-
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LExprContext expression)
         {
             dynamic lexpr = expression.lExpression();
