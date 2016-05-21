@@ -321,12 +321,19 @@ namespace Rubberduck.Parsing.Binding
             return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
         }
 
-        private IExpressionBinding VisitTypeOf(Declaration module, Declaration parent, VBAParser.RelationalOpContext typeOfExpression, VBAParser.TypeofexprContext typeOfLeftPartExpression, ParserRuleContext typeExpression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        private IExpressionBinding VisitTypeOf(
+            Declaration module, 
+            Declaration parent,
+            VBAParser.RelationalOpContext typeOfIsExpression,
+            VBAParser.TypeofexprContext typeOfLeftPartExpression,
+            ParserRuleContext typeExpression,
+            IBoundExpression withBlockVariable, 
+            StatementResolutionContext statementContext)
         {
             dynamic booleanExpression = typeOfLeftPartExpression.expression();
             var booleanExpressionBinding = Visit(module, parent, booleanExpression, withBlockVariable, StatementResolutionContext.Undefined);
             var typeExpressionBinding = VisitType(module, parent, (dynamic)typeExpression, withBlockVariable, StatementResolutionContext.Undefined);
-            return new TypeOfIsDefaultBinding(typeOfExpression, booleanExpressionBinding, typeExpressionBinding);
+            return new TypeOfIsDefaultBinding(typeOfIsExpression, booleanExpressionBinding, typeExpressionBinding);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LogicalAndOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
