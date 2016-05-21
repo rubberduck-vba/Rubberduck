@@ -64,7 +64,7 @@ namespace Rubberduck.UI.Command
                 select new SearchResultItem(declaration, error.Item2.GetNavigateCodeEventArgs(declaration), error.Item2.Message);
 
             var searchResultItems = errors as IList<SearchResultItem> ?? errors.ToList();
-            var viewModel = new SearchResultsViewModel(_navigateCommand, "Parser Errors", null, searchResultItems);
+            var viewModel = new SearchResultsViewModel(_navigateCommand,RubberduckUI.Parser_ParserError, null, searchResultItems);
             return viewModel;
         }
 

@@ -1587,4 +1587,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="UnitTest_TotalDuration" xml:space="preserve">
     <value>Total Duration</value>
   </data>
+  <data name="Parser_ParserError" xml:space="preserve">
+    <value>Parser Errors</value>
+  </data>
 </root>
