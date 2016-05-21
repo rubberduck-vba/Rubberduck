@@ -1567,4 +1567,10 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parserfehler</value>
   </data>
+  <data name="GeneralSettings_DetailedLoggingEnabled" xml:space="preserve">
+    <value>Detailliertes Logging</value>
+  </data>
+  <data name="GeneralSettings_DetailedLoggingEnabledLabel" xml:space="preserve">
+    <value>Detailliertes Logging aktivieren:</value>
+  </data>
 </root>

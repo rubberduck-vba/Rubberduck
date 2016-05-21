@@ -1590,4 +1590,10 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parser Errors</value>
   </data>
+  <data name="GeneralSettings_DetailedLoggingEnabled" xml:space="preserve">
+    <value>Detailed logging</value>
+  </data>
+  <data name="GeneralSettings_DetailedLoggingEnabledLabel" xml:space="preserve">
+    <value>Enable detailed logging</value>
+  </data>
 </root>

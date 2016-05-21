@@ -2,25 +2,32 @@
 <nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       autoReload="true">
-
-  <!-- define various log targets -->
   <targets>
-    <!-- write logs to file -->
-    <target xsi:type="File" name="file"
-        fileName="${specialfolder:folder=ApplicationData}/Rubberduck/logs/${logger}.log"
-        layout="${longdate} ${processid} ${uppercase:${level}} ${message} ${exception:format=tostring}" />
-
-    <!-- log message to event log -->
-    <target xsi:type="EventLog" name="eventLog" source="RubberDuck.VBE" eventId="${event-properties:EventID}"
-            layout="${message}${newline}Call site: ${callsite:className=true:methodName=true}${newline}Logger: ${logger}${newline}${exception:format=tostring}">
+    <target 
+      xsi:type="File" 
+      name="file"
+      fileName="${specialfolder:folder=ApplicationData}/Rubberduck/logs/rubberduck.log"
+      layout="${longdate};${uppercase:${level}};${logger};${message};${exception:format=tostring}"
+      archiveFileName="${specialfolder:folder=ApplicationData}/Rubberduck/logs/archives/log.{#####}.log"
+      archiveAboveSize="5120"
+      archiveNumbering="Sequence"
+      concurrentWrites="true"
+      keepFileOpen="false"
+      encoding="UTF-8"/>
+    <target 
+      xsi:type="EventLog"
+      name="eventlog" 
+      source="Rubberduck-VBA"
+      layout="${message}${newline}Call site: ${callsite:className=true:methodName=true}${newline}Logger: ${logger}${newline}${exception:format=tostring}">
     </target>
-
-    <!-- increase the performance counter -->
-    <!--target xsi:type="PerfCounter" name="pc1" categoryName="My Log" counterName="My Counter">
-    </target-->
+    <target
+      xsi:type="Debugger"
+      name="debuglog"
+      layout="${longdate};${uppercase:${level}};${logger};${message};${exception:format=tostring}"/>
   </targets>
   <rules>
-    <logger name="*" minlevel="Trace" writeTo="file" />
+    <logger name="*" minlevel="Info" writeTo="file" />
     <logger name="*" minlevel="Error"  writeTo="eventlog"/>
+    <logger name="*" minlevel="Trace" writeTo="debuglog" />
   </rules>
 </nlog>

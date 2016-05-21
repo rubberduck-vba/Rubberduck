@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
@@ -21,6 +22,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
         private readonly AnnotationService _annotationService;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
         {
@@ -52,7 +54,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void SetCurrentScope(string memberName, DeclarationType type)
         {
-            Debug.WriteLine("Setting current scope: {0} ({1}) in thread {2}", memberName, type,
+            _logger.Trace("Setting current scope: {0} ({1}) in thread {2}", memberName, type,
                 Thread.CurrentThread.ManagedThreadId);
 
             _currentParent = _declarationFinder.MatchName(memberName).SingleOrDefault(item =>
@@ -62,7 +64,7 @@ namespace Rubberduck.Parsing.Symbols
                 item.QualifiedName.QualifiedModuleName == _qualifiedModuleName && item.DeclarationType == type) ??
                             _moduleDeclaration;
 
-            Debug.WriteLine("Current scope is now {0} in thread {1}",
+            _logger.Trace("Current scope is now {0} in thread {1}",
                 _currentScope == null ? "null" : _currentScope.IdentifierName, Thread.CurrentThread.ManagedThreadId);
         }
 
@@ -141,7 +143,7 @@ namespace Rubberduck.Parsing.Symbols
                 statementContext);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                Debug.WriteLine(
+                 _logger.Trace(
                     string.Format(
                         "{0}/Default Context: Failed to resolve {1}. Binding all successfully resolved expressions anyway.",
                         GetType().Name,
@@ -155,7 +157,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                Debug.WriteLine(
+                 _logger.Trace(
                     string.Format(
                         "{0}/Type Context: Failed to resolve {1}. Binding all successfully resolved expressions anyway.",
                         GetType().Name,
