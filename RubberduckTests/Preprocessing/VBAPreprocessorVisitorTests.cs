@@ -34,12 +34,14 @@ namespace RubberduckTests.Preprocessing
 #Const c = doesNotExist
 #Const d& = 1
 #Const e = d%
+#Const f = [a]
 ";
             var result = Preprocess(code);
             Assert.AreEqual(result.Item1.Get("b"), result.Item1.Get("a"));
             Assert.AreEqual(EmptyValue.Value, result.Item1.Get("c"));
             Assert.AreEqual(1m, result.Item1.Get("d").AsDecimal);
             Assert.AreEqual(1m, result.Item1.Get("e").AsDecimal);
+            Assert.AreEqual(5m, result.Item1.Get("f").AsDecimal);
         }
 
         [TestMethod]

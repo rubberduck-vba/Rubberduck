@@ -155,6 +155,28 @@ End Sub
         }
 
         [TestMethod]
+        public void LocalVariableForeignNameCall_IsReferenceToVariableDeclaration()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    Dim foo As Integer
+    a = [foo]
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+
+            var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
+            Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
+        [TestMethod]
         public void LocalVariableAssignment_IsReferenceToVariableDeclaration()
         {
             // arrange
@@ -748,7 +770,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Parameter 
                 && item.IdentifierName == "values"
-                && item.IsArray());
+                && item.IsArray);
 
             Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
                 item.ParentScoping.DeclarationType == DeclarationType.Procedure
@@ -774,7 +796,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Parameter
                 && item.IdentifierName == "values"
-                && item.IsArray());
+                && item.IsArray);
 
             Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
                 item.ParentScoping.DeclarationType == DeclarationType.Procedure
@@ -1009,7 +1031,7 @@ End Function";
 
             var declaration = state.AllUserDeclarations.Single(item => 
                 item.DeclarationType == DeclarationType.Variable
-                && item.IsArray()
+                && item.IsArray
                 && item.ParentScopeDeclaration.IdentifierName == "DoSomething");
 
             Assert.IsNotNull(declaration.References.SingleOrDefault(item => !item.IsAssignment));

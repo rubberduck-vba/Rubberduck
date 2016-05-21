@@ -52,8 +52,8 @@ namespace Rubberduck.Inspections
                                           .Replace("_", string.Empty);
             var originalInstruction = Context.GetText();
 
-            var identifier = context.valueStmt()[0].GetText();
-            var value = context.valueStmt()[1].GetText();
+            var identifier = context.lExpression().GetText();
+            var value = context.expression().GetText();
 
             module.DeleteLines(selection.StartLine, selection.LineCount);
 

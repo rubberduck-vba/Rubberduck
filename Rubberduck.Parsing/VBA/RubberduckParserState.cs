@@ -715,23 +715,6 @@ namespace Rubberduck.Parsing.VBA
                    && reference.Selection.ContainsFirstCharacter(selection.Selection);
         }
 
-        public static Selection CreateBindingSelection(ParserRuleContext vbaGrammarContext, ParserRuleContext exprContext)
-        {
-            Selection vbaGrammarSelection = vbaGrammarContext.GetSelection();
-            Selection exprSelection = exprContext.GetSelection();
-            int lineOffset = vbaGrammarSelection.StartLine - 1;
-            int columnOffset = 0;
-            if (exprSelection.StartLine == 1)
-            {
-                columnOffset = vbaGrammarSelection.StartColumn - 1;
-            }
-            return new Selection(
-                exprSelection.StartLine + lineOffset,
-                exprSelection.StartColumn + columnOffset,
-                exprSelection.EndLine + lineOffset,
-                exprSelection.EndColumn + columnOffset);
-        }
-
         public void RemoveBuiltInDeclarations(Reference reference)
         {
             var projectName = reference.Name;

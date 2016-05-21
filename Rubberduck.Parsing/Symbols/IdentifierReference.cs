@@ -80,7 +80,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool HasExplicitCallStatement()
         {
-            return Context.Parent is VBAParser.ExplicitCallStmtContext;
+            return Context.Parent is VBAParser.CallStmtContext && ((VBAParser.CallStmtContext)Context).CALL() != null;
         }
 
         private bool? _hasTypeHint;

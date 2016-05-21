@@ -135,8 +135,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var result = access + ' ' + keyword + ' ' + model.Method.MethodName + parameters + ' ' + asTypeClause + newLine;
 
             var localConsts = model.Locals.Where(e => e.DeclarationType == DeclarationType.Constant)
-                .Cast<ValuedDeclaration>()
-                .Select(e => "    " + Tokens.Const + ' ' + e.IdentifierName + ' ' + Tokens.As + ' ' + e.AsTypeName + " = " + e.Value);
+                .Cast<ConstantDeclaration>()
+                .Select(e => "    " + Tokens.Const + ' ' + e.IdentifierName + ' ' + Tokens.As + ' ' + e.AsTypeName + " = " + e.Expression);
 
             var localVariables = model.Locals.Where(e => e.DeclarationType == DeclarationType.Variable)
                 .Where(e => model.Method.Parameters.All(param => param.Name != e.IdentifierName))

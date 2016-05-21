@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Binding
@@ -9,7 +10,7 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _project;
         private readonly Declaration _module;
         private readonly Declaration _parent;
-        private readonly VBAExpressionParser.SimpleNameExpressionContext _expression;
+        private readonly VBAParser.SimpleNameExprContext _expression;
         private readonly DeclarationType _propertySearchType;
 
         public SimpleNameDefaultBinding(
@@ -17,8 +18,8 @@ namespace Rubberduck.Parsing.Binding
             Declaration project,
             Declaration module,
             Declaration parent,
-            VBAExpressionParser.SimpleNameExpressionContext expression,
-            ResolutionStatementContext statementContext)
+            VBAParser.SimpleNameExprContext expression,
+            StatementResolutionContext statementContext)
         {
             _declarationFinder = declarationFinder;
             _project = project;
@@ -32,7 +33,7 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve()
         {
-            string name = ExpressionName.GetName(_expression.name());
+            string name = ExpressionName.GetName(_expression.identifier());
             IBoundExpression boundExpression = null;
             boundExpression = ResolveProcedureNamespace(name);
             if (boundExpression != null)
@@ -64,7 +65,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return null;
+            return new ResolutionFailedExpression();
         }
 
         private IBoundExpression ResolveProcedureNamespace(string name)
@@ -120,6 +121,11 @@ namespace Rubberduck.Parsing.Binding
             if (IsValidMatch(enumMember, name))
             {
                 return new SimpleNameExpression(enumMember, ExpressionClassification.Value, _expression);
+            }
+            // Prioritize return value assignments over any other let/set property references.
+            if (_parent.DeclarationType == DeclarationType.PropertyGet && _declarationFinder.IsMatch(_parent.IdentifierName, name))
+            {
+                return new SimpleNameExpression(_parent, ExpressionClassification.Property, _expression);
             }
             var property = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, _propertySearchType);
             if (IsValidMatch(property, name))

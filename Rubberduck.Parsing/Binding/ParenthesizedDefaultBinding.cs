@@ -19,9 +19,9 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression Resolve()
         {
             var expr = _expressionBinding.Resolve();
-            if (expr == null)
+            if (expr.Classification == ExpressionClassification.ResolutionFailed)
             {
-                return null;
+                return expr;
             }
             return new ParenthesizedExpression(expr.ReferencedDeclaration, _context, expr);
         }

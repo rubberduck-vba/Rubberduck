@@ -1,4 +1,3 @@
-using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -21,28 +20,24 @@ namespace Rubberduck.Inspections
             var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount);
             var originalInstruction = Context.GetText();
 
-            var context = (VBAParser.ExplicitCallStmtContext)Context;
+            var context = (VBAParser.CallStmtContext)Context;
 
-            string procedure;
-            VBAParser.ArgsCallContext arguments;
-            if (context.explicitCallStmtExpression() is VBAParser.ECS_MemberCallContext)
+            string target;
+            string arguments;
+            // The CALL statement only has arguments if it's an index expression.
+            if (context.expression() is VBAParser.LExprContext && ((VBAParser.LExprContext)context.expression()).lExpression() is VBAParser.IndexExprContext)
             {
-                procedure = ((VBAParser.ECS_MemberCallContext)context.explicitCallStmtExpression()).identifier().GetText();
-                arguments = ((VBAParser.ECS_MemberCallContext)context.explicitCallStmtExpression()).argsCall();
+                var indexExpr = (VBAParser.IndexExprContext)((VBAParser.LExprContext)context.expression()).lExpression();
+                target = indexExpr.lExpression().GetText();
+                arguments = " " + indexExpr.argumentList().GetText();
             }
             else
             {
-                procedure = ((VBAParser.ECS_ProcedureCallContext)context.explicitCallStmtExpression()).identifier().GetText();
-                arguments = ((VBAParser.ECS_ProcedureCallContext)context.explicitCallStmtExpression()).argsCall();
+                target = context.expression().GetText();
+                arguments = string.Empty;
             }
-
             module.DeleteLines(selection.StartLine, selection.LineCount);
-
-            var argsList = (arguments == null
-                ? new string[] { }
-                : arguments.argCall().Select(e => e.GetText()))
-                .ToList();
-            var newInstruction = procedure + (argsList.Any() ? ' ' + string.Join(", ", argsList) : string.Empty);
+            var newInstruction = target + arguments;
             var newCodeLines = originalCodeLines.Replace(originalInstruction, newInstruction);
 
             module.InsertLines(selection.StartLine, newCodeLines);

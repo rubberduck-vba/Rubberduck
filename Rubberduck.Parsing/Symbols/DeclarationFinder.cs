@@ -79,14 +79,13 @@ namespace Rubberduck.Parsing.Symbols
             return matches.Where(m => procedure.Equals(m.ParentDeclaration) && m.DeclarationType == DeclarationType.Parameter).FirstOrDefault();
         }
 
-        public IEnumerable<IAnnotation> ModuleAnnotations(QualifiedModuleName module)
+        public IEnumerable<IAnnotation> FindAnnotations(QualifiedModuleName module)
         {
             IAnnotation[] result;
             if (_annotations.TryGetValue(module, out result))
             {
                 return result;
             }
-
             return new List<IAnnotation>();
         }
 
