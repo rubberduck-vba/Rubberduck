@@ -23,6 +23,7 @@ namespace Rubberduck
 {
     public sealed class App : IDisposable
     {
+        private const string FILE_TARGET_NAME = "file";
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IRubberduckParser _parser;
@@ -41,7 +42,7 @@ namespace Rubberduck
         private readonly IConnectionPoint _projectsEventsConnectionPoint;
         private readonly int _projectsEventsCookie;
 
-        private readonly IDictionary<string, Tuple<IConnectionPoint, int>>  _componentsEventsConnectionPoints = 
+        private readonly IDictionary<string, Tuple<IConnectionPoint, int>> _componentsEventsConnectionPoints =
             new Dictionary<string, Tuple<IConnectionPoint, int>>();
         private readonly IDictionary<string, Tuple<IConnectionPoint, int>> _referencesEventsConnectionPoints =
             new Dictionary<string, Tuple<IConnectionPoint, int>>();
@@ -74,7 +75,7 @@ namespace Rubberduck
 
             _sink = new VBProjectsEventsSink();
             var connectionPointContainer = (IConnectionPointContainer)_vbe.VBProjects;
-            var interfaceId = typeof (_dispVBProjectsEvents).GUID;
+            var interfaceId = typeof(_dispVBProjectsEvents).GUID;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
 
             _sink.ProjectAdded += sink_ProjectAdded;
@@ -130,9 +131,32 @@ namespace Rubberduck
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
         {
+            _config = _configService.LoadConfiguration();
             // also updates the ShortcutKey text
             _appMenus.Localize();
             _hooks.HookHotkeys();
+            UpdateLoggingLevel();
+        }
+
+        private void UpdateLoggingLevel()
+        {
+            var fileRule = LogManager.Configuration.LoggingRules.Where(rule => rule.Targets.Any(t => t.Name == FILE_TARGET_NAME)).FirstOrDefault();
+            if (fileRule == null)
+            {
+                return;
+            }
+            if (_config.UserSettings.GeneralSettings.DetailedLoggingEnabled)
+            {
+                // "Enable" should have been called "Add" perhaps?
+                fileRule.EnableLoggingForLevel(LogLevel.Trace);
+                fileRule.EnableLoggingForLevel(LogLevel.Debug);
+            }
+            else
+            {
+                fileRule.DisableLoggingForLevel(LogLevel.Trace);
+                fileRule.DisableLoggingForLevel(LogLevel.Debug);
+            }
+            LogManager.ReconfigExistingLoggers();
         }
 
         public void Startup()
@@ -142,6 +166,7 @@ namespace Rubberduck
             _appMenus.Localize();
             Task.Delay(1000).ContinueWith(t => UiDispatcher.Invoke(() => _parser.State.OnParseRequested(this))).ConfigureAwait(false);
             _hooks.HookHotkeys();
+            UpdateLoggingLevel();
         }
 
         public void Shutdown()
@@ -186,10 +211,10 @@ namespace Rubberduck
             }
         }
 
-        private readonly IDictionary<string,VBComponentsEventsSink> _componentsEventsSinks =
-            new Dictionary<string,VBComponentsEventsSink>();
+        private readonly IDictionary<string, VBComponentsEventsSink> _componentsEventsSinks =
+            new Dictionary<string, VBComponentsEventsSink>();
 
-        private readonly IDictionary<string,ReferencesEventsSink> _referencesEventsSinks = 
+        private readonly IDictionary<string, ReferencesEventsSink> _referencesEventsSinks =
             new Dictionary<string, ReferencesEventsSink>();
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
@@ -226,7 +251,7 @@ namespace Rubberduck
             }
 
             var connectionPointContainer = (IConnectionPointContainer)components;
-            var interfaceId = typeof (_dispVBComponentsEvents).GUID;
+            var interfaceId = typeof(_dispVBComponentsEvents).GUID;
 
             IConnectionPoint connectionPoint;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
@@ -436,7 +461,7 @@ namespace Rubberduck
             }
 
             if (_autoSave != null)
-            { 
+            {
                 _autoSave.Dispose();
                 _autoSave = null;
             }
