@@ -17,6 +17,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor.Extensions;
 using System.IO;
+using NLog;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -44,6 +45,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckParser(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
@@ -60,11 +62,11 @@ namespace Rubberduck.Parsing.VBA
 
         private void StateOnStateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("RubberduckParser handles OnStateChanged ({0})", _state.Status);
+            _logger.Debug("RubberduckParser handles OnStateChanged ({0})", _state.Status);
 
             if (_state.Status == ParserState.Parsed)
             {
-                Debug.WriteLine("(handling OnStateChanged) Starting resolver task");
+                _logger.Debug("(handling OnStateChanged) Starting resolver task");
                 Resolve(_central.Token); // Tests expect this to be synchronous
             }
         }
@@ -485,7 +487,7 @@ namespace Rubberduck.Parsing.VBA
             foreach (var kvp in _state.ParseTrees)
             {
                 var qualifiedName = kvp.Key;
-                Debug.WriteLine("Module '{0}' {1}", qualifiedName.ComponentName, _state.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
+                _logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName, _state.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
                 // modified module; walk parse tree and re-acquire all declarations
                 if (token.IsCancellationRequested) return;
                 ResolveDeclarations(qualifiedName.Component, kvp.Value);
@@ -534,12 +536,12 @@ namespace Rubberduck.Parsing.VBA
                 declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
                 declarationsListener.CreateModuleDeclarations();
 
-                Debug.WriteLine(string.Format("Walking parse tree for '{0}'... (acquiring declarations)", qualifiedModuleName.Name));
+                _logger.Debug("Walking parse tree for '{0}'... (acquiring declarations)", qualifiedModuleName.Name);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
             }
             catch (Exception exception)
             {
-                Debug.WriteLine("Exception thrown acquiring declarations for '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
+                _logger.Error(exception, "Exception thrown acquiring declarations for '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
                 lock (_state)
                 {
                     _state.SetModuleState(component, ParserState.ResolverError);
@@ -569,7 +571,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
             var qualifiedName = new QualifiedModuleName(component);
-            Debug.WriteLine("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
+            _logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
             var listener = new IdentifierReferenceListener(resolver);
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
@@ -592,7 +594,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _state.SetModuleState(component, state);
-            Debug.WriteLine("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
+            _logger.Debug("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
         }
 
         public void Dispose()

@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
+using NLog;
 using Rubberduck.Parsing.Date;
 using Rubberduck.Parsing.Symbols;
 using System.Diagnostics;
@@ -8,6 +9,8 @@ namespace Rubberduck.Parsing.VBA
 {
     public sealed class VBADateLiteralParser
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Parses the given date.
         /// </summary>
@@ -28,7 +31,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch
             {
-                Debug.WriteLine(string.Format("{0}: SLL mode failed for {1}. Retrying using LL.", this.GetType().Name, date));
+                _logger.Warn("{0}: SLL mode failed for {1}. Retrying using LL.", this.GetType().Name, date);
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;

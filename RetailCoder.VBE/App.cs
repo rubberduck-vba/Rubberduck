@@ -186,7 +186,7 @@ namespace Rubberduck
         {
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                Debug.WriteLine(string.Format("Locked project '{0}' was removed.", e.Item.Name));
+                _logger.Debug("Locked project '{0}' was removed.", e.Item.Name);
                 return;
             }
 
@@ -195,7 +195,7 @@ namespace Rubberduck
             _referencesEventsSinks.Remove(projectId);
             _parser.State.RemoveProject(e.Item);
 
-            Debug.WriteLine(string.Format("Project '{0}' was removed.", e.Item.Name));
+            _logger.Debug("Project '{0}' was removed.", e.Item.Name);
             Tuple<IConnectionPoint, int> componentsTuple;
             if (_componentsEventsConnectionPoints.TryGetValue(projectId, out componentsTuple))
             {
@@ -219,10 +219,10 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
-            Debug.WriteLine(string.Format("Project '{0}' was added.", e.Item.Name));
+            _logger.Debug("Project '{0}' was added.", e.Item.Name);
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                Debug.WriteLine("Project is protected and will not be added to parser state.");
+                _logger.Debug("Project is protected and will not be added to parser state.");
                 return;
             }
 
@@ -246,7 +246,7 @@ namespace Rubberduck
             if (_componentsEventsSinks.ContainsKey(projectId))
             {
                 // already registered - this is caused by the initial load+rename of a project in the VBE
-                Debug.WriteLine("Components sink already registered.");
+                _logger.Debug("Components sink already registered.");
                 return;
             }
 
@@ -269,7 +269,7 @@ namespace Rubberduck
             connectionPoint.Advise(componentsSink, out cookie);
 
             _componentsEventsConnectionPoints.Add(projectId, Tuple.Create(connectionPoint, cookie));
-            Debug.WriteLine("Components sink registered and advising.");
+            _logger.Debug("Components sink registered and advising.");
         }
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
@@ -279,7 +279,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was selected.", e.Item.Name));
+            _logger.Debug("Component '{0}' was selected.", e.Item.Name);
             // do something?
         }
 
@@ -290,7 +290,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
+            _logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
 
             _parser.State.RemoveRenamedComponent(e.Item, e.OldName);
         }
@@ -302,7 +302,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was removed.", e.Item.Name));
+            _logger.Debug("Component '{0}' was removed.", e.Item.Name);
             _parser.State.ClearStateCache(e.Item, true);
         }
 
@@ -313,7 +313,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was reloaded.", e.Item.Name));
+            _logger.Debug("Component '{0}' was reloaded.", e.Item.Name);
             _parser.State.OnParseRequested(sender, e.Item);
         }
 
@@ -324,7 +324,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was added.", e.Item.Name));
+            _logger.Debug("Component '{0}' was added.", e.Item.Name);
             _parser.State.OnParseRequested(sender, e.Item);
         }
 
@@ -335,7 +335,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was activated.", e.Item.Name));
+            _logger.Debug("Component '{0}' was activated.", e.Item.Name);
             // do something?
         }
 
@@ -346,7 +346,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
+            _logger.Debug("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
             _parser.State.RemoveProject(e.Item.HelpFile);
             _parser.State.OnParseRequested(sender);
         }
@@ -358,7 +358,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Project '{0}' was activated.", e.Item.Name));
+            _logger.Debug("Project '{0}' was activated.", e.Item.Name);
             // do something?
         }
         #endregion
@@ -371,7 +371,7 @@ namespace Rubberduck
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
+            _logger.Debug("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
         }
 

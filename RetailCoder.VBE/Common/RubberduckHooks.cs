@@ -11,6 +11,7 @@ using Rubberduck.Common.WinAPI;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
+using NLog;
 
 namespace Rubberduck.Common
 {
@@ -28,6 +29,7 @@ namespace Rubberduck.Common
         private readonly IEnumerable<ICommand> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private readonly IDictionary<RubberduckHotkey, ICommand> _mappings;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<ICommand> commands)
         {
@@ -151,7 +153,7 @@ namespace Rubberduck.Common
             }
             catch (Win32Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception, "Attaching hooks failed.");
             }
         }
 
@@ -172,7 +174,7 @@ namespace Rubberduck.Common
             }
             catch (Win32Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception, "Detaching hooks failed.");
             }
             IsAttached = false;
         }
@@ -182,12 +184,12 @@ namespace Rubberduck.Common
             var hotkey = sender as IHotkey;
             if (hotkey != null)
             {
-                Debug.WriteLine("Hotkey message received");
+                _logger.Debug("Hotkey message received");                
                 hotkey.Command.Execute(null);
                 return;
             }
 
-            Debug.WriteLine("Unknown message received");
+            _logger.Debug("Unknown message received");
             OnMessageReceived(sender, e);
         }
 
@@ -221,7 +223,7 @@ namespace Rubberduck.Common
             }
             catch (Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception, "Encountered error in WindowProc.");
             }
 
             return IntPtr.Zero;
@@ -244,7 +246,7 @@ namespace Rubberduck.Common
             }
             catch (Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception, "Encountered error in HandleHotkeyMessage.");
             }
             return processed;
         }
