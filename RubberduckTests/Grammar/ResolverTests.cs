@@ -60,7 +60,7 @@ namespace RubberduckTests.Grammar
             return parser.State;
         }
 
-        private RubberduckParserState Resolve(params Tuple<string,vbext_ComponentType>[] components)
+        private RubberduckParserState Resolve(params Tuple<string, vbext_ComponentType>[] components)
         {
             var builder = new MockVbeBuilder();
             var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
@@ -105,6 +105,52 @@ End Function
                 item.DeclarationType == DeclarationType.Function && item.IdentifierName == "Foo");
 
             Assert.AreEqual(1, declaration.References.Count(item => item.IsAssignment));
+        }
+
+        [TestMethod]
+        public void TypeOfIsExpression_BooleanExpressionIsReferenceToLocalVariable()
+        {
+            // arrange
+            var code_class1 = @"
+Public Function Foo() As String
+    Dim a As Object
+    anything = TypeOf a Is Class2
+End Function
+";
+            // We only use the second class as as target of the type expression, its contents don't matter.
+            var code_class2 = string.Empty;
+
+            // act
+            var state = Resolve(code_class1, code_class2);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "a");
+
+            Assert.AreEqual(1, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void TypeOfIsExpression_TypeExpressionIsReferenceToClass()
+        {
+            // arrange
+            var code_class1 = @"
+Public Function Foo() As String
+    Dim a As Object
+    anything = TypeOf a Is Class2
+End Function
+";
+            // We only use the second class as as target of the type expression, its contents don't matter.
+            var code_class2 = string.Empty;
+
+            // act
+            var state = Resolve(code_class1, code_class2);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class2");
+
+            Assert.AreEqual(1, declaration.References.Count());
         }
 
         [TestMethod]
@@ -285,18 +331,18 @@ Public foo As Integer
 ";
             var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
             var class2 = Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_ClassModule);
- 
+
             // act
             var state = Resolve(class1, class2);
- 
+
             // assert
             var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
- 
+
             var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
             Assert.IsNull(reference);
         }
 
-    [TestMethod]
+        [TestMethod]
         public void PublicVariableCall_IsReferenceToVariableDeclaration()
         {
             // arrange
@@ -311,7 +357,7 @@ Public foo As Integer
 ";
             // act
             var state = Resolve(
-                Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule), 
+                Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule),
                 Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_StdModule));
 
             // assert
@@ -451,7 +497,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "foo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item => 
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
                 item.ParentScoping.IdentifierName == "DoSomething"));
         }
 
@@ -768,7 +814,7 @@ End Sub
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Parameter 
+                item.DeclarationType == DeclarationType.Parameter
                 && item.IdentifierName == "values"
                 && item.IsArray);
 
@@ -927,7 +973,7 @@ End Sub
                 && item.ParentDeclaration.IdentifierName == "FooBarBaz");
 
             Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                !item.IsAssignment 
+                !item.IsAssignment
                 && item.ParentScoping.IdentifierName == "DoSomething"
                 && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
 
@@ -984,7 +1030,7 @@ End Sub
                 item.DeclarationType == DeclarationType.Enumeration
                 && item.IdentifierName == "FooBarBaz");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item => 
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
                 item.ParentScoping.IdentifierName == "DoSomething"
                 && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
         }
@@ -1029,7 +1075,7 @@ End Function";
 
             var state = Resolve(code);
 
-            var declaration = state.AllUserDeclarations.Single(item => 
+            var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable
                 && item.IsArray
                 && item.ParentScopeDeclaration.IdentifierName == "DoSomething");
@@ -1212,7 +1258,7 @@ End Sub
             if (declaration.Project.Name != declaration.AsTypeName)
             {
                 Assert.Inconclusive("variable should be named after project.");
-            } 
+            }
             var usages = declaration.References;
 
             Assert.AreEqual(2, usages.Count());
@@ -1239,7 +1285,7 @@ End Sub
                 item.DeclarationType == DeclarationType.UserDefinedTypeMember
                 && item.IdentifierName == "Foo");
 
-            var usages = declaration.References.Where(item => 
+            var usages = declaration.References.Where(item =>
                 item.ParentScoping.IdentifierName == "DoSomething");
 
             Assert.AreEqual(1, usages.Count());
@@ -1272,12 +1318,12 @@ End Sub
                 && item.AsTypeName == item.Project.Name
                 && item.IdentifierName == item.ParentDeclaration.IdentifierName);
 
-            var usages = declaration.References.Where(item => 
+            var usages = declaration.References.Where(item =>
                 item.ParentScoping.IdentifierName == "DoSomething");
 
             Assert.AreEqual(2, usages.Count());
         }
-    
+
         [TestMethod]
         public void GivenUDT_NamedAfterModule_LocalAsTypeResolvesToUDT()
         {
@@ -1303,7 +1349,7 @@ End Sub
                 item.DeclarationType == DeclarationType.UserDefinedType
                 && item.IdentifierName == item.ComponentName);
 
-            var usages = declaration.References.Where(item => 
+            var usages = declaration.References.Where(item =>
                 item.ParentScoping.IdentifierName == "DoSomething");
 
             Assert.AreEqual(1, usages.Count());
