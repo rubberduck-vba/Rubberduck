@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
@@ -55,20 +56,92 @@ namespace RubberduckTests.Refactoring.ExtractMethod
         [TestClass]
         public class WhenSetValidFlagIsCalledWhenTheReferenceIsInSelection : ExtractMethodRuleInSelectionTests
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodRuleTests")]
-            public void shouldSetFlagInSelection()
+            #region inputCode
+            string inputCode = @"
+Option explicit
+Public Sub CodeWithDeclaration()
+    Dim x as long
+    Dim z as long
+
+    x = 1 + 2
+    DebugPrint x
+    Dim y as long
+    y = x + 1
+    x = 2
+    DebugPrint y
+
+    z = x
+    DebugPrint z
+
+End Sub
+Public Sub DebugPrint(byval g as long)
+End Sub
+
+
+";
+            #endregion
+            [TestClass]
+            public class AndReferenceIsNotADeclaration : WhenSetValidFlagIsCalledWhenTheReferenceIsInSelection
             {
-                byte flag = new byte();
-                var usedSelection = new Selection(4, 1, 7, 10);
-                var referenceSelection = new Selection(5, 1, 5, 10);
-                IdentifierReference reference = new IdentifierReference(new QualifiedModuleName(), null, null, "a", referenceSelection, null, null);
+                [TestMethod]
+                [TestCategory("ExtractMethodRuleTests")]
+                public void shouldSetFlagInSelection()
+                {
+                    QualifiedModuleName qualifiedModuleName;
+                    RubberduckParserState state;
+                    MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
 
-                var SUT = new ExtractMethodRuleInSelection();
-                SUT.setValidFlag(ref flag, reference, usedSelection);
+                    var declarations = state.AllDeclarations;
+                    var selection = new Selection(8, 4, 13, 14);
+                    var referenceSelection = new Selection(10, 1, 10, 1);
 
-                Assert.AreEqual((byte)ExtractMethodRuleFlags.InSelection, flag);
+                    QualifiedSelection? qualifiedSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    var codeModule = new Mock<ICodeModuleWrapper>();
 
+                    byte flag = new byte();
+
+
+                    IdentifierReference reference = declarations.SelectMany(d => d.References, (d, r) => new { refernce = r, declarationStartLine = d.Selection.StartLine })
+                        .Where(anon => anon.declarationStartLine != anon.refernce.Selection.StartLine)
+                        .Select(anon => anon.refernce).First();
+
+                    var SUT = new ExtractMethodRuleInSelection();
+                    SUT.setValidFlag(ref flag, reference, selection);
+
+                    Assert.AreEqual((byte)ExtractMethodRuleFlags.InSelection, flag);
+                }
+            }
+
+            [TestClass]
+            public class AndReferenceIsADeclaration : WhenSetValidFlagIsCalledWhenTheReferenceIsInSelection
+            {
+                [TestMethod]
+                [TestCategory("ExtractMethodRuleTests")]
+                public void shouldNotSetFlagInSelection()
+                {
+                    QualifiedModuleName qualifiedModuleName;
+                    RubberduckParserState state;
+                    MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+
+                    var declarations = state.AllDeclarations;
+                    var selection = new Selection(8, 4, 13, 14);
+                    var referenceSelection = new Selection(9, 1, 9, 1);
+
+                    QualifiedSelection? qualifiedSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    var codeModule = new Mock<ICodeModuleWrapper>();
+
+                    byte flag = new byte();
+
+                    IdentifierReference reference = declarations.SelectMany(d => d.References, (d, r) => new { refernce = r, declarationStartLine = d.Selection.StartLine })
+                        .Where(anon => anon.declarationStartLine != anon.refernce.Selection.StartLine)
+                        .Select(anon => anon.refernce).First();
+
+                    var SUT = new ExtractMethodRuleInSelection();
+                    SUT.setValidFlag(ref flag, reference, selection);
+
+                    Assert.AreEqual((byte)ExtractMethodRuleFlags.InSelection, flag);
+
+                }
             }
 
         }
@@ -386,7 +459,7 @@ End Sub";
 
                 var emr = new Mock<IExtractMethodRule>();
                 var extractedMethod = new Mock<IExtractedMethod>();
-                var extractedMethodModel = new ExtractMethodModel(emRules,extractedMethod.Object);
+                var extractedMethodModel = new ExtractMethodModel(emRules, extractedMethod.Object);
                 extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
 
                 var selections = new List<Selection>() { new Selection(5, 9, 5, 10), selection };
@@ -436,10 +509,10 @@ End Sub";
                 var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
                 SUT.extract(declarations, qSelection.Value, selectedCode);
 
-                var expected = new Selection(9,1,9,1);
+                var expected = new Selection(9, 1, 9, 1);
                 var actual = SUT.PositionForMethodCall;
 
-                Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual );
+                Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual);
             }
             [TestMethod]
             [TestCategory("ExtractMethodModelTests")]
@@ -459,10 +532,10 @@ End Sub";
                 var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
                 SUT.extract(declarations, qSelection.Value, selectedCode);
 
-                var expected = new Selection(18,1,18,1);
+                var expected = new Selection(18, 1, 18, 1);
                 var actual = SUT.PositionForNewMethod;
 
-                Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual );
+                Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual);
 
             }
 
@@ -524,7 +597,7 @@ Debug.Print y";
                 var emr = new Mock<IExtractMethodRule>();
                 var emRules = new List<IExtractMethodRule>() { emr.Object, emr.Object };
                 var extractedMethod = new Mock<IExtractedMethod>();
-                var extractedMethodModel = new ExtractMethodModel(emRules,extractedMethod.Object);
+                var extractedMethodModel = new ExtractMethodModel(emRules, extractedMethod.Object);
                 extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
                 var _byte = new Byte();
 
@@ -586,7 +659,7 @@ Debug.Print y";
                     new ExtractMethodRuleUsedAfter(),
                     new ExtractMethodRuleUsedBefore()};
                 var extractedMethod = new Mock<IExtractedMethod>();
-                var extractedMethodModel = new ExtractMethodModel(emRules,extractedMethod.Object);
+                var extractedMethodModel = new ExtractMethodModel(emRules, extractedMethod.Object);
                 extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
 
                 var actual = extractedMethodModel.Method.NewMethodCall();
@@ -619,7 +692,7 @@ End Sub";
 
                 var emRules = new List<IExtractMethodRule>() { };
                 var extractedMethod = new Mock<IExtractedMethod>();
-                var SUT = new ExtractMethodModel(emRules,extractedMethod.Object);
+                var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
                 SUT.extract(declarations, qSelection.Value, "x = 1 + 2");
 
                 var actual = SUT.Method.MethodName;
@@ -659,7 +732,7 @@ End Sub";
 
                 var emRules = new List<IExtractMethodRule>() { };
                 var extractedMethod = new Mock<IExtractedMethod>();
-                var SUT = new ExtractMethodModel(emRules,extractedMethod.Object);
+                var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
                 SUT.extract(declarations, qSelection.Value, "x = 1 + 2");
 
                 var actual = SUT.Method.MethodName;
@@ -707,7 +780,7 @@ End Sub";
 
                 var emRules = new List<IExtractMethodRule>() { };
                 var extractedMethod = new Mock<IExtractedMethod>();
-                var SUT = new ExtractMethodModel(emRules,extractedMethod.Object);
+                var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
                 SUT.extract(declarations, qSelection.Value, "x = 1 + 2");
 
                 var actual = SUT.Method.MethodName;
