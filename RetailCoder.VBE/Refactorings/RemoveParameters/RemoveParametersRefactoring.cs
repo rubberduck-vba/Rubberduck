@@ -86,21 +86,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
             {
                 var proc = (dynamic)reference.Context;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
-                VBAParser.ArgumentListContext paramList = null;
-
+                VBAParser.ArgumentListContext argumentList = null;
                 var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
                 if (callStmt != null)
                 {
-                    paramList = callStmt.argumentList();
+                    argumentList = CallStatement.GetArgumentList(callStmt);
                 }
-                else if (reference.Context is VBAParser.IndexExprContext)
-                {
-                    paramList = ((VBAParser.IndexExprContext)reference.Context).argumentList();
-                }
-
-                if (paramList == null) { continue; }
-
-                RemoveCallParameter(paramList, module);
+                if (argumentList == null) { continue; }
+                RemoveCallParameter(argumentList, module);
             }
         }
 

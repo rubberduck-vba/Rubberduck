@@ -363,7 +363,7 @@ namespace Rubberduck.Common
             return declarations.Where(item => item.Project != null && item.ProjectId == type.ProjectId && item.ParentScope == type.Scope);
         }
 
-            /// <summary>
+        /// <summary>
         /// Finds all class members that are interface implementation members.
         /// </summary>
         public static IEnumerable<Declaration> FindInterfaceImplementationMembers(this IEnumerable<Declaration> declarations)

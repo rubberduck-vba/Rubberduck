@@ -225,6 +225,7 @@
     <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="StaTaskScheduler.cs" />
     <Compile Include="Symbols\AccessibilityCheck.cs" />
+    <Compile Include="Symbols\CallStatement.cs" />
     <Compile Include="Symbols\ExternalProcedureDeclaration.cs" />
     <Compile Include="Symbols\ICompilationPass.cs" />
     <Compile Include="Symbols\ParserRuleContextHelper.cs" />

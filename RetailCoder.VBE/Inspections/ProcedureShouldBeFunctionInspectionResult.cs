@@ -139,18 +139,7 @@ namespace Rubberduck.Inspections
 
                 var referenceParent = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
                 if (referenceParent == null) { continue; }
-
-                VBAParser.ArgumentListContext argList = null;
-                if (referenceParent.CALL() != null && referenceParent.expression() is VBAParser.LExprContext && ((VBAParser.LExprContext)referenceParent.expression()).lExpression() is VBAParser.IndexExprContext)
-                {
-                    var indexExpr = (VBAParser.IndexExprContext)((VBAParser.LExprContext)referenceParent.expression()).lExpression();
-                    argList = indexExpr.argumentList();
-                }
-                else
-                {
-                    argList = referenceParent.argumentList();
-                }
-
+                VBAParser.ArgumentListContext argList = CallStatement.GetArgumentList(referenceParent);
                 List<string> paramNames = new List<string>();
                 string argsCall = string.Empty;
                 int argsCallOffset = 0;

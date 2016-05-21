@@ -10,6 +10,19 @@ namespace Rubberduck.Parsing.Symbols
             return GetParent<T>(context) != null;
         }
 
+        public static bool HasParent(RuleContext context, RuleContext parent)
+        {
+            if (context == null)
+            {
+                return false;
+            }
+            if (context == parent)
+            {
+                return true;
+            }
+            return HasParent(context.Parent, parent);
+        }
+
         public static T GetParent<T>(RuleContext context)
         {
             if (context == null)
