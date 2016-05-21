@@ -59,6 +59,18 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _commitCommand = commands.OfType<CodeExplorer_CommitCommand>().FirstOrDefault();
             _undoCommand = commands.OfType<CodeExplorer_UndoCommand>().FirstOrDefault();
+
+            _setNameSortCommand = new DelegateCommand(param =>
+            {
+                SortByName = (bool)param;
+                SortBySelection = !(bool)param;
+            });
+
+            _setSelectionSortCommand = new DelegateCommand(param =>
+            {
+                SortBySelection = (bool)param;
+                SortByName = !(bool)param;
+            });
         }
 
         private CodeExplorerItemViewModel _selectedItem;
@@ -96,6 +108,30 @@ namespace Rubberduck.Navigation.CodeExplorer
                 ReorderChildNodes(Projects);
             }
         }
+
+        private bool _sortBySelection;
+        public bool SortBySelection
+        {
+            get { return _sortBySelection; }
+            set
+            {
+                if (_sortBySelection == value)
+                {
+                    return;
+                }
+
+                _sortBySelection = value;
+                OnPropertyChanged();
+
+                ReorderChildNodes(Projects);
+            }
+        }
+
+        private readonly ICommand _setNameSortCommand;
+        public ICommand SetNameSortCommand { get { return _setNameSortCommand; } }
+
+        private readonly ICommand _setSelectionSortCommand;
+        public ICommand SetSelectionSortCommand { get { return _setSelectionSortCommand; } }
 
         private bool _sortByType = true;
         public bool SortByType
