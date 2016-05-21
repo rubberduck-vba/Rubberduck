@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
@@ -16,9 +17,12 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parent,
             Declaration parentScope,
             string asTypeName,
+            VBAParser.AsTypeClauseContext asTypeContext,
+            string typeHint,
             Accessibility accessibility,
             ParserRuleContext context,
             Selection selection,
+            bool isArray,
             bool isBuiltIn,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
@@ -27,12 +31,15 @@ namespace Rubberduck.Parsing.Symbols
                   parent,
                   parentScope,
                   asTypeName,
+                  typeHint,
                   false,
                   false,
                   accessibility,
                   DeclarationType.Function,
                   context,
                   selection,
+                  isArray,
+                  asTypeContext,
                   isBuiltIn,
                   annotations,
                   attributes)
@@ -69,6 +76,22 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 return false;
+            }
+        }
+
+        public override string AsTypeNameWithoutArrayDesignator
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(AsTypeName))
+                {
+                    return AsTypeName;
+                }
+                if (!IsArray)
+                {
+                    return AsTypeName;
+                }
+                return AsTypeName.Substring(0, AsTypeName.IndexOf("("));
             }
         }
     }

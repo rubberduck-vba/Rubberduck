@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Antlr4.Runtime;
-using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -37,24 +36,50 @@ namespace Rubberduck.Parsing.Symbols
                 "ANY"
         };
 
+        public static readonly IDictionary<string, string> TYPEHINT_TO_TYPENAME = new Dictionary<string, string>
+        {
+            { "%", Tokens.Integer },
+            { "&", Tokens.Long },
+            { "@", Tokens.Decimal },
+            { "!", Tokens.Single },
+            { "#", Tokens.Double },
+            { "$", Tokens.String }
+        };
+
         public Declaration(
             QualifiedMemberName qualifiedName,
             Declaration parentDeclaration,
             Declaration parentScope,
             string asTypeName,
+            string typeHint,
             bool isSelfAssigned,
             bool isWithEvents,
             Accessibility accessibility,
             DeclarationType declarationType,
             ParserRuleContext context,
             Selection selection,
+            bool isArray,
+            VBAParser.AsTypeClauseContext asTypeContext,
             bool isBuiltIn = true,
             IEnumerable<IAnnotation> annotations = null,
             Attributes attributes = null)
             : this(
-                qualifiedName, parentDeclaration, parentScope == null ? null : parentScope.Scope, asTypeName,
-                isSelfAssigned, isWithEvents,
-                accessibility, declarationType, context, selection, isBuiltIn, annotations, attributes)
+                qualifiedName,
+                parentDeclaration,
+                parentScope == null ? null : parentScope.Scope,
+                asTypeName,
+                typeHint,
+                isSelfAssigned,
+                isWithEvents,
+                accessibility,
+                declarationType,
+                context,
+                selection,
+                isArray,
+                asTypeContext,
+                isBuiltIn,
+                annotations,
+                attributes)
         {
             _parentScopeDeclaration = parentScope;
         }
@@ -64,27 +89,51 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parentDeclaration,
             string parentScope,
             string asTypeName,
+            string typeHint,
             bool isSelfAssigned,
             bool isWithEvents,
             Accessibility accessibility,
             DeclarationType declarationType,
+            bool isArray,
+            VBAParser.AsTypeClauseContext asTypeContext,
             bool isBuiltIn = true,
             IEnumerable<IAnnotation> annotations = null,
             Attributes attributes = null)
-            : this(qualifiedName, parentDeclaration, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn, annotations, attributes)
-        { }
+            : this(
+                  qualifiedName,
+                  parentDeclaration,
+                  parentScope,
+                  asTypeName,
+                  typeHint,
+                  isSelfAssigned,
+                  isWithEvents,
+                  accessibility,
+                  declarationType,
+                  null,
+                  Selection.Home,
+                  isArray,
+                  asTypeContext,
+                  isBuiltIn,
+                  annotations,
+                  attributes)
+        {
+
+        }
 
         public Declaration(
             QualifiedMemberName qualifiedName,
             Declaration parentDeclaration,
             string parentScope,
             string asTypeName,
+            string typeHint,
             bool isSelfAssigned,
             bool isWithEvents,
             Accessibility accessibility,
             DeclarationType declarationType,
             ParserRuleContext context,
             Selection selection,
+            bool isArray,
+            VBAParser.AsTypeClauseContext asTypeContext,
             bool isBuiltIn = false,
             IEnumerable<IAnnotation> annotations = null,
             Attributes attributes = null)
@@ -121,16 +170,9 @@ namespace Rubberduck.Parsing.Symbols
                 result = value;
             }
             _customFolder = result;
-        }
-
-        public static bool HasParameter(DeclarationType declarationType)
-        {
-            return
-                declarationType.HasFlag(DeclarationType.Property)
-                || declarationType == DeclarationType.Function
-                || declarationType == DeclarationType.Procedure
-                || declarationType == DeclarationType.LibraryFunction
-                || declarationType == DeclarationType.LibraryProcedure;
+            _isArray = isArray;
+            _asTypeContext = asTypeContext;
+            _typeHint = typeHint;
         }
 
         public static Declaration GetModuleParent(Declaration declaration)
@@ -159,10 +201,23 @@ namespace Rubberduck.Parsing.Symbols
             return GetProjectParent(declaration.ParentDeclaration);
         }
 
+        private readonly bool _isArray;
+        public bool IsArray { get { return _isArray; } }
+        private readonly VBAParser.AsTypeClauseContext _asTypeContext;
+        public VBAParser.AsTypeClauseContext AsTypeContext { get { return _asTypeContext; } }
+        private readonly string _typeHint;
+        public string TypeHint { get { return _typeHint; } }
+        public bool HasTypeHint { get { return !string.IsNullOrWhiteSpace(_typeHint); } }
+
+        public bool IsTypeSpecified
+        {
+            get
+            {
+                return HasTypeHint || _asTypeContext != null;
+            }
+        }
+
         private readonly bool _isBuiltIn;
-        /// <summary>
-        /// Marks a declaration as non-user code, e.g. the <see cref="VbaStandardLib"/> or <see cref="ExcelObjectModel"/>.
-        /// </summary>
         public bool IsBuiltIn { get { return _isBuiltIn; } }
 
         private readonly Declaration _parentDeclaration;
@@ -258,23 +313,49 @@ namespace Rubberduck.Parsing.Symbols
                 && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
-        public void AddReference(IdentifierReference reference)
+        public void AddReference(
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            ParserRuleContext callSiteContext,
+            string identifier,
+            Declaration callee,
+            Selection selection,
+            IEnumerable<IAnnotation> annotations,
+            bool isAssignmentTarget = false,
+            bool hasExplicitLetStatement = false)
         {
-            if (reference == null || reference.Declaration.Context == reference.Context)
-            {
-                return;
-            }
-            if (reference.Context.Parent != _context
-                && !_references.Select(r => r.Context).Contains(reference.Context.Parent)
-                && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName
-                    && r.Selection.StartLine == reference.Selection.StartLine
-                    && r.Selection.EndLine == reference.Selection.EndLine
-                    && r.Selection.StartColumn == reference.Selection.StartColumn
-                    && r.Selection.EndColumn == reference.Selection.EndColumn))
-            {
-                _references.Add(reference);
-            }
+            _references.Add(
+                new IdentifierReference(
+                    module,
+                    scope,
+                    parent,
+                    identifier,
+                    selection,
+                    callSiteContext,
+                    callee,
+                    isAssignmentTarget,
+                    hasExplicitLetStatement,
+                    annotations));
         }
+
+        //public void AddReference(IdentifierReference reference)
+        //{
+        //    if (reference == null || reference.Declaration.Context == reference.Context)
+        //    {
+        //        return;
+        //    }
+        //    if (reference.Context.Parent != _context
+        //        && !_references.Select(r => r.Context).Contains(reference.Context.Parent)
+        //        && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName
+        //            && r.Selection.StartLine == reference.Selection.StartLine
+        //            && r.Selection.EndLine == reference.Selection.EndLine
+        //            && r.Selection.StartColumn == reference.Selection.StartColumn
+        //            && r.Selection.EndColumn == reference.Selection.EndColumn))
+        //    {
+        //        _references.Add(reference);
+        //    }
+        //}
 
         public void AddMemberCall(IdentifierReference reference)
         {
@@ -356,7 +437,15 @@ namespace Rubberduck.Parsing.Symbols
         /// and <c>Variant</c> if applicable but unspecified.
         /// </remarks>
         public string AsTypeName { get { return _asTypeName; } }
-        
+
+        public virtual string AsTypeNameWithoutArrayDesignator
+        {
+            get
+            {
+                return AsTypeName;
+            }
+        }
+
         public bool AsTypeIsBaseType
         {
             get
@@ -366,8 +455,6 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public Declaration AsTypeDeclaration { get; internal set; }
-
-        private bool? _isArray;
 
         private readonly IReadOnlyList<DeclarationType> _neverArray = new[]
         {
@@ -391,136 +478,6 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.UserDefinedType,
             DeclarationType.Constant,
         };
-
-        public virtual bool IsArray()
-        {
-            if (Context == null || _neverArray.Any(item => DeclarationType.HasFlag(item)))
-            {
-                return false;
-            }
-
-            if (_isArray.HasValue)
-            {
-                return _isArray.Value;
-            }
-
-            var rParenMethod = Context.GetType().GetMethod("RPAREN");
-            if (rParenMethod == null)
-            {
-                _isArray = false;
-                return _isArray.Value;
-            }
-
-            var declaration = (dynamic)Context;
-            _isArray = declaration.LPAREN() != null && declaration.RPAREN() != null;
-            return _isArray.Value;
-        }
-
-        private bool? _isTypeSpecified;
-
-        private readonly IReadOnlyList<DeclarationType> _neverSpecified = new[]
-        {
-            DeclarationType.Procedure,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet,
-            DeclarationType.UserDefinedType,
-            DeclarationType.ClassModule,
-            DeclarationType.Control,
-            DeclarationType.Enumeration,
-            DeclarationType.EnumerationMember,
-            DeclarationType.LibraryProcedure,
-            DeclarationType.LineLabel,
-            DeclarationType.ModuleOption,
-            DeclarationType.Project,
-        };
-
-        public VBAParser.AsTypeClauseContext GetAsTypeContext()
-        {
-            return (VBAParser.AsTypeClauseContext)((dynamic)Context).asTypeClause();
-        }
-
-        public virtual bool IsTypeSpecified()
-        {
-            if (Context == null || _neverSpecified.Any(item => DeclarationType.HasFlag(item)))
-            {
-                return false;
-            }
-
-            if (_isTypeSpecified.HasValue)
-            {
-                return _isTypeSpecified.Value;
-            }
-
-            var method = Context.GetType().GetMethod("asTypeClause");
-            if (method == null)
-            {
-                _isTypeSpecified = false;
-                return false;
-            }
-
-            if (HasTypeHint())
-            {
-                _isTypeSpecified = false;
-                return true;
-            }
-
-            _isTypeSpecified = ((dynamic)Context).asTypeClause() is VBAParser.AsTypeClauseContext;
-            return _isTypeSpecified.Value;
-        }
-
-        private bool? _hasTypeHint;
-
-        public bool HasTypeHint()
-        {
-            if (_hasTypeHint.HasValue)
-            {
-                return _hasTypeHint.Value;
-            }
-
-            string token;
-            return HasTypeHint(out token);
-        }
-
-        private readonly IReadOnlyList<DeclarationType> _neverHinted = new[]
-        {
-            DeclarationType.ClassModule,
-            DeclarationType.LineLabel,
-            DeclarationType.ModuleOption,
-            DeclarationType.Project,
-            DeclarationType.Control,
-            DeclarationType.Enumeration,
-            DeclarationType.EnumerationMember,
-            DeclarationType.LibraryProcedure,
-            DeclarationType.Procedure,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet,
-            DeclarationType.UserDefinedType,
-            DeclarationType.UserDefinedTypeMember,
-        };
-
-        public bool HasTypeHint(out string token)
-        {
-            if (Context == null || _neverHinted.Any(item => DeclarationType.HasFlag(item)))
-            {
-                token = null;
-                _hasTypeHint = false;
-                return _hasTypeHint.Value;
-            }
-
-            try
-            {
-                var hint = ((dynamic)Context).typeHint();
-                token = hint == null ? null : hint.GetText();
-                _hasTypeHint = hint != null;
-                return _hasTypeHint.Value;
-            }
-            catch (RuntimeBinderException)
-            {
-                token = null;
-                _hasTypeHint = false;
-                return _hasTypeHint.Value;
-            }
-        }
 
         public bool IsSelected(QualifiedSelection selection)
         {

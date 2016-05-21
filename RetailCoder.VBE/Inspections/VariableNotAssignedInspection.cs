@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections
             // ignore arrays. todo: ArrayIndicesNotAccessedInspection
             var arrays = items.Where(declaration =>
                 declaration.DeclarationType == DeclarationType.Variable
-                && declaration.IsArray()).ToList();
+                && declaration.IsArray).ToList();
 
             var declarations = items.Where(declaration =>
                 declaration.DeclarationType == DeclarationType.Variable

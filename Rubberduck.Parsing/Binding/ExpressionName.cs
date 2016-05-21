@@ -1,45 +1,71 @@
-﻿namespace Rubberduck.Parsing.Binding
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Preprocessing;
+using System.Linq;
+
+namespace Rubberduck.Parsing.Binding
 {
     public static class ExpressionName
     {
-        public static string GetName(VBAExpressionParser.NameContext context)
+        public static string GetName(VBAParser.UnrestrictedIdentifierContext context)
         {
-            string name;
-            if (context.untypedName() != null)
+            if (context.identifier() != null)
             {
-                name = context.untypedName().GetText();
+                return GetName(context.identifier());
             }
             else
             {
-                name = context.typedName().typedNameValue().GetText();
+                return context.GetText();
+            }
+        }
+
+        public static string GetName(VBAParser.IdentifierContext context)
+        {
+            string name;
+            var value = context.identifierValue();
+            if (value.foreignName() != null)
+            {
+                if (value.foreignName().foreignIdentifier() != null)
+                {
+                    // Foreign identifiers can be nested, since the meaning of the content can differ depending on the host application,
+                    // we simply everything that's inside the brackets as the identifier.
+                    name = string.Join("", value.foreignName().foreignIdentifier().Select(id => id.GetText()));
+                }
+                else
+                {
+                    // Foreign identifiers can be empty, e.g. "[]".
+                    name = string.Empty;
+                }
+            }
+            else
+            {
+                name = value.GetText();
             }
             return name;
         }
 
-        public static string GetName(VBAExpressionParser.ReservedIdentifierNameContext context)
+        public static string GetName(VBAConditionalCompilationParser.NameContext context)
         {
             string name;
-            if (context.reservedUntypedName() != null)
+            var value = context.nameValue();
+            if (value.foreignName() != null)
             {
-                name = context.reservedUntypedName().GetText();
+                if (value.foreignName().foreignIdentifier() != null)
+                {
+                    // Foreign identifiers can be nested, since the meaning of the content can differ depending on the host application,
+                    // we simply everything that's inside the brackets as the identifier.
+                    name = string.Join("", value.foreignName().foreignIdentifier().Select(id => id.GetText()));
+                }
+                else
+                {
+                    // Foreign identifiers can be empty, e.g. "[]".
+                    name = string.Empty;
+                }
             }
             else
             {
-                name = context.reservedTypedName().reservedIdentifier().GetText();
+                name = value.GetText();
             }
             return name;
-        }
-
-        public static string GetName(VBAExpressionParser.UnrestrictedNameContext context)
-        {
-            if (context.name() != null)
-            {
-                return GetName(context.name());
-            }
-            else
-            {
-                return GetName(context.reservedIdentifierName());
-            }
         }
     }
 }

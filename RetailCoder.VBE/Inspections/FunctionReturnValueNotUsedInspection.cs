@@ -93,11 +93,7 @@ namespace Rubberduck.Inspections
                 {
                     continue;
                 }
-                if (IsExplicitCall(usage))
-                {
-                    continue;
-                }
-                if (IsImplicitCall(usage))
+                if (IsCallStmt(usage))
                 {
                     continue;
                 }
@@ -117,12 +113,12 @@ namespace Rubberduck.Inspections
         private bool IsAddressOfCall(IdentifierReference usage)
         {
             var what = usage.Context.GetType();
-            return ParserRuleContextHelper.HasParent<VBAParser.VsAddressOfContext>(usage.Context);
+            return ParserRuleContextHelper.HasParent<VBAParser.AddressOfExpressionContext>(usage.Context);
         }
 
         private bool IsTypeOfExpression(IdentifierReference usage)
         {
-            return ParserRuleContextHelper.HasParent<VBAParser.TypeOfIsExpressionContext>(usage.Context);
+            return ParserRuleContextHelper.HasParent<VBAParser.TypeofexprContext>(usage.Context);
         }
 
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
@@ -130,16 +126,9 @@ namespace Rubberduck.Inspections
             return assignment.ParentScoping.Equals(function) && assignment.Declaration.Equals(function);
         }
 
-        private bool IsExplicitCall(IdentifierReference usage)
+        private bool IsCallStmt(IdentifierReference usage)
         {
-            return usage.Context.Parent is VBAParser.ExplicitCallStmtContext;
-        }
-
-        private bool IsImplicitCall(IdentifierReference usage)
-        {
-            var a = usage.Context.Parent.GetType();
-            var b = usage.Context.Parent.Parent.GetType();
-            return usage.Context.Parent is VBAParser.ImplicitCallStmt_InBlockContext;
+            return usage.Context.Parent is VBAParser.CallStmtContext;
         }
 
         private bool IsLet(IdentifierReference usage)
@@ -148,7 +137,7 @@ namespace Rubberduck.Inspections
             {
                 return false;
             }
-            return ((VBAParser.LetStmtContext)usage.Context.Parent).valueStmt()[0] == usage.Context;
+            return ((VBAParser.LetStmtContext)usage.Context.Parent).lExpression() == usage.Context;
         }
 
         private bool IsSet(IdentifierReference usage)
@@ -157,7 +146,7 @@ namespace Rubberduck.Inspections
             {
                 return false;
             }
-            return ((VBAParser.SetStmtContext)usage.Context.Parent).valueStmt()[0] == usage.Context;
+            return ((VBAParser.SetStmtContext)usage.Context.Parent).lExpression() == usage.Context;
         }
     }
 }

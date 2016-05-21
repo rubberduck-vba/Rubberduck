@@ -1,5 +1,4 @@
 ﻿using Antlr4.Runtime;
-using System.Diagnostics;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -22,14 +21,13 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression Resolve()
         {
             var leftExpr = _left.Resolve();
-            if (leftExpr == null)
-            {
-                return null;
-            }
             var rightExpr = _right.Resolve();
-            if (rightExpr == null)
+            if (leftExpr.Classification == ExpressionClassification.ResolutionFailed || rightExpr.Classification == ExpressionClassification.ResolutionFailed)
             {
-                return null;
+                var failedExpr = new ResolutionFailedExpression();
+                failedExpr.AddSuccessfullyResolvedExpression(leftExpr);
+                failedExpr.AddSuccessfullyResolvedExpression(rightExpr);
+                return failedExpr;
             }
             return new BinaryOpExpression(null, _context, leftExpr, rightExpr);
         }

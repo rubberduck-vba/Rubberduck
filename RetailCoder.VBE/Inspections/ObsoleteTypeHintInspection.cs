@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections
             var results = UserDeclarations.ToList();
 
             var declarations = from item in results
-                where item.HasTypeHint()
+                where item.HasTypeHint
                 select
                     new ObsoleteTypeHintInspectionResult(this,
                         string.Format(InspectionsUI.ObsoleteTypeHintInspectionResultFormat,

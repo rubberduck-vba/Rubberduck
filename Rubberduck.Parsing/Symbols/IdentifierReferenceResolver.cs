@@ -2,7 +2,6 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,6 +20,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _currentParent;
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
+        private readonly AnnotationService _annotationService;
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
         {
@@ -40,7 +40,8 @@ namespace Rubberduck.Parsing.Symbols
                 new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
                 typeBindingContext,
                 procedurePointerBindingContext);
-            _boundExpressionVisitor = new BoundExpressionVisitor();
+            _annotationService = new AnnotationService(_declarationFinder);
+            _boundExpressionVisitor = new BoundExpressionVisitor(_annotationService);
         }
 
         public void SetCurrentScope()
@@ -67,19 +68,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public void EnterWithBlock(VBAParser.WithStmtContext context)
         {
-            Declaration qualifier = null;
-            var expr = context.withStmtExpression();
-            var typeExpression = expr.GetText();
-            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, typeExpression,
-                GetInnerMostWithExpression(), ResolutionStatementContext.Undefined);
-            if (boundExpression != null)
-            {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression,
-                    (exprCtx, identifier, declaration) =>
-                        CreateReference(expr, identifier, declaration,
-                            RubberduckParserState.CreateBindingSelection(expr, exprCtx)));
-                qualifier = boundExpression.ReferencedDeclaration;
-            }
+            var boundExpression = _bindingService.ResolveDefault(
+                _moduleDeclaration,
+                _currentParent,
+                context.expression(),
+                GetInnerMostWithExpression(),
+                StatementResolutionContext.Undefined);
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
             // note: pushes null if unresolved
             _withBlockExpressions.Push(boundExpression);
         }
@@ -98,52 +93,18 @@ namespace Rubberduck.Parsing.Symbols
             _withBlockExpressions.Pop();
         }
 
-        private IdentifierReference CreateReference(ParserRuleContext callSiteContext, string identifier,
-            Declaration callee, Selection selection, bool isAssignmentTarget = false,
-            bool hasExplicitLetStatement = false)
-        {
-            if (callSiteContext == null || _currentScope == null)
-            {
-                return null;
-            }
-            var annotations = FindAnnotations(selection.StartLine);
-            return new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, identifier, selection,
-                callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
-        }
-
-        private IEnumerable<IAnnotation> FindAnnotations(int line)
-        {
-            var annotations = new List<IAnnotation>();
-            var moduleAnnotations = _declarationFinder.ModuleAnnotations(_qualifiedModuleName).ToList();
-
-            // VBE 1-based indexing
-            for (var i = line - 1; i >= 1; i--)
-            {
-                var annotation = moduleAnnotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i);
-
-                if (annotation == null)
-                {
-                    break;
-                }
-
-                annotations.Add(annotation);
-            }
-
-            return annotations;
-        }
-
         public void Resolve(VBAParser.OnErrorStmtContext context)
         {
-            if (context.valueStmt() == null)
+            if (context.expression() == null)
             {
                 return;
             }
-            ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
+            ResolveLabel(context.expression(), context.expression().GetText());
         }
 
         public void Resolve(VBAParser.ErrorStmtContext context)
         {
-            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+            ResolveDefault(context.expression());
         }
 
         private void ResolveLabel(ParserRuleContext context, string label)
@@ -151,113 +112,124 @@ namespace Rubberduck.Parsing.Symbols
             var labelDeclaration = _bindingService.ResolveGoTo(_currentParent, label);
             if (labelDeclaration != null)
             {
-                labelDeclaration.AddReference(CreateReference(context, context.GetText(), labelDeclaration,
-                    context.GetSelection()));
+                var callSiteContext = context;
+                var identifier = context.GetText();
+                var callee = labelDeclaration;
+                labelDeclaration.AddReference(
+                    _qualifiedModuleName,
+                    _currentScope,
+                    _currentParent,
+                    callSiteContext,
+                    identifier,
+                    callee,
+                    callSiteContext.GetSelection(),
+                    _annotationService.FindAnnotations(_qualifiedModuleName, callSiteContext.GetSelection().StartLine));
             }
         }
 
-        private void ResolveDefault(ParserRuleContext context, string expression,
-            ResolutionStatementContext statementContext = ResolutionStatementContext.Undefined,
-            bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
+        private void ResolveDefault(
+            ParserRuleContext expression,
+            StatementResolutionContext statementContext = StatementResolutionContext.Undefined,
+            bool isAssignmentTarget = false,
+            bool hasExplicitLetStatement = false)
         {
-            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression,
-                GetInnerMostWithExpression(), statementContext);
-            if (boundExpression != null)
-            {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression,
-                    (exprCtx, identifier, declaration) =>
-                        CreateReference(context, identifier, declaration,
-                            RubberduckParserState.CreateBindingSelection(context, exprCtx),
-                            boundExpression is MemberAccessExpression
-                                ? isAssignmentTarget && boundExpression.Context.children.Last() == exprCtx
-                                : isAssignmentTarget,
-                            hasExplicitLetStatement));
-            }
-            else
+            var boundExpression = _bindingService.ResolveDefault(
+                _moduleDeclaration,
+                _currentParent,
+                expression,
+                GetInnerMostWithExpression(),
+                statementContext);
+            if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
                 Debug.WriteLine(
                     string.Format(
-                        "Failed to resolve {0}. Possible causes include: COM Coclass/Interface mixup / Alias / Bug in the resolver.",
-                        expression));
+                        "{0}/Default Context: Failed to resolve {1}. Binding all successfully resolved expressions anyway.",
+                        GetType().Name,
+                        expression.GetText()));
             }
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget, false);
         }
 
-        private void ResolveType(ParserRuleContext context, string expression)
+        private void ResolveType(ParserRuleContext expression)
         {
             var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
-            if (boundExpression != null)
+            if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression,
-                    (exprCtx, identifier, declaration) =>
-                        CreateReference(context, identifier, declaration,
-                            RubberduckParserState.CreateBindingSelection(context, exprCtx)));
+                Debug.WriteLine(
+                    string.Format(
+                        "{0}/Type Context: Failed to resolve {1}. Binding all successfully resolved expressions anyway.",
+                        GetType().Name,
+                        expression.GetText()));
             }
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
         }
 
         public void Resolve(VBAParser.GoToStmtContext context)
         {
-            ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
+            ResolveLabel(context.expression(), context.expression().GetText());
         }
 
         public void Resolve(VBAParser.OnGoToStmtContext context)
         {
-            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText());
-            for (int labelIndex = 1; labelIndex < context.valueStmt().Count; labelIndex++)
+            ResolveDefault(context.expression()[0]);
+            for (int labelIndex = 1; labelIndex < context.expression().Count; labelIndex++)
             {
-                ResolveLabel(context.valueStmt()[labelIndex], context.valueStmt()[labelIndex].GetText());
+                ResolveLabel(context.expression()[labelIndex], context.expression()[labelIndex].GetText());
             }
         }
 
         public void Resolve(VBAParser.GoSubStmtContext context)
         {
-            ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
+            ResolveLabel(context.expression(), context.expression().GetText());
         }
 
         public void Resolve(VBAParser.OnGoSubStmtContext context)
         {
-            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText());
-            for (int labelIndex = 1; labelIndex < context.valueStmt().Count; labelIndex++)
+            ResolveDefault(context.expression()[0]);
+            for (int labelIndex = 1; labelIndex < context.expression().Count; labelIndex++)
             {
-                ResolveLabel(context.valueStmt()[labelIndex], context.valueStmt()[labelIndex].GetText());
+                ResolveLabel(context.expression()[labelIndex], context.expression()[labelIndex].GetText());
             }
         }
 
         public void Resolve(VBAParser.RedimStmtContext context)
         {
-            foreach (var redimStmt in context.redimSubStmt())
+            foreach (var redimVariableExpression in context.redimDeclarationList().redimVariableDeclarationExpression())
             {
-                foreach (var dimSpec in redimStmt.subscripts().subscript())
+                ResolveDefault(redimVariableExpression.lExpression());
+                foreach (var dimSpec in redimVariableExpression.dynamicArrayClause().dynamicArrayDim().dynamicBoundsList().dynamicDimSpec())
                 {
-                    foreach (var expr in dimSpec.valueStmt())
+                    if (dimSpec.dynamicLowerBound() != null)
                     {
-                        ResolveDefault(expr, expr.GetText());
+                        ResolveDefault(dimSpec.dynamicLowerBound().integerExpression());
                     }
+                    ResolveDefault(dimSpec.dynamicUpperBound().integerExpression());
                 }
             }
         }
 
         public void Resolve(VBAParser.WhileWendStmtContext context)
         {
-            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+            ResolveDefault(context.expression());
         }
 
         public void Resolve(VBAParser.DoLoopStmtContext context)
         {
-            if (context.valueStmt() == null)
+            if (context.expression() == null)
             {
                 return;
             }
-            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+            ResolveDefault(context.expression());
         }
 
         public void Resolve(VBAParser.IfStmtContext context)
         {
-            ResolveDefault(context.booleanExpression(), context.booleanExpression().GetText());
+            ResolveDefault(context.booleanExpression());
             if (context.elseIfBlock() != null)
             {
                 foreach (var elseIfBlock in context.elseIfBlock())
                 {
-                    ResolveDefault(elseIfBlock.booleanExpression(), elseIfBlock.booleanExpression().GetText());
+                    ResolveDefault(elseIfBlock.booleanExpression());
                 }
             }
         }
@@ -268,12 +240,12 @@ namespace Rubberduck.Parsing.Symbols
             // single-line-if-statements, we do it here for better understanding.
             if (context.ifWithEmptyThen() != null)
             {
-                ResolveDefault(context.ifWithEmptyThen().booleanExpression(), context.ifWithEmptyThen().booleanExpression().GetText());
+                ResolveDefault(context.ifWithEmptyThen().booleanExpression());
                 ResolveListOrLabel(context.ifWithEmptyThen().singleLineElseClause().listOrLabel());
             }
             else
             {
-                ResolveDefault(context.ifWithNonEmptyThen().booleanExpression(), context.ifWithNonEmptyThen().booleanExpression().GetText());
+                ResolveDefault(context.ifWithNonEmptyThen().booleanExpression());
                 ResolveListOrLabel(context.ifWithNonEmptyThen().listOrLabel());
                 if (context.ifWithNonEmptyThen().singleLineElseClause() != null)
                 {
@@ -293,33 +265,23 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.SelectCaseStmtContext context)
         {
-            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
-            if (context.sC_Case() != null)
+            ResolveDefault(context.selectExpression().expression());
+            if (context.caseClause() == null)
             {
-                foreach (var caseClauseBlock in context.sC_Case())
+                return;
+            }
+            foreach (var caseClause in context.caseClause())
+            {
+                foreach (var rangeClause in caseClause.rangeClause())
                 {
-                    var caseClause = caseClauseBlock.sC_Cond();
-                    if (caseClause is VBAParser.CaseCondSelectionContext)
+                    if (rangeClause.expression() != null)
                     {
-                        foreach (var selectClause in ((VBAParser.CaseCondSelectionContext)caseClause).sC_Selection())
-                        {
-                            if (selectClause is VBAParser.CaseCondIsContext)
-                            {
-                                var ctx = (VBAParser.CaseCondIsContext)selectClause;
-                                ResolveDefault(ctx.valueStmt(), ctx.valueStmt().GetText());
-                            }
-                            else if (selectClause is VBAParser.CaseCondToContext)
-                            {
-                                var ctx = (VBAParser.CaseCondToContext)selectClause;
-                                ResolveDefault(ctx.valueStmt()[0], ctx.valueStmt()[0].GetText());
-                                ResolveDefault(ctx.valueStmt()[0], ctx.valueStmt()[0].GetText());
-                            }
-                            else
-                            {
-                                var ctx = (VBAParser.CaseCondValueContext)selectClause;
-                                ResolveDefault(ctx.valueStmt(), ctx.valueStmt().GetText());
-                            }
-                        }
+                        ResolveDefault(rangeClause.expression());
+                    }
+                    else
+                    {
+                        ResolveDefault(rangeClause.selectStartValue().expression());
+                        ResolveDefault(rangeClause.selectEndValue().expression());
                     }
                 }
             }
@@ -328,47 +290,64 @@ namespace Rubberduck.Parsing.Symbols
         public void Resolve(VBAParser.LetStmtContext context)
         {
             var letStatement = context.LET();
-            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText(),
-                ResolutionStatementContext.LetStatement, true, letStatement != null);
-            ResolveDefault(context.valueStmt()[1], context.valueStmt()[1].GetText());
+            ResolveDefault(
+                context.lExpression(),
+                StatementResolutionContext.LetStatement,
+                true,
+                letStatement != null);
+            ResolveDefault(context.expression());
         }
 
         public void Resolve(VBAParser.SetStmtContext context)
         {
-            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText(),
-                ResolutionStatementContext.SetStatement, true, false);
-            ResolveDefault(context.valueStmt()[1], context.valueStmt()[1].GetText());
+            ResolveDefault(
+                context.lExpression(),
+                StatementResolutionContext.SetStatement,
+                true,
+                false);
+            ResolveDefault(context.expression());
         }
 
-        public void Resolve(VBAParser.ExplicitCallStmtContext context)
+        public void Resolve(VBAParser.CallStmtContext context)
         {
-            ResolveDefault(context.explicitCallStmtExpression(), context.explicitCallStmtExpression().GetText(),
-                ResolutionStatementContext.CallStatement);
+            ResolveDefault(context);
         }
 
         public void Resolve(VBAParser.ConstStmtContext context)
         {
             foreach (var constStmt in context.constSubStmt())
             {
-                ResolveDefault(constStmt.valueStmt(), constStmt.valueStmt().GetText());
+                ResolveDefault(constStmt.expression());
             }
         }
 
         public void Resolve(VBAParser.EraseStmtContext context)
         {
-            foreach (var expr in context.valueStmt())
+            foreach (var expr in context.expression())
             {
-                ResolveDefault(expr, expr.GetText());
+                ResolveDefault(expr);
+            }
+        }
+
+        private void ResolveFileNumber(VBAParser.FileNumberContext fileNumber)
+        {
+            if (fileNumber.markedFileNumber() != null)
+            {
+                ResolveDefault(fileNumber.markedFileNumber().expression());
+            }
+            else
+            {
+                ResolveDefault(fileNumber.unmarkedFileNumber().expression());
             }
         }
 
         public void Resolve(VBAParser.OpenStmtContext context)
         {
-            ResolveDefault(context.pathName(), context.pathName().GetText());
-            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            ResolveDefault(context.pathName().expression());
+            ResolveFileNumber(context.fileNumber());
             if (context.lenClause() != null)
             {
-                ResolveDefault(context.lenClause().recLength(), context.lenClause().recLength().GetText());
+                ResolveDefault(context.lenClause().recLength().expression());
             }
         }
 
@@ -378,26 +357,30 @@ namespace Rubberduck.Parsing.Symbols
             {
                 foreach (var fileNumber in context.fileNumberList().fileNumber())
                 {
-                    ResolveDefault(fileNumber, fileNumber.GetText());
+                    ResolveFileNumber(fileNumber);
                 }
             }
         }
 
         public void Resolve(VBAParser.SeekStmtContext context)
         {
-            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
-            ResolveDefault(context.position(), context.position().GetText());
+            ResolveFileNumber(context.fileNumber());
+            ResolveDefault(context.position().expression());
         }
 
         public void Resolve(VBAParser.LockStmtContext context)
         {
-            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            ResolveFileNumber(context.fileNumber());
+            if (context.recordRange() == null)
+            {
+                return;
+            }
             ResolveRecordRange(context.recordRange());
         }
 
         public void Resolve(VBAParser.UnlockStmtContext context)
         {
-            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            ResolveFileNumber(context.fileNumber());
             ResolveRecordRange(context.recordRange());
         }
 
@@ -409,35 +392,35 @@ namespace Rubberduck.Parsing.Symbols
             }
             if (recordRange.startRecordNumber() != null)
             {
-                ResolveDefault(recordRange.startRecordNumber(), recordRange.startRecordNumber().GetText());
+                ResolveDefault(recordRange.startRecordNumber().expression());
             }
             if (recordRange.endRecordNumber() != null)
             {
-                ResolveDefault(recordRange.endRecordNumber(), recordRange.endRecordNumber().GetText());
+                ResolveDefault(recordRange.endRecordNumber().expression());
             }
         }
 
         public void Resolve(VBAParser.LineInputStmtContext context)
         {
-            ResolveDefault(context.markedFileNumber(), context.markedFileNumber().GetText());
-            ResolveDefault(context.variableName(), context.variableName().GetText());
+            ResolveDefault(context.markedFileNumber().expression());
+            ResolveDefault(context.variableName().expression());
         }
 
         public void Resolve(VBAParser.WidthStmtContext context)
         {
-            ResolveDefault(context.markedFileNumber(), context.markedFileNumber().GetText());
-            ResolveDefault(context.lineWidth(), context.lineWidth().GetText());
+            ResolveDefault(context.markedFileNumber().expression());
+            ResolveDefault(context.lineWidth().expression());
         }
 
         public void Resolve(VBAParser.PrintStmtContext context)
         {
-            ResolveDefault(context.markedFileNumber(), context.markedFileNumber().GetText());
+            ResolveDefault(context.markedFileNumber().expression());
             ResolveOutputList(context.outputList());
         }
 
         public void Resolve(VBAParser.WriteStmtContext context)
         {
-            ResolveDefault(context.markedFileNumber(), context.markedFileNumber().GetText());
+            ResolveDefault(context.markedFileNumber().expression());
             ResolveOutputList(context.outputList());
         }
 
@@ -453,15 +436,15 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     if (outputItem.outputClause().spcClause() != null)
                     {
-                        ResolveDefault(outputItem.outputClause().spcClause().spcNumber(), outputItem.outputClause().spcClause().spcNumber().GetText());
+                        ResolveDefault(outputItem.outputClause().spcClause().spcNumber().expression());
                     }
                     if (outputItem.outputClause().tabClause() != null && outputItem.outputClause().tabClause().tabNumberClause() != null)
                     {
-                        ResolveDefault(outputItem.outputClause().tabClause().tabNumberClause().tabNumber(), outputItem.outputClause().tabClause().tabNumberClause().tabNumber().GetText());
+                        ResolveDefault(outputItem.outputClause().tabClause().tabNumberClause().tabNumber().expression());
                     }
                     if (outputItem.outputClause().outputExpression() != null)
                     {
-                        ResolveDefault(outputItem.outputClause().outputExpression(), outputItem.outputClause().outputExpression().GetText());
+                        ResolveDefault(outputItem.outputClause().outputExpression().expression());
                     }
                 }
             }
@@ -469,57 +452,58 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.InputStmtContext context)
         {
-            ResolveDefault(context.markedFileNumber(), context.markedFileNumber().GetText());
+            ResolveDefault(context.markedFileNumber().expression());
             foreach (var inputVariable in context.inputList().inputVariable())
             {
-                ResolveDefault(inputVariable, inputVariable.GetText());
+                ResolveDefault(inputVariable.expression());
             }
         }
 
         public void Resolve(VBAParser.PutStmtContext context)
         {
-            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            ResolveFileNumber(context.fileNumber());
             if (context.recordNumber() != null)
             {
-                ResolveDefault(context.recordNumber(), context.recordNumber().GetText());
+                ResolveDefault(context.recordNumber().expression());
             }
             if (context.data() != null)
             {
-                ResolveDefault(context.data(), context.data().GetText());
+                ResolveDefault(context.data().expression());
             }
         }
 
         public void Resolve(VBAParser.GetStmtContext context)
         {
-            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            ResolveFileNumber(context.fileNumber());
             if (context.recordNumber() != null)
             {
-                ResolveDefault(context.recordNumber(), context.recordNumber().GetText());
+                ResolveDefault(context.recordNumber().expression());
             }
             if (context.variable() != null)
             {
-                ResolveDefault(context.variable(), context.variable().GetText());
+                ResolveDefault(context.variable().expression());
             }
         }
 
         public void Resolve(VBAParser.LsetStmtContext context)
         {
-            foreach (var expr in context.valueStmt())
+            foreach (var expr in context.expression())
             {
-                ResolveDefault(expr, expr.GetText());
+                ResolveDefault(expr);
             }
         }
 
         public void Resolve(VBAParser.RsetStmtContext context)
         {
-            foreach (var expr in context.valueStmt())
+            foreach (var expr in context.expression())
             {
-                ResolveDefault(expr, expr.GetText());
+                ResolveDefault(expr);
             }
         }
 
         public void Resolve(VBAParser.AsTypeClauseContext context)
         {
+            // All "As Type" expressions are resolved here, statements don't have to resolve their "As Types" themselves.
             var asType = context.type();
             if (asType == null)
             {
@@ -530,65 +514,102 @@ namespace Rubberduck.Parsing.Symbols
             {
                 // Fixed-Length strings can have a constant-name as length that is a simple-name-expression that also has to be resolved.
                 var length = context.fieldLength();
-                if (context.fieldLength() != null && context.fieldLength().identifier() != null)
+                if (context.fieldLength() != null)
                 {
-                    ResolveDefault(context.fieldLength().identifier(), context.fieldLength().identifier().GetText());
+                    ResolveDefault(context.fieldLength().expression());
                 }
                 return;
             }
-            ResolveType(asType.complexType(), asType.complexType().GetText());
+            ResolveType(asType.complexType().expression());
         }
 
         public void Resolve(VBAParser.ForNextStmtContext context)
         {
-            var firstExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent,
-                context.valueStmt()[0].GetText(), GetInnerMostWithExpression(), ResolutionStatementContext.Undefined);
-            if (firstExpression != null)
+            var firstExpression = _bindingService.ResolveDefault(
+                _moduleDeclaration,
+                _currentParent,
+                context.expression()[0],
+                GetInnerMostWithExpression(),
+                StatementResolutionContext.Undefined);
+            if (firstExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                // each iteration counts as an assignment
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression,
-                    (exprCtx, identifier, declaration) =>
-                        CreateReference(context.valueStmt()[0], identifier, declaration,
-                            RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx), true));
-                // each iteration also counts as a plain usage
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression,
-                    (exprCtx, identifier, declaration) =>
-                        CreateReference(context.valueStmt()[0], identifier, declaration,
-                            RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx)));
+                _boundExpressionVisitor.AddIdentifierReferences(
+                    firstExpression,
+                    _qualifiedModuleName,
+                    _currentScope,
+                    _currentParent);
             }
-            for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
+            else
             {
-                ResolveDefault(context.valueStmt()[exprIndex], context.valueStmt()[exprIndex].GetText());
+                // In "For expr1 = expr2" the "expr1 = expr2" part is treated as a single expression.
+                var binOp = (BinaryOpExpression)firstExpression;
+                var assignmentExpr = binOp.Left;
+                var fromExpr = binOp.Right;
+                // each iteration counts as an assignment
+                _boundExpressionVisitor.AddIdentifierReferences(
+                    assignmentExpr,
+                    _qualifiedModuleName,
+                    _currentScope,
+                    _currentParent,
+                    true);
+                _boundExpressionVisitor.AddIdentifierReferences(
+                    assignmentExpr,
+                    _qualifiedModuleName,
+                    _currentScope,
+                    _currentParent);
+                _boundExpressionVisitor.AddIdentifierReferences(
+                    fromExpr,
+                    _qualifiedModuleName,
+                    _currentScope,
+                    _currentParent);
+            }
+            for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
+            {
+                ResolveDefault(context.expression()[exprIndex]);
             }
         }
 
         public void Resolve(VBAParser.ForEachStmtContext context)
         {
-            var firstExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent,
-                context.valueStmt()[0].GetText(), GetInnerMostWithExpression(), ResolutionStatementContext.Undefined);
-            if (firstExpression != null)
+            var firstExpression = _bindingService.ResolveDefault(
+                _moduleDeclaration,
+                _currentParent,
+                context.expression()[0],
+                GetInnerMostWithExpression(),
+                StatementResolutionContext.Undefined);
+            if (firstExpression.Classification == ExpressionClassification.ResolutionFailed)
+            {
+
+                _boundExpressionVisitor.AddIdentifierReferences(
+                    firstExpression,
+                    _qualifiedModuleName,
+                    _currentScope,
+                    _currentParent);
+            }
+            else
             {
                 // each iteration counts as an assignment
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression,
-                    (exprCtx, identifier, declaration) =>
-                        CreateReference(context.valueStmt()[0], identifier, declaration,
-                            RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx), true));
-                // each iteration also counts as a plain usage
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression,
-                    (exprCtx, identifier, declaration) =>
-                        CreateReference(context.valueStmt()[0], identifier, declaration,
-                            RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx)));
+                _boundExpressionVisitor.AddIdentifierReferences(
+                    firstExpression,
+                    _qualifiedModuleName,
+                    _currentScope,
+                    _currentParent,
+                    true);
+                _boundExpressionVisitor.AddIdentifierReferences(
+                    firstExpression,
+                    _qualifiedModuleName,
+                    _currentScope,
+                    _currentParent);
             }
-
-            for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
+            for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
             {
-                ResolveDefault(context.valueStmt()[exprIndex], context.valueStmt()[exprIndex].GetText());
+                ResolveDefault(context.expression()[exprIndex]);
             }
         }
 
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
-            ResolveType(context.valueStmt(), context.valueStmt().GetText());
+            ResolveType(context.expression());
         }
 
         public void Resolve(VBAParser.RaiseEventStmtContext context)
@@ -596,52 +617,52 @@ namespace Rubberduck.Parsing.Symbols
             var eventDeclaration = _bindingService.ResolveEvent(_moduleDeclaration, context.identifier().GetText());
             if (eventDeclaration != null)
             {
-                eventDeclaration.AddReference(CreateReference(context.identifier(), context.identifier().GetText(),
-                    eventDeclaration, context.identifier().GetSelection()));
+                var callSiteContext = context.identifier();
+                var identifier = context.identifier().identifierValue().GetText();
+                var callee = eventDeclaration;
+                callee.AddReference(
+                    _qualifiedModuleName,
+                    _currentScope,
+                    _currentParent,
+                    callSiteContext,
+                    identifier,
+                    callee,
+                    callSiteContext.GetSelection(),
+                    _annotationService.FindAnnotations(_qualifiedModuleName, callSiteContext.GetSelection().StartLine));
             }
-            ResolveArgsCall(context.argsCall());
-        }
-
-        public void Resolve(VBAParser.MidStmtContext context)
-        {
-            ResolveArgsCall(context.argsCall());
-        }
-
-        private void ResolveArgsCall(VBAParser.ArgsCallContext argsCall)
-        {
-            if (argsCall == null)
+            if (context.eventArgumentList() == null)
             {
                 return;
             }
-            foreach (var argCall in argsCall.argCall())
+            foreach (var eventArgument in context.eventArgumentList().eventArgument())
             {
-                ResolveDefault(argCall.valueStmt(), argCall.valueStmt().GetText());
+                ResolveDefault(eventArgument.expression());
             }
         }
 
         public void Resolve(VBAParser.ResumeStmtContext context)
         {
-            if (context.valueStmt() == null)
+            if (context.expression() == null)
             {
                 return;
             }
-            ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
+            ResolveLabel(context.expression(), context.expression().GetText());
         }
 
         public void Resolve(VBAParser.CircleSpecialFormContext context)
         {
-            foreach (var expr in context.valueStmt())
+            foreach (var expr in context.expression())
             {
-                ResolveDefault(expr, expr.GetText());
+                ResolveDefault(expr);
             }
             ResolveTuple(context.tuple());
         }
 
         public void Resolve(VBAParser.ScaleSpecialFormContext context)
         {
-            if (context.valueStmt() != null)
+            if (context.expression() != null)
             {
-                ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+                ResolveDefault(context.expression());
 
             }
             foreach (var tuple in context.tuple())
@@ -652,26 +673,10 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveTuple(VBAParser.TupleContext tuple)
         {
-            foreach (var expr in tuple.valueStmt())
+            foreach (var expr in tuple.expression())
             {
-                ResolveDefault(expr, expr.GetText());
+                ResolveDefault(expr);
             }
-        }
-
-        public void Resolve(VBAParser.ImplicitCallStmt_InBlockContext context)
-        {
-            ParserRuleContext subContext;
-            if (context.iCS_B_MemberProcedureCall() != null)
-            {
-                subContext = context.iCS_B_MemberProcedureCall();
-            }
-            else
-            {
-                subContext = context.iCS_B_ProcedureCall();
-            }
-            string expr = subContext.GetText();
-            // This represents a CALL statement without the CALL keyword which is slightly different than a normal expression because it does not allow parentheses around its argument list.
-            ResolveDefault(subContext, expr, ResolutionStatementContext.CallStatement);
         }
 
         public void Resolve(VBAParser.EnumerationStmtContext context)
@@ -682,9 +687,9 @@ namespace Rubberduck.Parsing.Symbols
             }
             foreach (var enumMember in context.enumerationStmt_Constant())
             {
-                if (enumMember.valueStmt() != null)
+                if (enumMember.expression() != null)
                 {
-                    ResolveDefault(enumMember.valueStmt(), enumMember.valueStmt().GetText());
+                    ResolveDefault(enumMember.expression());
                 }
             }
         }

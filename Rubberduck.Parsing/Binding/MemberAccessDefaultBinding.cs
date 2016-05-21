@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
@@ -21,9 +22,9 @@ namespace Rubberduck.Parsing.Binding
             Declaration project,
             Declaration module,
             Declaration parent,
-            VBAExpressionParser.MemberAccessExpressionContext expression,
+            VBAParser.MemberAccessExprContext expression,
             IExpressionBinding lExpressionBinding,
-            ResolutionStatementContext statementContext,
+            StatementResolutionContext statementContext,
             ParserRuleContext unrestrictedNameContext)
             : this(
                   declarationFinder,
@@ -32,30 +33,7 @@ namespace Rubberduck.Parsing.Binding
                   parent,
                   expression,
                   null,
-                  ExpressionName.GetName(expression.unrestrictedName()),
-                  statementContext,
-                  unrestrictedNameContext)
-        {
-            _lExpressionBinding = lExpressionBinding;
-        }
-
-        public MemberAccessDefaultBinding(
-            DeclarationFinder declarationFinder,
-            Declaration project,
-            Declaration module,
-            Declaration parent,
-            VBAExpressionParser.MemberAccessExprContext expression,
-            IExpressionBinding lExpressionBinding,
-            ResolutionStatementContext statementContext,
-            ParserRuleContext unrestrictedNameContext)
-            : this(
-                  declarationFinder,
-                  project,
-                  module,
-                  parent,
-                  expression,
-                  null,
-                  ExpressionName.GetName(expression.unrestrictedName()),
+                  ExpressionName.GetName(expression.unrestrictedIdentifier()),
                   statementContext,
                   unrestrictedNameContext)
         {
@@ -70,7 +48,7 @@ namespace Rubberduck.Parsing.Binding
             ParserRuleContext expression,
             IBoundExpression lExpression,
             string name,
-            ResolutionStatementContext statementContext,
+            StatementResolutionContext statementContext,
             ParserRuleContext unrestrictedNameContext)
         {
             _declarationFinder = declarationFinder;
@@ -91,9 +69,9 @@ namespace Rubberduck.Parsing.Binding
             {
                  _lExpression = _lExpressionBinding.Resolve();
             }
-            if (_lExpression == null)
+            if (_lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                return null;
+                return _lExpression;
             }
             boundExpression = ResolveLExpressionIsVariablePropertyOrFunction();
             if (boundExpression != null)
@@ -120,7 +98,9 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return null;
+            var failedExpr = new ResolutionFailedExpression();
+            failedExpr.AddSuccessfullyResolvedExpression(_lExpression);
+            return failedExpr;
         }
 
         private IBoundExpression ResolveLExpressionIsVariablePropertyOrFunction()

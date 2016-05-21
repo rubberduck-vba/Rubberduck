@@ -190,9 +190,7 @@ namespace Rubberduck.Common
         public static IEnumerable<Declaration> FindInterfaces(this IEnumerable<Declaration> declarations)
         {
             var classes = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule);
-            var interfaces = classes.Where(item => item.References.Any(reference =>
-                reference.Context.Parent is VBAParser.ImplementsStmtContext));
-
+            var interfaces = classes.Where(item => ((ClassModuleDeclaration)item).Subtypes.Any(s => !s.IsBuiltIn));
             return interfaces;
         }
 
@@ -532,7 +530,7 @@ namespace Rubberduck.Common
             {
                 foreach (var reference in declaration.References)
                 {
-                    var implementsStmt = reference.Context.Parent as VBAParser.ImplementsStmtContext;
+                    var implementsStmt = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context);
 
                     if (implementsStmt == null) { continue; }
 

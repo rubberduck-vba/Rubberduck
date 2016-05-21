@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Annotations\AnnotationBase.cs" />
     <Compile Include="Annotations\AnnotationListener.cs" />
+    <Compile Include="Annotations\AnnotationService.cs" />
     <Compile Include="Annotations\AnnotationType.cs" />
     <Compile Include="Annotations\FolderAnnotation.cs" />
     <Compile Include="Annotations\IAnnotation.cs" />
@@ -82,9 +83,10 @@
     <Compile Include="Binding\ArgumentList.cs" />
     <Compile Include="Binding\ArgumentListArgument.cs" />
     <Compile Include="Binding\ArgumentListArgumentType.cs" />
+    <Compile Include="Binding\ResolutionFailedExpression.cs" />
     <Compile Include="Binding\LiteralDefaultBinding.cs" />
     <Compile Include="Binding\InstanceDefaultBinding.cs" />
-    <Compile Include="Binding\ResolutionStatementContext.cs" />
+    <Compile Include="Binding\StatementResolutionContext.cs" />
     <Compile Include="Binding\StatementContext.cs" />
     <Compile Include="Binding\UnaryOpDefaultBinding.cs" />
     <Compile Include="Binding\LiteralExpression.cs" />
@@ -118,11 +120,6 @@
     <Compile Include="Binding\IExpressionBinding.cs" />
     <Compile Include="Binding\SimpleNameExpression.cs" />
     <Compile Include="Binding\SimpleNameTypeBinding.cs" />
-    <Compile Include="Binding\VBAExpressionParser.cs" />
-    <Compile Include="Binding\VBAExpressionParserBaseListener.cs" />
-    <Compile Include="Binding\VBAExpressionParserBaseVisitor.cs" />
-    <Compile Include="Binding\VBAExpressionParserListener.cs" />
-    <Compile Include="Binding\VBAExpressionParserVisitor.cs" />
     <Compile Include="ComHelper.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
@@ -213,6 +210,7 @@
     <Compile Include="Preprocessing\VBALikeListener.cs" />
     <Compile Include="Preprocessing\VBALikeParser.cs" />
     <Compile Include="Preprocessing\VBALikeVisitor.cs" />
+    <Compile Include="Preprocessing\VBAPrecompilationParser.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorException.cs" />
     <Compile Include="Preprocessing\VBADateConstants.cs" />
     <Compile Include="Preprocessing\SymbolTable.cs" />
@@ -264,7 +262,7 @@
     <Compile Include="Symbols\DeclarationType.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
-    <Compile Include="Symbols\ValuedDeclaration.cs" />
+    <Compile Include="Symbols\ConstantDeclaration.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\CombinedParseTreeListener.cs" />
@@ -282,10 +280,13 @@
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
+    <Compile Include="VBA\VBALikePatternParser.cs" />
+    <Compile Include="VBA\VBADateLiteralParser.cs" />
+    <Compile Include="VBA\VBAExpressionParser.cs" />
+    <Compile Include="VBA\VBAModuleParser.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Binding\VBAExpressionParser.g4" />
     <None Include="Grammar\VBAParser.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>

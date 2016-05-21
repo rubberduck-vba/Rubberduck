@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -8,14 +9,14 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _project;
         private readonly Declaration _module;
         private readonly Declaration _parent;
-        private readonly VBAExpressionParser.SimpleNameExpressionContext _expression;
+        private readonly VBAParser.SimpleNameExprContext _expression;
 
         public SimpleNameProcedurePointerBinding(
             DeclarationFinder declarationFinder,
             Declaration project,
             Declaration module,
             Declaration parent,
-            VBAExpressionParser.SimpleNameExpressionContext expression)
+            VBAParser.SimpleNameExprContext expression)
         {
             _declarationFinder = declarationFinder;
             _project = project;
@@ -27,7 +28,7 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression Resolve()
         {
             IBoundExpression boundExpression = null;
-            string name = ExpressionName.GetName(_expression.name());
+            string name = ExpressionName.GetName(_expression.identifier());
             boundExpression = ResolveEnclosingModule(name);
             if (boundExpression != null)
             {
@@ -39,7 +40,11 @@ namespace Rubberduck.Parsing.Binding
                 return boundExpression;
             }
             boundExpression = ResolveOtherModuleInEnclosingProject(name);
-            return boundExpression;
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            return new ResolutionFailedExpression();
         }
 
         private IBoundExpression ResolveEnclosingModule(string name)

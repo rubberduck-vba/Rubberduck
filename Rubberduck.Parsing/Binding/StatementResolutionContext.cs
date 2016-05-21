@@ -1,9 +1,8 @@
 ﻿namespace Rubberduck.Parsing.Binding
 {
-    public enum ResolutionStatementContext
+    public enum StatementResolutionContext
     {
         Undefined,
-        CallStatement,
         SetStatement,
         LetStatement
     }

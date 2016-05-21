@@ -86,12 +86,17 @@ namespace Rubberduck.Refactorings.RemoveParameters
             {
                 var proc = (dynamic)reference.Context;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
-                VBAParser.ArgsCallContext paramList;
+                VBAParser.ArgumentListContext paramList = null;
 
-                // This is to prevent throws when this statement fails:
-                // (VBAParser.ArgsCallContext)proc.argsCall();
-                try { paramList = (VBAParser.ArgsCallContext)proc.argsCall(); }
-                catch { continue; }
+                var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
+                if (callStmt != null)
+                {
+                    paramList = callStmt.argumentList();
+                }
+                else if (reference.Context is VBAParser.IndexExprContext)
+                {
+                    paramList = ((VBAParser.IndexExprContext)reference.Context).argumentList();
+                }
 
                 if (paramList == null) { continue; }
 
@@ -99,9 +104,31 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private void RemoveCallParameter(VBAParser.ArgsCallContext paramList, CodeModule module)
+        private void RemoveCallParameter(VBAParser.ArgumentListContext paramList, CodeModule module)
         {
-            var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
+            List<string> paramNames = new List<string>();
+            if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
+            {
+                paramNames.AddRange(paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
+                {
+                    if (p is VBAParser.SpecifiedPositionalArgumentContext)
+                    {
+                        return ((VBAParser.SpecifiedPositionalArgumentContext)p).positionalArgument().GetText();
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
+                }).ToList());
+            }
+            if (paramList.positionalOrNamedArgumentList().namedArgumentList() != null)
+            {
+                paramNames.AddRange(paramList.positionalOrNamedArgumentList().namedArgumentList().namedArgument().Select(p => p.GetText()).ToList());
+            }
+            if (paramList.positionalOrNamedArgumentList().requiredPositionalArgument() != null)
+            {
+                paramNames.Add(paramList.positionalOrNamedArgumentList().requiredPositionalArgument().GetText());
+            }
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
             var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _" + Environment.NewLine, string.Empty).RemoveExtraSpacesLeavingIndentation();
@@ -112,7 +139,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     _model.Parameters.Where(item => item.IsRemoved && item.Index < paramNames.Count)
                         .Select(item => item.Declaration))
             {
-                var paramIndex = _model.Parameters.FindIndex(item => item.Declaration.Context.GetText() == param.Context.GetText()); 
+                var paramIndex = _model.Parameters.FindIndex(item => item.Declaration.Context.GetText() == param.Context.GetText());
                 if (paramIndex >= paramNames.Count) { return; }
 
                 do

@@ -1,8 +1,5 @@
 ﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using System;
-using System.Diagnostics;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -35,34 +32,19 @@ namespace Rubberduck.Parsing.Binding
             return _declarationFinder.FindLabel(procedure, label);
         }
 
-        public IBoundExpression ResolveDefault(Declaration module, Declaration parent, string expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
+        public IBoundExpression ResolveDefault(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            var expr = Parse(expression.Trim());
-            return _defaultBindingContext.Resolve(module, parent, expr, withBlockVariable, statementContext);
+            return _defaultBindingContext.Resolve(module, parent, expression, withBlockVariable, statementContext);
         }
 
-        public IBoundExpression ResolveType(Declaration module, Declaration parent, string expression)
+        public IBoundExpression ResolveType(Declaration module, Declaration parent, ParserRuleContext expression)
         {
-            var expr = Parse(expression.Trim());
-            return _typedBindingContext.Resolve(module, parent, expr, null, ResolutionStatementContext.Undefined);
+            return _typedBindingContext.Resolve(module, parent, expression, null, StatementResolutionContext.Undefined);
         }
 
-        public IBoundExpression ResolveProcedurePointer(Declaration module, Declaration parent, string expression)
+        public IBoundExpression ResolveProcedurePointer(Declaration module, Declaration parent, ParserRuleContext expression)
         {
-            var expr = Parse(expression.Trim());
-            return _procedurePointerBindingContext.Resolve(module, parent, expr, null, ResolutionStatementContext.Undefined);
-        }
-
-        private ParserRuleContext Parse(string expression)
-        {
-            var stream = new AntlrInputStream(expression);
-            var lexer = new VBALexer(stream);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBAExpressionParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener());
-            var tree = parser.startRule();
-            var prettyTree = tree.ToStringTree(parser);
-            return tree;
+            return _procedurePointerBindingContext.Resolve(module, parent, expression, null, StatementResolutionContext.Undefined);
         }
     }
 }

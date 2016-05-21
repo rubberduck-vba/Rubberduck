@@ -1,5 +1,6 @@
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
-using System;
+using Rubberduck.Parsing.VBA;
 using System.Diagnostics;
 
 namespace Rubberduck.Parsing.Symbols
@@ -9,8 +10,9 @@ namespace Rubberduck.Parsing.Symbols
         private readonly DeclarationFinder _declarationFinder;
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
+        private readonly VBAExpressionParser _expressionParser;
 
-        public TypeHierarchyPass(DeclarationFinder declarationFinder)
+        public TypeHierarchyPass(DeclarationFinder declarationFinder, VBAExpressionParser expressionParser)
         {
             _declarationFinder = declarationFinder;
             var typeBindingContext = new TypeBindingContext(_declarationFinder);
@@ -20,7 +22,8 @@ namespace Rubberduck.Parsing.Symbols
                 new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
                 typeBindingContext,
                 procedurePointerBindingContext);
-            _boundExpressionVisitor = new BoundExpressionVisitor();
+            _boundExpressionVisitor = new BoundExpressionVisitor(new AnnotationService(_declarationFinder));
+            _expressionParser = expressionParser;
         }
 
         public void Execute()
@@ -43,11 +46,16 @@ namespace Rubberduck.Parsing.Symbols
             var classModule = (ClassModuleDeclaration)potentialClassModule;
             foreach (var implementedInterfaceName in classModule.SupertypeNames)
             {
-                var implementedInterface = _bindingService.ResolveType(potentialClassModule, potentialClassModule, implementedInterfaceName);
+                var expressionContext = _expressionParser.Parse(implementedInterfaceName);
+                var implementedInterface = _bindingService.ResolveType(potentialClassModule, potentialClassModule, expressionContext);
                 if (implementedInterface != null)
                 {
                     classModule.AddSupertype(implementedInterface.ReferencedDeclaration);
                     ((ClassModuleDeclaration)implementedInterface.ReferencedDeclaration).AddSubtype(classModule);
+                }
+                else
+                {
+                    Debug.WriteLine(string.Format("{0}: Failed to resolve interface {1}.", GetType().Name, implementedInterfaceName));
                 }
             }
         }

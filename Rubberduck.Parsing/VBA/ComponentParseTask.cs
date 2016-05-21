@@ -25,6 +25,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
         private readonly VBAPreprocessor _preprocessor;
+        private readonly VBAModuleParser _parser;
 
         public event EventHandler<ParseCompletionArgs> ParseCompleted;
         public event EventHandler<ParseFailureArgs> ParseFailure;
@@ -35,7 +36,8 @@ namespace Rubberduck.Parsing.VBA
             _preprocessor = preprocessor;
             _component = vbComponent;
             _rewriter = rewriter;
-            _qualifiedName = new QualifiedModuleName(vbComponent); 
+            _qualifiedName = new QualifiedModuleName(vbComponent);
+            _parser = new VBAModuleParser();
         }
         
         public void Start(CancellationToken token)
@@ -115,21 +117,9 @@ namespace Rubberduck.Parsing.VBA
             return processed;
         }
 
-        private static IParseTree ParseInternal(string code, IParseTreeListener[] listeners, out ITokenStream outStream)
+        private IParseTree ParseInternal(string code, IParseTreeListener[] listeners, out ITokenStream outStream)
         {
-            var stream = new AntlrInputStream(code);
-            var lexer = new VBALexer(stream);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBAParser(tokens);
-
-            parser.AddErrorListener(new ExceptionErrorListener());
-            foreach (var l in listeners)
-            {
-                parser.AddParseListener(l);
-            }
-
-            outStream = tokens;
-            return parser.startRule();
+            return _parser.Parse(code, listeners, out outStream);
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)
