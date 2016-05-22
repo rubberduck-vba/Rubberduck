@@ -53,10 +53,11 @@ namespace Rubberduck.Refactorings.ExtractMethod
     {
         public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
         {
-            if (selection.StartLine <= reference.Selection.StartLine && 
-                reference.Selection.StartLine <= selection.EndLine && 
-                (reference.Declaration == null) ? false : reference.Declaration.Selection.StartLine != reference.Selection.StartLine)
-                flags = (byte)(flags | 8);
+
+            if (selection.StartLine <= reference.Selection.StartLine &&
+                reference.Selection.StartLine <= selection.EndLine &&
+                ((reference.Declaration == null) ? false : reference.Declaration.Selection.StartLine != reference.Selection.StartLine))
+                flags = (byte)(flags | ((byte)ExtractMethodRuleFlags.InSelection));
         }
     }
 
