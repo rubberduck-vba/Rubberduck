@@ -56,7 +56,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             if (selection.StartLine <= reference.Selection.StartLine && 
                 reference.Selection.StartLine <= selection.EndLine && 
                 (reference.Declaration == null) ? false : reference.Declaration.Selection.StartLine != reference.Selection.StartLine)
-                flags = (byte)(flags | 8);
+                flags = (byte)(flags | ((byte)ExtractMethodRuleFlags.InSelection);
         }
     }
 
