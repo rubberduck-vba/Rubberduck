@@ -372,6 +372,15 @@
     <Compile Include="Navigation\CodeExplorer\CodeExplorerErrorNodeViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodSelectionValidation.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractedMethod.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodExtraction.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodExtraction.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodModel.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
     <Compile Include="Settings\GeneralConfigProvider.cs" />
     <Compile Include="Settings\HotkeySettings.cs" />
