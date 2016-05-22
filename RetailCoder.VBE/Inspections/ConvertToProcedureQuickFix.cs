@@ -36,6 +36,17 @@ namespace Rubberduck.Inspections
                 throw new InvalidOperationException(string.Format(InspectionsUI.InvalidContextTypeInspectionFix, Context.GetType(), GetType()));
             }
 
+
+            VBAParser.FunctionNameContext functionName = null;
+            if (Context is VBAParser.FunctionStmtContext)
+            {
+                functionName = ((VBAParser.FunctionStmtContext)Context).functionName();
+            }
+            else
+            {
+                functionName = ((VBAParser.PropertyGetStmtContext)Context).functionName();
+            }
+
             string token = functionContext != null
                 ? Tokens.Function
                 : Tokens.Property + ' ' + Tokens.Get;
@@ -44,13 +55,13 @@ namespace Rubberduck.Inspections
                 : Tokens.Property;
 
             string visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
-            string name = ' ' + context.functionName().GetText();
-            bool hasTypeHint = context.typeHint() != null;
+            string name = ' ' + functionName.identifier().identifierValue().GetText();
+            bool hasTypeHint = functionName.identifier().typeHint() != null;
 
             string args = context.argList().GetText();
             string asType = context.asTypeClause() == null ? string.Empty : ' ' + context.asTypeClause().GetText();
 
-            string oldSignature = visibility + token + name + (hasTypeHint ? context.typeHint().GetText() : string.Empty) + args + asType;
+            string oldSignature = visibility + token + name + (hasTypeHint ? functionName.identifier().typeHint().GetText() : string.Empty) + args + asType;
             string newSignature = visibility + Tokens.Sub + name + args;
 
             string procedure = Context.GetText();

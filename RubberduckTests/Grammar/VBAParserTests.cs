@@ -163,10 +163,11 @@ Sub FooFoo()
   [""!""]
   [""[]""]
   []
+  a = [A1] + [A2]
 End Sub";
             var parseResult = Parse(code);
-            // 7 foreign names + 1 for the subroutine's name.
-            AssertTree(parseResult.Item1, parseResult.Item2, "//identifier", matches => matches.Count == 8);
+            // foreign names + 1 for the subroutine's name.
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifier", matches => matches.Count == 11);
         }
 
         [TestMethod]
@@ -187,7 +188,7 @@ Public Sub Test()
     call
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//dictionaryCallStmt");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
         [TestMethod]
@@ -214,7 +215,7 @@ Public Sub Test()
                     FooBar.Baz
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_S_MembersCall");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
         [TestMethod]
@@ -227,7 +228,7 @@ Sub Test()
 	.fun(3)
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_B_MemberProcedureCall");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
         [TestMethod]
@@ -518,7 +519,7 @@ Sub Test()
     a = String(5, ""a"")
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_S_VariableOrProcedureCall", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
         [TestMethod]
@@ -591,7 +592,7 @@ Sub Test()
     anything = Seek(50)
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//implicitCallStmt_InStmt");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
         [TestMethod]
@@ -658,7 +659,7 @@ Sub Test()
     Debug.Print ""Anything""
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//implicitCallStmt_InBlock");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
         [TestMethod]
@@ -692,7 +693,7 @@ Sub Test()
     s = Input$(LOF(file1), #file1)
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//implicitCallStmt_InStmt");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
         [TestMethod]
@@ -704,7 +705,7 @@ Sub Test()
     s = InputB$(LOF(file1), #file1)
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//implicitCallStmt_InStmt");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
         [TestMethod]

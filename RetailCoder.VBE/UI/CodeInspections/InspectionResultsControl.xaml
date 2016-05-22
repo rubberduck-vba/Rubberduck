@@ -520,14 +520,18 @@
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center" 
                                   Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
-                                  IsChecked="{Binding GroupByInspectionType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  IsChecked="{Binding GroupByInspectionType, UpdateSourceTrigger=PropertyChanged}" 
                                   IsCheckable="True"
+                                  Command="{Binding SetInspectionTypeGroupingCommand}"
+                                  CommandParameter="{Binding ElementName=GroupByInspectionType, Path=IsChecked}"
                                   controls:MenuItemGroup.GroupName="InspectionsResults_GroupingStyle" />
                         <MenuItem x:Name="GroupByLocation"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center" 
                                   Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
-                                  IsChecked="{Binding GroupByInspectionType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBoolValue}}" 
+                                  IsChecked="{Binding GroupByLocation, UpdateSourceTrigger=PropertyChanged}"
+                                  Command="{Binding SetLocationGroupingCommand}"
+                                  CommandParameter="{Binding ElementName=GroupByLocation, Path=IsChecked}"
                                   IsCheckable="True"
                                   controls:MenuItemGroup.GroupName="InspectionsResults_GroupingStyle" />
                     </MenuItem>

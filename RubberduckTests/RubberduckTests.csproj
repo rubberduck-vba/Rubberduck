@@ -169,6 +169,9 @@
     <Compile Include="VbeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NLog.dll.nlog">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

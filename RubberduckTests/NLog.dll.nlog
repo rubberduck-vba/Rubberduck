@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      autoReload="true">
+  <targets>
+    <target
+      xsi:type="Debugger"
+      name="debuglog"
+      layout="${longdate};${uppercase:${level}};${logger};${message};${exception:format=tostring}"/>
+  </targets>
+  <rules>
+    <logger name="*" minlevel="Trace" writeTo="debuglog" />
+  </rules>
+</nlog>

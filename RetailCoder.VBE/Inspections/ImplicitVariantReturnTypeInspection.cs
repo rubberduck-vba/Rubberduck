@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections
             var issues = from item in UserDeclarations
                                where !item.IsInspectionDisabled(AnnotationName)
                                 && ProcedureTypes.Contains(item.DeclarationType)
-                                && !item.IsTypeSpecified()
+                                && !item.IsTypeSpecified
                                let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
                                select new ImplicitVariantReturnTypeInspectionResult(this, issue.Declaration.IdentifierName, issue.QualifiedContext);
             return issues;

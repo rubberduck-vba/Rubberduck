@@ -46,48 +46,48 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            string hint;
-            if (_declaration.HasTypeHint(out hint))
+            if (!string.IsNullOrWhiteSpace(_declaration.TypeHint))
             {
                 var module = _declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                FixTypeHintUsage(hint, module, _declaration.Selection, true);
+                FixTypeHintUsage(_declaration.TypeHint, module, _declaration.Selection, true);
             }
 
             foreach (var reference in _declaration.References)
             {
                 // or should we assume type hint is the same as declaration?
-                string referenceHint;
-                if (reference.HasTypeHint(out referenceHint))
+                if (!string.IsNullOrWhiteSpace(_declaration.TypeHint))
                 {
                     var module = reference.QualifiedModuleName.Component.CodeModule;
-                    FixTypeHintUsage(referenceHint, module, reference.Selection);
+                    FixTypeHintUsage(_declaration.TypeHint, module, reference.Selection);
                 }
             }
 
         }
 
-        private static readonly IDictionary<string, string> TypeHints = new Dictionary<string, string>
-        {
-            { "%", Tokens.Integer },
-            { "&", Tokens.Long },
-            { "@", Tokens.Decimal },
-            { "!", Tokens.Single },
-            { "#", Tokens.Double },
-            { "$", Tokens.String }
-        };
-
         private void FixTypeHintUsage(string hint, CodeModule module, Selection selection, bool isDeclaration = false)
         {
             var line = module.Lines[selection.StartLine, 1];
 
-            var asTypeClause = ' ' + Tokens.As + ' ' + TypeHints[hint];
+            var asTypeClause = ' ' + Tokens.As + ' ' + Declaration.TYPEHINT_TO_TYPENAME[hint];
 
             string fix;
 
-            if (isDeclaration && (Context is VBAParser.FunctionStmtContext || Context is VBAParser.PropertyGetStmtContext))
+            if (isDeclaration && Context is VBAParser.FunctionStmtContext)
             {
-                var typeHint = (ParserRuleContext)Context.children.First(c => c is VBAParser.TypeHintContext);
-                var argList = (ParserRuleContext) Context.children.First(c => c is VBAParser.ArgListContext);
+                var typeHint = ((VBAParser.FunctionStmtContext)Context).functionName().identifier().typeHint();
+                var argList = ((VBAParser.FunctionStmtContext)Context).argList();
+                var endLine = argList.Stop.Line;
+                var endColumn = argList.Stop.Column;
+
+                var oldLine = module.Lines[endLine, selection.LineCount];
+                fix = oldLine.Insert(endColumn + 1, asTypeClause).Remove(typeHint.Start.Column, 1);  // adjust for VBA 0-based indexing
+
+                module.ReplaceLine(endLine, fix);
+            }
+            else if (isDeclaration && Context is VBAParser.PropertyGetStmtContext)
+            {
+                var typeHint = ((VBAParser.PropertyGetStmtContext)Context).functionName().identifier().typeHint();
+                var argList = ((VBAParser.PropertyGetStmtContext)Context).argList();
                 var endLine = argList.Stop.Line;
                 var endColumn = argList.Stop.Column;
 

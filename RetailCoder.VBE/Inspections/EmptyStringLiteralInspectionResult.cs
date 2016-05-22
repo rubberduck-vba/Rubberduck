@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections
                 return;
             }
 
-            var literal = (VBAParser.LiteralContext)Context;
+            var literal = (VBAParser.LiteralExpressionContext)Context;
             var newCodeLines = module.Lines[literal.Start.Line, 1].Replace("\"\"", "vbNullString");
 
             module.ReplaceLine(literal.Start.Line, newCodeLines);

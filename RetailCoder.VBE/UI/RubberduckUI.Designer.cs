@@ -1265,6 +1265,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Detailed logging.
+        /// </summary>
+        public static string GeneralSettings_DetailedLoggingEnabled {
+            get {
+                return ResourceManager.GetString("GeneralSettings_DetailedLoggingEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable detailed logging.
+        /// </summary>
+        public static string GeneralSettings_DetailedLoggingEnabledLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_DetailedLoggingEnabledLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Folder Delimiter:.
         /// </summary>
         public static string GeneralSettings_FolderDelimiterLabel {
@@ -2054,6 +2072,15 @@ namespace Rubberduck.UI {
         public static string ParseProgress {
             get {
                 return ResourceManager.GetString("ParseProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parser Errors.
+        /// </summary>
+        public static string Parser_ParserError {
+            get {
+                return ResourceManager.GetString("Parser_ParserError", resourceCulture);
             }
         }
         
