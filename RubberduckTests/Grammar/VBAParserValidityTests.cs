@@ -14,8 +14,10 @@ namespace RubberduckTests.Grammar
     [TestClass]
     public class VBAParserValidityTests
     {
-        [Ignore] // runs for 19 seconds. todo: improve performance
+        //[Ignore] // runs for 19 seconds. todo: improve performance
         [TestMethod]
+        [TestCategory("LongRunning")]
+        [TestCategory("Grammar")]
         [DeploymentItem(@"Testfiles\")]
         public void TestParser()
         {

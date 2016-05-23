@@ -14,7 +14,7 @@ namespace RubberduckTests.Preprocessing
     [TestClass]
     public class VBAPreprocessorTests
     {
-        [Ignore] // runs for 9 seconds. todo: improve performance
+        [Ignore] // runs for 10 seconds. todo: improve performance
         [TestMethod]
         [DeploymentItem(@"Testfiles\")]
         public void TestPreprocessor()

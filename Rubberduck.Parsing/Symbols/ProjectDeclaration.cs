@@ -17,12 +17,15 @@ namespace Rubberduck.Parsing.Symbols
                   null,
                   (Declaration)null,
                   name,
+                  null,
                   false,
                   false,
                   Accessibility.Implicit,
                   DeclarationType.Project,
                   null,
                   Selection.Home,
+                  false,
+                  null,
                   isBuiltIn)
         {
             _projectReferences = new List<ProjectReference>();

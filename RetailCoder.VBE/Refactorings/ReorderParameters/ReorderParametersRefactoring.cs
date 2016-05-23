@@ -1,9 +1,5 @@
-﻿using Microsoft.Vbe.Interop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using Antlr4.Runtime.Misc;
+﻿using Antlr4.Runtime.Misc;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -12,6 +8,10 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
@@ -96,25 +96,43 @@ namespace Rubberduck.Refactorings.ReorderParameters
             {
                 dynamic proc = reference.Context;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
-                VBAParser.ArgsCallContext paramList;
-
-                // This is to prevent throws when this statement fails:
-                // (VBAParser.ArgsCallContext)proc.argsCall();
-                try
+                VBAParser.ArgumentListContext argumentList = null;
+                var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
+                if (callStmt != null)
                 {
-                    paramList = (VBAParser.ArgsCallContext)proc.argsCall();
+                    argumentList = CallStatement.GetArgumentList(callStmt);
                 }
-                catch { continue; }
-
-                if (paramList == null) { continue; }
-
-                RewriteCall(paramList, module);
+                if (argumentList == null) { continue; }
+                RewriteCall(argumentList, module);
             }
         }
 
-        private void RewriteCall(VBAParser.ArgsCallContext paramList, CodeModule module)
+        private void RewriteCall(VBAParser.ArgumentListContext paramList, CodeModule module)
         {
-            var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
+            List<string> paramNames = new List<string>();
+            if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
+            {
+                paramNames.AddRange(paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
+                {
+                    if (p is VBAParser.SpecifiedPositionalArgumentContext)
+                    {
+                        return ((VBAParser.SpecifiedPositionalArgumentContext)p).positionalArgument().GetText();
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
+                }).ToList());
+            }
+            if (paramList.positionalOrNamedArgumentList().namedArgumentList() != null)
+            {
+                paramNames.AddRange(paramList.positionalOrNamedArgumentList().namedArgumentList().namedArgument().Select(p => p.GetText()).ToList());
+            }
+            if (paramList.positionalOrNamedArgumentList().requiredPositionalArgument() != null)
+            {
+                paramNames.Add(paramList.positionalOrNamedArgumentList().requiredPositionalArgument().GetText());
+            }
+
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
             var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _" + Environment.NewLine, string.Empty).RemoveExtraSpacesLeavingIndentation();

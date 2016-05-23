@@ -32,6 +32,7 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
+using NLog;
 
 namespace Rubberduck.Root
 {
@@ -47,6 +48,8 @@ namespace Rubberduck.Root
         private const int MsForms = 17;
         private const int MsFormsControl = 18;
 
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public RubberduckModule(IKernel kernel, VBE vbe, AddIn addin)
         {
             _kernel = kernel;
@@ -56,7 +59,7 @@ namespace Rubberduck.Root
 
         public override void Load()
         {
-            Debug.Print("in RubberduckModule.Load()");
+            _logger.Debug("in RubberduckModule.Load()");
 
             // bind VBE and AddIn dependencies to host-provided instances.
             _kernel.Bind<VBE>().ToConstant(_vbe);
@@ -144,7 +147,7 @@ namespace Rubberduck.Root
             ConfigureProjectExplorerContextMenu();
 
             BindWindowsHooks();
-            Debug.Print("completed RubberduckModule.Load()");
+            _logger.Debug("completed RubberduckModule.Load()");
         }
 
         private void BindWindowsHooks()

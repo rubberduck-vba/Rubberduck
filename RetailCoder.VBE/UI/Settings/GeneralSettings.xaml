@@ -124,6 +124,16 @@
                       SelectedIndex="0"
                       ItemsSource="{Binding Source={StaticResource Delimiters}, Converter={StaticResource DelimiterToText}, UpdateSourceTrigger=PropertyChanged}"
                       SelectedItem="{Binding Delimiter, Mode=TwoWay, Converter={StaticResource DelimiterValueToText}}" />
+
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_DetailedLoggingEnabledLabel}"
+                        FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox
+                          Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_DetailedLoggingEnabled}"
+                          Margin="5,0,0,5"
+                          IsChecked="{Binding DetailedLoggingEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          HorizontalAlignment="Left" />
+                    </StackPanel>
                 </StackPanel>
 
                 <Label Grid.Row="1" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />

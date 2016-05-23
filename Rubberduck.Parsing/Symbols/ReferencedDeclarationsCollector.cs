@@ -199,7 +199,23 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else
                 {
-                    moduleDeclaration = new Declaration(typeQualifiedMemberName, projectDeclaration, projectDeclaration, typeName, false, false, Accessibility.Global, typeDeclarationType, null, Selection.Home, true, null, attributes);
+                    moduleDeclaration = new Declaration(
+                        typeQualifiedMemberName, 
+                        projectDeclaration, 
+                        projectDeclaration, 
+                        typeName,
+                        null,
+                        false, 
+                        false, 
+                        Accessibility.Global,
+                        typeDeclarationType,
+                        null, 
+                        Selection.Home,
+                        false,
+                        null,
+                        true, 
+                        null, 
+                        attributes);
                 }
 
                 yield return moduleDeclaration;
@@ -223,7 +239,7 @@ namespace Rubberduck.Parsing.Symbols
                     for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
                     {
                         var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration);
-                        if (Declaration.HasParameter(memberDeclaration.DeclarationType))
+                        if (memberDeclaration is IDeclarationWithParameter)
                         {
                             ((IDeclarationWithParameter)memberDeclaration).AddParameter(parameter);
                         }
@@ -317,9 +333,13 @@ namespace Rubberduck.Parsing.Symbols
                     moduleDeclaration,
                     moduleDeclaration,
                     asTypeName,
+                    null,
+                    null,
                     Accessibility.Global,
                     null,
                     Selection.Home,
+                    // TODO: how to find out if it's an array?
+                    false,
                     true,
                     null,
                     attributes);
@@ -331,9 +351,13 @@ namespace Rubberduck.Parsing.Symbols
                     moduleDeclaration,
                     moduleDeclaration,
                     asTypeName,
+                    null,
+                    null,
                     Accessibility.Global,
                     null,
                     Selection.Home,
+                    // TODO: how to find out if it's an array?
+                    false,
                     true,
                     null,
                     attributes);
@@ -373,12 +397,15 @@ namespace Rubberduck.Parsing.Symbols
                     moduleDeclaration,
                     moduleDeclaration,
                     asTypeName,
+                    null,
                     false,
                     false,
                     Accessibility.Global,
                     memberDeclarationType,
                     null,
                     Selection.Home,
+                    false,
+                    null,
                     true,
                     null,
                     attributes);
@@ -408,8 +435,8 @@ namespace Rubberduck.Parsing.Symbols
                 asTypeName = TypeNames[VarEnum.VT_VARIANT];
             }
             return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName),
-                moduleDeclaration, moduleDeclaration, asTypeName, false, false, Accessibility.Global, memberType, null,
-                Selection.Home);
+                moduleDeclaration, moduleDeclaration, asTypeName, null, false, false, Accessibility.Global, memberType, null,
+                Selection.Home, false, null);
         }
 
         private static ParameterDeclaration CreateParameterDeclaration(IReadOnlyList<string> memberNames, int paramIndex,
@@ -447,7 +474,7 @@ namespace Rubberduck.Parsing.Symbols
                 isArray = true;
             }
 
-            return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, asParamTypeName, isOptional, isByRef, isArray);
+            return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, asParamTypeName, null, null, isOptional, isByRef, isArray);
         }
 
         private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info)

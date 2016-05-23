@@ -21,14 +21,13 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression Resolve()
         {
             var expr = _expressionBinding.Resolve();
-            if (expr == null)
-            {
-                return null;
-            }
             var typeExpr = _typeExpressionBinding.Resolve();
-            if (typeExpr == null)
+            if (expr.Classification == ExpressionClassification.ResolutionFailed || typeExpr.Classification == ExpressionClassification.ResolutionFailed)
             {
-                return null;
+                var failedExpr = new ResolutionFailedExpression();
+                failedExpr.AddSuccessfullyResolvedExpression(expr);
+                failedExpr.AddSuccessfullyResolvedExpression(typeExpr);
+                return failedExpr;
             }
             return new TypeOfIsExpression(null, _context, expr, typeExpr);
         }

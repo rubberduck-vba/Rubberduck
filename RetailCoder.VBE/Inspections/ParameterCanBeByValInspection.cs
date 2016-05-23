@@ -63,7 +63,7 @@ namespace Rubberduck.Inspections
             var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
 
             var issues = declarations.Where(declaration =>
-                !declaration.IsArray()
+                !declaration.IsArray
                 && !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
@@ -104,17 +104,11 @@ namespace Rubberduck.Inspections
 
                     foreach (var reference in item)
                     {
-                        if (reference.Context.Parent is VBAParser.ICS_S_VariableOrProcedureCallContext)
-                        {
-                            // parameterless call (what's this doing here?)
-                            continue;
-                        }
-
-                        if (!(reference.Context is VBAParser.ArgCallContext))
+                        if (!(reference.Context is VBAParser.ArgContext))
                         {
                             continue;
                         }
-                        var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgsCallContext;
+                        var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgContext;
                         if (context == null)
                         {
                             continue;

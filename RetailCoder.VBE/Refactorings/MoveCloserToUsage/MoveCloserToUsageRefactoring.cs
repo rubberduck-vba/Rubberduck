@@ -195,14 +195,14 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private void RemoveField(Declaration target)
         {
             Selection selection;
-            var declarationText = target.Context.GetText();
+            var declarationText = target.Context.GetText().Replace(" _" + Environment.NewLine, string.Empty);
             var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
 
             var variableStmtContext = target.GetVariableStmtContext();
 
             if (!multipleDeclarations)
             {
-                declarationText = variableStmtContext.GetText();
+                declarationText = variableStmtContext.GetText().Replace(" _" + Environment.NewLine, string.Empty);
                 selection = target.GetVariableStmtContextSelection();
             }
             else
@@ -284,34 +284,34 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
             foreach (var reference in identifierReferences.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
             {
-                var parent = reference.Context.Parent;
-                while (!(parent is VBAParser.ICS_S_MembersCallContext))
-                {
-                    parent = parent.Parent;
-                }
+                //var parent = reference.Context.Parent;
+                //while (!(parent is VBAParser.ICS_S_MembersCallContext))
+                //{
+                //    parent = parent.Parent;
+                //}
 
-                var parentSelection = ((VBAParser.ICS_S_MembersCallContext)parent).GetSelection();
-                
-                var oldText = module.Lines[parentSelection.StartLine, parentSelection.LineCount];
-                string newText;
+                //var parentSelection = ((VBAParser.ICS_S_MembersCallContext)parent).GetSelection();
 
-                if (parentSelection.LineCount == 1)
-                {
-                    newText = oldText.Remove(parentSelection.StartColumn - 1,
-                        parentSelection.EndColumn - parentSelection.StartColumn);
-                }
-                else
-                {
-                    var lines = oldText.Split(new[] {" _" + Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+                //var oldText = module.Lines[parentSelection.StartLine, parentSelection.LineCount];
+                //string newText;
 
-                    newText = lines.First().Remove(parentSelection.StartColumn - 1);
-                    newText += lines.Last().Remove(0, parentSelection.EndColumn - 1);
-                }
+                //if (parentSelection.LineCount == 1)
+                //{
+                //    newText = oldText.Remove(parentSelection.StartColumn - 1,
+                //        parentSelection.EndColumn - parentSelection.StartColumn);
+                //}
+                //else
+                //{
+                //    var lines = oldText.Split(new[] { " _" + Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
-                newText = newText.Insert(parentSelection.StartColumn - 1, reference.IdentifierName);
+                //    newText = lines.First().Remove(parentSelection.StartColumn - 1);
+                //    newText += lines.Last().Remove(0, parentSelection.EndColumn - 1);
+                //}
 
-                module.DeleteLines(parentSelection.StartLine, parentSelection.LineCount);
-                module.InsertLines(parentSelection.StartLine, newText);
+                //newText = newText.Insert(parentSelection.StartColumn - 1, reference.IdentifierName);
+
+                //module.DeleteLines(parentSelection.StartLine, parentSelection.LineCount);
+                //module.InsertLines(parentSelection.StartLine, newText);
             }
         }
     }

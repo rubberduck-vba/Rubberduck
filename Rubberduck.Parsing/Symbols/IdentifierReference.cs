@@ -4,9 +4,11 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Rubberduck.Parsing.Symbols
 {
+    [DebuggerDisplay("({IdentifierName}) IsAss:{IsAssignment} | {Selection} ")]
     public class IdentifierReference
     {
         public IdentifierReference(
@@ -80,7 +82,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool HasExplicitCallStatement()
         {
-            return Context.Parent is VBAParser.ExplicitCallStmtContext;
+            return Context.Parent is VBAParser.CallStmtContext && ((VBAParser.CallStmtContext)Context).CALL() != null;
         }
 
         private bool? _hasTypeHint;

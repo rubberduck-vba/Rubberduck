@@ -53,8 +53,8 @@ End Sub
                     new QualifiedMemberName(
                         new QualifiedModuleName("Excel",
                             "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "ListColumn"), "Range"),
-                    listColumnDeclaration, "EXCEL.EXE;Excel.ListColumn", "Range", false, false, Accessibility.Global,
-                    (DeclarationType)3712, true, null, new Attributes());
+                    listColumnDeclaration, "EXCEL.EXE;Excel.ListColumn", "Range", null, false, false, Accessibility.Global,
+                    (DeclarationType)3712, false, null, true, null, new Attributes());
 
             parser.State.AddDeclaration(excelDeclaration);
             parser.State.AddDeclaration(listColumnDeclaration);

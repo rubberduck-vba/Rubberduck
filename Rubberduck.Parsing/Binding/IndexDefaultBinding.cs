@@ -70,7 +70,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 _lExpression = _lExpressionBinding.Resolve();
             }
-            if (_lExpression != null)
+            if (_lExpression.Classification != ExpressionClassification.ResolutionFailed)
             {
                 ResolveArgumentList(_lExpression.ReferencedDeclaration);
             }
@@ -84,9 +84,9 @@ namespace Rubberduck.Parsing.Binding
         private IBoundExpression Resolve(IBoundExpression lExpression)
         {
             IBoundExpression boundExpression = null;
-            if (lExpression == null)
+            if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                return null;
+                return CreateFailedExpression(lExpression);
             }
             boundExpression = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression);
             if (boundExpression != null)
@@ -103,7 +103,18 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return null;
+            return CreateFailedExpression(lExpression);
+        }
+
+        private IBoundExpression CreateFailedExpression(IBoundExpression lExpression)
+        {
+            var failedExpr = new ResolutionFailedExpression();
+            failedExpr.AddSuccessfullyResolvedExpression(lExpression);
+            foreach (var arg in _argumentList.Arguments)
+            {
+                failedExpr.AddSuccessfullyResolvedExpression(arg.Expression);
+            }
+            return failedExpr;
         }
 
         private IBoundExpression ResolveLExpressionIsVariablePropertyFunctionNoParameters(IBoundExpression lExpression)
@@ -114,10 +125,9 @@ namespace Rubberduck.Parsing.Binding
                     empty, and one of the following is true (see below):
              */
             bool isVariable = lExpression.Classification == ExpressionClassification.Variable;
-            bool propertyWithParameters = lExpression.Classification == ExpressionClassification.Property && ((IDeclarationWithParameter)lExpression.ReferencedDeclaration).Parameters.Any();
-            bool functionWithParameters = lExpression.Classification == ExpressionClassification.Function && ((IDeclarationWithParameter)lExpression.ReferencedDeclaration).Parameters.Any();
-            if (isVariable ||
-                ((lExpression.Classification == ExpressionClassification.Property || lExpression.Classification == ExpressionClassification.Function) && _argumentList.HasArguments))
+            bool propertyWithParameters = lExpression.Classification == ExpressionClassification.Property && !((IDeclarationWithParameter)lExpression.ReferencedDeclaration).Parameters.Any();
+            bool functionWithParameters = lExpression.Classification == ExpressionClassification.Function && !((IDeclarationWithParameter)lExpression.ReferencedDeclaration).Parameters.Any();
+            if (isVariable || ((propertyWithParameters || functionWithParameters) && _argumentList.HasArguments))
             {
                 IBoundExpression boundExpression = null;
                 var asTypeName = lExpression.ReferencedDeclaration.AsTypeName;
@@ -139,12 +149,19 @@ namespace Rubberduck.Parsing.Binding
 
         private IBoundExpression ResolveDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration)
         {
+            if (lExpression.ReferencedDeclaration.IsArray)
+            {
+                return null;
+            }
             /*
                 The declared type of <l-expression> is Object or Variant, and <argument-list> contains no 
                 named arguments. In this case, the index expression is classified as an unbound member with 
                 a declared type of Variant, referencing <l-expression> with no member name. 
              */
-            if (asTypeName != null && (asTypeName.ToUpperInvariant() == "VARIANT" || asTypeName.ToUpperInvariant() == "OBJECT"))
+            if (
+                asTypeName != null
+                && (asTypeName.ToUpperInvariant() == "VARIANT" || asTypeName.ToUpperInvariant() == "OBJECT")
+                && !_argumentList.HasNamedArguments)
             {
                 return new IndexExpression(null, ExpressionClassification.Unbound, _expression, lExpression, _argumentList);
             }
@@ -170,12 +187,25 @@ namespace Rubberduck.Parsing.Binding
                     || defaultMember.Accessibility == Accessibility.Public;
                 if (isPropertyGetLetFunctionProcedure && isPublic)
                 {
+
+                    /*
+                        This default member’s parameter list is compatible with <argument-list>. In this case, the 
+                        index expression references this default member and takes on its classification and 
+                        declared type.  
+
+                        TODO: Primitive argument compatibility checking for now.
+                     */
+                    if (((IDeclarationWithParameter)defaultMember).Parameters.Count() == _argumentList.Arguments.Count)
+                    {
+                        return new IndexExpression(defaultMember, lExpression.Classification, _expression, lExpression, _argumentList);
+                    }
+
                     /**
                         This default member cannot accept any parameters. In this case, the static analysis restarts 
                         recursively, as if this default member was specified instead for <l-expression> with the 
                         same <argument-list>.
                     */
-                    if (((IDeclarationWithParameter)defaultMember).Parameters.Count() == 0 && _argumentList.HasArguments)
+                    if (((IDeclarationWithParameter)defaultMember).Parameters.Count() == 0)
                     {
                         // Recursion limit reached, abort.
                         if (DEFAULT_MEMBER_RECURSION_LIMIT == _defaultMemberRecursionLimitCounter)
@@ -199,18 +229,6 @@ namespace Rubberduck.Parsing.Binding
                         var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, classification, _expression);
                         return Resolve(defaultMemberAsLExpression);
                     }
-                    else
-                    {
-                        /*
-                            This default member’s parameter list is compatible with <argument-list>. In this case, the 
-                            index expression references this default member and takes on its classification and 
-                            declared type.  
-
-                            Note: To not have to deal with implementing parameter compatibility ourselves we simply assume
-                            that they are compatible otherwise it wouldn't have compiled in the VBE.
-                         */
-                        return new IndexExpression(defaultMember, lExpression.Classification, _expression, lExpression, _argumentList);
-                    }
                 }
             }
             return null;
@@ -218,13 +236,11 @@ namespace Rubberduck.Parsing.Binding
 
         private IBoundExpression ResolveLExpressionDeclaredTypeIsArray(IBoundExpression lExpression, Declaration asTypeDeclaration)
         {
-            // TODO: Test this as soon as parser has as type fixed.
-
             /*
                  The declared type of <l-expression> is an array type, an empty argument list has not already 
                  been specified for it, and one of the following is true:  
              */
-            if (lExpression.ReferencedDeclaration.IsArray())
+            if (lExpression.ReferencedDeclaration.IsArray)
             {
                 /*
                     <argument-list> represents an empty argument list. In this case, the index expression 
@@ -243,7 +259,7 @@ namespace Rubberduck.Parsing.Binding
                         references an individual element of the array, is classified as a variable and has the 
                         declared type of the array’s element type.  
 
-                        Note: We assume this is the case without checking, enfored by the VBE.
+                        TODO: Implement compatibility checking / amend the grammar
                      */
                     if (!_argumentList.HasNamedArguments)
                     {

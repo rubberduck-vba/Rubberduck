@@ -17,11 +17,10 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve()
         {
-            // TODO: Allow broken trees?
             var expr = _expr.Resolve();
-            if (expr == null)
+            if (expr.Classification == ExpressionClassification.ResolutionFailed)
             {
-                return null;
+                return expr;
             }
             return new UnaryOpExpression(expr.ReferencedDeclaration, _context, expr);
         }

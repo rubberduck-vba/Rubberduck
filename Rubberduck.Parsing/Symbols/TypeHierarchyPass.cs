@@ -1,5 +1,7 @@
+using NLog;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
-using System;
+using Rubberduck.Parsing.VBA;
 using System.Diagnostics;
 
 namespace Rubberduck.Parsing.Symbols
@@ -9,8 +11,10 @@ namespace Rubberduck.Parsing.Symbols
         private readonly DeclarationFinder _declarationFinder;
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
+        private readonly VBAExpressionParser _expressionParser;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public TypeHierarchyPass(DeclarationFinder declarationFinder)
+        public TypeHierarchyPass(DeclarationFinder declarationFinder, VBAExpressionParser expressionParser)
         {
             _declarationFinder = declarationFinder;
             var typeBindingContext = new TypeBindingContext(_declarationFinder);
@@ -20,7 +24,8 @@ namespace Rubberduck.Parsing.Symbols
                 new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
                 typeBindingContext,
                 procedurePointerBindingContext);
-            _boundExpressionVisitor = new BoundExpressionVisitor();
+            _boundExpressionVisitor = new BoundExpressionVisitor(new AnnotationService(_declarationFinder));
+            _expressionParser = expressionParser;
         }
 
         public void Execute()
@@ -31,7 +36,7 @@ namespace Rubberduck.Parsing.Symbols
                 AddImplementedInterface(declaration);
             }
             stopwatch.Stop();
-            Debug.WriteLine("Type hierarchies built in {0}ms.", stopwatch.ElapsedMilliseconds);
+            _logger.Debug("Type hierarchies built in {0}ms.", stopwatch.ElapsedMilliseconds);
         }
 
         private void AddImplementedInterface(Declaration potentialClassModule)
@@ -43,11 +48,16 @@ namespace Rubberduck.Parsing.Symbols
             var classModule = (ClassModuleDeclaration)potentialClassModule;
             foreach (var implementedInterfaceName in classModule.SupertypeNames)
             {
-                var implementedInterface = _bindingService.ResolveType(potentialClassModule, potentialClassModule, implementedInterfaceName);
-                if (implementedInterface != null)
+                var expressionContext = _expressionParser.Parse(implementedInterfaceName);
+                var implementedInterface = _bindingService.ResolveType(potentialClassModule, potentialClassModule, expressionContext);
+                if (implementedInterface.Classification != ExpressionClassification.ResolutionFailed)
                 {
                     classModule.AddSupertype(implementedInterface.ReferencedDeclaration);
                     ((ClassModuleDeclaration)implementedInterface.ReferencedDeclaration).AddSubtype(classModule);
+                }
+                else
+                {
+                    _logger.Warn("Failed to resolve interface {0}.", implementedInterfaceName);
                 }
             }
         }

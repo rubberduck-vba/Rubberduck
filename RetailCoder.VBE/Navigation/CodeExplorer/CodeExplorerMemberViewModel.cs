@@ -132,14 +132,14 @@ namespace Rubberduck.Navigation.CodeExplorer
                 case DeclarationType.PropertySet:
                     return declaration.IdentifierName + " (Set)";
                 case DeclarationType.Variable:
-                    if (declaration.IsArray())
+                    if (declaration.IsArray)
                     {
                         return declaration.IdentifierName + "()";
                     }
                     return declaration.IdentifierName;
                 case DeclarationType.Constant:
-                    var valuedDeclaration = (ValuedDeclaration)declaration;
-                    return valuedDeclaration.IdentifierName + " = " + valuedDeclaration.Value;
+                    var valuedDeclaration = (ConstantDeclaration)declaration;
+                    return valuedDeclaration.IdentifierName + " = " + valuedDeclaration.Expression;
 
                 default:
                     return declaration.IdentifierName;

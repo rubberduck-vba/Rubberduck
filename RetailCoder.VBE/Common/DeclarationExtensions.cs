@@ -190,9 +190,7 @@ namespace Rubberduck.Common
         public static IEnumerable<Declaration> FindInterfaces(this IEnumerable<Declaration> declarations)
         {
             var classes = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule);
-            var interfaces = classes.Where(item => item.References.Any(reference =>
-                reference.Context.Parent is VBAParser.ImplementsStmtContext));
-
+            var interfaces = classes.Where(item => ((ClassModuleDeclaration)item).Subtypes.Any(s => !s.IsBuiltIn));
             return interfaces;
         }
 
@@ -233,8 +231,8 @@ namespace Rubberduck.Common
         }
 
         /// <summary>
-        /// Gets the <see cref="Declaration"/> of the specified <see cref="type"/>, 
-        /// at the specified <see cref="selection"/>.
+        /// Gets the <see cref="Declaration"/> of the specified <see cref="DeclarationType"/>, 
+        /// at the specified <see cref="QualifiedSelection"/>.
         /// Returns the declaration if selection is on an identifier reference.
         /// </summary>
         public static Declaration FindSelectedDeclaration(this IEnumerable<Declaration> declarations, QualifiedSelection selection, DeclarationType type, Func<Declaration, Selection> selector = null)
@@ -243,8 +241,8 @@ namespace Rubberduck.Common
         }
 
         /// <summary>
-        /// Gets the <see cref="Declaration"/> of the specified <see cref="types"/>, 
-        /// at the specified <see cref="selection"/>.
+        /// Gets the <see cref="Declaration"/> of the specified <see cref="DeclarationType"/>, 
+        /// at the specified <see cref="QualifiedSelection"/>.
         /// Returns the declaration if selection is on an identifier reference.
         /// </summary>
         public static Declaration FindSelectedDeclaration(this IEnumerable<Declaration> declarations, QualifiedSelection selection, IEnumerable<DeclarationType> types, Func<Declaration, Selection> selector = null)
@@ -365,7 +363,7 @@ namespace Rubberduck.Common
             return declarations.Where(item => item.Project != null && item.ProjectId == type.ProjectId && item.ParentScope == type.Scope);
         }
 
-            /// <summary>
+        /// <summary>
         /// Finds all class members that are interface implementation members.
         /// </summary>
         public static IEnumerable<Declaration> FindInterfaceImplementationMembers(this IEnumerable<Declaration> declarations)
@@ -532,7 +530,7 @@ namespace Rubberduck.Common
             {
                 foreach (var reference in declaration.References)
                 {
-                    var implementsStmt = reference.Context.Parent as VBAParser.ImplementsStmtContext;
+                    var implementsStmt = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context);
 
                     if (implementsStmt == null) { continue; }
 

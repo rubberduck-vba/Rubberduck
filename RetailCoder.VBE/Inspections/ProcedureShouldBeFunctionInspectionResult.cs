@@ -115,7 +115,7 @@ namespace Rubberduck.Inspections
 
         private void UpdateCalls()
         {
-            var procedureName = _subStmtQualifiedContext.Context.subroutineName().GetText();
+            var procedureName = _subStmtQualifiedContext.Context.subroutineName().identifier().identifierValue().GetText();
 
             var procedure =
                 _state.AllDeclarations.SingleOrDefault(d =>
@@ -137,17 +137,47 @@ namespace Rubberduck.Inspections
 
                 var module = reference.QualifiedModuleName.Component.CodeModule;
 
-                var referenceParent = reference.Context as VBAParser.ICS_B_ProcedureCallContext;
+                var referenceParent = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
                 if (referenceParent == null) { continue; }
-                
+                VBAParser.ArgumentListContext argList = CallStatement.GetArgumentList(referenceParent);
+                List<string> paramNames = new List<string>();
+                string argsCall = string.Empty;
+                int argsCallOffset = 0;
+                if (argList != null)
+                {
+                    argsCallOffset = argList.GetSelection().EndColumn - reference.Context.GetSelection().EndColumn;
+                    argsCall = argList.GetText();
+                    if (argList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
+                    {
+                        paramNames.AddRange(argList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
+                        {
+                            if (p is VBAParser.SpecifiedPositionalArgumentContext)
+                            {
+                                return ((VBAParser.SpecifiedPositionalArgumentContext)p).positionalArgument().GetText();
+                            }
+                            else
+                            {
+                                return string.Empty;
+                            }
+                        }).ToList());
+                    }
+                    if (argList.positionalOrNamedArgumentList().namedArgumentList() != null)
+                    {
+                        paramNames.AddRange(argList.positionalOrNamedArgumentList().namedArgumentList().namedArgument().Select(p => p.GetText()).ToList());
+                    }
+                    if (argList.positionalOrNamedArgumentList().requiredPositionalArgument() != null)
+                    {
+                        paramNames.Add(argList.positionalOrNamedArgumentList().requiredPositionalArgument().GetText());
+                    }
+                }
                 var referenceText = reference.Context.GetText();
-                var newCall = referenceParent.argsCall().argCall().ToList().ElementAt(_argListQualifiedContext.Context.arg().ToList().IndexOf(_argQualifiedContext.Context)).GetText() +
+                var newCall = paramNames.ToList().ElementAt(_argListQualifiedContext.Context.arg().ToList().IndexOf(_argQualifiedContext.Context)) +
                               " = " + _subStmtQualifiedContext.Context.subroutineName().GetText() +
-                              "(" + referenceParent.argsCall().GetText() + ")";
+                              "(" + argsCall + ")";
 
                 var oldLines = module.Lines[startLine, reference.Selection.LineCount];
 
-                var newText = oldLines.Remove(reference.Selection.StartColumn - 1, referenceText.Length)
+                var newText = oldLines.Remove(reference.Selection.StartColumn - 1, referenceText.Length + argsCallOffset)
                     .Insert(reference.Selection.StartColumn - 1, newCall);
 
                 module.DeleteLines(startLine, reference.Selection.LineCount);
