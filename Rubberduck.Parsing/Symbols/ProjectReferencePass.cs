@@ -1,3 +1,4 @@
+using NLog;
 using System.Diagnostics;
 using System.Linq;
 
@@ -6,6 +7,7 @@ namespace Rubberduck.Parsing.Symbols
     public sealed class ProjectReferencePass : ICompilationPass
     {
         private readonly DeclarationFinder _declarationFinder;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ProjectReferencePass(DeclarationFinder declarationFinder)
         {
@@ -27,7 +29,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
             stopwatch.Stop();
-            Debug.WriteLine("Built-in project references linked up in {0}ms.", stopwatch.ElapsedMilliseconds);
+            _logger.Trace("Built-in project references linked up in {0}ms.", stopwatch.ElapsedMilliseconds);
         }
     }
 }
