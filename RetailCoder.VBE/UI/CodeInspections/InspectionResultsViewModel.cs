@@ -318,7 +318,7 @@ namespace Rubberduck.UI.CodeInspections
             {
                 return;
             }
-            ColumnInfo[] ColumnInfos = { new ColumnInfo("Type"), new ColumnInfo("Issue"), new ColumnInfo("File"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Line",hAlignment.Right)};
+            ColumnInfo[] ColumnInfos = { new ColumnInfo("Type"), new ColumnInfo("File"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
             var aResults = _results.Select(result => result.ToArray()).ToArray();
 
@@ -329,8 +329,8 @@ namespace Rubberduck.UI.CodeInspections
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InstalledUICulture), _results.Count);
 
             var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
-            var csvResults = ExportFormatter.Csv(aResults, title);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title);
+            var csvResults = ExportFormatter.Csv(aResults, title,ColumnInfos);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title,ColumnInfos);
             var rtfResults = ExportFormatter.RTF(aResults, title);
 
             MemoryStream strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, ColumnInfos);
