@@ -1,5 +1,4 @@
-﻿using NLog;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,8 +13,6 @@ namespace Rubberduck.VBEditor
     /// </remarks>
     public static class NativeMethods
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
         /// <summary>   Sends a message to the OS. </summary>
         ///
         /// <param name="hWnd">     The window handle. </param>
@@ -102,7 +99,7 @@ namespace Rubberduck.VBEditor
 
             if (result != 0)
             {
-                _logger.Error("EnumChildWindows failed");
+                Debug.WriteLine("EnumChildWindows failed");
             }
         }
 
