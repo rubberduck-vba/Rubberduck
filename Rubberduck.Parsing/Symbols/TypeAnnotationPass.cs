@@ -1,3 +1,4 @@
+using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.VBA;
@@ -12,6 +13,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
         private readonly VBAExpressionParser _expressionParser;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public TypeAnnotationPass(DeclarationFinder declarationFinder, VBAExpressionParser expressionParser)
         {
@@ -35,7 +37,7 @@ namespace Rubberduck.Parsing.Symbols
                 AnnotateType(declaration);
             }
             stopwatch.Stop();
-            Debug.WriteLine("Type annotations completed in {0}ms.", stopwatch.ElapsedMilliseconds);
+            _logger.Trace("Type annotations completed in {0}ms.", stopwatch.ElapsedMilliseconds);
         }
 
         private void AnnotateType(Declaration declaration)
@@ -63,12 +65,12 @@ namespace Rubberduck.Parsing.Symbols
             if (module == null)
             {
                 // TODO: Reference Collector does not add module, find workaround?
-                Debug.WriteLine(string.Format("{0}: Type annotation failed for {1} because module parent is missing.", GetType().Name, typeExpression));
+                _logger.Warn("Type annotation failed for {0} because module parent is missing.", typeExpression);
                 return;
             }
             var expressionContext = _expressionParser.Parse(typeExpression.Trim());
             var boundExpression = _bindingService.ResolveType(module, declaration.ParentDeclaration, expressionContext);
-            if (boundExpression != null)
+            if (boundExpression.Classification != ExpressionClassification.ResolutionFailed)
             {
                 declaration.AsTypeDeclaration = boundExpression.ReferencedDeclaration;
             }
