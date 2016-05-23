@@ -68,13 +68,15 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
+                bool hasDefaultInstanceVariable = type != vbext_ComponentType.vbext_ct_ClassModule && type != vbext_ComponentType.vbext_ct_StdModule;
                 _moduleDeclaration = new ClassModuleDeclaration(
                     _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
                     _projectDeclaration,
                     _qualifiedName.Component.Name,
                     false,
                     FindAnnotations(),
-                    moduleAttributes);
+                    moduleAttributes,
+                    hasDefaultInstanceVariable: hasDefaultInstanceVariable);
             }
 
             SetCurrentScope();

@@ -10,6 +10,7 @@ namespace Rubberduck.Parsing.Symbols
     {
         private readonly bool _isExposed;
         private readonly bool _isGlobalClassModule;
+        private readonly bool _hasDefaultInstanceVariable;
         private readonly List<string> _supertypeNames;
         private readonly HashSet<Declaration> _supertypes;
         private readonly HashSet<Declaration> _subtypes;
@@ -22,7 +23,8 @@ namespace Rubberduck.Parsing.Symbols
                   IEnumerable<IAnnotation> annotations,
                   Attributes attributes,
                   bool isExposed = false,
-                  bool isGlobalClassModule = false)
+                  bool isGlobalClassModule = false,
+                  bool hasDefaultInstanceVariable = false)
             : base(
                   qualifiedName,
                   projectDeclaration,
@@ -43,6 +45,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             _isExposed = isExposed;
             _isGlobalClassModule = isGlobalClassModule;
+            _hasDefaultInstanceVariable = hasDefaultInstanceVariable;
             _supertypeNames = new List<string>();
             _supertypes = new HashSet<Declaration>();
             _subtypes = new HashSet<Declaration>();
@@ -97,12 +100,13 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
+                bool attributeHasDefaultInstanceVariable = false;
                 IEnumerable<string> value;
                 if (Attributes.TryGetValue("VB_PredeclaredId", out value))
                 {
-                    return value.Single() == "True";
+                    attributeHasDefaultInstanceVariable = value.Single() == "True";
                 }
-                return false;
+                return _hasDefaultInstanceVariable || attributeHasDefaultInstanceVariable;
             }
         }
 
