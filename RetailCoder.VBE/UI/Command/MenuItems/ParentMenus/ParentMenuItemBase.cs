@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Rubberduck.Parsing.VBA;
 using stdole;
+using NLog;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
@@ -16,6 +17,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         private readonly string _key;
         private readonly int? _beforeIndex;
         private readonly IDictionary<IMenuItem, CommandBarControl> _items;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         protected ParentMenuItemBase(string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
         {
@@ -127,9 +129,9 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             var command = item.Command as CommandBase; // todo: add 'ShortcutText' to a new 'interface ICommand : System.Windows.Input.ICommand'
             child.ShortcutText = command != null
                 ? command.ShortcutText
-                : string.Empty; 
+                : string.Empty;
 
-            Debug.WriteLine("Menu item '{0}' created; hash code: {1} (command hash code {2})", child.Caption, child.GetHashCode(), item.Command.GetHashCode());
+            _logger.Debug("Menu item '{0}' created; hash code: {1} (command hash code {2})", child.Caption, child.GetHashCode(), item.Command.GetHashCode());
 
             child.Click += child_Click;
             return child;
@@ -150,7 +152,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             // hash code is different on every frakkin' click. go figure. I've had it, this is the fix.
             _lastHashCode = Ctrl.GetHashCode();
 
-            Debug.WriteLine("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), Ctrl.Caption, Ctrl.GetHashCode());
+            _logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), Ctrl.Caption, Ctrl.GetHashCode());
             item.Command.Execute(null);
         }
 

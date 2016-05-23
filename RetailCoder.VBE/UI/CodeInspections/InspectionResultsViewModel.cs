@@ -18,6 +18,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor.Extensions;
+using NLog;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -28,6 +29,7 @@ namespace Rubberduck.UI.CodeInspections
         private readonly VBE _vbe;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
                                           IGeneralConfigService configService)
@@ -205,7 +207,7 @@ namespace Rubberduck.UI.CodeInspections
 
             IsBusy = true;
 
-            Debug.WriteLine("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
+            _logger.Debug("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
             _state.OnParseRequested(this);
         }
 
@@ -216,14 +218,14 @@ namespace Rubberduck.UI.CodeInspections
 
         private async void _state_StateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("InspectionResultsViewModel handles StateChanged...");
+            _logger.Debug("InspectionResultsViewModel handles StateChanged...");
             if (_state.Status != ParserState.Ready)
             {
                 IsBusy = false;
                 return;
             }
 
-            Debug.WriteLine("Running code inspections...");
+            _logger.Debug("Running code inspections...");
             IsBusy = true;
 
             var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();

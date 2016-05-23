@@ -1,13 +1,15 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
+using NLog;
 using Rubberduck.Parsing.Like;
 using Rubberduck.Parsing.Symbols;
-using System.Diagnostics;
 
 namespace Rubberduck.Parsing.VBA
 {
     public sealed class VBALikePatternParser
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Parses the given like pattern.
         /// </summary>
@@ -28,7 +30,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch
             {
-                Debug.WriteLine(string.Format("{0}: SLL mode failed for {1}. Retrying using LL.", this.GetType().Name, likePattern));
+                _logger.Warn("{0}: SLL mode failed for {1}. Retrying using LL.", this.GetType().Name, likePattern);
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;

@@ -2,6 +2,7 @@
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Factory;
+using NLog;
 using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
@@ -25,6 +26,7 @@ namespace Rubberduck
 
         private IKernel _kernel;
         private App _app;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public void OnAddInsUpdate(ref Array custom)
         {
@@ -49,6 +51,7 @@ namespace Rubberduck
             }
             catch (Exception exception)
             {
+                _logger.Error(exception, "Rubberduck failed to load.");
                 System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
