@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
@@ -29,6 +30,7 @@ namespace Rubberduck.Parsing.VBA
 
         public event EventHandler<ParseCompletionArgs> ParseCompleted;
         public event EventHandler<ParseFailureArgs> ParseFailure;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ComponentParseTask(VBComponent vbComponent, VBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
         {
@@ -62,7 +64,7 @@ namespace Rubberduck.Parsing.VBA
                 stopwatch.Stop();
                 if (tree != null)
                 {
-                    Debug.Print("IParseTree for component '{0}' acquired in {1}ms (thread {2})", _component.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+                    _logger.Trace("IParseTree for component '{0}' acquired in {1}ms (thread {2})", _component.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
                 }
 
                 var comments = QualifyAndUnionComments(_qualifiedName, commentListener.Comments, commentListener.RemComments);
@@ -79,7 +81,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (COMException exception)
             {
-                Debug.WriteLine("Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
+                _logger.Error(exception, "Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
                 ParseFailure.Invoke(this, new ParseFailureArgs
                 {
                     Cause = exception
@@ -87,7 +89,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (SyntaxErrorException exception)
             {
-                Debug.WriteLine("Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
+                _logger.Error(exception, "Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
                 ParseFailure.Invoke(this, new ParseFailureArgs
                 {
                     Cause = exception
@@ -95,7 +97,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (OperationCanceledException cancel)
             {
-                Debug.WriteLine("Operation was Cancelled", cancel);
+                _logger.Info("Operation was Cancelled", cancel);
                 // no results to be used, so no results "returned"
                 //ParseCompleted.Invoke(this, new ParseCompletionArgs());
             }
@@ -109,9 +111,9 @@ namespace Rubberduck.Parsing.VBA
             {
                 processed = _preprocessor.Execute(code);
             }
-            catch (VBAPreprocessorException)
+            catch (VBAPreprocessorException ex)
             {
-                Debug.WriteLine("Falling back to no preprocessing");
+                _logger.Error(ex, "Preprocessing failed for component {0}, falling back to no preprocessing.", _component.Name);
                 processed = code;
             }
             return processed;

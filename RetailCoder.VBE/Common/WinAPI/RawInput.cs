@@ -1,3 +1,4 @@
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +12,7 @@ namespace Rubberduck.Common.WinAPI
     {
         static readonly Guid DeviceInterfaceHid = new Guid("4D1E55B2-F16F-11CF-88CB-001111000030");
         private readonly List<IRawDevice> _devices;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RawInput(IntPtr parentHandle)
         {
@@ -46,7 +48,7 @@ namespace Rubberduck.Common.WinAPI
                         if (dwSize != res)
                         {
                             var ex = new Win32Exception(Marshal.GetLastWin32Error());
-                            Debug.WriteLine("Error getting the rawinput buffer: {0}", ex.Message);
+                            _logger.Error(ex, "Error getting the rawinput buffer: {0}", ex.Message);                            
                             return;
                         }
                         foreach (var device in _devices)

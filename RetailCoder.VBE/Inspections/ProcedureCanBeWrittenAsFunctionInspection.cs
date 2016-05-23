@@ -6,11 +6,14 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using System.Diagnostics;
+using NLog;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : InspectionBase, IParseTreeInspection
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
@@ -26,7 +29,7 @@ namespace Rubberduck.Inspections
         {
             if (ParseTreeResults == null)
             {
-                Debug.WriteLine("Aborting GetInspectionResults because ParseTree results were not passed");
+                _logger.Debug("Aborting GetInspectionResults because ParseTree results were not passed");
                 return new InspectionResultBase[] { };
             }
             var subStmts = ParseTreeResults.ArgListsWithOneByRefParam

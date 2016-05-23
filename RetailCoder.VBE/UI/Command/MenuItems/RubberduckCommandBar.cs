@@ -8,6 +8,7 @@ using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
 using ParserState = Rubberduck.Parsing.VBA.ParserState;
+using NLog;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -16,11 +17,11 @@ namespace Rubberduck.UI.Command.MenuItems
         private readonly RubberduckParserState _state;
         private readonly VBE _vbe;
         private readonly IShowParserErrorsCommand _command;
-
         private CommandBarButton _refreshButton;
         private CommandBarButton _statusButton;
         private CommandBarButton _selectionButton;
         private CommandBar _commandbar;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckCommandBar(RubberduckParserState state, VBE vbe, IShowParserErrorsCommand command)
         {
@@ -42,7 +43,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public void SetStatusText(string value = null)
         {
             var text = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status);
-            Debug.WriteLine(string.Format("RubberduckCommandBar status text changes to '{0}'.", text));
+            _logger.Debug("RubberduckCommandBar status text changes to '{0}'.", text);
             UiDispatcher.Invoke(() => _statusButton.Caption = text);
         }
 
@@ -89,7 +90,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         private void State_StateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("RubberduckCommandBar handles StateChanged...");
+            _logger.Debug("RubberduckCommandBar handles StateChanged...");
             SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status));
         }
 
