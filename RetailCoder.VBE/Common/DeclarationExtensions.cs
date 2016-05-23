@@ -231,8 +231,8 @@ namespace Rubberduck.Common
         }
 
         /// <summary>
-        /// Gets the <see cref="Declaration"/> of the specified <see cref="type"/>, 
-        /// at the specified <see cref="selection"/>.
+        /// Gets the <see cref="Declaration"/> of the specified <see cref="DeclarationType"/>, 
+        /// at the specified <see cref="QualifiedSelection"/>.
         /// Returns the declaration if selection is on an identifier reference.
         /// </summary>
         public static Declaration FindSelectedDeclaration(this IEnumerable<Declaration> declarations, QualifiedSelection selection, DeclarationType type, Func<Declaration, Selection> selector = null)
@@ -241,8 +241,8 @@ namespace Rubberduck.Common
         }
 
         /// <summary>
-        /// Gets the <see cref="Declaration"/> of the specified <see cref="types"/>, 
-        /// at the specified <see cref="selection"/>.
+        /// Gets the <see cref="Declaration"/> of the specified <see cref="DeclarationType"/>, 
+        /// at the specified <see cref="QualifiedSelection"/>.
         /// Returns the declaration if selection is on an identifier reference.
         /// </summary>
         public static Declaration FindSelectedDeclaration(this IEnumerable<Declaration> declarations, QualifiedSelection selection, IEnumerable<DeclarationType> types, Func<Declaration, Selection> selector = null)

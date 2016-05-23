@@ -121,6 +121,8 @@
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\WindowExtensions.cs" />
+    <Compile Include="VBEInterfaces\RubberduckCodeModule\CodeModuleWrapper.cs" />
+    <Compile Include="VBEInterfaces\RubberduckCodeModule\ICodeModuleWrapper.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapper.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapperFactory.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapperFactory.cs" />
