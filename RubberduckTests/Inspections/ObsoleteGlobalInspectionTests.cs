@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ObsoleteGlobalInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteGlobal_ReturnsResult()
         {
             const string inputCode =
@@ -37,6 +38,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteGlobal_ReturnsResult_MultipleGlobals()
         {
             const string inputCode =
@@ -61,6 +63,7 @@ Global var2 As String";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteGlobal_DoesNotReturnResult()
         {
             const string inputCode =
@@ -84,6 +87,7 @@ Global var2 As String";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteGlobal_ReturnsResult_SomeConstantsUsed()
         {
             const string inputCode =
@@ -108,6 +112,7 @@ Global var2 As Date";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteGlobal_QuickFixWorks()
         {
             const string inputCode =
@@ -138,6 +143,7 @@ Global var2 As Date";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ObsoleteGlobalInspection(null);
@@ -145,6 +151,7 @@ Global var2 As Date";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteGlobalInspection";

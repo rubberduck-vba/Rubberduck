@@ -1,3 +1,4 @@
+using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.VBA;
@@ -11,6 +12,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
         private readonly VBAExpressionParser _expressionParser;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public TypeHierarchyPass(DeclarationFinder declarationFinder, VBAExpressionParser expressionParser)
         {
@@ -34,7 +36,7 @@ namespace Rubberduck.Parsing.Symbols
                 AddImplementedInterface(declaration);
             }
             stopwatch.Stop();
-            Debug.WriteLine("Type hierarchies built in {0}ms.", stopwatch.ElapsedMilliseconds);
+            _logger.Debug("Type hierarchies built in {0}ms.", stopwatch.ElapsedMilliseconds);
         }
 
         private void AddImplementedInterface(Declaration potentialClassModule)
@@ -48,14 +50,14 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var expressionContext = _expressionParser.Parse(implementedInterfaceName);
                 var implementedInterface = _bindingService.ResolveType(potentialClassModule, potentialClassModule, expressionContext);
-                if (implementedInterface != null)
+                if (implementedInterface.Classification != ExpressionClassification.ResolutionFailed)
                 {
                     classModule.AddSupertype(implementedInterface.ReferencedDeclaration);
                     ((ClassModuleDeclaration)implementedInterface.ReferencedDeclaration).AddSubtype(classModule);
                 }
                 else
                 {
-                    Debug.WriteLine(string.Format("{0}: Failed to resolve interface {1}.", GetType().Name, implementedInterfaceName));
+                    _logger.Warn("Failed to resolve interface {0}.", implementedInterfaceName);
                 }
             }
         }

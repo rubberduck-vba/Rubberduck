@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class VariableNeverUsedInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableNotAssigned_ReturnsResult()
         {
             const string inputCode =
@@ -39,6 +40,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_ReturnsResult_MultipleVariables()
         {
             const string inputCode =
@@ -65,6 +67,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_DoesNotReturnResult()
         {
             const string inputCode =
@@ -96,6 +99,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_ReturnsResult_MultipleVariables_SomeAssigned()
         {
             const string inputCode =
@@ -129,6 +133,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_ReturnsResult_QuickFixWorks()
         {
             const string inputCode =
@@ -160,6 +165,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new VariableNotUsedInspection(null);
@@ -167,6 +173,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "VariableNotUsedInspection";

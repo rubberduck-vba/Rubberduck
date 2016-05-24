@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
+using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System.Diagnostics;
@@ -8,6 +9,8 @@ namespace Rubberduck.Parsing.VBA
 {
     public sealed class VBAExpressionParser
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Parses the given VBA expression.
         /// </summary>
@@ -28,7 +31,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch
             {
-                Debug.WriteLine(string.Format("{0}: SLL mode failed for {1}. Retrying using LL.", this.GetType().Name, expression));
+                _logger.Warn("SLL mode failed for {0}. Retrying using LL.", expression);
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;

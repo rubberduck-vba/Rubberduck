@@ -59,7 +59,7 @@ namespace Rubberduck.UI.Command
         }
     }
     
-    public class TestRunEventArgs
+    public class TestRunEventArgs : EventArgs
     {
         public long Duration { get; private set; }
 

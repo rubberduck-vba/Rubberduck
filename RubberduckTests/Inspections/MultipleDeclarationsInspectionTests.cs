@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class MultipleDeclarationsInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_ReturnsResult_Variables()
         {
             const string inputCode =
@@ -39,6 +40,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_ReturnsResult_Constants()
         {
             const string inputCode =
@@ -64,6 +66,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_ReturnsResult_StaticVariables()
         {
             const string inputCode =
@@ -89,6 +92,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_ReturnsResult_MultipleDeclarations()
         {
             const string inputCode =
@@ -115,6 +119,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_ReturnsResult_SomeDeclarationsSeparate()
         {
             const string inputCode =
@@ -141,6 +146,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_QuickFixWorks_Variables()
         {
             const string inputCode =
@@ -177,6 +183,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_QuickFixWorks_Constants()
         {
             const string inputCode =
@@ -213,6 +220,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_QuickFixWorks_StaticVariables()
         {
             const string inputCode =
@@ -249,6 +257,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new MultipleDeclarationsInspection(null);
@@ -256,6 +265,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "MultipleDeclarationsInspection";

@@ -17,6 +17,7 @@ namespace RubberduckTests.Inspections
     public class EmptyStringLiteralInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void EmptyStringLiteral_ReturnsResult_PassToProcedure()
         {
             const string inputCode =
@@ -51,6 +52,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void EmptyStringLiteral_ReturnsResult_Assignment()
         {
             const string inputCode =
@@ -82,6 +84,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NotEmptyStringLiteral_DoesNotReturnResult()
         {
             const string inputCode =
@@ -113,6 +116,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void EmptyStringLiteral_QuickFixWorks()
         {
             const string inputCode =
@@ -153,6 +157,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new EmptyStringLiteralInspection(null);
@@ -160,6 +165,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "EmptyStringLiteralInspection";

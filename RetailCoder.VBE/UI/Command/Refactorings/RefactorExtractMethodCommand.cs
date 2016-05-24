@@ -11,6 +11,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
 using System;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
+using NLog;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -19,6 +20,7 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IIndenter indenter)
             : base (vbe)
@@ -55,7 +57,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 && !string.IsNullOrWhiteSpace(code);
             */
 
-            Debug.Print("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            _logger.Debug("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 

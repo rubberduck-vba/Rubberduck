@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class MultilineParameterInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultilineParameter_ReturnsResult()
         {
             const string inputCode =
@@ -41,6 +42,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultilineParameter_DoesNotReturnResult()
         {
             const string inputCode =
@@ -65,6 +67,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultilineParameter_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -97,6 +100,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultilineParameter_ReturnsResults_SomeParams()
         {
             const string inputCode =
@@ -124,6 +128,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultilineParameter_QuickFixWorks()
         {
             const string inputCode =
@@ -161,6 +166,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new MultilineParameterInspection(null);
@@ -168,6 +174,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "MultilineParameterInspection";

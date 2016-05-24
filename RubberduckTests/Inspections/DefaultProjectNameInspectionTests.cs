@@ -13,6 +13,7 @@ namespace RubberduckTests.Inspections
     public class DefaultProjectNameInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void DefaultProjectName_ReturnsResult()
         {
             const string inputCode = @"";
@@ -38,6 +39,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void DefaultProjectName_DoesNotReturnResult()
         {
             const string inputCode = @"";
@@ -63,6 +65,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new DefaultProjectNameInspection(null);
@@ -70,6 +73,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "DefaultProjectNameInspection";
