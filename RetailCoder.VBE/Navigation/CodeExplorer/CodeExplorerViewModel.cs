@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Navigation.Folders;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.VBEditor;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 
@@ -20,12 +22,9 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
-        private readonly Dispatcher _dispatcher;
 
         public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<ICommand> commands)
         {
-            _dispatcher = Dispatcher.CurrentDispatcher;
-
             _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += ParserState_StateChanged;
@@ -267,9 +266,6 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-
-            var components = userDeclarations.SelectMany(s => s.Key.VBComponents.Cast<VBComponent>()).FirstOrDefault(s => s.Name == "asdf");
-
             var newProjects = userDeclarations.Select(grouping =>
                 new CodeExplorerProjectViewModel(_folderHelper,
                     grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
@@ -322,36 +318,60 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             var componentProject = e.Component.Collection.Parent;
-            var node = Projects.OfType<CodeExplorerProjectViewModel>()
+            var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
                 .FirstOrDefault(p => p.Declaration.Project == componentProject);
 
-            if (node == null)
+            if (projectNode == null)
             {
                 return;
             }
 
-            var folderNode = node.Items.First(f => f is CodeExplorerCustomFolderViewModel && f.Name == node.Name);
+            SetErrorState(projectNode, e.Component);
 
-            AddErrorNode addNode = AddComponentErrorNode;
-            _dispatcher.BeginInvoke(addNode, node, folderNode, e.Component.Name);
+            if (_errorStateSet) { return; }
+
+            // at this point, we know the node is newly added--we have to add a new node, not just change the icon of the old one.
+
+            var folderNode = projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == componentProject.Name);
+
+            UiDispatcher.Invoke(() =>
+            {
+                if (folderNode == null)
+                {
+                    folderNode = new CodeExplorerCustomFolderViewModel(projectNode, componentProject.Name,
+                        componentProject.Name);
+                    projectNode.AddChild(folderNode);
+                }
+
+                var declaration = CreateDeclaration(e.Component);
+                var newNode = new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
+                {
+                    IsErrorState = true
+                };
+
+                folderNode.AddChild(newNode);
+
+                // Force a refresh. OnPropertyChanged("Projects") didn't work.
+                Projects = Projects;
+            });
         }
 
-        private delegate void AddErrorNode(CodeExplorerItemViewModel projectNode, CodeExplorerItemViewModel folderNode, string componentName);
-        private void AddComponentErrorNode(CodeExplorerItemViewModel projectNode, CodeExplorerItemViewModel folderNode,
-            string componentName)
+        private Declaration CreateDeclaration(VBComponent component)
         {
-            Projects.Remove(projectNode);
-            RemoveFailingComponent(projectNode, componentName);
+            var projectDeclaration =
+                _state.AllUserDeclarations.FirstOrDefault(item =>
+                        item.DeclarationType == DeclarationType.Project &&
+                        item.Project.VBComponents.Cast<VBComponent>().Contains(component));
 
-            folderNode.AddChild(new CodeExplorerErrorNodeViewModel(folderNode, componentName));
-            Projects.Add(projectNode);
-
-            if (SortByName)
+            if (component.Type == vbext_ComponentType.vbext_ct_StdModule)
             {
-                // this setter does not ensure the values are the same
-                // it also sorts the projects by name
-                Projects = Projects;
+                return new ProceduralModuleDeclaration(
+                        new QualifiedMemberName(new QualifiedModuleName(component), component.Name), projectDeclaration,
+                        component.Name, false, new List<IAnnotation>(), null);
             }
+
+            return new ClassModuleDeclaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name),
+                    projectDeclaration, component.Name, false, new List<IAnnotation>(), null);
         }
 
         private void ReorderChildNodes(IEnumerable<CodeExplorerItemViewModel> nodes)
@@ -363,30 +383,30 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private bool _removedNode;
-        private void RemoveFailingComponent(CodeExplorerItemViewModel itemNode, string componentName)
+        private bool _errorStateSet;
+        private void SetErrorState(CodeExplorerItemViewModel itemNode, VBComponent component)
         {
+            _errorStateSet = false;
+
             foreach (var node in itemNode.Items)
             {
                 if (node is CodeExplorerCustomFolderViewModel)
                 {
-                    RemoveFailingComponent(node, componentName);
+                    SetErrorState(node, component);
                 }
 
-                if (_removedNode)
+                if (_errorStateSet)
                 {
                     return;
                 }
 
                 if (node is CodeExplorerComponentViewModel)
                 {
-                    var component = (CodeExplorerComponentViewModel) node;
-                    if (component.Name == componentName)
+                    var componentNode = (CodeExplorerComponentViewModel) node;
+                    if (componentNode.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component == component)
                     {
-                        itemNode.Items.Remove(node);
-                        _removedNode = true;
-
-                        return;
+                        componentNode.IsErrorState = true;
+                        _errorStateSet = true;
                     }
                 }
             }
