@@ -16,7 +16,7 @@ namespace RubberduckTests.Refactoring.ExtractMethod
     public class ExtractMethodExtractionTests
     {
 
-#region inputCode
+        #region inputCode
         string inputCode = @"
 Option explicit
 Public Sub CodeWithDeclaration()
@@ -39,7 +39,7 @@ End Sub
 
 
 ";
-#endregion 
+        #endregion
 
         [TestClass]
         public class WhenRemoveSelectionIsCalledWithValidSelection
@@ -78,7 +78,7 @@ End Sub";
                 var codeModule = new Mock<ICodeModuleWrapper>();
                 var model = new Mock<IExtractMethodModel>();
                 var selection = new Selection(1, 1, 1, 1);
-                var methodMock = new Mock<ExtractedMethod>() { CallBase = true }; 
+                var methodMock = new Mock<ExtractedMethod>() { CallBase = true };
                 var method = methodMock.Object;
                 method.Accessibility = Accessibility.Private;
                 method.Parameters = new List<ExtractedParameter>();
@@ -131,7 +131,7 @@ End Sub";
             [TestCategory("ExtractedMethodRefactoringTests")]
             public void shouldInsertMethodCall()
             {
-                
+
                 var extraction = new Mock<ExtractMethodExtraction>() { CallBase = true };
                 IExtractMethodExtraction SUT = extraction.Object;
                 var codeModule = new Mock<ICodeModuleWrapper>();
@@ -149,17 +149,17 @@ End Sub";
                 extraction.Setup(em => em.constructLinesOfProc(It.IsAny<ICodeModuleWrapper>(), It.IsAny<IExtractMethodModel>())).Returns("theMethodCall");
                 extraction.Setup(em => em.removeSelection(It.IsAny<ICodeModuleWrapper>(), It.IsAny<IEnumerable<Selection>>()));
 
-                var inserted = new List<Tuple<int,string>>();
-                codeModule.Setup( cm => cm.InsertLines(It.IsAny<int>(),It.IsAny<string>()))
-                    .Callback<int,string>( (line,data) => inserted.Add(Tuple.Create(line,data)));
+                var inserted = new List<Tuple<int, string>>();
+                codeModule.Setup(cm => cm.InsertLines(It.IsAny<int>(), It.IsAny<string>()))
+                    .Callback<int, string>((line, data) => inserted.Add(Tuple.Create(line, data)));
 
                 SUT.apply(codeModule.Object, model.Object, selection);
 
                 // selection.StartLine = 7
-                var expected = Tuple.Create(7,"theMethodCall");
+                var expected = Tuple.Create(7, "theMethodCall");
                 var actual = inserted[1];
                 //Make sure the second insert inserted the methodCall higher up.
-                Assert.AreEqual(expected ,actual);
+                Assert.AreEqual(expected, actual);
             }
 
             [TestMethod]
@@ -184,14 +184,14 @@ End Sub";
                 extraction.Setup(em => em.constructLinesOfProc(It.IsAny<ICodeModuleWrapper>(), It.IsAny<IExtractMethodModel>())).Returns(newProc);
                 extraction.Setup(em => em.removeSelection(It.IsAny<ICodeModuleWrapper>(), It.IsAny<IEnumerable<Selection>>()));
 
-                var inserted = new List<Tuple<int,string>>();
-                codeModule.Setup( cm => cm.InsertLines(It.IsAny<int>(),It.IsAny<string>())).Callback<int,string>( (line,data) => inserted.Add(Tuple.Create(line,data)));
+                var inserted = new List<Tuple<int, string>>();
+                codeModule.Setup(cm => cm.InsertLines(It.IsAny<int>(), It.IsAny<string>())).Callback<int, string>((line, data) => inserted.Add(Tuple.Create(line, data)));
                 SUT.apply(codeModule.Object, model.Object, selection);
 
-                var expected = Tuple.Create(selection.StartLine,newProc);
+                var expected = Tuple.Create(selection.StartLine, newProc);
                 var actual = inserted[0];
                 //Make sure the first insert inserted the rows.
-                Assert.AreEqual(expected,actual);
+                Assert.AreEqual(expected, actual);
 
             }
         }
@@ -226,5 +226,8 @@ End Sub";
             }
 
         }
+
+        
+
     }
 }

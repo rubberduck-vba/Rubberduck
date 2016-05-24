@@ -40,7 +40,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _byref = new List<Declaration>();
             _byval = new List<Declaration>();
             _declarationsToMove = new List<Declaration>();
-
+            _extractDeclarations = new List<Tuple<Declaration,bool>>();
             _extractedMethod = new ExtractedMethod();
             
 
@@ -152,6 +152,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public IEnumerable<Selection> SelectionToRemove { get { return _selectionToRemove; } }
 
+        private IEnumerable<Tuple<Declaration,bool>> _extractDeclarations;
+        public IEnumerable<Tuple<Declaration,bool>> ExtractDeclarations { get { return _extractDeclarations; } }
 
     }
 }

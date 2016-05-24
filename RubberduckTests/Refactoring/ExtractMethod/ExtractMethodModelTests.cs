@@ -51,9 +51,7 @@ namespace RubberduckTests.Refactoring.ExtractMethod
                 Assert.AreEqual(0, flag);
 
             }
-
         }
-
     }
 
     [TestClass]
@@ -284,8 +282,13 @@ namespace RubberduckTests.Refactoring.ExtractMethod
     public class ExtractMethodModelTests
     {
 
+        List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
+                new ExtractMethodRuleInSelection(),
+                new ExtractMethodRuleIsAssignedInSelection(),
+                new ExtractMethodRuleUsedBefore(),
+                new ExtractMethodRuleUsedAfter()};
         [TestClass]
-        public class WhenExtractingFromASelection
+        public class WhenExtractingFromASelection : ExtractedMethodTests
         {
             #region hard coded data
             string inputCode = @"
@@ -324,11 +327,6 @@ Public Sub NewVal( byval x as long)
 End Sub";
             #endregion
 
-            List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
-                new ExtractMethodRuleInSelection(),
-                new ExtractMethodRuleIsAssignedInSelection(),
-                new ExtractMethodRuleUsedBefore(),
-                new ExtractMethodRuleUsedAfter()};
 
             [TestMethod]
             [TestCategory("ExtractMethodModelTests")]
@@ -446,6 +444,7 @@ End Sub";
                 Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual);
 
             }
+
 
         }
 
@@ -700,5 +699,82 @@ End Sub";
 
         }
 
+        [TestClass]
+        public class WhenVariableIsDefinedInTheSelection : ExtractMethodModelTests
+        {
+            #region variableInternalAndOnlyUsedInternally
+            string internalVariable = @"
+Option explicit
+Public Sub CodeWithDeclaration()
+    Dim x as long
+    Dim z as long
+
+    x = 1 + 2
+    DebugPrint ""something""  '8:
+    Dim y as long  
+    y = x + 1
+    x = 2
+    DebugPrint y   '12:
+
+    z = x
+    DebugPrint z
+
+End Sub
+Public Sub DebugPrint(byval g as long)
+End Sub
+
+
+";
+            string selectedCode = @"
+y = x + 1 
+x = 2
+Debug.Print y";
+
+            string outputCode = @"
+Public Sub NewVal( byval x as long)
+    Dim y as long
+    DebugPrint ""something""
+    y = x + 1
+    x = 2
+    DebugPrint y
+End Sub";
+            #endregion
+
+            [TestClass]
+            public class AndIsNotUsedOutsideOfSelection : WhenVariableIsDefinedInTheSelection
+            {
+
+                List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
+                        new ExtractMethodRuleInSelection(),
+                        new ExtractMethodRuleIsAssignedInSelection(),
+                        new ExtractMethodRuleUsedBefore(),
+                        new ExtractMethodRuleUsedAfter()};
+
+                [TestMethod]
+                [TestCategory("ExtractMethodModelTests")]
+                public void shouldOnlyHaveInternallyMarkedDefinitions()
+                {
+
+
+                    QualifiedModuleName qualifiedModuleName;
+                    RubberduckParserState state;
+                    MockParser.ParseString(internalVariable, out qualifiedModuleName, out state);
+                    var declarations = state.AllDeclarations;
+
+                    var selection = new Selection(8, 1, 12, 24);
+                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+
+                    var emr = new Mock<IExtractMethodRule>();
+                    var extractedMethod = new Mock<IExtractedMethod>();
+                    var extractedMethodProc = new Mock<IExtractMethodProc>();
+                    var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
+                    SUT.extract(declarations, qSelection.Value, selectedCode);
+
+                    var actual = SUT.ExtractDeclarations.Count(x => !x.Item2);
+                    Assert.AreEqual(0, SUT.ExtractDeclarations.Count(), "There should be no declarations in the collection");
+
+                }
+            }
+        }
     }
 }
