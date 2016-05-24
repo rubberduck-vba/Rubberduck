@@ -105,6 +105,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _isErrorState = value;
                 _icon = GetImageSource(resx.Error);
 
+
+                foreach (var item in Items)
+                {
+                    ((CodeExplorerMemberViewModel) item).ParentComponentHasError();
+                }
+
                 OnPropertyChanged();
                 OnPropertyChanged("CollapsedIcon");
                 OnPropertyChanged("ExpandedIcon");
