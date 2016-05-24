@@ -18,7 +18,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
         UsedBefore = 1,
         UsedAfter = 2,
         IsAssigned = 4,
-        InSelection = 8
+        InSelection = 8,
+        IsExternallyReferenced = 16
 
     }
 
@@ -30,6 +31,21 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 flags = (byte)(flags | (byte)ExtractMethodRuleFlags.UsedBefore);
         }
     }
+
+    public class ExtractMethodRuleExternalReference : IExtractMethodRule
+    {
+        public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
+        {
+            if (reference.Selection.StartLine > selection.EndLine &&
+                selection.StartLine <= reference.Declaration.Selection.StartLine &&
+                reference.Declaration.Selection.StartLine <= selection.EndLine)
+            {
+
+                flags = (byte)(flags | (byte)ExtractMethodRuleFlags.IsExternallyReferenced);
+            }
+        }
+    }
+
     public class ExtractMethodRuleUsedAfter : IExtractMethodRule
     {
         public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
@@ -38,6 +54,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 flags = (byte)(flags | (byte)ExtractMethodRuleFlags.UsedAfter);
         }
     }
+
     public class ExtractMethodRuleIsAssignedInSelection : IExtractMethodRule
     {
         public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
@@ -49,12 +66,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
         }
     }
+
     public class ExtractMethodRuleInSelection : IExtractMethodRule
     {
         public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
         {
-            if (selection.StartLine <= reference.Selection.StartLine && 
-                reference.Selection.StartLine <= selection.EndLine && 
+            if (selection.StartLine <= reference.Selection.StartLine &&
+                reference.Selection.StartLine <= selection.EndLine &&
                 ((reference.Declaration == null) ? false : reference.Declaration.Selection.StartLine != reference.Selection.StartLine))
             {
                 flags = (byte)(flags | ((byte)ExtractMethodRuleFlags.InSelection));

@@ -40,9 +40,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _byref = new List<Declaration>();
             _byval = new List<Declaration>();
             _declarationsToMove = new List<Declaration>();
-            _extractDeclarations = new List<Tuple<Declaration,bool>>();
+            _extractDeclarations = new List<Tuple<Declaration, bool>>();
             _extractedMethod = new ExtractedMethod();
-            
+
 
             var selectionToRemove = new List<Selection>();
             var selectionStartLine = selection.Selection.StartLine;
@@ -73,7 +73,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 else if (flags > 12)
                     _byval.Add(item);
 
+                if (flags >= 18)
+                {
+                    _extractDeclarations.Add(Tuple.Create(item, true));
+                }
+
             }
+
 
             _declarationsToMove.ForEach(d => selectionToRemove.Add(d.Selection));
             selectionToRemove.Add(selection.Selection);
@@ -146,14 +152,14 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public string NewMethodCall { get { return _extractedMethod.NewMethodCall(); } }
 
         private Selection _positionForNewMethod;
-        public Selection PositionForNewMethod { get { return _positionForNewMethod; } } 
+        public Selection PositionForNewMethod { get { return _positionForNewMethod; } }
         IEnumerable<Selection> _selectionToRemove;
         private List<IExtractMethodRule> emRules;
 
         public IEnumerable<Selection> SelectionToRemove { get { return _selectionToRemove; } }
 
-        private IEnumerable<Tuple<Declaration,bool>> _extractDeclarations;
-        public IEnumerable<Tuple<Declaration,bool>> ExtractDeclarations { get { return _extractDeclarations; } }
+        private List<Tuple<Declaration, bool>> _extractDeclarations;
+        public IEnumerable<Tuple<Declaration, bool>> ExtractDeclarations { get { return _extractDeclarations; } }
 
     }
 }

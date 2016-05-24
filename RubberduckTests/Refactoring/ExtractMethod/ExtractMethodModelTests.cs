@@ -282,11 +282,6 @@ namespace RubberduckTests.Refactoring.ExtractMethod
     public class ExtractMethodModelTests
     {
 
-        List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
-                new ExtractMethodRuleInSelection(),
-                new ExtractMethodRuleIsAssignedInSelection(),
-                new ExtractMethodRuleUsedBefore(),
-                new ExtractMethodRuleUsedAfter()};
         [TestClass]
         public class WhenExtractingFromASelection : ExtractedMethodTests
         {
@@ -327,6 +322,11 @@ Public Sub NewVal( byval x as long)
 End Sub";
             #endregion
 
+            List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
+                new ExtractMethodRuleInSelection(),
+                new ExtractMethodRuleIsAssignedInSelection(),
+                new ExtractMethodRuleUsedBefore(),
+                new ExtractMethodRuleUsedAfter()};
 
             [TestMethod]
             [TestCategory("ExtractMethodModelTests")]
@@ -702,6 +702,81 @@ End Sub";
         [TestClass]
         public class WhenVariableIsDefinedInTheSelection : ExtractMethodModelTests
         {
+            [TestClass]
+            public class AndIsUsedAfterSelection : WhenVariableIsDefinedInTheSelection
+            {
+
+            #region variableInternalAndOnlyUsedInternally
+            string internalVariable = @"
+Option explicit
+Public Sub CodeWithDeclaration()
+    Dim x as long
+    Dim z as long
+
+    x = 1 + 2
+    DebugPrint ""something""  '8:
+    Dim y as long  
+    y = x + 1
+    x = 2
+    DebugPrint y   '12:
+
+    y = x
+    DebugPrint y
+    z = 1
+
+End Sub
+Public Sub DebugPrint(byval g as long)
+End Sub
+
+
+";
+            string selectedCode = @"
+y = x + 1 
+x = 2
+Debug.Print y";
+
+            string outputCode = @"
+Public Sub NewVal( byval x as long, byval y as long)
+    DebugPrint ""something""
+    y = x + 1
+    x = 2
+    DebugPrint y
+End Sub";
+            #endregion
+
+                List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
+                        new ExtractMethodRuleInSelection(),
+                        new ExtractMethodRuleIsAssignedInSelection(),
+                        new ExtractMethodRuleUsedBefore(),
+                        new ExtractMethodRuleUsedAfter(),
+                        new ExtractMethodRuleExternalReference()};
+
+                [TestMethod]
+                [TestCategory("ExtractMethodModelTests")]
+                public void shouldMarkDeclarationForExternalUse()
+                {
+                    QualifiedModuleName qualifiedModuleName;
+                    RubberduckParserState state;
+                    MockParser.ParseString(internalVariable, out qualifiedModuleName, out state);
+                    var declarations = state.AllDeclarations;
+
+                    var selection = new Selection(8, 1, 12, 24);
+                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+
+                    var emr = new Mock<IExtractMethodRule>();
+                    var extractedMethod = new Mock<IExtractedMethod>();
+                    var extractedMethodProc = new Mock<IExtractMethodProc>();
+                    var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
+                    SUT.extract(declarations, qSelection.Value, selectedCode);
+
+                    var actual = SUT.ExtractDeclarations.Count(x => x.Item2);
+                    Assert.AreEqual(1, actual, "y should have been marked as external");
+                }
+            }
+            [TestClass]
+            public class AndIsNotUsedOutsideOfSelection : WhenVariableIsDefinedInTheSelection
+            {
+
             #region variableInternalAndOnlyUsedInternally
             string internalVariable = @"
 Option explicit
@@ -740,19 +815,16 @@ Public Sub NewVal( byval x as long)
 End Sub";
             #endregion
 
-            [TestClass]
-            public class AndIsNotUsedOutsideOfSelection : WhenVariableIsDefinedInTheSelection
-            {
-
                 List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
                         new ExtractMethodRuleInSelection(),
                         new ExtractMethodRuleIsAssignedInSelection(),
                         new ExtractMethodRuleUsedBefore(),
-                        new ExtractMethodRuleUsedAfter()};
+                        new ExtractMethodRuleUsedAfter(),
+                        new ExtractMethodRuleExternalReference()};
 
                 [TestMethod]
                 [TestCategory("ExtractMethodModelTests")]
-                public void shouldOnlyHaveInternallyMarkedDefinitions()
+                public void shouldNotHaveAnyExternallyMarkedDeclarations()
                 {
 
 
@@ -770,8 +842,8 @@ End Sub";
                     var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
                     SUT.extract(declarations, qSelection.Value, selectedCode);
 
-                    var actual = SUT.ExtractDeclarations.Count(x => !x.Item2);
-                    Assert.AreEqual(0, SUT.ExtractDeclarations.Count(), "There should be no declarations in the collection");
+                    var actual = SUT.ExtractDeclarations.Count(x => x.Item2);
+                    Assert.AreEqual(0, actual, "There should be no declarations in the collection");
 
                 }
             }
