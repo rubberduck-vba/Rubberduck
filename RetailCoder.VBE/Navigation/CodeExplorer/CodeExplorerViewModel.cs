@@ -216,11 +216,6 @@ namespace Rubberduck.Navigation.CodeExplorer
                     return ((CodeExplorerCustomFolderViewModel) SelectedItem).FolderAttribute;
                 }
 
-                if (SelectedItem is CodeExplorerErrorNodeViewModel)
-                {
-                    return ((CodeExplorerErrorNodeViewModel) SelectedItem).Name;
-                }
-
                 return string.Empty;
             }
         }

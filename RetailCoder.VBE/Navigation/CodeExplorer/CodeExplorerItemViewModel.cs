@@ -57,13 +57,6 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return nodeComparison;
             }
 
-            // error nodes have the same sort value
-            if (x is CodeExplorerErrorNodeViewModel &&
-                y is CodeExplorerErrorNodeViewModel)
-            {
-                return 0;
-            }
-
             var xNode = (ICodeExplorerDeclarationViewModel)x;
             var yNode = (ICodeExplorerDeclarationViewModel)y;
 
@@ -151,13 +144,6 @@ namespace Rubberduck.Navigation.CodeExplorer
                 y is CodeExplorerCustomFolderViewModel)
             {
                 return string.CompareOrdinal(x.NameWithSignature, y.NameWithSignature);
-            }
-
-            // error nodes come after folders
-            if (x is CodeExplorerErrorNodeViewModel ^
-                y is CodeExplorerErrorNodeViewModel)
-            {
-                return x is CodeExplorerErrorNodeViewModel ? -1 : 1;
             }
 
             return 0;
