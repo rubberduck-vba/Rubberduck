@@ -23,6 +23,18 @@ namespace Rubberduck.UI.ToDoItems
             _state = state;
             _configService = configService;
             _state.StateChanged += _state_StateChanged;
+
+            _setMarkerGroupingCommand = new DelegateCommand(param =>
+            {
+                GroupByMarker = (bool)param;
+                GroupByLocation = !(bool)param;
+            });
+
+            _setLocationGroupingCommand = new DelegateCommand(param =>
+            {
+                GroupByLocation = (bool)param;
+                GroupByMarker = !(bool)param;
+            });
         }
 
         private ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
@@ -52,6 +64,26 @@ namespace Rubberduck.UI.ToDoItems
                 }
             }
         }
+
+        private bool _groupByLocation;
+        public bool GroupByLocation
+        {
+            get { return _groupByLocation; }
+            set
+            {
+                if (_groupByLocation != value)
+                {
+                    _groupByLocation = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private readonly ICommand _setMarkerGroupingCommand;
+        public ICommand SetMarkerGroupingCommand { get { return _setMarkerGroupingCommand; } }
+
+        private readonly ICommand _setLocationGroupingCommand;
+        public ICommand SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
 
         private ICommand _refreshCommand;
         public ICommand RefreshCommand

@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var selection = activePane.GetQualifiedSelection();
-            if (selection.HasValue)
+            if (!selection.HasValue)
             {
                 return false;
             }

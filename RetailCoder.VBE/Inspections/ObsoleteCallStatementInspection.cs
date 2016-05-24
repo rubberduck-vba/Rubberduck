@@ -25,21 +25,23 @@ namespace Rubberduck.Inspections
                 return new InspectionResultBase[] { };
             }
 
-            return ParseTreeResults.ObsoleteCallContexts.Select(context => 
+            return ParseTreeResults.ObsoleteCallContexts.Select(context =>
                 new ObsoleteCallStatementUsageInspectionResult(this,
-                    new QualifiedContext<VBAParser.ExplicitCallStmtContext>(context.ModuleName, context.Context as VBAParser.ExplicitCallStmtContext)));
+                    new QualifiedContext<VBAParser.CallStmtContext>(context.ModuleName, context.Context as VBAParser.CallStmtContext)));
         }
 
         public class ObsoleteCallStatementListener : VBAParserBaseListener
         {
-            private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
-            public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
+            private readonly IList<VBAParser.CallStmtContext> _contexts = new List<VBAParser.CallStmtContext>();
+            public IEnumerable<VBAParser.CallStmtContext> Contexts { get { return _contexts; } }
 
-            public override void ExitExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
+            public override void ExitCallStmt(VBAParser.CallStmtContext context)
             {
-                _contexts.Add(context);
+                if (context.CALL() != null)
+                {
+                    _contexts.Add(context);
+                }
             }
         }
-
     }
 }

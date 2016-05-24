@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
@@ -25,9 +26,11 @@ namespace Rubberduck.Parsing.VBA
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
         private readonly VBAPreprocessor _preprocessor;
+        private readonly VBAModuleParser _parser;
 
         public event EventHandler<ParseCompletionArgs> ParseCompleted;
         public event EventHandler<ParseFailureArgs> ParseFailure;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ComponentParseTask(VBComponent vbComponent, VBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
         {
@@ -35,7 +38,8 @@ namespace Rubberduck.Parsing.VBA
             _preprocessor = preprocessor;
             _component = vbComponent;
             _rewriter = rewriter;
-            _qualifiedName = new QualifiedModuleName(vbComponent); 
+            _qualifiedName = new QualifiedModuleName(vbComponent);
+            _parser = new VBAModuleParser();
         }
         
         public void Start(CancellationToken token)
@@ -60,7 +64,7 @@ namespace Rubberduck.Parsing.VBA
                 stopwatch.Stop();
                 if (tree != null)
                 {
-                    Debug.Print("IParseTree for component '{0}' acquired in {1}ms (thread {2})", _component.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+                    _logger.Trace("IParseTree for component '{0}' acquired in {1}ms (thread {2})", _component.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
                 }
 
                 var comments = QualifyAndUnionComments(_qualifiedName, commentListener.Comments, commentListener.RemComments);
@@ -77,7 +81,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (COMException exception)
             {
-                Debug.WriteLine("Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
+                _logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
                 ParseFailure.Invoke(this, new ParseFailureArgs
                 {
                     Cause = exception
@@ -85,15 +89,15 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (SyntaxErrorException exception)
             {
-                Debug.WriteLine("Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
+                _logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
                 ParseFailure.Invoke(this, new ParseFailureArgs
                 {
                     Cause = exception
                 });
             }
-            catch (OperationCanceledException cancel)
+            catch (OperationCanceledException)
             {
-                Debug.WriteLine("Operation was Cancelled", cancel);
+                _logger.Debug("Component {0}: Operation was Cancelled", _component.Name);
                 // no results to be used, so no results "returned"
                 //ParseCompleted.Invoke(this, new ParseCompletionArgs());
             }
@@ -107,29 +111,17 @@ namespace Rubberduck.Parsing.VBA
             {
                 processed = _preprocessor.Execute(code);
             }
-            catch (VBAPreprocessorException)
+            catch (VBAPreprocessorException ex)
             {
-                Debug.WriteLine("Falling back to no preprocessing");
+                _logger.Error(ex, "Preprocessing failed. Falling back to no preprocessing");
                 processed = code;
             }
             return processed;
         }
 
-        private static IParseTree ParseInternal(string code, IParseTreeListener[] listeners, out ITokenStream outStream)
+        private IParseTree ParseInternal(string code, IParseTreeListener[] listeners, out ITokenStream outStream)
         {
-            var stream = new AntlrInputStream(code);
-            var lexer = new VBALexer(stream);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBAParser(tokens);
-
-            parser.AddErrorListener(new ExceptionErrorListener());
-            foreach (var l in listeners)
-            {
-                parser.AddParseListener(l);
-            }
-
-            outStream = tokens;
-            return parser.startRule();
+            return _parser.Parse(code, listeners, out outStream);
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

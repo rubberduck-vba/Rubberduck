@@ -4,13 +4,13 @@ namespace Rubberduck.Parsing.Binding
 {
     public static class StatementContext
     {
-        public static DeclarationType GetSearchDeclarationType(ResolutionStatementContext statementContext)
+        public static DeclarationType GetSearchDeclarationType(StatementResolutionContext statementContext)
         {
-            switch(statementContext)
+            switch (statementContext)
             {
-                case ResolutionStatementContext.LetStatement:
+                case StatementResolutionContext.LetStatement:
                     return DeclarationType.PropertyLet;
-                case ResolutionStatementContext.SetStatement:
+                case StatementResolutionContext.SetStatement:
                     return DeclarationType.PropertySet;
                 default:
                     return DeclarationType.PropertyGet;

@@ -33,10 +33,10 @@ namespace Rubberduck.Inspections
 
         public class EmptyStringLiteralListener : VBAParserBaseListener
         {
-            private readonly IList<VBAParser.LiteralContext> _contexts = new List<VBAParser.LiteralContext>();
-            public IEnumerable<VBAParser.LiteralContext> Contexts { get { return _contexts; } }
+            private readonly IList<VBAParser.LiteralExpressionContext> _contexts = new List<VBAParser.LiteralExpressionContext>();
+            public IEnumerable<VBAParser.LiteralExpressionContext> Contexts { get { return _contexts; } }
 
-            public override void ExitLiteral(VBAParser.LiteralContext context)
+            public override void ExitLiteralExpression(VBAParser.LiteralExpressionContext context)
             {
                 var literal = context.STRINGLITERAL();
                 if (literal != null && literal.GetText() == "\"\"")

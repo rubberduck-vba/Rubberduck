@@ -1,4 +1,7 @@
+using NLog;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
+using Rubberduck.Parsing.VBA;
 using System.Diagnostics;
 using System.Linq;
 
@@ -9,8 +12,10 @@ namespace Rubberduck.Parsing.Symbols
         private readonly DeclarationFinder _declarationFinder;
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
+        private readonly VBAExpressionParser _expressionParser;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public TypeAnnotationPass(DeclarationFinder declarationFinder)
+        public TypeAnnotationPass(DeclarationFinder declarationFinder, VBAExpressionParser expressionParser)
         {
             _declarationFinder = declarationFinder;
             var typeBindingContext = new TypeBindingContext(_declarationFinder);
@@ -20,7 +25,8 @@ namespace Rubberduck.Parsing.Symbols
                 new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
                 typeBindingContext,
                 procedurePointerBindingContext);
-            _boundExpressionVisitor = new BoundExpressionVisitor();
+            _boundExpressionVisitor = new BoundExpressionVisitor(new AnnotationService(_declarationFinder));
+            _expressionParser = expressionParser;
         }
 
         public void Execute()
@@ -31,41 +37,47 @@ namespace Rubberduck.Parsing.Symbols
                 AnnotateType(declaration);
             }
             stopwatch.Stop();
-            Debug.WriteLine("Type annotations completed in {0}ms.", stopwatch.ElapsedMilliseconds);
+            _logger.Trace("Type annotations completed in {0}ms.", stopwatch.ElapsedMilliseconds);
         }
 
-        private void AnnotateType(Declaration declarationWithAsType)
+        private void AnnotateType(Declaration declaration)
         {
-            // Classes are their own type, we treat the "as type" as the "declared type".
-            if (declarationWithAsType.DeclarationType == DeclarationType.ClassModule)
+            if (declaration.DeclarationType == DeclarationType.ClassModule || declaration.DeclarationType == DeclarationType.UserDefinedType)
             {
-                declarationWithAsType.AsTypeDeclaration = declarationWithAsType;
+                declaration.AsTypeDeclaration = declaration;
                 return;
             }
             string typeExpression;
-            if (declarationWithAsType.IsTypeSpecified())
+            if (declaration.AsTypeContext != null && declaration.AsTypeContext.type().complexType() != null)
             {
-                var typeContext = declarationWithAsType.GetAsTypeContext();
+                var typeContext = declaration.AsTypeContext;
                 typeExpression = typeContext.type().complexType().GetText();
             }
-            else if (!string.IsNullOrWhiteSpace(declarationWithAsType.AsTypeName) && !Declaration.BASE_TYPES.Contains(declarationWithAsType.AsTypeName.ToUpperInvariant()))
+            else if (!string.IsNullOrWhiteSpace(declaration.AsTypeNameWithoutArrayDesignator) && !Declaration.BASE_TYPES.Contains(declaration.AsTypeNameWithoutArrayDesignator.ToUpperInvariant()))
             {
-                typeExpression = declarationWithAsType.AsTypeName;
+                typeExpression = declaration.AsTypeNameWithoutArrayDesignator;
             }
             else
             {
                 return;
             }
-            var module = Declaration.GetModuleParent(declarationWithAsType);
+            var module = Declaration.GetModuleParent(declaration);
             if (module == null)
             {
                 // TODO: Reference Collector does not add module, find workaround?
+                _logger.Warn("Type annotation failed for {0} because module parent is missing.", typeExpression);
                 return;
             }
-            var boundExpression = _bindingService.ResolveType(module, declarationWithAsType.ParentDeclaration, typeExpression);
-            if (boundExpression != null)
+            var expressionContext = _expressionParser.Parse(typeExpression.Trim());
+            var boundExpression = _bindingService.ResolveType(module, declaration.ParentDeclaration, expressionContext);
+            if (boundExpression.Classification != ExpressionClassification.ResolutionFailed)
             {
-                declarationWithAsType.AsTypeDeclaration = boundExpression.ReferencedDeclaration;
+                declaration.AsTypeDeclaration = boundExpression.ReferencedDeclaration;
+            }
+            else
+            {
+                // Commented out due to a massive amount of VT_HRESULT messages.
+                //Debug.WriteLine(string.Format("{0}: Failed to resolve type {1}.", GetType().Name, typeExpression));
             }
         }
     }

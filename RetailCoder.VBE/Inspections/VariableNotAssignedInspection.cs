@@ -23,12 +23,11 @@ namespace Rubberduck.Inspections
             // ignore arrays. todo: ArrayIndicesNotAccessedInspection
             var arrays = items.Where(declaration =>
                 declaration.DeclarationType == DeclarationType.Variable
-                && declaration.IsArray()).ToList();
+                && declaration.IsArray).ToList();
 
-            var declarations = items.Where(declaration =>
+            var declarations = items.Except(arrays).Where(declaration =>
                 declaration.DeclarationType == DeclarationType.Variable
                 && !declaration.IsWithEvents
-                && !arrays.Contains(declaration)
                 && !items.Any(item => 
                     item.IdentifierName == declaration.AsTypeName 
                     && item.DeclarationType == DeclarationType.UserDefinedType) // UDT variables don't need to be assigned
@@ -36,7 +35,7 @@ namespace Rubberduck.Inspections
                 && !declaration.References.Any(reference => reference.IsAssignment));
 
             return declarations.Select(issue => 
-                new IdentifierNotAssignedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
+                new IdentifierNotAssignedInspectionResult(this, issue, issue.Context));
         }
     }
 }

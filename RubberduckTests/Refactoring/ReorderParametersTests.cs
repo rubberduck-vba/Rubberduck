@@ -205,7 +205,7 @@ End Sub";
 
         [TestMethod]
         public void ReorderParams_SwapPositions_UpdatesCallers()
-        {
+         {
             //Input
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)

@@ -54,7 +54,7 @@ namespace Rubberduck.UI
             }
             catch (NullReferenceException exception)
             {
-                Debug.Print(exception.ToString());
+                _logger.Error(exception);
                 return null; //throw;
             }
 

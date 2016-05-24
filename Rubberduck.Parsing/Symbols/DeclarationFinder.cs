@@ -1,3 +1,4 @@
+using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
@@ -5,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -15,6 +15,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly IReadOnlyList<Declaration> _declarations;
         private readonly IDictionary<string, Declaration[]> _declarationsByName;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public DeclarationFinder(
             IReadOnlyList<Declaration> declarations,
@@ -79,14 +80,13 @@ namespace Rubberduck.Parsing.Symbols
             return matches.Where(m => procedure.Equals(m.ParentDeclaration) && m.DeclarationType == DeclarationType.Parameter).FirstOrDefault();
         }
 
-        public IEnumerable<IAnnotation> ModuleAnnotations(QualifiedModuleName module)
+        public IEnumerable<IAnnotation> FindAnnotations(QualifiedModuleName module)
         {
             IAnnotation[] result;
             if (_annotations.TryGetValue(module, out result))
             {
                 return result;
             }
-
             return new List<IAnnotation>();
         }
 
@@ -136,7 +136,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             catch (InvalidOperationException exception)
             {
-                Debug.WriteLine("Multiple matches found for project '{0}'.\n{1}", name, exception);
+                _logger.Error(exception, "Multiple matches found for project '{0}'.", name);
             }
 
             return result;
@@ -154,7 +154,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             catch (InvalidOperationException exception)
             {
-                Debug.WriteLine("Multiple matches found for std.module '{0}'.\n{1}", name, exception);
+                _logger.Error(exception, "Multiple matches found for std.module '{0}'.", name);
             }
 
             return result;
@@ -172,7 +172,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             catch (Exception exception)
             {
-                Debug.WriteLine("Multiple matches found for user-defined type '{0}'.\n{1}", name, exception);
+                _logger.Error(exception, "Multiple matches found for user-defined type '{0}'.", name);
             }
 
             return result;
@@ -190,7 +190,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             catch (Exception exception)
             {
-                Debug.WriteLine("Multiple matches found for enum type '{0}'.\n{1}", name, exception);
+                _logger.Error(exception, "Multiple matches found for enum type '{0}'.", name);
             }
 
             return result;
@@ -207,7 +207,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             catch (InvalidOperationException exception)
             {
-                Debug.WriteLine("Multiple matches found for class '{0}'.\n{1}", name, exception);
+                _logger.Error(exception, "Multiple matches found for class '{0}'.", name);
             }
 
             return result;

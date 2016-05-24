@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Rubberduck.Common.WinAPI;
+using NLog;
 
 namespace Rubberduck.Common.Hotkeys
 {
@@ -12,6 +13,7 @@ namespace Rubberduck.Common.Hotkeys
         private readonly string _key;
         private readonly ICommand _command;
         private readonly IntPtr _hWndVbe;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Hotkey(IntPtr hWndVbe, string key, ICommand command, Keys secondKey = Keys.None)
         {
@@ -82,13 +84,13 @@ namespace Rubberduck.Common.Hotkeys
             var success = User32.RegisterHotKey(_hWndVbe, hookId, shift, (uint)key);
             if (!success)
             {
-                Debug.WriteLine(Rubberduck.UI.RubberduckUI.CommonHotkey_KeyNotRegistered, key);
+                _logger.Debug(Rubberduck.UI.RubberduckUI.CommonHotkey_KeyNotRegistered, key);
                 //throw new Win32Exception(Rubberduck.UI.RubberduckUI.CommonHotkey_KeyNotRegistered, key);
             }
 
             HotkeyInfo = new HotkeyInfo(hookId, Combo);
             IsAttached = true;
-            Debug.WriteLine("Hotkey '{0}' hooked successfully to command '{1}'", Key, Command.GetType());  //no translation needed for Debug.Writeline
+            _logger.Debug("Hotkey '{0}' hooked successfully to command '{1}'", Key, Command.GetType());  //no translation needed for Debug.Writeline
         }
 
         private static readonly IDictionary<char,uint> Modifiers = new Dictionary<char, uint>

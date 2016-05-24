@@ -2,6 +2,7 @@
 {
     public enum ExpressionClassification
     {
+        ResolutionFailed,
         Value,
         Variable,
         Property,

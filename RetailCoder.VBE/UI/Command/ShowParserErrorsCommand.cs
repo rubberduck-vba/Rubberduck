@@ -64,7 +64,7 @@ namespace Rubberduck.UI.Command
                 select new SearchResultItem(declaration, error.Item2.GetNavigateCodeEventArgs(declaration), error.Item2.Message);
 
             var searchResultItems = errors as IList<SearchResultItem> ?? errors.ToList();
-            var viewModel = new SearchResultsViewModel(_navigateCommand, "Parser Errors", null, searchResultItems);
+            var viewModel = new SearchResultsViewModel(_navigateCommand,RubberduckUI.Parser_ParserError, null, searchResultItems);
             return viewModel;
         }
 
@@ -80,7 +80,7 @@ namespace Rubberduck.UI.Command
                                                              && (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule));
            
             // FIXME dirty hack for project.Scope in case project is null. Clean up!
-            var declaration = new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), project, project == null ? null : project.Scope, component.Name, false, false, Accessibility.Global, DeclarationType.ProceduralModule, false);
+            var declaration = new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), project, project == null ? null : project.Scope, component.Name, null, false, false, Accessibility.Global, DeclarationType.ProceduralModule, false, null, false);
             return result ?? declaration; // module isn't in parser state - give it a dummy declaration, just so the ViewModel has something to chew on
         }
     }

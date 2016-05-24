@@ -25,12 +25,11 @@ namespace Rubberduck.UI.Settings
             });
 
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
-
             Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.HotkeySettings.Settings);
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
-
             Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;
+            DetailedLoggingEnabled = config.UserSettings.GeneralSettings.DetailedLoggingEnabled;
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
@@ -105,6 +104,20 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _detailedLoggingEnabled;
+        public bool DetailedLoggingEnabled
+        {
+            get { return _detailedLoggingEnabled; }
+            set
+            {
+                if (_detailedLoggingEnabled != value)
+                {
+                    _detailedLoggingEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.GeneralSettings.Language = SelectedLanguage;
@@ -112,6 +125,7 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.GeneralSettings.AutoSaveEnabled = AutoSaveEnabled;
             config.UserSettings.GeneralSettings.AutoSavePeriod = AutoSavePeriod;
             config.UserSettings.GeneralSettings.Delimiter = (char)Delimiter;
+            config.UserSettings.GeneralSettings.DetailedLoggingEnabled = DetailedLoggingEnabled;
         }
 
         public void SetToDefaults(Configuration config)
@@ -121,6 +135,7 @@ namespace Rubberduck.UI.Settings
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
             Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;
+            DetailedLoggingEnabled = config.UserSettings.GeneralSettings.DetailedLoggingEnabled;
         }
     }
 }

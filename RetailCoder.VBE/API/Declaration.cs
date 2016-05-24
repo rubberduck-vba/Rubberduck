@@ -40,11 +40,11 @@ namespace Rubberduck.API
 
         protected RubberduckDeclaration Instance { get { return _declaration; } }
 
+        public bool IsArray { get { return _declaration.IsArray; } }
         public string Name { get { return _declaration.IdentifierName; } }
         public Accessibility Accessibility { get { return (Accessibility)_declaration.Accessibility; } }
         public DeclarationType DeclarationType {get { return TypeMappings[_declaration.DeclarationType]; }}
         public string TypeName { get { return _declaration.AsTypeName; } }
-        public bool IsArray { get { return _declaration.IsArray(); } }
 
         private static readonly IDictionary<Parsing.Symbols.DeclarationType,DeclarationType> TypeMappings =
             new Dictionary<Parsing.Symbols.DeclarationType, DeclarationType>

@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Date;
+using Rubberduck.Parsing.VBA;
 using System;
 using System.Globalization;
 
@@ -17,11 +18,8 @@ namespace Rubberduck.Parsing.Preprocessing
         public override IValue Evaluate()
         {
             string literal = _tokenText.Evaluate().AsString;
-            var stream = new AntlrInputStream(literal);
-            var lexer = new VBADateLexer(stream);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBADateParser(tokens);
-            var dateLiteral = parser.dateLiteral();
+            var parser = new VBADateLiteralParser();
+            var dateLiteral = parser.Parse(literal);
             var dateOrTime = dateLiteral.dateOrTime();
             int year;
             int month;

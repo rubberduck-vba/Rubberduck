@@ -73,6 +73,64 @@ End Property
         }
 
         [TestMethod]
+        public void EncapsulatePublicField_FieldIsOverMultipleLines()
+        {
+            //Input
+            const string inputCode =
+@"Public _
+fizz _
+As _
+Integer";
+            var selection = new Selection(1, 1, 1, 1);
+
+            //Expectation
+            const string expectedCode =
+@"Private fizz As Integer
+
+Public Property Get Name() As Integer
+    Name = fizz
+End Property
+
+Public Property Let Name(ByVal value As Integer)
+    fizz = value
+End Property
+";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
+            {
+                ImplementLetSetterType = true,
+                ImplementSetSetterType = false,
+                ParameterName = "value",
+                PropertyName = "Name"
+            };
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
         public void EncapsulatePublicField_WithSetter()
         {
             //Input
