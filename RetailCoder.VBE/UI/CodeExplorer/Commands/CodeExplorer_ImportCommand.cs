@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 
@@ -23,17 +24,24 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _openFileDialog.CheckFileExists = true;
         }
 
-        public override bool CanExecute(object parameter)
-        {
-            // I could import to a folder as well, if I had a
-            // MoveToFolder refactoring to call
-            return parameter is ICodeExplorerDeclarationViewModel;
-        }
-
         public override void Execute(object parameter)
         {
-            // I know this will never be null because of the CanExecute
-            var project = ((ICodeExplorerDeclarationViewModel)parameter).Declaration.QualifiedName.QualifiedModuleName.Project;
+            VBProject project;
+
+            if (parameter is ICodeExplorerDeclarationViewModel)
+            {
+                project = ((ICodeExplorerDeclarationViewModel) parameter).Declaration.QualifiedName.QualifiedModuleName.Project;
+            }
+            else
+            {
+                var node = ((CodeExplorerItemViewModel) parameter).Parent;
+                while (!(node is ICodeExplorerDeclarationViewModel))
+                {
+                    node = node.Parent;
+                }
+
+                project = ((ICodeExplorerDeclarationViewModel) node).Declaration.QualifiedName.QualifiedModuleName.Project;
+            }
 
             if (_openFileDialog.ShowDialog() == DialogResult.OK)
             {
