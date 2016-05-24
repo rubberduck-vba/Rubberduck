@@ -445,6 +445,8 @@ namespace Rubberduck.Parsing.VBA
         {
             if (component == null) { return false; }
 
+            ClearBuiltInReferences();
+
             var match = new QualifiedModuleName(component);
             var keys = _moduleStates.Keys.Where(kvp => kvp.Equals(match))
                 .Union(new[] { match }).Distinct(); // make sure the key is present, even if there are no declarations left
@@ -723,10 +725,10 @@ namespace Rubberduck.Parsing.VBA
             var projectName = reference.Name;
             var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
             ModuleState moduleState;
-            if (!_moduleStates.TryRemove(key, out moduleState))
+            if (_moduleStates.TryRemove(key, out moduleState))
             {
                 if (moduleState != null)
-            {
+                {
                     moduleState.Dispose();
                 }
 
