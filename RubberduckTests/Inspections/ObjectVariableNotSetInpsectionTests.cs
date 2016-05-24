@@ -13,6 +13,7 @@ namespace RubberduckTests.Inspections
     public class ObjectVariableNotSetInpsectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenStringVariable_ReturnsNoResult()
         {
             const string inputCode = @"
@@ -43,6 +44,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariable_ReturnsNoResult()
         {
             const string inputCode = @"
@@ -73,6 +75,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenObjectVariableNotSet_ReturnsResult()
         {
             const string inputCode = @"
@@ -103,6 +106,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenSetObjectVariable_ReturnsNoResult()
         {
             const string inputCode = @"

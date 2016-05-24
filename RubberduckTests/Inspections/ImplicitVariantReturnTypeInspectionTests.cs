@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ImplicitVariantReturnTypeInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_Function()
         {
             const string inputCode =
@@ -38,6 +39,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_PropertyGet()
         {
             const string inputCode =
@@ -62,6 +64,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_MultipleFunctions()
         {
             const string inputCode =
@@ -89,6 +92,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_DoesNotReturnResult()
         {
             const string inputCode =
@@ -113,6 +117,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_MultipleSubs_SomeReturning()
         {
             const string inputCode =
@@ -140,6 +145,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_QuickFixWorks_Function()
         {
             const string inputCode =
@@ -172,6 +178,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_QuickFixWorks_PropertyGet()
         {
             const string inputCode =
@@ -204,6 +211,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ImplicitVariantReturnTypeInspection(null);
@@ -211,6 +219,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitVariantReturnTypeInspection";

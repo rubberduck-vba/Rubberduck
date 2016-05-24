@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class AssignedByValParameterInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void AssignedByValParameter_ReturnsResult_Sub()
         {
             const string inputCode =
@@ -39,6 +40,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void AssignedByValParameter_ReturnsResult_Function()
         {
             const string inputCode =
@@ -64,6 +66,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void AssignedByValParameter_ReturnsResult_MultipleParams()
         {
             const string inputCode =
@@ -90,6 +93,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void AssignedByValParameter_DoesNotReturnResult()
         {
             const string inputCode =
@@ -114,6 +118,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void AssignedByValParameter_ReturnsResult_SomeAssignedByValParams()
         {
             const string inputCode =
@@ -142,6 +147,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void AssignedByValParameter_QuickFixWorks()
         {
             const string inputCode =
@@ -176,6 +182,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new AssignedByValParameterInspection(null);
@@ -183,6 +190,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "AssignedByValParameterInspection";

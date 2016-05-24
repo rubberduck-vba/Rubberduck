@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ImplicitByRefParameterInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_ReturnsResult()
         {
             const string inputCode =
@@ -38,6 +39,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_ReturnsResult_MultipleParams()
         {
             const string inputCode =
@@ -62,6 +64,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_DoesNotReturnResult_ByRef()
         {
             const string inputCode =
@@ -86,6 +89,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_DoesNotReturnResult_ByVal()
         {
             const string inputCode =
@@ -110,6 +114,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_ReturnsResult_SomePassedByRefImplicitely()
         {
             const string inputCode =
@@ -134,6 +139,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_ReturnsResult_InterfaceImplementation()
         {
             //Input
@@ -168,6 +174,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_QuickFixWorks_PassByRef()
         {
             const string inputCode =
@@ -200,6 +207,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_QuickFixWorks_ParamArrayIsIgnored()
         {
             const string inputCode =
@@ -224,6 +232,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ImplicitByRefParameterInspection(null);
@@ -231,6 +240,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitByRefParameterInspection";

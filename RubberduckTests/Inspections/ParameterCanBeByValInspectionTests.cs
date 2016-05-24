@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ParameterCanBeByValInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_PassedByNotSpecified()
         {
             const string inputCode =
@@ -38,6 +39,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_PassedByRef_Unassigned()
         {
             const string inputCode =
@@ -62,6 +64,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_Multiple()
         {
             const string inputCode =
@@ -86,6 +89,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_DoesNotReturnResult_PassedByValExplicitly()
         {
             const string inputCode =
@@ -110,6 +114,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_DoesNotReturnResult_PassedByRefAndAssigned()
         {
             const string inputCode =
@@ -135,6 +140,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_SomeParams()
         {
             const string inputCode =
@@ -159,6 +165,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByUnspecified()
         {
             const string inputCode =
@@ -189,6 +196,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByRefUnassigned()
         {
             const string inputCode =
@@ -219,6 +227,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenArrayParameter_ReturnsNoResult()
         {
             const string inputCode =
@@ -244,6 +253,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ParameterCanBeByValInspection(null);
@@ -251,6 +261,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ParameterCanBeByValInspection";

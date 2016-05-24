@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ObsoleteTypeHintInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithLongTypeHintReturnsResult()
         {
             const string inputCode =
@@ -37,6 +38,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithIntegerTypeHintReturnsResult()
         {
             const string inputCode =
@@ -60,6 +62,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithDoubleTypeHintReturnsResult()
         {
             const string inputCode =
@@ -83,6 +86,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithSingleTypeHintReturnsResult()
         {
             const string inputCode =
@@ -106,6 +110,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithDecimalTypeHintReturnsResult()
         {
             const string inputCode =
@@ -129,6 +134,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithStringTypeHintReturnsResult()
         {
             const string inputCode =
@@ -152,6 +158,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FunctionReturnsResult()
         {
             const string inputCode =
@@ -176,6 +183,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_PropertyGetReturnsResult()
         {
             const string inputCode =
@@ -200,6 +208,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_ParameterReturnsResult()
         {
             const string inputCode =
@@ -224,6 +233,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_VariableReturnsResult()
         {
             const string inputCode =
@@ -250,6 +260,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_StringValueDoesNotReturnsResult()
         {
             const string inputCode =
@@ -276,6 +287,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldsReturnMultipleResults()
         {
             const string inputCode =
@@ -300,6 +312,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_LongTypeHint()
         {
             const string inputCode =
@@ -333,6 +346,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_IntegerTypeHint()
         {
             const string inputCode =
@@ -366,6 +380,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_DoubleTypeHint()
         {
             const string inputCode =
@@ -399,6 +414,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_SingleTypeHint()
         {
             const string inputCode =
@@ -432,6 +448,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_DecimalTypeHint()
         {
             const string inputCode =
@@ -465,6 +482,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_StringTypeHint()
         {
             const string inputCode =
@@ -498,6 +516,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Function_StringTypeHint()
         {
             const string inputCode =
@@ -535,6 +554,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_PropertyGet_StringTypeHint()
         {
             const string inputCode =
@@ -572,6 +592,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Parameter_StringTypeHint()
         {
             const string inputCode =
@@ -609,6 +630,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Variable_StringTypeHint()
         {
             const string inputCode =
@@ -646,6 +668,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ObsoleteTypeHintInspection(null);
@@ -653,6 +676,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteTypeHintInspection";

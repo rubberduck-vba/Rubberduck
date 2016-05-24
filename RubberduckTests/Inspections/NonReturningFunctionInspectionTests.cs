@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class NonReturningFunctionInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NonReturningFunction_ReturnsResult()
         {
             const string inputCode =
@@ -38,6 +39,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NonReturningPropertyGet_ReturnsResult()
         {
             const string inputCode =
@@ -62,6 +64,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NonReturningFunction_ReturnsResult_MultipleFunctions()
         {
             const string inputCode =
@@ -89,6 +92,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NonReturningFunction_DoesNotReturnResult()
         {
             const string inputCode =
@@ -114,6 +118,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NonReturningFunction_ReturnsResult_MultipleSubs_SomeReturning()
         {
             const string inputCode =
@@ -142,6 +147,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NonReturningFunction_ReturnsResult_InterfaceImplementation()
         {
             //Input
@@ -176,6 +182,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NonReturningFunction_QuickFixWorks_Function()
         {
             const string inputCode =
@@ -208,6 +215,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenFunctionNameWithTypeHint_SubNameHasNoTypeHint()
         {
             const string inputCode =
@@ -240,6 +248,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NonReturningFunction_QuickFixWorks_FunctionReturnsImplicitVariant()
         {
             const string inputCode =
@@ -272,6 +281,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NonReturningFunction_QuickFixWorks_FunctionHasVariable()
         {
             const string inputCode =
@@ -304,6 +314,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenNonReturningPropertyGetter_QuickFixConvertsToSub()
         {
             const string inputCode =
@@ -336,6 +347,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenNonReturningPropertyGetWithTypeHint_QuickFixDropsTypeHint()
         {
             const string inputCode =
@@ -368,6 +380,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenImplicitVariantPropertyGetter_StillConvertsToSub()
         {
             const string inputCode =
@@ -400,6 +413,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenParameterizedPropertyGetter_QuickFixKeepsParameter()
         {
             const string inputCode =
@@ -432,6 +446,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NonReturningFunction_ReturnsResult_InterfaceImplementation_NoQuickFix()
         {
             //Input
@@ -466,6 +481,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new NonReturningFunctionInspection(null);

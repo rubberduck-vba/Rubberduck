@@ -18,6 +18,7 @@ namespace RubberduckTests.Inspections
     public class ProcedureShouldBeFunctionInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_ReturnsResult()
         {
             const string inputCode =
@@ -50,6 +51,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
@@ -83,6 +85,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_Function()
         {
             const string inputCode =
@@ -114,6 +117,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_SingleByValParam()
         {
             const string inputCode =
@@ -144,6 +148,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnsResult_MultipleByValParams()
         {
             const string inputCode =
@@ -174,6 +179,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnsResult_MultipleByRefParams()
         {
             const string inputCode =
@@ -204,6 +210,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_InterfaceImplementation()
         {
             //Input
@@ -244,6 +251,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_EventImplementation()
         {
             //Input
@@ -283,6 +291,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_QuickFixWorks()
         {
             const string inputCode =
@@ -322,6 +331,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody()
         {
             const string inputCode =
@@ -371,6 +381,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine()
         {
             const string inputCode =
@@ -417,6 +428,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine_BodyHasStringLiteralContainingColon()
         {
             const string inputCode =
@@ -463,6 +475,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_QuickFixWorks_UpdatesCallsAbove()
         {
             const string inputCode =
@@ -512,6 +525,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureShouldBeFunction_QuickFixWorks_UpdatesCallsBelow()
         {
             const string inputCode =
@@ -561,6 +575,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(null);

@@ -13,6 +13,7 @@ namespace RubberduckTests.Inspections
     public class OptionBaseInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void OptionBaseOneSpecified_ReturnsResult()
         {
             const string inputCode = @"Option Base 1";
@@ -35,6 +36,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void OptionBaseNotSpecified_DoesNotReturnResult()
         {
             const string inputCode = @"";
@@ -57,6 +59,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void OptionBaseZeroSpecified_DoesNotReturnResult()
         {
             const string inputCode = @"Option Base 0";
@@ -79,6 +82,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void OptionBaseOneSpecified_ReturnsMultipleResults()
         {
             const string inputCode = @"Option Base 1";
@@ -105,6 +109,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void OptionBaseOnePartiallySpecified_ReturnsResults()
         {
             const string inputCode1 = @"";
@@ -132,6 +137,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new OptionBaseInspection(null);
@@ -139,6 +145,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "OptionBaseInspection";

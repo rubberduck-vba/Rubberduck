@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class OptionExplicitInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NotAlreadySpecified_ReturnsResult()
         {
             const string inputCode = @"";
@@ -36,6 +37,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void AlreadySpecified_DoesNotReturnResult()
         {
             const string inputCode = @"Option Explicit";
@@ -58,6 +60,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NotAlreadySpecified_ReturnsMultipleResults()
         {
             const string inputCode = @"";
@@ -84,6 +87,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void PartiallySpecified_ReturnsResults()
         {
             const string inputCode1 = @"";
@@ -111,6 +115,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void NotAlreadySpecified_QuickFixWorks()
         {
             const string inputCode = @"";
@@ -141,6 +146,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new OptionExplicitInspection(null);
@@ -148,6 +154,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "OptionExplicitInspection";

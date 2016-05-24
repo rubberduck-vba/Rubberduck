@@ -23,6 +23,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionNameStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
@@ -35,6 +36,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionMetaStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
@@ -47,6 +49,8 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Inspections")]
         public void InspectionResultFormatStringsExist()
         {
             var inspectionsWithSharedResultFormat = new List<string>
@@ -68,6 +72,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionNameStrings_AreNotFormatted()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()

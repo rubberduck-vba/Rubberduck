@@ -17,6 +17,7 @@ namespace RubberduckTests.Inspections
     public class ObsoleteLetStatementInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteLetStatement_ReturnsResult()
         {
             const string inputCode =
@@ -51,6 +52,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteLetStatement_ReturnsResult_MultipleLets()
         {
             const string inputCode =
@@ -86,6 +88,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteLetStatement_DoesNotReturnResult()
         {
             const string inputCode =
@@ -120,6 +123,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteLetStatement_ReturnsResult_SomeConstantsUsed()
         {
             const string inputCode =
@@ -155,6 +159,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteLetStatement_QuickFixWorks()
         {
             const string inputCode =
@@ -201,6 +206,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ObsoleteLetStatementInspection(null);
@@ -208,6 +214,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteLetStatementInspection";

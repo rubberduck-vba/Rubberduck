@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ConstantNotUsedInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ConstantNotUsed_ReturnsResult()
         {
             const string inputCode =
@@ -39,6 +40,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ConstantNotUsed_ReturnsResult_MultipleConsts()
         {
             const string inputCode =
@@ -65,6 +67,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenReferencedConstant_ReturnsNoInspectionResult()
         {
             const string inputCode =
@@ -94,6 +97,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenConstantNotUsed_ReturnsResultForUnusedConstant()
         {
             const string inputCode =
@@ -125,6 +129,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ConstantNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -158,6 +163,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ConstantNotUsedInspection(null);
@@ -165,6 +171,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ConstantNotUsedInspection";
