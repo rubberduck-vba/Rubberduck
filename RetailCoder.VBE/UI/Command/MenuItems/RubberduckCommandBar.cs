@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Castle.Core.Internal;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
@@ -58,25 +59,28 @@ namespace Rubberduck.UI.Command.MenuItems
             }
             else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
             {
-                _selectionButton.Caption = string.Format("{0} ({1}): {2} ({3})", 
-                    declaration.QualifiedName.QualifiedModuleName,
+                _selectionButton.Caption = string.Format("{0}|{1}: {2} ({3}{4})",
                     declaration.QualifiedSelection.Selection,
+                    declaration.QualifiedName.QualifiedModuleName,
                     declaration.IdentifierName,
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType));
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
+                    string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + declaration.AsTypeName);
                 _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
                     ? _selectionButton.Caption
                     : declaration.DescriptionString;
             }
             else if (declaration != null)
             {
+                // todo: confirm this is what we want, and then refator
                 var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
                 if (selection.HasValue)
                 {
-                    _selectionButton.Caption = string.Format("{0}: {1} ({2}) {3}",
+                    _selectionButton.Caption = string.Format("{0}|{1}: {2} ({3}{4})",
+                        selection.Value.Selection,
                         declaration.QualifiedName.QualifiedModuleName,
                         declaration.IdentifierName,
                         RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
-                        selection.Value.Selection);
+                    string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + declaration.AsTypeName);
                 }
                 _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
                     ? _selectionButton.Caption
