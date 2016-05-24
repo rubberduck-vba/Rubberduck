@@ -67,7 +67,7 @@ namespace Rubberduck.Common
                 }
                 rows[r] = string.Join(",", row);
             }
-            return CsvEncode(Title) + Environment.NewLine + string.Join(",", headerRow) + Environment.NewLine + string.Join(Environment.NewLine, rows);
+            return CsvEncode(Title.Replace("\r\n"," ")) + Environment.NewLine + string.Join(",", headerRow) + Environment.NewLine + string.Join(Environment.NewLine, rows);
         }
 
         private static string CsvEncode(object value)
@@ -133,12 +133,12 @@ namespace Rubberduck.Common
         public static string HtmlTable(object[][] data, string Title, ColumnInfo[] ColumnInfos)
         {            
 
-            string titleRow = HtmlCell(Title,true,false,10,ColumnInfos.Length);
+            string titleRow = HtmlCell(Title,true,false,3,ColumnInfos.Length);
 
             string[] hcells = new string[ColumnInfos.Length];
             for (var c = 0; c < ColumnInfos.Length; c++)
             {
-                hcells[c] = HtmlCell(ColumnInfos[c].Title, true, true, 10, 1, ColumnInfos[c].Heading.HorizontalAlignment);
+                hcells[c] = HtmlCell(ColumnInfos[c].Title, true, true, 3, 1, ColumnInfos[c].Heading.HorizontalAlignment);
             }
             string headerRow = "  <tr>\r\n" + string.Join(Environment.NewLine, hcells) + "\r\n</tr>";
 
@@ -148,14 +148,14 @@ namespace Rubberduck.Common
                 string[] row = new string[data[r].Length];
                 for (var c = 0; c < data[r].Length; c++)
                 {
-                    row[c] = HtmlCell(data[r][c], r == data.Length - 1, false, c == 0 ? 5 : 10, 1, ColumnInfos[c].Heading.HorizontalAlignment);
+                    row[c] = HtmlCell(data[r][c], r == data.Length - 1, false, 3, 1, ColumnInfos[c].Heading.HorizontalAlignment);
                 }
                 rows[r] = "  <tr>\r\n" + string.Join(Environment.NewLine, row) + "\r\n</tr>";
             }
             return  "<table cellspacing=\"0\">\r\n" + titleRow + "\r\n" + headerRow + "\r\n" + string.Join(Environment.NewLine, rows) + "\r\n</table>\r\n";
         }
 
-        private static string HtmlCell(object value, bool BottomBorder = false, bool bold = false, int LeftPadding = 10, int colSpan = 1, hAlignment hAlign = hAlignment.Left)
+        private static string HtmlCell(object value, bool BottomBorder = false, bool bold = false, int padding = 3, int colSpan = 1, hAlignment hAlign = hAlignment.Left)
         {
             const string td = "    <td style=\"{0}\"{1}><div style=\"{2}\">{3}</div></td>";
             const string nbsp = "&#160;";
@@ -169,7 +169,7 @@ namespace Rubberduck.Common
                 CellContent = value.ToString().HtmlEncode();
                 AlignLeft = value is string;
             }
-            return string.Format(td, TdStyle(hAlign, Border, bold), colspanAttribute, TdDivStyle(LeftPadding), CellContent);
+            return string.Format(td, TdStyle(hAlign, Border, bold), colspanAttribute, TdDivStyle(padding, hAlign), CellContent);
         }
 
         private static string TdStyle(hAlignment hAlign = hAlignment.Left, string BorderBottom = "", bool bold = false)
@@ -182,9 +182,17 @@ namespace Rubberduck.Common
             return tdstyle + sAlign + sBorder + sWeight;
         }
 
-        private static string TdDivStyle(int LeftPadding)
+        private static string TdDivStyle(int padding, hAlignment hAlign = hAlignment.Left)
         {
-            return "vertical-align: bottom; padding-left: " + LeftPadding + "px; ";
+            switch (hAlign)
+            {
+                case hAlignment.Left:
+                    return "vertical-align: bottom; padding-left: " + padding + "px; ";
+                case hAlignment.Right:
+                    return "vertical-align: bottom; padding-right: " + padding + "px; ";
+                default:
+                    return "vertical-align: bottom; padding-left: " + padding + "px; padding-right: " + padding + "px; ";
+            }
         }
 
         private static string HtmlEncode(this string value)

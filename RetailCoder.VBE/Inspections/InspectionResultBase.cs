@@ -121,9 +121,7 @@ namespace Rubberduck.Inspections
         public object[] ToArray()
         {
             var module = QualifiedSelection.QualifiedName;
-            //TODO - Fix this Merge conflict ThunderFrame
-            //return new object[] {Inspection.Severity.ToString(), Description, module.DocumentName, module.ProjectName, module.ComponentName, QualifiedSelection.Selection.StartLine };
-            return new object[] { Inspection.Severity.ToString(), module.ProjectPath, module.ProjectName, module.ComponentName, Description, QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.StartColumn };
+            return new object[] { Inspection.Severity.ToString(), module.DocumentName, module.ProjectName, module.ComponentName, Description, QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.StartColumn };
         }
 
         public string ToCsvString()

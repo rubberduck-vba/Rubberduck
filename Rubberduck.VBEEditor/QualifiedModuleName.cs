@@ -9,6 +9,36 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
+
+        public static string GetDocumentName(VBProject project)
+        {
+            string DocName = String.Empty;
+            try
+            {
+                DocName = project.FileName;
+            }
+            catch { }
+
+            if (DocName.Length > 0)
+            {
+                return DocName;
+            }
+            else
+            {
+                try
+                {
+                    DocName = project.VBComponents.Cast<VBComponent>()
+                        .Where(component => component.Type == vbext_ComponentType.vbext_ct_Document
+                        && component.Properties.Count > 1)
+                        .SelectMany(component => component.Properties.OfType<Property>())
+                        .FirstOrDefault(property => property.Name == "Name").Value.ToString();
+                }
+                catch { } 
+                return DocName;
+            }
+
+        }
+
         public static string GetProjectId(VBProject project)
         {
             if (project == null)
@@ -31,9 +61,9 @@ namespace Rubberduck.VBEditor
             _componentName = null;
             _project = project;
             _projectName = project.Name;
-            _documentName = string.Empty;
             _projectPath = string.Empty;
             _projectId = GetProjectId(project);
+            _documentName = GetDocumentName(project);
             _contentHashCode = 0;
         }
 
@@ -43,11 +73,11 @@ namespace Rubberduck.VBEditor
 
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
-            _documentName = string.Empty;
             _project = component == null ? null : component.Collection.Parent;
             _projectName = _project == null ? string.Empty : _project.Name;
             _projectPath = string.Empty;
             _projectId = GetProjectId(_project);
+            _documentName = GetDocumentName(_project);
 
             _contentHashCode = 0;
             if (component == null)
@@ -101,42 +131,7 @@ namespace Rubberduck.VBEditor
         public string Name { get { return ToString(); } }
 
         private readonly string _documentName;
-        public string DocumentName
-        {
-            get
-            {
-                string DocName = "";
-                try
-                {
-                    DocName = this.Project.FileName;
-                }
-                catch
-                {
-                }
-
-                if (DocName.Length > 0)
-                {
-                    return DocName;
-                }
-                else
-                {
-                    VBComponent comp = this.Project.VBComponents.Item(1);
-                    if (comp.Type == vbext_ComponentType.vbext_ct_Document && comp.Properties.Count > 1)
-                    {
-                        Property prop = null;
-                        try
-                        {
-                            prop = comp.Properties.Item("Name");
-                        }
-                        catch
-                        {
-                        }
-                        DocName = (prop != null) ? prop.Value.ToString() : "";
-                    }
-                    return DocName;
-                }
-            }
-        }
+        public string DocumentName { get {return _documentName; } }
             
         private readonly string _projectName;
 
