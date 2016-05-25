@@ -17,8 +17,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override bool CanExecute(object parameter)
         {
-            return _state.Status == ParserState.Ready && !(parameter is CodeExplorerCustomFolderViewModel) &&
-                !(parameter is CodeExplorerErrorNodeViewModel);
+            return _state.Status == ParserState.Ready && !(parameter is CodeExplorerCustomFolderViewModel);
         }
 
         public override void Execute(object parameter)

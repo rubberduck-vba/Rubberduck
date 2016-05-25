@@ -146,7 +146,14 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private readonly BitmapImage _icon;
+        public void ParentComponentHasError()
+        {
+            _icon = GetImageSource(resx.Warning);
+            OnPropertyChanged("CollapsedIcon");
+            OnPropertyChanged("ExpandedIcon");
+        }
+
+        private BitmapImage _icon;
         public override BitmapImage CollapsedIcon { get { return _icon; } }
         public override BitmapImage ExpandedIcon { get { return _icon; } }
     }

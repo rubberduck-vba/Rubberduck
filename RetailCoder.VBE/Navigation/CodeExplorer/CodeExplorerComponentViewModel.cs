@@ -97,7 +97,25 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         private bool _isErrorState;
-        public bool IsErrorState { get { return _isErrorState; } set { _isErrorState = value; OnPropertyChanged(); } }
+        public bool IsErrorState
+        {
+            get { return _isErrorState; }
+            set
+            {
+                _isErrorState = value;
+                _icon = GetImageSource(resx.Error);
+
+
+                foreach (var item in Items)
+                {
+                    ((CodeExplorerMemberViewModel) item).ParentComponentHasError();
+                }
+
+                OnPropertyChanged();
+                OnPropertyChanged("CollapsedIcon");
+                OnPropertyChanged("ExpandedIcon");
+            }
+        }
 
         public bool IsTestModule
         {
@@ -149,7 +167,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             { DeclarationType.Document, GetImageSource(resx.document_office) }
         };
 
-        private readonly BitmapImage _icon;
+        private BitmapImage _icon;
         public override BitmapImage CollapsedIcon { get { return _icon; } }
         public override BitmapImage ExpandedIcon { get { return _icon; } }
     }

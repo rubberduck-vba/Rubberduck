@@ -445,8 +445,6 @@ namespace Rubberduck.Parsing.VBA
         {
             if (component == null) { return false; }
 
-            ClearBuiltInReferences();
-
             var match = new QualifiedModuleName(component);
             var keys = _moduleStates.Keys.Where(kvp => kvp.Equals(match))
                 .Union(new[] { match }).Distinct(); // make sure the key is present, even if there are no declarations left
@@ -530,8 +528,8 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                return _moduleStates.Select(
-                        item => new KeyValuePair<QualifiedModuleName, IParseTree>(item.Key, item.Value.ParseTree));
+                return _moduleStates.Where(state => state.Value.ParseTree != null)
+                                    .Select(item => new KeyValuePair<QualifiedModuleName, IParseTree>(item.Key, item.Value.ParseTree));
             }
         }
 
