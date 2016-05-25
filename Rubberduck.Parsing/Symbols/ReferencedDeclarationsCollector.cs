@@ -90,7 +90,15 @@ namespace Rubberduck.Parsing.Symbols
                 case VarEnum.VT_USERDEFINED:
                     unchecked
                     {
-                        var href = (int)desc.lpValue.ToInt64(); // todo: verify this also works on 32-bit
+                        int href;
+                        if (Marshal.SizeOf(typeof (IntPtr)) == sizeof (long))
+                        {
+                            href = (int) desc.lpValue.ToInt64();
+                        }
+                        else
+                        {
+                            href = desc.lpValue.ToInt32();
+                        }
                         ITypeInfo refTypeInfo;
                         info.GetRefTypeInfo(href, out refTypeInfo);
                         return GetTypeName(refTypeInfo);
@@ -183,39 +191,39 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 Declaration moduleDeclaration;
-                if (typeDeclarationType == DeclarationType.ProceduralModule)
+                switch (typeDeclarationType)
                 {
-                    moduleDeclaration = new ProceduralModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
-                }
-                else if (typeDeclarationType == DeclarationType.ClassModule)
-                {
-                    var module = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes, isExposed: true, isGlobalClassModule: true);
-                    var implements = GetImplementedInterfaceNames(typeAttributes, info);
-                    foreach (var supertypeName in implements)
-                    {
-                        module.AddSupertype(supertypeName);
-                    }
-                    moduleDeclaration = module;
-                }
-                else
-                {
-                    moduleDeclaration = new Declaration(
-                        typeQualifiedMemberName, 
-                        projectDeclaration, 
-                        projectDeclaration, 
-                        typeName,
-                        null,
-                        false, 
-                        false, 
-                        Accessibility.Global,
-                        typeDeclarationType,
-                        null, 
-                        Selection.Home,
-                        false,
-                        null,
-                        true, 
-                        null, 
-                        attributes);
+                    case DeclarationType.ProceduralModule:
+                        moduleDeclaration = new ProceduralModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                        break;
+                    case DeclarationType.ClassModule:
+                        var module = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                        var implements = GetImplementedInterfaceNames(typeAttributes, info);
+                        foreach (var supertypeName in implements)
+                        {
+                            module.AddSupertype(supertypeName);
+                        }
+                        moduleDeclaration = module;
+                        break;
+                    default:
+                        moduleDeclaration = new Declaration(
+                            typeQualifiedMemberName, 
+                            projectDeclaration, 
+                            projectDeclaration, 
+                            typeName,
+                            null,
+                            false, 
+                            false, 
+                            Accessibility.Global,
+                            typeDeclarationType,
+                            null, 
+                            Selection.Home,
+                            false,
+                            null,
+                            true, 
+                            null, 
+                            attributes);
+                        break;
                 }
 
                 yield return moduleDeclaration;
@@ -296,103 +304,94 @@ namespace Rubberduck.Parsing.Symbols
                 attributes.AddHiddenMemberAttribute(memberName);
             }
 
-            if (memberDeclarationType == DeclarationType.Procedure)
+            switch (memberDeclarationType)
             {
-                return new SubroutineDeclaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    Accessibility.Global,
-                    null,
-                    Selection.Home,
-                    true,
-                    null,
-                    attributes);
-            }
-            else if (memberDeclarationType == DeclarationType.Function)
-            {
-                return new FunctionDeclaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    null,
-                    null,
-                    Accessibility.Global,
-                    null,
-                    Selection.Home,
-                    // TODO: how to find out if it's an array?
-                    false,
-                    true,
-                    null,
-                    attributes);
-            }
-            else if (memberDeclarationType == DeclarationType.PropertyGet)
-            {
-                return new PropertyGetDeclaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    null,
-                    null,
-                    Accessibility.Global,
-                    null,
-                    Selection.Home,
-                    // TODO: how to find out if it's an array?
-                    false,
-                    true,
-                    null,
-                    attributes);
-            }
-            else if (memberDeclarationType == DeclarationType.PropertySet)
-            {
-                return new PropertySetDeclaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    Accessibility.Global,
-                    null,
-                    Selection.Home,
-                    true,
-                    null,
-                    attributes);
-            }
-            else if (memberDeclarationType == DeclarationType.PropertyLet)
-            {
-                return new PropertyLetDeclaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    Accessibility.Global,
-                    null,
-                    Selection.Home,
-                    true,
-                    null,
-                    attributes);
-            }
-            else
-            {
-                return new Declaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    null,
-                    false,
-                    false,
-                    Accessibility.Global,
-                    memberDeclarationType,
-                    null,
-                    Selection.Home,
-                    false,
-                    null,
-                    true,
-                    null,
-                    attributes);
+                case DeclarationType.Procedure:
+                    return new SubroutineDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.Function:
+                    return new FunctionDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        null,
+                        null,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        // TODO: how to find out if it's an array?
+                        false,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.PropertyGet:
+                    return new PropertyGetDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        null,
+                        null,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        // TODO: how to find out if it's an array?
+                        false,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.PropertySet:
+                    return new PropertySetDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.PropertyLet:
+                    return new PropertyLetDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        true,
+                        null,
+                        attributes);
+                default:
+                    return new Declaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        null,
+                        false,
+                        false,
+                        Accessibility.Global,
+                        memberDeclarationType,
+                        null,
+                        Selection.Home,
+                        false,
+                        null,
+                        true,
+                        null,
+                        attributes);
             }
         }
 
