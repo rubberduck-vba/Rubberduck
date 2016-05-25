@@ -31,13 +31,6 @@ namespace Rubberduck.Refactorings.ImplementInterface
             _messageBox = messageBox;
         }
 
-        public bool CanExecute(QualifiedSelection selection)
-        {
-            CalculateTargets(selection);
-
-            return _targetClass != null && _targetInterface != null;
-        }
-
         public void Refactor()
         {
             if (_vbe.ActiveCodePane == null)
@@ -60,7 +53,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         public void Refactor(QualifiedSelection selection)
         {
-            CalculateTargets(selection);
+            _targetInterface = _declarations.FindInterface(selection);
+
+            _targetClass = _declarations.SingleOrDefault(d =>
+                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
+                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
             if (_targetClass == null || _targetInterface == null)
             {
@@ -70,22 +67,13 @@ namespace Rubberduck.Refactorings.ImplementInterface
             }
 
             ImplementMissingMembers();
+
+            _state.OnParseRequested(this);
         }
 
         public void Refactor(Declaration target)
         {
             throw new NotImplementedException();
-        }
-
-        private void CalculateTargets(QualifiedSelection selection)
-        {
-            _declarations = _state.AllUserDeclarations.ToList();
-
-            _targetInterface = _declarations.FindInterface(selection);
-
-            _targetClass = _declarations.SingleOrDefault(d =>
-                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
-                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
         }
 
         private void ImplementMissingMembers()

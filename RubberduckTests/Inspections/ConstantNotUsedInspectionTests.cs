@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ConstantNotUsedInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ConstantNotUsed_ReturnsResult()
         {
             const string inputCode =
@@ -30,7 +31,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ConstantNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -39,6 +40,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ConstantNotUsed_ReturnsResult_MultipleConsts()
         {
             const string inputCode =
@@ -56,7 +58,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ConstantNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -65,6 +67,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenReferencedConstant_ReturnsNoInspectionResult()
         {
             const string inputCode =
@@ -85,7 +88,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ConstantNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -94,6 +97,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenConstantNotUsed_ReturnsResultForUnusedConstant()
         {
             const string inputCode =
@@ -116,7 +120,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ConstantNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -125,6 +129,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ConstantNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -147,7 +152,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ConstantNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -158,6 +163,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ConstantNotUsedInspection(null);
@@ -165,6 +171,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ConstantNotUsedInspection";

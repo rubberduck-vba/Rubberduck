@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ObsoleteGlobalInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteGlobal_ReturnsResult()
         {
             const string inputCode =
@@ -28,7 +29,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteGlobalInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -37,6 +38,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteGlobal_ReturnsResult_MultipleGlobals()
         {
             const string inputCode =
@@ -52,7 +54,7 @@ Global var2 As String";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteGlobalInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -61,6 +63,7 @@ Global var2 As String";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteGlobal_DoesNotReturnResult()
         {
             const string inputCode =
@@ -75,7 +78,7 @@ Global var2 As String";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteGlobalInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -84,6 +87,7 @@ Global var2 As String";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteGlobal_ReturnsResult_SomeConstantsUsed()
         {
             const string inputCode =
@@ -99,7 +103,7 @@ Global var2 As Date";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteGlobalInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -108,6 +112,7 @@ Global var2 As Date";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteGlobal_QuickFixWorks()
         {
             const string inputCode =
@@ -127,7 +132,7 @@ Global var2 As Date";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteGlobalInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -138,6 +143,7 @@ Global var2 As Date";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ObsoleteGlobalInspection(null);
@@ -145,6 +151,7 @@ Global var2 As Date";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteGlobalInspection";

@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -8,31 +9,75 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _project;
         private readonly Declaration _module;
         private readonly Declaration _parent;
-        private readonly VBAExpressionParser.SimpleNameExpressionContext _expression;
+        private readonly VBAParser.SimpleNameExprContext _expression;
 
         public SimpleNameTypeBinding(
-            DeclarationFinder declarationFinder, 
+            DeclarationFinder declarationFinder,
+            Declaration project,
             Declaration module,
             Declaration parent,
-            VBAExpressionParser.SimpleNameExpressionContext expression)
+            VBAParser.SimpleNameExprContext expression)
         {
             _declarationFinder = declarationFinder;
-            _project = module.ParentDeclaration;
+            _project = project;
             _module = module;
             _parent = parent;
             _expression = expression;
         }
 
+        public bool PreferProjectOverUdt { get; set; }
+
         public IBoundExpression Resolve()
         {
+            string name = ExpressionName.GetName(_expression.identifier());
+            if (PreferProjectOverUdt)
+            {
+                return ResolvePreferProject(name);
+            }
+            return ResolvePreferUdt(name);
+        }
+
+        private IBoundExpression ResolvePreferUdt(string name)
+        {
             IBoundExpression boundExpression = null;
-            string name = ExpressionName.GetName(_expression.name());
             boundExpression = ResolveEnclosingModule(name);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
             boundExpression = ResolveEnclosingProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveOtherModuleInEnclosingProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveReferencedProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveModuleInReferencedProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            return new ResolutionFailedExpression();
+        }
+
+        private IBoundExpression ResolvePreferProject(string name)
+        {
+            IBoundExpression boundExpression = null;
+            // EnclosingProject and EnclosingModule have been switched.
+            boundExpression = ResolveEnclosingProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveEnclosingModule(name);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -57,12 +102,12 @@ namespace Rubberduck.Parsing.Binding
                 Enclosing Module namespace: A UDT or Enum type defined at the module-level in the 
                 enclosing module.
             */
-            var udt = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.UserDefinedType);
+            var udt = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.UserDefinedType);
             if (udt != null)
             {
                 return new SimpleNameExpression(udt, ExpressionClassification.Type, _expression);
             }
-            var enumType = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Enumeration);
+            var enumType = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Enumeration);
             if (enumType != null)
             {
                 return new SimpleNameExpression(enumType, ExpressionClassification.Type, _expression);
@@ -76,7 +121,7 @@ namespace Rubberduck.Parsing.Binding
                 Enclosing Project namespace: The enclosing project itself, a referenced project, or a 
                 procedural module or class module contained in the enclosing project.  
             */
-            if (_declarationFinder.IsMatch(_project.Project.Name, name))
+            if (_declarationFinder.IsMatch(_project.ProjectName, name))
             {
                 return new SimpleNameExpression(_project, ExpressionClassification.Project, _expression);
             }

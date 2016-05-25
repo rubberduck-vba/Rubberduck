@@ -21,26 +21,28 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck
 {
-    public class App : IDisposable
+    public sealed class App : IDisposable
     {
+        private const string FILE_TARGET_NAME = "file";
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IRubberduckParser _parser;
-        private readonly AutoSave.AutoSave _autoSave;
-        private readonly IGeneralConfigService _configService;
-        private readonly IAppMenu _appMenus;
-        private readonly RubberduckCommandBar _stateBar;
+        private AutoSave.AutoSave _autoSave;
+        private IGeneralConfigService _configService;
+        private IAppMenu _appMenus;
+        private RubberduckCommandBar _stateBar;
         private readonly IIndenter _indenter;
-        private readonly IRubberduckHooks _hooks;
+        private IRubberduckHooks _hooks;
 
         private readonly Logger _logger;
 
+        private VBProjectsEventsSink _sink;
         private Configuration _config;
 
         private readonly IConnectionPoint _projectsEventsConnectionPoint;
         private readonly int _projectsEventsCookie;
 
-        private readonly IDictionary<string, Tuple<IConnectionPoint, int>>  _componentsEventsConnectionPoints = 
+        private readonly IDictionary<string, Tuple<IConnectionPoint, int>> _componentsEventsConnectionPoints =
             new Dictionary<string, Tuple<IConnectionPoint, int>>();
         private readonly IDictionary<string, Tuple<IConnectionPoint, int>> _referencesEventsConnectionPoints =
             new Dictionary<string, Tuple<IConnectionPoint, int>>();
@@ -71,17 +73,17 @@ namespace Rubberduck
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
             _stateBar.Refresh += _stateBar_Refresh;
 
-            var sink = new VBProjectsEventsSink();
+            _sink = new VBProjectsEventsSink();
             var connectionPointContainer = (IConnectionPointContainer)_vbe.VBProjects;
-            var interfaceId = typeof (_dispVBProjectsEvents).GUID;
+            var interfaceId = typeof(_dispVBProjectsEvents).GUID;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
-            
-            sink.ProjectAdded += sink_ProjectAdded;
-            sink.ProjectRemoved += sink_ProjectRemoved;
-            sink.ProjectActivated += sink_ProjectActivated;
-            sink.ProjectRenamed += sink_ProjectRenamed;
 
-            _projectsEventsConnectionPoint.Advise(sink, out _projectsEventsCookie);
+            _sink.ProjectAdded += sink_ProjectAdded;
+            _sink.ProjectRemoved += sink_ProjectRemoved;
+            _sink.ProjectActivated += sink_ProjectActivated;
+            _sink.ProjectRenamed += sink_ProjectRenamed;
+
+            _projectsEventsConnectionPoint.Advise(_sink, out _projectsEventsCookie);
             UiDispatcher.Initialize();
         }
 
@@ -129,9 +131,32 @@ namespace Rubberduck
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
         {
+            _config = _configService.LoadConfiguration();
             // also updates the ShortcutKey text
             _appMenus.Localize();
             _hooks.HookHotkeys();
+            UpdateLoggingLevel();
+        }
+
+        private void UpdateLoggingLevel()
+        {
+            var fileRule = LogManager.Configuration.LoggingRules.Where(rule => rule.Targets.Any(t => t.Name == FILE_TARGET_NAME)).FirstOrDefault();
+            if (fileRule == null)
+            {
+                return;
+            }
+            if (_config.UserSettings.GeneralSettings.DetailedLoggingEnabled)
+            {
+                // "Enable" should have been called "Add" perhaps?
+                fileRule.EnableLoggingForLevel(LogLevel.Trace);
+                fileRule.EnableLoggingForLevel(LogLevel.Debug);
+            }
+            else
+            {
+                fileRule.DisableLoggingForLevel(LogLevel.Trace);
+                fileRule.DisableLoggingForLevel(LogLevel.Debug);
+            }
+            LogManager.ReconfigExistingLoggers();
         }
 
         public void Startup()
@@ -139,15 +164,9 @@ namespace Rubberduck
             CleanReloadConfig();
             _appMenus.Initialize();
             _appMenus.Localize();
-            Task.Delay(1000).ContinueWith(t =>
-            {
-                // run this on UI thread
-                UiDispatcher.Invoke(() =>
-                {
-                    _parser.State.OnParseRequested(this);
-                });
-            }).ConfigureAwait(false);
+            Task.Delay(1000).ContinueWith(t => UiDispatcher.Invoke(() => _parser.State.OnParseRequested(this))).ConfigureAwait(false);
             _hooks.HookHotkeys();
+            UpdateLoggingLevel();
         }
 
         public void Shutdown()
@@ -167,7 +186,7 @@ namespace Rubberduck
         {
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                Debug.WriteLine(string.Format("Locked project '{0}' was removed.", e.Item.Name));
+                _logger.Debug("Locked project '{0}' was removed.", e.Item.Name);
                 return;
             }
 
@@ -176,7 +195,7 @@ namespace Rubberduck
             _referencesEventsSinks.Remove(projectId);
             _parser.State.RemoveProject(e.Item);
 
-            Debug.WriteLine(string.Format("Project '{0}' was removed.", e.Item.Name));
+            _logger.Debug("Project '{0}' was removed.", e.Item.Name);
             Tuple<IConnectionPoint, int> componentsTuple;
             if (_componentsEventsConnectionPoints.TryGetValue(projectId, out componentsTuple))
             {
@@ -192,18 +211,18 @@ namespace Rubberduck
             }
         }
 
-        private readonly IDictionary<string,VBComponentsEventsSink> _componentsEventsSinks =
-            new Dictionary<string,VBComponentsEventsSink>();
+        private readonly IDictionary<string, VBComponentsEventsSink> _componentsEventsSinks =
+            new Dictionary<string, VBComponentsEventsSink>();
 
-        private readonly IDictionary<string,ReferencesEventsSink> _referencesEventsSinks = 
+        private readonly IDictionary<string, ReferencesEventsSink> _referencesEventsSinks =
             new Dictionary<string, ReferencesEventsSink>();
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
-            Debug.WriteLine(string.Format("Project '{0}' was added.", e.Item.Name));
+            _logger.Debug("Project '{0}' was added.", e.Item.Name);
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                Debug.WriteLine("Project is protected and will not be added to parser state.");
+                _logger.Debug("Project is protected and will not be added to parser state.");
                 return;
             }
 
@@ -225,14 +244,14 @@ namespace Rubberduck
         private void RegisterComponentsEventSink(VBComponents components, string projectId)
         {
             if (_componentsEventsSinks.ContainsKey(projectId))
-        {
+            {
                 // already registered - this is caused by the initial load+rename of a project in the VBE
-                Debug.WriteLine("Components sink already registered.");
+                _logger.Debug("Components sink already registered.");
                 return;
             }
 
             var connectionPointContainer = (IConnectionPointContainer)components;
-            var interfaceId = typeof (_dispVBComponentsEvents).GUID;
+            var interfaceId = typeof(_dispVBComponentsEvents).GUID;
 
             IConnectionPoint connectionPoint;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
@@ -250,7 +269,7 @@ namespace Rubberduck
             connectionPoint.Advise(componentsSink, out cookie);
 
             _componentsEventsConnectionPoints.Add(projectId, Tuple.Create(connectionPoint, cookie));
-            Debug.WriteLine("Components sink registered and advising.");
+            _logger.Debug("Components sink registered and advising.");
         }
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
@@ -260,7 +279,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was selected.", e.Item.Name));
+            _logger.Debug("Component '{0}' was selected.", e.Item.Name);
             // do something?
         }
 
@@ -271,9 +290,9 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was renamed.", e.Item.Name));
+            _logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
 
-            _parser.State.OnParseRequested(sender, e.Item);
+            _parser.State.RemoveRenamedComponent(e.Item, e.OldName);
         }
 
         async void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
@@ -283,8 +302,8 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was removed.", e.Item.Name));
-            _parser.State.ClearStateCache(e.Item);
+            _logger.Debug("Component '{0}' was removed.", e.Item.Name);
+            _parser.State.ClearStateCache(e.Item, true);
         }
 
         async void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
@@ -294,7 +313,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was reloaded.", e.Item.Name));
+            _logger.Debug("Component '{0}' was reloaded.", e.Item.Name);
             _parser.State.OnParseRequested(sender, e.Item);
         }
 
@@ -305,7 +324,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was added.", e.Item.Name));
+            _logger.Debug("Component '{0}' was added.", e.Item.Name);
             _parser.State.OnParseRequested(sender, e.Item);
         }
 
@@ -316,7 +335,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was activated.", e.Item.Name));
+            _logger.Debug("Component '{0}' was activated.", e.Item.Name);
             // do something?
         }
 
@@ -327,7 +346,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
+            _logger.Debug("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
             _parser.State.RemoveProject(e.Item.HelpFile);
             _parser.State.OnParseRequested(sender);
         }
@@ -339,7 +358,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Project '{0}' was activated.", e.Item.Name));
+            _logger.Debug("Project '{0}' was activated.", e.Item.Name);
             // do something?
         }
         #endregion
@@ -352,7 +371,7 @@ namespace Rubberduck
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
+            _logger.Debug("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
         }
 
@@ -386,11 +405,66 @@ namespace Rubberduck
             }
         }
 
+        private bool _disposed;
         public void Dispose()
         {
-            _configService.LanguageChanged -= ConfigServiceLanguageChanged;
-            _parser.State.StateChanged -= Parser_StateChanged;
-            _autoSave.Dispose();
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (_hooks != null)
+            {
+                _hooks.MessageReceived -= _hooks_MessageReceived;
+                _hooks.Dispose();
+                _hooks = null;
+            }
+
+            if (_configService != null)
+            {
+                _configService.SettingsChanged -= _configService_SettingsChanged;
+                _configService.LanguageChanged -= ConfigServiceLanguageChanged;
+                _configService = null;
+            }
+
+            if (_parser != null && _parser.State != null)
+            {
+                _parser.State.StateChanged -= Parser_StateChanged;
+                _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
+                // I won't set this to null because other components may try to release things
+            }
+
+            if (_stateBar != null)
+            {
+                _stateBar.Refresh -= _stateBar_Refresh;
+                _stateBar.Dispose();
+                _stateBar = null;
+            }
+
+            if (_sink != null)
+            {
+                _sink.ProjectAdded -= sink_ProjectAdded;
+                _sink.ProjectRemoved -= sink_ProjectRemoved;
+                _sink.ProjectActivated -= sink_ProjectActivated;
+                _sink.ProjectRenamed -= sink_ProjectRenamed;
+                _sink = null;
+            }
+
+            foreach (var item in _componentsEventsSinks)
+            {
+                item.Value.ComponentActivated -= sink_ComponentActivated;
+                item.Value.ComponentAdded -= sink_ComponentAdded;
+                item.Value.ComponentReloaded -= sink_ComponentReloaded;
+                item.Value.ComponentRemoved -= sink_ComponentRemoved;
+                item.Value.ComponentRenamed -= sink_ComponentRenamed;
+                item.Value.ComponentSelected -= sink_ComponentSelected;
+            }
+
+            if (_autoSave != null)
+            {
+                _autoSave.Dispose();
+                _autoSave = null;
+            }
 
             _projectsEventsConnectionPoint.Unadvise(_projectsEventsCookie);
             foreach (var item in _componentsEventsConnectionPoints)
@@ -401,7 +475,8 @@ namespace Rubberduck
             {
                 item.Value.Item1.Unadvise(item.Value.Item2);
             }
-            _hooks.Dispose();
+
+            _disposed = true;
         }
     }
 }

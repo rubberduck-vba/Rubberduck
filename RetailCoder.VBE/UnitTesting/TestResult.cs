@@ -2,40 +2,32 @@
 {
     public class TestResult
     {
-        public static TestResult Unknown()
-        {
-            return new TestResult(TestOutcome.Unknown);
-        }
-
-        public static TestResult Success()
-        {
-            return new TestResult(TestOutcome.Succeeded);
-        }
-
-        public static TestResult Inconclusive(string message = null)
-        {
-            return new TestResult(TestOutcome.Inconclusive, message);
-        }
-
-        public TestResult(TestOutcome outcome, string output = null)
+        public void SetValues(TestOutcome outcome, string output = "", long duration = 0)
         {
             _outcome = outcome;
             _output = output;
+            _duration = duration;
         }
 
-        public TestResult(TestResult result, long elapsedMilliseconds)
-            :this(result.Outcome, result.Output)
+        public void SetDuration(long duration)
         {
-            _elapsedMilliseconds = elapsedMilliseconds;
+            _duration = duration;
         }
 
-        private readonly long _elapsedMilliseconds;
-        public long Duration { get { return _elapsedMilliseconds; } }
+        public TestResult(TestOutcome outcome, string output = "", long duration = 0)
+        {
+            _outcome = outcome;
+            _output = output;
+            _duration = duration;
+        }
 
-        private readonly TestOutcome _outcome;
+        private long _duration;
+        public long Duration { get { return _duration; } }
+
+        private TestOutcome _outcome;
         public TestOutcome Outcome { get { return _outcome; } }
 
-        private readonly string _output;
+        private string _output;
         public string Output { get { return _output; } }
     }
 }

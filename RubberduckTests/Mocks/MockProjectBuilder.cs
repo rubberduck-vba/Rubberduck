@@ -20,8 +20,24 @@ namespace RubberduckTests.Mocks
         private readonly Mock<VBComponents> _vbComponents;
         private readonly Mock<References> _vbReferences;
 
-        private readonly List<VBComponent> _components = new List<VBComponent>();
+        private readonly List<Mock<VBComponent>> _componentsMock = new List<Mock<VBComponent>>();
+        //private readonly List<VBComponent> _components = new List<VBComponent>();
         private readonly List<Reference> _references = new List<Reference>();
+
+        public Mock<VBComponents> MockVBComponents
+        {
+            get { return _vbComponents; }
+        }
+
+        public List<Mock<VBComponent>> MockComponents
+        {
+            get { return _componentsMock; }
+        }
+
+        private List<VBComponent> Components
+        {
+            get { return _componentsMock.Select(m => m.Object).ToList(); }
+        }
 
         public MockProjectBuilder(string name, string filename, vbext_ProjectProtection protection, Func<VBE> getVbe, MockVbeBuilder mockVbeBuilder)
         {
@@ -62,7 +78,7 @@ namespace RubberduckTests.Mocks
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
         public MockProjectBuilder AddComponent(Mock<VBComponent> component)
         {
-            _components.Add(component.Object);
+            _componentsMock.Add(component);
             _getVbe().ActiveCodePane = component.Object.CodeModule.CodePane;
             return this;
         }
@@ -131,12 +147,38 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.Parent).Returns(() => _project.Object);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
 
-            result.Setup(c => c.GetEnumerator()).Returns(() => _components.GetEnumerator());
-            result.As<IEnumerable>().Setup(c => c.GetEnumerator()).Returns(() => _components.GetEnumerator());
+            result.Setup(c => c.GetEnumerator()).Returns(() => Components.GetEnumerator());
+            result.As<IEnumerable>().Setup(c => c.GetEnumerator()).Returns(() => Components.GetEnumerator());
 
-            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _components.ElementAt(index));
-            result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => _components.Single(item => item.Name == name));
-            result.SetupGet(m => m.Count).Returns(_components.Count);
+            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => Components.ElementAt(index));
+            result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => Components.Single(item => item.Name == name));
+            result.SetupGet(m => m.Count).Returns(Components.Count);
+
+            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>())).Callback((vbext_ComponentType c) =>
+            {
+                _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection()));
+            });
+
+            result.Setup(m => m.Remove(It.IsAny<VBComponent>())).Callback((VBComponent c) =>
+            {
+                _componentsMock.Remove(_componentsMock.First(m => m.Object == c));
+            });
+
+            result.Setup(m => m.Import(It.IsAny<string>())).Callback((string s) =>
+            {
+                var parts = s.Split('.').ToList();
+                var types = new Dictionary<string, vbext_ComponentType>
+                {
+                    {"bas", vbext_ComponentType.vbext_ct_StdModule},
+                    {"cls", vbext_ComponentType.vbext_ct_ClassModule},
+                    {"frm", vbext_ComponentType.vbext_ct_MSForm}
+                };
+
+                vbext_ComponentType type;
+                types.TryGetValue(parts.Last(), out type);
+
+                _componentsMock.Add(CreateComponentMock(s.Split('\\').Last(), type, string.Empty, new Selection()));
+            });
 
             return result;
         }
@@ -150,6 +192,7 @@ namespace RubberduckTests.Mocks
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _references.GetEnumerator());
             result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _references.ElementAt(index - 1));
             result.SetupGet(m => m.Count).Returns(() => _references.Count);
+            result.Setup(m => m.AddFromFile(It.IsAny<string>()));
             return result;
         }
 
@@ -197,6 +240,9 @@ namespace RubberduckTests.Mocks
             result.SetupProperty(m => m.Name, name);
 
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
+
+            result.Setup(m => m.AddFromFile(It.IsAny<string>()));
+            result.Setup(m => m.AddFromString(It.IsAny<string>()));
             return result;
         }
 

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -15,22 +13,77 @@ using Rubberduck.UI.Settings;
 
 namespace Rubberduck.UI.ToDoItems
 {
-    public class ToDoExplorerViewModel : ViewModelBase, INavigateSelection
+    public sealed class ToDoExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
-        private readonly Dispatcher _dispatcher;
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configService;
 
         public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService)
         {
-            _dispatcher = Dispatcher.CurrentDispatcher;
             _state = state;
             _configService = configService;
             _state.StateChanged += _state_StateChanged;
+
+            _setMarkerGroupingCommand = new DelegateCommand(param =>
+            {
+                GroupByMarker = (bool)param;
+                GroupByLocation = !(bool)param;
+            });
+
+            _setLocationGroupingCommand = new DelegateCommand(param =>
+            {
+                GroupByLocation = (bool)param;
+                GroupByMarker = !(bool)param;
+            });
         }
 
-        private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
-        public ObservableCollection<ToDoItem> Items { get { return _items; } } 
+        private ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
+        public ObservableCollection<ToDoItem> Items
+        {
+            get { return _items; }
+            set
+            {
+                if (_items != value)
+                {
+                    _items = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _groupByMarker = true;
+        public bool GroupByMarker
+        {
+            get { return _groupByMarker; }
+            set
+            {
+                if (_groupByMarker != value)
+                {
+                    _groupByMarker = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _groupByLocation;
+        public bool GroupByLocation
+        {
+            get { return _groupByLocation; }
+            set
+            {
+                if (_groupByLocation != value)
+                {
+                    _groupByLocation = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private readonly ICommand _setMarkerGroupingCommand;
+        public ICommand SetMarkerGroupingCommand { get { return _setMarkerGroupingCommand; } }
+
+        private readonly ICommand _setLocationGroupingCommand;
+        public ICommand SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
 
         private ICommand _refreshCommand;
         public ICommand RefreshCommand
@@ -48,23 +101,14 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private async void _state_StateChanged(object sender, EventArgs e)
+        private void _state_StateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("ToDoExplorerViewModel handles StateChanged...");
             if (_state.Status != ParserState.Ready)
             {
                 return;
             }
 
-            Debug.WriteLine("Refreshing TODO items...");
-            _dispatcher.Invoke(() =>
-            {
-                Items.Clear();
-                foreach (var item in GetItems())
-                {
-                    Items.Add(item);
-                }
-            });
+            Items = new ObservableCollection<ToDoItem>(GetItems());
         }
 
         private ToDoItem _selectedItem;
@@ -148,6 +192,14 @@ namespace Rubberduck.UI.ToDoItems
         private IEnumerable<ToDoItem> GetItems()
         {
             return _state.AllComments.SelectMany(GetToDoMarkers);
+        }
+
+        public void Dispose()
+        {
+            if (_state != null)
+            {
+                _state.StateChanged -= _state_StateChanged;
+            }
         }
     }
 }

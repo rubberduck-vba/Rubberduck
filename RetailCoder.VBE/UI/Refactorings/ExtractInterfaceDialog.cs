@@ -8,7 +8,7 @@ using Rubberduck.Refactorings.ExtractInterface;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class ExtractInterfaceDialog : Form, IExtractInterfaceView
+    public partial class ExtractInterfaceDialog : Form, IExtractInterfaceDialog
     {
         public string InterfaceName
         {

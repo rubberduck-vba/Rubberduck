@@ -50,6 +50,9 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -61,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Annotations\AnnotationBase.cs" />
     <Compile Include="Annotations\AnnotationListener.cs" />
+    <Compile Include="Annotations\AnnotationService.cs" />
     <Compile Include="Annotations\AnnotationType.cs" />
     <Compile Include="Annotations\FolderAnnotation.cs" />
     <Compile Include="Annotations\IAnnotation.cs" />
@@ -69,21 +73,45 @@
     <Compile Include="Annotations\InvalidAnnotationArgumentException.cs" />
     <Compile Include="Annotations\ModuleCleanupAnnotation.cs" />
     <Compile Include="Annotations\ModuleInitializeAnnotation.cs" />
+    <Compile Include="Annotations\IgnoreTestAnnotation.cs" />
+    <Compile Include="Annotations\NoIndentAnnotation.cs" />
     <Compile Include="Annotations\TestCleanupAnnotation.cs" />
     <Compile Include="Annotations\TestInitializeAnnotation.cs" />
     <Compile Include="Annotations\TestMethodAnnotation.cs" />
     <Compile Include="Annotations\TestModuleAnnotation.cs" />
     <Compile Include="Annotations\VBAParserAnnotationFactory.cs" />
+    <Compile Include="Binding\ArgumentList.cs" />
+    <Compile Include="Binding\ArgumentListArgument.cs" />
+    <Compile Include="Binding\ArgumentListArgumentType.cs" />
+    <Compile Include="Binding\ResolutionFailedExpression.cs" />
+    <Compile Include="Binding\LiteralDefaultBinding.cs" />
+    <Compile Include="Binding\InstanceDefaultBinding.cs" />
+    <Compile Include="Binding\StatementResolutionContext.cs" />
+    <Compile Include="Binding\StatementContext.cs" />
+    <Compile Include="Binding\UnaryOpDefaultBinding.cs" />
+    <Compile Include="Binding\LiteralExpression.cs" />
+    <Compile Include="Binding\InstanceExpression.cs" />
+    <Compile Include="Binding\UnaryOpExpression.cs" />
     <Compile Include="Binding\BindingService.cs" />
     <Compile Include="Binding\BoundExpression.cs" />
+    <Compile Include="Binding\IndexDefaultBinding.cs" />
+    <Compile Include="Binding\IndexExpression.cs" />
     <Compile Include="Binding\MemberAccessExpression.cs" />
     <Compile Include="Binding\MemberAccessProcedurePointerBinding.cs" />
     <Compile Include="Binding\MemberAccessTypeBinding.cs" />
     <Compile Include="Binding\NewExpression.cs" />
+    <Compile Include="Binding\BinaryOpDefaultBinding.cs" />
+    <Compile Include="Binding\TypeOfIsDefaultBinding.cs" />
+    <Compile Include="Binding\BinaryOpExpression.cs" />
+    <Compile Include="Binding\TypeOfIsExpression.cs" />
     <Compile Include="Binding\ProcedurePointerBindingContext.cs" />
+    <Compile Include="Binding\MemberAccessDefaultBinding.cs" />
+    <Compile Include="Binding\SimpleNameDefaultBinding.cs" />
+    <Compile Include="Binding\ParenthesizedExpression.cs" />
     <Compile Include="Binding\SimpleNameProcedurePointerBinding.cs" />
     <Compile Include="Binding\NewTypeBinding.cs" />
     <Compile Include="Binding\DefaultBindingContext.cs" />
+    <Compile Include="Binding\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
     <Compile Include="Binding\ExpressionName.cs" />
@@ -92,11 +120,6 @@
     <Compile Include="Binding\IExpressionBinding.cs" />
     <Compile Include="Binding\SimpleNameExpression.cs" />
     <Compile Include="Binding\SimpleNameTypeBinding.cs" />
-    <Compile Include="Binding\VBAExpressionParser.cs" />
-    <Compile Include="Binding\VBAExpressionParserBaseListener.cs" />
-    <Compile Include="Binding\VBAExpressionParserBaseVisitor.cs" />
-    <Compile Include="Binding\VBAExpressionParserListener.cs" />
-    <Compile Include="Binding\VBAExpressionParserVisitor.cs" />
     <Compile Include="ComHelper.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
@@ -187,6 +210,7 @@
     <Compile Include="Preprocessing\VBALikeListener.cs" />
     <Compile Include="Preprocessing\VBALikeParser.cs" />
     <Compile Include="Preprocessing\VBALikeVisitor.cs" />
+    <Compile Include="Preprocessing\VBAPrecompilationParser.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorException.cs" />
     <Compile Include="Preprocessing\VBADateConstants.cs" />
     <Compile Include="Preprocessing\SymbolTable.cs" />
@@ -201,13 +225,26 @@
     <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="StaTaskScheduler.cs" />
     <Compile Include="Symbols\AccessibilityCheck.cs" />
-    <Compile Include="Symbols\BindingMigrationHelper.cs" />
+    <Compile Include="Symbols\CallStatement.cs" />
+    <Compile Include="Symbols\ExternalProcedureDeclaration.cs" />
+    <Compile Include="Symbols\ICompilationPass.cs" />
+    <Compile Include="Symbols\ParserRuleContextHelper.cs" />
     <Compile Include="Symbols\BoundExpressionVisitor.cs" />
     <Compile Include="Symbols\ClassModuleDeclaration.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\DeclarationFinder.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
+    <Compile Include="Symbols\ICanBeDefaultMember.cs" />
+    <Compile Include="Symbols\IDeclarationWithParameter.cs" />
+    <Compile Include="Symbols\PropertyLetDeclaration.cs" />
+    <Compile Include="Symbols\PropertySetDeclaration.cs" />
+    <Compile Include="Symbols\PropertyGetDeclaration.cs" />
+    <Compile Include="Symbols\FunctionDeclaration.cs" />
+    <Compile Include="Symbols\SubroutineDeclaration.cs" />
+    <Compile Include="Symbols\ProjectReferencePass.cs" />
+    <Compile Include="Symbols\TypeHierarchyPass.cs" />
+    <Compile Include="Symbols\TypeAnnotationPass.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
     <Compile Include="Symbols\ParameterDeclaration.cs" />
@@ -220,15 +257,13 @@
     <Compile Include="ParserRuleContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QualifiedContext.cs" />
-    <Compile Include="Reflection\Attributes.cs" />
-    <Compile Include="Reflection\Member.cs" />
     <Compile Include="Symbols\Declaration.cs" />
     <Compile Include="Symbols\Accessibility.cs" />
     <Compile Include="Symbols\DeclarationSymbolsListener.cs" />
     <Compile Include="Symbols\DeclarationType.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
-    <Compile Include="Symbols\ValuedDeclaration.cs" />
+    <Compile Include="Symbols\ConstantDeclaration.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\CombinedParseTreeListener.cs" />
@@ -236,6 +271,7 @@
     <Compile Include="VBA\EnumerableExtensions.cs" />
     <Compile Include="VBA\IAttributeParser.cs" />
     <Compile Include="VBA\IModuleExporter.cs" />
+    <Compile Include="VBA\ModuleState.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
@@ -245,11 +281,13 @@
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
+    <Compile Include="VBA\VBALikePatternParser.cs" />
+    <Compile Include="VBA\VBADateLiteralParser.cs" />
+    <Compile Include="VBA\VBAExpressionParser.cs" />
+    <Compile Include="VBA\VBAModuleParser.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
-    <Compile Include="VBComponentExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Binding\VBAExpressionParser.g4" />
     <None Include="Grammar\VBAParser.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>

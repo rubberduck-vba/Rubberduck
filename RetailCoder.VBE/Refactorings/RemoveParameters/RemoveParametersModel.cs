@@ -11,8 +11,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersModel
     {
-        private readonly RubberduckParserState _parseResult;
-        public RubberduckParserState ParseResult { get { return _parseResult; } }
+        private readonly RubberduckParserState _state;
+        public RubberduckParserState State { get { return _state; } }
 
         private readonly IList<Declaration> _declarations;
         public IEnumerable<Declaration> Declarations { get { return _declarations; } }
@@ -22,10 +22,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private readonly IMessageBox _messageBox;
 
-        public RemoveParametersModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
+        public RemoveParametersModel(RubberduckParserState state, QualifiedSelection selection, IMessageBox messageBox)
         {
-            _parseResult = parseResult;
-            _declarations = parseResult.AllDeclarations.ToList();
+            _state = state;
+            _declarations = state.AllDeclarations.ToList();
             _messageBox = messageBox;
 
             AcquireTarget(selection);

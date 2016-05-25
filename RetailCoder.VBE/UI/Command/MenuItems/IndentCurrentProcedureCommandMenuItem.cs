@@ -12,14 +12,4 @@ namespace Rubberduck.UI.Command.MenuItems
         public override string Key { get { return "IndentCurrentProcedure"; } }
         public override int DisplayOrder  { get { return (int)SmartIndenterMenuItemDisplayOrder.CurrentProcedure; } }
     }
-
-    public class IndentCurrentModuleCommandMenuItem : CommandMenuItemBase
-    {
-        public IndentCurrentModuleCommandMenuItem(ICommand command) : base(command)
-        {
-        }
-
-        public override string Key { get { return "IndentCurrentModule"; } }
-        public override int DisplayOrder { get { return (int)SmartIndenterMenuItemDisplayOrder.CurrentModule; } }
-    }
 }

@@ -8,10 +8,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
     public class ExtractInterfacePresenterFactory : IRefactoringPresenterFactory<ExtractInterfacePresenter>
     {
         private readonly VBE _vbe;
-        private readonly IExtractInterfaceView _view;
+        private readonly IExtractInterfaceDialog _view;
         private readonly RubberduckParserState _state;
 
-        public ExtractInterfacePresenterFactory(VBE vbe, RubberduckParserState state, IExtractInterfaceView view)
+        public ExtractInterfacePresenterFactory(VBE vbe, RubberduckParserState state, IExtractInterfaceDialog view)
         {
             _vbe = vbe;
             _view = view;

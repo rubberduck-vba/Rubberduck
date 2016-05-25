@@ -9,31 +9,32 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor.Extensions;
+using NLog;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    public class InspectionResultsViewModel : ViewModelBase, INavigateSelection
+    public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
         private readonly VBE _vbe;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
+        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
+                                          IGeneralConfigService configService)
         {
-            _dispatcher = Dispatcher.CurrentDispatcher;
-
             _state = state;
             _inspector = inspector;
             _vbe = vbe;
@@ -48,13 +49,30 @@ namespace Rubberduck.UI.CodeInspections
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             _openSettingsCommand = new DelegateCommand(OpenSettings);
 
+            _setInspectionTypeGroupingCommand = new DelegateCommand(param =>
+            {
+                GroupByInspectionType = (bool)param;
+                GroupByLocation = !(bool)param;
+            });
+
+            _setLocationGroupingCommand = new DelegateCommand(param =>
+            {
+                GroupByLocation = (bool)param;
+                GroupByInspectionType = !(bool)param;
+            });
+
             _state.StateChanged += _state_StateChanged;
         }
 
-        private readonly ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
+        private ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
         public ObservableCollection<ICodeInspectionResult> Results
         {
-            get { return _results; } 
+            get { return _results; }
+            private set
+            {
+                _results = value;
+                OnPropertyChanged();
+            }
         }
 
         private CodeInspectionQuickFix _defaultFix;
@@ -88,7 +106,6 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private IInspection _selectedInspection;
-
         public IInspection SelectedInspection
         {
             get { return _selectedInspection; }
@@ -98,6 +115,38 @@ namespace Rubberduck.UI.CodeInspections
                 OnPropertyChanged();
             }
         }
+
+        private bool _groupByInspectionType = true;
+        public bool GroupByInspectionType
+        {
+            get { return _groupByInspectionType; }
+            set
+            {
+                if (_groupByInspectionType == value) { return; }
+                
+                _groupByInspectionType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _groupByLocation;
+        public bool GroupByLocation
+        {
+            get { return _groupByLocation; }
+            set
+            {
+                if (_groupByLocation == value) { return; }
+                
+                _groupByLocation = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private readonly ICommand _setInspectionTypeGroupingCommand;
+        public ICommand SetInspectionTypeGroupingCommand { get { return _setInspectionTypeGroupingCommand; } }
+
+        private readonly ICommand _setLocationGroupingCommand;
+        public ICommand SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
 
         private readonly INavigateCommand _navigateCommand;
         public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
@@ -132,7 +181,6 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private bool _canRefresh = true;
-
         public bool CanRefresh
         {
             get { return _canRefresh; }
@@ -156,10 +204,11 @@ namespace Rubberduck.UI.CodeInspections
             {
                 return;
             }
+            await Task.Yield();
 
             IsBusy = true;
 
-            Debug.WriteLine("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
+            _logger.Debug("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
             _state.OnParseRequested(this);
         }
 
@@ -170,23 +219,22 @@ namespace Rubberduck.UI.CodeInspections
 
         private async void _state_StateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("InspectionResultsViewModel handles StateChanged...");
+            _logger.Debug("InspectionResultsViewModel handles StateChanged...");
             if (_state.Status != ParserState.Ready)
             {
                 IsBusy = false;
                 return;
             }
 
-            Debug.WriteLine("Running code inspections...");
+            _logger.Debug("Running code inspections...");
             IsBusy = true;
-            var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
-            _dispatcher.Invoke(() =>
+
+            var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();
+
+            UiDispatcher.Invoke(() =>
             {
-                Results.Clear();
-                foreach (var codeInspectionResult in results)
-                {
-                    Results.Add(codeInspectionResult);
-                }
+                Results = new ObservableCollection<ICodeInspectionResult>(results);
+
                 CanRefresh = true;
                 IsBusy = false;
                 SelectedItem = null;
@@ -287,7 +335,6 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private bool _canDisableInspection;
-        private readonly Dispatcher _dispatcher;
 
         public bool CanDisableInspection
         {
@@ -347,6 +394,14 @@ namespace Rubberduck.UI.CodeInspections
         private bool CanExecuteCopyResultsCommand(object parameter)
         {
             return !IsBusy && _results != null && _results.Any();
+        }
+
+        public void Dispose()
+        {
+            if (_state != null)
+            {
+                _state.StateChanged -= _state_StateChanged;
+            }
         }
     }
 }

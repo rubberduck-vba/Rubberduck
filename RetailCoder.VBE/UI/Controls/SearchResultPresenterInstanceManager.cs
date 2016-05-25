@@ -6,7 +6,7 @@ namespace Rubberduck.UI.Controls
     /// <summary>
     /// A "disposable singleton" factory that creates/returns the same instance to all clients.
     /// </summary>
-    public class SearchResultPresenterInstanceManager : IDisposable
+    public sealed class SearchResultPresenterInstanceManager : IDisposable
     {
         private readonly VBE _vbe;
         private readonly AddIn _addin;
@@ -39,18 +39,27 @@ namespace Rubberduck.UI.Controls
         {
             _presenter.Hide();
         }
-        
+
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing) { return; }
+
             if (_view.ViewModel != null)
             {
-            _view.ViewModel.LastTabClosed -= viewModel_LastTabClosed;
+                _view.ViewModel.LastTabClosed -= viewModel_LastTabClosed;
             }
 
             if (_presenter != null)
             {
-            _presenter.Dispose();
+                _presenter.Dispose();
+                _presenter = null;
+            }
         }
     }
-}
 }

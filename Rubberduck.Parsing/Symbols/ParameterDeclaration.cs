@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -7,7 +8,6 @@ namespace Rubberduck.Parsing.Symbols
     {
         private readonly bool _isOptional;
         private readonly bool _isByRef;
-        private readonly bool _isArray;
         private readonly bool _isParamArray;
 
         /// <summary>
@@ -15,16 +15,30 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public ParameterDeclaration(QualifiedMemberName qualifiedName, 
             Declaration parentDeclaration, 
-            string asTypeName, 
+            string asTypeName,
+            VBAParser.AsTypeClauseContext asTypeContext,
+            string typeHint,
             bool isOptional, 
             bool isByRef, 
             bool isArray = false, 
             bool isParamArray = false)
-            : base(qualifiedName, parentDeclaration, parentDeclaration, asTypeName, false, false, Accessibility.Implicit, DeclarationType.Parameter, null, Selection.Home)
+            : base(
+                  qualifiedName, 
+                  parentDeclaration, 
+                  parentDeclaration, 
+                  asTypeName,
+                  typeHint,
+                  false, 
+                  false, 
+                  Accessibility.Implicit,
+                  DeclarationType.Parameter, 
+                  null, 
+                  Selection.Home,
+                  isArray,
+                  asTypeContext)
         {
             _isOptional = isOptional;
             _isByRef = isByRef;
-            _isArray = isArray;
             _isParamArray = isParamArray;
         }
 
@@ -35,26 +49,36 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parentDeclaration,
             ParserRuleContext context, 
             Selection selection, 
-            string asTypeName, 
-            bool isOptional, 
+            string asTypeName,
+            VBAParser.AsTypeClauseContext asTypeContext,
+            string typeHint,
+            bool isOptional,
             bool isByRef,
             bool isArray = false, 
             bool isParamArray = false)
-            : base(qualifiedName, parentDeclaration, parentDeclaration, asTypeName, false, false, Accessibility.Implicit, DeclarationType.Parameter, context, selection, false)
+            : base(
+                  qualifiedName, 
+                  parentDeclaration, 
+                  parentDeclaration,
+                  asTypeName,
+                  typeHint,
+                  false, 
+                  false, 
+                  Accessibility.Implicit,
+                  DeclarationType.Parameter, 
+                  context, 
+                  selection,
+                  isArray,
+                  asTypeContext,
+                  false)
         {
             _isOptional = isOptional;
             _isByRef = isByRef;
-            _isArray = isArray;
             _isParamArray = isParamArray;
         }
 
         public bool IsOptional { get { return _isOptional; } }
         public bool IsByRef { get { return _isByRef; } }
-        public override bool IsArray()
-        {
-            return _isArray;
-        }
-
         public bool IsParamArray { get { return _isParamArray; } }
     }
 }

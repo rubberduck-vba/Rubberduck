@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ParameterNotUsedInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterNotUsed_ReturnsResult()
         {
             const string inputCode =
@@ -29,7 +30,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
@@ -38,6 +39,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterNotUsed_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
@@ -56,7 +58,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
@@ -65,6 +67,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterUsed_DoesNotReturnResult()
         {
             const string inputCode =
@@ -81,7 +84,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
@@ -90,6 +93,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterNotUsed_ReturnsResult_SomeParamsUsed()
         {
             const string inputCode =
@@ -106,7 +110,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
@@ -115,6 +119,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterNotUsed_ReturnsResult_InterfaceImplementation()
         {
             //Input
@@ -140,16 +145,18 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspectionResults = inspection.GetInspectionResults().ToList();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+            Assert.AreEqual(1, inspectionResults.Count);
+            
         }
 
         [TestMethod]
-        public void ParameterNotUsed_QuickFixWorks()
+        [TestCategory("Inspections")]
+        public void GivenPrivateSub_DefaultQuickFixRemovesParameter()
         {
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 as Integer)
@@ -170,7 +177,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
@@ -181,6 +188,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ParameterNotUsedInspection(null, null, null);
@@ -188,6 +196,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ParameterNotUsedInspection";

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Vbe.Interop;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.SmartIndenter
 {
@@ -48,6 +48,11 @@ namespace Rubberduck.SmartIndenter
         public void IndentCurrentProcedure()
         {
             var pane = _vbe.ActiveCodePane;
+
+            if (pane == null)
+            {
+                return;
+            }
             var module = pane.CodeModule;
             var selection = GetSelection(pane);
 
@@ -69,44 +74,17 @@ namespace Rubberduck.SmartIndenter
         public void IndentCurrentModule()
         {
             var pane = _vbe.ActiveCodePane;
+            if (pane == null)
+            {
+                return;
+            }
             Indent(pane.CodeModule.Parent);
-        }
-
-        public void Indent(VBProject project)
-        {
-            if (project == null)
-            {
-                throw new ArgumentNullException("project");
-            }
-            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
-            {
-                throw new InvalidOperationException("Project is protected.");
-            }
-
-            var lineCount = 0; // to set progressbar max value
-            if (project.VBComponents.Cast<VBComponent>().All(component => !HasCode(component.CodeModule, ref lineCount)))
-            {
-                throw new InvalidOperationException("Project contains no code.");
-            }
-
-            _originalTopLine = _vbe.ActiveCodePane.TopLine;
-            _originalSelection = GetSelection(_vbe.ActiveCodePane);
-
-            var progress = 0; // to set progressbar value
-            foreach (var component in project.VBComponents.Cast<VBComponent>().Where(component => HasCode(component.CodeModule)))
-            {
-                Indent(component, true, progress);
-                progress += component.CodeModule.CountOfLines;
-            }
-
-            _vbe.ActiveCodePane.TopLine = _originalTopLine;
-            _vbe.ActiveCodePane.SetSelection(_originalSelection.StartLine, _originalSelection.StartColumn, _originalSelection.EndLine, _originalSelection.EndColumn);
         }
 
         private static bool HasCode(CodeModule module, ref int lineCount)
         {
             lineCount += module.CountOfLines;
-            for (var i = 0; i < module.CountOfLines; i++)
+            for (var i = 1; i <= module.CountOfLines; i++)
             {
                 if (!string.IsNullOrWhiteSpace(module.Lines[i, 1]))
                 {
@@ -118,7 +96,7 @@ namespace Rubberduck.SmartIndenter
 
         private static bool HasCode(CodeModule module)
         {
-            for (var i = 0; i < module.CountOfLines; i++)
+            for (var i = 1; i <= module.CountOfLines; i++)
             {
                 if (!string.IsNullOrWhiteSpace(module.Lines[i, 1]))
                 {
@@ -319,12 +297,12 @@ namespace Rubberduck.SmartIndenter
                                 break;
 
                             case ": ":
-                                // a multi-statement line separator => tidy up and continue
-                                if (!currentLine.Substring(0, scan + 1).EndsWith("Then:"))
+                                 //a multi-statement line separator => tidy up and continue
+                                if (!currentLine.Substring(0, scan + 1).EndsWith(" Then:"))
                                 {
-                                    currentLine = currentLine.Substring(0, scan + 1) + currentLine.Substring(scan + 2);
+                                    currentLine = currentLine.Substring(0, scan + 2) + currentLine.Substring(scan + 2);
                                     // check the indenting for the line segment
-                                    CheckLine(settings, currentLine, ref noIndent, out ins, out outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
+                                    CheckLine(settings, currentLine.Substring(start - 1), ref noIndent, out ins, out outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
                                     if (atProcedureStart)
                                     {
                                         atFirstDim = true;
@@ -486,11 +464,7 @@ namespace Rubberduck.SmartIndenter
                                         (settings.EndOfLineCommentStyle == EndOfLineCommentStyle.Absolute ||
                                          settings.EndOfLineCommentStyle == EndOfLineCommentStyle.AlignInColumn))
                                     {
-                                        gap -= lineNumber.Length - indents*settings.IndentSpaces - 1;
-                                    }
-                                    if (gap < 2)
-                                    {
-                                        gap = settings.IndentSpaces;
+                                        gap -= lineNumber.Length - indents * settings.IndentSpaces - 1;
                                     }
 
                                     commentStart = currentLine.Length + gap;
@@ -498,15 +472,15 @@ namespace Rubberduck.SmartIndenter
                                 }
 
                                 // work out where the text of the comment starts, to align the next line
-                                if (currentLine.Substring(commentStart, 4) == "Rem ")
+                                if (commentStart < currentLine.Length - 4 && currentLine.Substring(commentStart, 4) == "Rem ")
                                 {
                                     commentStart += 3;
                                 }
-                                if (currentLine.Substring(commentStart, 1) == "'")
+                                if (commentStart < currentLine.Length && currentLine.Substring(commentStart, 1) == "'")
                                 {
                                     commentStart += 1;
                                 }
-                                while (currentLine.Substring(commentStart, 1) != " ")
+                                while (commentStart < currentLine.Length && currentLine.Substring(commentStart, 1) != " ")
                                 {
                                     commentStart += 1;
                                 }
@@ -559,7 +533,9 @@ namespace Rubberduck.SmartIndenter
                             atProcedureStart = false;
                         }
 
-                        CheckLine(settings, currentLine.Substring(start - 1, scan - 1), ref noIndent, out ins, out outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
+                        CheckLine(settings, currentLine.Substring(start - 1, Math.Min(scan - 1, currentLine.Length - start)),
+                                  ref noIndent, out ins, out outs, ref atProcedureStart, ref atFirstProcLine,
+                                  ref isInsideIfBlock);
                         if (atProcedureStart)
                         {
                             atFirstDim = true;

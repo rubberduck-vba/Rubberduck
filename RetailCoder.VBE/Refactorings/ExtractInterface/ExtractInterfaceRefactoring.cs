@@ -9,6 +9,7 @@ using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using NLog;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
@@ -19,6 +20,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory<ExtractInterfacePresenter> _factory;
         private ExtractInterfaceModel _model;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ExtractInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<ExtractInterfacePresenter> factory)
         {
@@ -44,6 +46,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
 
             AddInterface();
+
+            _state.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
@@ -78,13 +82,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private int _insertionLine;
         private void _state_StateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("ExtractInterfaceRefactoring handles StateChanged...");
+            _logger.Debug("ExtractInterfaceRefactoring handles StateChanged...");
             if (_state.Status != ParserState.Ready)
             {
                 return;
             }
 
-            Debug.WriteLine("Implementing extracted interface...");
+            _logger.Debug("Implementing extracted interface...");
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
             _vbe.ActiveCodePane.CodeModule.SetSelection(qualifiedSelection);
 

@@ -2,36 +2,44 @@
 
 namespace Rubberduck.Settings
 {
-    interface IGeneralSettings
+    public interface IGeneralSettings
     {
         DisplayLanguageSetting Language { get; set; }
-        HotkeySetting[] HotkeySettings { get; set; }
         bool AutoSaveEnabled { get; set; }
         int AutoSavePeriod { get; set; }
+        char Delimiter { get; set; }
+        bool DetailedLoggingEnabled { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
     public class GeneralSettings : IGeneralSettings
     {
         public DisplayLanguageSetting Language { get; set; }
-
-        [XmlArrayItem("Hotkey", IsNullable = false)]
-        public HotkeySetting[] HotkeySettings { get; set; }
-        
         public bool AutoSaveEnabled { get; set; }
         public int AutoSavePeriod { get; set; }
+        public char Delimiter { get; set; }
+        public bool DetailedLoggingEnabled { get; set; }
 
         public GeneralSettings()
         {
-            //empty constructor needed for serialization
+            Language = new DisplayLanguageSetting("en-US");
+            AutoSaveEnabled = false;
+            AutoSavePeriod = 10;
+            Delimiter = '.';
+            DetailedLoggingEnabled = false;
         }
 
-        public GeneralSettings(DisplayLanguageSetting language, HotkeySetting[] hotkeySettings, bool autoSaveEnabled, int autoSavePeriod)
+        public GeneralSettings(
+            DisplayLanguageSetting language, 
+            bool autoSaveEnabled, 
+            int autoSavePeriod, 
+            bool detailedLoggingEnabled)
         {
             Language = language;
-            HotkeySettings = hotkeySettings;
             AutoSaveEnabled = autoSaveEnabled;
             AutoSavePeriod = autoSavePeriod;
+            Delimiter = '.';
+            DetailedLoggingEnabled = detailedLoggingEnabled;
         }
     }
 }

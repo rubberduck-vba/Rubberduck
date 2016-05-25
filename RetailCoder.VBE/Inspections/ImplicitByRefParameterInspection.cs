@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections
                 let arg = item.Context as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null
                 select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
-                .Select(issue => new ImplicitByRefParameterInspectionResult(this, issue.Context.identifier().GetText(), issue));
+                .Select(issue => new ImplicitByRefParameterInspectionResult(this, issue.Context.unrestrictedIdentifier().GetText(), issue));
 
  
             return issues;

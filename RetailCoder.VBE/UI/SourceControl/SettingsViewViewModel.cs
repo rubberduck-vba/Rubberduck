@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Input;
-using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.SourceControl;
 
@@ -11,17 +10,17 @@ namespace Rubberduck.UI.SourceControl
 {
     public class SettingsViewViewModel : ViewModelBase, IControlViewModel
     {
-        private readonly IConfigurationService<SourceControlConfiguration> _configService;
+        private readonly ISourceControlConfigProvider _configService;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
-        private readonly SourceControlConfiguration _config;
+        private readonly SourceControlSettings _config;
 
         public SettingsViewViewModel(
-            IConfigurationService<SourceControlConfiguration> configService,
+            ISourceControlConfigProvider configService,
             IFolderBrowserFactory folderBrowserFactory)
         {
             _configService = configService;
             _folderBrowserFactory = folderBrowserFactory;
-            _config = _configService.LoadConfiguration();
+            _config = _configService.Create();
 
             UserName = _config.UserName;
             EmailAddress = _config.EmailAddress;
@@ -36,6 +35,8 @@ namespace Rubberduck.UI.SourceControl
 
         public ISourceControlProvider Provider { get; set; }
         public void RefreshView() {} // nothing to refresh here
+
+        public SourceControlTab Tab { get { return SourceControlTab.Settings; } }
 
         private string _userName;
         public string UserName
@@ -103,10 +104,10 @@ namespace Rubberduck.UI.SourceControl
             _config.EmailAddress = EmailAddress;
             _config.DefaultRepositoryLocation = DefaultRepositoryLocation;
 
-            _configService.SaveConfiguration(_config);
+            _configService.Save(_config);
 
             RaiseErrorEvent(RubberduckUI.SourceControl_UpdateSettingsTitle,
-                RubberduckUI.SourceControl_UpdateSettingsMessage);
+                RubberduckUI.SourceControl_UpdateSettingsMessage, NotificationType.Info);
         }
 
         private void ShowGitIgnore()
@@ -192,12 +193,12 @@ namespace Rubberduck.UI.SourceControl
         }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
-        private void RaiseErrorEvent(string message, string innerMessage)
+        private void RaiseErrorEvent(string message, string innerMessage, NotificationType notificationType)
         {
             var handler = ErrorThrown;
             if (handler != null)
             {
-                handler(this, new ErrorEventArgs(message, innerMessage));
+                handler(this, new ErrorEventArgs(message, innerMessage, notificationType));
             }
         }
     }

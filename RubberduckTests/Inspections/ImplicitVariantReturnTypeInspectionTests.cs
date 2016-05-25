@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ImplicitVariantReturnTypeInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_Function()
         {
             const string inputCode =
@@ -29,7 +30,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitVariantReturnTypeInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -38,6 +39,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_PropertyGet()
         {
             const string inputCode =
@@ -53,7 +55,7 @@ End Property";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitVariantReturnTypeInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -62,6 +64,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_MultipleFunctions()
         {
             const string inputCode =
@@ -80,7 +83,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitVariantReturnTypeInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -89,6 +92,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_DoesNotReturnResult()
         {
             const string inputCode =
@@ -104,7 +108,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitVariantReturnTypeInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -113,6 +117,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_MultipleSubs_SomeReturning()
         {
             const string inputCode =
@@ -131,7 +136,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitVariantReturnTypeInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -140,6 +145,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_QuickFixWorks_Function()
         {
             const string inputCode =
@@ -161,7 +167,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitVariantReturnTypeInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -172,6 +178,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitVariantReturnType_QuickFixWorks_PropertyGet()
         {
             const string inputCode =
@@ -193,7 +200,7 @@ End Property";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitVariantReturnTypeInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -204,6 +211,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ImplicitVariantReturnTypeInspection(null);
@@ -211,6 +219,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitVariantReturnTypeInspection";

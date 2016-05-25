@@ -1,26 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class SourceControlViewViewModel : ViewModelBase
+    public enum SourceControlTab
+    {
+        Changes,
+        Branches,
+        UnsyncedCommits,
+        Settings
+    }
+    
+    public sealed class SourceControlViewViewModel : ViewModelBase, IDisposable
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
-        private readonly IConfigurationService<SourceControlConfiguration> _configService;
-        private readonly SourceControlConfiguration _config;
+        private readonly ISourceControlConfigProvider _configService;
+        private readonly SourceControlSettings _config;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public SourceControlViewViewModel(
@@ -28,7 +39,7 @@ namespace Rubberduck.UI.SourceControl
             RubberduckParserState state,
             ISourceControlProviderFactory providerFactory,
             IFolderBrowserFactory folderBrowserFactory,
-            IConfigurationService<SourceControlConfiguration> configService,
+            ISourceControlConfigProvider configService,
             [Named("changesView")] IControlView changesView,
             [Named("branchesView")] IControlView branchesView,
             [Named("unsyncedCommitsView")] IControlView unsyncedCommitsView,
@@ -43,7 +54,7 @@ namespace Rubberduck.UI.SourceControl
             _state.StateChanged += _state_StateChanged;
 
             _configService = configService;
-            _config = _configService.LoadConfiguration();
+            _config = _configService.Create();
             _wrapperFactory = wrapperFactory;
 
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
@@ -52,7 +63,8 @@ namespace Rubberduck.UI.SourceControl
             _refreshCommand = new DelegateCommand(_ => Refresh());
             _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
             _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
-            _closeLoginGridCommand = new DelegateCommand(_ => CloseLoginGrid());
+            _loginGridOkCommand = new DelegateCommand(_ => CloseLoginGrid(), text => !string.IsNullOrEmpty((string)text));
+            _loginGridCancelCommand = new DelegateCommand(_ => CloseLoginGrid());
 
             _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidRemotePath);
             _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
@@ -64,16 +76,30 @@ namespace Rubberduck.UI.SourceControl
                 unsyncedCommitsView,
                 settingsView
             };
+            SetTab(SourceControlTab.Changes);
+
             Status = RubberduckUI.Offline;
 
             ListenForErrors();
         }
 
+        public void SetTab(SourceControlTab tab)
+        {
+            SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
+        }
+
+        private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
+            new Dictionary<NotificationType, BitmapImage>
+            {
+                { NotificationType.Info, GetImageSource(resx.information)},
+                { NotificationType.Error, GetImageSource(resx.cross_circle)}
+            };
+
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
             if (e.State == ParserState.Parsed)
             {
-                Refresh();
+                UiDispatcher.InvokeAsync(Refresh);
             }
         }
 
@@ -97,6 +123,20 @@ namespace Rubberduck.UI.SourceControl
                 if (_tabItems != value)
                 {
                     _tabItems = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private IControlView _selectedItem;
+        public IControlView SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
                     OnPropertyChanged();
                 }
             }
@@ -178,6 +218,20 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private string _errorTitle;
+        public string ErrorTitle
+        {
+            get { return _errorTitle; }
+            set
+            {
+                if (_errorTitle != value)
+                {
+                    _errorTitle = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private string _errorMessage;
         public string ErrorMessage
         {
@@ -187,6 +241,20 @@ namespace Rubberduck.UI.SourceControl
                 if (_errorMessage != value)
                 {
                     _errorMessage = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private BitmapImage _errorIcon;
+        public BitmapImage ErrorIcon
+        {
+            get { return _errorIcon; }
+            set
+            {
+                if (_errorIcon != value)
+                {
+                    _errorIcon = value;
                     OnPropertyChanged();
                 }
             }
@@ -233,7 +301,12 @@ namespace Rubberduck.UI.SourceControl
             }
             else
             {
-                ErrorMessage = e.Message + ":" + Environment.NewLine + e.InnerMessage;
+                ErrorTitle = e.Message;
+                ErrorMessage = e.InnerMessage;
+
+                IconMappings.TryGetValue(e.NotificationType, out _errorIcon);
+                OnPropertyChanged("ErrorIcon");
+
                 DisplayErrorMessageGrid = true;
             }
         }
@@ -271,7 +344,7 @@ namespace Rubberduck.UI.SourceControl
             if (Provider.CurrentBranch == null)
             {
                 ViewModel_ErrorThrown(null,
-                    new ErrorEventArgs(RubberduckUI.SourceControl_NoBranchesTitle, RubberduckUI.SourceControl_NoBranchesMessage));
+                    new ErrorEventArgs(RubberduckUI.SourceControl_NoBranchesTitle, RubberduckUI.SourceControl_NoBranchesMessage, NotificationType.Error));
                 return;
             }
 
@@ -286,7 +359,7 @@ namespace Rubberduck.UI.SourceControl
             if (_config.Repositories.All(repository => repository.LocalLocation != repo.LocalLocation))
             {
                 _config.Repositories.Add(repo);
-                _configService.SaveConfiguration(_config);
+                _configService.Save(_config);
             }
             else
             {
@@ -300,7 +373,7 @@ namespace Rubberduck.UI.SourceControl
                 existing.Name = repo.Name;
                 existing.RemoteLocation = repo.RemoteLocation;
 
-                _configService.SaveConfiguration(_config);
+                _configService.Save(_config);
             }
         }
 
@@ -322,7 +395,7 @@ namespace Rubberduck.UI.SourceControl
                 }
                 catch (SourceControlException ex)
                 {
-                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message));
+                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                     return;
                 }
 
@@ -348,7 +421,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message));
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 return;
             }
 
@@ -385,7 +458,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message));
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 Status = RubberduckUI.Offline;
             }
         }
@@ -497,12 +570,29 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _closeLoginGridCommand;
-        public ICommand CloseLoginGridCommand
+        private readonly ICommand _loginGridOkCommand;
+        public ICommand LoginGridOkCommand
         {
             get
             {
-                return _closeLoginGridCommand;
+                return _loginGridOkCommand;
+            }
+        }
+
+        private readonly ICommand _loginGridCancelCommand;
+        public ICommand LoginGridCancelCommand
+        {
+            get
+            {
+                return _loginGridCancelCommand;
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_state != null)
+            {
+                _state.StateChanged -= _state_StateChanged;
             }
         }
     }

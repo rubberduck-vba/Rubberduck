@@ -51,26 +51,26 @@ namespace Rubberduck.Inspections
             var formEventHandlerScopes = declarations.FindFormEventHandlers()
                 .Select(handler => handler.Scope);
 
-            var eventScopes = declarations.Where(item => 
+            var eventScopes = declarations.Where(item =>
                 !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event)
                 .Select(e => e.Scope);
 
-            var declareScopes = declarations.Where(item => 
-                    item.DeclarationType == DeclarationType.LibraryFunction 
+            var declareScopes = declarations.Where(item =>
+                    item.DeclarationType == DeclarationType.LibraryFunction
                     || item.DeclarationType == DeclarationType.LibraryProcedure)
                 .Select(e => e.Scope);
 
             var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
 
             var issues = declarations.Where(declaration =>
-                !declaration.IsArray()
+                !declaration.IsArray
                 && !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
-                && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
+                && ((VBAParser.ArgContext)declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, ((dynamic)issue.Context).unrestrictedIdentifier(), issue.QualifiedName));
 
             return issues;
         }
@@ -97,20 +97,18 @@ namespace Rubberduck.Inspections
 
                 for (var i = 0; i < calledProcedureArgs.Count(); i++)
                 {
-                    if (((VBAParser.ArgContext) calledProcedureArgs[i].Context).BYVAL() != null)
+                    if (((VBAParser.ArgContext)calledProcedureArgs[i].Context).BYVAL() != null)
                     {
                         continue;
                     }
 
                     foreach (var reference in item)
                     {
-                        if (reference.Context.Parent is VBAParser.ICS_S_VariableOrProcedureCallContext)
+                        if (!(reference.Context is VBAParser.ArgContext))
                         {
-                            // parameterless call (what's this doing here?)
                             continue;
                         }
-
-                        var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgsCallContext;
+                        var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgContext;
                         if (context == null)
                         {
                             continue;

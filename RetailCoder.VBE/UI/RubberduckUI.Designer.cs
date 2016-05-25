@@ -245,6 +245,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commit....
+        /// </summary>
+        public static string CodeExplorer_Commit {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Commit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         public static string CodeExplorer_DisplayMemberNamesText {
@@ -272,6 +281,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export....
+        /// </summary>
+        public static string CodeExplorer_Export {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find All Implementations....
         /// </summary>
         public static string CodeExplorer_FindAllImplementationsText {
@@ -290,11 +308,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Inspect.
+        ///   Looks up a localized string similar to Import....
         /// </summary>
-        public static string CodeExplorer_Inspect {
+        public static string CodeExplorer_Import {
             get {
-                return ResourceManager.GetString("CodeExplorer_Inspect", resourceCulture);
+                return ResourceManager.GetString("CodeExplorer_Import", resourceCulture);
             }
         }
         
@@ -326,11 +344,38 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Print....
+        /// </summary>
+        public static string CodeExplorer_Print {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Print", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to R&amp;efresh.
         /// </summary>
         public static string CodeExplorer_Refresh {
             get {
                 return ResourceManager.GetString("CodeExplorer_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh component.
+        /// </summary>
+        public static string CodeExplorer_RefreshComponent {
+            get {
+                return ResourceManager.GetString("CodeExplorer_RefreshComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove....
+        /// </summary>
+        public static string CodeExplorer_Remove {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Remove", resourceCulture);
             }
         }
         
@@ -367,6 +412,24 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_ShowSignaturesToolTip {
             get {
                 return ResourceManager.GetString("CodeExplorer_ShowSignaturesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort.
+        /// </summary>
+        public static string CodeExplorer_Sort {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Sort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo....
+        /// </summary>
+        public static string CodeExplorer_Undo {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Undo", resourceCulture);
             }
         }
         
@@ -711,6 +774,16 @@ namespace Rubberduck.UI {
         public static string ContextMenu_GoToImplementation {
             get {
                 return ResourceManager.GetString("ContextMenu_GoToImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap cross_circle {
+            get {
+                object obj = ResourceManager.GetObject("cross_circle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -1192,6 +1265,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Detailed logging.
+        /// </summary>
+        public static string GeneralSettings_DetailedLoggingEnabled {
+            get {
+                return ResourceManager.GetString("GeneralSettings_DetailedLoggingEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable detailed logging.
+        /// </summary>
+        public static string GeneralSettings_DetailedLoggingEnabledLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_DetailedLoggingEnabledLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder Delimiter:.
+        /// </summary>
+        public static string GeneralSettings_FolderDelimiterLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_FolderDelimiterLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alt.
         /// </summary>
         public static string GeneralSettings_HotkeyAlt {
@@ -1269,6 +1369,24 @@ namespace Rubberduck.UI {
         public static string GeneralSettings_LanguageLabel {
             get {
                 return ResourceManager.GetString("GeneralSettings_LanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Period (.).
+        /// </summary>
+        public static string GeneralSettings_PeriodDelimiter {
+            get {
+                return ResourceManager.GetString("GeneralSettings_PeriodDelimiter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slash (/).
+        /// </summary>
+        public static string GeneralSettings_SlashDelimiter {
+            get {
+                return ResourceManager.GetString("GeneralSettings_SlashDelimiter", resourceCulture);
             }
         }
         
@@ -1633,6 +1751,16 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap information {
+            get {
+                object obj = ResourceManager.GetObject("information", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inspect.
         /// </summary>
         public static string Inspect {
@@ -1867,6 +1995,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add &apos;@NoIndent.
+        /// </summary>
+        public static string NoIndentAnnotation {
+            get {
+                return ResourceManager.GetString("NoIndentAnnotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Offline.
         /// </summary>
         public static string Offline {
@@ -1935,6 +2072,15 @@ namespace Rubberduck.UI {
         public static string ParseProgress {
             get {
                 return ResourceManager.GetString("ParseProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parser Errors.
+        /// </summary>
+        public static string Parser_ParserError {
+            get {
+                return ResourceManager.GetString("Parser_ParserError", resourceCulture);
             }
         }
         
@@ -2927,6 +3073,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By name.
+        /// </summary>
+        public static string SortStyle_ByName {
+            get {
+                return ResourceManager.GetString("SortStyle_ByName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By selection.
+        /// </summary>
+        public static string SortStyle_BySelection {
+            get {
+                return ResourceManager.GetString("SortStyle_BySelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By type.
+        /// </summary>
+        public static string SortStyle_ByType {
+            get {
+                return ResourceManager.GetString("SortStyle_ByType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;.gitattributes&apos; File.
         /// </summary>
         public static string SourceControl_AttributesFile {
@@ -3031,6 +3204,42 @@ namespace Rubberduck.UI {
         public static string SourceControl_CommitMessageLabel {
             get {
                 return ResourceManager.GetString("SourceControl_CommitMessageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit status..
+        /// </summary>
+        public static string SourceControl_CommitStatus {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and push succeeded..
+        /// </summary>
+        public static string SourceControl_CommitStatus_CommitAndPushSuccess {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus_CommitAndPushSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and sync succeeded..
+        /// </summary>
+        public static string SourceControl_CommitStatus_CommitAndSyncSuccess {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus_CommitAndSyncSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit succeeded..
+        /// </summary>
+        public static string SourceControl_CommitStatus_CommitSuccess {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus_CommitSuccess", resourceCulture);
             }
         }
         
@@ -3332,7 +3541,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Merge status.
+        ///   Looks up a localized string similar to Merge status..
         /// </summary>
         public static string SourceControl_MergeStatus {
             get {
@@ -3346,6 +3555,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_Message {
             get {
                 return ResourceManager.GetString("SourceControl_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing credentials..
+        /// </summary>
+        public static string SourceControl_MissingCredentials {
+            get {
+                return ResourceManager.GetString("SourceControl_MissingCredentials", resourceCulture);
             }
         }
         
@@ -3526,6 +3744,24 @@ namespace Rubberduck.UI {
         public static string SourceControl_UndoChangesButton {
             get {
                 return ResourceManager.GetString("SourceControl_UndoChangesButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to undo your changes to {0}?.
+        /// </summary>
+        public static string SourceControl_UndoPrompt {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source Control - Undo.
+        /// </summary>
+        public static string SourceControl_UndoTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoTitle", resourceCulture);
             }
         }
         
@@ -3827,6 +4063,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignored.
+        /// </summary>
+        public static string TestOutcome_Ignored {
+            get {
+                return ResourceManager.GetString("TestOutcome_Ignored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inconclusive.
         /// </summary>
         public static string TestOutcome_Inconclusive {
@@ -4021,6 +4266,15 @@ namespace Rubberduck.UI {
         public static string UnitTest_NewModule_RunOnce {
             get {
                 return ResourceManager.GetString("UnitTest_NewModule_RunOnce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Duration.
+        /// </summary>
+        public static string UnitTest_TotalDuration {
+            get {
+                return ResourceManager.GetString("UnitTest_TotalDuration", resourceCulture);
             }
         }
         

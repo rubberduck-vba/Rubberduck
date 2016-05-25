@@ -7,16 +7,20 @@ namespace Rubberduck.UI.SourceControl
     {
         public readonly string Message;
         public readonly string InnerMessage;
+        public readonly NotificationType NotificationType;
 
-        public ErrorEventArgs(string message,string innerMessage)
+        public ErrorEventArgs(string message, string innerMessage, NotificationType notificationType)
         {
             Message = message;
             InnerMessage = innerMessage;
+            NotificationType = notificationType;
         }
     }
 
     public interface IControlViewModel
     {
+        SourceControlTab Tab { get; }
+
         ISourceControlProvider Provider { get; set; }
         event EventHandler<ErrorEventArgs> ErrorThrown;
 

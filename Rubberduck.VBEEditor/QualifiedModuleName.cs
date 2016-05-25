@@ -111,6 +111,34 @@ namespace Rubberduck.VBEditor
         }
 
         /// <summary>
+        /// Creates a QualifiedModuleName for removing renamed declarations.
+        /// Do not use this overload.
+        /// </summary>
+        public QualifiedModuleName(VBComponent component, string oldComponentName)
+        {
+            _project = null; // field is only assigned when the instance refers to a VBProject.
+
+            _component = component;
+            _componentName = oldComponentName;
+            _project = component == null ? null : component.Collection.Parent;
+            _projectName = _project == null ? string.Empty : _project.Name;
+            _projectPath = string.Empty;
+            _projectId = GetProjectId(_project);
+
+            _contentHashCode = 0;
+            if (component == null)
+            {
+                return;
+            }
+
+            var module = component.CodeModule;
+            _contentHashCode = module.CountOfLines > 0
+                // ReSharper disable once UseIndexedProperty
+                ? module.get_Lines(1, module.CountOfLines).GetHashCode()
+                : 0;
+        }
+
+        /// <summary>
         /// Creates a QualifiedModuleName for a built-in declaration.
         /// Do not use this overload for user declarations.
         /// </summary>

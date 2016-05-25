@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
         {
             return UserDeclarations
                 .Where(declaration => declaration.IsSelfAssigned 
-                    && declaration.IsTypeSpecified()
+                    && declaration.IsTypeSpecified
                     && !ValueTypes.Contains(declaration.AsTypeName)
                     && declaration.DeclarationType == DeclarationType.Variable
                     && declaration.ParentScopeDeclaration != null

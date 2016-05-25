@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ImplicitPublicMemberInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitPublicMember_ReturnsResult_Sub()
         {
             const string inputCode = @"
@@ -30,7 +31,7 @@ End Sub
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitPublicMemberInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -39,6 +40,7 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitPublicMember_ReturnsResult_Function()
         {
             const string inputCode =
@@ -55,7 +57,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitPublicMemberInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -64,6 +66,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitPublicMember_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
@@ -82,7 +85,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitPublicMemberInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -91,6 +94,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitPublicMember_DoesNotReturnResult()
         {
             const string inputCode =
@@ -106,7 +110,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitPublicMemberInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -115,6 +119,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitPublicMember_ReturnsResult_SomeImplicitlyPublicSubs()
         {
             const string inputCode =
@@ -133,7 +138,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitPublicMemberInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -142,6 +147,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitPublicMember_QuickFixWorks()
         {
             const string inputCode =
@@ -167,7 +173,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitPublicMemberInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -178,6 +184,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ImplicitPublicMemberInspection(null);
@@ -185,6 +192,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitPublicMemberInspection";

@@ -20,7 +20,7 @@ namespace RubberduckTests.Settings
                 }
             };
 
-            var userSettings = new UserSettings(null, todoSettings, null, null, null);
+            var userSettings = new UserSettings(null, null, todoSettings, null, null, null);
             return new Configuration(userSettings);
         }
 
@@ -34,7 +34,7 @@ namespace RubberduckTests.Settings
                 }
             };
 
-            var userSettings = new UserSettings(null, todoSettings, null, null, null);
+            var userSettings = new UserSettings(null, null, todoSettings, null, null, null);
             return new Configuration(userSettings);
         }
 

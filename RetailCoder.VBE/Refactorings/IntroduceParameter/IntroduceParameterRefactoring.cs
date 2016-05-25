@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
     public class IntroduceParameterRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
-        private readonly RubberduckParserState _parseResult;
+        private readonly RubberduckParserState _state;
         private readonly IList<Declaration> _declarations;
         private readonly IMessageBox _messageBox;
 
@@ -31,11 +31,11 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             DeclarationType.PropertySet
         };
 
-        public IntroduceParameterRefactoring(VBE vbe, RubberduckParserState parseResult, IMessageBox messageBox)
+        public IntroduceParameterRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
             _vbe = vbe;
-            _parseResult = parseResult;
-            _declarations = parseResult.AllDeclarations.ToList();
+            _state = state;
+            _declarations = state.AllDeclarations.ToList();
             _messageBox = messageBox;
         }
 
@@ -97,6 +97,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             RemoveVariable(target);
             UpdateSignature(target);
+
+            _state.OnParseRequested(this);
         }
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
@@ -241,14 +243,14 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         private void RemoveVariable(Declaration target)
         {
             Selection selection;
-            var declarationText = target.Context.GetText();
+            var declarationText = target.Context.GetText().Replace(" _" + Environment.NewLine, string.Empty);
             var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
 
             var variableStmtContext = target.GetVariableStmtContext();
 
             if (!multipleDeclarations)
             {
-                declarationText = variableStmtContext.GetText();
+                declarationText = variableStmtContext.GetText().Replace(" _" + Environment.NewLine, string.Empty);
                 selection = target.GetVariableStmtContextSelection();
             }
             else
@@ -296,7 +298,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private string GetOldSignature(Declaration target)
         {
-            var rewriter = _parseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
+            var rewriter = _state.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
 
             var context = target.Context;
             var firstTokenIndex = context.Start.TokenIndex;

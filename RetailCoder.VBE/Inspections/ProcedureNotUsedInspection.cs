@@ -89,6 +89,7 @@ namespace Rubberduck.Inspections
             return parent != null;
         }
 
+        // TODO: Put this into grammar?
         private static readonly string[] ClassLifeCycleHandlers =
         {
             "Class_Initialize",
@@ -127,7 +128,7 @@ namespace Rubberduck.Inspections
             }
 
             var interfaces = enumerable.Where(item => item.References.Any(reference =>
-                    reference.Context.Parent is VBAParser.ImplementsStmtContext));
+                    ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context.Parent)));
 
             if (interfaces.Select(i => i.ComponentName).Contains(procedure.ComponentName))
             {
@@ -143,7 +144,7 @@ namespace Rubberduck.Inspections
         private IEnumerable<string> GetImplementedInterfaceMembers(IEnumerable<Declaration> declarations, IEnumerable<Declaration> classes, string componentName)
         {
             var interfaces = classes.Where(item => item.References.Any(reference =>
-                    reference.Context.Parent is VBAParser.ImplementsStmtContext
+                    ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context.Parent)
                     && reference.QualifiedModuleName.Component.Name == componentName));
 
             var members = interfaces.SelectMany(declarations.InScope)

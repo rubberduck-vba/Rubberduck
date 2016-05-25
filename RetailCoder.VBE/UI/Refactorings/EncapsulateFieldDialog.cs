@@ -7,7 +7,7 @@ using Rubberduck.Refactorings.EncapsulateField;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class EncapsulateFieldDialog : Form, IEncapsulateFieldView
+    public partial class EncapsulateFieldDialog : Form, IEncapsulateFieldDialog
     {
         public string NewPropertyName
         {

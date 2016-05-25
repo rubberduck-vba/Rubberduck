@@ -32,6 +32,8 @@ namespace Rubberduck.Inspections
             var nonInterfaceFunctions = functions.Except(interfaceMembers.Union(interfaceImplementationMembers));
             var nonInterfaceIssues = GetNonInterfaceIssues(nonInterfaceFunctions);
             return interfaceMemberIssues.Union(nonInterfaceIssues);
+            //// Temporarily disabled until fix for lack of context because of new resolver is found...
+            //return new List<InspectionResultBase>();
         }
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetInterfaceMemberIssues(IEnumerable<Declaration> interfaceMembers)
@@ -77,25 +79,89 @@ namespace Rubberduck.Inspections
 
         private bool IsReturnValueUsed(Declaration function)
         {
-            return function.References.Any(usage =>
-                            !IsReturnStatement(function, usage) && !IsAddressOfCall(usage) && !IsCallWithoutAssignment(usage));
+            foreach (var usage in function.References)
+            {
+                if (IsReturnStatement(function, usage))
+                {
+                    continue;
+                }
+                if (IsAddressOfCall(usage))
+                {
+                    continue;
+                }
+                if (IsTypeOfExpression(usage))
+                {
+                    continue;
+                }
+                if (IsCallStmt(usage))
+                {
+                    continue;
+                }
+                if (IsLet(usage))
+                {
+                    continue;
+                }
+                if (IsSet(usage))
+                {
+                    continue;
+                }
+                return true;
+            }
+            return false;
         }
 
         private bool IsAddressOfCall(IdentifierReference usage)
         {
-            RuleContext current = usage.Context;
-            while (current != null && !(current is VBAParser.VsAddressOfContext)) current = current.Parent;
-            return current != null;
+            var what = usage.Context.GetType();
+            return ParserRuleContextHelper.HasParent<VBAParser.AddressOfExpressionContext>(usage.Context);
+        }
+
+        private bool IsTypeOfExpression(IdentifierReference usage)
+        {
+            return ParserRuleContextHelper.HasParent<VBAParser.TypeofexprContext>(usage.Context);
         }
 
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
         {
-            return assignment.ParentScoping.Equals(function);
+            return assignment.ParentScoping.Equals(function) && assignment.Declaration.Equals(function);
         }
 
-        private bool IsCallWithoutAssignment(IdentifierReference usage)
+        private bool IsCallStmt(IdentifierReference usage)
         {
-            return usage.Context.Parent != null && usage.Context.Parent.Parent is VBAParser.ImplicitCallStmt_InBlockContext;
+            var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(usage.Context);
+            if (callStmt == null)
+            {
+                return false;
+            }
+            var argumentList = CallStatement.GetArgumentList(callStmt);
+            if (argumentList == null)
+            {
+                return true;
+            }
+            bool isUsedAsArgumentThusReturnValueIsUsed = ParserRuleContextHelper.HasParent(usage.Context, argumentList);
+            return !isUsedAsArgumentThusReturnValueIsUsed;
+        }
+
+        private bool IsLet(IdentifierReference usage)
+        {
+            var letStmt = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(usage.Context);
+            if (letStmt == null)
+            {
+                return false;
+            }
+            bool isLetAssignmentTarget = letStmt == usage.Context;
+            return isLetAssignmentTarget;
+        }
+
+        private bool IsSet(IdentifierReference usage)
+        {
+            var setStmt = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(usage.Context);
+            if (setStmt == null)
+            {
+                return false;
+            }
+            bool isSetAssignmentTarget = setStmt == usage.Context;
+            return isSetAssignmentTarget;
         }
     }
 }

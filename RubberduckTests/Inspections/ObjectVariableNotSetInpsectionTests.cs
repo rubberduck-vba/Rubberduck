@@ -13,6 +13,7 @@ namespace RubberduckTests.Inspections
     public class ObjectVariableNotSetInpsectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenStringVariable_ReturnsNoResult()
         {
             const string inputCode = @"
@@ -34,7 +35,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObjectVariableNotSetInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -43,6 +44,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariable_ReturnsNoResult()
         {
             const string inputCode = @"
@@ -64,7 +66,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObjectVariableNotSetInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -73,6 +75,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenObjectVariableNotSet_ReturnsResult()
         {
             const string inputCode = @"
@@ -94,7 +97,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObjectVariableNotSetInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -103,6 +106,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenSetObjectVariable_ReturnsNoResult()
         {
             const string inputCode = @"
@@ -124,7 +128,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObjectVariableNotSetInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();

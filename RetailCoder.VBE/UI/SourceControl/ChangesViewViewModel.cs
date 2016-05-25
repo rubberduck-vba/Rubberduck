@@ -69,6 +69,8 @@ namespace Rubberduck.UI.SourceControl
                     Provider.Status().Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
         }
 
+        public SourceControlTab Tab { get { return SourceControlTab.Changes; } }
+
         private void Provider_BranchChanged(object sender, EventArgs e)
         {
             OnPropertyChanged("CurrentBranch");
@@ -137,7 +139,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
         }
 
@@ -169,10 +171,21 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
 
-            CommitMessage = string.Empty;
+            switch (CommitAction)
+            {
+                case CommitAction.Commit:
+                    RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitSuccess, NotificationType.Info);
+                    return;
+                case CommitAction.CommitAndPush:
+                    RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitAndPushSuccess, NotificationType.Info);
+                    return;
+                case CommitAction.CommitAndSync:
+                    RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitAndSyncSuccess, NotificationType.Info);
+                    return;
+            }
         }
 
         private void IncludeChanges(IFileStatusEntry fileStatusEntry)
@@ -221,12 +234,12 @@ namespace Rubberduck.UI.SourceControl
         }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
-        private void RaiseErrorEvent(string message, string innerMessage)
+        private void RaiseErrorEvent(string message, string innerMessage, NotificationType notificationType)
         {
             var handler = ErrorThrown;
             if (handler != null)
             {
-                handler(this, new ErrorEventArgs(message, innerMessage));
+                handler(this, new ErrorEventArgs(message, innerMessage, notificationType));
             }
         }
     }

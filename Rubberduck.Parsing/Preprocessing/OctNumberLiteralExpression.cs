@@ -14,7 +14,10 @@ namespace Rubberduck.Parsing.Preprocessing
         public override IValue Evaluate()
         {
             string literal = _tokenText.Evaluate().AsString;
-            literal = literal.Replace("&O", "").Replace("&", "");
+            literal = literal.Replace("&O", "")
+                .Replace("&", "")
+                .Replace("%", "")
+                .Replace("^", "");
             var number = (decimal)Convert.ToInt32(literal, 8);
             return new DecimalValue(number);
         }

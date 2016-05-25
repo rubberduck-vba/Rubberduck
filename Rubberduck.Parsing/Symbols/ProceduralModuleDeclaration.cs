@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.Symbols
             QualifiedMemberName qualifiedName,
             Declaration projectDeclaration,
             string name,
-                  bool isBuiltIn,
+            bool isBuiltIn,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
@@ -19,12 +19,15 @@ namespace Rubberduck.Parsing.Symbols
                   projectDeclaration,
                   projectDeclaration,
                   name,
+                  null,
                   false,
                   false,
                   Accessibility.Public,
                   DeclarationType.ProceduralModule,
                   null,
                   Selection.Home,
+                  false,
+                  null,
                   isBuiltIn,
                   annotations,
                   attributes)

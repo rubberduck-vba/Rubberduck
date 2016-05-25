@@ -4,10 +4,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Common.WinAPI;
 using Rubberduck.Settings;
+using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.Refactorings;
+using NLog;
 
 namespace Rubberduck.Common
 {
@@ -22,9 +26,12 @@ namespace Rubberduck.Common
         private IRawDevice _kb;
         private IRawDevice _mouse;
         private readonly IGeneralConfigService _config;
+        private readonly IEnumerable<ICommand> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
+        private readonly IDictionary<RubberduckHotkey, ICommand> _mappings;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckHooks(VBE vbe, IGeneralConfigService config)
+        public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<ICommand> commands)
         {
             _vbe = vbe;
             _mainWindowHandle = (IntPtr)vbe.MainWindow.HWnd;
@@ -33,8 +40,31 @@ namespace Rubberduck.Common
             _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
             _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
+            _commands = commands;
             _config = config;
+            _mappings = GetCommandMappings();
+        }
 
+        private ICommand Command<TCommand>() where TCommand : ICommand
+        {
+            return _commands.OfType<TCommand>().SingleOrDefault();
+        }
+
+        private IDictionary<RubberduckHotkey, ICommand> GetCommandMappings()
+        {
+            return new Dictionary<RubberduckHotkey, ICommand>
+            {
+                { RubberduckHotkey.ParseAll, Command<ReparseCommand>() },
+                { RubberduckHotkey.CodeExplorer, Command<CodeExplorerCommand>() },
+                { RubberduckHotkey.IndentModule, Command<IndentCurrentModuleCommand>() },
+                { RubberduckHotkey.IndentProcedure, Command<IndentCurrentProcedureCommand>() },
+                { RubberduckHotkey.FindSymbol, Command<FindSymbolCommand>() },
+                { RubberduckHotkey.RefactorMoveCloserToUsage, Command<RefactorMoveCloserToUsageCommand>() },
+                { RubberduckHotkey.InspectionResults, Command<InspectionResultsCommand>() },
+                { RubberduckHotkey.RefactorExtractMethod, Command<RefactorExtractMethodCommand>() },
+                { RubberduckHotkey.RefactorRename, Command<CodePaneRefactorRenameCommand>() },
+                { RubberduckHotkey.TestExplorer, Command<TestExplorerCommand>() }
+            };
         }
 
         public void HookHotkeys()
@@ -43,10 +73,9 @@ namespace Rubberduck.Common
             _hooks.Clear();
 
             var config = _config.LoadConfiguration();
-            var settings = config.UserSettings.GeneralSettings.HotkeySettings;
+            var settings = config.UserSettings.HotkeySettings;
 
-            _rawinput = new RawInput(_mainWindowHandle, true);
-            _rawinput.AddMessageFilter();
+            _rawinput = new RawInput(_mainWindowHandle);
 
             var kb = (RawKeyboard)_rawinput.CreateKeyboard();
             _rawinput.AddDevice(kb);
@@ -58,9 +87,13 @@ namespace Rubberduck.Common
             mouse.RawMouseInputReceived += Mouse_RawMouseInputReceived;
             _mouse = mouse;
 
-            foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
+            foreach (var hotkey in settings.Settings.Where(hotkey => hotkey.IsEnabled))
             {
-                AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), hotkey.Command));
+                RubberduckHotkey assigned;
+                if (Enum.TryParse(hotkey.Name, out assigned))
+                {
+                    AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), _mappings[assigned]));
+                }
             }
             Attach();
         }
@@ -69,7 +102,7 @@ namespace Rubberduck.Common
         {
             if (e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_LEFT_BUTTON_UP) || e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_RIGHT_BUTTON_UP))
             {
-                MessageReceived(this, HookEventArgs.Empty);
+                OnMessageReceived(this, HookEventArgs.Empty);
             }
         }
 
@@ -77,7 +110,7 @@ namespace Rubberduck.Common
         {
             if (e.Message == WM.KEYUP)
             {
-                MessageReceived(this, HookEventArgs.Empty);
+                OnMessageReceived(this, HookEventArgs.Empty);
             }
         }
 
@@ -120,7 +153,7 @@ namespace Rubberduck.Common
             }
             catch (Win32Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception);
             }
         }
 
@@ -141,7 +174,7 @@ namespace Rubberduck.Common
             }
             catch (Win32Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception);
             }
             IsAttached = false;
         }
@@ -151,12 +184,12 @@ namespace Rubberduck.Common
             var hotkey = sender as IHotkey;
             if (hotkey != null)
             {
-                Debug.WriteLine("Hotkey message received");
+                _logger.Debug("Hotkey message received");
                 hotkey.Command.Execute(null);
                 return;
             }
 
-            Debug.WriteLine("Unknown message received");
+            _logger.Debug("Unknown message received");
             OnMessageReceived(sender, e);
         }
 
@@ -190,7 +223,7 @@ namespace Rubberduck.Common
             }
             catch (Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception);
             }
 
             return IntPtr.Zero;
@@ -213,7 +246,7 @@ namespace Rubberduck.Common
             }
             catch (Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception);
             }
             return processed;
         }

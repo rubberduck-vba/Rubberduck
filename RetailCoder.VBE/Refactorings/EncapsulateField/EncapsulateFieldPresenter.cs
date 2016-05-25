@@ -12,10 +12,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class EncapsulateFieldPresenter : IEncapsulateFieldPresenter
     {
-        private readonly IEncapsulateFieldView _view;
+        private readonly IEncapsulateFieldDialog _view;
         private readonly EncapsulateFieldModel _model;
 
-        public EncapsulateFieldPresenter(IEncapsulateFieldView view, EncapsulateFieldModel model)
+        public EncapsulateFieldPresenter(IEncapsulateFieldDialog view, EncapsulateFieldModel model)
         {
             _view = view;
             _model = model;

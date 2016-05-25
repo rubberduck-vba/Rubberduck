@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class VariableTypeNotDeclaredInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_Parameter()
         {
             const string inputCode =
@@ -29,7 +30,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -38,6 +39,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_MultipleParams()
         {
             const string inputCode =
@@ -53,7 +55,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -62,6 +64,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableTypeNotDeclared_DoesNotReturnResult_Parameter()
         {
             const string inputCode =
@@ -77,7 +80,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -86,6 +89,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_SomeTypesNotDeclared_Parameters()
         {
             const string inputCode =
@@ -101,7 +105,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -110,6 +114,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_QuickFixWorks_Parameter()
         {
             const string inputCode =
@@ -131,7 +136,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
@@ -141,6 +146,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_Variable()
         {
             const string inputCode =
@@ -157,7 +163,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -166,6 +172,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_MultipleVariables()
         {
             const string inputCode =
@@ -183,7 +190,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -192,6 +199,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableTypeNotDeclared_DoesNotReturnResult_Variable()
         {
             const string inputCode =
@@ -208,7 +216,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -217,6 +225,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_SomeTypesNotDeclared_Variables()
         {
             const string inputCode =
@@ -234,7 +243,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -243,6 +252,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_QuickFixWorks_Variable()
         {
             const string inputCode =
@@ -266,7 +276,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
@@ -275,6 +285,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new VariableTypeNotDeclaredInspection(null);
@@ -282,6 +293,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "VariableTypeNotDeclaredInspection";
