@@ -70,6 +70,7 @@ namespace Rubberduck.Parsing.Symbols
             {VarEnum.VT_INT, "Long"}, // same as I4
             {VarEnum.VT_UINT, "Variant"}, // same as UI4
             {VarEnum.VT_DATE, "Date"},
+            {VarEnum.VT_CY, "Currency"},
             {VarEnum.VT_DECIMAL, "Currency"}, // best match?
             {VarEnum.VT_EMPTY, "Empty"},
             {VarEnum.VT_R4, "Single"},
@@ -89,9 +90,9 @@ namespace Rubberduck.Parsing.Symbols
                 case VarEnum.VT_USERDEFINED:
                     unchecked
                     {
-                        var href = desc.lpValue.ToInt64();
+                        var href = (int)desc.lpValue.ToInt64(); // todo: verify this also works on 32-bit
                         ITypeInfo refTypeInfo;
-                        info.GetRefTypeInfo((int)href, out refTypeInfo);
+                        info.GetRefTypeInfo(href, out refTypeInfo);
                         return GetTypeName(refTypeInfo);
                     }
                 case VarEnum.VT_CARRAY:
@@ -105,7 +106,6 @@ namespace Rubberduck.Parsing.Symbols
                     }
                     break;
             }
-
             return "UNKNOWN";
         }
 
@@ -238,7 +238,7 @@ namespace Rubberduck.Parsing.Symbols
                     var parameterCount = memberDescriptor.cParams - 1;
                     for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
                     {
-                        var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration);
+                        var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration, info);
                         if (memberDeclaration is IDeclarationWithParameter)
                         {
                             ((IDeclarationWithParameter)memberDeclaration).AddParameter(parameter);
@@ -280,7 +280,7 @@ namespace Rubberduck.Parsing.Symbols
             var asTypeName = string.Empty;
             if (memberDeclarationType != DeclarationType.Procedure && !TypeNames.TryGetValue(funcValueType, out asTypeName))
             {
-                if (funcValueType == VarEnum.VT_PTR)
+                if (funcValueType == VarEnum.VT_PTR || funcValueType == VarEnum.VT_BYREF)
                 {
                     try
                     {
@@ -289,12 +289,18 @@ namespace Rubberduck.Parsing.Symbols
                     }
                     catch
                     {
-                        asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                        if (!TypeNames.TryGetValue(funcValueType, out asTypeName))
+                        {
+                            asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                        }
                     }
                 }
                 else
                 {
-                    asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                    if (!TypeNames.TryGetValue(funcValueType, out asTypeName))
+                    {
+                        asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                    }
                 }
             }
             var attributes = new Attributes();
@@ -426,53 +432,35 @@ namespace Rubberduck.Parsing.Symbols
             info.GetNames(varDesc.memid, names, 255, out namesArrayLength);
 
             var fieldName = names[0];
-            var fieldValueType = (VarEnum)varDesc.elemdescVar.tdesc.vt;
             var memberType = GetDeclarationType(varDesc, typeDeclarationType);
 
-            string asTypeName;
-            if (!TypeNames.TryGetValue(fieldValueType, out asTypeName))
-            {
-                asTypeName = TypeNames[VarEnum.VT_VARIANT];
-            }
+            var asTypeName = GetTypeName(varDesc.elemdescVar.tdesc, info);
+
             return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName),
                 moduleDeclaration, moduleDeclaration, asTypeName, null, false, false, Accessibility.Global, memberType, null,
                 Selection.Home, false, null);
         }
 
-        private static ParameterDeclaration CreateParameterDeclaration(IReadOnlyList<string> memberNames, int paramIndex,
-            FUNCDESC memberDescriptor, QualifiedModuleName typeQualifiedModuleName, Declaration memberDeclaration)
+        private ParameterDeclaration CreateParameterDeclaration(IReadOnlyList<string> memberNames, int paramIndex,
+            FUNCDESC memberDescriptor, QualifiedModuleName typeQualifiedModuleName, Declaration memberDeclaration, ITypeInfo info)
         {
             var paramName = memberNames[paramIndex + 1];
 
             var paramPointer = new IntPtr(memberDescriptor.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof(ELEMDESC)) * paramIndex);
             var elementDesc = (ELEMDESC)Marshal.PtrToStructure(paramPointer, typeof(ELEMDESC));
             var isOptional = elementDesc.desc.paramdesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOPT);
-            var asParamTypeName = string.Empty;
 
-            var isByRef = false;
+            var isByRef = elementDesc.desc.paramdesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOUT);
             var isArray = false;
             var paramDesc = elementDesc.tdesc;
             var valueType = (VarEnum)paramDesc.vt;
-            if (valueType == VarEnum.VT_PTR || valueType == VarEnum.VT_BYREF)
-            {
-                //var paramTypeDesc = (TYPEDESC) Marshal.PtrToStructure(paramDesc.lpValue, typeof (TYPEDESC));
-                isByRef = true;
-                var paramValueType = (VarEnum)paramDesc.vt;
-                if (!TypeNames.TryGetValue(paramValueType, out asParamTypeName))
-                {
-                    asParamTypeName = TypeNames[VarEnum.VT_VARIANT];
-                }
-                //var href = paramDesc.lpValue.ToInt32();
-                //ITypeInfo refTypeInfo;
-                //info.GetRefTypeInfo(href, out refTypeInfo);
-
-                // todo: get type info?
-            }
             if (valueType == VarEnum.VT_CARRAY || valueType == VarEnum.VT_ARRAY || valueType == VarEnum.VT_SAFEARRAY)
             {
                 // todo: tell ParamArray arrays from normal arrays
                 isArray = true;
             }
+
+            var asParamTypeName = GetTypeName(paramDesc, info);
 
             return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, asParamTypeName, null, null, isOptional, isByRef, isArray);
         }
