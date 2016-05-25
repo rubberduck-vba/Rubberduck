@@ -42,8 +42,15 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
+            var oldTab = _viewModel.SelectedTab;
+            
             _viewModel.AddTab(viewModel);
             _viewModel.SelectedTab = viewModel;
+
+            if (oldTab != null)
+            {
+                oldTab.CloseCommand.Execute(null);
+            }
 
             try
             {
