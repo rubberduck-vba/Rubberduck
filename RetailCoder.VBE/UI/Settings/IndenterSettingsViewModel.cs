@@ -268,6 +268,7 @@ namespace Rubberduck.UI.Settings
 Sub ExampleProc()
 
     ' SMART INDENTER
+    ' Original VB6 code graciously offered to Rubberduck by Stephen Bullen & Rob Bovey
     '@ 2016 by Rubberduck VBA.
 
     Dim iCount As Integer
