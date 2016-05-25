@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
 
@@ -10,7 +11,8 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _project;
         private readonly Declaration _module;
         private readonly Declaration _parent;
-        private readonly VBAParser.SimpleNameExprContext _expression;
+        private readonly ParserRuleContext _context;
+        private readonly string _name;
         private readonly DeclarationType _propertySearchType;
 
         public SimpleNameDefaultBinding(
@@ -18,14 +20,16 @@ namespace Rubberduck.Parsing.Binding
             Declaration project,
             Declaration module,
             Declaration parent,
-            VBAParser.SimpleNameExprContext expression,
+            ParserRuleContext context,
+            string name,
             StatementResolutionContext statementContext)
         {
             _declarationFinder = declarationFinder;
             _project = project;
             _module = module;
             _parent = parent;
-            _expression = expression;
+            _context = context;
+            _name = name;
             _propertySearchType = StatementContext.GetSearchDeclarationType(statementContext);
         }
         
@@ -33,34 +37,33 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve()
         {
-            string name = ExpressionName.GetName(_expression.identifier());
             IBoundExpression boundExpression = null;
-            boundExpression = ResolveProcedureNamespace(name);
+            boundExpression = ResolveProcedureNamespace();
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveEnclosingModuleNamespace(name);
+            boundExpression = ResolveEnclosingModuleNamespace();
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveEnclosingProjectNamespace(name);
+            boundExpression = ResolveEnclosingProjectNamespace();
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveOtherProceduralModuleEnclosingProjectNamespace(name);
+            boundExpression = ResolveOtherProceduralModuleEnclosingProjectNamespace();
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveReferencedProjectNamespace(name);
+            boundExpression = ResolveReferencedProjectNamespace();
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveModuleReferencedProjectNamespace(name);
+            boundExpression = ResolveModuleReferencedProjectNamespace();
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -68,7 +71,7 @@ namespace Rubberduck.Parsing.Binding
             return new ResolutionFailedExpression();
         }
 
-        private IBoundExpression ResolveProcedureNamespace(string name)
+        private IBoundExpression ResolveProcedureNamespace()
         {
             /*  Namespace tier 1:
                 Procedure namespace: A local variable, reference parameter binding or constant whose implicit 
@@ -78,170 +81,170 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, name, DeclarationType.Variable);
-            if (IsValidMatch(localVariable, name))
+            var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable);
+            if (IsValidMatch(localVariable, _name))
             {
-                return new SimpleNameExpression(localVariable, ExpressionClassification.Variable, _expression);
+                return new SimpleNameExpression(localVariable, ExpressionClassification.Variable, _context);
             }
-            var parameter = _declarationFinder.FindMemberEnclosingProcedure(_parent, name, DeclarationType.Parameter);
-            if (IsValidMatch(parameter, name))
+            var parameter = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Parameter);
+            if (IsValidMatch(parameter, _name))
             {
-                return new SimpleNameExpression(parameter, ExpressionClassification.Variable, _expression);
+                return new SimpleNameExpression(parameter, ExpressionClassification.Variable, _context);
             }
-            var constant = _declarationFinder.FindMemberEnclosingProcedure(_parent, name, DeclarationType.Constant);
-            if (IsValidMatch(constant, name))
+            var constant = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Constant);
+            if (IsValidMatch(constant, _name))
             {
-                return new SimpleNameExpression(constant, ExpressionClassification.Value, _expression);
+                return new SimpleNameExpression(constant, ExpressionClassification.Value, _context);
             }
             return null;
         }
 
-        private IBoundExpression ResolveEnclosingModuleNamespace(string name)
+        private IBoundExpression ResolveEnclosingModuleNamespace()
         {
             /*  Namespace tier 2:
                 Enclosing Module namespace: A variable, constant, Enum type, Enum member, property, 
                 function or subroutine defined at the module-level in the enclosing module.
             */
-            var moduleVariable = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Variable);
-            if (IsValidMatch(moduleVariable, name))
+            var moduleVariable = _declarationFinder.FindMemberEnclosingModule(_module, _parent, _name, DeclarationType.Variable);
+            if (IsValidMatch(moduleVariable, _name))
             {
-                return new SimpleNameExpression(moduleVariable, ExpressionClassification.Variable, _expression);
+                return new SimpleNameExpression(moduleVariable, ExpressionClassification.Variable, _context);
             }
-            var moduleConstant = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Constant);
-            if (IsValidMatch(moduleConstant, name))
+            var moduleConstant = _declarationFinder.FindMemberEnclosingModule(_module, _parent, _name, DeclarationType.Constant);
+            if (IsValidMatch(moduleConstant, _name))
             {
-                return new SimpleNameExpression(moduleConstant, ExpressionClassification.Variable, _expression);
+                return new SimpleNameExpression(moduleConstant, ExpressionClassification.Variable, _context);
             }
-            var enumType = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Enumeration);
-            if (IsValidMatch(enumType, name))
+            var enumType = _declarationFinder.FindMemberEnclosingModule(_module, _parent, _name, DeclarationType.Enumeration);
+            if (IsValidMatch(enumType, _name))
             {
-                return new SimpleNameExpression(enumType, ExpressionClassification.Type, _expression);
+                return new SimpleNameExpression(enumType, ExpressionClassification.Type, _context);
             }
-            var enumMember = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.EnumerationMember);
-            if (IsValidMatch(enumMember, name))
+            var enumMember = _declarationFinder.FindMemberEnclosingModule(_module, _parent, _name, DeclarationType.EnumerationMember);
+            if (IsValidMatch(enumMember, _name))
             {
-                return new SimpleNameExpression(enumMember, ExpressionClassification.Value, _expression);
+                return new SimpleNameExpression(enumMember, ExpressionClassification.Value, _context);
             }
             // Prioritize return value assignments over any other let/set property references.
-            if (_parent.DeclarationType == DeclarationType.PropertyGet && _declarationFinder.IsMatch(_parent.IdentifierName, name))
+            if (_parent.DeclarationType == DeclarationType.PropertyGet && _declarationFinder.IsMatch(_parent.IdentifierName, _name))
             {
-                return new SimpleNameExpression(_parent, ExpressionClassification.Property, _expression);
+                return new SimpleNameExpression(_parent, ExpressionClassification.Property, _context);
             }
-            var property = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, _propertySearchType);
-            if (IsValidMatch(property, name))
+            var property = _declarationFinder.FindMemberEnclosingModule(_module, _parent, _name, _propertySearchType);
+            if (IsValidMatch(property, _name))
             {
-                return new SimpleNameExpression(property, ExpressionClassification.Property, _expression);
+                return new SimpleNameExpression(property, ExpressionClassification.Property, _context);
             }
-            var function = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Function);
-            if (IsValidMatch(function, name))
+            var function = _declarationFinder.FindMemberEnclosingModule(_module, _parent, _name, DeclarationType.Function);
+            if (IsValidMatch(function, _name))
             {
-                return new SimpleNameExpression(function, ExpressionClassification.Function, _expression);
+                return new SimpleNameExpression(function, ExpressionClassification.Function, _context);
             }
-            var subroutine = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Procedure);
-            if (IsValidMatch(subroutine, name))
+            var subroutine = _declarationFinder.FindMemberEnclosingModule(_module, _parent, _name, DeclarationType.Procedure);
+            if (IsValidMatch(subroutine, _name))
             {
-                return new SimpleNameExpression(subroutine, ExpressionClassification.Subroutine, _expression);
+                return new SimpleNameExpression(subroutine, ExpressionClassification.Subroutine, _context);
             }
             return null;
         }
 
-        private IBoundExpression ResolveEnclosingProjectNamespace(string name)
+        private IBoundExpression ResolveEnclosingProjectNamespace()
         {
             /*  Namespace tier 3:
                 Enclosing Project namespace: The enclosing project itself, a referenced project, or a 
                 procedural module contained in the enclosing project.
             */
-            if (_declarationFinder.IsMatch(_project.ProjectName, name))
+            if (_declarationFinder.IsMatch(_project.ProjectName, _name))
             {
-                return new SimpleNameExpression(_project, ExpressionClassification.Project, _expression);
+                return new SimpleNameExpression(_project, ExpressionClassification.Project, _context);
             }
-            var referencedProject = _declarationFinder.FindReferencedProject(_project, name);
+            var referencedProject = _declarationFinder.FindReferencedProject(_project, _name);
             if (referencedProject != null)
             {
-                return new SimpleNameExpression(referencedProject, ExpressionClassification.Project, _expression);
+                return new SimpleNameExpression(referencedProject, ExpressionClassification.Project, _context);
             }
-            if (_module.DeclarationType == DeclarationType.ProceduralModule && _declarationFinder.IsMatch(_module.IdentifierName, name))
+            if (_module.DeclarationType == DeclarationType.ProceduralModule && _declarationFinder.IsMatch(_module.IdentifierName, _name))
             {
-                return new SimpleNameExpression(_module, ExpressionClassification.ProceduralModule, _expression);
+                return new SimpleNameExpression(_module, ExpressionClassification.ProceduralModule, _context);
             }
-            var proceduralModuleEnclosingProject = _declarationFinder.FindModuleEnclosingProjectWithoutEnclosingModule(_project, _module, name, DeclarationType.ProceduralModule);
+            var proceduralModuleEnclosingProject = _declarationFinder.FindModuleEnclosingProjectWithoutEnclosingModule(_project, _module, _name, DeclarationType.ProceduralModule);
             if (proceduralModuleEnclosingProject != null)
             {
-                return new SimpleNameExpression(proceduralModuleEnclosingProject, ExpressionClassification.ProceduralModule, _expression);
+                return new SimpleNameExpression(proceduralModuleEnclosingProject, ExpressionClassification.ProceduralModule, _context);
             }
-            var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassEnclosingProject(_project, _module, name);
+            var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassEnclosingProject(_project, _module, _name);
             if (defaultInstanceVariableClass != null)
             {
-                return new SimpleNameExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _expression);
+                return new SimpleNameExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _context);
             }
             return null;
         }
 
-        private IBoundExpression ResolveOtherProceduralModuleEnclosingProjectNamespace(string name)
+        private IBoundExpression ResolveOtherProceduralModuleEnclosingProjectNamespace()
         {
             /*  Namespace tier 4:
                 Other Procedural Module in Enclosing Project namespace: An accessible variable, constant, 
                 Enum type, Enum member, property, function or subroutine defined in a procedural module 
                 within the enclosing project other than the enclosing module.  
             */
-            var accessibleVariable = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Variable);
-            if (IsValidMatch(accessibleVariable, name))
+            var accessibleVariable = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.Variable);
+            if (IsValidMatch(accessibleVariable, _name))
             {
-                return new SimpleNameExpression(accessibleVariable, ExpressionClassification.Variable, _expression);
+                return new SimpleNameExpression(accessibleVariable, ExpressionClassification.Variable, _context);
             }
-            var accessibleConstant = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Constant);
-            if (IsValidMatch(accessibleConstant, name))
+            var accessibleConstant = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.Constant);
+            if (IsValidMatch(accessibleConstant, _name))
             {
-                return new SimpleNameExpression(accessibleConstant, ExpressionClassification.Variable, _expression);
+                return new SimpleNameExpression(accessibleConstant, ExpressionClassification.Variable, _context);
             }
-            var accessibleType = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Enumeration);
-            if (IsValidMatch(accessibleType, name))
+            var accessibleType = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.Enumeration);
+            if (IsValidMatch(accessibleType, _name))
             {
-                return new SimpleNameExpression(accessibleType, ExpressionClassification.Type, _expression);
+                return new SimpleNameExpression(accessibleType, ExpressionClassification.Type, _context);
             }
-            var accessibleMember = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.EnumerationMember);
-            if (IsValidMatch(accessibleMember, name))
+            var accessibleMember = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.EnumerationMember);
+            if (IsValidMatch(accessibleMember, _name))
             {
-                return new SimpleNameExpression(accessibleMember, ExpressionClassification.Value, _expression);
+                return new SimpleNameExpression(accessibleMember, ExpressionClassification.Value, _context);
             }
-            var accessibleProperty = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, _propertySearchType);
-            if (IsValidMatch(accessibleProperty, name))
+            var accessibleProperty = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, _propertySearchType);
+            if (IsValidMatch(accessibleProperty, _name))
             {
-                return new SimpleNameExpression(accessibleProperty, ExpressionClassification.Property, _expression);
+                return new SimpleNameExpression(accessibleProperty, ExpressionClassification.Property, _context);
             }
-            var accessibleFunction = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Function);
-            if (IsValidMatch(accessibleFunction, name))
+            var accessibleFunction = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.Function);
+            if (IsValidMatch(accessibleFunction, _name))
             {
-                return new SimpleNameExpression(accessibleFunction, ExpressionClassification.Function, _expression);
+                return new SimpleNameExpression(accessibleFunction, ExpressionClassification.Function, _context);
             }
-            var accessibleSubroutine = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Procedure);
-            if (IsValidMatch(accessibleSubroutine, name))
+            var accessibleSubroutine = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.Procedure);
+            if (IsValidMatch(accessibleSubroutine, _name))
             {
-                return new SimpleNameExpression(accessibleSubroutine, ExpressionClassification.Subroutine, _expression);
+                return new SimpleNameExpression(accessibleSubroutine, ExpressionClassification.Subroutine, _context);
             }
             return null;
         }
 
-        private IBoundExpression ResolveReferencedProjectNamespace(string name)
+        private IBoundExpression ResolveReferencedProjectNamespace()
         {
             /*  Namespace tier 5:
                 Referenced Project namespace: An accessible procedural module contained in a referenced 
                 project.
             */
-            var accessibleModule = _declarationFinder.FindModuleReferencedProject(_project, _module, name, DeclarationType.ProceduralModule);
+            var accessibleModule = _declarationFinder.FindModuleReferencedProject(_project, _module, _name, DeclarationType.ProceduralModule);
             if (accessibleModule != null)
             {
-                return new SimpleNameExpression(accessibleModule, ExpressionClassification.ProceduralModule, _expression);
+                return new SimpleNameExpression(accessibleModule, ExpressionClassification.ProceduralModule, _context);
             }
-            var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassReferencedProject(_project, _module, name);
+            var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassReferencedProject(_project, _module, _name);
             if (defaultInstanceVariableClass != null)
             {
-                return new SimpleNameExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _expression);
+                return new SimpleNameExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _context);
             }
             return null;
         }
 
-        private IBoundExpression ResolveModuleReferencedProjectNamespace(string name)
+        private IBoundExpression ResolveModuleReferencedProjectNamespace()
         {
             /*  Namespace tier 6:
                 Module in Referenced Project namespace: An accessible variable, constant, Enum type, 
@@ -250,77 +253,77 @@ namespace Rubberduck.Parsing.Binding
             */
 
             // Part 1: Procedural module as parent
-            var accessibleVariable = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Variable);
-            if (IsValidMatch(accessibleVariable, name))
+            var accessibleVariable = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, _name, DeclarationType.Variable);
+            if (IsValidMatch(accessibleVariable, _name))
             {
-                return new SimpleNameExpression(accessibleVariable, ExpressionClassification.Variable, _expression);
+                return new SimpleNameExpression(accessibleVariable, ExpressionClassification.Variable, _context);
             }
-            var accessibleConstant = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Constant);
-            if (IsValidMatch(accessibleConstant, name))
+            var accessibleConstant = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, _name, DeclarationType.Constant);
+            if (IsValidMatch(accessibleConstant, _name))
             {
-                return new SimpleNameExpression(accessibleConstant, ExpressionClassification.Variable, _expression);
+                return new SimpleNameExpression(accessibleConstant, ExpressionClassification.Variable, _context);
             }
-            var accessibleType = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Enumeration);
-            if (IsValidMatch(accessibleType, name))
+            var accessibleType = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, _name, DeclarationType.Enumeration);
+            if (IsValidMatch(accessibleType, _name))
             {
-                return new SimpleNameExpression(accessibleType, ExpressionClassification.Type, _expression);
+                return new SimpleNameExpression(accessibleType, ExpressionClassification.Type, _context);
             }
-            var accessibleMember = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.EnumerationMember);
-            if (IsValidMatch(accessibleMember, name))
+            var accessibleMember = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, _name, DeclarationType.EnumerationMember);
+            if (IsValidMatch(accessibleMember, _name))
             {
-                return new SimpleNameExpression(accessibleMember, ExpressionClassification.Value, _expression);
+                return new SimpleNameExpression(accessibleMember, ExpressionClassification.Value, _context);
             }
-            var accessibleProperty = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, _propertySearchType);
-            if (IsValidMatch(accessibleProperty, name))
+            var accessibleProperty = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, _name, _propertySearchType);
+            if (IsValidMatch(accessibleProperty, _name))
             {
-                return new SimpleNameExpression(accessibleProperty, ExpressionClassification.Property, _expression);
+                return new SimpleNameExpression(accessibleProperty, ExpressionClassification.Property, _context);
             }
-            var accessibleFunction = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Function);
-            if (IsValidMatch(accessibleFunction, name))
+            var accessibleFunction = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, _name, DeclarationType.Function);
+            if (IsValidMatch(accessibleFunction, _name))
             {
-                return new SimpleNameExpression(accessibleFunction, ExpressionClassification.Function, _expression);
+                return new SimpleNameExpression(accessibleFunction, ExpressionClassification.Function, _context);
             }
-            var accessibleSubroutine = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Procedure);
-            if (IsValidMatch(accessibleSubroutine, name))
+            var accessibleSubroutine = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, _name, DeclarationType.Procedure);
+            if (IsValidMatch(accessibleSubroutine, _name))
             {
-                return new SimpleNameExpression(accessibleSubroutine, ExpressionClassification.Subroutine, _expression);
+                return new SimpleNameExpression(accessibleSubroutine, ExpressionClassification.Subroutine, _context);
             }
 
             // Part 2: Global class module as parent
-            var globalClassModuleVariable = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Variable);
-            if (IsValidMatch(globalClassModuleVariable, name))
+            var globalClassModuleVariable = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, _name, DeclarationType.Variable);
+            if (IsValidMatch(globalClassModuleVariable, _name))
             {
-                return new SimpleNameExpression(globalClassModuleVariable, ExpressionClassification.Variable, _expression);
+                return new SimpleNameExpression(globalClassModuleVariable, ExpressionClassification.Variable, _context);
             }
-            var globalClassModuleConstant = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Constant);
-            if (IsValidMatch(globalClassModuleConstant, name))
+            var globalClassModuleConstant = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, _name, DeclarationType.Constant);
+            if (IsValidMatch(globalClassModuleConstant, _name))
             {
-                return new SimpleNameExpression(globalClassModuleConstant, ExpressionClassification.Variable, _expression);
+                return new SimpleNameExpression(globalClassModuleConstant, ExpressionClassification.Variable, _context);
             }
-            var globalClassModuleType = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Enumeration);
-            if (IsValidMatch(globalClassModuleType, name))
+            var globalClassModuleType = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, _name, DeclarationType.Enumeration);
+            if (IsValidMatch(globalClassModuleType, _name))
             {
-                return new SimpleNameExpression(globalClassModuleType, ExpressionClassification.Type, _expression);
+                return new SimpleNameExpression(globalClassModuleType, ExpressionClassification.Type, _context);
             }
-            var globalClassModuleMember = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.EnumerationMember);
-            if (IsValidMatch(globalClassModuleMember, name))
+            var globalClassModuleMember = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, _name, DeclarationType.EnumerationMember);
+            if (IsValidMatch(globalClassModuleMember, _name))
             {
-                return new SimpleNameExpression(globalClassModuleMember, ExpressionClassification.Value, _expression);
+                return new SimpleNameExpression(globalClassModuleMember, ExpressionClassification.Value, _context);
             }
-            var globalClassModuleProperty = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, _propertySearchType);
-            if (IsValidMatch(globalClassModuleProperty, name))
+            var globalClassModuleProperty = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, _name, _propertySearchType);
+            if (IsValidMatch(globalClassModuleProperty, _name))
             {
-                return new SimpleNameExpression(globalClassModuleProperty, ExpressionClassification.Property, _expression);
+                return new SimpleNameExpression(globalClassModuleProperty, ExpressionClassification.Property, _context);
             }
-            var globalClassModuleFunction = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Function);
-            if (IsValidMatch(globalClassModuleFunction, name))
+            var globalClassModuleFunction = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, _name, DeclarationType.Function);
+            if (IsValidMatch(globalClassModuleFunction, _name))
             {
-                return new SimpleNameExpression(globalClassModuleFunction, ExpressionClassification.Function, _expression);
+                return new SimpleNameExpression(globalClassModuleFunction, ExpressionClassification.Function, _context);
             }
-            var globalClassModuleSubroutine = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Procedure);
-            if (IsValidMatch(globalClassModuleSubroutine, name))
+            var globalClassModuleSubroutine = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, _name, DeclarationType.Procedure);
+            if (IsValidMatch(globalClassModuleSubroutine, _name))
             {
-                return new SimpleNameExpression(globalClassModuleSubroutine, ExpressionClassification.Subroutine, _expression);
+                return new SimpleNameExpression(globalClassModuleSubroutine, ExpressionClassification.Subroutine, _context);
             }
             return null;
         }

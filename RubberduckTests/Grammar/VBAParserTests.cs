@@ -512,6 +512,50 @@ End Sub";
         }
 
         [TestMethod]
+        public void TestRedimStmtArray()
+        {
+            string code = @"
+Sub Test()
+    ReDim strArray(1)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//expression");
+        }
+
+        [TestMethod]
+        public void TestRedimStmtLowerBoundsArgument()
+        {
+            string code = @"
+Sub Test()
+    ReDim strArray(1 To 10)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lowerBoundArgumentExpression");
+        }
+
+        [TestMethod]
+        public void TestRedimStmtUpperBoundsArgument()
+        {
+            string code = @"
+Sub Test()
+    ReDim strArray(1 To 10)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//upperBoundArgumentExpression");
+        }
+
+        [TestMethod]
+        public void TestRedimStmtNormalArgument()
+        {
+            string code = @"
+Sub Test()
+    ReDim strArray(1 To 10)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression");
+        }
+
+        [TestMethod]
         public void TestStringFunction()
         {
             string code = @"

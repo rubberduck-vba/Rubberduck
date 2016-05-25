@@ -137,13 +137,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitModuleHeader([NotNull] VBAParser.ModuleHeaderContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.dynamicArrayDim"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDynamicArrayDim([NotNull] VBAParser.DynamicArrayDimContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>typeofexpr</c>
 	/// labeled alternative in <see cref="VBAParser.expression"/>.
 	/// </summary>
@@ -282,13 +275,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLineWidth([NotNull] VBAParser.LineWidthContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.dynamicDimSpec"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDynamicDimSpec([NotNull] VBAParser.DynamicDimSpecContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.asTypeClause"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -323,13 +309,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMemberAccessExpr([NotNull] VBAParser.MemberAccessExprContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.dynamicUpperBound"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDynamicUpperBound([NotNull] VBAParser.DynamicUpperBoundContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.eventStmt"/>.
@@ -442,6 +421,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitInputVariable([NotNull] VBAParser.InputVariableContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.lowerBoundArgumentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLowerBoundArgumentExpression([NotNull] VBAParser.LowerBoundArgumentExpressionContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.forEachStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -542,13 +528,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLExpr([NotNull] VBAParser.LExprContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.dynamicLowerBound"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDynamicLowerBound([NotNull] VBAParser.DynamicLowerBoundContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>logicalAndOp</c>
 	/// labeled alternative in <see cref="VBAParser.expression"/>.
 	/// </summary>
@@ -600,13 +579,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitElseIfBlock([NotNull] VBAParser.ElseIfBlockContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.dynamicArrayClause"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDynamicArrayClause([NotNull] VBAParser.DynamicArrayClauseContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.visibility"/>.
@@ -770,13 +742,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCaseElseClause([NotNull] VBAParser.CaseElseClauseContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.dynamicBoundsList"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDynamicBoundsList([NotNull] VBAParser.DynamicBoundsListContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>literalExpr</c>
@@ -1177,6 +1142,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTuple([NotNull] VBAParser.TupleContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.untypedIdentifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUntypedIdentifier([NotNull] VBAParser.UntypedIdentifierContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.builtInType"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1270,6 +1242,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitSingleLineElseClause([NotNull] VBAParser.SingleLineElseClauseContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.upperBoundArgumentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUpperBoundArgumentExpression([NotNull] VBAParser.UpperBoundArgumentExpressionContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.forNextStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1356,13 +1335,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitMissingPositionalArgument([NotNull] VBAParser.MissingPositionalArgumentContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.redimVariableDeclarationExpression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRedimVariableDeclarationExpression([NotNull] VBAParser.RedimVariableDeclarationExpressionContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.typeStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1397,6 +1369,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitAnnotationArg([NotNull] VBAParser.AnnotationArgContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.redimVariableDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRedimVariableDeclaration([NotNull] VBAParser.RedimVariableDeclarationContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.recordNumber"/>.
@@ -1609,6 +1588,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitUnlockStmt([NotNull] VBAParser.UnlockStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.typedIdentifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTypedIdentifier([NotNull] VBAParser.TypedIdentifierContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.booleanExpression"/>.

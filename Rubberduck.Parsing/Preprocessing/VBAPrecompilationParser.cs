@@ -3,6 +3,7 @@ using Antlr4.Runtime.Atn;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using System;
 using System.Diagnostics;
 
 namespace Rubberduck.Parsing.Preprocessing
@@ -11,7 +12,7 @@ namespace Rubberduck.Parsing.Preprocessing
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public VBAConditionalCompilationParser.CompilationUnitContext Parse(string unprocessedCode)
+        public VBAConditionalCompilationParser.CompilationUnitContext Parse(string moduleName, string unprocessedCode)
         {
             var stream = new AntlrInputStream(unprocessedCode);
             var lexer = new VBALexer(stream);
@@ -24,9 +25,9 @@ namespace Rubberduck.Parsing.Preprocessing
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
                 tree = parser.compilationUnit();
             }
-            catch
+            catch (Exception ex)
             {
-                _logger.Debug(string.Format("{0}: SLL mode failed. Retrying using LL.", GetType().Name));
+                _logger.Warn(ex, "SLL mode failed in module {0}. Retrying using LL.", moduleName);
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;

@@ -48,7 +48,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return lExpression;
             }
-            string unrestrictedName = ExpressionName.GetName(_expression.unrestrictedIdentifier());
+            string unrestrictedName = Identifier.GetName(_expression.unrestrictedIdentifier());
             boundExpression = ResolveLExpressionIsProject(lExpression, unrestrictedName);
             if (boundExpression != null)
             {

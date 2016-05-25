@@ -3,6 +3,7 @@ using Antlr4.Runtime.Atn;
 using NLog;
 using Rubberduck.Parsing.Date;
 using Rubberduck.Parsing.Symbols;
+using System;
 using System.Diagnostics;
 
 namespace Rubberduck.Parsing.VBA
@@ -29,9 +30,9 @@ namespace Rubberduck.Parsing.VBA
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
                 tree = parser.compilationUnit();
             }
-            catch
+            catch (Exception ex)
             {
-                _logger.Warn("SLL mode failed for {0}. Retrying using LL.", date);
+                _logger.Warn(ex, "SLL mode failed for {0}. Retrying using LL.", date);
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;

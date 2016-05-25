@@ -60,7 +60,7 @@ namespace Rubberduck.Parsing.VBA
 
                 var stopwatch = Stopwatch.StartNew();
                 ITokenStream stream;
-                var tree = ParseInternal(code, new IParseTreeListener[]{ commentListener, annotationListener }, out stream);
+                var tree = ParseInternal(_component.Name, code, new IParseTreeListener[]{ commentListener, annotationListener }, out stream);
                 stopwatch.Stop();
                 if (tree != null)
                 {
@@ -109,7 +109,7 @@ namespace Rubberduck.Parsing.VBA
             string processed;
             try
             {
-                processed = _preprocessor.Execute(code);
+                processed = _preprocessor.Execute(_component.Name, code);
             }
             catch (VBAPreprocessorException ex)
             {
@@ -119,9 +119,9 @@ namespace Rubberduck.Parsing.VBA
             return processed;
         }
 
-        private IParseTree ParseInternal(string code, IParseTreeListener[] listeners, out ITokenStream outStream)
+        private IParseTree ParseInternal(string moduleName, string code, IParseTreeListener[] listeners, out ITokenStream outStream)
         {
-            return _parser.Parse(code, listeners, out outStream);
+            return _parser.Parse(moduleName, code, listeners, out outStream);
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)
