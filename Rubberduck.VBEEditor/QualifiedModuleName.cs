@@ -161,8 +161,24 @@ namespace Rubberduck.VBEditor
         /// </summary>
         public string ComponentTitle {
             get {
-                return (_componentName ?? _projectName) + ((_componentDisplayName != null) && (_componentDisplayName != _projectDisplayName) 
-                    ? " (" + (_projectName == _componentName ? _projectDisplayName : _componentDisplayName) + ")" : string.Empty);
+                if (_project != null && _component == null)
+                {
+                    //handle display of Project component
+                    return _projectName + (_projectDisplayName != null ? " (" + _projectDisplayName + ")" : string.Empty);
+                }
+                else
+                {
+                    if (_componentDisplayName == _projectDisplayName) 
+                    {
+                        //handle display of main documents, like ThisWorkbook and ThisDocument
+                        return _componentName;
+                    }
+                    else
+                    {
+                        //handle display of all other components
+                        return _componentName + (_componentDisplayName != null ? " (" +  _componentDisplayName  + ")" : string.Empty);
+                    }
+                }
             } 
         }
 

@@ -318,7 +318,7 @@ namespace Rubberduck.UI.CodeInspections
             {
                 return;
             }
-            ColumnInfo[] ColumnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
+            ColumnInfo[] ColumnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
             var aResults = _results.Select(result => result.ToArray()).ToArray();
 
