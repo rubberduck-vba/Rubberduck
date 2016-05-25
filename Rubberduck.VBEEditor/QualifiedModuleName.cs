@@ -120,8 +120,10 @@ namespace Rubberduck.VBEditor
 
             _component = component;
             _componentName = oldComponentName;
+            _componentDisplayName = GetDisplayName(component);
             _project = component == null ? null : component.Collection.Parent;
             _projectName = _project == null ? string.Empty : _project.Name;
+            _projectDisplayName = GetDisplayName(_project);
             _projectPath = string.Empty;
             _projectId = GetProjectId(_project);
 
@@ -220,7 +222,6 @@ namespace Rubberduck.VBEditor
                 return _projectName + (_projectDisplayName != null ? " (" + _projectDisplayName + ")" : string.Empty);
             }
         }
-
 
         private readonly string _projectName;
 
