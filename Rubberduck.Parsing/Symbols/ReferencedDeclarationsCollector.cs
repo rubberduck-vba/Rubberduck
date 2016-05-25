@@ -278,30 +278,9 @@ namespace Rubberduck.Parsing.Symbols
             var memberDeclarationType = GetDeclarationType(memberDescriptor, funcValueType, typeKind);
 
             var asTypeName = string.Empty;
-            if (memberDeclarationType != DeclarationType.Procedure && !TypeNames.TryGetValue(funcValueType, out asTypeName))
+            if (memberDeclarationType != DeclarationType.Procedure)
             {
-                if (funcValueType == VarEnum.VT_PTR || funcValueType == VarEnum.VT_BYREF)
-                {
-                    try
-                    {
-                        var asTypeDesc = (TYPEDESC)Marshal.PtrToStructure(memberDescriptor.elemdescFunc.tdesc.lpValue, typeof(TYPEDESC));
-                        asTypeName = GetTypeName(asTypeDesc, info);
-                    }
-                    catch
-                    {
-                        if (!TypeNames.TryGetValue(funcValueType, out asTypeName))
-                        {
-                            asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
-                        }
-                    }
-                }
-                else
-                {
-                    if (!TypeNames.TryGetValue(funcValueType, out asTypeName))
-                    {
-                        asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
-                    }
-                }
+                asTypeName = GetTypeName(memberDescriptor.elemdescFunc.tdesc, info);
             }
             var attributes = new Attributes();
             if (memberName == "_NewEnum" && ((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FNONBROWSABLE))
@@ -311,7 +290,6 @@ namespace Rubberduck.Parsing.Symbols
             else if (memberDescriptor.memid == 0)
             {
                 attributes.AddDefaultMemberAttribute(memberName);
-                //Debug.WriteLine("Default member found: {0}.{1} ({2} / {3})", moduleDeclaration.IdentifierName, memberName, memberDeclarationType, (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt);
             }
             else if (((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN))
             {
