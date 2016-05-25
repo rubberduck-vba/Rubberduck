@@ -484,6 +484,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
             _projectDeclarations.Clear();
+            _state.ClearBuiltInReferences();
             foreach (var kvp in _state.ParseTrees)
             {
                 var qualifiedName = kvp.Key;

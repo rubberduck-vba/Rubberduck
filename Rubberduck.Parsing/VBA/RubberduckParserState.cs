@@ -528,8 +528,8 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                return _moduleStates.Select(
-                        item => new KeyValuePair<QualifiedModuleName, IParseTree>(item.Key, item.Value.ParseTree));
+                return _moduleStates.Where(state => state.Value.ParseTree != null)
+                                    .Select(item => new KeyValuePair<QualifiedModuleName, IParseTree>(item.Key, item.Value.ParseTree));
             }
         }
 
@@ -723,10 +723,10 @@ namespace Rubberduck.Parsing.VBA
             var projectName = reference.Name;
             var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
             ModuleState moduleState;
-            if (!_moduleStates.TryRemove(key, out moduleState))
+            if (_moduleStates.TryRemove(key, out moduleState))
             {
                 if (moduleState != null)
-            {
+                {
                     moduleState.Dispose();
                 }
 
