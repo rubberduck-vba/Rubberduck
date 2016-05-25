@@ -20,6 +20,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
+        private Declaration _target;
 
         public MoveCloserToUsageRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
@@ -45,16 +46,16 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         public void Refactor(QualifiedSelection selection)
         {
-            var target = _declarations.FindVariable(selection);
+            _target = _declarations.FindVariable(selection);
 
-            if (target == null)
+            if (_target == null)
             {
                 _messageBox.Show(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
-            MoveCloserToUsage(target);
+            MoveCloserToUsage();
         }
 
         public void Refactor(Declaration target)
@@ -68,7 +69,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 throw new ArgumentException("Invalid Argument. DeclarationType must be 'Variable'", "target");
             }
 
-            MoveCloserToUsage(target);
+            _target = target;
+            MoveCloserToUsage();
         }
 
         private bool TargetIsReferencedFromMultipleMethods(Declaration target)
@@ -78,11 +80,11 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return firstReference != null && target.References.Any(r => r.ParentScoping != firstReference.ParentScoping);
         }
 
-        private void MoveCloserToUsage(Declaration target)
+        private void MoveCloserToUsage()
         {
-            if (!target.References.Any())
+            if (!_target.References.Any())
             {
-                var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetHasNoReferences, target.IdentifierName);
+                var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetHasNoReferences, _target.IdentifierName);
 
                 _messageBox.Show(message, RubberduckUI.MoveCloserToUsage_Caption, MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
@@ -90,9 +92,9 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 return;
             }
 
-            if (TargetIsReferencedFromMultipleMethods(target))
+            if (TargetIsReferencedFromMultipleMethods(_target))
             {
-                var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetIsUsedInMultipleMethods, target.IdentifierName);
+                var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetIsUsedInMultipleMethods, _target.IdentifierName);
                 _messageBox.Show(message, RubberduckUI.MoveCloserToUsage_Caption, MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
 
@@ -100,47 +102,42 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             // it doesn't make sense to do it backwards, but we need to work from the bottom up so our selections are accurate
-            InsertDeclaration(target);
+            InsertDeclaration();
 
-            if (target.QualifiedName.QualifiedModuleName.Component !=
-                target.References.First().QualifiedModuleName.Component)
-            {
-                _state.StateChanged += (sender, e) =>
-                {
-                    if (e.State == ParserState.Ready)
-                    {
-                        foreach (var newTarget in _state.AllUserDeclarations.Where(newTarget => newTarget.ComponentName == target.ComponentName &&
-                                                                                                      newTarget.IdentifierName == target.IdentifierName &&
-                                                                                                      newTarget.ParentScope == target.ParentScope &&
-                                                                                                      newTarget.Project == target.Project &&
-                                                                                                      Equals(newTarget.Selection, target.Selection)))
-                        {
-                            UpdateCallsToOtherModule(newTarget.References);
-                            RemoveField(newTarget);
-                            break;
-                        }
-                    }
-                };
-
-                _state.OnParseRequested(this);
-            }
-            else
-            {
-                RemoveField(target);
-            }
-
+            _state.StateChanged += _state_StateChanged;
             _state.OnParseRequested(this);
         }
 
-        private void InsertDeclaration(Declaration target)
+        private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
-            var module = target.References.First().QualifiedModuleName.Component.CodeModule;
+            if (e.State != ParserState.Ready) { return; }
 
-            var firstReference = target.References.OrderBy(r => r.Selection.StartLine).First();
+            var newTarget = _state.AllUserDeclarations.FirstOrDefault(
+                    item => item.ComponentName == _target.ComponentName &&
+                                 item.IdentifierName == _target.IdentifierName &&
+                                 item.ParentScope == _target.ParentScope &&
+                                 item.Project == _target.Project &&
+                                 Equals(item.Selection, _target.Selection));
+
+            if (newTarget != null)
+            {
+                UpdateCallsToOtherModule(newTarget.References);
+                RemoveField(newTarget);
+            }
+
+            _state.StateChanged -= _state_StateChanged;
+            _state.OnParseRequested(this);
+        }
+
+        private void InsertDeclaration()
+        {
+            var module = _target.References.First().QualifiedModuleName.Component.CodeModule;
+
+            var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
             var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(firstReference);
 
             var oldLines = module.Lines[beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount];
-            var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString(target));
+            var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString());
 
             var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
 
@@ -187,9 +184,9 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return new Selection(currentLine, index, currentLine, index);
         }
 
-        private string GetDeclarationString(Declaration target)
+        private string GetDeclarationString()
         {
-            return Environment.NewLine + "    Dim " + target.IdentifierName + " As " + target.AsTypeName + Environment.NewLine;
+            return Environment.NewLine + "    Dim " + _target.IdentifierName + " As " + _target.AsTypeName + Environment.NewLine;
         }
 
         private void RemoveField(Declaration target)
@@ -276,7 +273,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
         }
 
-        private void UpdateCallsToOtherModule(IEnumerable <IdentifierReference> references)
+        private void UpdateCallsToOtherModule(IEnumerable<IdentifierReference> references)
         {
             var identifierReferences = references.ToList();
 
@@ -284,34 +281,34 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
             foreach (var reference in identifierReferences.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
             {
-                //var parent = reference.Context.Parent;
-                //while (!(parent is VBAParser.ICS_S_MembersCallContext))
-                //{
-                //    parent = parent.Parent;
-                //}
+                var parent = reference.Context.Parent;
+                while (!(parent is VBAParser.MemberAccessExprContext))
+                {
+                    parent = parent.Parent;
+                }
 
-                //var parentSelection = ((VBAParser.ICS_S_MembersCallContext)parent).GetSelection();
+                var parentSelection = ((VBAParser.MemberAccessExprContext)parent).GetSelection();
 
-                //var oldText = module.Lines[parentSelection.StartLine, parentSelection.LineCount];
-                //string newText;
+                var oldText = module.Lines[parentSelection.StartLine, parentSelection.LineCount];
+                string newText;
 
-                //if (parentSelection.LineCount == 1)
-                //{
-                //    newText = oldText.Remove(parentSelection.StartColumn - 1,
-                //        parentSelection.EndColumn - parentSelection.StartColumn);
-                //}
-                //else
-                //{
-                //    var lines = oldText.Split(new[] { " _" + Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                if (parentSelection.LineCount == 1)
+                {
+                    newText = oldText.Remove(parentSelection.StartColumn - 1,
+                        parentSelection.EndColumn - parentSelection.StartColumn);
+                }
+                else
+                {
+                    var lines = oldText.Split(new[] { " _" + Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
-                //    newText = lines.First().Remove(parentSelection.StartColumn - 1);
-                //    newText += lines.Last().Remove(0, parentSelection.EndColumn - 1);
-                //}
+                    newText = lines.First().Remove(parentSelection.StartColumn - 1);
+                    newText += lines.Last().Remove(0, parentSelection.EndColumn - 1);
+                }
 
-                //newText = newText.Insert(parentSelection.StartColumn - 1, reference.IdentifierName);
+                newText = newText.Insert(parentSelection.StartColumn - 1, reference.IdentifierName);
 
-                //module.DeleteLines(parentSelection.StartLine, parentSelection.LineCount);
-                //module.InsertLines(parentSelection.StartLine, newText);
+                module.DeleteLines(parentSelection.StartLine, parentSelection.LineCount);
+                module.InsertLines(parentSelection.StartLine, newText);
             }
         }
     }

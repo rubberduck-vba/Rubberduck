@@ -210,43 +210,43 @@ End Property";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void MoveFieldCloserToUsage_QuickFixWorks()
-        {
-            const string inputCode =
-@"Private bar As String
-Public Sub Foo()
-    bar = ""test""
-End Sub";
+//        [TestMethod]
+//        [TestCategory("Inspections")]
+//        public void MoveFieldCloserToUsage_QuickFixWorks()
+//        {
+//            const string inputCode =
+//@"Private bar As String
+//Public Sub Foo()
+//    bar = ""test""
+//End Sub";
 
-            const string expectedCode =
-@"Public Sub Foo()
+//            const string expectedCode =
+//@"Public Sub Foo()
 
-    Dim bar As String
-    bar = ""test""
-End Sub";
+//    Dim bar As String
+//    bar = ""test""
+//End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = project.VBComponents.Item(0).CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            VBComponent component;
+//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+//            var project = vbe.Object.VBProjects.Item(0);
+//            var module = project.VBComponents.Item(0).CodeModule;
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+//            parser.Parse();
+//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new MoveFieldCloserToUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+//            var inspection = new MoveFieldCloserToUsageInspection(parser.State);
+//            var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+//            inspectionResults.First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
-        }
+//            Assert.AreEqual(expectedCode, module.Lines());
+//        }
 
         [TestMethod]
         [TestCategory("Inspections")]

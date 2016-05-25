@@ -369,7 +369,6 @@
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
-    <Compile Include="Navigation\CodeExplorer\CodeExplorerErrorNodeViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
