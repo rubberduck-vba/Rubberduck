@@ -274,8 +274,10 @@ Sub ExampleProc()
     Dim iCount As Integer
     Static sName As String
 
-    If YouWantMoreExamplesAndTools Then
-        ' Visit http://rubberduckvba.com/
+    If YouLikeRubberduck Then
+        ' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
+        ' Follow us on Twitter @rubberduck-vba/contributors 
+        ' Visit http://rubberduckvba.com for news and updates
 
         Select Case X
         Case ""A""
@@ -288,7 +290,7 @@ Sub ExampleProc()
 
         Case ""Continued strings and parameters can be"" _
            & ""lined up for easier reading, optionally ignoring"" _
-           , ""any operatirs (&+, etc) at the start of the line.""
+           , ""any operators (&+, etc) at the start of the line.""
 
            Debug.Print ""X<>1""
         End Select                                'Case X
