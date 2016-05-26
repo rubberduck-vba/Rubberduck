@@ -145,18 +145,8 @@ namespace Rubberduck
             {
                 return;
             }
-            if (_config.UserSettings.GeneralSettings.DetailedLoggingEnabled)
-            {
-                // "Enable" should have been called "Add" perhaps?
-                fileRule.EnableLoggingForLevel(LogLevel.Trace);
-                fileRule.EnableLoggingForLevel(LogLevel.Debug);
-            }
-            else
-            {
-                fileRule.DisableLoggingForLevel(LogLevel.Trace);
-                fileRule.DisableLoggingForLevel(LogLevel.Debug);
-            }
-            LogManager.ReconfigExistingLoggers();
+            LogManager.EnableLogging();
+            LogLevelHelper.SetMinimumLogLevel(fileRule, LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
         }
 
         public void Startup()
