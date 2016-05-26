@@ -40,7 +40,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return lExpression;
             }
-            string name = ExpressionName.GetName(_expression.unrestrictedIdentifier());
+            string name = Identifier.GetName(_expression.unrestrictedIdentifier());
             if (lExpression.Classification != ExpressionClassification.ProceduralModule)
             {
                 return null;

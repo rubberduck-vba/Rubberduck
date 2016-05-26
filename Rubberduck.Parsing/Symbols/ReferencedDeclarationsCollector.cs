@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Vbe.Interop;
@@ -70,11 +71,15 @@ namespace Rubberduck.Parsing.Symbols
             {VarEnum.VT_INT, "Long"}, // same as I4
             {VarEnum.VT_UINT, "Variant"}, // same as UI4
             {VarEnum.VT_DATE, "Date"},
+            {VarEnum.VT_CY, "Currency"},
             {VarEnum.VT_DECIMAL, "Currency"}, // best match?
             {VarEnum.VT_EMPTY, "Empty"},
             {VarEnum.VT_R4, "Single"},
             {VarEnum.VT_R8, "Double"},
         };
+
+        [DllImport("kernel32.dll")]
+        public static extern bool IsBadReadPtr(IntPtr lp, uint ucb);
 
         private string GetTypeName(TYPEDESC desc, ITypeInfo info)
         {
@@ -84,15 +89,28 @@ namespace Rubberduck.Parsing.Symbols
             switch (vt)
             {
                 case VarEnum.VT_PTR:
+                    if (IsBadReadPtr(desc.lpValue, (uint) IntPtr.Size))
+                    {
+                        Debug.WriteLine("Bad read pointer; returning fallback 'Object' type name.");
+                        return "Object";
+                    }
                     tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
                     return GetTypeName(tdesc, info);
                 case VarEnum.VT_USERDEFINED:
+                    int href;
                     unchecked
                     {
-                        var href = desc.lpValue.ToInt64();
+                        href = (int)(desc.lpValue.ToInt64() & 0xFFFFFFFF);
+                    }
+                    try
+                    {
                         ITypeInfo refTypeInfo;
-                        info.GetRefTypeInfo((int)href, out refTypeInfo);
+                        info.GetRefTypeInfo(href, out refTypeInfo);
                         return GetTypeName(refTypeInfo);
+                    }
+                    catch (Exception)
+                    {
+                        return "Object";
                     }
                 case VarEnum.VT_CARRAY:
                     tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
@@ -105,8 +123,7 @@ namespace Rubberduck.Parsing.Symbols
                     }
                     break;
             }
-
-            return "UNKNOWN";
+            return "Object";
         }
 
         private string GetTypeName(ITypeInfo info)
@@ -183,39 +200,39 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 Declaration moduleDeclaration;
-                if (typeDeclarationType == DeclarationType.ProceduralModule)
+                switch (typeDeclarationType)
                 {
-                    moduleDeclaration = new ProceduralModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
-                }
-                else if (typeDeclarationType == DeclarationType.ClassModule)
-                {
-                    var module = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes, isExposed: true, isGlobalClassModule: true);
-                    var implements = GetImplementedInterfaceNames(typeAttributes, info);
-                    foreach (var supertypeName in implements)
-                    {
-                        module.AddSupertype(supertypeName);
-                    }
-                    moduleDeclaration = module;
-                }
-                else
-                {
-                    moduleDeclaration = new Declaration(
-                        typeQualifiedMemberName, 
-                        projectDeclaration, 
-                        projectDeclaration, 
-                        typeName,
-                        null,
-                        false, 
-                        false, 
-                        Accessibility.Global,
-                        typeDeclarationType,
-                        null, 
-                        Selection.Home,
-                        false,
-                        null,
-                        true, 
-                        null, 
-                        attributes);
+                    case DeclarationType.ProceduralModule:
+                        moduleDeclaration = new ProceduralModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                        break;
+                    case DeclarationType.ClassModule:
+                        var module = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                        var implements = GetImplementedInterfaceNames(typeAttributes, info);
+                        foreach (var supertypeName in implements)
+                        {
+                            module.AddSupertype(supertypeName);
+                        }
+                        moduleDeclaration = module;
+                        break;
+                    default:
+                        moduleDeclaration = new Declaration(
+                            typeQualifiedMemberName, 
+                            projectDeclaration, 
+                            projectDeclaration, 
+                            typeName,
+                            null,
+                            false, 
+                            false, 
+                            Accessibility.Global,
+                            typeDeclarationType,
+                            null, 
+                            Selection.Home,
+                            false,
+                            null,
+                            true, 
+                            null, 
+                            attributes);
+                        break;
                 }
 
                 yield return moduleDeclaration;
@@ -238,7 +255,7 @@ namespace Rubberduck.Parsing.Symbols
                     var parameterCount = memberDescriptor.cParams - 1;
                     for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
                     {
-                        var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration);
+                        var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration, info);
                         if (memberDeclaration is IDeclarationWithParameter)
                         {
                             ((IDeclarationWithParameter)memberDeclaration).AddParameter(parameter);
@@ -278,24 +295,9 @@ namespace Rubberduck.Parsing.Symbols
             var memberDeclarationType = GetDeclarationType(memberDescriptor, funcValueType, typeKind);
 
             var asTypeName = string.Empty;
-            if (memberDeclarationType != DeclarationType.Procedure && !TypeNames.TryGetValue(funcValueType, out asTypeName))
+            if (memberDeclarationType != DeclarationType.Procedure)
             {
-                if (funcValueType == VarEnum.VT_PTR)
-                {
-                    try
-                    {
-                        var asTypeDesc = (TYPEDESC)Marshal.PtrToStructure(memberDescriptor.elemdescFunc.tdesc.lpValue, typeof(TYPEDESC));
-                        asTypeName = GetTypeName(asTypeDesc, info);
-                    }
-                    catch
-                    {
-                        asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
-                    }
-                }
-                else
-                {
-                    asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
-                }
+                asTypeName = GetTypeName(memberDescriptor.elemdescFunc.tdesc, info);
             }
             var attributes = new Attributes();
             if (memberName == "_NewEnum" && ((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FNONBROWSABLE))
@@ -305,110 +307,100 @@ namespace Rubberduck.Parsing.Symbols
             else if (memberDescriptor.memid == 0)
             {
                 attributes.AddDefaultMemberAttribute(memberName);
-                //Debug.WriteLine("Default member found: {0}.{1} ({2} / {3})", moduleDeclaration.IdentifierName, memberName, memberDeclarationType, (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt);
             }
             else if (((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN))
             {
                 attributes.AddHiddenMemberAttribute(memberName);
             }
 
-            if (memberDeclarationType == DeclarationType.Procedure)
+            switch (memberDeclarationType)
             {
-                return new SubroutineDeclaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    Accessibility.Global,
-                    null,
-                    Selection.Home,
-                    true,
-                    null,
-                    attributes);
-            }
-            else if (memberDeclarationType == DeclarationType.Function)
-            {
-                return new FunctionDeclaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    null,
-                    null,
-                    Accessibility.Global,
-                    null,
-                    Selection.Home,
-                    // TODO: how to find out if it's an array?
-                    false,
-                    true,
-                    null,
-                    attributes);
-            }
-            else if (memberDeclarationType == DeclarationType.PropertyGet)
-            {
-                return new PropertyGetDeclaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    null,
-                    null,
-                    Accessibility.Global,
-                    null,
-                    Selection.Home,
-                    // TODO: how to find out if it's an array?
-                    false,
-                    true,
-                    null,
-                    attributes);
-            }
-            else if (memberDeclarationType == DeclarationType.PropertySet)
-            {
-                return new PropertySetDeclaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    Accessibility.Global,
-                    null,
-                    Selection.Home,
-                    true,
-                    null,
-                    attributes);
-            }
-            else if (memberDeclarationType == DeclarationType.PropertyLet)
-            {
-                return new PropertyLetDeclaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    Accessibility.Global,
-                    null,
-                    Selection.Home,
-                    true,
-                    null,
-                    attributes);
-            }
-            else
-            {
-                return new Declaration(
-                    new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                    moduleDeclaration,
-                    moduleDeclaration,
-                    asTypeName,
-                    null,
-                    false,
-                    false,
-                    Accessibility.Global,
-                    memberDeclarationType,
-                    null,
-                    Selection.Home,
-                    false,
-                    null,
-                    true,
-                    null,
-                    attributes);
+                case DeclarationType.Procedure:
+                    return new SubroutineDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.Function:
+                    return new FunctionDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        null,
+                        null,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        // TODO: how to find out if it's an array?
+                        false,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.PropertyGet:
+                    return new PropertyGetDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        null,
+                        null,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        // TODO: how to find out if it's an array?
+                        false,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.PropertySet:
+                    return new PropertySetDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.PropertyLet:
+                    return new PropertyLetDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        true,
+                        null,
+                        attributes);
+                default:
+                    return new Declaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName,
+                        null,
+                        false,
+                        false,
+                        Accessibility.Global,
+                        memberDeclarationType,
+                        null,
+                        Selection.Home,
+                        false,
+                        null,
+                        true,
+                        null,
+                        attributes);
             }
         }
 
@@ -426,53 +418,35 @@ namespace Rubberduck.Parsing.Symbols
             info.GetNames(varDesc.memid, names, 255, out namesArrayLength);
 
             var fieldName = names[0];
-            var fieldValueType = (VarEnum)varDesc.elemdescVar.tdesc.vt;
             var memberType = GetDeclarationType(varDesc, typeDeclarationType);
 
-            string asTypeName;
-            if (!TypeNames.TryGetValue(fieldValueType, out asTypeName))
-            {
-                asTypeName = TypeNames[VarEnum.VT_VARIANT];
-            }
+            var asTypeName = GetTypeName(varDesc.elemdescVar.tdesc, info);
+
             return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName),
                 moduleDeclaration, moduleDeclaration, asTypeName, null, false, false, Accessibility.Global, memberType, null,
                 Selection.Home, false, null);
         }
 
-        private static ParameterDeclaration CreateParameterDeclaration(IReadOnlyList<string> memberNames, int paramIndex,
-            FUNCDESC memberDescriptor, QualifiedModuleName typeQualifiedModuleName, Declaration memberDeclaration)
+        private ParameterDeclaration CreateParameterDeclaration(IReadOnlyList<string> memberNames, int paramIndex,
+            FUNCDESC memberDescriptor, QualifiedModuleName typeQualifiedModuleName, Declaration memberDeclaration, ITypeInfo info)
         {
             var paramName = memberNames[paramIndex + 1];
 
             var paramPointer = new IntPtr(memberDescriptor.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof(ELEMDESC)) * paramIndex);
             var elementDesc = (ELEMDESC)Marshal.PtrToStructure(paramPointer, typeof(ELEMDESC));
             var isOptional = elementDesc.desc.paramdesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOPT);
-            var asParamTypeName = string.Empty;
 
-            var isByRef = false;
+            var isByRef = elementDesc.desc.paramdesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOUT);
             var isArray = false;
             var paramDesc = elementDesc.tdesc;
             var valueType = (VarEnum)paramDesc.vt;
-            if (valueType == VarEnum.VT_PTR || valueType == VarEnum.VT_BYREF)
-            {
-                //var paramTypeDesc = (TYPEDESC) Marshal.PtrToStructure(paramDesc.lpValue, typeof (TYPEDESC));
-                isByRef = true;
-                var paramValueType = (VarEnum)paramDesc.vt;
-                if (!TypeNames.TryGetValue(paramValueType, out asParamTypeName))
-                {
-                    asParamTypeName = TypeNames[VarEnum.VT_VARIANT];
-                }
-                //var href = paramDesc.lpValue.ToInt32();
-                //ITypeInfo refTypeInfo;
-                //info.GetRefTypeInfo(href, out refTypeInfo);
-
-                // todo: get type info?
-            }
             if (valueType == VarEnum.VT_CARRAY || valueType == VarEnum.VT_ARRAY || valueType == VarEnum.VT_SAFEARRAY)
             {
                 // todo: tell ParamArray arrays from normal arrays
                 isArray = true;
             }
+
+            var asParamTypeName = GetTypeName(paramDesc, info);
 
             return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, asParamTypeName, null, null, isOptional, isByRef, isArray);
         }

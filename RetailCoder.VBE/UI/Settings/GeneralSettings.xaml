@@ -69,12 +69,6 @@
     <Grid>
         <ScrollViewer>
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
                 <StackPanel Grid.Row="0" Margin="5,5,5,0">
                     <Label DockPanel.Dock="Top"
                    Background="DarkGray"
@@ -134,11 +128,10 @@
                           IsChecked="{Binding DetailedLoggingEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           HorizontalAlignment="Left" />
                     </StackPanel>
-                </StackPanel>
 
-                <Label Grid.Row="1" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
 
-                <DataGrid Grid.Row="2" ItemsSource="{Binding Hotkeys}"
+                <DataGrid ItemsSource="{Binding Hotkeys}"
                       HorizontalAlignment="Stretch"
                       AutoGenerateColumns="False"
                       CanUserDeleteRows="False"
@@ -154,6 +147,7 @@
                       HorizontalScrollBarVisibility="Hidden"
                       ItemContainerStyle="{StaticResource PrettifyRow}"
                       ColumnHeaderHeight="22"
+                      Height="100"
                       BorderThickness="0">
                     <DataGrid.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}">
@@ -206,7 +200,8 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
-                </DataGrid>
+                    </DataGrid>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>

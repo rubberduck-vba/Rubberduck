@@ -116,7 +116,7 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.SimpleNameExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            return new SimpleNameDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, statementContext);
+            return new SimpleNameDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, Identifier.GetName(expression.identifier()), statementContext);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.MemberAccessExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)

@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -115,7 +116,7 @@ namespace Rubberduck.Inspections
 
         private void UpdateCalls()
         {
-            var procedureName = _subStmtQualifiedContext.Context.subroutineName().identifier().identifierValue().GetText();
+            var procedureName = Identifier.GetName(_subStmtQualifiedContext.Context.subroutineName().identifier());
 
             var procedure =
                 _state.AllDeclarations.SingleOrDefault(d =>

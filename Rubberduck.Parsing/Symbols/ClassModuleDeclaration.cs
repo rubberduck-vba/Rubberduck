@@ -8,9 +8,6 @@ namespace Rubberduck.Parsing.Symbols
 {
     public sealed class ClassModuleDeclaration : Declaration
     {
-        private readonly bool _isExposed;
-        private readonly bool _isGlobalClassModule;
-        private readonly bool _hasDefaultInstanceVariable;
         private readonly List<string> _supertypeNames;
         private readonly HashSet<Declaration> _supertypes;
         private readonly HashSet<Declaration> _subtypes;
@@ -21,10 +18,7 @@ namespace Rubberduck.Parsing.Symbols
                   string name,
                   bool isBuiltIn,
                   IEnumerable<IAnnotation> annotations,
-                  Attributes attributes,
-                  bool isExposed = false,
-                  bool isGlobalClassModule = false,
-                  bool hasDefaultInstanceVariable = false)
+                  Attributes attributes, bool hasDefaultInstanceVariable = false)
             : base(
                   qualifiedName,
                   projectDeclaration,
@@ -43,9 +37,10 @@ namespace Rubberduck.Parsing.Symbols
                   annotations,
                   attributes)
         {
-            _isExposed = isExposed;
-            _isGlobalClassModule = isGlobalClassModule;
-            _hasDefaultInstanceVariable = hasDefaultInstanceVariable;
+            if (hasDefaultInstanceVariable)
+            {
+                _hasPredeclaredId = true;
+            }
             _supertypeNames = new List<string>();
             _supertypes = new HashSet<Declaration>();
             _subtypes = new HashSet<Declaration>();
@@ -60,6 +55,8 @@ namespace Rubberduck.Parsing.Symbols
             return ((ClassModuleDeclaration)type).Supertypes;
         }
 
+
+        private bool? _isExposed;
         /// <summary>
         /// Gets an attribute value indicating whether a class is exposed to other projects.
         /// If this value is false, any public types and members cannot be accessed from outside the project they're declared in.
@@ -68,30 +65,44 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                bool attributeIsExposed = false;
+                if (_isExposed.HasValue)
+                {
+                    return _isExposed.Value;
+                }
+
+                var attributeIsExposed = false;
                 IEnumerable<string> value;
                 if (Attributes.TryGetValue("VB_Exposed", out value))
                 {
                     attributeIsExposed = value.Single() == "True";
                 }
-                return _isExposed || attributeIsExposed;
+                _isExposed = attributeIsExposed;
+                return _isExposed.Value;
             }
         }
 
+        private bool? _isGlobal;
         public bool IsGlobalClassModule
         {
             get
             {
-                bool attributeIsGlobalClassModule = false;
+                if (_isGlobal.HasValue)
+                {
+                    return _isGlobal.Value;
+                }
+
+                var attributeIsGlobalClassModule = false;
                 IEnumerable<string> value;
                 if (Attributes.TryGetValue("VB_GlobalNamespace", out value))
                 {
                     attributeIsGlobalClassModule = value.Single() == "True";
                 }
-                return _isGlobalClassModule || attributeIsGlobalClassModule;
+                _isGlobal = attributeIsGlobalClassModule;
+                return _isGlobal.Value;
             }
         }
 
+        private bool? _hasPredeclaredId;
         /// <summary>
         /// Gets an attribute value indicating whether a class has a predeclared ID.
         /// Such classes can be treated as "static classes", or as far as resolving is concerned, as standard modules.
@@ -100,13 +111,19 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                bool attributeHasDefaultInstanceVariable = false;
+                if (_hasPredeclaredId.HasValue)
+                {
+                    return _hasPredeclaredId.Value;
+                }
+
+                var attributeHasDefaultInstanceVariable = false;
                 IEnumerable<string> value;
                 if (Attributes.TryGetValue("VB_PredeclaredId", out value))
                 {
                     attributeHasDefaultInstanceVariable = value.Single() == "True";
                 }
-                return _hasDefaultInstanceVariable || attributeHasDefaultInstanceVariable;
+                _hasPredeclaredId = attributeHasDefaultInstanceVariable;
+                return _hasPredeclaredId.Value;
             }
         }
 

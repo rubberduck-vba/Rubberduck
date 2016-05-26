@@ -178,13 +178,16 @@
             </StackPanel>
         </ScrollViewer>
 
-        <TextBlock Grid.Row="1"
-                   Background="White"
-                   Height="100"
-                   xml:space="preserve"
-                   Margin="5,0"
-                   FontFamily="Consolas"
-                   VerticalAlignment="Bottom"
-                   Text="{Binding PreviewSampleCode}"/>
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto">
+            <TextBlock Background="White"
+                       xml:space="preserve"
+                       Margin="5,0"
+                       FontFamily="Consolas"
+                       VerticalAlignment="Top"
+                       Text="{Binding PreviewSampleCode}"
+                       ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+        </ScrollViewer>
     </Grid>
 </UserControl>

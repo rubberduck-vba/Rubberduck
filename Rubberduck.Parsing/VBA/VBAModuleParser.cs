@@ -4,6 +4,7 @@ using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using System;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -11,9 +12,9 @@ namespace Rubberduck.Parsing.VBA
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public IParseTree Parse(string module, IParseTreeListener[] listeners, out ITokenStream outStream)
+        public IParseTree Parse(string moduleName, string moduleCode, IParseTreeListener[] listeners, out ITokenStream outStream)
         {
-            var stream = new AntlrInputStream(module);
+            var stream = new AntlrInputStream(moduleCode);
             var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
@@ -28,9 +29,9 @@ namespace Rubberduck.Parsing.VBA
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
                 tree = parser.startRule();
             }
-            catch
+            catch (Exception ex)
             {
-                _logger.Warn("SLL mode failed. Retrying using LL.");
+                _logger.Warn(ex, "SLL mode failed in module {0}. Retrying using LL.", moduleName);
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;

@@ -29,7 +29,7 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve()
         {
-            string name = ExpressionName.GetName(_expression.identifier());
+            string name = Identifier.GetName(_expression.identifier());
             if (PreferProjectOverUdt)
             {
                 return ResolvePreferProject(name);

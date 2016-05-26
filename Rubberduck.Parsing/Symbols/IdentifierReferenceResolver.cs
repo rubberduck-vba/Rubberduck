@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
@@ -143,11 +142,11 @@ namespace Rubberduck.Parsing.Symbols
                 statementContext);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                 _logger.Trace(
-                    string.Format(
-                        "{0}/Default Context: Failed to resolve {1}. Binding all successfully resolved expressions anyway.",
-                        GetType().Name,
-                        expression.GetText()));
+                _logger.Trace(
+                   string.Format(
+                       "{0}/Default Context: Failed to resolve {1}. Binding all successfully resolved expressions anyway.",
+                       GetType().Name,
+                       expression.GetText()));
             }
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget, false);
         }
@@ -157,11 +156,11 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                 _logger.Trace(
-                    string.Format(
-                        "{0}/Type Context: Failed to resolve {1}. Binding all successfully resolved expressions anyway.",
-                        GetType().Name,
-                        expression.GetText()));
+                _logger.Trace(
+                   string.Format(
+                       "{0}/Type Context: Failed to resolve {1}. Binding all successfully resolved expressions anyway.",
+                       GetType().Name,
+                       expression.GetText()));
             }
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
         }
@@ -196,17 +195,43 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.RedimStmtContext context)
         {
-            foreach (var redimVariableExpression in context.redimDeclarationList().redimVariableDeclarationExpression())
+            // TODO: Create local variable if no match for redim variable declaration.
+            foreach (var redimVariableDeclaration in context.redimDeclarationList().redimVariableDeclaration())
             {
-                ResolveDefault(redimVariableExpression.lExpression());
-                foreach (var dimSpec in redimVariableExpression.dynamicArrayClause().dynamicArrayDim().dynamicBoundsList().dynamicDimSpec())
+                // We treat redim statements as index expressions to make it SLL.
+                var lExpr = ((VBAParser.LExprContext)redimVariableDeclaration.expression()).lExpression();
+                var indexExpr = (VBAParser.IndexExprContext)lExpr;
+                // The lexpression is the array that is being resized.
+                // We can't treat it as a normal index expression because the semantics are different.
+                // It's not actually a function call but a special statement.
+                ResolveDefault(indexExpr.lExpression());
+                var positionalOrNamedArgumentList = indexExpr.argumentList().positionalOrNamedArgumentList();
+                // There is always at least one argument
+                ResolveRedimArgument(positionalOrNamedArgumentList.requiredPositionalArgument().argumentExpression());
+                if (positionalOrNamedArgumentList.positionalArgumentOrMissing() != null)
                 {
-                    if (dimSpec.dynamicLowerBound() != null)
+                    foreach (var positionalArgumentOrMissing in positionalOrNamedArgumentList.positionalArgumentOrMissing())
                     {
-                        ResolveDefault(dimSpec.dynamicLowerBound().integerExpression());
+                        if (positionalArgumentOrMissing is VBAParser.SpecifiedPositionalArgumentContext)
+                        {
+                            ResolveRedimArgument(((VBAParser.SpecifiedPositionalArgumentContext)positionalArgumentOrMissing).positionalArgument().argumentExpression());
+                        }
                     }
-                    ResolveDefault(dimSpec.dynamicUpperBound().integerExpression());
                 }
+            }
+        }
+
+        private void ResolveRedimArgument(VBAParser.ArgumentExpressionContext argument)
+        {
+            // Redim statements can either have "normal" positional argument expressions or lower + upper bounds arguments.
+            if (argument.lowerBoundArgumentExpression() != null)
+            {
+                ResolveDefault(argument.lowerBoundArgumentExpression().expression());
+                ResolveDefault(argument.upperBoundArgumentExpression().expression());
+            }
+            else
+            {
+                ResolveDefault(argument.expression());
             }
         }
 
@@ -620,7 +645,7 @@ namespace Rubberduck.Parsing.Symbols
             if (eventDeclaration != null)
             {
                 var callSiteContext = context.identifier();
-                var identifier = context.identifier().identifierValue().GetText();
+                var identifier = Identifier.GetName(context.identifier());
                 var callee = eventDeclaration;
                 callee.AddReference(
                     _qualifiedModuleName,
