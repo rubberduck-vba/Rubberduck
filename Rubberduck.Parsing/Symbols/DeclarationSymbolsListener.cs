@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
+using Microsoft.Vbe.Interop.Forms;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
@@ -8,9 +9,6 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime.Misc;
-using Microsoft.Vbe.Interop.Forms;
-using Rubberduck.Parsing.Binding;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -458,13 +456,13 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-            var name = identifier.identifierValue().GetText();
+            var name = Identifier.GetName(identifier);
 
             var asTypeClause = context.asTypeClause();
             var asTypeName = asTypeClause == null
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
-            var typeHint = identifier.typeHint() != null ? identifier.typeHint().GetText() : null;
+            var typeHint = Identifier.GetTypeHintValue(identifier);
             var isArray = asTypeClause != null && asTypeClause.type().LPAREN() != null;
             var declaration = CreateDeclaration(
                 name, 
@@ -489,12 +487,12 @@ namespace Rubberduck.Parsing.Symbols
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
             var identifier = context.functionName().identifier();
-            var name = identifier.identifierValue().GetText();
+            var name = Identifier.GetName(identifier);
             var asTypeClause = context.asTypeClause();
             var asTypeName = asTypeClause == null
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
-            var typeHint = identifier.typeHint() != null ? identifier.typeHint().GetText() : null;
+            var typeHint = Identifier.GetTypeHintValue(identifier);
             var isArray = asTypeClause != null && asTypeClause.type().LPAREN() != null;
             var declaration = CreateDeclaration(
                 name, 
@@ -524,7 +522,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-            var name = identifier.identifier().identifierValue().GetText();
+            var name = Identifier.GetName(identifier.identifier());
             var declaration = CreateDeclaration(
                 name, 
                 null, 
@@ -552,7 +550,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-            var name = identifier.identifier().identifierValue().GetText();
+            var name = Identifier.GetName(identifier.identifier());
 
             var declaration = CreateDeclaration(
                 name, 
@@ -582,7 +580,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-            var name = identifier.identifierValue().GetText();
+            var name = Identifier.GetName(identifier);
 
             var declaration = CreateDeclaration(
                 name, 
@@ -607,13 +605,13 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterDeclareStmt(VBAParser.DeclareStmtContext context)
         {
             var accessibility = GetMemberAccessibility(context.visibility());
-            var nameContext = context.identifier();
-            if (nameContext == null)
+            var identifier = context.identifier();
+            if (identifier == null)
             {
                 return;
             }
-            var name = nameContext.GetText();
-            var typeHint = nameContext.typeHint() != null ? nameContext.typeHint().GetText() : null;
+            var name = Identifier.GetName(identifier);
+            var typeHint = Identifier.GetTypeHintValue(identifier);
 
             var hasReturnType = context.FUNCTION() != null;
 
@@ -623,7 +621,7 @@ namespace Rubberduck.Parsing.Symbols
                                     ? Tokens.Variant
                                     : asTypeClause.type().GetText()
                                 : null;
-            var selection = nameContext.GetSelection();
+            var selection = identifier.GetSelection();
 
             var declarationType = hasReturnType
                 ? DeclarationType.LibraryFunction
@@ -659,11 +657,11 @@ namespace Rubberduck.Parsing.Symbols
                     ? Tokens.Variant
                     : asTypeClause.type().GetText();
                 var identifier = argContext.unrestrictedIdentifier();
-                string typeHint = identifier.identifier() != null && identifier.identifier().typeHint() != null ? identifier.identifier().typeHint().GetText() : null;
+                string typeHint = Identifier.GetTypeHintValue(identifier);
                 bool isArray = argContext.LPAREN() != null;
                 OnNewDeclaration(
                     CreateDeclaration(
-                        ExpressionName.GetName(identifier),
+                        Identifier.GetName(identifier),
                         asTypeName,
                         Accessibility.Implicit, 
                         DeclarationType.Parameter, 
@@ -699,8 +697,8 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-            var name = identifier.identifierValue().GetText();
-            var typeHint = identifier.typeHint() != null ? identifier.typeHint().GetText() : null;
+            var name = Identifier.GetName(identifier);
+            var typeHint = Identifier.GetTypeHintValue(identifier);
             var asTypeClause = context.asTypeClause();
             var asTypeName = asTypeClause == null
                 ? Tokens.Variant
@@ -733,8 +731,8 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
             var identifier = context.identifier();
-            var typeHint = identifier.typeHint() != null ? identifier.typeHint().GetText() : null;
-            var name = identifier.identifierValue().GetText();
+            var typeHint = Identifier.GetTypeHintValue(identifier);
+            var name = Identifier.GetName(identifier);
             var value = context.expression().GetText();
             var declaration = new ConstantDeclaration(
                 new QualifiedMemberName(_qualifiedName, name), 
@@ -760,7 +758,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-            var name = identifier.identifierValue().GetText();
+            var name = Identifier.GetName(identifier);
             var declaration = CreateDeclaration(
                 name, 
                 null,
@@ -787,7 +785,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
             bool isArray = context.LPAREN() != null;
-            string typeHint = context.identifier().typeHint() != null ? context.identifier().typeHint().GetText() : null;
+            string typeHint = Identifier.GetTypeHintValue(context.identifier());
             OnNewDeclaration(
                 CreateDeclaration(
                     context.identifier().GetText(), 
@@ -809,7 +807,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-            var name = identifier.identifierValue().GetText();
+            var name = Identifier.GetName(identifier);
 
             var declaration = CreateDeclaration(
                 name, 

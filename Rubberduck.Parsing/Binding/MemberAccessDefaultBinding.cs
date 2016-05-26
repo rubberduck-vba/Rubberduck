@@ -33,7 +33,7 @@ namespace Rubberduck.Parsing.Binding
                   parent,
                   expression,
                   null,
-                  ExpressionName.GetName(expression.unrestrictedIdentifier()),
+                  Identifier.GetName(expression.unrestrictedIdentifier()),
                   statementContext,
                   unrestrictedNameContext)
         {

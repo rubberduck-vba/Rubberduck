@@ -114,7 +114,12 @@
     <Compile Include="Binding\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
-    <Compile Include="Binding\ExpressionName.cs" />
+    <Compile Include="Grammar\VBAParser.cs" />
+    <Compile Include="Grammar\VBAParserBaseListener.cs" />
+    <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
+    <Compile Include="Grammar\VBAParserListener.cs" />
+    <Compile Include="Grammar\VBAParserVisitor.cs" />
+    <Compile Include="Symbols\Identifier.cs" />
     <Compile Include="Binding\IBindingContext.cs" />
     <Compile Include="Binding\IBoundExpression.cs" />
     <Compile Include="Binding\IExpressionBinding.cs" />
@@ -124,11 +129,6 @@
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
-    <Compile Include="Grammar\VBAParser.cs" />
-    <Compile Include="Grammar\VBAParserBaseListener.cs" />
-    <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
-    <Compile Include="Grammar\VBAParserListener.cs" />
-    <Compile Include="Grammar\VBAParserVisitor.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
     <Compile Include="ParsingText.Designer.cs">
