@@ -1,5 +1,7 @@
 using System;
 using Microsoft.Vbe.Interop;
+using System.IO;
+using System.Linq;
 
 namespace Rubberduck.VBEditor
 {
@@ -8,6 +10,51 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
+
+        public static string GetDisplayName(VBProject project)
+        {
+            try
+            {
+                return Path.GetFileName(project.FileName);
+            }
+            catch 
+            {
+                //the file hasn't been saved yet
+            }
+            
+            try
+            {
+                //Don't need to check protection, as a protected project is saved, by definition
+                return project.VBComponents.Cast<VBComponent>()
+                    .Where(component => component.Type == vbext_ComponentType.vbext_ct_Document
+                    && component.Properties.Count > 1)
+                    .SelectMany(component => component.Properties.OfType<Property>())
+                    .FirstOrDefault(property => property.Name == "Name").Value.ToString();
+                }
+            catch 
+            { 
+              return null;
+            }
+        }
+
+        public static string GetDisplayName(VBComponent component)
+        {
+            if (component.Type == vbext_ComponentType.vbext_ct_Document)
+            {
+                try
+                {
+                    return component.Properties.Item("Name").Value.ToString();
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            else {
+                return null;
+            }
+        }
+
         public static string GetProjectId(VBProject project)
         {
             if (project == null)
@@ -28,10 +75,12 @@ namespace Rubberduck.VBEditor
         {
             _component = null;
             _componentName = null;
+            _componentDisplayName = null;
             _project = project;
             _projectName = project.Name;
             _projectPath = string.Empty;
             _projectId = GetProjectId(project);
+            _projectDisplayName = GetDisplayName(project);
             _contentHashCode = 0;
         }
 
@@ -41,8 +90,10 @@ namespace Rubberduck.VBEditor
 
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
+            _componentDisplayName = GetDisplayName(component);
             _project = component == null ? null : component.Collection.Parent;
             _projectName = _project == null ? string.Empty : _project.Name;
+            _projectDisplayName = GetDisplayName(_project);
             _projectPath = string.Empty;
             _projectId = GetProjectId(_project);
 
@@ -69,8 +120,10 @@ namespace Rubberduck.VBEditor
 
             _component = component;
             _componentName = oldComponentName;
+            _componentDisplayName = GetDisplayName(component);
             _project = component == null ? null : component.Collection.Parent;
             _projectName = _project == null ? string.Empty : _project.Name;
+            _projectDisplayName = GetDisplayName(_project);
             _projectPath = string.Empty;
             _projectId = GetProjectId(_project);
 
@@ -95,10 +148,12 @@ namespace Rubberduck.VBEditor
         {
             _project = null;
             _projectName = projectName;
+            _projectDisplayName = null;
             _projectPath = projectPath;
             _projectId = (_projectName + ";" + _projectPath).GetHashCode().ToString();
             _componentName = componentName;
             _component = null;
+            _componentDisplayName = null;
             _contentHashCode = 0;
         }
 
@@ -123,6 +178,50 @@ namespace Rubberduck.VBEditor
         public string ComponentName { get { return _componentName ?? string.Empty; } }
 
         public string Name { get { return ToString(); } }
+
+        private readonly string _componentDisplayName;
+        public string ComponentDisplayName { get {return _componentDisplayName; } }
+
+        private readonly string _projectDisplayName;
+        public string ProjectDisplayName { get { return _projectDisplayName; } }
+
+
+        /// <summary>
+        /// returns: "ComponentName (DisplayName)" as typically displayed in VBE Project Explorer
+        /// </summary>
+        public string ComponentTitle {
+            get {
+                if (_project != null && _component == null)
+                {
+                    //handle display of Project component
+                    return _projectName + (_projectDisplayName != null ? " (" + _projectDisplayName + ")" : string.Empty);
+                }
+                else
+                {
+                    if (_componentDisplayName == _projectDisplayName) 
+                    {
+                        //handle display of main documents, like ThisWorkbook and ThisDocument
+                        return _componentName;
+                    }
+                    else
+                    {
+                        //handle display of all other components
+                        return _componentName + (_componentDisplayName != null ? " (" +  _componentDisplayName  + ")" : string.Empty);
+                    }
+                }
+            } 
+        }
+
+        /// <summary>
+        /// returns: "ProjectName (DisplayName)" as typically displayed in VBE Project Explorer
+        /// </summary>
+        public string ProjectTitle
+        {
+            get
+            {
+                return _projectName + (_projectDisplayName != null ? " (" + _projectDisplayName + ")" : string.Empty);
+            }
+        }
 
         private readonly string _projectName;
 

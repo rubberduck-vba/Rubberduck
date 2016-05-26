@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -359,10 +360,13 @@ namespace Rubberduck.UI.CodeInspections
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
+            const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
             if (_results == null)
             {
                 return;
             }
+            ColumnInfo[] ColumnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
+
             var aResults = _results.Select(result => result.ToArray()).ToArray();
 
             var resource = _results.Count == 1
@@ -372,13 +376,17 @@ namespace Rubberduck.UI.CodeInspections
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InstalledUICulture), _results.Count);
 
             var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
-            var csvResults = ExportFormatter.Csv(aResults, title);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title);
-            
+            var csvResults = ExportFormatter.Csv(aResults, title,ColumnInfos);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title,ColumnInfos);
+            var rtfResults = ExportFormatter.RTF(aResults, title);
+
+            MemoryStream strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, ColumnInfos);
             //Add the formats from richest formatting to least formatting
-            _clipboard.AppendData(DataFormats.Html, htmlResults);
-            _clipboard.AppendData(DataFormats.CommaSeparatedValue, csvResults);
-            _clipboard.AppendData(DataFormats.UnicodeText, textResults);
+            _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
+            _clipboard.AppendString(DataFormats.Rtf, rtfResults);
+            _clipboard.AppendString(DataFormats.Html, htmlResults);
+            _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
+            _clipboard.AppendString(DataFormats.UnicodeText, textResults);
 
             _clipboard.Flush();
         }
