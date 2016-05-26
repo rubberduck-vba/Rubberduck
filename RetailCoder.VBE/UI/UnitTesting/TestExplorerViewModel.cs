@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
@@ -305,20 +308,49 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
-            var results = string.Join(Environment.NewLine, _model.LastRun.Select(test => test.ToString()));
+            const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
 
-            var passed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Succeeded) + " " + TestOutcome.Succeeded;
-            var failed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Failed) + " " + TestOutcome.Failed;
-            var inconclusive = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Inconclusive) + " " + TestOutcome.Inconclusive;
-            var ignored = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Ignored) + " " + TestOutcome.Ignored;
+            ColumnInfo[] ColumnInfos = { new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Method"), new ColumnInfo("Outcome"), new ColumnInfo("Output"), 
+                                           new ColumnInfo("Start Time"), new ColumnInfo("End Time"), new ColumnInfo("Duration (ms)", hAlignment.Right) };
 
-            var duration = RubberduckUI.UnitTest_TotalDuration + " - " + TotalDuration;
+            var aResults = _model.Tests.Select(test => test.ToArray()).ToArray();
 
-            var resource = "Rubberduck Unit Tests - {0}{6}{1} | {2} | {3} | {4}{6}{5} ms{6}";
-            var text = string.Format(resource, DateTime.Now, passed, failed, inconclusive, ignored, duration, Environment.NewLine) + results;
+            var resource = "Rubberduck Test Results - {0}";
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
-            _clipboard.Write(text);
+            //var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
+            var csvResults = ExportFormatter.Csv(aResults, title, ColumnInfos);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title, ColumnInfos);
+            var rtfResults = ExportFormatter.RTF(aResults, title);
+
+            MemoryStream strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, ColumnInfos);
+            //Add the formats from richest formatting to least formatting
+            _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
+            _clipboard.AppendString(DataFormats.Rtf, rtfResults);
+            _clipboard.AppendString(DataFormats.Html, htmlResults);
+            _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
+            //_clipboard.AppendString(DataFormats.UnicodeText, textResults);
+
+            _clipboard.Flush();
         }
+ 
+        //KEEP THIS, AS IT MAKES FOR THE BASIS OF A USEFUL *SUMMARY* REPORT
+        //private void ExecuteCopyResultsCommand(object parameter)
+        //{
+        //    var results = string.Join(Environment.NewLine, _model.LastRun.Select(test => test.ToString()));
+
+        //    var passed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Succeeded) + " " + TestOutcome.Succeeded;
+        //    var failed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Failed) + " " + TestOutcome.Failed;
+        //    var inconclusive = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Inconclusive) + " " + TestOutcome.Inconclusive;
+        //    var ignored = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Ignored) + " " + TestOutcome.Ignored;
+
+        //    var duration = RubberduckUI.UnitTest_TotalDuration + " - " + TotalDuration;
+
+        //    var resource = "Rubberduck Unit Tests - {0}{6}{1} | {2} | {3} | {4}{6}{5} ms{6}";
+        //    var text = string.Format(resource, DateTime.Now, passed, failed, inconclusive, ignored, duration, Environment.NewLine) + results;
+
+        //    _clipboard.Write(text);
+        //}
 
         public void Dispose()
         {
