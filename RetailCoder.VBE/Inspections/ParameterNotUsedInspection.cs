@@ -16,14 +16,12 @@ namespace Rubberduck.Inspections
     {
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public ParameterNotUsedInspection(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
             : base(state)
         {
             _vbe = vbe;
             _messageBox = messageBox;
-            _wrapperFactory = new CodePaneWrapperFactory();
         }
 
         public override string Meta { get { return InspectionsUI.ParameterNotUsedInspectionName; }}
