@@ -229,19 +229,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitModuleHeader([NotNull] VBAParser.ModuleHeaderContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.dynamicArrayDim"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDynamicArrayDim([NotNull] VBAParser.DynamicArrayDimContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.dynamicArrayDim"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDynamicArrayDim([NotNull] VBAParser.DynamicArrayDimContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.typeofexpr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -489,19 +476,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitLineWidth([NotNull] VBAParser.LineWidthContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.dynamicDimSpec"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDynamicDimSpec([NotNull] VBAParser.DynamicDimSpecContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.dynamicDimSpec"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDynamicDimSpec([NotNull] VBAParser.DynamicDimSpecContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.asTypeClause"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -565,19 +539,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMemberAccessExpr([NotNull] VBAParser.MemberAccessExprContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.dynamicUpperBound"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDynamicUpperBound([NotNull] VBAParser.DynamicUpperBoundContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.dynamicUpperBound"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDynamicUpperBound([NotNull] VBAParser.DynamicUpperBoundContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.eventStmt"/>.
@@ -775,6 +736,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitInputVariable([NotNull] VBAParser.InputVariableContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.lowerBoundArgumentExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLowerBoundArgumentExpression([NotNull] VBAParser.LowerBoundArgumentExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.lowerBoundArgumentExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLowerBoundArgumentExpression([NotNull] VBAParser.LowerBoundArgumentExpressionContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.forEachStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -957,19 +931,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitLExpr([NotNull] VBAParser.LExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.dynamicLowerBound"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDynamicLowerBound([NotNull] VBAParser.DynamicLowerBoundContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.dynamicLowerBound"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDynamicLowerBound([NotNull] VBAParser.DynamicLowerBoundContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.logicalAndOp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1059,19 +1020,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitElseIfBlock([NotNull] VBAParser.ElseIfBlockContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.dynamicArrayClause"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDynamicArrayClause([NotNull] VBAParser.DynamicArrayClauseContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.dynamicArrayClause"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDynamicArrayClause([NotNull] VBAParser.DynamicArrayClauseContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.visibility"/>.
@@ -1371,19 +1319,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCaseElseClause([NotNull] VBAParser.CaseElseClauseContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.dynamicBoundsList"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDynamicBoundsList([NotNull] VBAParser.DynamicBoundsListContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.dynamicBoundsList"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDynamicBoundsList([NotNull] VBAParser.DynamicBoundsListContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.literalExpr"/>.
@@ -2114,6 +2049,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitTuple([NotNull] VBAParser.TupleContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.untypedIdentifier"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUntypedIdentifier([NotNull] VBAParser.UntypedIdentifierContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.untypedIdentifier"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUntypedIdentifier([NotNull] VBAParser.UntypedIdentifierContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.builtInType"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2283,6 +2231,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitSingleLineElseClause([NotNull] VBAParser.SingleLineElseClauseContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.upperBoundArgumentExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUpperBoundArgumentExpression([NotNull] VBAParser.UpperBoundArgumentExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.upperBoundArgumentExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUpperBoundArgumentExpression([NotNull] VBAParser.UpperBoundArgumentExpressionContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.forNextStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2439,19 +2400,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitMissingPositionalArgument([NotNull] VBAParser.MissingPositionalArgumentContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.redimVariableDeclarationExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRedimVariableDeclarationExpression([NotNull] VBAParser.RedimVariableDeclarationExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.redimVariableDeclarationExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRedimVariableDeclarationExpression([NotNull] VBAParser.RedimVariableDeclarationExpressionContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.typeStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2515,6 +2463,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAnnotationArg([NotNull] VBAParser.AnnotationArgContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.redimVariableDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRedimVariableDeclaration([NotNull] VBAParser.RedimVariableDeclarationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.redimVariableDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRedimVariableDeclaration([NotNull] VBAParser.RedimVariableDeclarationContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.recordNumber"/>.
@@ -2905,6 +2866,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitUnlockStmt([NotNull] VBAParser.UnlockStmtContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.typedIdentifier"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTypedIdentifier([NotNull] VBAParser.TypedIdentifierContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.typedIdentifier"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTypedIdentifier([NotNull] VBAParser.TypedIdentifierContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.booleanExpression"/>.

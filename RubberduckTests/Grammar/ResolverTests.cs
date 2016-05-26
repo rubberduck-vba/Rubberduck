@@ -1634,6 +1634,26 @@ End Sub
         }
 
         [TestMethod]
+        public void RedimStmt_RedimVariableDeclarationIsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced() As Variant
+    ReDim referenced(referenced TO referenced, referenced), referenced(referenced)
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(6, declaration.References.Count());
+        }
+
+        [TestMethod]
         public void OpenStmt_IsReferenceToLocalVariable()
         {
             // arrange

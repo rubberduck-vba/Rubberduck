@@ -14,9 +14,6 @@ namespace RubberduckTests.Binding
         private const string BINDING_TARGET_NAME = "BindingTarget";
         private const string TEST_CLASS_NAME = "TestClass";       
 
-        [TestClass]
-        public class ResolverTests
-        {
             [TestMethod]
             public void ProceduralModuleWithAccessibleMember()
             {
@@ -69,5 +66,4 @@ End Function
 ", BINDING_TARGET_NAME);
             }
         }
-    }
 }

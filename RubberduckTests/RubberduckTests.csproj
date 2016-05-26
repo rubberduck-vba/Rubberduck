@@ -96,6 +96,7 @@
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\GeneralInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspectionTests.cs" />
+    <Compile Include="Inspections\MultipleFolderAnnotationsInspectionTests.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInpsectionTests.cs" />
     <Compile Include="MockParser.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionTests.cs" />

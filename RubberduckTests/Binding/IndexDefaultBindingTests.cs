@@ -16,13 +16,10 @@ namespace RubberduckTests.Binding
         private const string TEST_CLASS_NAME = "TestClass";
         private const string REFERENCED_PROJECT_FILEPATH = @"C:\Temp\ReferencedProjectA";
 
-        [TestClass]
-        public class ResolverTests
+        [TestMethod]
+        public void RecursiveDefaultMember()
         {
-            [TestMethod]
-            public void RecursiveDefaultMember()
-            {
-                string callerModule = @"
+            string callerModule = @"
 Public Property Get Ok() As Klasse1
 End Property
 
@@ -31,71 +28,70 @@ Public Sub Test()
 End Sub
 ";
 
-                string middleman = @"
+            string middleman = @"
 Public Property Get Test1() As Klasse2
 End Property
 ";
 
-                string defaultMemberClass = @"
+            string defaultMemberClass = @"
 Public Property Get Test2(a As Integer)
     Test2 = 2
 End Property
 ";
 
-                var builder = new MockVbeBuilder();
-                var enclosingProjectBuilder = builder.ProjectBuilder("Any Project", vbext_ProjectProtection.vbext_pp_none);
-                enclosingProjectBuilder.AddComponent("AnyModule1", vbext_ComponentType.vbext_ct_StdModule, callerModule);
-                enclosingProjectBuilder.AddComponent("AnyClass", vbext_ComponentType.vbext_ct_ClassModule, middleman);
-                enclosingProjectBuilder.AddComponent("AnyClass2", vbext_ComponentType.vbext_ct_ClassModule, defaultMemberClass);
-                var enclosingProject = enclosingProjectBuilder.Build();
-                builder.AddProject(enclosingProject);
-                var vbe = builder.Build();
-                var state = Parse(vbe);
+            var builder = new MockVbeBuilder();
+            var enclosingProjectBuilder = builder.ProjectBuilder("Any Project", vbext_ProjectProtection.vbext_pp_none);
+            enclosingProjectBuilder.AddComponent("AnyModule1", vbext_ComponentType.vbext_ct_StdModule, callerModule);
+            enclosingProjectBuilder.AddComponent("AnyClass", vbext_ComponentType.vbext_ct_ClassModule, middleman);
+            enclosingProjectBuilder.AddComponent("AnyClass2", vbext_ComponentType.vbext_ct_ClassModule, defaultMemberClass);
+            var enclosingProject = enclosingProjectBuilder.Build();
+            builder.AddProject(enclosingProject);
+            var vbe = builder.Build();
+            var state = Parse(vbe);
 
-                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.PropertyGet && d.IdentifierName == "Test2");
+            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.PropertyGet && d.IdentifierName == "Test2");
 
-                Assert.AreEqual(1, declaration.References.Count());
-            }
+            Assert.AreEqual(1, declaration.References.Count());
+        }
 
-            [TestMethod]
-            public void NormalPropertyFunctionSubroutine()
-            {
-                string callerModule = @"
+        [TestMethod]
+        public void NormalPropertyFunctionSubroutine()
+        {
+            string callerModule = @"
 Public Sub Test()
     Call Test1(1)
 End Sub
 ";
 
-                string property = @"
+            string property = @"
 Public Property Get Test1(a As Integer) As Long
 End Property
 ";
 
-                var builder = new MockVbeBuilder();
-                var enclosingProjectBuilder = builder.ProjectBuilder("Any Project", vbext_ProjectProtection.vbext_pp_none);
-                enclosingProjectBuilder.AddComponent("AnyModule1", vbext_ComponentType.vbext_ct_StdModule, callerModule);
-                enclosingProjectBuilder.AddComponent("AnyClass", vbext_ComponentType.vbext_ct_StdModule, property);
-                var enclosingProject = enclosingProjectBuilder.Build();
-                builder.AddProject(enclosingProject);
-                var vbe = builder.Build();
-                var state = Parse(vbe);
+            var builder = new MockVbeBuilder();
+            var enclosingProjectBuilder = builder.ProjectBuilder("Any Project", vbext_ProjectProtection.vbext_pp_none);
+            enclosingProjectBuilder.AddComponent("AnyModule1", vbext_ComponentType.vbext_ct_StdModule, callerModule);
+            enclosingProjectBuilder.AddComponent("AnyClass", vbext_ComponentType.vbext_ct_StdModule, property);
+            var enclosingProject = enclosingProjectBuilder.Build();
+            builder.AddProject(enclosingProject);
+            var vbe = builder.Build();
+            var state = Parse(vbe);
 
-                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.PropertyGet && d.IdentifierName == "Test1");
+            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.PropertyGet && d.IdentifierName == "Test1");
 
-                Assert.AreEqual(1, declaration.References.Count());
-            }
+            Assert.AreEqual(1, declaration.References.Count());
+        }
 
-            private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
+        private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
+        {
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+            parser.Parse();
+            if (parser.State.Status != ParserState.Ready)
             {
-                var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
-                parser.Parse();
-                if (parser.State.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
-                }
-                var state = parser.State;
-                return state;
+                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
             }
+            var state = parser.State;
+            return state;
         }
     }
 }

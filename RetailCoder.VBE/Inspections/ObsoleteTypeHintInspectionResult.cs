@@ -7,6 +7,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -74,7 +75,7 @@ namespace Rubberduck.Inspections
 
             if (isDeclaration && Context is VBAParser.FunctionStmtContext)
             {
-                var typeHint = ((VBAParser.FunctionStmtContext)Context).functionName().identifier().typeHint();
+                var typeHint = Identifier.GetTypeHintContext(((VBAParser.FunctionStmtContext)Context).functionName().identifier());
                 var argList = ((VBAParser.FunctionStmtContext)Context).argList();
                 var endLine = argList.Stop.Line;
                 var endColumn = argList.Stop.Column;
@@ -86,7 +87,7 @@ namespace Rubberduck.Inspections
             }
             else if (isDeclaration && Context is VBAParser.PropertyGetStmtContext)
             {
-                var typeHint = ((VBAParser.PropertyGetStmtContext)Context).functionName().identifier().typeHint();
+                var typeHint = Identifier.GetTypeHintContext(((VBAParser.PropertyGetStmtContext)Context).functionName().identifier());
                 var argList = ((VBAParser.PropertyGetStmtContext)Context).argList();
                 var endLine = argList.Stop.Line;
                 var endColumn = argList.Stop.Column;
