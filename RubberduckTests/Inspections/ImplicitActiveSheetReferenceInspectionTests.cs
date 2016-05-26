@@ -47,7 +47,7 @@ End Sub
             var listColumnDeclaration = new ClassModuleDeclaration(new QualifiedMemberName(
                 new QualifiedModuleName("Excel",
                     "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "ListColumn"),
-                "ListColumn"), excelDeclaration, "ListColumn", true, null, null, true, true);
+                "ListColumn"), excelDeclaration, "ListColumn", true, null, null);
 
             var rangeDeclaration =
                 new Declaration(
