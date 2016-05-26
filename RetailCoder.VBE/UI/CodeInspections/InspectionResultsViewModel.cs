@@ -373,7 +373,7 @@ namespace Rubberduck.UI.CodeInspections
                 ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InstalledUICulture), _results.Count);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
 
             var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(aResults, title,ColumnInfos);
