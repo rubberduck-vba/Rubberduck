@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Vbe.Interop;
@@ -77,6 +78,9 @@ namespace Rubberduck.Parsing.Symbols
             {VarEnum.VT_R8, "Double"},
         };
 
+        [DllImport("kernel32.dll")]
+        public static extern bool IsBadReadPtr(IntPtr lp, uint ucb);
+
         private string GetTypeName(TYPEDESC desc, ITypeInfo info)
         {
             var vt = (VarEnum)desc.vt;
@@ -85,23 +89,28 @@ namespace Rubberduck.Parsing.Symbols
             switch (vt)
             {
                 case VarEnum.VT_PTR:
+                    if (IsBadReadPtr(desc.lpValue, (uint) IntPtr.Size))
+                    {
+                        Debug.WriteLine("Bad read pointer; returning fallback 'Object' type name.");
+                        return "Object";
+                    }
                     tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
                     return GetTypeName(tdesc, info);
                 case VarEnum.VT_USERDEFINED:
+                    int href;
                     unchecked
                     {
-                        int href;
-                        if (Marshal.SizeOf(typeof (IntPtr)) == sizeof (long))
-                        {
-                            href = (int) desc.lpValue.ToInt64();
-                        }
-                        else
-                        {
-                            href = desc.lpValue.ToInt32();
-                        }
+                        href = (int)(desc.lpValue.ToInt64() & 0xFFFFFFFF);
+                    }
+                    try
+                    {
                         ITypeInfo refTypeInfo;
                         info.GetRefTypeInfo(href, out refTypeInfo);
                         return GetTypeName(refTypeInfo);
+                    }
+                    catch (Exception)
+                    {
+                        return "Object";
                     }
                 case VarEnum.VT_CARRAY:
                     tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
@@ -114,7 +123,7 @@ namespace Rubberduck.Parsing.Symbols
                     }
                     break;
             }
-            return "UNKNOWN";
+            return "Object";
         }
 
         private string GetTypeName(ITypeInfo info)
