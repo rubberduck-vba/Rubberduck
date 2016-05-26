@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -55,13 +56,13 @@ namespace Rubberduck.Inspections
                 : Tokens.Property;
 
             string visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
-            string name = ' ' + functionName.identifier().identifierValue().GetText();
-            bool hasTypeHint = functionName.identifier().typeHint() != null;
+            string name = ' ' + Identifier.GetName(functionName.identifier());
+            bool hasTypeHint = Identifier.GetTypeHintValue(functionName.identifier()) != null;
 
             string args = context.argList().GetText();
             string asType = context.asTypeClause() == null ? string.Empty : ' ' + context.asTypeClause().GetText();
 
-            string oldSignature = visibility + token + name + (hasTypeHint ? functionName.identifier().typeHint().GetText() : string.Empty) + args + asType;
+            string oldSignature = visibility + token + name + (hasTypeHint ? Identifier.GetTypeHintValue(functionName.identifier()) : string.Empty) + args + asType;
             string newSignature = visibility + Tokens.Sub + name + args;
 
             string procedure = Context.GetText();

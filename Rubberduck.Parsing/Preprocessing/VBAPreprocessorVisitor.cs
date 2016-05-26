@@ -1,5 +1,5 @@
 ﻿using Antlr4.Runtime.Misc;
-using Rubberduck.Parsing.Binding;
+using Rubberduck.Parsing.Symbols;
 using System;
 using System.Linq;
 
@@ -45,7 +45,7 @@ namespace Rubberduck.Parsing.Preprocessing
         {
             return new ConditionalCompilationConstantExpression(
                     new ConstantExpression(new StringValue(context.GetText())),
-                    new ConstantExpression(new StringValue(ExpressionName.GetName(context.ccVarLhs().name()))),
+                    new ConstantExpression(new StringValue(Identifier.GetName(context.ccVarLhs().name()))),
                     Visit(context.ccExpression()),
                     _symbolTable);
         }
@@ -84,7 +84,7 @@ namespace Rubberduck.Parsing.Preprocessing
         private IExpression Visit(VBAConditionalCompilationParser.NameContext context)
         {
             return new NameExpression(
-                new ConstantExpression(new StringValue(ExpressionName.GetName(context))),
+                new ConstantExpression(new StringValue(Identifier.GetName(context))),
                 _symbolTable);
         }
 

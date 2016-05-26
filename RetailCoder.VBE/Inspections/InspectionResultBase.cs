@@ -121,7 +121,7 @@ namespace Rubberduck.Inspections
         public object[] ToArray()
         {
             var module = QualifiedSelection.QualifiedName;
-            return new object[] {Inspection.Severity.ToString(), Description, module.ProjectId, module.ComponentName, QualifiedSelection.Selection.StartLine };
+            return new object[] { Inspection.Severity.ToString(), module.ProjectTitle, module.ComponentTitle, Description, QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.StartColumn };
         }
 
         public string ToCsvString()

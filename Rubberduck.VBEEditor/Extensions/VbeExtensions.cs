@@ -68,6 +68,8 @@ namespace Rubberduck.VBEditor.Extensions
                             return new OutlookApp();
                         case "Microsoft Publisher":
                             return new PublisherApp();
+                        case "Microsoft Visio":
+                            return new VisioApp();
                         case "AutoCAD":
                             return new AutoCADApp();
                         case "CorelDRAW":
@@ -94,7 +96,9 @@ namespace Rubberduck.VBEditor.Extensions
                         return new OutlookApp();
                     case "Publisher":
                         return new PublisherApp();
-					case "AutoCAD":
+                    case "Visio":
+                        return new VisioApp();
+                    case "AutoCAD":
                         return new AutoCADApp();
                     case "CorelDRAW":
                         return new CorelDRAWApp(vbe);

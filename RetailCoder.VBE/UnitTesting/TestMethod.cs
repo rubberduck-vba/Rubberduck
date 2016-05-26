@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
@@ -41,6 +42,7 @@ namespace Rubberduck.UnitTesting
 
             AssertCompletedEventArgs result;
             var duration = new TimeSpan();
+            var startTime = DateTime.Now;
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
@@ -53,13 +55,13 @@ namespace Rubberduck.UnitTesting
             {
                 result = new AssertCompletedEventArgs(TestOutcome.Inconclusive, "Test raised an error. " + exception.Message);
             }
-            
-            UpdateResult(result.Outcome, result.Message, duration.Milliseconds);
+            var endTime = DateTime.Now;
+            UpdateResult(result.Outcome, result.Message, duration.Milliseconds, startTime, endTime);
         }
         
-        public void UpdateResult(TestOutcome outcome, string message = "", long duration = 0)
+        public void UpdateResult(TestOutcome outcome, string message = "", long duration = 0, DateTime? startTime = null, DateTime? endTime = null)
         {
-            Result.SetValues(outcome, message, duration);
+            Result.SetValues(outcome, message, duration, startTime, endTime);
             OnPropertyChanged("Result");
         }
 
@@ -106,6 +108,12 @@ namespace Rubberduck.UnitTesting
             {
                 return null;
             }
+        }
+
+        public object[] ToArray()
+        {
+            return new object[] { QualifiedMemberName.QualifiedModuleName.ProjectTitle, QualifiedMemberName.QualifiedModuleName.ComponentTitle, QualifiedMemberName.MemberName, 
+                _result.Outcome.ToString(), _result.Output, _result.StartTime.ToString(CultureInfo.InvariantCulture), _result.EndTime.ToString(CultureInfo.InvariantCulture), _result.Duration };
         }
 
         public bool Equals(TestMethod other)

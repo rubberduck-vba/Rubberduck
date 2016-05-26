@@ -2,9 +2,9 @@
 using Rubberduck.Parsing.Preprocessing;
 using System.Linq;
 
-namespace Rubberduck.Parsing.Binding
+namespace Rubberduck.Parsing.Symbols
 {
-    public static class ExpressionName
+    public static class Identifier
     {
         public static string GetName(VBAParser.UnrestrictedIdentifierContext context)
         {
@@ -20,8 +20,12 @@ namespace Rubberduck.Parsing.Binding
 
         public static string GetName(VBAParser.IdentifierContext context)
         {
+            return GetName(GetIdentifierValueContext(context));
+        }
+
+        public static string GetName(VBAParser.IdentifierValueContext value)
+        {
             string name;
-            var value = context.identifierValue();
             if (value.foreignName() != null)
             {
                 if (value.foreignName().foreignIdentifier() != null)
@@ -41,6 +45,18 @@ namespace Rubberduck.Parsing.Binding
                 name = value.GetText();
             }
             return name;
+        }
+
+        public static VBAParser.IdentifierValueContext GetIdentifierValueContext(VBAParser.IdentifierContext context)
+        {
+            if (context.untypedIdentifier() != null)
+            {
+                return context.untypedIdentifier().identifierValue();
+            }
+            else
+            {
+                return context.typedIdentifier().identifierValue();
+            }
         }
 
         public static string GetName(VBAConditionalCompilationParser.NameContext context)
@@ -66,6 +82,40 @@ namespace Rubberduck.Parsing.Binding
                 name = value.GetText();
             }
             return name;
+        }
+
+        public static string GetTypeHintValue(VBAParser.IdentifierContext identifier)
+        {
+            var typeHintContext = GetTypeHintContext(identifier);
+            if (typeHintContext != null)
+            {
+                return typeHintContext.GetText();
+            }
+            return null;
+        }
+
+        public static string GetTypeHintValue(VBAParser.UnrestrictedIdentifierContext identifier)
+        {
+            if (identifier.identifier() != null)
+            {
+                return GetTypeHintValue(identifier.identifier());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static VBAParser.TypeHintContext GetTypeHintContext(VBAParser.IdentifierContext identifier)
+        {
+            if (identifier.untypedIdentifier() != null)
+            {
+                return null;
+            }
+            else
+            {
+                return identifier.typedIdentifier().typeHint();
+            }
         }
     }
 }

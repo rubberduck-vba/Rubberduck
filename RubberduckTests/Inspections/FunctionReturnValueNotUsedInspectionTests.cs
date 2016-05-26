@@ -10,7 +10,6 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [Ignore] // todo: uncomment these tests
     [TestClass]
     public class FunctionReturnValueNotUsedInspectionTests
     {

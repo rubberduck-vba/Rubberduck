@@ -68,6 +68,11 @@
       <HintPath>..\libs\Corel.GraphicsSuite.Interop.CorelDRAW.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Visio, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\libs\Microsoft.Office.Interop.Visio.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Word, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -116,6 +121,7 @@
     <Compile Include="VBEHost\OutlookApp.cs" />
     <Compile Include="VBEHost\PowerPointApp.cs" />
     <Compile Include="VBEHost\PublisherApp.cs" />
+    <Compile Include="VBEHost\Visio.cs" />
     <Compile Include="VBEHost\WordApp.cs" />
     <Compile Include="VBEHost\AutoCADApp.cs" />
     <Compile Include="Extensions\VbProjectExtensions.cs" />

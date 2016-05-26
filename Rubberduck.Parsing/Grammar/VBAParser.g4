@@ -403,15 +403,11 @@ eventArgumentList : eventArgument (whiteSpace? COMMA whiteSpace? eventArgument)*
 eventArgument : expression;
 
 // 5.4.3.3 ReDim Statement
+// To make the grammar non-ambiguous we treat redim statements as index expressions.
+// For this to work the argumentList rule had to be changed to support "lower bound arguments", e.g. "1 To 10".
 redimStmt : REDIM whiteSpace (PRESERVE whiteSpace)? redimDeclarationList;
-redimDeclarationList : redimVariableDeclarationExpression (whiteSpace? COMMA whiteSpace? redimVariableDeclarationExpression)*;  
-redimVariableDeclarationExpression : lExpression whiteSpace? dynamicArrayClause;
-dynamicArrayClause : dynamicArrayDim asTypeClause?;
-dynamicArrayDim : LPAREN whiteSpace? dynamicBoundsList whiteSpace? RPAREN;
-dynamicBoundsList : dynamicDimSpec (whiteSpace? COMMA whiteSpace? dynamicDimSpec)*;
-dynamicDimSpec : (dynamicLowerBound whiteSpace)? dynamicUpperBound; 
-dynamicLowerBound : integerExpression whiteSpace TO;
-dynamicUpperBound : integerExpression;
+redimDeclarationList : redimVariableDeclaration (whiteSpace? COMMA whiteSpace? redimVariableDeclaration)*;
+redimVariableDeclaration : expression (whiteSpace asTypeClause)?;
 
 integerExpression : expression;
 
@@ -492,7 +488,9 @@ subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 subscript : (expression whiteSpace TO whiteSpace)? expression;
 
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
-identifier : identifierValue typeHint?;
+identifier : untypedIdentifier | typedIdentifier;
+untypedIdentifier : identifierValue;
+typedIdentifier : identifierValue typeHint;
 identifierValue : IDENTIFIER | keyword | foreignName;
 foreignName : L_SQUARE_BRACKET foreignIdentifier* R_SQUARE_BRACKET;
 foreignIdentifier : ~L_SQUARE_BRACKET | foreignName;
@@ -820,7 +818,11 @@ namedArgument : unrestrictedIdentifier whiteSpace? ASSIGN whiteSpace? argumentEx
 argumentExpression :
     (BYVAL whiteSpace)? expression
     | addressOfExpression
+    // Special case for redim statements. The resolver doesn't have to deal with this because it is "picked apart" in the redim statement.
+    | lowerBoundArgumentExpression whiteSpace TO whiteSpace upperBoundArgumentExpression
 ;
+lowerBoundArgumentExpression : expression;
+upperBoundArgumentExpression : expression;
 
 // 5.6.16.8   AddressOf Expressions 
 addressOfExpression : ADDRESSOF whiteSpace expression;
