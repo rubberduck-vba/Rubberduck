@@ -303,6 +303,7 @@
     <Compile Include="Common\IAttachable.cs" />
     <Compile Include="Common\Hotkeys\IHotkey.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
+    <Compile Include="Common\LogLevelHelper.cs" />
     <Compile Include="Common\ModuleExporter.cs" />
     <Compile Include="Common\WinAPI\IRawDevice.cs" />
     <Compile Include="Common\WinAPI\KeyMap.cs" />
@@ -384,6 +385,7 @@
     <Compile Include="Settings\GeneralConfigProvider.cs" />
     <Compile Include="Settings\HotkeySettings.cs" />
     <Compile Include="Settings\HotkeyConfigProvider.cs" />
+    <Compile Include="Settings\MinimumLogLevel.cs" />
     <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="Settings\ToDoListConfigProvider.cs" />
     <Compile Include="Settings\UnitTestConfigProvider.cs" />

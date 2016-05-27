@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Rubberduck.Inspections
 {
-    internal interface IParseTreeInspection : IInspection
+    public interface IParseTreeInspection : IInspection
     {
         ParseTreeResults ParseTreeResults { get; set; }
     }

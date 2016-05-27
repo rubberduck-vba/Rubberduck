@@ -10,49 +10,34 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
-
-        public static string GetDisplayName(VBProject project)
+        private static string GetDisplayName(VBProject project)
         {
-            try
+            if (!string.IsNullOrEmpty(Path.GetDirectoryName(project.BuildFileName)))
             {
                 return Path.GetFileName(project.FileName);
             }
-            catch 
-            {
-                //the file hasn't been saved yet
-            }
             
-            try
-            {
-                //Don't need to check protection, as a protected project is saved, by definition
-                return project.VBComponents.Cast<VBComponent>()
-                    .Where(component => component.Type == vbext_ComponentType.vbext_ct_Document
-                    && component.Properties.Count > 1)
-                    .SelectMany(component => component.Properties.OfType<Property>())
-                    .FirstOrDefault(property => property.Name == "Name").Value.ToString();
-                }
-            catch 
-            { 
-              return null;
-            }
+            //Don't need to check protection, as a protected project is saved, by definition
+            var firstOrDefault = project.VBComponents.Cast<VBComponent>()
+                .Where(component => component.Type == vbext_ComponentType.vbext_ct_Document
+                                    && component.Properties.Count > 1)
+                .SelectMany(component => component.Properties.OfType<Property>())
+                .FirstOrDefault(property => property.Name == "Name");
+            return firstOrDefault == null 
+                ? null 
+                : firstOrDefault.Value.ToString();
         }
 
-        public static string GetDisplayName(VBComponent component)
+        private static string GetDisplayName(VBComponent component)
         {
-            if (component.Type == vbext_ComponentType.vbext_ct_Document)
+            if (component.Type != vbext_ComponentType.vbext_ct_Document)
             {
-                try
-                {
-                    return component.Properties.Item("Name").Value.ToString();
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-            else {
                 return null;
             }
+            var nameProperty = component.Properties.Cast<Property>().SingleOrDefault(p => p.Name == "Name");
+            return nameProperty == null
+                ? null
+                : nameProperty.Value.ToString();
         }
 
         public static string GetProjectId(VBProject project)
@@ -61,7 +46,9 @@ namespace Rubberduck.VBEditor
             {
                 return string.Empty;
             }
-            return string.IsNullOrEmpty(project.HelpFile) ? project.GetHashCode().ToString() : project.HelpFile;
+            return string.IsNullOrEmpty(project.HelpFile) 
+                ? project.GetHashCode().ToString() 
+                : project.HelpFile;
         }
 
         public static string GetProjectId(Reference reference)
