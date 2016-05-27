@@ -2241,6 +2241,7 @@ public partial class VBAConditionalCompilationParser : Parser {
 			case PARAMARRAY:
 			case PRESERVE:
 			case PRINT:
+			case PTRSAFE:
 			case PUT:
 			case RANDOM:
 			case READ:
@@ -2990,6 +2991,7 @@ public partial class VBAConditionalCompilationParser : Parser {
 		public ITerminalNode ARRAY() { return GetToken(VBAConditionalCompilationParser.ARRAY, 0); }
 		public ITerminalNode VERSION() { return GetToken(VBAConditionalCompilationParser.VERSION, 0); }
 		public ITerminalNode COLLECTION() { return GetToken(VBAConditionalCompilationParser.COLLECTION, 0); }
+		public ITerminalNode PTRSAFE() { return GetToken(VBAConditionalCompilationParser.PTRSAFE, 0); }
 		public ITerminalNode ACCESS() { return GetToken(VBAConditionalCompilationParser.ACCESS, 0); }
 		public ITerminalNode TRUE() { return GetToken(VBAConditionalCompilationParser.TRUE, 0); }
 		public ITerminalNode VARIANT() { return GetToken(VBAConditionalCompilationParser.VARIANT, 0); }
@@ -3099,7 +3101,7 @@ public partial class VBAConditionalCompilationParser : Parser {
 			{
 			State = 427;
 			_la = _input.La(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLASS - 64)) | (1L << (CLOSE - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DOUBLE - 64)) | (1L << (END - 64)) | (1L << (EQV - 64)) | (1L << (ERROR - 64)) | (1L << (OBJECT - 64)) | (1L << (FALSE - 64)) | (1L << (GET - 64)) | (1L << (IMP - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)))) != 0) || ((((_la - 129)) & ~0x3f) == 0 && ((1L << (_la - 129)) & ((1L << (LIB - 129)) | (1L << (LIKE - 129)) | (1L << (LINE_INPUT - 129)) | (1L << (LOCK_READ - 129)) | (1L << (LOCK_WRITE - 129)) | (1L << (LOCK_READ_WRITE - 129)) | (1L << (ME - 129)) | (1L << (MID - 129)) | (1L << (MOD - 129)) | (1L << (NEW - 129)) | (1L << (NOT - 129)) | (1L << (NOTHING - 129)) | (1L << (NULL - 129)) | (1L << (ON_ERROR - 129)) | (1L << (OPEN - 129)) | (1L << (OPTIONAL - 129)) | (1L << (OR - 129)) | (1L << (OUTPUT - 129)) | (1L << (PARAMARRAY - 129)) | (1L << (PRESERVE - 129)) | (1L << (PRINT - 129)) | (1L << (PUT - 129)) | (1L << (RANDOM - 129)) | (1L << (READ - 129)) | (1L << (READ_WRITE - 129)) | (1L << (REM - 129)) | (1L << (RESET - 129)) | (1L << (SEEK - 129)) | (1L << (SHARED - 129)) | (1L << (SINGLE - 129)) | (1L << (SPC - 129)) | (1L << (STEP - 129)) | (1L << (STRING - 129)) | (1L << (TAB - 129)) | (1L << (TEXT - 129)) | (1L << (THEN - 129)) | (1L << (TO - 129)) | (1L << (TRUE - 129)) | (1L << (TYPEOF - 129)))) != 0) || ((((_la - 193)) & ~0x3f) == 0 && ((1L << (_la - 193)) & ((1L << (UNLOCK - 193)) | (1L << (UNTIL - 193)) | (1L << (VARIANT - 193)) | (1L << (VERSION - 193)) | (1L << (WIDTH - 193)) | (1L << (WITHEVENTS - 193)) | (1L << (WRITE - 193)) | (1L << (XOR - 193)) | (1L << (COLLECTION - 193)) | (1L << (DELETESETTING - 193)) | (1L << (LOAD - 193)) | (1L << (RMDIR - 193)) | (1L << (SENDKEYS - 193)) | (1L << (SETATTR - 193)) | (1L << (RESUME_NEXT - 193)))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLASS - 64)) | (1L << (CLOSE - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DOUBLE - 64)) | (1L << (END - 64)) | (1L << (EQV - 64)) | (1L << (ERROR - 64)) | (1L << (OBJECT - 64)) | (1L << (FALSE - 64)) | (1L << (GET - 64)) | (1L << (IMP - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)))) != 0) || ((((_la - 129)) & ~0x3f) == 0 && ((1L << (_la - 129)) & ((1L << (LIB - 129)) | (1L << (LIKE - 129)) | (1L << (LINE_INPUT - 129)) | (1L << (LOCK_READ - 129)) | (1L << (LOCK_WRITE - 129)) | (1L << (LOCK_READ_WRITE - 129)) | (1L << (ME - 129)) | (1L << (MID - 129)) | (1L << (MOD - 129)) | (1L << (NEW - 129)) | (1L << (NOT - 129)) | (1L << (NOTHING - 129)) | (1L << (NULL - 129)) | (1L << (ON_ERROR - 129)) | (1L << (OPEN - 129)) | (1L << (OPTIONAL - 129)) | (1L << (OR - 129)) | (1L << (OUTPUT - 129)) | (1L << (PARAMARRAY - 129)) | (1L << (PRESERVE - 129)) | (1L << (PRINT - 129)) | (1L << (PTRSAFE - 129)) | (1L << (PUT - 129)) | (1L << (RANDOM - 129)) | (1L << (READ - 129)) | (1L << (READ_WRITE - 129)) | (1L << (REM - 129)) | (1L << (RESET - 129)) | (1L << (SEEK - 129)) | (1L << (SHARED - 129)) | (1L << (SINGLE - 129)) | (1L << (SPC - 129)) | (1L << (STEP - 129)) | (1L << (STRING - 129)) | (1L << (TAB - 129)) | (1L << (TEXT - 129)) | (1L << (THEN - 129)) | (1L << (TO - 129)) | (1L << (TRUE - 129)) | (1L << (TYPEOF - 129)))) != 0) || ((((_la - 193)) & ~0x3f) == 0 && ((1L << (_la - 193)) & ((1L << (UNLOCK - 193)) | (1L << (UNTIL - 193)) | (1L << (VARIANT - 193)) | (1L << (VERSION - 193)) | (1L << (WIDTH - 193)) | (1L << (WITHEVENTS - 193)) | (1L << (WRITE - 193)) | (1L << (XOR - 193)) | (1L << (COLLECTION - 193)) | (1L << (DELETESETTING - 193)) | (1L << (LOAD - 193)) | (1L << (RMDIR - 193)) | (1L << (SENDKEYS - 193)) | (1L << (SETATTR - 193)) | (1L << (RESUME_NEXT - 193)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			}
 			Consume();
@@ -3348,27 +3350,27 @@ public partial class VBAConditionalCompilationParser : Parser {
 		"\x2\xE\x3\x2\xDD\xE1\x4\x2\xCF\xCF\xD8\xD8\x4\x2\xD7\xD7\xDA\xDA\a\x2"+
 		"}}\x84\x84\xD1\xD4\xD6\xD6\xD9\xD9\x3\x3\xEA\xEA\v\x2\x3\x3\x6\n\f\f\xE"+
 		"\x12\x14\x14\x19\x19\x1B\x1B\x1D\x1E\'\'\x3\x2\xE2\xE2\x5\x2,,.\x32\xDB"+
-		"\xDB\a\x2[[pp\x90\x91\xC0\xC0\xE4\xE9\x3\x2\xEA\xEA%\x2\x3\f\xE\x17\x19"+
+		"\xDB\a\x2[[pp\x90\x91\xC0\xC0\xE4\xE9\x3\x2\xEA\xEA&\x2\x3\f\xE\x17\x19"+
 		"#%%\'(\x33\x38:?\x42\x43\x45\x46WW\x64\x64\x66\x66hippttyy{\x80\x83\x88"+
-		"\x8A\x8C\x8E\x91\x93\x93\x95\x96\x9B\x9F\xA6\xA7\xA9\xAA\xAC\xAD\xB1\xB1"+
-		"\xB4\xB6\xB8\xB8\xBA\xBA\xBC\xC0\xC2\xC6\xC9\xC9\xCB\xCD\xF2\xF8 \x2\x18"+
-		"\x18$$@\x41\x44\x44GVYZ``\x63\x63\x65\x65ggjoqsuxzz\x81\x82\x89\x89\x8D"+
-		"\x8D\x92\x92\xA0\xA0\xA5\xA5\xA8\xA8\xAB\xAB\xAE\xB0\xB2\xB3\xB7\xB7\xB9"+
-		"\xB9\xBB\xBB\xC1\xC1\xC7\xC8\xCA\xCA\x1DF\x2\x36\x3\x2\x2\x2\x4>\x3\x2"+
-		"\x2\x2\x6\x41\x3\x2\x2\x2\bW\x3\x2\x2\x2\nY\x3\x2\x2\x2\f\x7F\x3\x2\x2"+
-		"\x2\xE\x13A\x3\x2\x2\x2\x10\x147\x3\x2\x2\x2\x12\x157\x3\x2\x2\x2\x14"+
-		"\x15A\x3\x2\x2\x2\x16\x16A\x3\x2\x2\x2\x18\x16D\x3\x2\x2\x2\x1A\x16F\x3"+
-		"\x2\x2\x2\x1C\x172\x3\x2\x2\x2\x1E\x176\x3\x2\x2\x2 \x187\x3\x2\x2\x2"+
-		"\"\x189\x3\x2\x2\x2$\x192\x3\x2\x2\x2&\x194\x3\x2\x2\x2(\x19F\x3\x2\x2"+
-		"\x2*\x1A1\x3\x2\x2\x2,\x1A3\x3\x2\x2\x2.\x1A5\x3\x2\x2\x2\x30\x1AD\x3"+
-		"\x2\x2\x2\x32\x1AF\x3\x2\x2\x2\x34\x1B1\x3\x2\x2\x2\x36\x37\x5\x4\x3\x2"+
-		"\x37\x38\a\x2\x2\x3\x38\x3\x3\x2\x2\x2\x39=\x5\x6\x4\x2:=\x5\xE\b\x2;"+
-		"=\x5\b\x5\x2<\x39\x3\x2\x2\x2<:\x3\x2\x2\x2<;\x3\x2\x2\x2=@\x3\x2\x2\x2"+
-		"><\x3\x2\x2\x2>?\x3\x2\x2\x2?\x5\x3\x2\x2\x2@>\x3\x2\x2\x2\x41\x42\a\xDD"+
-		"\x2\x2\x42\x44\x5\n\x6\x2\x43\x45\a\xED\x2\x2\x44\x43\x3\x2\x2\x2\x45"+
-		"\x46\x3\x2\x2\x2\x46\x44\x3\x2\x2\x2\x46G\x3\x2\x2\x2GH\x3\x2\x2\x2HJ"+
-		"\a\xD1\x2\x2IK\a\xED\x2\x2JI\x3\x2\x2\x2KL\x3\x2\x2\x2LJ\x3\x2\x2\x2L"+
-		"M\x3\x2\x2\x2MN\x3\x2\x2\x2NO\x5\f\a\x2OP\x5\x1C\xF\x2P\a\x3\x2\x2\x2"+
+		"\x8A\x8C\x8E\x91\x93\x93\x95\x96\x9B\x9F\xA4\xA4\xA6\xA7\xA9\xAA\xAC\xAD"+
+		"\xB1\xB1\xB4\xB6\xB8\xB8\xBA\xBA\xBC\xC0\xC2\xC6\xC9\xC9\xCB\xCD\xF2\xF8"+
+		" \x2\x18\x18$$@\x41\x44\x44GVYZ``\x63\x63\x65\x65ggjoqsuxzz\x81\x82\x89"+
+		"\x89\x8D\x8D\x92\x92\xA0\xA0\xA5\xA5\xA8\xA8\xAB\xAB\xAE\xB0\xB2\xB3\xB7"+
+		"\xB7\xB9\xB9\xBB\xBB\xC1\xC1\xC7\xC8\xCA\xCA\x1DF\x2\x36\x3\x2\x2\x2\x4"+
+		">\x3\x2\x2\x2\x6\x41\x3\x2\x2\x2\bW\x3\x2\x2\x2\nY\x3\x2\x2\x2\f\x7F\x3"+
+		"\x2\x2\x2\xE\x13A\x3\x2\x2\x2\x10\x147\x3\x2\x2\x2\x12\x157\x3\x2\x2\x2"+
+		"\x14\x15A\x3\x2\x2\x2\x16\x16A\x3\x2\x2\x2\x18\x16D\x3\x2\x2\x2\x1A\x16F"+
+		"\x3\x2\x2\x2\x1C\x172\x3\x2\x2\x2\x1E\x176\x3\x2\x2\x2 \x187\x3\x2\x2"+
+		"\x2\"\x189\x3\x2\x2\x2$\x192\x3\x2\x2\x2&\x194\x3\x2\x2\x2(\x19F\x3\x2"+
+		"\x2\x2*\x1A1\x3\x2\x2\x2,\x1A3\x3\x2\x2\x2.\x1A5\x3\x2\x2\x2\x30\x1AD"+
+		"\x3\x2\x2\x2\x32\x1AF\x3\x2\x2\x2\x34\x1B1\x3\x2\x2\x2\x36\x37\x5\x4\x3"+
+		"\x2\x37\x38\a\x2\x2\x3\x38\x3\x3\x2\x2\x2\x39=\x5\x6\x4\x2:=\x5\xE\b\x2"+
+		";=\x5\b\x5\x2<\x39\x3\x2\x2\x2<:\x3\x2\x2\x2<;\x3\x2\x2\x2=@\x3\x2\x2"+
+		"\x2><\x3\x2\x2\x2>?\x3\x2\x2\x2?\x5\x3\x2\x2\x2@>\x3\x2\x2\x2\x41\x42"+
+		"\a\xDD\x2\x2\x42\x44\x5\n\x6\x2\x43\x45\a\xED\x2\x2\x44\x43\x3\x2\x2\x2"+
+		"\x45\x46\x3\x2\x2\x2\x46\x44\x3\x2\x2\x2\x46G\x3\x2\x2\x2GH\x3\x2\x2\x2"+
+		"HJ\a\xD1\x2\x2IK\a\xED\x2\x2JI\x3\x2\x2\x2KL\x3\x2\x2\x2LJ\x3\x2\x2\x2"+
+		"LM\x3\x2\x2\x2MN\x3\x2\x2\x2NO\x5\f\a\x2OP\x5\x1C\xF\x2P\a\x3\x2\x2\x2"+
 		"QS\n\x2\x2\x2RQ\x3\x2\x2\x2ST\x3\x2\x2\x2TR\x3\x2\x2\x2TU\x3\x2\x2\x2"+
 		"UX\x3\x2\x2\x2VX\a\xEA\x2\x2WR\x3\x2\x2\x2WV\x3\x2\x2\x2X\t\x3\x2\x2\x2"+
 		"YZ\x5\"\x12\x2Z\v\x3\x2\x2\x2[\\\b\a\x1\x2\\`\a\xD7\x2\x2]_\a\xED\x2\x2"+

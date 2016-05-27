@@ -38,12 +38,11 @@ namespace Rubberduck.UI.Command
 
         public override bool CanExecute(object parameter)
         {
-            if (_vbe.ActiveCodePane == null && _state.Status != ParserState.Ready)
+            if (_vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
                 return false;
             }
 
-            // todo: make this work for Code/Project Explorer context menus too (may require a new command implementation)
             var target = FindTarget(parameter);
             var canExecute = target != null;
 
