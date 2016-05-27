@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Rubberduck.UI.CodeInspections
+namespace Rubberduck.UI.Inspections
 {
     partial class CodeInspectionsWindow
     {
@@ -32,7 +32,7 @@ namespace Rubberduck.UI.CodeInspections
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.wpfInspectionResultsControl = new Rubberduck.UI.CodeInspections.InspectionResultsControl();
+            this.wpfInspectionResultsControl = new InspectionResultsControl();
             this.SuspendLayout();
             // 
             // elementHost1

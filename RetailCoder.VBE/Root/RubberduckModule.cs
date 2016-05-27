@@ -21,7 +21,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
-using Rubberduck.UI.CodeInspections;
+using Rubberduck.UI.Inspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;

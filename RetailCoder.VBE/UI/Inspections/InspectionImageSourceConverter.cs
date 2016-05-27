@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using Rubberduck.Inspections;
 
-namespace Rubberduck.UI.CodeInspections
+namespace Rubberduck.UI.Inspections
 {
     public class InspectionImageSourceConverter : IValueConverter
     {

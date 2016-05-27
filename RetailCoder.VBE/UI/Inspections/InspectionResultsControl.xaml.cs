@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Rubberduck.UI.CodeInspections
+namespace Rubberduck.UI.Inspections
 {
     /// <summary>
     /// Interaction logic for InspectionResultsControl.xaml
