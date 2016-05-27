@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -14,14 +13,12 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public FormDesignerRefactorRenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public FormDesignerRefactorRenameCommand(VBE vbe, RubberduckParserState state) 
             : base (vbe)
         {
             _vbe = vbe;
             _state = state;
-            _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
         public override bool CanExecute(object parameter)
