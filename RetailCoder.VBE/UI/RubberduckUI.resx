@@ -1590,10 +1590,28 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parser Errors</value>
   </data>
-  <data name="GeneralSettings_DetailedLoggingEnabled" xml:space="preserve">
-    <value>Detailed logging</value>
+  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
+    <value>Minimum Log Level</value>
   </data>
-  <data name="GeneralSettings_DetailedLoggingEnabledLabel" xml:space="preserve">
-    <value>Enable detailed logging</value>
+  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
+    <value>Fatal</value>
+  </data>
+  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
+    <value>No Logging</value>
+  </data>
+  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
+    <value>Trace</value>
+  </data>
+  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
+    <value>Warn</value>
   </data>
 </root>

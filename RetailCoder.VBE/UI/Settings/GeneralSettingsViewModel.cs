@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using Rubberduck.Settings;
+using NLog;
+using Rubberduck.Common;
 
 namespace Rubberduck.UI.Settings
 {
@@ -29,7 +31,8 @@ namespace Rubberduck.UI.Settings
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
             Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;
-            DetailedLoggingEnabled = config.UserSettings.GeneralSettings.DetailedLoggingEnabled;
+            LogLevels = new ObservableCollection<MinimumLogLevel>(LogLevelHelper.LogLevels.Select(l => new MinimumLogLevel(l.Ordinal, l.Name)));
+            SelectedLogLevel = LogLevels.First(l => l.Ordinal == config.UserSettings.GeneralSettings.MinimumLogLevel);
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
@@ -104,15 +107,16 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool _detailedLoggingEnabled;
-        public bool DetailedLoggingEnabled
+        public ObservableCollection<MinimumLogLevel> LogLevels { get; set; }
+        private MinimumLogLevel _selectedLogLevel;
+        public MinimumLogLevel SelectedLogLevel
         {
-            get { return _detailedLoggingEnabled; }
+            get { return _selectedLogLevel; }
             set
             {
-                if (_detailedLoggingEnabled != value)
+                if (!Equals(_selectedLogLevel, value))
                 {
-                    _detailedLoggingEnabled = value;
+                    _selectedLogLevel = value;
                     OnPropertyChanged();
                 }
             }
@@ -125,7 +129,7 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.GeneralSettings.AutoSaveEnabled = AutoSaveEnabled;
             config.UserSettings.GeneralSettings.AutoSavePeriod = AutoSavePeriod;
             config.UserSettings.GeneralSettings.Delimiter = (char)Delimiter;
-            config.UserSettings.GeneralSettings.DetailedLoggingEnabled = DetailedLoggingEnabled;
+            config.UserSettings.GeneralSettings.MinimumLogLevel = SelectedLogLevel.Ordinal;
         }
 
         public void SetToDefaults(Configuration config)
@@ -135,7 +139,7 @@ namespace Rubberduck.UI.Settings
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
             Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;
-            DetailedLoggingEnabled = config.UserSettings.GeneralSettings.DetailedLoggingEnabled;
+            SelectedLogLevel = LogLevels.First(l => l.Ordinal == config.UserSettings.GeneralSettings.MinimumLogLevel);
         }
     }
 }

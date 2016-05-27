@@ -1567,10 +1567,28 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parserfehler</value>
   </data>
-  <data name="GeneralSettings_DetailedLoggingEnabled" xml:space="preserve">
-    <value>Detailliertes Logging</value>
+  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
+    <value>Minimum Log Level</value>
   </data>
-  <data name="GeneralSettings_DetailedLoggingEnabledLabel" xml:space="preserve">
-    <value>Detailliertes Logging aktivieren:</value>
+  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
+    <value>Fatal</value>
+  </data>
+  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
+    <value>Kein Logging</value>
+  </data>
+  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
+    <value>Trace</value>
+  </data>
+  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
+    <value>Warnung</value>
   </data>
 </root>
