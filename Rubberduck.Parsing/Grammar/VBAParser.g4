@@ -590,6 +590,7 @@ keyword :
      | PARAMARRAY
      | PRESERVE
      | PSET
+     | PTRSAFE
      | REM
      | RMDIR
      | SENDKEYS
