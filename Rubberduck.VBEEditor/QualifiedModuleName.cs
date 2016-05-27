@@ -10,8 +10,7 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
-
-        public static string GetDisplayName(VBProject project)
+        private static string GetDisplayName(VBProject project)
         {
             if (!string.IsNullOrEmpty(Path.GetDirectoryName(project.BuildFileName)))
             {
@@ -24,22 +23,21 @@ namespace Rubberduck.VBEditor
                                     && component.Properties.Count > 1)
                 .SelectMany(component => component.Properties.OfType<Property>())
                 .FirstOrDefault(property => property.Name == "Name");
-            return firstOrDefault != null 
-                ? firstOrDefault.Value.ToString() 
-                : project.Name;
+            return firstOrDefault == null 
+                ? null 
+                : firstOrDefault.Value.ToString();
         }
 
-        public static string GetDisplayName(VBComponent component)
+        private static string GetDisplayName(VBComponent component)
         {
-            if (component.Type == vbext_ComponentType.vbext_ct_Document)
+            if (component.Type != vbext_ComponentType.vbext_ct_Document)
             {
-                var nameProperty = component.Properties.Cast<Property>().SingleOrDefault(p => p.Name == "Name");
-                return nameProperty == null
-                    ? component.Name
-                    : nameProperty.Value.ToString();
+                return null;
             }
-
-            return component.Name;
+            var nameProperty = component.Properties.Cast<Property>().SingleOrDefault(p => p.Name == "Name");
+            return nameProperty == null
+                ? null
+                : nameProperty.Value.ToString();
         }
 
         public static string GetProjectId(VBProject project)
