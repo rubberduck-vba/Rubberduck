@@ -15,7 +15,7 @@ namespace Rubberduck.VBEditor
         {
             if (!string.IsNullOrEmpty(Path.GetDirectoryName(project.BuildFileName)))
             {
-                return Path.GetFileName(project.BuildFileName);
+                return Path.GetFileName(project.FileName);
             }
             
             //Don't need to check protection, as a protected project is saved, by definition
