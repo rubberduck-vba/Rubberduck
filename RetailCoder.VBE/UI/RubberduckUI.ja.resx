@@ -900,7 +900,7 @@
     <value />
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
-    <value />
+    <value>インデント</value>
   </data>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value />
@@ -1089,13 +1089,13 @@
     <value />
   </data>
   <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
-    <value />
+    <value>コードエクスプローラ</value>
   </data>
   <data name="HotkeyDescription_RefactorRename" xml:space="preserve">
-    <value />
+    <value>名前の変更</value>
   </data>
   <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
-    <value />
+    <value>Shiftキー</value>
   </data>
   <data name="SearchResults_MemberName" xml:space="preserve">
     <value />
@@ -1107,7 +1107,7 @@
     <value />
   </data>
   <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
-    <value />
+    <value>Altキー</value>
   </data>
   <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
     <value />
@@ -1116,13 +1116,13 @@
     <value />
   </data>
   <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
-    <value />
+    <value>コード検査</value>
   </data>
   <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
     <value />
   </data>
   <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
-    <value />
+    <value>ショートカットキー</value>
   </data>
   <data name="SourceControl_CommitAndSync" xml:space="preserve">
     <value />
@@ -1179,7 +1179,7 @@
     <value />
   </data>
   <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
-    <value />
+    <value>宣言へ移動</value>
   </data>
   <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
     <value />
@@ -1191,7 +1191,7 @@
     <value />
   </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
-    <value />
+    <value>&amp;x正規表現の検索置換</value>
   </data>
   <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
     <value />
@@ -1212,7 +1212,7 @@
     <value />
   </data>
   <data name="HotkeyDescription_IndentModule" xml:space="preserve">
-    <value />
+    <value>モジュールをインデント</value>
   </data>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value />
@@ -1233,16 +1233,16 @@
     <value />
   </data>
   <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
-    <value />
+    <value>自動保存モードを有効</value>
   </data>
   <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
-    <value />
+    <value>インデント設定</value>
   </data>
   <data name="ParserState_Pending" xml:space="preserve">
     <value />
   </data>
   <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
-    <value />
+    <value>Ctrlキー</value>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
     <value />
@@ -1251,7 +1251,7 @@
     <value />
   </data>
   <data name="HotkeyDescription_IndentProcedure" xml:space="preserve">
-    <value />
+    <value>プロシージャをインデント</value>
   </data>
   <data name="SearchResults_Context" xml:space="preserve">
     <value />
@@ -1272,25 +1272,25 @@
     <value />
   </data>
   <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
-    <value />
+    <value>メソッドを抽出</value>
   </data>
   <data name="SettingsInstructions_IndenterSettings" xml:space="preserve">
     <value />
   </data>
   <data name="GeneralSettings_AutoSaveLabel" xml:space="preserve">
-    <value />
+    <value>自動保存モード</value>
   </data>
   <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
-    <value />
+    <value>記述</value>
   </data>
   <data name="SourceControl_ExcludeFileButton" xml:space="preserve">
     <value />
   </data>
   <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
-    <value />
+    <value>1つ目のきー</value>
   </data>
   <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
-    <value />
+    <value>2つ目のきー</value>
   </data>
   <data name="SourceControl_Author" xml:space="preserve">
     <value />
@@ -1302,7 +1302,7 @@
     <value />
   </data>
   <data name="RubberduckMenu_Settings" xml:space="preserve">
-    <value />
+    <value>&amp;e設定</value>
   </data>
   <data name="IndenterSettings_IndentCase" xml:space="preserve">
     <value />
@@ -1353,7 +1353,7 @@
     <value />
   </data>
   <data name="HotkeyDescription_ParseAll" xml:space="preserve">
-    <value />
+    <value>パーサーのステートを更新</value>
   </data>
   <data name="SourceControl_NoBranchesTitle" xml:space="preserve">
     <value />
@@ -1401,7 +1401,7 @@
     <value />
   </data>
   <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
-    <value />
+    <value>テストエクスプローラ</value>
   </data>
   <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
     <value />
@@ -1413,7 +1413,7 @@
     <value />
   </data>
   <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
-    <value />
+    <value>有効</value>
   </data>
   <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
     <value />
@@ -1434,7 +1434,7 @@
     <value />
   </data>
   <data name="SettingsCaption_InspectionSettings" xml:space="preserve">
-    <value />
+    <value>コード検査設定</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
     <value />
@@ -1452,7 +1452,7 @@
     <value />
   </data>
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
-    <value />
+    <value>ユニットテスト設定</value>
   </data>
   <data name="SourceControl_IncludeFileButton" xml:space="preserve">
     <value />
@@ -1470,10 +1470,10 @@
     <value />
   </data>
   <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
-    <value />
+    <value>シンボルを検索</value>
   </data>
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
-    <value />
+    <value>表示言語</value>
   </data>
   <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
     <value>デバッグ</value>
@@ -1498,5 +1498,14 @@
   </data>
   <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
     <value>警告</value>
+  </data>
+  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
+    <value>フォルダ デリミタ</value>
+  </data>
+  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
+    <value>ピリオド「 . 」</value>
+  </data>
+  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
+    <value>スラッシュ「 / 」</value>
   </data>
 </root>
