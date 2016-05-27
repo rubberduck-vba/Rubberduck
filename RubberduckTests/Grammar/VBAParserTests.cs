@@ -774,6 +774,30 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//scaleSpecialForm");
         }
 
+        [TestMethod]
+        public void TestPtrSafeAsSub()
+        {
+            string code = @"
+Private Sub PtrSafe()
+    Debug.Print 42
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
+        }
+
+        [TestMethod]
+        public void TestPtrSafeAsVariable()
+        {
+            string code = @"
+Private Sub Foo()
+    Dim PtrSafe As Integer
+    PtrSafe = 42
+    Debug.Print PtrSafe
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//variableStmt");
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);
