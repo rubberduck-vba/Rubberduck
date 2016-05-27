@@ -119,6 +119,11 @@
     <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
     <Compile Include="Grammar\VBAParserListener.cs" />
     <Compile Include="Grammar\VBAParserVisitor.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParser.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseListener.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseVisitor.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserListener.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserVisitor.cs" />
     <Compile Include="Symbols\Identifier.cs" />
     <Compile Include="Binding\IBindingContext.cs" />
     <Compile Include="Binding\IBoundExpression.cs" />
@@ -198,11 +203,6 @@
     <Compile Include="Preprocessing\UnaryMinusExpression.cs" />
     <Compile Include="Preprocessing\UnaryNotExpression.cs" />
     <Compile Include="Preprocessing\ValueType.cs" />
-    <Compile Include="Preprocessing\VBAConditionalCompilationParser.cs" />
-    <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseListener.cs" />
-    <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseVisitor.cs" />
-    <Compile Include="Preprocessing\VBAConditionalCompilationParserListener.cs" />
-    <Compile Include="Preprocessing\VBAConditionalCompilationParserVisitor.cs" />
     <Compile Include="Preprocessing\VBALibrary.cs" />
     <Compile Include="Preprocessing\VBALikeBaseListener.cs" />
     <Compile Include="Preprocessing\VBALikeBaseVisitor.cs" />

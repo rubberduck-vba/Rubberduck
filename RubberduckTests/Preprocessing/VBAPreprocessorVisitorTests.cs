@@ -1202,6 +1202,30 @@ End Sub
             Assert.AreEqual(evaluated, result.Item2.AsString);
         }
 
+        [TestMethod]
+        public void TestPtrSafeKeywordAsConstant()
+        {
+            string code = @"
+#Const PtrSafe = True
+#If PtrSafe Then
+    Public Declare PtrSafe Function GetActiveWindow Lib ""User32"" () As LongPtr
+#Else
+    Public Declare Function GetActiveWindow Lib ""User32""() As Long
+#End If
+";
+
+            string evaluated = @"
+
+
+    Public Declare PtrSafe Function GetActiveWindow Lib ""User32"" () As LongPtr
+
+
+
+";
+            var result = Preprocess(code);
+            Assert.AreEqual(evaluated, result.Item2.AsString);
+        }
+
         private Tuple<SymbolTable<string, IValue>, IValue> Preprocess(string code)
         {
             SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
