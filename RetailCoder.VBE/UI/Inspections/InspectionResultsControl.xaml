@@ -483,7 +483,7 @@
             <RowDefinition Height="Auto" MinHeight="48"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD" />
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="White" />
 
         <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
@@ -590,7 +590,7 @@
 
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
 
-            <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
+            <StackPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
                 
                 <Grid Margin="4" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
