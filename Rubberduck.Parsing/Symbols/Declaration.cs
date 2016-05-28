@@ -405,6 +405,12 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        public object[] ToArray()
+        {
+            return new object[] { this.ProjectName, this.CustomFolder, this.ComponentName, this.DeclarationType.ToString(), this.Scope, this.IdentifierName, this.AsTypeName };
+        }
+
+
         /// <summary>
         /// Gets the name of the VBComponent the declaration is made in.
         /// </summary>
