@@ -55,13 +55,14 @@ namespace Rubberduck
 
         Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
         {
-            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
+            var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
             if (!File.Exists(assemblyPath))
             {
                 return null;
             }
-            Assembly assembly = Assembly.LoadFrom(assemblyPath);
+
+            var assembly = Assembly.LoadFile(assemblyPath);
             return assembly;
         }
 
