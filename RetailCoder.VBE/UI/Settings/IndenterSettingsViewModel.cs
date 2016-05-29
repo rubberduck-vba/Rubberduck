@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 
@@ -305,8 +306,8 @@ End Sub
             {
                 var indenter = new Indenter(null, GetCurrentSettings);
 
-                var lines = _previewSampleCode.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
-                indenter.Indent(lines, "TestModule", false);
+                var lines = _previewSampleCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                lines = indenter.Indent(lines, "TestModule", false).ToArray();
                 return string.Join(Environment.NewLine, lines);
             }
         }
