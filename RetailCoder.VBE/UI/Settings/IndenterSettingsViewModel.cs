@@ -268,34 +268,34 @@ namespace Rubberduck.UI.Settings
 @"' Example Procedure
 Sub ExampleProc()
 
-    ' SMART INDENTER
-    ' Original VB6 code graciously offered to Rubberduck by Stephen Bullen & Rob Bovey
-    '@ 2016 by Rubberduck VBA.
+' SMART INDENTER
+' Original VB6 code graciously offered to Rubberduck by Stephen Bullen & Rob Bovey
+' @ 2016 by Rubberduck VBA.
 
-    Dim iCount As Integer
-    Static sName As String
+Dim count As Integer
+Static name As String
 
-    If YouLikeRubberduck Then
-        ' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
-        ' Follow us on Twitter @rubberduck-vba/contributors 
-        ' Visit http://rubberduckvba.com for news and updates
+If YouLikeRubberduck Then
+' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
+' Follow us on Twitter @rubberduck-vba/contributors 
+' Visit http://rubberduckvba.com for news and updates
 
-        Select Case X
-        Case ""A""
-            ' If you have any comments or suggestions, _
-	         or find valid VBA code that isn't indented correctly,
+Select Case X
+Case ""A""
+' If you have any comments or suggestions, _
+or find valid VBA code that isn't indented correctly,
 
-	        #If VBA6 Then
-	            MsgBox ""Contact contact@rubberduck-vba.com""
-	        #End If
+#If VBA6 Then
+MsgBox ""Contact contact@rubberduck-vba.com""
+#End If
 
-        Case ""Continued strings and parameters can be"" _
-           & ""lined up for easier reading, optionally ignoring"" _
-           , ""any operators (&+, etc) at the start of the line.""
+Case ""Continued strings and parameters can be"" _
+& ""lined up for easier reading, optionally ignoring"" _
+& ""any operators (&+, etc) at the start of the line.""
 
-           Debug.Print ""X<>1""
-        End Select                                'Case X
-    End If                                        'More Tools?
+Debug.Print ""X<>1""
+End Select      'Case X
+End If      'More Tools?
 
 End Sub
 ";
