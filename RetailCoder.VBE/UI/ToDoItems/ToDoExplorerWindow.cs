@@ -23,10 +23,6 @@ namespace Rubberduck.UI.ToDoItems
             {
                 _viewModel = value;
                 TodoExplorerControl.DataContext = _viewModel;
-                if (_viewModel != null)
-                {
-                    _viewModel.RefreshCommand.Execute(null);
-                }
             }
         }
 
