@@ -905,19 +905,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitCircleSpecialForm([NotNull] VBAParser.CircleSpecialFormContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterStatementKeyword([NotNull] VBAParser.StatementKeywordContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitStatementKeyword([NotNull] VBAParser.StatementKeywordContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.lExpr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -929,6 +916,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitLExpr([NotNull] VBAParser.LExprContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStatementKeyword([NotNull] VBAParser.StatementKeywordContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStatementKeyword([NotNull] VBAParser.StatementKeywordContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.logicalAndOp"/>.
