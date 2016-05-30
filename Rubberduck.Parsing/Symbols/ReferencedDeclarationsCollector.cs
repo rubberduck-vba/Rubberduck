@@ -78,9 +78,6 @@ namespace Rubberduck.Parsing.Symbols
             {VarEnum.VT_R8, "Double"},
         };
 
-        [DllImport("kernel32.dll")]
-        public static extern bool IsBadReadPtr(IntPtr lp, uint ucb);
-
         private string GetTypeName(TYPEDESC desc, ITypeInfo info)
         {
             var vt = (VarEnum)desc.vt;
@@ -89,11 +86,6 @@ namespace Rubberduck.Parsing.Symbols
             switch (vt)
             {
                 case VarEnum.VT_PTR:
-                    if (IsBadReadPtr(desc.lpValue, (uint) IntPtr.Size))
-                    {
-                        Debug.WriteLine("Bad read pointer; returning fallback 'Object' type name.");
-                        return "Object";
-                    }
                     tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
                     return GetTypeName(tdesc, info);
                 case VarEnum.VT_USERDEFINED:
@@ -191,7 +183,6 @@ namespace Rubberduck.Parsing.Symbols
                 info.GetTypeAttr(out typeAttributesPointer);
 
                 var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
-                info.ReleaseTypeAttr(typeAttributesPointer);
 
                 var attributes = new Attributes();
                 if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID))
@@ -277,7 +268,6 @@ namespace Rubberduck.Parsing.Symbols
             IntPtr memberDescriptorPointer;
             info.GetFuncDesc(memberIndex, out memberDescriptorPointer);
             memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
-            info.ReleaseFuncDesc(memberDescriptorPointer);
 
             if (memberDescriptor.callconv != CALLCONV.CC_STDCALL)
             {
@@ -411,7 +401,6 @@ namespace Rubberduck.Parsing.Symbols
             info.GetVarDesc(fieldIndex, out ppVarDesc);
 
             var varDesc = (VARDESC)Marshal.PtrToStructure(ppVarDesc, typeof(VARDESC));
-            info.ReleaseVarDesc(ppVarDesc);
 
             var names = new string[255];
             int namesArrayLength;

@@ -85,7 +85,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
              */
             var extractedMethod = extractMethodProc.createProc(extractMethodModel);
             var code = extractedMethod.Split(new[]{Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
-            _indenter.Indent(code, "Preview", false);
+            code = _indenter.Indent(code, "Preview", false).ToArray();
             _view.Preview = string.Join(Environment.NewLine, code);
         }
     }
