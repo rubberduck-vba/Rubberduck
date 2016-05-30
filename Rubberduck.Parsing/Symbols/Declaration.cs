@@ -438,11 +438,15 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         public string AsTypeName { get { return _asTypeName; } }
 
-        public virtual string AsTypeNameWithoutArrayDesignator
+        public string AsTypeNameWithoutArrayDesignator
         {
             get
             {
-                return AsTypeName;
+                if (string.IsNullOrWhiteSpace(AsTypeName))
+                {
+                    return AsTypeName;
+                }
+                return AsTypeName.Replace("(", "").Replace(")", "").Trim();
             }
         }
 

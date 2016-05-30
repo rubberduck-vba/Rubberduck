@@ -78,21 +78,5 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
         }
-
-        public override string AsTypeNameWithoutArrayDesignator
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(AsTypeName))
-                {
-                    return AsTypeName;
-                }
-                if (!IsArray)
-                {
-                    return AsTypeName;
-                }
-                return AsTypeName.Substring(0, AsTypeName.IndexOf("("));
-            }
-        }
     }
 }

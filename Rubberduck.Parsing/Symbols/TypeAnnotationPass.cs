@@ -64,7 +64,6 @@ namespace Rubberduck.Parsing.Symbols
             var module = Declaration.GetModuleParent(declaration);
             if (module == null)
             {
-                // TODO: Reference Collector does not add module, find workaround?
                 _logger.Warn("Type annotation failed for {0} because module parent is missing.", typeExpression);
                 return;
             }
@@ -76,8 +75,11 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                // Commented out due to a massive amount of VT_HRESULT messages.
-                //Debug.WriteLine(string.Format("{0}: Failed to resolve type {1}.", GetType().Name, typeExpression));
+                const string IGNORE_THIS = "DISPATCH";
+                if (typeExpression != IGNORE_THIS)
+                {
+                    _logger.Warn("Failed to resolve type {0}", typeExpression);
+                }
             }
         }
     }
