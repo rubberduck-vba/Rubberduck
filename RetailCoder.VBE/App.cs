@@ -65,6 +65,9 @@ namespace Rubberduck
             _indenter = indenter;
             _hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
+            // Anyone else could be starting a parse task before we get to disable logging (if the user has configured it so)
+            // that is why we are conservative and disable logging by default.
+            LogManager.DisableLogging();
 
             _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -145,7 +148,6 @@ namespace Rubberduck
             {
                 return;
             }
-            LogManager.EnableLogging();
             LogLevelHelper.SetMinimumLogLevel(fileRule, LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
         }
 
