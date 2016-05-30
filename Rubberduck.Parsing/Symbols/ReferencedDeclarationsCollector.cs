@@ -20,6 +20,7 @@ using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using Rubberduck.Parsing.Annotations;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -206,10 +207,25 @@ namespace Rubberduck.Parsing.Symbols
                         moduleDeclaration = module;
                         break;
                     default:
+                        string pseudoModuleName = string.Format("_{0}", typeName);
+                        var pseudoParentModule = new ProceduralModuleDeclaration(
+                            new QualifiedMemberName(projectQualifiedModuleName, pseudoModuleName),
+                            projectDeclaration,
+                            pseudoModuleName,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                        // Enums don't define their own type but have a declared type of "Long".
+                        if (typeDeclarationType == DeclarationType.Enumeration)
+                        {
+                            typeName = Tokens.Long;
+                        }
+                        // UDTs and ENUMs don't seem to have a module parent that's why we add a "fake" module
+                        // so that the rest of the application can treat it normally.
                         moduleDeclaration = new Declaration(
-                            typeQualifiedMemberName, 
-                            projectDeclaration, 
-                            projectDeclaration, 
+                            typeQualifiedMemberName,
+                            pseudoParentModule,
+                            pseudoParentModule, 
                             typeName,
                             null,
                             false, 
@@ -409,7 +425,7 @@ namespace Rubberduck.Parsing.Symbols
             var fieldName = names[0];
             var memberType = GetDeclarationType(varDesc, typeDeclarationType);
 
-            var asTypeName = GetTypeName(varDesc.elemdescVar.tdesc, info);
+            var asTypeName = GetTypeName(varDesc.elemdescVar.tdesc, info);            
 
             return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName),
                 moduleDeclaration, moduleDeclaration, asTypeName, null, false, false, Accessibility.Global, memberType, null,
