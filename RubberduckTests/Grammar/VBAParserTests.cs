@@ -798,6 +798,17 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//variableStmt");
         }
 
+        [TestMethod]
+        public void TestLiteralExpressionResolvesCorrectly()
+        {
+            string code = @"
+Private Sub Foo()
+    a = True
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//literalExpression");
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);
