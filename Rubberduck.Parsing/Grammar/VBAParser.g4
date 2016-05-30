@@ -520,6 +520,7 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
 // 5.6 Expressions
 expression :
+    // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
     literalExpression                                                                               # literalExpr
     | lExpression                                                                                   # lExpr
     | builtInType                                                                                   # builtInTypeExpr
