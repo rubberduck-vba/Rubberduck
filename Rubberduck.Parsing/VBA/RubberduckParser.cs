@@ -45,14 +45,20 @@ namespace Rubberduck.Parsing.VBA
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
+        private readonly Func<IVBAPreprocessor> _preprocessorFactory;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckParser(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
+        public RubberduckParser(
+            VBE vbe, 
+            RubberduckParserState state,
+            IAttributeParser attributeParser,
+            Func<IVBAPreprocessor> preprocessorFactory)
         {
             _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
             _vbe = vbe;
             _state = state;
             _attributeParser = attributeParser;
+            _preprocessorFactory = preprocessorFactory;
 
             _comReflector = new ReferencedDeclarationsCollector();
 
@@ -428,7 +434,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseAsyncInternal(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
-            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
+            var preprocessor = _preprocessorFactory();
             var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
             parser.ParseFailure += (sender, e) =>
             {
