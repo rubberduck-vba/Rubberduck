@@ -23,12 +23,12 @@
             {
                 return true;
             }
-            bool sameProject = calleeModule != null && callingModule.ParentScopeDeclaration.Equals(calleeModule.ParentScopeDeclaration);
+            bool sameProject = callingModule.ParentScopeDeclaration.Equals(calleeModule.ParentScopeDeclaration);
             if (sameProject)
             {
                 return validAccessibility;
             }
-            if (calleeModule != null && calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule))
+            if (calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule))
             {
                 bool isPrivate = ((ProceduralModuleDeclaration)calleeModule).IsPrivateModule;
                 return validAccessibility && !isPrivate;
@@ -64,13 +64,7 @@
                 return calleeHasSameParent;
             }
             var memberModule = Declaration.GetModuleParent(calleeMember);
-            // TODO: Fix this?
-            // Assume null = built in declaration which is always accessible.
-            if (memberModule == null)
-            {
-                return true;
-            }
-            if (IsModuleAccessible(callingProject, callingModule, memberModule) && calleeMember.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+            if (IsModuleAccessible(callingProject, callingModule, memberModule))
             {
                 if (calleeMember.DeclarationType.HasFlag(DeclarationType.EnumerationMember) || calleeMember.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember))
                 {
