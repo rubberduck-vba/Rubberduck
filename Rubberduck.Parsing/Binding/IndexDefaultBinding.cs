@@ -132,10 +132,6 @@ namespace Rubberduck.Parsing.Binding
                 IBoundExpression boundExpression = null;
                 var asTypeName = lExpression.ReferencedDeclaration.AsTypeName;
                 var asTypeDeclaration = lExpression.ReferencedDeclaration.AsTypeDeclaration;
-                if (asTypeDeclaration == null)
-                {
-                    return null;
-                }
                 boundExpression = ResolveDefaultMember(lExpression, asTypeName, asTypeDeclaration);
                 if (boundExpression != null)
                 {
@@ -173,7 +169,8 @@ namespace Rubberduck.Parsing.Binding
                 The declared type of <l-expression> is a specific class, which has a public default Property 
                 Get, Property Let, function or subroutine, and one of the following is true:
             */
-            bool hasDefaultMember = asTypeDeclaration.DeclarationType == DeclarationType.ClassModule
+            bool hasDefaultMember = asTypeDeclaration != null
+                && asTypeDeclaration.DeclarationType == DeclarationType.ClassModule
                 && ((ClassModuleDeclaration)asTypeDeclaration).DefaultMember != null;
             if (hasDefaultMember)
             {
