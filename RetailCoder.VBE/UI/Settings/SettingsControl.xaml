@@ -8,6 +8,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance {x:Type settings:SettingsControlViewModel}, IsDesignTimeCreatable=False}">
+    <UserControl.InputBindings>
+        <KeyBinding Key="Esc"
+                    Command="{Binding CancelButtonCommand}" />
+    </UserControl.InputBindings>
     <UserControl.Resources>
         <converters:SettingsViewToPageConverter x:Key="SettingsViewToPage" />
 
@@ -157,7 +161,8 @@
                             Height="20"
                             Margin="5,0"
                             Padding="10,0"
-                            Command="{Binding CancelButtonCommand}" />
+                            Command="{Binding CancelButtonCommand}">
+                    </Button>
                 </Grid>
             </DockPanel>
         </Border>

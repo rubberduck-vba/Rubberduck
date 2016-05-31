@@ -65,11 +65,17 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
+                // TODO: Find out if there's info about "being exposed" in type libraries.
+                // We take the conservative approach of treating all type library modules as exposed.
+                if (IsBuiltIn)
+                {
+                    _isExposed = true;
+                    return _isExposed.Value;
+                }
                 if (_isExposed.HasValue)
                 {
                     return _isExposed.Value;
                 }
-
                 var attributeIsExposed = false;
                 IEnumerable<string> value;
                 if (Attributes.TryGetValue("VB_Exposed", out value))

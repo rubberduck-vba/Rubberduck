@@ -142,10 +142,9 @@ namespace Rubberduck.Parsing.Symbols
                 statementContext);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                _logger.Trace(
+                _logger.Warn(
                    string.Format(
-                       "{0}/Default Context: Failed to resolve {1}. Binding all successfully resolved expressions anyway.",
-                       GetType().Name,
+                       "Default Context: Failed to resolve {0}. Binding as much as we can.",
                        expression.GetText()));
             }
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget, false);
@@ -156,10 +155,9 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                _logger.Trace(
+                _logger.Warn(
                    string.Format(
-                       "{0}/Type Context: Failed to resolve {1}. Binding all successfully resolved expressions anyway.",
-                       GetType().Name,
+                       "Type Context: Failed to resolve {0}. Binding as much as we can.",
                        expression.GetText()));
             }
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
