@@ -23,13 +23,7 @@ namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParser : IRubberduckParser, IDisposable
     {
-        public RubberduckParserState State
-        {
-            get
-            {
-                return _state;
-            }
-        }
+        public RubberduckParserState State { get { return _state; } }
 
         private CancellationTokenSource _central = new CancellationTokenSource();
         private CancellationTokenSource _resolverTokenSource; // linked to _central later
@@ -64,11 +58,11 @@ namespace Rubberduck.Parsing.VBA
         {
             Logger.Debug("RubberduckParser handles OnStateChanged ({0})", _state.Status);
 
-            if (_state.Status == ParserState.Parsed)
+            /*if (_state.Status == ParserState.Parsed)
             {
                 Logger.Debug("(handling OnStateChanged) Starting resolver task");
                 Resolve(_central.Token); // Tests expect this to be synchronous
-            }
+            }*/
         }
 
         private void ReparseRequested(object sender, ParseRequestEventArgs e)
@@ -81,7 +75,10 @@ namespace Rubberduck.Parsing.VBA
             else
             {
                 Cancel(e.Component);
-                ParseAsync(e.Component, CancellationToken.None);
+                ParseAsync(e.Component, CancellationToken.None).Wait();
+
+                Logger.Trace("Starting resolver task");
+                Resolve(_central.Token); // Tests expect this to be synchronous
             }
         }
 
@@ -137,6 +134,14 @@ namespace Rubberduck.Parsing.VBA
             var toParse = components.Where(c => _state.IsNewOrModified(c)).ToList();
             var unchanged = components.Where(c => !_state.IsNewOrModified(c)).ToList();
 
+            File.AppendAllLines("C:/Users/hosch/Desktop/debug.txt", new[]
+            {
+                "Projects: " + projects.Count,
+                "Components: " + components.Count,
+                "ToParse: " + toParse.Count,
+                "Unchanged: " + unchanged.Count
+            });
+
             AddBuiltInDeclarations(projects);
 
             if (!toParse.Any())
@@ -168,10 +173,11 @@ namespace Rubberduck.Parsing.VBA
                 _componentAttributes.Remove(invalidated);
             }
 
-            foreach (var vbComponent in toParse)
-            {
-                ParseAsync(vbComponent, CancellationToken.None);
-            }
+            var parseTasks = toParse.Select(vbComponent => ParseAsync(vbComponent, CancellationToken.None)).ToArray();
+            Task.WaitAll(parseTasks);
+
+            Logger.Trace("Starting resolver task");
+            Resolve(_central.Token); // Tests expect this to be synchronous
         }
 
         private void AddBuiltInDeclarations(IReadOnlyList<VBProject> projects)
@@ -479,10 +485,14 @@ namespace Rubberduck.Parsing.VBA
             var components = _state.Projects
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
-            if (!_state.HasAllParseTrees(components))
+
+            File.AppendAllLines("C:/Users/hosch/Desktop/debug.txt", new[]
             {
-                return;
-            }
+                "Parse tree count: " + _state.ParseTrees.Count()
+            });
+
+            Debug.Assert(_state.HasAllParseTrees(components), string.Format("Expected parse trees: {0}\r\nParse trees: {1}", components.Count, _state.ParseTrees.Count()));
+
             _projectDeclarations.Clear();
             _state.ClearBuiltInReferences();
             foreach (var kvp in _state.ParseTrees)

@@ -159,8 +159,7 @@ namespace Rubberduck.Parsing.VBA
             if (AllUserDeclarations.Any())
             {
                 var projectId = component.Collection.Parent.HelpFile;
-                var project = AllUserDeclarations.SingleOrDefault(item =>
-                    item.DeclarationType == DeclarationType.Project && item.ProjectId == projectId);
+                var project = _projects.SingleOrDefault(item => item.Value().HelpFile == projectId).Value();
 
                 if (project == null)
                 {
