@@ -20,6 +20,7 @@ using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using Rubberduck.Parsing.Annotations;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -78,9 +79,6 @@ namespace Rubberduck.Parsing.Symbols
             {VarEnum.VT_R8, "Double"},
         };
 
-        [DllImport("kernel32.dll")]
-        public static extern bool IsBadReadPtr(IntPtr lp, uint ucb);
-
         private string GetTypeName(TYPEDESC desc, ITypeInfo info)
         {
             var vt = (VarEnum)desc.vt;
@@ -89,11 +87,6 @@ namespace Rubberduck.Parsing.Symbols
             switch (vt)
             {
                 case VarEnum.VT_PTR:
-                    if (IsBadReadPtr(desc.lpValue, (uint) IntPtr.Size))
-                    {
-                        Debug.WriteLine("Bad read pointer; returning fallback 'Object' type name.");
-                        return "Object";
-                    }
                     tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
                     return GetTypeName(tdesc, info);
                 case VarEnum.VT_USERDEFINED:
@@ -191,7 +184,6 @@ namespace Rubberduck.Parsing.Symbols
                 info.GetTypeAttr(out typeAttributesPointer);
 
                 var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
-                info.ReleaseTypeAttr(typeAttributesPointer);
 
                 var attributes = new Attributes();
                 if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID))
@@ -215,10 +207,25 @@ namespace Rubberduck.Parsing.Symbols
                         moduleDeclaration = module;
                         break;
                     default:
+                        string pseudoModuleName = string.Format("_{0}", typeName);
+                        var pseudoParentModule = new ProceduralModuleDeclaration(
+                            new QualifiedMemberName(projectQualifiedModuleName, pseudoModuleName),
+                            projectDeclaration,
+                            pseudoModuleName,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                        // Enums don't define their own type but have a declared type of "Long".
+                        if (typeDeclarationType == DeclarationType.Enumeration)
+                        {
+                            typeName = Tokens.Long;
+                        }
+                        // UDTs and ENUMs don't seem to have a module parent that's why we add a "fake" module
+                        // so that the rest of the application can treat it normally.
                         moduleDeclaration = new Declaration(
-                            typeQualifiedMemberName, 
-                            projectDeclaration, 
-                            projectDeclaration, 
+                            typeQualifiedMemberName,
+                            pseudoParentModule,
+                            pseudoParentModule, 
                             typeName,
                             null,
                             false, 
@@ -277,7 +284,6 @@ namespace Rubberduck.Parsing.Symbols
             IntPtr memberDescriptorPointer;
             info.GetFuncDesc(memberIndex, out memberDescriptorPointer);
             memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
-            info.ReleaseFuncDesc(memberDescriptorPointer);
 
             if (memberDescriptor.callconv != CALLCONV.CC_STDCALL)
             {
@@ -411,7 +417,6 @@ namespace Rubberduck.Parsing.Symbols
             info.GetVarDesc(fieldIndex, out ppVarDesc);
 
             var varDesc = (VARDESC)Marshal.PtrToStructure(ppVarDesc, typeof(VARDESC));
-            info.ReleaseVarDesc(ppVarDesc);
 
             var names = new string[255];
             int namesArrayLength;
@@ -420,7 +425,7 @@ namespace Rubberduck.Parsing.Symbols
             var fieldName = names[0];
             var memberType = GetDeclarationType(varDesc, typeDeclarationType);
 
-            var asTypeName = GetTypeName(varDesc.elemdescVar.tdesc, info);
+            var asTypeName = GetTypeName(varDesc.elemdescVar.tdesc, info);            
 
             return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName),
                 moduleDeclaration, moduleDeclaration, asTypeName, null, false, false, Accessibility.Global, memberType, null,

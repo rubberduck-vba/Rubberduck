@@ -793,17 +793,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitCircleSpecialForm([NotNull] VBAParser.CircleSpecialFormContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterStatementKeyword([NotNull] VBAParser.StatementKeywordContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitStatementKeyword([NotNull] VBAParser.StatementKeywordContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>lExpr</c>
 	/// labeled alternative in <see cref="VBAParser.expression"/>.
 	/// </summary>
@@ -815,6 +804,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitLExpr([NotNull] VBAParser.LExprContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStatementKeyword([NotNull] VBAParser.StatementKeywordContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStatementKeyword([NotNull] VBAParser.StatementKeywordContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>logicalAndOp</c>
