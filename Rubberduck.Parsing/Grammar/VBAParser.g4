@@ -47,8 +47,8 @@ moduleConfigElement :
 
 moduleAttributes : (attributeStmt endOfStatement)*;
 attributeStmt : ATTRIBUTE whiteSpace attributeName whiteSpace? EQ whiteSpace? attributeValue (whiteSpace? COMMA whiteSpace? attributeValue)*;
-attributeName : unrestrictedIdentifier;
-attributeValue : literalExpression;
+attributeName : lExpression;
+attributeValue : expression;
 
 moduleDeclarations : (moduleDeclarationsElement endOfStatement)*;
 
@@ -520,7 +520,6 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
 // 5.6 Expressions
 expression :
-    // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
     literalExpression                                                                               # literalExpr
     | lExpression                                                                                   # lExpr
     | builtInType                                                                                   # builtInTypeExpr

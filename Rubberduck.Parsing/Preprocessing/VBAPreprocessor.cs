@@ -2,7 +2,7 @@
 
 namespace Rubberduck.Parsing.Preprocessing
 {
-    public sealed class VBAPreprocessor
+    public sealed class VBAPreprocessor : IVBAPreprocessor
     {
         private readonly double _vbaVersion;
         private readonly VBAPrecompilationParser _parser;

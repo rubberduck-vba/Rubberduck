@@ -6,6 +6,8 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.Parsing.Preprocessing;
+using System.Globalization;
 
 namespace Rubberduck.API
 {
@@ -44,15 +46,13 @@ namespace Rubberduck.API
         private const string ProgId = "Rubberduck.ParserState";
 
         private readonly RubberduckParserState _state;
-        private readonly AttributeParser _attributeParser;
-
+        private AttributeParser _attributeParser;
         private RubberduckParser _parser;
 
         public ParserState()
         {
             UiDispatcher.Initialize();
             _state = new RubberduckParserState();
-            _attributeParser = new AttributeParser(new ModuleExporter());
             
             _state.StateChanged += _state_StateChanged;
         }
@@ -63,8 +63,9 @@ namespace Rubberduck.API
             {
                 throw new InvalidOperationException("ParserState is already initialized.");
             }
-
-            _parser = new RubberduckParser(vbe, _state, _attributeParser);
+            Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
+            _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
+            _parser = new RubberduckParser(vbe, _state, _attributeParser, preprocessorFactory);
         }
 
         /// <summary>
