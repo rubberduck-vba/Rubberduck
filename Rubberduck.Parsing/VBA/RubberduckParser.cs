@@ -532,13 +532,13 @@ namespace Rubberduck.Parsing.VBA
                         _state.AddDeclaration(projectDeclaration);
                     }
                 }
-                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component), _state.GetModuleAttributes(component), _projectReferences, projectDeclaration);
-                // TODO: should we unify the API? consider working like the other listeners instead of event-based
-                declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
-                declarationsListener.CreateModuleDeclarations();
-
-                _logger.Debug("Walking parse tree for '{0}'... (acquiring declarations)", qualifiedModuleName.Name);
+                _logger.Debug("Creating declarations for module {0}.", qualifiedModuleName.Name);
+                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component), _state.GetModuleAttributes(component), _projectReferences, projectDeclaration);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
+                foreach (var createdDeclaration in declarationsListener.CreatedDeclarations)
+                {
+                    _state.AddDeclaration(createdDeclaration);
+                }
             }
             catch (Exception exception)
             {
