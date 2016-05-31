@@ -49,7 +49,7 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckParser(
-            VBE vbe, 
+            VBE vbe,
             RubberduckParserState state,
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory)
