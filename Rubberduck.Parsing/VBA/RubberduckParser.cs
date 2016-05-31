@@ -40,13 +40,19 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly Func<IVBAPreprocessor> _preprocessorFactory;
 
-        public RubberduckParser(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
+        public RubberduckParser(
+            VBE vbe, 
+            RubberduckParserState state,
+            IAttributeParser attributeParser,
+            Func<IVBAPreprocessor> preprocessorFactory)
         {
             _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
             _vbe = vbe;
             _state = state;
             _attributeParser = attributeParser;
+            _preprocessorFactory = preprocessorFactory;
 
             _comReflector = new ReferencedDeclarationsCollector();
 
@@ -434,7 +440,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseAsyncInternal(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
-            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
+            var preprocessor = _preprocessorFactory();
             var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
             parser.ParseFailure += (sender, e) =>
             {
@@ -548,7 +554,12 @@ namespace Rubberduck.Parsing.VBA
                 declarationsListener.CreateModuleDeclarations();
 
                 Logger.Debug("Walking parse tree for '{0}'... (acquiring declarations)", qualifiedModuleName.Name);
+                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component), _state.GetModuleAttributes(component), _projectReferences, projectDeclaration);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
+                foreach (var createdDeclaration in declarationsListener.CreatedDeclarations)
+                {
+                    _state.AddDeclaration(createdDeclaration);
+                }
             }
             catch (Exception exception)
             {

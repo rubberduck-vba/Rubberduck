@@ -47,8 +47,8 @@ moduleConfigElement :
 
 moduleAttributes : (attributeStmt endOfStatement)*;
 attributeStmt : ATTRIBUTE whiteSpace attributeName whiteSpace? EQ whiteSpace? attributeValue (whiteSpace? COMMA whiteSpace? attributeValue)*;
-attributeName : unrestrictedIdentifier;
-attributeValue : literalExpression;
+attributeName : lExpression;
+attributeValue : expression;
 
 moduleDeclarations : (moduleDeclarationsElement endOfStatement)*;
 

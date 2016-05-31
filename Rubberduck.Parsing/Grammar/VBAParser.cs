@@ -831,8 +831,8 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class AttributeNameContext : ParserRuleContext {
-		public UnrestrictedIdentifierContext unrestrictedIdentifier() {
-			return GetRuleContext<UnrestrictedIdentifierContext>(0);
+		public LExpressionContext lExpression() {
+			return GetRuleContext<LExpressionContext>(0);
 		}
 		public AttributeNameContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -861,7 +861,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 499; unrestrictedIdentifier();
+			State = 499; lExpression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -876,8 +876,8 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class AttributeValueContext : ParserRuleContext {
-		public LiteralExpressionContext literalExpression() {
-			return GetRuleContext<LiteralExpressionContext>(0);
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
 		}
 		public AttributeValueContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -906,7 +906,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 501; literalExpression();
+			State = 501; expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -18325,7 +18325,7 @@ public partial class VBAParser : Parser {
 		"\x3\x2\x2\x2\x1ED\x1EE\x3\x2\x2\x2\x1EE\x1EF\x3\x2\x2\x2\x1EF\x1F1\x5"+
 		"\x12\n\x2\x1F0\x1E9\x3\x2\x2\x2\x1F1\x1F4\x3\x2\x2\x2\x1F2\x1F0\x3\x2"+
 		"\x2\x2\x1F2\x1F3\x3\x2\x2\x2\x1F3\xF\x3\x2\x2\x2\x1F4\x1F2\x3\x2\x2\x2"+
-		"\x1F5\x1F6\x5\x126\x94\x2\x1F6\x11\x3\x2\x2\x2\x1F7\x1F8\x5\x150\xA9\x2"+
+		"\x1F5\x1F6\x5\x15A\xAE\x2\x1F6\x11\x3\x2\x2\x2\x1F7\x1F8\x5\x14E\xA8\x2"+
 		"\x1F8\x13\x3\x2\x2\x2\x1F9\x1FA\x5\x18\r\x2\x1FA\x1FB\x5\x17C\xBF\x2\x1FB"+
 		"\x1FD\x3\x2\x2\x2\x1FC\x1F9\x3\x2\x2\x2\x1FD\x200\x3\x2\x2\x2\x1FE\x1FC"+
 		"\x3\x2\x2\x2\x1FE\x1FF\x3\x2\x2\x2\x1FF\x15\x3\x2\x2\x2\x200\x1FE\x3\x2"+

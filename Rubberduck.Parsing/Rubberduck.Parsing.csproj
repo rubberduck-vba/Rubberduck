@@ -120,6 +120,7 @@
     <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
     <Compile Include="Grammar\VBAParserListener.cs" />
     <Compile Include="Grammar\VBAParserVisitor.cs" />
+    <Compile Include="Preprocessing\IVBAPreprocessor.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParser.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseListener.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseVisitor.cs" />

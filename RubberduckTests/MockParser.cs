@@ -7,6 +7,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Preprocessing;
+using System.Globalization;
 
 namespace RubberduckTests
 {
@@ -37,7 +39,7 @@ namespace RubberduckTests
 
         public static RubberduckParser Create(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
-            return new RubberduckParser(vbe, state, attributeParser);
+            return new RubberduckParser(vbe, state, attributeParser, () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)));
         }
     }
 }
