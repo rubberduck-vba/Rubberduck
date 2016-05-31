@@ -470,11 +470,6 @@ namespace Rubberduck.Parsing.VBA
             parser.Start(token);
         }
 
-        private void ParseComponent(VBComponent component, TokenStreamRewriter rewriter = null)
-        {
-            ParseAsync(component, CancellationToken.None, rewriter).Wait();
-        }
-
         private void Resolve(CancellationToken token)
         {
             var sharedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_resolverTokenSource.Token, token);
