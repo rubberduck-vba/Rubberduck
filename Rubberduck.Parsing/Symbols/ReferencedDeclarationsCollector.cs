@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Vbe.Interop;
@@ -19,7 +18,6 @@ using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using Rubberduck.Parsing.Annotations;
-using System.Linq;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -130,8 +128,9 @@ namespace Rubberduck.Parsing.Symbols
             return typeName;
         }
 
-        public IEnumerable<Declaration> GetDeclarationsForReference(Reference reference)
+        public List<Declaration> GetDeclarationsForReference(Reference reference)
         {
+            var output = new List<Declaration>();
             var projectName = reference.Name;
             var path = reference.FullPath;
             ITypeLib typeLibrary;
@@ -139,12 +138,12 @@ namespace Rubberduck.Parsing.Symbols
             LoadTypeLibEx(path, REGKIND.REGKIND_NONE, out typeLibrary);
             if (typeLibrary == null)
             {
-                yield break;
+                return output;
             }
             var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
             var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
             var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName, isBuiltIn: true);
-            yield return projectDeclaration;
+            output.Add(projectDeclaration);
 
             var typeCount = typeLibrary.GetTypeInfoCount();
             for (var i = 0; i < typeCount; i++)
@@ -156,7 +155,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 catch (NullReferenceException)
                 {
-                    yield break;
+                    return output;
                 }
 
                 if (info == null)
@@ -242,7 +241,7 @@ namespace Rubberduck.Parsing.Symbols
                         break;
                 }
 
-                yield return moduleDeclaration;
+                output.Add(moduleDeclaration);
 
                 for (var memberIndex = 0; memberIndex < typeAttributes.cFuncs; memberIndex++)
                 {
@@ -257,25 +256,27 @@ namespace Rubberduck.Parsing.Symbols
                     {
                         ((ClassModuleDeclaration)moduleDeclaration).DefaultMember = memberDeclaration;
                     }
-                    yield return memberDeclaration;
+                    output.Add(memberDeclaration);
 
                     var parameterCount = memberDescriptor.cParams - 1;
                     for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
                     {
                         var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration, info);
-                        if (memberDeclaration is IDeclarationWithParameter)
+                        var declaration = memberDeclaration as IDeclarationWithParameter;
+                        if (declaration != null)
                         {
-                            ((IDeclarationWithParameter)memberDeclaration).AddParameter(parameter);
+                            declaration.AddParameter(parameter);
                         }
-                        yield return parameter;
+                        output.Add(parameter);
                     }
                 }
 
                 for (var fieldIndex = 0; fieldIndex < typeAttributes.cVars; fieldIndex++)
                 {
-                    yield return CreateFieldDeclaration(info, fieldIndex, typeDeclarationType, typeQualifiedModuleName, moduleDeclaration);
+                    output.Add(CreateFieldDeclaration(info, fieldIndex, typeDeclarationType, typeQualifiedModuleName, moduleDeclaration));
                 }
             }
+            return output;
         }
 
         private Declaration CreateMemberDeclaration(out FUNCDESC memberDescriptor, TYPEKIND typeKind, ITypeInfo info, int memberIndex,
@@ -458,6 +459,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info)
         {
+            var output = new List<string>();
             for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
             {
                 int href;
@@ -470,10 +472,11 @@ namespace Rubberduck.Parsing.Symbols
                 if (implTypeName != "IDispatch" && implTypeName != "IUnknown")
                 {
                     // skip IDispatch.. just about everything implements it and RD doesn't need to care about it; don't care about IUnknown either
-                    yield return implTypeName;
+                    output.Add(implTypeName);
                 }
                 //Debug.WriteLine(string.Format("\tImplements {0}", implTypeName));
             }
+            return output;
         }
 
         private DeclarationType GetDeclarationType(ITypeLib typeLibrary, int i)
