@@ -47,7 +47,7 @@ namespace RubberduckTests.Settings
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
 
-            Assert.IsTrue(config.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings));
+            Assert.IsTrue(config.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings.Select(m => new ToDoMarker(m.Text))));
         }
 
         [TestMethod]
@@ -58,7 +58,7 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);
 
-            Assert.IsTrue(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings));
+            Assert.IsTrue(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings.Select(m => new ToDoMarker(m.Text))));
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             var viewModel = new TodoSettingsViewModel(defaultConfig);
 
-            Assert.IsTrue(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings));
+            Assert.IsTrue(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings.Select(m => new ToDoMarker(m.Text))));
         }
 
         [TestMethod]
@@ -80,7 +80,7 @@ namespace RubberduckTests.Settings
             var todoMarkersList = defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
             todoMarkersList.Add(new ToDoMarker("PLACEHOLDER "));
 
-            Assert.IsTrue(todoMarkersList.SequenceEqual(viewModel.TodoSettings));
+            Assert.IsTrue(todoMarkersList.SequenceEqual(viewModel.TodoSettings.Select(m => new ToDoMarker(m.Text))));
         }
 
         [TestMethod]
@@ -89,7 +89,7 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             var viewModel = new TodoSettingsViewModel(defaultConfig);
 
-            viewModel.DeleteTodoCommand.Execute(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers[0]);
+            viewModel.DeleteTodoCommand.Execute(new TodoMarkerVM(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers[0]));
             var todoMarkersList = defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
             todoMarkersList.Remove(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers[0]);
 
