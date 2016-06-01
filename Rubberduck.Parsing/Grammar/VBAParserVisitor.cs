@@ -348,6 +348,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitAnnotation([NotNull] VBAParser.AnnotationContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.mandatoryLineContinuation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMandatoryLineContinuation([NotNull] VBAParser.MandatoryLineContinuationContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.foreignIdentifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
