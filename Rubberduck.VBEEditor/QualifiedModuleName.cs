@@ -12,32 +12,86 @@ namespace Rubberduck.VBEditor
     {
         private static string GetDisplayName(VBProject project)
         {
-            if (!string.IsNullOrEmpty(Path.GetDirectoryName(project.BuildFileName)))
+            //Try reading the filename first
+            try
             {
-                return Path.GetFileName(project.FileName);
+                if (!string.IsNullOrEmpty(Path.GetDirectoryName(project.BuildFileName)))
+                {
+                    return Path.GetFileName(project.FileName);
+                }
             }
-            
-            //Don't need to check protection, as a protected project is saved, by definition
-            var firstOrDefault = project.VBComponents.Cast<VBComponent>()
-                .Where(component => component.Type == vbext_ComponentType.vbext_ct_Document
-                                    && component.Properties.Count > 1)
-                .SelectMany(component => component.Properties.OfType<Property>())
-                .FirstOrDefault(property => property.Name == "Name");
-            return firstOrDefault == null 
-                ? null 
-                : firstOrDefault.Value.ToString();
+            catch
+            {  //The GetFileName getter probably threw
+            }
+
+            if (project.Protection == vbext_ProjectProtection.vbext_pp_none)
+            {
+                //Try reading the top-most document-type component's Properties("Name") value
+                //Eg. A Workbook's parent is the application, so read the workbook's name
+                try
+                {
+                    var nameProperty = project.VBComponents.Cast<VBComponent>()
+                        .FirstOrDefault(comp => comp.Type == vbext_ComponentType.vbext_ct_Document
+                                                && comp.Properties.Item("Name").Value != null
+                                                && comp.Properties.Item("Parent")
+                                                .Object.Equals(comp.Properties.Item("Application").Object))
+                                                .Properties.Cast<Property>().FirstOrDefault(property => property.Name == "Name");
+                    return nameProperty == null
+                        ? null
+                        : nameProperty.Value.ToString();
+                }
+                catch 
+                {
+                  //The Properties collection either wasn't available, or didn't have the expected properties
+                }
+
+                //Try reading the top-most document-type component's parent's Properties("Name") value
+                // Eg. A PowerPoint Slide is top level, but it's parent is a Presentation (that is NOT a vbComponent)
+                try
+                {
+                    var parentProp = project.VBComponents.Cast<VBComponent>()
+                        .FirstOrDefault(comp => comp.Type == vbext_ComponentType.vbext_ct_Document
+                                                && comp.Properties.Item("Parent").Value != null)
+                                                .Properties.Cast<Property>().FirstOrDefault(property => property.Name == "Parent");
+
+                    Properties props = null;
+                    Property nameProperty = null;
+                    if (parentProp.Value is Properties)
+                    {
+                        props = (Properties)parentProp.Value;
+                        nameProperty = props.Cast<Property>().FirstOrDefault(property => property.Name == "Name");
+                    }
+
+                    return nameProperty == null
+                        ? null
+                        : nameProperty.Value.ToString();
+                }
+                catch
+                {
+                    //The Properties collection either wasn't available, or didn't have the expected properties
+                }
+            }
+            return null;
         }
 
         private static string GetDisplayName(VBComponent component)
         {
-            if (component.Type != vbext_ComponentType.vbext_ct_Document)
+            if (component.Type == vbext_ComponentType.vbext_ct_Document)
             {
-                return null;
+                //Check for a valid properties collection (some hosts don't validate the Properties method unless the component's designer is open in the host
+                try
+                {
+                    var nameProperty = component.Properties.Item("Name");
+                    return nameProperty == null
+                        ? null
+                        : nameProperty.Value.ToString();
+                }
+                catch 
+                { 
+                    //The component isn't open in the host, the Properties Collection is probably inaccessible
+                }
             }
-            var nameProperty = component.Properties.Cast<Property>().SingleOrDefault(p => p.Name == "Name");
-            return nameProperty == null
-                ? null
-                : nameProperty.Value.ToString();
+            return null;    
         }
 
         public static string GetProjectId(VBProject project)
