@@ -1,9 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Controls;
-using Rubberduck.Settings;
-
-namespace Rubberduck.UI.Settings
+﻿namespace Rubberduck.UI.Settings
 {
     /// <summary>
     /// Interaction logic for TodoSettings.xaml
