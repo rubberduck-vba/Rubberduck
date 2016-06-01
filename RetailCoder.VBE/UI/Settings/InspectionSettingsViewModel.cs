@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
-using Rubberduck.Inspections;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
@@ -17,6 +16,11 @@ namespace Rubberduck.UI.Settings
             {
                 InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
             }
+        }
+
+        public void UpdateCollection()
+        {
+            InspectionSettings.CommitEdit();
         }
 
         private ListCollectionView _inspectionSettings;

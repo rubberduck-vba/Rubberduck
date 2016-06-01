@@ -22,5 +22,18 @@ namespace Rubberduck.UI.Settings
         }
 
         public ISettingsViewModel ViewModel { get { return DataContext as ISettingsViewModel; } }
+        
+        private void TodoMarkerGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.Cancel || e.EditAction == DataGridEditAction.Cancel) { return; }
+
+            var markers = TodoMarkerGrid.ItemsSource.OfType<ToDoMarker>().ToList();
+
+            var editedIndex = e.Row.GetIndex();
+            markers.RemoveAt(editedIndex);
+            markers.Insert(editedIndex, new ToDoMarker(((TextBox)e.EditingElement).Text));
+
+            ((TodoSettingsViewModel) ViewModel).TodoSettings = new ObservableCollection<ToDoMarker>(markers);
+        }
     }
 }
