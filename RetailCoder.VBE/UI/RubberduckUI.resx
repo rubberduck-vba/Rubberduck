@@ -562,6 +562,9 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
     <value>Toggle folders</value>
   </data>
+  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
   <data name="CodeInspections_CopyToolTip" xml:space="preserve">
     <value>Copy inspection results to clipboard</value>
   </data>

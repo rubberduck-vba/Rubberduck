@@ -701,6 +701,16 @@
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ShowDesignerToolTip}" />
                     </Button.ToolTip>
                 </Button>
+
+                <Separator />
+                
+                <Button Command="{Binding CopyResultsCommand}">
+                    <Image Height="16" Source="../../Resources/document-copy.png" />
+                    <Button.ToolTip>
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_CopyToolTip}" />
+                    </Button.ToolTip>
+                </Button>
+
             </ToolBar>
         </ToolBarTray>
 
@@ -708,7 +718,7 @@
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="TreeView_OnMouseDoubleClick"
-                  Style="{StaticResource CodeExplorerTreeViewStyle}">
+                  Style="{StaticResource CodeExplorerTreeViewStyle}" BorderThickness="0,1">
             <i:Interaction.Behaviors>
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>

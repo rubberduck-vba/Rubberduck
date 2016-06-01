@@ -254,6 +254,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string CodeExplorer_CopyToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_CopyToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         public static string CodeExplorer_DisplayMemberNamesText {
