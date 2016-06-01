@@ -42,16 +42,7 @@ namespace Rubberduck.Parsing.VBA
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
             var preprocessor = _preprocessorFactory();
-            string preprocessed;
-            try
-            {
-                preprocessed = preprocessor.Execute(component.Name, code);
-            }
-            catch (VBAPreprocessorException ex)
-            {
-                _logger.Error(ex, "Preprocessing failed while preparing attribute parsing for module {0}. Trying without preprocessing.", component.Name);
-                preprocessed = code;
-            }
+            var preprocessed = preprocessor.Execute(component.Name, code);
             var listener = new AttributeListener(Tuple.Create(component.Name, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes

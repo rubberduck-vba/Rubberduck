@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime.Tree.Xpath;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -6,15 +7,14 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace RubberduckTests.Grammar
 {
     [TestClass]
-    public class AttributeParserTests
+    public class VBAParserTests
     {
         [TestMethod]
-        public void ParsesEmptyForm()
+        public void TestParsesEmptyForm()
         {
             var code = @"
 VERSION 5.00
@@ -33,24 +33,127 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 ";
-            var stream = new AntlrInputStream(code);
-            var lexer = new VBALexer(stream);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBAParser(tokens);
-            parser.ErrorListeners.Clear();
-            parser.ErrorListeners.Add(new ExceptionErrorListener());
-            var tree = parser.startRule();
-            Assert.IsNotNull(tree);
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
         }
-    }
 
-    [TestClass]
-    public class VBAParserTests
-    {
+        [TestMethod]
+        public void TestAttributeFirstLine()
+        {
+            string code = @"
+Attribute VB_Name = ""Form1""
+VERSION 5.00";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
+        }
+
+        [TestMethod]
+        public void TestAttributeAfterModuleHeader()
+        {
+            string code = @"
+VERSION 5.00
+Attribute VB_Name = ""Form1""
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} Form1 
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   ""Form1.frx"":0000
+   StartUpPosition =   1  'CenterOwner
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
+        }
+
+        [TestMethod]
+        public void TestAttributeAfterModuleConfig()
+        {
+            string code = @"
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} Form1 
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   ""Form1.frx"":0000
+   StartUpPosition =   1  'CenterOwner
+End
+Attribute VB_Name = ""Form1""
+Private this As TProgressIndicator
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
+        }
+
+        [TestMethod]
+        public void TestAttributeAfterModuleDeclarations()
+        {
+            string code = @"
+Private this As TProgressIndicator
+Attribute VB_Name = ""Form1""
+Public Sub Test()
+    Attribute VB_Name = ""Form1""
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
+        }
+
+        [TestMethod]
+        public void TestAttributeInsideProcedure()
+        {
+            string code = @"
+Public Sub Test()
+    Attribute VB_Name = ""Form1""
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
+        }
+
+        [TestMethod]
+        public void TestAttributeEndOfFile()
+        {
+            string code = @"
+Public Sub Test()
+End Sub
+Attribute VB_Name = ""Form1""
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
+        }
+
+        [TestMethod]
+        public void TestAttributeNameIsMemberAccessExpr()
+        {
+            string code = @"
+Attribute view.VB_VarHelpID = -1
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
+        }
+
         [TestMethod]
         public void TestTrivialCase()
         {
             string code = @":";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//module");
+        }
+
+        [TestMethod]
+        public void TestEmptyModule()
+        {
+            string code = @"
+_
+
+   _
+
+           _
+
+";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//module");
         }
@@ -179,13 +282,27 @@ End Sub";
         }
 
         [TestMethod]
-        public void TestDictionaryCallLineContinuation()
+        public void TestDictionaryAccessExprLineContinuation()
         {
             string code = @"
 Public Sub Test()
     Set result = myObj _
     ! _
     call
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
+        }
+
+        [TestMethod]
+        public void TestWithDictionaryAccessExprLineContinuation()
+        {
+            string code = @"
+Public Sub Test()
+    With Application
+        ! _ 
+  Activate
+    End With
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
@@ -206,7 +323,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void TestMemberCallLineContinuation()
+        public void TestMemberAccessExprLineContinuation()
         {
             string code = @"
 Public Sub Test()
@@ -219,7 +336,21 @@ End Sub";
         }
 
         [TestMethod]
-        public void TestMemberProcedureCallLineContinuation()
+        public void TestWithMemberAccessExprLineContinuation()
+        {
+            string code = @"
+Public Sub Test()
+    With Application
+        . _
+    Activate
+    End With
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
+        }
+
+        [TestMethod]
+        public void TestCallStmtLineContinuation()
         {
             string code = @"
 Sub Test()
@@ -815,9 +946,13 @@ End Sub";
             var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
-            var root = parser.startRule();
-            var k = root.ToStringTree(parser);
-            return Tuple.Create<VBAParser, ParserRuleContext>(parser, root);
+            // Don't remove this line otherwise we won't get notified of parser failures.
+            parser.AddErrorListener(new ExceptionErrorListener());
+            // If SLL fails we want to get notified ASAP so we can fix it, that's why we don't retry using LL.
+            parser.Interpreter.PredictionMode = PredictionMode.Sll;
+            var tree = parser.startRule();
+            var k = tree.ToStringTree(parser);
+            return Tuple.Create<VBAParser, ParserRuleContext>(parser, tree);
         }
 
         private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath)

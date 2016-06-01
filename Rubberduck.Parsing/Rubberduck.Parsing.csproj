@@ -212,7 +212,6 @@
     <Compile Include="Preprocessing\VBALikeParser.cs" />
     <Compile Include="Preprocessing\VBALikeVisitor.cs" />
     <Compile Include="Preprocessing\VBAPrecompilationParser.cs" />
-    <Compile Include="Preprocessing\VBAPreprocessorException.cs" />
     <Compile Include="Preprocessing\VBADateConstants.cs" />
     <Compile Include="Preprocessing\SymbolTable.cs" />
     <Compile Include="Preprocessing\VBADateBaseListener.cs" />
