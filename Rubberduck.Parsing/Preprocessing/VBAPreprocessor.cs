@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rubberduck.Parsing.Preprocessing
+﻿namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class VBAPreprocessor : IVBAPreprocessor
     {
@@ -15,14 +13,7 @@ namespace Rubberduck.Parsing.Preprocessing
 
         public string Execute(string moduleName, string unprocessedCode)
         {
-            try
-            {
-                return Preprocess(moduleName, unprocessedCode);
-            }
-            catch (Exception ex)
-            {
-                throw new VBAPreprocessorException("Exception encountered during preprocessing.", ex);
-            }
+            return Preprocess(moduleName, unprocessedCode);
         }
 
         private string Preprocess(string moduleName, string unprocessedCode)

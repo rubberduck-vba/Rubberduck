@@ -2,10 +2,6 @@
 using NLog.Config;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Common
 {
@@ -32,9 +28,13 @@ namespace Rubberduck.Common
             return logLevels;
         }
 
-        public static void SetMinimumLogLevel(LoggingRule loggingRule, LogLevel minimumLogLevel)
+        public static void SetMinimumLogLevel(LogLevel minimumLogLevel)
         {
-            ClearLogLevels(loggingRule);
+            var loggingRules = LogManager.Configuration.LoggingRules;
+            foreach (var loggingRule in loggingRules)
+            {
+                ClearLogLevels(loggingRule);
+            }
             if (minimumLogLevel == LogLevel.Off)
             {
                 LogManager.DisableLogging();
@@ -42,11 +42,14 @@ namespace Rubberduck.Common
                 return;
             }
             LogManager.EnableLogging();
-            foreach (var logLevel in LogLevels)
+            foreach (var loggingRule in loggingRules)
             {
-                if (logLevel != LogLevel.Off && logLevel >= minimumLogLevel)
+                foreach (var logLevel in LogLevels)
                 {
-                    loggingRule.EnableLoggingForLevel(logLevel);
+                    if (logLevel != LogLevel.Off && logLevel >= minimumLogLevel)
+                    {
+                        loggingRule.EnableLoggingForLevel(logLevel);
+                    }
                 }
             }
             LogManager.ReconfigExistingLoggers();

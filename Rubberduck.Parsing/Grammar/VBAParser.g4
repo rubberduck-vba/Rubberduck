@@ -25,11 +25,16 @@ startRule : module EOF;
 
 module :
 	endOfStatement
+    moduleAttributes
 	moduleHeader?
+    moduleAttributes
 	moduleConfig?
 	moduleAttributes
 	moduleDeclarations
+    moduleAttributes
 	moduleBody
+    moduleAttributes
+    // A module can consist of WS as well as line continuations only.
     whiteSpace?
 ;
 
@@ -493,7 +498,7 @@ untypedIdentifier : identifierValue;
 typedIdentifier : identifierValue typeHint;
 identifierValue : IDENTIFIER | keyword | foreignName;
 foreignName : L_SQUARE_BRACKET foreignIdentifier* R_SQUARE_BRACKET;
-foreignIdentifier : ~L_SQUARE_BRACKET | foreignName;
+foreignIdentifier : ~(L_SQUARE_BRACKET | R_SQUARE_BRACKET) | foreignName;
 
 asTypeClause : AS whiteSpace? (NEW whiteSpace)? type (whiteSpace? fieldLength)?;
 
@@ -558,16 +563,13 @@ objectLiteralIdentifier : NOTHING;
 variantLiteralIdentifier : EMPTY | NULL;
 
 lExpression :
-    lExpression whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                         # indexExpr
-    | lExpression DOT unrestrictedIdentifier                                                            # memberAccessExpr
-    | lExpression LINE_CONTINUATION whiteSpace? DOT unrestrictedIdentifier                              # memberAccessExpr
-    | lExpression EXCLAMATIONPOINT unrestrictedIdentifier                                               # dictionaryAccessExpr
-    | lExpression LINE_CONTINUATION EXCLAMATIONPOINT unrestrictedIdentifier                             # dictionaryAccessExpr
-    | lExpression LINE_CONTINUATION EXCLAMATIONPOINT LINE_CONTINUATION unrestrictedIdentifier           # dictionaryAccessExpr
-    | ME                                                                                                # instanceExpr
-    | identifier                                                                                        # simpleNameExpr
-    | DOT unrestrictedIdentifier                                                                        # withMemberAccessExpr
-    | EXCLAMATIONPOINT unrestrictedIdentifier                                                           # withDictionaryAccessExpr
+    lExpression whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                     # indexExpr
+    | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? unrestrictedIdentifier                  # memberAccessExpr
+    | lExpression mandatoryLineContinuation? EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
+    | ME                                                                                                            # instanceExpr
+    | identifier                                                                                                    # simpleNameExpr
+    | DOT mandatoryLineContinuation? unrestrictedIdentifier                                                         # withMemberAccessExpr
+    | EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
 ;
 
 // 3.3.5.3 Special Identifier Forms
@@ -819,4 +821,5 @@ annotationArgList :
 	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
 annotationArg : expression;
 
+mandatoryLineContinuation : WS* LINE_CONTINUATION WS*;
 whiteSpace : (WS | LINE_CONTINUATION)+;

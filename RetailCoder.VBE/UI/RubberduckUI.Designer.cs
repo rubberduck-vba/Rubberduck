@@ -1427,6 +1427,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Log Folder.
+        /// </summary>
+        public static string GeneralSettings_ShowLogFolder {
+            get {
+                return ResourceManager.GetString("GeneralSettings_ShowLogFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Slash (/).
         /// </summary>
         public static string GeneralSettings_SlashDelimiter {

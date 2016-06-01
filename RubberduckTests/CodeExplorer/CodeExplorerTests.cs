@@ -1195,8 +1195,6 @@ End Sub
             Assert.AreEqual(-1, new CompareByType().Compare(functionNode, subNode));
         }
 
-        // TODO: Doesn't work until DisplayName is figured out.
-        [Ignore]
         [TestMethod]
         public void CompareByType_ReturnsClassModuleBelowDocument()
         {

@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.UI.Settings
+﻿using System.Windows.Controls;
+
+namespace Rubberduck.UI.Settings
 {
     /// <summary>
     /// Interaction logic for InspectionSettings.xaml
@@ -16,5 +18,12 @@
         }
 
         public ISettingsViewModel ViewModel { get { return DataContext as ISettingsViewModel; } }
+
+        private void GroupingGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.Cancel || e.EditAction == DataGridEditAction.Cancel) { return; }
+
+            ((InspectionSettingsViewModel) ViewModel).UpdateCollection();
+        }
     }
 }
