@@ -7,22 +7,22 @@ namespace Rubberduck.SmartIndenter
     [XmlType(AnonymousType = true)]
     public class IndenterSettings : IIndenterSettings
     {
-        public bool IndentEntireProcedureBody { get; set; }
-        public bool IndentFirstCommentBlock { get; set; }
-        public bool IndentFirstDeclarationBlock { get; set; }
-        public bool AlignCommentsWithCode { get; set; }
-        public bool AlignContinuations { get; set; }
-        public bool IgnoreOperatorsInContinuations { get; set; }
-        public bool IndentCase { get; set; }
-        public bool ForceDebugStatementsInColumn1 { get; set; }
-        public bool ForceCompilerDirectivesInColumn1 { get; set; }
-        public bool IndentCompilerDirectives { get; set; }
-        public bool AlignDims { get; set; }
-        public int AlignDimColumn { get; set; }
-        public bool EnableUndo { get; set; }
-        public EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
-        public int EndOfLineCommentColumnSpaceAlignment { get; set; }
-        public int IndentSpaces { get; set; }
+        public virtual bool IndentEntireProcedureBody { get; set; }
+        public virtual bool IndentFirstCommentBlock { get; set; }
+        public virtual bool IndentFirstDeclarationBlock { get; set; }
+        public virtual bool AlignCommentsWithCode { get; set; }
+        public virtual bool AlignContinuations { get; set; }
+        public virtual bool IgnoreOperatorsInContinuations { get; set; }
+        public virtual bool IndentCase { get; set; }
+        public virtual bool ForceDebugStatementsInColumn1 { get; set; }
+        public virtual bool ForceCompilerDirectivesInColumn1 { get; set; }
+        public virtual bool IndentCompilerDirectives { get; set; }
+        public virtual bool AlignDims { get; set; }
+        public virtual int AlignDimColumn { get; set; }
+        public virtual bool EnableUndo { get; set; }
+        public virtual EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
+        public virtual int EndOfLineCommentColumnSpaceAlignment { get; set; }
+        public virtual int IndentSpaces { get; set; }
 
         public IndenterSettings()
         {

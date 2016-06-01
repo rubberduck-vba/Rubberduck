@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.SmartIndenter;
+using RubberduckTests.Settings;
 
 namespace RubberduckTests.SmartIndenter
 {
@@ -17,7 +18,7 @@ namespace RubberduckTests.SmartIndenter
                @"Public Declare Sub Bar Lib ""bar.dll"" (Y As Integer)"
             };
 
-            var indenter = new Indenter(null, () => new IndenterSettings());
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(code.SequenceEqual(actual));
         }
@@ -42,7 +43,7 @@ namespace RubberduckTests.SmartIndenter
                 "End Function"
             };
 
-            var indenter = new Indenter(null, () => new IndenterSettings());
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
@@ -77,7 +78,7 @@ namespace RubberduckTests.SmartIndenter
                 "End Function"
             };
 
-            var indenter = new Indenter(null, () => new IndenterSettings());
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
@@ -104,7 +105,7 @@ namespace RubberduckTests.SmartIndenter
                 "End Sub"
             };
 
-            var indenter = new Indenter(null, () => new IndenterSettings());
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
@@ -131,7 +132,7 @@ namespace RubberduckTests.SmartIndenter
                 "End Sub"
             };
 
-            var indenter = new Indenter(null, () => new IndenterSettings());
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
@@ -160,7 +161,7 @@ namespace RubberduckTests.SmartIndenter
                 "#End If"
             };
 
-            var indenter = new Indenter(null, () => new IndenterSettings());
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
@@ -200,7 +201,7 @@ namespace RubberduckTests.SmartIndenter
                 "End Type"
             };
 
-            var indenter = new Indenter(null, () => new IndenterSettings());
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
@@ -235,7 +236,7 @@ namespace RubberduckTests.SmartIndenter
                 "End Sub"
             };
 
-            var indenter = new Indenter(null, () => new IndenterSettings());
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
@@ -272,7 +273,7 @@ namespace RubberduckTests.SmartIndenter
                 "End Sub"
             };
 
-            var indenter = new Indenter(null, () => new IndenterSettings());
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
@@ -299,7 +300,7 @@ namespace RubberduckTests.SmartIndenter
                 "End Sub"
             };
 
-            var indenter = new Indenter(null, () => new IndenterSettings());
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
