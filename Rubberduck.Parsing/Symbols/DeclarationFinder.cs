@@ -4,7 +4,6 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols

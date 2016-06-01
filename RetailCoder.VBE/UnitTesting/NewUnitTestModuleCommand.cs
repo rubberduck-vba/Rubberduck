@@ -81,7 +81,10 @@ namespace Rubberduck.UnitTesting
             
             try
             {
-                project.EnsureReferenceToAddInLibrary();
+                if (settings.BindingMode == BindingMode.EarlyBinding)
+                {
+                    project.EnsureReferenceToAddInLibrary();
+                }
 
                 component = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
                 component.Name = GetNextTestModuleName(project);
