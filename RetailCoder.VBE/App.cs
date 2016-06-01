@@ -339,7 +339,9 @@ namespace Rubberduck
             }
 
             _logger.Debug("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
-            _parser.State.RemoveProject(e.Item.HelpFile);
+
+            // note: if a bug is discovered with renaming a project, it may just need to be removed and readded.
+
             _parser.State.OnParseRequested(sender);
         }
 

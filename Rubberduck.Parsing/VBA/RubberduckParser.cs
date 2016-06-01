@@ -9,7 +9,6 @@ using Microsoft.Vbe.Interop;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using System.Globalization;
 using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using Rubberduck.Parsing.Annotations;
@@ -23,13 +22,7 @@ namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParser : IRubberduckParser, IDisposable
     {
-        public RubberduckParserState State
-        {
-            get
-            {
-                return _state;
-            }
-        }
+        public RubberduckParserState State { get { return _state; } }
 
         private CancellationTokenSource _central = new CancellationTokenSource();
         private CancellationTokenSource _resolverTokenSource; // linked to _central later
@@ -46,10 +39,10 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckParser(
-            VBE vbe, 
+            VBE vbe,
             RubberduckParserState state,
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory)
@@ -68,13 +61,13 @@ namespace Rubberduck.Parsing.VBA
 
         private void StateOnStateChanged(object sender, EventArgs e)
         {
-            _logger.Debug("RubberduckParser handles OnStateChanged ({0})", _state.Status);
+            Logger.Debug("RubberduckParser handles OnStateChanged ({0})", _state.Status);
 
-            if (_state.Status == ParserState.Parsed)
+            /*if (_state.Status == ParserState.Parsed)
             {
                 _logger.Debug("(handling OnStateChanged) Starting resolver task");
                 Resolve(_central.Token); // Tests expect this to be synchronous
-            }
+            }*/
         }
 
         private void ReparseRequested(object sender, ParseRequestEventArgs e)
@@ -87,7 +80,10 @@ namespace Rubberduck.Parsing.VBA
             else
             {
                 Cancel(e.Component);
-                ParseAsync(e.Component, CancellationToken.None);
+                ParseAsync(e.Component, CancellationToken.None).Wait();
+                
+                Logger.Trace("Starting resolver task");
+                Resolve(_central.Token); // Tests expect this to be synchronous
             }
         }
 
@@ -117,11 +113,17 @@ namespace Rubberduck.Parsing.VBA
                 _componentAttributes.Remove(invalidated);
             }
 
-            foreach (var vbComponent in components)
+            /*foreach (var vbComponent in components)
             {
                 _state.ClearStateCache(vbComponent);
                 ParseComponent(vbComponent);
-            }
+            }*/
+
+            var parseTasks = components.Select(vbComponent => ParseAsync(vbComponent, CancellationToken.None)).ToArray();
+            Task.WaitAll(parseTasks);
+
+            Logger.Trace("Starting resolver task");
+            Resolve(_central.Token); // Tests expect this to be synchronous
         }
 
         /// <summary>
@@ -174,10 +176,11 @@ namespace Rubberduck.Parsing.VBA
                 _componentAttributes.Remove(invalidated);
             }
 
-            foreach (var vbComponent in toParse)
-            {
-                ParseAsync(vbComponent, CancellationToken.None);
-            }
+            var parseTasks = toParse.Select(vbComponent => ParseAsync(vbComponent, CancellationToken.None)).ToArray();
+            Task.WaitAll(parseTasks);
+            
+            Logger.Trace("Starting resolver task");
+            Resolve(_central.Token); // Tests expect this to be synchronous
         }
 
         private void AddBuiltInDeclarations(IReadOnlyList<VBProject> projects)
@@ -467,11 +470,6 @@ namespace Rubberduck.Parsing.VBA
             parser.Start(token);
         }
 
-        private void ParseComponent(VBComponent component, TokenStreamRewriter rewriter = null)
-        {
-            ParseAsync(component, CancellationToken.None, rewriter).Wait();
-        }
-
         private void Resolve(CancellationToken token)
         {
             var sharedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_resolverTokenSource.Token, token);
@@ -494,7 +492,7 @@ namespace Rubberduck.Parsing.VBA
             foreach (var kvp in _state.ParseTrees)
             {
                 var qualifiedName = kvp.Key;
-                _logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName, _state.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
+                Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName, _state.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
                 // modified module; walk parse tree and re-acquire all declarations
                 if (token.IsCancellationRequested) return;
                 ResolveDeclarations(qualifiedName.Component, kvp.Value);
@@ -538,7 +536,7 @@ namespace Rubberduck.Parsing.VBA
                         _state.AddDeclaration(projectDeclaration);
                     }
                 }
-                _logger.Debug("Creating declarations for module {0}.", qualifiedModuleName.Name);
+                Logger.Debug("Creating declarations for module {0}.", qualifiedModuleName.Name);
                 var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component), _state.GetModuleAttributes(component), _projectReferences, projectDeclaration);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
                 foreach (var createdDeclaration in declarationsListener.CreatedDeclarations)
@@ -548,7 +546,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (Exception exception)
             {
-                _logger.Error(exception, "Exception thrown acquiring declarations for '{0}' (thread {1}).", component.Name, Thread.CurrentThread.ManagedThreadId);
+                Logger.Error(exception, "Exception thrown acquiring declarations for '{0}' (thread {1}).", component.Name, Thread.CurrentThread.ManagedThreadId);
                 lock (_state)
                 {
                     _state.SetModuleState(component, ParserState.ResolverError);
@@ -578,7 +576,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
             var qualifiedName = new QualifiedModuleName(component);
-            _logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
+            Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
             var listener = new IdentifierReferenceListener(resolver);
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
@@ -589,19 +587,19 @@ namespace Rubberduck.Parsing.VBA
                     Stopwatch watch = Stopwatch.StartNew();
                     walker.Walk(listener, tree);
                     watch.Stop();
-                    _logger.Debug("Binding Resolution done for component '{0}' in {1}ms (thread {2})", component.Name, watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+                    Logger.Debug("Binding Resolution done for component '{0}' in {1}ms (thread {2})", component.Name, watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
                     _state.RebuildSelectionCache();
                     state = ParserState.Ready;
                 }
                 catch (Exception exception)
                 {
-                    _logger.Error(exception, "Exception thrown resolving '{0}' (thread {1}).", component.Name, Thread.CurrentThread.ManagedThreadId);
+                    Logger.Error(exception, "Exception thrown resolving '{0}' (thread {1}).", component.Name, Thread.CurrentThread.ManagedThreadId);
                     state = ParserState.ResolverError;
                 }
             }
 
             _state.SetModuleState(component, state);
-            _logger.Debug("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
+            Logger.Debug("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
         }
 
         public void Dispose()
