@@ -80,6 +80,18 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _selectedItem = value;
                 OnPropertyChanged();
+
+                if (_selectedItem is CodeExplorerProjectViewModel)
+                {
+                    var vbe = _selectedItem.GetSelectedDeclaration().Project.VBE;
+                    var project = vbe.VBProjects.Cast<VBProject>().FirstOrDefault(f => f.HelpFile == _selectedItem.GetSelectedDeclaration().Project.HelpFile);
+
+                    if (project != null)
+                    {
+                        vbe.ActiveVBProject = project;
+                    }
+                }
+
                 // ReSharper disable ExplicitCallerInfoArgument
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
