@@ -22,6 +22,7 @@ namespace Rubberduck.UI.UnitTesting
         private readonly TestExplorerModel _model;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
+        private readonly IOperatingSystem _operatingSystem;
 
         public TestExplorerViewModel(VBE vbe,
              RubberduckParserState state,
@@ -30,13 +31,15 @@ namespace Rubberduck.UI.UnitTesting
              IClipboardWriter clipboard,
              NewUnitTestModuleCommand newTestModuleCommand,
              NewTestMethodCommand newTestMethodCommand,
-             IGeneralConfigService configService)
+             IGeneralConfigService configService,
+             IOperatingSystem operatingSystem)
         {
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
             _model = model;
             _clipboard = clipboard;
             _configService = configService;
+            _operatingSystem = operatingSystem;
 
             _navigateCommand = new NavigateCommand();
 
@@ -190,13 +193,13 @@ namespace Rubberduck.UI.UnitTesting
 
         private readonly ICommand _runSelectedTestCommand;
         public ICommand RunSelectedTestCommand { get { return _runSelectedTestCommand; } }
-        
+
         private readonly ICommand _openTestSettingsCommand;
         public ICommand OpenTestSettingsCommand { get { return _openTestSettingsCommand; } }
 
         private void OpenSettings(object param)
         {
-            using (var window = new SettingsForm(_configService, SettingsViews.UnitTestSettings))
+            using (var window = new SettingsForm(_configService, _operatingSystem, SettingsViews.UnitTestSettings))
             {
                 window.ShowDialog();
             }
@@ -246,7 +249,7 @@ namespace Rubberduck.UI.UnitTesting
             stopwatch.Start();
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
             stopwatch.Stop();
-            
+
             Model.IsBusy = false;
             TotalDuration = stopwatch.ElapsedMilliseconds;
         }
@@ -310,7 +313,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
 
-            ColumnInfo[] ColumnInfos = { new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Method"), new ColumnInfo("Outcome"), new ColumnInfo("Output"), 
+            ColumnInfo[] ColumnInfos = { new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Method"), new ColumnInfo("Outcome"), new ColumnInfo("Output"),
                                            new ColumnInfo("Start Time"), new ColumnInfo("End Time"), new ColumnInfo("Duration (ms)", hAlignment.Right) };
 
             var aResults = _model.Tests.Select(test => test.ToArray()).ToArray();
@@ -333,7 +336,7 @@ namespace Rubberduck.UI.UnitTesting
 
             _clipboard.Flush();
         }
- 
+
         //KEEP THIS, AS IT MAKES FOR THE BASIS OF A USEFUL *SUMMARY* REPORT
         //private void ExecuteCopyResultsCommand(object parameter)
         //{

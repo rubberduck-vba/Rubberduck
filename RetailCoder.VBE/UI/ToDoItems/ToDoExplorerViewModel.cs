@@ -10,6 +10,7 @@ using Rubberduck.ToDoItems;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
+using Rubberduck.Common;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -17,11 +18,13 @@ namespace Rubberduck.UI.ToDoItems
     {
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configService;
+        private readonly IOperatingSystem _operatingSystem;
 
-        public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService)
+        public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService, IOperatingSystem operatingSystem)
         {
             _state = state;
             _configService = configService;
+            _operatingSystem = operatingSystem;
             _state.StateChanged += _state_StateChanged;
 
             _setMarkerGroupingCommand = new DelegateCommand(param =>
@@ -160,7 +163,7 @@ namespace Rubberduck.UI.ToDoItems
                 }
                 return _openTodoSettings = new DelegateCommand(_ =>
                 {
-                    using (var window = new SettingsForm(_configService, SettingsViews.TodoSettings))
+                    using (var window = new SettingsForm(_configService, _operatingSystem, SettingsViews.TodoSettings))
                     {
                         window.ShowDialog();
                     }

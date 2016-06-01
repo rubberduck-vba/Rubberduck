@@ -3,6 +3,8 @@ using System.Linq;
 using Rubberduck.Settings;
 using NLog;
 using Rubberduck.Common;
+using System.Windows.Input;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
@@ -14,8 +16,11 @@ namespace Rubberduck.UI.Settings
 
     public class GeneralSettingsViewModel : ViewModelBase, ISettingsViewModel
     {
-        public GeneralSettingsViewModel(Configuration config)
+        private readonly IOperatingSystem _operatingSystem;
+
+        public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem)
         {
+            _operatingSystem = operatingSystem;
             Languages = new ObservableCollection<DisplayLanguageSetting>(
                 new[] 
             {
@@ -33,6 +38,8 @@ namespace Rubberduck.UI.Settings
             Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;
             LogLevels = new ObservableCollection<MinimumLogLevel>(LogLevelHelper.LogLevels.Select(l => new MinimumLogLevel(l.Ordinal, l.Name)));
             SelectedLogLevel = LogLevels.First(l => l.Ordinal == config.UserSettings.GeneralSettings.MinimumLogLevel);
+
+            _showLogFolderCommand = new DelegateCommand(_ => ShowLogFolder());
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
@@ -120,6 +127,17 @@ namespace Rubberduck.UI.Settings
                     OnPropertyChanged();
                 }
             }
+        }
+
+        private readonly ICommand _showLogFolderCommand;
+        public ICommand ShowLogFolderCommand
+        {
+            get { return _showLogFolderCommand; }
+        }
+
+        private void ShowLogFolder()
+        {
+            _operatingSystem.ShowFolder(ApplicationConstants.LOG_FOLDER_PATH);
         }
 
         public void UpdateConfig(Configuration config)

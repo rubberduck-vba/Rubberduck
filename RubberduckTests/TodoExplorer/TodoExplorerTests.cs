@@ -7,6 +7,7 @@ using Rubberduck.Settings;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
+using Rubberduck.Common;
 
 namespace RubberduckTests.TodoExplorer
 {
@@ -31,14 +32,14 @@ namespace RubberduckTests.TodoExplorer
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-            var vm = new ToDoExplorerViewModel(parser.State, GetConfigService());
+            var vm = new ToDoExplorerViewModel(parser.State, GetConfigService(), GetOperatingSystemMock().Object);
 
             parser.Parse();
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var comments = vm.Items.Select(s => s.Type);
 
-            Assert.IsTrue(comments.SequenceEqual(new[] {"TODO ", "NOTE ", "BUG "}));
+            Assert.IsTrue(comments.SequenceEqual(new[] { "TODO ", "NOTE ", "BUG " }));
         }
 
         [TestMethod]
@@ -60,7 +61,7 @@ namespace RubberduckTests.TodoExplorer
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-            var vm = new ToDoExplorerViewModel(parser.State, GetConfigService());
+            var vm = new ToDoExplorerViewModel(parser.State, GetConfigService(), GetOperatingSystemMock().Object);
 
             parser.Parse();
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -74,7 +75,7 @@ namespace RubberduckTests.TodoExplorer
         {
             var configService = new Mock<IGeneralConfigService>();
             configService.Setup(c => c.LoadConfiguration()).Returns(GetTodoConfig);
-            
+
             return configService.Object;
         }
 
@@ -92,6 +93,11 @@ namespace RubberduckTests.TodoExplorer
 
             var userSettings = new UserSettings(null, null, todoSettings, null, null, null);
             return new Configuration(userSettings);
+        }
+
+        private Mock<IOperatingSystem> GetOperatingSystemMock()
+        {
+            return new Mock<IOperatingSystem>();
         }
     }
 }
