@@ -703,8 +703,8 @@
                 </Button>
 
                 <Separator />
-                
-                <Button Command="{Binding CopyResultsCommand}">
+
+                <Button Command="{Binding CopyResultsCommand}" CommandParameter="{Binding ElementName=ProjectTree}">
                     <Image Height="16" Source="../../Resources/document-copy.png" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_CopyToolTip}" />
@@ -714,11 +714,12 @@
             </ToolBar>
         </ToolBarTray>
 
-        <TreeView Grid.Row="1"
+        <TreeView x:Name="ProjectTree" Grid.Row="1"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="TreeView_OnMouseDoubleClick"
-                  Style="{StaticResource CodeExplorerTreeViewStyle}" BorderThickness="0,1">
+                  Style="{StaticResource CodeExplorerTreeViewStyle}" BorderThickness="0,1"
+                  VirtualizingPanel.IsVirtualizing="False">
             <i:Interaction.Behaviors>
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>

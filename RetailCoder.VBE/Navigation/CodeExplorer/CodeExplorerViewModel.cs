@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Navigation.Folders;
@@ -72,6 +74,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
 
+                
+                const long DPI = 96;
+                FrameworkElement element = (FrameworkElement)param;
+                double height = element.ActualHeight;
+                double width = element.ActualWidth;
+                RenderTargetBitmap bmp = new RenderTargetBitmap((int)Math.Round(width), (int)Math.Round(height), DPI, DPI, PixelFormats.Default);
+                DrawingVisual dv = new DrawingVisual();
+                using (DrawingContext dc = dv.RenderOpen())
+                {
+                    VisualBrush vb = new VisualBrush(element);
+                    dc.DrawRectangle(vb, null, new Rect(new Point(), new Size(width, height)));
+                }
+                bmp.Render(dv);
+
+
+
                 ColumnInfo[] ColumnInfos = { new ColumnInfo("Project"), new ColumnInfo("Folder"), new ColumnInfo("Component"), new ColumnInfo("Declaration Type"), new ColumnInfo("Scope"), 
                                            new ColumnInfo("Name"), new ColumnInfo("Return Type") };
 
@@ -91,6 +109,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
                 _clipboard.AppendString(DataFormats.Rtf, rtfResults);
                 _clipboard.AppendString(DataFormats.Html, htmlResults);
+                _clipboard.AppendImage(bmp);
                 _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
                 //_clipboard.AppendString(DataFormats.UnicodeText, textResults);
 
