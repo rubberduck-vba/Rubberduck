@@ -33,6 +33,8 @@ using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 using NLog;
+using Rubberduck.Parsing.Preprocessing;
+using System.Globalization;
 
 namespace Rubberduck.Root
 {
@@ -94,6 +96,7 @@ namespace Rubberduck.Root
 
             //Bind<TestExplorerModel>().To<StandardModuleTestExplorerModel>().InSingletonScope();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
+            Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)));
 
             _kernel.Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();
             _kernel.Bind<SearchResultPresenterInstanceManager>().ToSelf().InSingletonScope();

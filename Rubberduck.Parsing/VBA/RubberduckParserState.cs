@@ -64,7 +64,7 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParseRequestEventArgs> ParseRequest;
         public event EventHandler<RubberduckStatusMessageEventArgs> StatusMessageUpdate;
 
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public void OnStatusMessageUpdate(string message)
         {
@@ -129,7 +129,7 @@ namespace Rubberduck.Parsing.VBA
                 return _moduleStates.Select(kvp => Tuple.Create(kvp.Key.Component, kvp.Value.ModuleException))
                     .Where(item => item.Item2 != null)
                     .ToList();
-        }
+            }
         }
 
         public event EventHandler<ParserStateEventArgs> StateChanged;
@@ -154,26 +154,12 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void SetModuleState(ParserState state)
-        {
-            var projects = Projects
-                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
-                .ToList();
-
-            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
-            foreach (var component in components)
-            {
-                SetModuleState(component, state);
-            }
-        }
-
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
             if (AllUserDeclarations.Any())
             {
                 var projectId = component.Collection.Parent.HelpFile;
-                var project = AllUserDeclarations.SingleOrDefault(item =>
-                    item.DeclarationType == DeclarationType.Project && item.ProjectId == projectId);
+                var project = _projects.SingleOrDefault(item => item.Value().HelpFile == projectId).Value();
 
                 if (project == null)
                 {
@@ -187,7 +173,7 @@ namespace Rubberduck.Parsing.VBA
 
             _moduleStates.AddOrUpdate(key, new ModuleState(state), (c, e) => e.SetState(state));
             _moduleStates.AddOrUpdate(key, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
-            _logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
+            Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state);
             Status = EvaluateParserState();
         }
@@ -214,20 +200,20 @@ namespace Rubberduck.Parsing.VBA
             if (state != default(ParserState))
             {
                 // if all modules are in the same state, we have our result.
-                _logger.Debug("ParserState evaluates to '{0}' (thread {1})", state, Thread.CurrentThread.ManagedThreadId);
+                Logger.Debug("ParserState evaluates to '{0}' (thread {1})", state, Thread.CurrentThread.ManagedThreadId);
                 return state;
             }
 
             // error state takes precedence over every other state
             if (moduleStates.Any(ms => ms == ParserState.Error))
             {
-                _logger.Debug("ParserState evaluates to '{0}' (thread {1})", ParserState.Error,
+                Logger.Debug("ParserState evaluates to '{0}' (thread {1})", ParserState.Error,
                 Thread.CurrentThread.ManagedThreadId);
                 return ParserState.Error;
             }
             if (moduleStates.Any(ms => ms == ParserState.ResolverError))
             {
-                _logger.Debug("ParserState evaluates to '{0}' (thread {1})", ParserState.ResolverError,
+                Logger.Debug("ParserState evaluates to '{0}' (thread {1})", ParserState.ResolverError,
                 Thread.CurrentThread.ManagedThreadId);
                 return ParserState.ResolverError;
             }
@@ -250,7 +236,7 @@ namespace Rubberduck.Parsing.VBA
 
             Debug.Assert(result != ParserState.Ready || moduleStates.All(item => item == ParserState.Ready || item == ParserState.None));
 
-            _logger.Debug("ParserState evaluates to '{0}' (thread {1})", result,
+            Logger.Debug("ParserState evaluates to '{0}' (thread {1})", result,
             Thread.CurrentThread.ManagedThreadId);
             return result;
         }
@@ -283,12 +269,12 @@ namespace Rubberduck.Parsing.VBA
         public ParserState Status
         {
             get { return _status; }
-            internal set
+            private set
             {
                 if (_status != value)
                 {
                     _status = value;
-                    _logger.Debug("ParserState changed to '{0}', raising OnStateChanged", value);
+                    Logger.Debug("ParserState changed to '{0}', raising OnStateChanged", value);
                     OnStateChanged(_status);
                 }
             }
@@ -401,12 +387,12 @@ namespace Rubberduck.Parsing.VBA
                 byte _;
                 while (!declarations.TryRemove(declaration, out _))
                 {
-                    _logger.Debug("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                    Logger.Debug("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
                 }
             }
             while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
             {
-                _logger.Debug("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                Logger.Debug("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
             }
         }
 
@@ -465,7 +451,7 @@ namespace Rubberduck.Parsing.VBA
                 }
 
                 _projects.Remove(projectId);
-                _logger.Debug("Removed Project declaration for project Id {0}", projectId);
+                Logger.Debug("Removed Project declaration for project Id {0}", projectId);
             }
 
             if (notifyStateChanged)
@@ -610,7 +596,7 @@ namespace Rubberduck.Parsing.VBA
 
         private QualifiedSelection _lastSelection;
         private Declaration _selectedDeclaration;
-        private List<Tuple<Declaration, Selection, QualifiedModuleName>> _declarationSelections = new List<Tuple<Declaration, Selection, QualifiedModuleName>>();
+        private readonly List<Tuple<Declaration, Selection, QualifiedModuleName>> _declarationSelections = new List<Tuple<Declaration, Selection, QualifiedModuleName>>();
 
         public void RebuildSelectionCache()
         {
@@ -625,7 +611,6 @@ namespace Rubberduck.Parsing.VBA
 
         public Declaration FindSelectedDeclaration(CodePane activeCodePane, bool procedureLevelOnly = false)
         {
-
             var selection = activeCodePane.GetQualifiedSelection();
             if (selection.Equals(_lastSelection))
             {
@@ -642,7 +627,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (!selection.Equals(default(QualifiedSelection)))
             {
-                List<Tuple<Declaration, Selection, QualifiedModuleName>> matches = new List<Tuple<Declaration, Selection, QualifiedModuleName>>();
+                List<Tuple<Declaration, Selection, QualifiedModuleName>> matches;
                 lock (_declarationSelections)
                 {
                     matches = _declarationSelections.Where(t =>
@@ -694,28 +679,16 @@ namespace Rubberduck.Parsing.VBA
                 }
                 catch (InvalidOperationException exception)
                 {
-                    _logger.Error(exception);
+                    Logger.Error(exception);
                 }
             }
 
             if (_selectedDeclaration != null)
             {
-                _logger.Debug("Current selection ({0}) is '{1}' ({2})", selection, _selectedDeclaration.IdentifierName, _selectedDeclaration.DeclarationType);
+                Logger.Debug("Current selection ({0}) is '{1}' ({2})", selection, _selectedDeclaration.IdentifierName, _selectedDeclaration.DeclarationType);
             }
 
             return _selectedDeclaration;
-        }
-
-        private static bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName)
-                   && (declaration.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection));
-        }
-
-        private static bool IsSelectedReference(QualifiedSelection selection, IdentifierReference reference)
-        {
-            return reference.QualifiedModuleName.Equals(selection.QualifiedName)
-                   && reference.Selection.ContainsFirstCharacter(selection.Selection);
         }
 
         public void RemoveBuiltInDeclarations(Reference reference)
@@ -730,7 +703,7 @@ namespace Rubberduck.Parsing.VBA
                     moduleState.Dispose();
                 }
 
-                _logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
+                Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
             }
         }
 

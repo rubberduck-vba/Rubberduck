@@ -25,14 +25,14 @@ namespace Rubberduck.Parsing.VBA
         private readonly QualifiedModuleName _qualifiedName;
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
-        private readonly VBAPreprocessor _preprocessor;
+        private readonly IVBAPreprocessor _preprocessor;
         private readonly VBAModuleParser _parser;
 
         public event EventHandler<ParseCompletionArgs> ParseCompleted;
         public event EventHandler<ParseFailureArgs> ParseFailure;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ComponentParseTask(VBComponent vbComponent, VBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(VBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
         {
             _attributeParser = attributeParser;
             _preprocessor = preprocessor;
