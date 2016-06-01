@@ -21,7 +21,6 @@ namespace RubberduckTests.Mocks
         private readonly Mock<References> _vbReferences;
 
         private readonly List<Mock<VBComponent>> _componentsMock = new List<Mock<VBComponent>>();
-        //private readonly List<VBComponent> _components = new List<VBComponent>();
         private readonly List<Reference> _references = new List<Reference>();
 
         public Mock<VBComponents> MockVBComponents
