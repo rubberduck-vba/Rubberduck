@@ -73,6 +73,7 @@ namespace Rubberduck.Root
             _kernel.Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
             _kernel.Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
             _kernel.Bind<TestExplorerModel>().ToSelf().InSingletonScope();
+            _kernel.Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
 
             BindCodeInspectionTypes();
 

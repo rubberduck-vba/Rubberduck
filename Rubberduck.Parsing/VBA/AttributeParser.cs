@@ -73,7 +73,7 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitModuleAttributes(VBAParser.ModuleAttributesContext context)
             {
-                if (_currentScopeAttributes.Any())
+                if (_currentScopeAttributes.Any() && !_attributes.ContainsKey(_currentScope))
                 {
                     _attributes.Add(_currentScope, _currentScopeAttributes);
                 }

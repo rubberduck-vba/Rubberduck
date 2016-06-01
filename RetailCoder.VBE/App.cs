@@ -4,6 +4,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
@@ -11,13 +12,11 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck
 {
@@ -65,9 +64,6 @@ namespace Rubberduck
             _indenter = indenter;
             _hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
-            // Anyone else could be starting a parse task before we get to disable logging (if the user has configured it so)
-            // that is why we are conservative and disable logging by default.
-            LogManager.DisableLogging();
 
             _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -143,12 +139,7 @@ namespace Rubberduck
 
         private void UpdateLoggingLevel()
         {
-            var fileRule = LogManager.Configuration.LoggingRules.Where(rule => rule.Targets.Any(t => t.Name == FILE_TARGET_NAME)).FirstOrDefault();
-            if (fileRule == null)
-            {
-                return;
-            }
-            LogLevelHelper.SetMinimumLogLevel(fileRule, LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
+            LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
         }
 
         public void Startup()
