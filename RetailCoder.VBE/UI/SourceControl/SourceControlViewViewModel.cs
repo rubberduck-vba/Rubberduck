@@ -60,7 +60,7 @@ namespace Rubberduck.UI.SourceControl
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
             _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid());
-            _refreshCommand = new DelegateCommand(_ => Refresh(), _ => _state.IsDirty());
+            _refreshCommand = new DelegateCommand(_ => Refresh());
             _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
             _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
             _loginGridOkCommand = new DelegateCommand(_ => CloseLoginGrid(), text => !string.IsNullOrEmpty((string)text));
