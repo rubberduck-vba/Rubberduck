@@ -38,7 +38,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _clipboard = new ClipboardWriter();
 
             _refreshCommand = new DelegateCommand(param => _state.OnParseRequested(this),
-                param => _state.IsDirty() && !IsBusy);
+                param => !IsBusy && _state.IsDirty());
 
             _refreshComponentCommand = commands.OfType<CodeExplorer_RefreshComponentCommand>().FirstOrDefault();
             _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().FirstOrDefault();
