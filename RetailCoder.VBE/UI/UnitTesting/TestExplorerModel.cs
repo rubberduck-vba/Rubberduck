@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
@@ -13,12 +14,15 @@ namespace Rubberduck.UI.UnitTesting
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly Dispatcher _dispatcher;
 
         public TestExplorerModel(VBE vbe, RubberduckParserState state)
         {
             _vbe = vbe;
             _state = state;
             _state.StateChanged += State_StateChanged;
+
+            _dispatcher = Dispatcher.CurrentDispatcher;
         }
 
         private void State_StateChanged(object sender, ParserStateEventArgs e)
@@ -33,34 +37,38 @@ namespace Rubberduck.UI.UnitTesting
                                  t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
                                  t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
 
-            // remove old tests
-            foreach (var test in removedTests)
+            _dispatcher.Invoke(() =>
             {
-                UiDispatcher.Invoke(() => { Tests.Remove(test); });
-            }
 
-            // update declarations for existing tests--declarations are immutable
-            foreach (var test in Tests.Except(removedTests))
-            {
-                var declaration = tests.First(t =>
-                    t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                    t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                    t.Declaration.ProjectId == test.Declaration.ProjectId).Declaration;
-
-                test.SetDeclaration(declaration);
-            }
-
-            // add new tests
-            foreach (var test in tests)
-            {
-                if (!Tests.Any(t =>
-                    t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                    t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                    t.Declaration.ProjectId == test.Declaration.ProjectId))
+                // remove old tests
+                foreach (var test in removedTests)
                 {
-                    UiDispatcher.Invoke(() => { Tests.Add(test); });
+                    Tests.Remove(test);
                 }
-            }
+
+                // update declarations for existing tests--declarations are immutable
+                foreach (var test in Tests.Except(removedTests))
+                {
+                    var declaration = tests.First(t =>
+                        t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                        t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                        t.Declaration.ProjectId == test.Declaration.ProjectId).Declaration;
+
+                    test.SetDeclaration(declaration);
+                }
+
+                // add new tests
+                foreach (var test in tests)
+                {
+                    if (!Tests.Any(t =>
+                        t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                        t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                        t.Declaration.ProjectId == test.Declaration.ProjectId))
+                    {
+                        Tests.Add(test);
+                    }
+                }
+            });
         }
 
         private readonly ObservableCollection<TestMethod> _tests = new ObservableCollection<TestMethod>();

@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Command.MenuItems
         // thanks to Pellared on http://stackoverflow.com/a/12909070/1188513
 
         private static SynchronizationContext UiContext { get; set; }
-
+        
         public static void Initialize()
         {
             if (UiContext == null)

@@ -38,6 +38,11 @@ namespace RubberduckTests.Mocks
             get { return _componentsMock.Select(m => m.Object).ToList(); }
         }
 
+        public void RemoveComponent(Mock<VBComponent> component)
+        {
+            _componentsMock.Remove(component);
+        }
+
         public MockProjectBuilder(string name, string filename, vbext_ProjectProtection protection, Func<VBE> getVbe, MockVbeBuilder mockVbeBuilder)
         {
             _getVbe = getVbe;
