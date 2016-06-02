@@ -21,7 +21,6 @@ namespace RubberduckTests.Mocks
         private readonly Mock<References> _vbReferences;
 
         private readonly List<Mock<VBComponent>> _componentsMock = new List<Mock<VBComponent>>();
-        //private readonly List<VBComponent> _components = new List<VBComponent>();
         private readonly List<Reference> _references = new List<Reference>();
 
         public Mock<VBComponents> MockVBComponents
@@ -37,6 +36,11 @@ namespace RubberduckTests.Mocks
         private List<VBComponent> Components
         {
             get { return _componentsMock.Select(m => m.Object).ToList(); }
+        }
+
+        public void RemoveComponent(Mock<VBComponent> component)
+        {
+            _componentsMock.Remove(component);
         }
 
         public MockProjectBuilder(string name, string filename, vbext_ProjectProtection protection, Func<VBE> getVbe, MockVbeBuilder mockVbeBuilder)

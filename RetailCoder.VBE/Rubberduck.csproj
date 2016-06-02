@@ -288,6 +288,7 @@
     <Compile Include="API\ParserState.cs" />
     <Compile Include="AppMenu.cs" />
     <Compile Include="AutoSave\AutoSave.cs" />
+    <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationExtensions.cs" />
@@ -302,6 +303,7 @@
     <Compile Include="Common\Hotkeys\Hotkey.cs" />
     <Compile Include="Common\IAttachable.cs" />
     <Compile Include="Common\Hotkeys\IHotkey.cs" />
+    <Compile Include="Common\IOperatingSystem.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\LogLevelHelper.cs" />
     <Compile Include="Common\ModuleExporter.cs" />
@@ -346,6 +348,7 @@
     <Compile Include="Common\WinAPI\User32.cs" />
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
+    <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Inspections\InspectionsUI.de.Designer.cs">
       <DependentUpon>InspectionsUI.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>

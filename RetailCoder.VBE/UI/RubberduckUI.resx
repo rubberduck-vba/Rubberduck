@@ -1617,4 +1617,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
     <value>Warn</value>
   </data>
+  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
+    <value>Show Log Folder</value>
+  </data>
 </root>

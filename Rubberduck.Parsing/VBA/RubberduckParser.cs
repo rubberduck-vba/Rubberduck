@@ -348,7 +348,7 @@ namespace Rubberduck.Parsing.VBA
                     if (!map.IsLoaded)
                     {
                         _state.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
-                        var items = _comReflector.GetDeclarationsForReference(reference).ToList();
+                        var items = _comReflector.GetDeclarationsForReference(reference);
                         foreach (var declaration in items)
                         {
                             _state.AddDeclaration(declaration);

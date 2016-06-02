@@ -1591,4 +1591,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
     <value>Warnung</value>
   </data>
+  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
+    <value>Logging-Ordner anzeigen</value>
+  </data>
 </root>

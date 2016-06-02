@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
+using Rubberduck.Common;
 
 namespace Rubberduck.UI.Command
 {
@@ -11,14 +12,16 @@ namespace Rubberduck.UI.Command
     public class SettingsCommand : CommandBase
     {
         private readonly IGeneralConfigService _service;
-        public SettingsCommand(IGeneralConfigService service)
+        private readonly IOperatingSystem _operatingSystem;
+        public SettingsCommand(IGeneralConfigService service, IOperatingSystem operatingSystem)
         {
             _service = service;
+            _operatingSystem = operatingSystem;
         }
 
         public override void Execute(object parameter)
         {
-            using (var window = new SettingsForm(_service))
+            using (var window = new SettingsForm(_service, _operatingSystem))
             {
                 window.ShowDialog();
             }

@@ -606,6 +606,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitAnnotation([NotNull] VBAParser.AnnotationContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.mandatoryLineContinuation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMandatoryLineContinuation([NotNull] VBAParser.MandatoryLineContinuationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.mandatoryLineContinuation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMandatoryLineContinuation([NotNull] VBAParser.MandatoryLineContinuationContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.foreignIdentifier"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

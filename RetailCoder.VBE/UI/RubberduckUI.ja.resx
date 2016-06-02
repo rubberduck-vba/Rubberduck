@@ -1508,4 +1508,7 @@
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>スラッシュ「 / 」</value>
   </data>
+  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
+    <value>ロギングフォルダを開く</value>
+  </data>
 </root>
