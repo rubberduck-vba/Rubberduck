@@ -197,10 +197,10 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByRefUnassigned()
+        public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByRef()
         {
             const string inputCode =
-@"Sub Foo(arg1 As String)
+@"Sub Foo(ByRef arg1 As String)
 End Sub";
 
             const string expectedCode =
