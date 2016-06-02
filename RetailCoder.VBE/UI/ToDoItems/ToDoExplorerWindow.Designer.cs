@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
-using Rubberduck.UI.CodeInspections;
+using Rubberduck.UI.Inspections;
 
 namespace Rubberduck.UI.ToDoItems
 {

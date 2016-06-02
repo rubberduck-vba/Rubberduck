@@ -12,6 +12,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
@@ -174,6 +175,8 @@ namespace Rubberduck
             }
 
             var projectId = e.Item.HelpFile;
+            Debug.Assert(projectId != null);
+
             _componentsEventsSinks.Remove(projectId);
             _referencesEventsSinks.Remove(projectId);
             _parser.State.RemoveProject(e.Item);

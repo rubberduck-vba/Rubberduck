@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="Rubberduck.UI.CodeInspections.InspectionResultsControl"
+﻿<UserControl x:Class="Rubberduck.UI.Inspections.InspectionResultsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:inspections="clr-namespace:Rubberduck.Inspections"
-             xmlns:codeInspections="clr-namespace:Rubberduck.UI.CodeInspections"
+             xmlns:codeInspections="clr-namespace:Rubberduck.UI.Inspections"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
@@ -483,7 +483,7 @@
             <RowDefinition Height="Auto" MinHeight="48"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD" />
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="White" />
 
         <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
@@ -590,7 +590,7 @@
 
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
 
-            <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
+            <StackPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
                 
                 <Grid Margin="4" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>

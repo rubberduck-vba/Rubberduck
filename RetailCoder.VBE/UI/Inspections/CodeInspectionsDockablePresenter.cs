@@ -1,6 +1,6 @@
 ﻿using Microsoft.Vbe.Interop;
 
-namespace Rubberduck.UI.CodeInspections
+namespace Rubberduck.UI.Inspections
 {
     public class CodeInspectionsDockablePresenter : DockableToolwindowPresenter
     {

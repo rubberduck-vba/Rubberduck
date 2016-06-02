@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Rubberduck.UI.CodeInspections
+namespace Rubberduck.UI.Inspections
 {
     public partial class CodeInspectionsWindow : UserControl, IDockableUserControl
     {
