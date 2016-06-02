@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Common;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
