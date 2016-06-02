@@ -36,14 +36,9 @@ namespace Rubberduck.UI.Command
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
-            if (_state.Status != ParserState.Error && _state.Status != ParserState.Parsed) { return; }
-
             if (_viewModel == null) { return; }
 
-            if (_viewModel.Tabs.All(tab => tab.Header != RubberduckUI.Parser_ParserError))
-            {
-                return;
-            }
+            if (_state.Status != ParserState.Error && _state.Status != ParserState.Parsed) { return; }
             
             UiDispatcher.InvokeAsync(UpdateTab);
         }
@@ -75,8 +70,6 @@ namespace Rubberduck.UI.Command
             {
                 return;
             }
-
-            UpdateTab();
 
             try
             {
