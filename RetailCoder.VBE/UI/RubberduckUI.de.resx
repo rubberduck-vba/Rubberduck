@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -491,9 +491,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Parserfehler</value>
   </data>
-  <data name="CodeExplorer_AddClassText" xml:space="preserve">
-    <value>&amp;Klassenmodul (.cls)</value>
-  </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
     <value>Benutzerdefiniertes Formular</value>
   </data>
@@ -529,9 +526,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
     <value>Alle &amp;Tests ausführen</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
-    <value>Designer &amp;Anzeigen</value>
   </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
     <value>Designer öffnen</value>
@@ -858,9 +852,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
     <value>Bitte geben sie einen Zweignamen an.</value>
   </data>
-  <data name="CodeExplorer_Inspect" xml:space="preserve">
-    <value>&amp;Inspizieren</value>
-  </data>
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} Probleme</value>
   </data>
@@ -911,9 +902,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
     <value>Alles Ersetzen</value>
-  </data>
-  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
-    <value>Suche</value>
   </data>
   <data name="RegexSearchReplace_Caption" xml:space="preserve">
     <value>Regex Suchen &amp; Ersetzen</value>
@@ -1593,5 +1581,14 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Logging-Ordner anzeigen</value>
+  </data>
+  <data name="information">
+    <value />
+  </data>
+  <data name="CodeExplorer_CopyToolTip">
+    <value />
+  </data>
+  <data name="cross_circle">
+    <value />
   </data>
 </root>

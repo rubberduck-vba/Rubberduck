@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,166 +118,166 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AssignedByValParameterInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Le paramètre est passé par valeur, mais une nouvelle valeur/référence lui est assignée; considérez introduire une copie locale si le code appelant n'est pas sensé utiliser la nouvelle valeur. Si le code appelant est sensé utiliser la nouvelle valeur, le paramètre devrait être passé par référence (ByRef), et il y a un bogue.</value>
   </data>
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
-    <value />
+    <value>Assignation d'un paramètre passé par valeur (ByVal)</value>
   </data>
   <data name="CodeQualityIssues" xml:space="preserve">
-    <value />
+    <value>Qualité du code</value>
   </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
-    <value />
+    <value>La constante est déclarée, mais Rubberduck n'a pu trouver aucune référence; la déclaration pourrait être supprimée.</value>
   </data>
   <data name="ConstantNotUsedInspectionName" xml:space="preserve">
-    <value />
+    <value>Constante non utilisée</value>
   </data>
   <data name="DefaultProjectNameInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Considérez nommer votre projet VBA.</value>
   </data>
   <data name="DefaultProjectNameInspectionName" xml:space="preserve">
-    <value />
+    <value>Le projet porte le nom assigné par défaut</value>
   </data>
   <data name="EmptyStringLiteralInspection" xml:space="preserve">
-    <value />
+    <value>Préférez la constante 'vbNullString' à une chaîne de caractères vide</value>
   </data>
   <data name="EmptyStringLiteralInspectionMeta" xml:space="preserve">
-    <value />
+    <value>La constante 'vbNullString' est un pointeur nul de chaîne de caractères qui occupe 0 bytes de mémoire et qui transmet sans ambiguïté l'intention de représenter une chaîne de caractères vide.</value>
   </data>
   <data name="EmptyStringLiteralInspectionName" xml:space="preserve">
-    <value />
+    <value>Chaîne de caractères vide</value>
   </data>
   <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
-    <value />
+    <value>Remplacer "" par la constante 'vbNullString'</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>Le champ public '{0}' rompt l'encapsulation</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Considérez exposer plutôt une propriété.</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionName" xml:space="preserve">
-    <value />
+    <value>Un champ public rompt l'encapsulation</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
-    <value />
+    <value>Encapsuler le champ '{0}' avec une propriété</value>
   </data>
   <data name="IgnoreOnce" xml:space="preserve">
-    <value />
+    <value>Ignorer à cet emplacement</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Les références implicites à la feuille active rendent le code plus fragile et plus difficile à déboguer. Considérez rendre ces références explicites lorsqu'elles sont intentionelles, et préférez l'utilisations de références d'objets. Ignorez ce résultat si l'appel réfère à un type que Rubberduck n'a pu résoudre.</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionName" xml:space="preserve">
-    <value />
+    <value>Référence implicite à la feuille active.</value>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Les références implicites au classeur actif rendent le code plus fragile et plus difficile à déboguer. Considérez rendre ces références explicites lorsqu'elles sont intentionelles, et préférez l'utilisations de références d'objets. Ignorez ce résultat si l'appel réfère à un type que Rubberduck n'a pu résoudre.</value>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
-    <value />
+    <value>Référence implicite au classeur actif</value>
   </data>
   <data name="ImplicitByRefParameterInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Les paramètres sont passés par référence à moins qu'ils soient spécifiés autrement, ce qui peut être déroutant et rendre le code plus enclin à introduire des bogues. Passer les paramètres par valeur (ByVal) de préférence, et spécifier ByRef explicitement lorsque les paramètres sont passés par référence.</value>
   </data>
   <data name="ImplicitByRefParameterInspectionName" xml:space="preserve">
-    <value />
+    <value>Paramètre ByRef implicite</value>
   </data>
   <data name="ImplicitPublicMemberInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Les membres d'un module sont publics par défaut, ce qui peut être contre-intuitif. Considérez spécifier les modificateurs d'accès explicitement pour éviter toute ambiguïté.</value>
   </data>
   <data name="ImplicitPublicMemberInspectionName" xml:space="preserve">
-    <value />
+    <value>Membre implicitement public</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Les membres qui renvoient une valeur, renvoient implicitement une valeur de type 'Variant' à moins qu'un type explicite ne soit spécifié. Considérez renvoyer un 'Variant' explicite quand le type est inconnu, ou spécifiez le type explicitement.</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
-    <value />
+    <value>Le membre renvoie implicitement une valeur 'Variant'</value>
   </data>
   <data name="MoveFieldCloserToUsageInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Un champ qui n'est utilisé dans une seule procédure, devrait être déclarée dans cette procédure.</value>
   </data>
   <data name="MoveFieldCloserToUsageInspectionName" xml:space="preserve">
-    <value />
+    <value>La portée de la variable est plus grande que nécessaire</value>
   </data>
   <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>Restreindre la portée du champ '{0}'</value>
   </data>
   <data name="LanguageOpportunities" xml:space="preserve">
-    <value />
+    <value>Opportunités du language</value>
   </data>
   <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value />
+    <value>Maintenance et lisibilité</value>
   </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Considérez insérer les continuations entre les paramètres d'une longue signature. Séparer la déclaraion d'un paramètre sur plusieurs lignes rend plus difficile la lecture du code.</value>
   </data>
   <data name="MultilineParameterInspectionName" xml:space="preserve">
-    <value />
+    <value>Le paramètre est déclaré sur plus d'une ligne</value>
   </data>
   <data name="MultipleDeclarationsInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Déclarer plusieurs variables dans la même instruction est légal, mais devrait être utilisé avec modération. Considérez déclarer les variables plus près de leur utilisation, dans une seule déclaration par instruction.</value>
   </data>
   <data name="MultipleDeclarationsInspectionName" xml:space="preserve">
-    <value />
+    <value>L'instruction comporte plus d'une déclaration</value>
   </data>
   <data name="MultipleFolderAnnotationsInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>Le module '{0}' compre plus d'une annotation '@Folder'</value>
   </data>
   <data name="MultipleFolderAnnotationsInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Rubberduck utilise seulement la première annotation '@Folder' dans un module; considérez supprimer les annotations superflues.</value>
   </data>
   <data name="MultipleFolderAnnotationsInspectionName" xml:space="preserve">
-    <value />
+    <value>Le module compte plus d'une annotation '@Folder'</value>
   </data>
   <data name="NonReturningFunctionInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Il s'agit possiblement d'un bogue. La valeur de retour d'une fonction ou d'un accesseur de propriété doit être assignée avant la sortie, sans quoi la fonction ne renverra pas de résultat. Si la fonction n'a aucune valeur de retour significative, considérez plutôt une procédure (Sub).</value>
   </data>
   <data name="NonReturningFunctionInspectionName" xml:space="preserve">
-    <value />
+    <value>Fonction ou accesseur de propriété sans valeur de retour</value>
   </data>
   <data name="ObsoleteCallStatementInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Le mot-clé 'Call' n'est pas requis pour l'appel de procédures, et n'existe que pour permettre au code plus ancien de pouvoir s'exécuter; l'appel peut être réécrit sans le mot-clé.</value>
   </data>
   <data name="ObsoleteCallStatementInspectionName" xml:space="preserve">
-    <value />
+    <value>Utilisation du mot-clé 'Call'</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Le mot-clé 'Rem' n'est pas requis pour commenter le code, et n'existe que pour permettre au code plus ancien de pouvoir s'exécuter; 'Rem' peut être remplacé par une simple apostrophe.</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspectionName" xml:space="preserve">
-    <value />
+    <value>Utilisation du mot-clé 'Rem'</value>
   </data>
   <data name="ObsoleteGlobalInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Le mot-clé 'Global' n'existe que pour permettre au code plus ancien de pouvoir s'exécuter; 'Global' peut être remplacé par 'Public'.</value>
   </data>
   <data name="ObsoleteGlobalInspectionName" xml:space="preserve">
-    <value />
+    <value>Utilisation du mot-clé 'Global'</value>
   </data>
   <data name="ObsoleteLetStatementInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Le mot-clé 'Let' n'est pas requis pour assigner une valeur, et n'existe que pour permettre au code plus ancien de pouvoir s'exécuter; 'Let' peut être tout simplement supprimé.</value>
   </data>
   <data name="ObsoleteLetStatementInspectionName" xml:space="preserve">
-    <value />
+    <value>Utilisation du mot-clé 'Let'</value>
   </data>
   <data name="ObsoleteTypeHintInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Les indicateurs de type n'existent que pour permettre au code plus ancien de pouvoir s'exécuter, et peuvent être remplacés dans les déclarations par une clause 'As' qui spécifie un type explicitement; ils peuvent généralement être tout simplement omis partout ailleurs.</value>
   </data>
   <data name="ObsoleteTypeHintInspectionName" xml:space="preserve">
-    <value />
+    <value>Utilisation d'un indicateur de type</value>
   </data>
   <data name="OptionBaseInspectionMeta" xml:space="preserve">
-    <value />
+    <value>La limite inférieure des tableaux est typiquement zéro. Cette option change la limite inférieure des tableaux implicitement spécifiés, ce qui peut facilement introduire des erreurs ("off-by-one") par inadvertance.</value>
   </data>
   <data name="OptionBaseInspectionName" xml:space="preserve">
-    <value />
+    <value>'Option Base 1' est spécifié</value>
   </data>
   <data name="OptionExplicitInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Rubberduck ne peut pas voir les variables qui ne sont pas déclarées, et VBA n'aura aucun problème à compiler une erreur typographique: utilisez 'Option Explicit' pour prévenir la compilation d'un programme erroné.</value>
   </data>
   <data name="OptionExplicitInspectionName" xml:space="preserve">
-    <value />
+    <value>'Option Explicit' n'est pas spécifiée.</value>
   </data>
   <data name="ParameterCanBeByValInspectionMeta" xml:space="preserve">
     <value />
@@ -369,40 +369,40 @@
     <value />
   </data>
   <data name="FunctionReturnValueNotUsedInspectionName" xml:space="preserve">
-    <value />
+    <value>La valeur de retour de la fonction n'est jamais utilisée.</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>La valeur de retour de la fonction '{0}' n'est jamais utilisée.</value>
   </data>
   <data name="AssignedByValParameterInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>Le paramètre '{0}' passé par valeur est assigné</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Un membre est implémenté comme une fonction, mais utilisé comme une procédure. Considérez convertir la fonction en procédure.</value>
   </data>
   <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>{0} '{1}' n'est pas utilisé(e).</value>
   </data>
   <data name="ImplicitByRefParameterInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>Le paramètre '{0}' est passé par référence implicitement</value>
   </data>
   <data name="ImplicitPublicMemberInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>Le membre '{0}' est implicitement public</value>
   </data>
   <data name="ImplicitVariantDeclarationInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>{0} '{1}' est implicitement de type Variant</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>La valeur de retour du membre '{0}' est implicitement 'Variant'</value>
   </data>
   <data name="MultilineParameterInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>Le paramètre '{0}' est déclaré sur plusieurs lignes</value>
   </data>
   <data name="NonReturningFunctionInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>La valeur de retour du membre '{0}' n'est pas assignée</value>
   </data>
   <data name="ObsoleteGlobalInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>{0} '{1}' utilise le modificateur obsolète 'Global'</value>
   </data>
   <data name="ParameterCanBeByValInspectionResultFormat" xml:space="preserve">
     <value />
@@ -417,28 +417,28 @@
     <value />
   </data>
   <data name="ConvertFunctionToProcedureQuickFix" xml:space="preserve">
-    <value />
+    <value>Convertir la fonction en procédure</value>
   </data>
   <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
-    <value />
+    <value>Déclarer explicitement comme Variant</value>
   </data>
   <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
-    <value />
+    <value>Passer le paramètre par référence explicitement</value>
   </data>
   <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
-    <value />
+    <value>TODO</value>
   </data>
   <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
-    <value />
+    <value>Déclarer la variable sur une seule ligne</value>
   </data>
   <data name="ObsoleteGlobalInspectionQuickFix" xml:space="preserve">
-    <value />
+    <value>Remplacer le modificateur 'Global' par 'Public'</value>
   </data>
   <data name="OptionExplicitInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>'Option Explicit' n'est pas spécifiée dans le module '{0}'.</value>
   </data>
   <data name="OptionExplicitQuickFix" xml:space="preserve">
-    <value />
+    <value>Spécifier 'Option Explicit'</value>
   </data>
   <data name="PassParameterByReferenceQuickFix" xml:space="preserve">
     <value />
@@ -492,10 +492,10 @@
     <value />
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
-    <value />
+    <value>Désactiver cette inspection</value>
   </data>
   <data name="InvalidContextTypeInspectionFix">
-    <value />
+    <value>Le type de contexte '{0}' est invalide pour {1}.</value>
   </data>
   <data name="SetObjectVariableQuickFix">
     <value />
@@ -504,15 +504,54 @@
     <value />
   </data>
   <data name="ObjectVariableNotSetInspectionName">
-    <value />
+    <value>L'assignation d'une référence d'objet requiert le mot-clé 'Set'</value>
   </data>
   <data name="EmptyStringLiteralInspectionResultFormat">
-    <value />
+    <value>Préférez 'vbNullString' à une chaîne de caractères vide</value>
   </data>
   <data name="ObjectVariableNotSetInspectionResultFormat">
-    <value />
+    <value>La variable '{0}' est assignée dans le mot-clé 'Set'</value>
   </data>
   <data name="ObjectVariableNotSetInspectionMeta">
+    <value>Rubberduck voit cette variable comme étant une référence à un objet, assignée sans le mot-clé 'Set'. Ceci cause une erreur d'exécution (#91 'Object or With block variable not set').</value>
+  </data>
+  <data name="ImplicitActiveWorkbookReferenceInspectionResultFormat">
+    <value>Le membre '{0}' réfère implicitement au classeur actif</value>
+  </data>
+  <data name="MultipleDeclarationsInspectionResultFormat">
+    <value>L'instruction comporte plusieurs déclarations</value>
+  </data>
+  <data name="Inspections_Usage">
+    <value>Utilisation</value>
+  </data>
+  <data name="Inspections_Declaration">
+    <value>Déclaration</value>
+  </data>
+  <data name="VariableTypeNotDeclaredInspectionResultFormat">
+    <value />
+  </data>
+  <data name="DefaultProjectNameInspectionResultFormat">
+    <value>Le projet '{0}' n'est pas nommé</value>
+  </data>
+  <data name="ObsoleteCallStatementInspectionResultFormat">
+    <value>L'assignation utilise le mot-clé obsolète 'Call'</value>
+  </data>
+  <data name="ObsoleteLetStatementInspectionResultFormat">
+    <value>L'assignation utilise le mot-clé obsolète 'Let'</value>
+  </data>
+  <data name="OptionBaseInspectionResultFormat">
+    <value>Le module '{0}' utilise 'Option Base 1'</value>
+  </data>
+  <data name="ObsoleteCommentSyntaxInspectionResultFormat">
+    <value>Le commentaire utilise la forme obsolète 'Rem'</value>
+  </data>
+  <data name="ObsoleteTypeHintInspectionResultFormat">
+    <value>{0} de {1} '{2}' utilise un indicateur de type</value>
+  </data>
+  <data name="ImplicitActiveSheetReferenceInspectionResultFormat">
+    <value>Le membre '{0}' réfère implicitement à la feuille active</value>
+  </data>
+  <data name="UntypedFunctionUsageInspectionResultFormat">
     <value />
   </data>
 </root>
