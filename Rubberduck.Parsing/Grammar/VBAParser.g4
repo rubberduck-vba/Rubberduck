@@ -65,7 +65,8 @@ moduleOption :
 ;
 
 moduleDeclarationsElement :
-    declareStmt
+    attributeStmt
+    | declareStmt
     | defDirective
 	| enumerationStmt 
 	| eventStmt
@@ -821,5 +822,5 @@ annotationArgList :
 	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
 annotationArg : expression;
 
-mandatoryLineContinuation : WS* LINE_CONTINUATION WS*;
+mandatoryLineContinuation : LINE_CONTINUATION WS*;
 whiteSpace : (WS | LINE_CONTINUATION)+;
