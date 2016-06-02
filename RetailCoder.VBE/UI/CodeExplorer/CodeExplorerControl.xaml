@@ -628,7 +628,7 @@
         <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
-                <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding CanRefresh}">
+                <Button Command="{Binding RefreshCommand}">
                     <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" />
