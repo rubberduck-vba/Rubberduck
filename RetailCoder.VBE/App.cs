@@ -18,6 +18,7 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Rubberduck.Common.Hotkeys;
 
 namespace Rubberduck
 {
@@ -132,9 +133,9 @@ namespace Rubberduck
         private void _configService_SettingsChanged(object sender, EventArgs e)
         {
             _config = _configService.LoadConfiguration();
+            _hooks.HookHotkeys();
             // also updates the ShortcutKey text
             _appMenus.Localize();
-            _hooks.HookHotkeys();
             UpdateLoggingLevel();
         }
 
@@ -147,9 +148,9 @@ namespace Rubberduck
         {
             CleanReloadConfig();
             _appMenus.Initialize();
+            _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
             Task.Delay(1000).ContinueWith(t => UiDispatcher.Invoke(() => _parser.State.OnParseRequested(this))).ConfigureAwait(false);
-            _hooks.HookHotkeys();
             UpdateLoggingLevel();
         }
 

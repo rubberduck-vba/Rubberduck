@@ -100,7 +100,8 @@ namespace Rubberduck.UI.ToDoItems
                 return _refreshCommand = new DelegateCommand(_ =>
                 {
                     _state.OnParseRequested(this);
-                });
+                },
+                _ => _state.IsDirty());
             }
         }
 

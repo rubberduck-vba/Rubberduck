@@ -32,9 +32,10 @@ namespace Rubberduck.Navigation.CodeExplorer
             _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += ParserState_StateChanged;
-            _state.ModuleStateChanged += ParserState_ModuleStateChanged;
             
-            _refreshCommand = commands.OfType<CodeExplorer_RefreshCommand>().FirstOrDefault();
+            _refreshCommand = new DelegateCommand(param => _state.OnParseRequested(this),
+                param => !IsBusy && _state.IsDirty());
+
             _refreshComponentCommand = commands.OfType<CodeExplorer_RefreshComponentCommand>().FirstOrDefault();
             _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().FirstOrDefault();
 
@@ -176,18 +177,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             set
             {
                 _isBusy = value;
-                OnPropertyChanged();
-                CanRefresh = !_isBusy;
-            }
-        }
-
-        private bool _canRefresh = true;
-        public bool CanRefresh
-        {
-            get { return _canRefresh; }
-            private set
-            {
-                _canRefresh = value;
                 OnPropertyChanged();
             }
         }
