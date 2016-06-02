@@ -36,12 +36,12 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            var parameter = Context.GetText();
+            var parameter = Context.Parent.GetText();
             var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
             var selection = Selection.Selection;
 
             var module = Selection.QualifiedName.Component.CodeModule;
-            var lines = module.get_Lines(selection.StartLine, selection.LineCount);
+            var lines = module.Lines[selection.StartLine, selection.LineCount];
 
             var result = lines.Replace(parameter, newContent);
             module.ReplaceLine(selection.StartLine, result);
