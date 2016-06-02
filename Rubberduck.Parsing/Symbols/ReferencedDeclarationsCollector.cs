@@ -240,16 +240,21 @@ namespace Rubberduck.Parsing.Symbols
                             attributes);
                         break;
                 }
+                info.ReleaseTypeAttr(typeAttributesPointer);
 
                 output.Add(moduleDeclaration);
 
                 for (var memberIndex = 0; memberIndex < typeAttributes.cFuncs; memberIndex++)
                 {
-                    FUNCDESC memberDescriptor;
                     string[] memberNames;
-                    var memberDeclaration = CreateMemberDeclaration(out memberDescriptor, typeAttributes.typekind, info, memberIndex, typeQualifiedModuleName, moduleDeclaration, out memberNames);
+
+                    IntPtr memberDescriptorPointer;
+                    info.GetFuncDesc(memberIndex, out memberDescriptorPointer);
+                    var memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
+                    var memberDeclaration = CreateMemberDeclaration(memberDescriptor, typeAttributes.typekind, info, memberIndex, typeQualifiedModuleName, moduleDeclaration, out memberNames);
                     if (memberDeclaration == null)
                     {
+                        info.ReleaseFuncDesc(memberDescriptorPointer);
                         continue;
                     }
                     if (moduleDeclaration.DeclarationType == DeclarationType.ClassModule && memberDeclaration is ICanBeDefaultMember && ((ICanBeDefaultMember)memberDeclaration).IsDefaultMember)
@@ -269,6 +274,7 @@ namespace Rubberduck.Parsing.Symbols
                         }
                         output.Add(parameter);
                     }
+                    info.ReleaseFuncDesc(memberDescriptorPointer);
                 }
 
                 for (var fieldIndex = 0; fieldIndex < typeAttributes.cVars; fieldIndex++)
@@ -279,16 +285,11 @@ namespace Rubberduck.Parsing.Symbols
             return output;
         }
 
-        private Declaration CreateMemberDeclaration(out FUNCDESC memberDescriptor, TYPEKIND typeKind, ITypeInfo info, int memberIndex,
+        private Declaration CreateMemberDeclaration(FUNCDESC memberDescriptor, TYPEKIND typeKind, ITypeInfo info, int memberIndex,
             QualifiedModuleName typeQualifiedModuleName, Declaration moduleDeclaration, out string[] memberNames)
         {
-            IntPtr memberDescriptorPointer;
-            info.GetFuncDesc(memberIndex, out memberDescriptorPointer);
-            memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
-
             if (memberDescriptor.callconv != CALLCONV.CC_STDCALL)
             {
-                memberDescriptor = new FUNCDESC();
                 memberNames = new string[] { };
                 return null;
             }
@@ -426,7 +427,8 @@ namespace Rubberduck.Parsing.Symbols
             var fieldName = names[0];
             var memberType = GetDeclarationType(varDesc, typeDeclarationType);
 
-            var asTypeName = GetTypeName(varDesc.elemdescVar.tdesc, info);            
+            var asTypeName = GetTypeName(varDesc.elemdescVar.tdesc, info);
+            info.ReleaseVarDesc(ppVarDesc);
 
             return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName),
                 moduleDeclaration, moduleDeclaration, asTypeName, null, false, false, Accessibility.Global, memberType, null,
