@@ -6,51 +6,77 @@ using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command
 {
-    public interface IShowParserErrorsCommand : ICommand { }
+    public interface IShowParserErrorsCommand : ICommand, IDisposable { }
 
     [ComVisible(false)]
     public class ShowParserErrorsCommand : CommandBase, IShowParserErrorsCommand
     {
+        private readonly VBE _vbe;
         private readonly INavigateCommand _navigateCommand;
         private readonly RubberduckParserState _state;
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
 
-        public ShowParserErrorsCommand(INavigateCommand navigateCommand, RubberduckParserState state, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
+        public ShowParserErrorsCommand(VBE vbe, INavigateCommand navigateCommand, RubberduckParserState state, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
         {
+            _vbe = vbe;
             _navigateCommand = navigateCommand;
             _state = state;
             _viewModel = viewModel;
             _presenterService = presenterService;
+
+            _state.StateChanged += _state_StateChanged;
         }
 
-        public override void Execute(object parameter)
+        private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
-            if (_state.Status != ParserState.Error)
+            if (_state.Status != ParserState.Error && _state.Status != ParserState.Parsed) { return; }
+
+            if (_viewModel == null) { return; }
+
+            if (_viewModel.Tabs.All(tab => tab.Header != RubberduckUI.Parser_ParserError))
             {
                 return;
             }
+            
+            UiDispatcher.InvokeAsync(UpdateTab);
+        }
 
-            var viewModel = CreateViewModel();
+        private void UpdateTab()
+        {
             if (_viewModel == null)
             {
                 return;
             }
 
             var oldTab = _viewModel.Tabs.FirstOrDefault(tab => tab.Header == RubberduckUI.Parser_ParserError);
-            
-            _viewModel.AddTab(viewModel);
-            _viewModel.SelectedTab = viewModel;
+            if (_state.Status == ParserState.Error)
+            {
+                var viewModel = CreateViewModel();
+                _viewModel.AddTab(viewModel);
+                _viewModel.SelectedTab = viewModel;
+            }
 
             if (oldTab != null)
             {
                 oldTab.CloseCommand.Execute(null);
             }
+        }
+
+        public override void Execute(object parameter)
+        {
+            if (_viewModel == null)
+            {
+                return;
+            }
+
+            UpdateTab();
 
             try
             {
@@ -89,6 +115,14 @@ namespace Rubberduck.UI.Command
             // FIXME dirty hack for project.Scope in case project is null. Clean up!
             var declaration = new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), project, project == null ? null : project.Scope, component.Name, null, false, false, Accessibility.Global, DeclarationType.ProceduralModule, false, null, false);
             return result ?? declaration; // module isn't in parser state - give it a dummy declaration, just so the ViewModel has something to chew on
+        }
+
+        public void Dispose()
+        {
+            if (_state != null)
+            {
+                _state.StateChanged += _state_StateChanged;
+            }
         }
     }
 }
