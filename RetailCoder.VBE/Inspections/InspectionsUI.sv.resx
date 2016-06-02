@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -513,6 +513,45 @@
     <value />
   </data>
   <data name="ObjectVariableNotSetInspectionMeta">
+    <value />
+  </data>
+  <data name="ImplicitActiveWorkbookReferenceInspectionResultFormat">
+    <value />
+  </data>
+  <data name="MultipleDeclarationsInspectionResultFormat">
+    <value />
+  </data>
+  <data name="Inspections_Usage">
+    <value />
+  </data>
+  <data name="Inspections_Declaration">
+    <value />
+  </data>
+  <data name="VariableTypeNotDeclaredInspectionResultFormat">
+    <value />
+  </data>
+  <data name="DefaultProjectNameInspectionResultFormat">
+    <value />
+  </data>
+  <data name="ObsoleteCallStatementInspectionResultFormat">
+    <value />
+  </data>
+  <data name="ObsoleteLetStatementInspectionResultFormat">
+    <value />
+  </data>
+  <data name="OptionBaseInspectionResultFormat">
+    <value />
+  </data>
+  <data name="ObsoleteCommentSyntaxInspectionResultFormat">
+    <value />
+  </data>
+  <data name="ObsoleteTypeHintInspectionResultFormat">
+    <value />
+  </data>
+  <data name="ImplicitActiveSheetReferenceInspectionResultFormat">
+    <value />
+  </data>
+  <data name="UntypedFunctionUsageInspectionResultFormat">
     <value />
   </data>
 </root>

@@ -200,7 +200,7 @@
     <value>Cliquez [Ok] pour appliquer les modifications, ou [Annuler] pour conserver la configuration actuelle.</value>
   </data>
   <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
-    <value>Configurer les marqueurs à reconnaître dans les commentaires.</value>
+    <value>Configuration des marqueurs à reconnaître dans les commentaires.</value>
   </data>
   <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
     <value>Impossible de renommer le projet.</value>
@@ -304,7 +304,7 @@
     <value>Aller à l'&amp;implémentation...</value>
   </data>
   <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
-    <value>Extraire une &amp;Méthode</value>
+    <value>Extraire une &amp;méthode</value>
   </data>
   <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
     <value>Sup&amp;primer un Paramètre</value>
@@ -375,7 +375,7 @@ Restaurer les configurations par défaut?
 Attention: les valeurs personnalisées seront perdues.    Le fichier original sera enregistré sous '{3}'.</value>
   </data>
   <data name="ResolutionProgress" xml:space="preserve">
-    <value>Résolution de '{0}'...</value>
+    <value>Résolution...</value>
   </data>
   <data name="RubberduckLoadFailure" xml:space="preserve">
     <value>Une erreur est survenue lors du chargement du complément Rubberduck.</value>
@@ -480,9 +480,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Change" xml:space="preserve">
     <value>Modifier</value>
   </data>
-  <data name="CodeExplorer_AddClassText" xml:space="preserve">
-    <value>Module de &amp;classe (.cls)</value>
-  </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
     <value>&amp;Fenêtre</value>
   </data>
@@ -506,9 +503,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
     <value>Exécuter tous les tests</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
-    <value>Afficher le mode création</value>
   </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
     <value>Ouvrir le mode création</value>
@@ -571,7 +565,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Exécuter</value>
   </data>
   <data name="Settings_Caption" xml:space="preserve">
-    <value>Configuration Rubberduck</value>
+    <value>Configuration de Rubberduck</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
     <value>Ajouter</value>
@@ -813,9 +807,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="FormContextMenu_Rename" xml:space="preserve">
     <value>Re&amp;nommer</value>
   </data>
-  <data name="CodeExplorer_Inspect" xml:space="preserve">
-    <value>&amp;Inspecter</value>
-  </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
     <value>Na&amp;viguer</value>
   </data>
@@ -862,7 +853,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Rubberduck - Supprimer branche</value>
   </data>
   <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
-    <value>Rubberduck - Créer branche</value>
+    <value>Rubberduck - Créer une branche</value>
   </data>
   <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
     <value>Veuillez spécifier le nom de la branche.</value>
@@ -896,594 +887,715 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Na&amp;viguer</value>
   </data>
   <data name="Language_JA" xml:space="preserve">
-    <value />
+    <value>Japonais</value>
   </data>
   <data name="SourceControl_DeleteButton" xml:space="preserve">
     <value>Supprimer branche</value>
   </data>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
-    <value />
+    <value>Nom du paramètre:</value>
   </data>
   <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
-    <value />
+    <value>Référer explicitement au classeur actif</value>
   </data>
   <data name="SelectAll_Button" xml:space="preserve">
-    <value />
+    <value>Sélectionner tout</value>
   </data>
   <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
-    <value />
+    <value>Portée:</value>
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
-    <value />
+    <value>Indenter</value>
   </data>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
-    <value />
+    <value>Sélection</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
-    <value />
+    <value>&amp;Déplacer la déclaration</value>
   </data>
   <data name="IndentCurrentProject" xml:space="preserve">
-    <value />
+    <value>Projet entier</value>
   </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
-    <value />
+    <value>Rubberduck - Rapprocher la déclaration de son utilisation</value>
   </data>
   <data name="ExtractInterface_TitleLabel" xml:space="preserve">
-    <value />
+    <value>Extraire une interface</value>
   </data>
   <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
-    <value />
+    <value>Veuillez spécifier le nom et les membres de l'interface.</value>
   </data>
   <data name="ExtractInterface_Caption" xml:space="preserve">
-    <value />
+    <value>Rubberduck - Extraire une interface</value>
   </data>
   <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
-    <value />
+    <value>'{0}' n'est pas utilisé</value>
   </data>
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
-    <value />
+    <value>Introduire un &amp;champ</value>
   </data>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
-    <value />
+    <value>Encapsuler le champ</value>
   </data>
   <data name="IntroduceParameter_Caption" xml:space="preserve">
-    <value />
+    <value>Rubberduck - Introduire un paramètre</value>
   </data>
   <data name="DeselectAll_Button" xml:space="preserve">
-    <value />
+    <value>Désélectionner tout</value>
   </data>
   <data name="RegexSearchReplace_Caption" xml:space="preserve">
-    <value />
+    <value>Rechercher/remplacer avec une RegEx</value>
   </data>
   <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
-    <value />
+    <value>Projet courant</value>
   </data>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value />
+    <value>Rechercher:</value>
   </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
-    <value />
+    <value>Rubberduck - Implémenter une interface</value>
   </data>
   <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
-    <value />
+    <value>Remplacement:</value>
   </data>
   <data name="EncapsulateField_Caption" xml:space="preserve">
-    <value />
+    <value>Rubberduck - Encapsuler le champ</value>
   </data>
   <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
-    <value />
+    <value>Tous les fichiers ouverts</value>
   </data>
   <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
-    <value />
+    <value>Fichier courant</value>
   </data>
   <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
-    <value />
+    <value>Référer explicitement à la feuille active</value>
   </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
-    <value />
+    <value>Détails</value>
   </data>
   <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
-    <value />
+    <value>Bloc courant</value>
   </data>
   <data name="EncapsulateField_PropertyName" xml:space="preserve">
-    <value />
+    <value>Nom de la propriété:</value>
   </data>
   <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
-    <value />
-  </data>
-  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
-    <value />
+    <value>Tous les projets ouverts</value>
   </data>
   <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
-    <value />
+    <value>&amp;Encapsuler le champ</value>
   </data>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
-    <value />
+    <value>La sélection courante n'est pas valide pour cette opération.</value>
   </data>
   <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value />
+    <value>Procédure courante</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
-    <value />
+    <value>La sélection n'est pas une variable.</value>
   </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
-    <value />
+    <value>Membres</value>
   </data>
   <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
-    <value />
+    <value>E&amp;xtraire une interface</value>
   </data>
   <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
-    <value />
+    <value>Affichage</value>
   </data>
   <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value />
+    <value>Remplacer</value>
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
-    <value />
+    <value>Veuillez spécifier le nom, l'accessibilité des paramètres, et le type de mutateur pour la nouvelle propriété.</value>
   </data>
   <data name="IndentCurrentModule" xml:space="preserve">
-    <value />
+    <value>Module courant</value>
   </data>
   <data name="CodeExplorer_NewToolTip" xml:space="preserve">
-    <value />
+    <value>Ajouter un module au projet actif</value>
   </data>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
-    <value />
+    <value>Rechercher un symbole</value>
   </data>
   <data name="EncapsulateField_Preview" xml:space="preserve">
-    <value />
+    <value>Aperçu:</value>
   </data>
   <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
-    <value />
+    <value>'{0}' est utilisé dans plus d'une méthode.</value>
   </data>
   <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
-    <value />
+    <value>Introduire un &amp;paramètre</value>
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
-    <value />
+    <value>Remplacer tout</value>
   </data>
   <data name="EncapsulateField_SetterType" xml:space="preserve">
-    <value />
+    <value>Mutateur:</value>
   </data>
   <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
-    <value />
+    <value>Sélection invalide</value>
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
-    <value />
+    <value>Rubberduck - Introduire un champ</value>
   </data>
   <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
-    <value />
+    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier la signature de l'interface? (se propagera à toutes les implémentations)</value>
   </data>
   <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
-    <value />
+    <value>&amp;Implémenter l'interface</value>
   </data>
   <data name="SourceControl_DeleteBranch">
-    <value />
+    <value>Supprimer une branche</value>
   </data>
   <data name="ParserState_ResolverError">
-    <value />
+    <value>Erreur de résolution</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt">
-    <value />
+    <value>Initialisation et nettoyage des méthodes de test</value>
   </data>
   <data name="SourceControl_Id">
-    <value />
+    <value>Id</value>
   </data>
   <data name="EndOfLineCommentStyle_Absolute">
-    <value />
+    <value>Absolut</value>
   </data>
   <data name="IndenterSettings_EnableOptionsLabel">
-    <value />
+    <value>Activer les options</value>
   </data>
   <data name="ParserState_Error">
-    <value />
+    <value>Erreur d'analyse</value>
   </data>
   <data name="ParserState_LoadingReference">
-    <value />
+    <value>Chargement des références</value>
   </data>
   <data name="SourceControl_LocalDirectoryLabel">
-    <value />
+    <value>Répertoire local:</value>
   </data>
   <data name="SourceControl_FilePath">
-    <value />
+    <value>Emplacement</value>
   </data>
   <data name="SearchResults_MemberType">
-    <value />
+    <value>Type</value>
   </data>
   <data name="SourceControl_PasswordLabel">
-    <value />
+    <value>Mot de passe:</value>
   </data>
   <data name="UnitTest_NewModule_RunAfterTest">
-    <value />
+    <value>cette procédure s'exécute après chaque test dans le module</value>
   </data>
   <data name="UnitTestSettings_AssertMode">
-    <value />
+    <value>Mode:</value>
   </data>
   <data name="HotkeyDescription_CodeExplorer">
-    <value />
+    <value>Explorateur</value>
   </data>
   <data name="HotkeyDescription_RefactorRename">
-    <value />
+    <value>Refactorer / renommer</value>
   </data>
   <data name="GeneralSettings_HotkeyShift">
-    <value />
+    <value>Maj</value>
   </data>
   <data name="SearchResults_MemberName">
-    <value />
+    <value>Membre</value>
   </data>
   <data name="SourceControl_LoginInstructions">
-    <value />
+    <value>L'opération n'a pu être complétée parce que Rubberduck ne dispose pas des informations nécessaire à l'autorisation de cette opération.</value>
   </data>
   <data name="UnitTestSettings_TestModuleTemplateHeader">
-    <value />
+    <value>Module de test</value>
   </data>
   <data name="GeneralSettings_HotkeyAlt">
-    <value />
+    <value>Alt</value>
   </data>
   <data name="EndOfLineCommentStyle_AlignInColumn">
-    <value />
+    <value>Aligner dans la colonne</value>
   </data>
   <data name="SourceControl_CloneRepoButtonToolTip">
-    <value />
+    <value>Cloner le repository</value>
   </data>
   <data name="HotkeyDescription_InspectionResults">
-    <value />
+    <value>Inspections</value>
   </data>
   <data name="CodeInspectionResults_GroupByType">
-    <value />
+    <value>Par type d'inspection</value>
   </data>
   <data name="GeneralSettings_HotkeysLabel">
-    <value />
+    <value>Raccourcis:</value>
   </data>
   <data name="SourceControl_CommitAndSync">
-    <value />
+    <value>Consigner et synchroniser</value>
   </data>
   <data name="GroupingGrid_GroupingStyle">
-    <value />
+    <value>Regroupement</value>
   </data>
   <data name="ParserState_Parsed">
-    <value />
+    <value>Analyse complétée</value>
   </data>
   <data name="UnitTestSettings_LateBinding">
-    <value />
+    <value>Indirecte (late binding)</value>
   </data>
   <data name="GroupingStyle_ByOutcome">
-    <value />
+    <value>Par résultat</value>
   </data>
   <data name="IndenterSettings_AlignmentOptionsLabel">
-    <value />
+    <value>Aligner les options</value>
   </data>
   <data name="IndenterSettings_ForceDebugDirectivesToColumn1">
-    <value />
+    <value>Forcer les instructions Debug à la ligne 1</value>
   </data>
   <data name="SourceControl_FileStatus">
-    <value />
+    <value>Statut</value>
   </data>
   <data name="SourceControl_NoBranchesMessage">
-    <value />
+    <value>Le repository ne contient aucune branche.</value>
   </data>
   <data name="IndenterSettings_IndentFirstCommentBlock">
-    <value />
+    <value>Indenter le premier bloc de commentaires</value>
   </data>
   <data name="IndenterSettings_IndentOptionsLabel">
-    <value />
+    <value>Indenter les options</value>
   </data>
   <data name="CommonHotkey_HookDetached">
-    <value />
+    <value>L'attache est déjà désactivée.</value>
   </data>
   <data name="SourceControl_Dismiss">
-    <value />
+    <value>Ok</value>
   </data>
   <data name="UnitTestSettings_BindingMode">
-    <value />
+    <value>Liaison par défaut:</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt">
-    <value />
+    <value>Inclure un exemple de méthode de test</value>
   </data>
   <data name="IndenterSettings_EnableUndo">
-    <value />
+    <value>Activer l'annulation</value>
   </data>
   <data name="ParserState_Ready">
-    <value />
+    <value>Prêt</value>
   </data>
   <data name="Settings">
-    <value />
+    <value>Paramètres</value>
   </data>
   <data name="HotkeyDescription_RefactorMoveCloserToUsage">
-    <value />
+    <value>Déplacer la déclaration</value>
   </data>
   <data name="IndenterSettings_ForceCompilerDirectivesToColumn1">
-    <value />
+    <value>Forcer les directives du préprocesseur à la colonne 1</value>
   </data>
   <data name="AboutWindow_AttributionsLabel">
-    <value />
+    <value>Attributions</value>
   </data>
   <data name="SourceControl_Message">
-    <value />
+    <value>Message</value>
   </data>
   <data name="RubberduckMenu_RegexSearchReplace">
-    <value />
+    <value>Rechercher/remplacer avec une RegE&amp;x</value>
   </data>
   <data name="IndenterSettings_IgnoreOperators">
-    <value />
+    <value>Ignorer les opérateurs</value>
   </data>
   <data name="SourceControl_CommitAndPush">
-    <value />
+    <value>Consigner et pousser</value>
   </data>
   <data name="SearchResults_Caption">
-    <value />
+    <value>Résultats de recherche</value>
   </data>
   <data name="UnitTest_NewMethod_ErrorNotRaised">
-    <value />
+    <value>L'erreur attendue ne s'est pas produite</value>
   </data>
   <data name="TestExplorer_QualifiedModuleName">
-    <value />
+    <value>Module</value>
   </data>
   <data name="SourceControl_UpdateSettingsTitle">
-    <value />
+    <value>Paramètres mis à jour</value>
   </data>
   <data name="HotkeyDescription_IndentModule">
-    <value />
+    <value>Indenter le module</value>
   </data>
   <data name="RubberduckCommandbarRefreshButtonTooltip">
-    <value />
+    <value>Analyser tous les projets ouverts</value>
   </data>
   <data name="GroupingStyle_ByLocation">
-    <value />
+    <value>Par emplacement</value>
   </data>
   <data name="CommonHotkey_KeyNotRegistered">
-    <value />
+    <value>La combinaison ({0}) n'est pas enregistrée.</value>
   </data>
   <data name="UnitTestSettings_StrictAssert">
-    <value />
+    <value>Assertions strictes</value>
   </data>
   <data name="UnitTest_NewMethod_Rename">
-    <value />
+    <value>Renommer le test</value>
   </data>
   <data name="ParserState_Resolving">
-    <value />
+    <value>Résolution...</value>
   </data>
   <data name="GeneralSettings_AutoSaveEnabled">
-    <value />
+    <value>Activer la sauvegarde auto</value>
   </data>
   <data name="SettingsCaption_IndenterSettings">
-    <value />
+    <value>Options d'indentation</value>
   </data>
   <data name="ParserState_Pending">
-    <value />
+    <value>En attente</value>
   </data>
   <data name="GeneralSettings_HotkeyCtrl">
-    <value />
+    <value>Ctrl</value>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest">
-    <value />
+    <value>cette procédure s'exécute avant chaque test dans le module</value>
   </data>
   <data name="IndenterSettings_IndentCompilerDirectives">
-    <value />
+    <value>Indenter les directives du préprocesseur</value>
   </data>
   <data name="HotkeyDescription_IndentProcedure">
-    <value />
+    <value>Indenter la procédure</value>
   </data>
   <data name="SearchResults_Context">
-    <value />
+    <value>Contexte</value>
   </data>
   <data name="EndOfLineCommentStyle_SameGap">
-    <value />
+    <value>Même espacement</value>
   </data>
   <data name="SourceControl_SourceBranch">
-    <value />
+    <value>Branche source:</value>
   </data>
   <data name="TestOutcome_Inconclusive">
-    <value />
+    <value>Non concluant</value>
   </data>
   <data name="IndenterSettings_AlignDims">
-    <value />
+    <value>Aligner les déclarations (Dim)</value>
   </data>
   <data name="SourceControl_Delete">
-    <value />
+    <value>Supprimer</value>
   </data>
   <data name="HotkeyDescription_RefactorExtractMethod">
-    <value />
+    <value>Refactorer / extraire une méthode</value>
   </data>
   <data name="SettingsInstructions_IndenterSettings">
-    <value />
+    <value>Configuration des options d'indentation</value>
   </data>
   <data name="GeneralSettings_AutoSaveLabel">
-    <value />
+    <value>Sauvegarde auto:</value>
   </data>
   <data name="GeneralSettings_HotkeyDescription">
-    <value />
+    <value>Description</value>
   </data>
   <data name="SourceControl_ExcludeFileButton">
-    <value />
+    <value>Exclure</value>
   </data>
   <data name="GeneralSettings_HotkeyKey1">
-    <value />
+    <value>Touche1</value>
   </data>
   <data name="GeneralSettings_HotkeyKey2">
-    <value />
+    <value>Touche2</value>
   </data>
   <data name="SourceControl_Author">
-    <value />
+    <value>Auteur</value>
   </data>
   <data name="IndenterSettings_SpecialOptionsLabel">
-    <value />
+    <value>Options spéciales</value>
   </data>
   <data name="AboutWindow_Caption">
-    <value />
+    <value>À propos de Rubberduck</value>
   </data>
   <data name="RubberduckMenu_Settings">
-    <value />
+    <value>&amp;Paramètres</value>
   </data>
   <data name="IndenterSettings_IndentCase">
-    <value />
+    <value>Indenter les blocs Case</value>
   </data>
   <data name="IndenterSettings_EndOfLineCommentStyle">
-    <value />
+    <value>Style des commentaires de fin de ligne:</value>
   </data>
   <data name="IndenterSettings_IndentSpaces">
-    <value />
+    <value>Nombre d'espaces:</value>
   </data>
   <data name="SourceControl_MergeStatus">
-    <value />
+    <value>Statut</value>
   </data>
   <data name="AboutWindow_AttributionList">
-    <value />
+    <value>Analyse du code propulsée par ANTLR
+Intégration GitHub propulsée par LibGit2Sharp
+Icônes "Fugue" par Yusuke Kamiyamane</value>
   </data>
   <data name="CommonHotkey_InvalidKey">
-    <value />
+    <value>Clé invalide</value>
   </data>
   <data name="AboutWindow_Copyright">
-    <value />
+    <value>© Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce">
-    <value />
+    <value>cette procédure s'exécute une seule fois par module</value>
   </data>
   <data name="AboutWindow_ContributorsHeader">
-    <value />
+    <value>Contributeurs et supporters:</value>
   </data>
   <data name="SeverityLabelText">
-    <value />
+    <value>Sévérité:</value>
   </data>
   <data name="TestOutcome_Succeeded">
-    <value />
+    <value>Succès</value>
   </data>
   <data name="CodeInspectionResults_Issue">
-    <value />
+    <value>Problème</value>
   </data>
   <data name="IndenterSettings_IndentFirstDeclarationBlock">
-    <value />
+    <value>Indenter le premier bloc de déclarations</value>
   </data>
   <data name="SourceControl_RemotePathLabel">
-    <value />
+    <value>Chemin d'accès distant:</value>
   </data>
   <data name="CommonHotkey_HookAttached">
-    <value />
+    <value>L'attache est déjà active.</value>
   </data>
   <data name="IndenterSettings_IndentEntireProcedureBody">
-    <value />
+    <value>Indenter le contenu entier de la procédure</value>
   </data>
   <data name="HotkeyDescription_ParseAll">
-    <value />
+    <value>Rafraîchir l'analyseur</value>
   </data>
   <data name="SourceControl_NoBranchesTitle">
-    <value />
+    <value>Aucune branche trouvée</value>
   </data>
   <data name="UnitTestSettings_EarlyBinding">
-    <value />
+    <value>Directe (early binding)</value>
   </data>
   <data name="SettingsInstructions_UnitTestSettings">
-    <value />
+    <value>Configuration du contenu des nouveaux modules et méthodes de test.</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel">
-    <value />
+    <value>Remerciements</value>
   </data>
   <data name="GroupingStyle_ByMarker">
-    <value />
+    <value>Par marqueur</value>
   </data>
   <data name="SourceControl_BranchName">
-    <value />
+    <value>Nom de la branche:</value>
   </data>
   <data name="DeclarationType_LibraryProcedure">
-    <value />
+    <value>la procédure externe</value>
   </data>
   <data name="AboutWindow_CommunityHeader">
-    <value />
+    <value>Communauté:</value>
   </data>
   <data name="TestOutcome_Unknown">
-    <value />
+    <value>Inconnu</value>
   </data>
   <data name="IndenterSettings_AlignCommentsWithCode">
-    <value />
+    <value>Aligner les commentaires avec le code</value>
   </data>
   <data name="UnitTestSettings_PermissiveAssert">
-    <value />
+    <value>Assertions permissives</value>
   </data>
   <data name="SourceControl_UpdateSettingsMessage">
-    <value />
+    <value>Votre nom d'utilisateur, addresse courriel et emplacement par défaut ont été sauvegardés.</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule">
-    <value />
+    <value>Par module</value>
   </data>
   <data name="SearchResults_AllImplementationsTabFormat">
-    <value />
+    <value>Implémentations: '{0}'</value>
   </data>
   <data name="CodeInspectionResults_Type">
-    <value />
+    <value>Type</value>
   </data>
   <data name="HotkeyDescription_TestExplorer">
-    <value />
+    <value>Tests Unitaires</value>
   </data>
   <data name="IndenterSettings_AlignContinuations">
-    <value />
+    <value>Aligner les continuations</value>
   </data>
   <data name="SearchResults_AllReferencesTabFormat">
-    <value />
+    <value>Références: '{0}'</value>
   </data>
   <data name="EndOfLineCommentStyle_StandardGap">
-    <value />
+    <value>Espacement standard</value>
   </data>
   <data name="GeneralSettings_HotkeyEnabled">
-    <value />
+    <value>Active</value>
   </data>
   <data name="UnitTest_NewMethod_RaisedTestError">
-    <value />
+    <value>Le test a produit une erreur</value>
   </data>
   <data name="TestOutcome_Failed">
-    <value />
+    <value>Échec</value>
   </data>
   <data name="Rubberduck">
-    <value />
+    <value>Rubberduck</value>
   </data>
   <data name="AboutWindow_BlogsHeader">
-    <value />
+    <value>Blogues:</value>
   </data>
   <data name="SourceControl_UnpublishBranchButton">
-    <value />
+    <value>Dépublier</value>
   </data>
   <data name="GroupingStyle_ByInspectionType">
-    <value />
+    <value>Par type d'inspection</value>
   </data>
   <data name="SettingsCaption_InspectionSettings">
-    <value />
+    <value>Options des inspections</value>
   </data>
   <data name="ParserState_Parsing">
-    <value />
+    <value>Analyse...</value>
   </data>
   <data name="SourceControl_UndoChangesButton">
-    <value />
+    <value>Annuler</value>
   </data>
   <data name="CodeInspectionResults_Location">
-    <value />
+    <value>Emplacement</value>
   </data>
   <data name="SearchResults_Location">
-    <value />
+    <value>Emplacement</value>
   </data>
   <data name="AboutWindow_GeneralThanks">
-    <value />
+    <value>Tous les contributeurs à notre repository sur GitHub
+Tous ceux qui nous ont donné une étoile ou un "like"
+...et quiconque lit ceci!</value>
   </data>
   <data name="SettingsCaption_UnitTestSettings">
-    <value />
+    <value>Options des tests unitaires</value>
   </data>
   <data name="SourceControl_IncludeFileButton">
-    <value />
+    <value>Inclure</value>
   </data>
   <data name="UnitTest_NewMethod_ChangeErrorNo">
-    <value />
+    <value>Changer le numéro d'erreur</value>
   </data>
   <data name="SourceControl_PublishBranchButton">
-    <value />
+    <value>Publier</value>
   </data>
   <data name="SearchResults_ModuleName">
-    <value />
+    <value>Module</value>
   </data>
   <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt">
-    <value />
+    <value>Initialisation et nettoyage des modules de test</value>
   </data>
   <data name="HotkeyDescription_FindSymbol">
-    <value />
+    <value>Rechercher un symbole</value>
   </data>
   <data name="GeneralSettings_LanguageLabel">
-    <value />
+    <value>Langue d'affichage:</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndPushSuccess">
+    <value>Opération complétée avec succès.</value>
+  </data>
+  <data name="GeneralSettings_PeriodDelimiter">
+    <value>Point (.)</value>
+  </data>
+  <data name="SortStyle_ByType">
+    <value>Par type</value>
+  </data>
+  <data name="CodeExplorer_AddClassModuleText">
+    <value>Module de classe (.cls)</value>
+  </data>
+  <data name="information">
+    <value>..\Resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CodeExplorer_Import">
+    <value>Importer...</value>
+  </data>
+  <data name="Parser_ParserError">
+    <value>Erreurs d'analyse</value>
+  </data>
+  <data name="SortStyle_BySelection">
+    <value>Par emplacement</value>
+  </data>
+  <data name="SourceControl_MissingCredentials">
+    <value>Informations manquantes</value>
+  </data>
+  <data name="CodeExplorer_CopyToolTip">
+    <value>Copier au presse-papier</value>
+  </data>
+  <data name="CodeExplorer_Undo">
+    <value>Annuler...</value>
+  </data>
+  <data name="CodeExplorer_Commit">
+    <value>Consigner...</value>
+  </data>
+  <data name="GeneralSettings_WarnLogLevel">
+    <value>Warn</value>
+  </data>
+  <data name="cross_circle">
+    <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GeneralSettings_ShowLogFolder">
+    <value>Afficher dans le dossier</value>
+  </data>
+  <data name="CodeExplorer_Export">
+    <value>Exporter...</value>
+  </data>
+  <data name="GeneralSettings_ErrorLogLevel">
+    <value>Error</value>
+  </data>
+  <data name="NoIndentAnnotation">
+    <value>Annoter avec '@NoIndent</value>
+  </data>
+  <data name="SourceControl_UndoPrompt">
+    <value>Souhaitez-vous annuler les modifications effectuées à {0}?</value>
+  </data>
+  <data name="CodeExplorer_Print">
+    <value>Imprimer...</value>
+  </data>
+  <data name="SortStyle_ByName">
+    <value>Par nom</value>
+  </data>
+  <data name="SourceControl_UndoTitle">
+    <value>Contrôle des sources - annuler</value>
+  </data>
+  <data name="Find">
+    <value>Chercher</value>
+  </data>
+  <data name="UnitTest_TotalDuration">
+    <value>Durée totale</value>
+  </data>
+  <data name="GeneralSettings_SlashDelimiter">
+    <value>Barre oblique (/)</value>
+  </data>
+  <data name="TestOutcome_Ignored">
+    <value>Ignoré</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess">
+    <value>Opération complétée avec succès.</value>
+  </data>
+  <data name="GeneralSettings_FatalLogLevel">
+    <value>Fatal</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitSuccess">
+    <value>Opération complétée avec succès.</value>
+  </data>
+  <data name="GeneralSettings_TraceLogLevel">
+    <value>Trace</value>
+  </data>
+  <data name="GeneralSettings_DebugLogLevel">
+    <value>Debug</value>
+  </data>
+  <data name="CodeExplorer_Remove">
+    <value>Supprimer...</value>
+  </data>
+  <data name="GeneralSettings_FolderDelimiterLabel">
+    <value>Délimiteur de dossiers:</value>
+  </data>
+  <data name="CodeExplorer_RefreshComponent">
+    <value>Rafraîchir le module</value>
+  </data>
+  <data name="GeneralSettings_MinimumLogLevelLabel">
+    <value>Niveau minimum du journal</value>
+  </data>
+  <data name="GeneralSettings_OffLogLevel">
+    <value>Désactivé</value>
+  </data>
+  <data name="CodeExplorer_Sort">
+    <value>Trier</value>
+  </data>
+  <data name="SourceControl_CommitStatus">
+    <value>Consignation</value>
+  </data>
+  <data name="GeneralSettings_InfoLogLevel">
+    <value>Info</value>
+  </data>
+  <data name="CodeExplorer_ShowSignaturesToolTip">
+    <value>Activer/désactiver les signatures</value>
   </data>
 </root>
