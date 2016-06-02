@@ -30,12 +30,15 @@ namespace Rubberduck.VBEditor
                 //Eg. A Workbook's parent is the application, so read the workbook's name
                 try
                 {
-                    var nameProperty = project.VBComponents.Cast<VBComponent>()
+                    var component = project.VBComponents.Cast<VBComponent>()
                         .FirstOrDefault(comp => comp.Type == vbext_ComponentType.vbext_ct_Document
                                                 && comp.Properties.Item("Name").Value != null
                                                 && comp.Properties.Item("Parent")
-                                                .Object.Equals(comp.Properties.Item("Application").Object))
-                                                .Properties.Cast<Property>().FirstOrDefault(property => property.Name == "Name");
+                                                    .Object.Equals(comp.Properties.Item("Application").Object));
+
+                    if (component == null) { return null; }
+
+                    var nameProperty = component.Properties.Cast<Property>().FirstOrDefault(property => property.Name == "Name");
                     return nameProperty == null
                         ? null
                         : nameProperty.Value.ToString();
