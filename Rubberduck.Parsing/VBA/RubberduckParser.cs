@@ -62,12 +62,6 @@ namespace Rubberduck.Parsing.VBA
         private void StateOnStateChanged(object sender, EventArgs e)
         {
             Logger.Debug("RubberduckParser handles OnStateChanged ({0})", _state.Status);
-
-            /*if (_state.Status == ParserState.Parsed)
-            {
-                _logger.Debug("(handling OnStateChanged) Starting resolver task");
-                Resolve(_central.Token); // Tests expect this to be synchronous
-            }*/
         }
 
         private void ReparseRequested(object sender, ParseRequestEventArgs e)
@@ -83,10 +77,13 @@ namespace Rubberduck.Parsing.VBA
                 ParseAsync(e.Component, CancellationToken.None).Wait();
                 
                 Logger.Trace("Starting resolver task");
-                Resolve(_central.Token); // Tests expect this to be synchronous
+                Task.Run(() => Resolve(_central.Token));
             }
         }
 
+        /// <summary>
+        /// For the use of tests only
+        /// </summary>
         public void Parse()
         {
             if (!_state.Projects.Any())
@@ -112,12 +109,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 _componentAttributes.Remove(invalidated);
             }
-
-            /*foreach (var vbComponent in components)
-            {
-                _state.ClearStateCache(vbComponent);
-                ParseComponent(vbComponent);
-            }*/
 
             var parseTasks = components.Select(vbComponent => ParseAsync(vbComponent, CancellationToken.None)).ToArray();
             Task.WaitAll(parseTasks);
@@ -180,7 +171,7 @@ namespace Rubberduck.Parsing.VBA
             Task.WaitAll(parseTasks);
             
             Logger.Trace("Starting resolver task");
-            Resolve(_central.Token); // Tests expect this to be synchronous
+            Task.Run(() => Resolve(_central.Token));
         }
 
         private void AddBuiltInDeclarations(IReadOnlyList<VBProject> projects)
