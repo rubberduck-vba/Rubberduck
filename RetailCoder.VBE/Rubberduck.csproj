@@ -567,13 +567,13 @@
     <Compile Include="Navigation\CodeExplorer\CodeExplorerMemberViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerProjectViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerViewModel.cs" />
-    <Compile Include="UI\CodeInspections\InspectionDescriptionConverter.cs" />
-    <Compile Include="UI\CodeInspections\InspectionImageSourceConverter.cs" />
-    <Compile Include="UI\CodeInspections\InspectionResultsControl.xaml.cs">
+    <Compile Include="UI\Inspections\InspectionDescriptionConverter.cs" />
+    <Compile Include="UI\Inspections\InspectionImageSourceConverter.cs" />
+    <Compile Include="UI\Inspections\InspectionResultsControl.xaml.cs">
       <DependentUpon>InspectionResultsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeInspections\InspectionResultsViewModel.cs" />
-    <Compile Include="UI\CodeInspections\InspectionSeverityImageSourceConverter.cs" />
+    <Compile Include="UI\Inspections\InspectionResultsViewModel.cs" />
+    <Compile Include="UI\Inspections\InspectionSeverityImageSourceConverter.cs" />
     <Compile Include="UI\Command\AboutCommand.cs" />
     <Compile Include="UI\Command\AddTestMethodExpectedErrorCommand.cs" />
     <Compile Include="UI\Command\AddTestMethodCommand.cs" />
@@ -880,15 +880,15 @@
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.Designer.cs">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeInspections\CodeInspectionsDockablePresenter.cs" />
-    <Compile Include="UI\CodeInspections\CodeInspectionsWindow.cs">
+    <Compile Include="UI\Inspections\CodeInspectionsDockablePresenter.cs" />
+    <Compile Include="UI\Inspections\CodeInspectionsWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\CodeInspections\CodeInspectionsWindow.Designer.cs">
+    <Compile Include="UI\Inspections\CodeInspectionsWindow.Designer.cs">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\NavigateCodeEventArgs.cs" />
-    <Compile Include="UI\CodeInspections\QuickFixEventArgs.cs" />
+    <Compile Include="UI\Inspections\QuickFixEventArgs.cs" />
     <Compile Include="UI\DockableToolwindowPresenter.cs" />
     <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Settings\ToDoListSettings.cs" />
@@ -992,7 +992,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
+    <EmbeddedResource Include="UI\Inspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Controls\SearchResultWindow.resx">
@@ -1484,7 +1484,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
+    <Page Include="UI\Inspections\InspectionResultsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

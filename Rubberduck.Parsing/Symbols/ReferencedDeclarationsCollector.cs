@@ -263,7 +263,7 @@ namespace Rubberduck.Parsing.Symbols
                     }
                     output.Add(memberDeclaration);
 
-                    var parameterCount = memberDescriptor.cParams - 1;
+                    var parameterCount = memberDescriptor.cParams - (memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET) ? 0 : 1);
                     for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
                     {
                         var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration, info);

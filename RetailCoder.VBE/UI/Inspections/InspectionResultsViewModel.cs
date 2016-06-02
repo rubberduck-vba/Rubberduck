@@ -21,7 +21,7 @@ using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor.Extensions;
 using NLog;
 
-namespace Rubberduck.UI.CodeInspections
+namespace Rubberduck.UI.Inspections
 {
     public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IDisposable
     {

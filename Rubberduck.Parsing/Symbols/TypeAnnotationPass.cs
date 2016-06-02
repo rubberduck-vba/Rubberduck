@@ -62,6 +62,11 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
             var module = Declaration.GetModuleParent(declaration);
+            if (module == null)
+            {
+                _logger.Warn("Type annotation failed for {0} because module parent is missing.", typeExpression);
+                return;
+            }
             var expressionContext = _expressionParser.Parse(typeExpression.Trim());
             var boundExpression = _bindingService.ResolveType(module, declaration.ParentDeclaration, expressionContext);
             if (boundExpression.Classification != ExpressionClassification.ResolutionFailed)

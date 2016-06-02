@@ -714,7 +714,9 @@
             </ToolBar>
         </ToolBarTray>
 
-        <TreeView x:Name="ProjectTree" Grid.Row="1"
+        <TreeView x:Name="ProjectTree"
+                  Grid.Row="1"
+                  Background="White"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="TreeView_OnMouseDoubleClick"
@@ -731,7 +733,7 @@
 
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
 
-            <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
+            <StackPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
 
                 <Grid Margin="4" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>

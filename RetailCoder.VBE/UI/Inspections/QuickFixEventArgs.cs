@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.UI.CodeInspections
+namespace Rubberduck.UI.Inspections
 {
     public class QuickFixEventArgs : EventArgs
     {
