@@ -410,7 +410,6 @@
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_FindAllImplementationsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_IndentCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_NavigateCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RefreshCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RemoveCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_ExportCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_ImportCommand.cs" />

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Rubberduck.Common.WinAPI;
 using NLog;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.Common.Hotkeys
 {
@@ -58,6 +59,7 @@ namespace Rubberduck.Common.Hotkeys
             }
 
             HookKey(key, shift);
+            SetCommandShortcutText();
         }
 
         public void Detach()
@@ -71,6 +73,7 @@ namespace Rubberduck.Common.Hotkeys
             Kernel32.GlobalDeleteAtom(HotkeyInfo.HookId);
 
             IsAttached = false;
+            ClearCommandShortcutText();
         }
 
         private void HookKey(Keys key, uint shift)
@@ -90,8 +93,28 @@ namespace Rubberduck.Common.Hotkeys
 
             HotkeyInfo = new HotkeyInfo(hookId, Combo);
             IsAttached = true;
+
             _logger.Debug("Hotkey '{0}' hooked successfully to command '{1}'", Key, Command.GetType());  //no translation needed for Debug.Writeline
         }
+
+        private void SetCommandShortcutText()
+        {
+            var command = Command as CommandBase;
+            if (command != null)
+            {
+                command.ShortcutText = HotkeyInfo.ToString();
+            }
+        }
+
+        private void ClearCommandShortcutText()
+        {
+            var command = Command as CommandBase;
+            if (command != null)
+            {
+                command.ShortcutText = string.Empty;
+            }
+        }
+
 
         private static readonly IDictionary<char,uint> Modifiers = new Dictionary<char, uint>
         {

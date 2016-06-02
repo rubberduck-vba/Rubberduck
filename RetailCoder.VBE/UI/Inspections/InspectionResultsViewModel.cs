@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -216,7 +215,7 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteRefreshCommand(object parameter)
         {
-            return !IsBusy;
+            return !IsBusy && _state.IsDirty();
         }
 
         private async void _state_StateChanged(object sender, EventArgs e)
