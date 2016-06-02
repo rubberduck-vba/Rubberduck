@@ -30,10 +30,11 @@ namespace Rubberduck.UI.Inspections
         private readonly VBE _vbe;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
+        private readonly IOperatingSystem _operatingSystem;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
-                                          IGeneralConfigService configService)
+                                          IGeneralConfigService configService, IOperatingSystem operatingSystem)
         {
             _state = state;
             _inspector = inspector;
@@ -41,6 +42,7 @@ namespace Rubberduck.UI.Inspections
             _navigateCommand = navigateCommand;
             _clipboard = clipboard;
             _configService = configService;
+            _operatingSystem = operatingSystem;
             _refreshCommand = new DelegateCommand(async param => await Task.Run(() => ExecuteRefreshCommandAsync(param)), CanExecuteRefreshCommand);
             _disableInspectionCommand = new DelegateCommand(ExecuteDisableInspectionCommand);
             _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
@@ -174,7 +176,7 @@ namespace Rubberduck.UI.Inspections
 
         private void OpenSettings(object param)
         {
-            using (var window = new SettingsForm(_configService, SettingsViews.InspectionSettings))
+            using (var window = new SettingsForm(_configService, _operatingSystem, SettingsViews.InspectionSettings))
             {
                 window.ShowDialog();
             }

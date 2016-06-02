@@ -303,7 +303,8 @@
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                       ItemContainerStyle="{StaticResource PrettifyRow}"
                       ColumnHeaderHeight="22"
-                      BorderThickness="0">
+                      BorderThickness="0"
+                      CellEditEnding="TodoMarkerGrid_CellEditEnding">
                 <DataGrid.InputBindings>
                     <KeyBinding Key="Delete"
                                 Command="{Binding DeleteTodoCommand}"

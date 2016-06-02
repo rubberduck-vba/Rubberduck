@@ -172,6 +172,7 @@
     <Compile Include="UnitTesting\AssertTests.cs" />
     <Compile Include="UnitTesting\EngineTests.cs" />
     <Compile Include="UnitTesting\DiscoveryTests.cs" />
+    <Compile Include="UnitTesting\ViewModelTests.cs" />
     <Compile Include="VbeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>

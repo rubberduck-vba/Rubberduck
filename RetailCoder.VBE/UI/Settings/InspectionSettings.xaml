@@ -62,7 +62,8 @@
                                    HeadersVisibility="None"
                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                    ColumnHeaderHeight="22"
-                                   BorderThickness="0">
+                                   BorderThickness="0"
+                                   CellEditEnding="GroupingGrid_CellEditEnding">
                 <controls:GroupingGrid.Columns>
                     <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}"
                                             Width="2.75*"

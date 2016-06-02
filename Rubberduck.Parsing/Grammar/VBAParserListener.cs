@@ -532,6 +532,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitAnnotation([NotNull] VBAParser.AnnotationContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.mandatoryLineContinuation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMandatoryLineContinuation([NotNull] VBAParser.MandatoryLineContinuationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.mandatoryLineContinuation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMandatoryLineContinuation([NotNull] VBAParser.MandatoryLineContinuationContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.foreignIdentifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
