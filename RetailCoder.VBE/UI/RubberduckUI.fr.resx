@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -191,7 +191,7 @@
     <value>Options générales</value>
   </data>
   <data name="SettingsCaption_TodoSettings" xml:space="preserve">
-    <value>Configuration des markeurs "TODO"</value>
+    <value>Commentaires "todo"</value>
   </data>
   <data name="SettingsInstructions_InspectionSettings" xml:space="preserve">
     <value>Configuration des niveaux de sévérité des inspections. Utiliser "DoNotShow" pour désactiver une inspection.</value>
@@ -1045,557 +1045,557 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
     <value>&amp;Implémenter l'interface</value>
   </data>
-  <data name="SourceControl_DeleteBranch">
+  <data name="SourceControl_DeleteBranch" xml:space="preserve">
     <value>Supprimer une branche</value>
   </data>
-  <data name="ParserState_ResolverError">
+  <data name="ParserState_ResolverError" xml:space="preserve">
     <value>Erreur de résolution</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt">
+  <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
     <value>Initialisation et nettoyage des méthodes de test</value>
   </data>
-  <data name="SourceControl_Id">
+  <data name="SourceControl_Id" xml:space="preserve">
     <value>Id</value>
   </data>
-  <data name="EndOfLineCommentStyle_Absolute">
+  <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
     <value>Absolut</value>
   </data>
-  <data name="IndenterSettings_EnableOptionsLabel">
+  <data name="IndenterSettings_EnableOptionsLabel" xml:space="preserve">
     <value>Activer les options</value>
   </data>
-  <data name="ParserState_Error">
+  <data name="ParserState_Error" xml:space="preserve">
     <value>Erreur d'analyse</value>
   </data>
-  <data name="ParserState_LoadingReference">
+  <data name="ParserState_LoadingReference" xml:space="preserve">
     <value>Chargement des références</value>
   </data>
-  <data name="SourceControl_LocalDirectoryLabel">
+  <data name="SourceControl_LocalDirectoryLabel" xml:space="preserve">
     <value>Répertoire local:</value>
   </data>
-  <data name="SourceControl_FilePath">
+  <data name="SourceControl_FilePath" xml:space="preserve">
     <value>Emplacement</value>
   </data>
-  <data name="SearchResults_MemberType">
+  <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="SourceControl_PasswordLabel">
+  <data name="SourceControl_PasswordLabel" xml:space="preserve">
     <value>Mot de passe:</value>
   </data>
-  <data name="UnitTest_NewModule_RunAfterTest">
+  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
     <value>cette procédure s'exécute après chaque test dans le module</value>
   </data>
-  <data name="UnitTestSettings_AssertMode">
+  <data name="UnitTestSettings_AssertMode" xml:space="preserve">
     <value>Mode:</value>
   </data>
-  <data name="HotkeyDescription_CodeExplorer">
+  <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
     <value>Explorateur</value>
   </data>
-  <data name="HotkeyDescription_RefactorRename">
+  <data name="HotkeyDescription_RefactorRename" xml:space="preserve">
     <value>Refactorer / renommer</value>
   </data>
-  <data name="GeneralSettings_HotkeyShift">
+  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
     <value>Maj</value>
   </data>
-  <data name="SearchResults_MemberName">
+  <data name="SearchResults_MemberName" xml:space="preserve">
     <value>Membre</value>
   </data>
-  <data name="SourceControl_LoginInstructions">
+  <data name="SourceControl_LoginInstructions" xml:space="preserve">
     <value>L'opération n'a pu être complétée parce que Rubberduck ne dispose pas des informations nécessaire à l'autorisation de cette opération.</value>
   </data>
-  <data name="UnitTestSettings_TestModuleTemplateHeader">
+  <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
     <value>Module de test</value>
   </data>
-  <data name="GeneralSettings_HotkeyAlt">
+  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
     <value>Alt</value>
   </data>
-  <data name="EndOfLineCommentStyle_AlignInColumn">
+  <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
     <value>Aligner dans la colonne</value>
   </data>
-  <data name="SourceControl_CloneRepoButtonToolTip">
+  <data name="SourceControl_CloneRepoButtonToolTip" xml:space="preserve">
     <value>Cloner le repository</value>
   </data>
-  <data name="HotkeyDescription_InspectionResults">
+  <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
     <value>Inspections</value>
   </data>
-  <data name="CodeInspectionResults_GroupByType">
+  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
     <value>Par type d'inspection</value>
   </data>
-  <data name="GeneralSettings_HotkeysLabel">
+  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
     <value>Raccourcis:</value>
   </data>
-  <data name="SourceControl_CommitAndSync">
+  <data name="SourceControl_CommitAndSync" xml:space="preserve">
     <value>Consigner et synchroniser</value>
   </data>
-  <data name="GroupingGrid_GroupingStyle">
+  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Regroupement</value>
   </data>
-  <data name="ParserState_Parsed">
+  <data name="ParserState_Parsed" xml:space="preserve">
     <value>Analyse complétée</value>
   </data>
-  <data name="UnitTestSettings_LateBinding">
+  <data name="UnitTestSettings_LateBinding" xml:space="preserve">
     <value>Indirecte (late binding)</value>
   </data>
-  <data name="GroupingStyle_ByOutcome">
+  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>Par résultat</value>
   </data>
-  <data name="IndenterSettings_AlignmentOptionsLabel">
+  <data name="IndenterSettings_AlignmentOptionsLabel" xml:space="preserve">
     <value>Aligner les options</value>
   </data>
-  <data name="IndenterSettings_ForceDebugDirectivesToColumn1">
+  <data name="IndenterSettings_ForceDebugDirectivesToColumn1" xml:space="preserve">
     <value>Forcer les instructions Debug à la ligne 1</value>
   </data>
-  <data name="SourceControl_FileStatus">
+  <data name="SourceControl_FileStatus" xml:space="preserve">
     <value>Statut</value>
   </data>
-  <data name="SourceControl_NoBranchesMessage">
+  <data name="SourceControl_NoBranchesMessage" xml:space="preserve">
     <value>Le repository ne contient aucune branche.</value>
   </data>
-  <data name="IndenterSettings_IndentFirstCommentBlock">
+  <data name="IndenterSettings_IndentFirstCommentBlock" xml:space="preserve">
     <value>Indenter le premier bloc de commentaires</value>
   </data>
-  <data name="IndenterSettings_IndentOptionsLabel">
+  <data name="IndenterSettings_IndentOptionsLabel" xml:space="preserve">
     <value>Indenter les options</value>
   </data>
-  <data name="CommonHotkey_HookDetached">
+  <data name="CommonHotkey_HookDetached" xml:space="preserve">
     <value>L'attache est déjà désactivée.</value>
   </data>
-  <data name="SourceControl_Dismiss">
+  <data name="SourceControl_Dismiss" xml:space="preserve">
     <value>Ok</value>
   </data>
-  <data name="UnitTestSettings_BindingMode">
+  <data name="UnitTestSettings_BindingMode" xml:space="preserve">
     <value>Liaison par défaut:</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt">
+  <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
     <value>Inclure un exemple de méthode de test</value>
   </data>
-  <data name="IndenterSettings_EnableUndo">
+  <data name="IndenterSettings_EnableUndo" xml:space="preserve">
     <value>Activer l'annulation</value>
   </data>
-  <data name="ParserState_Ready">
+  <data name="ParserState_Ready" xml:space="preserve">
     <value>Prêt</value>
   </data>
-  <data name="Settings">
+  <data name="Settings" xml:space="preserve">
     <value>Paramètres</value>
   </data>
-  <data name="HotkeyDescription_RefactorMoveCloserToUsage">
+  <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
     <value>Déplacer la déclaration</value>
   </data>
-  <data name="IndenterSettings_ForceCompilerDirectivesToColumn1">
+  <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
     <value>Forcer les directives du préprocesseur à la colonne 1</value>
   </data>
-  <data name="AboutWindow_AttributionsLabel">
+  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
     <value>Attributions</value>
   </data>
-  <data name="SourceControl_Message">
+  <data name="SourceControl_Message" xml:space="preserve">
     <value>Message</value>
   </data>
-  <data name="RubberduckMenu_RegexSearchReplace">
+  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rechercher/remplacer avec une RegE&amp;x</value>
   </data>
-  <data name="IndenterSettings_IgnoreOperators">
+  <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
     <value>Ignorer les opérateurs</value>
   </data>
-  <data name="SourceControl_CommitAndPush">
+  <data name="SourceControl_CommitAndPush" xml:space="preserve">
     <value>Consigner et pousser</value>
   </data>
-  <data name="SearchResults_Caption">
+  <data name="SearchResults_Caption" xml:space="preserve">
     <value>Résultats de recherche</value>
   </data>
-  <data name="UnitTest_NewMethod_ErrorNotRaised">
+  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
     <value>L'erreur attendue ne s'est pas produite</value>
   </data>
-  <data name="TestExplorer_QualifiedModuleName">
+  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
     <value>Module</value>
   </data>
-  <data name="SourceControl_UpdateSettingsTitle">
+  <data name="SourceControl_UpdateSettingsTitle" xml:space="preserve">
     <value>Paramètres mis à jour</value>
   </data>
-  <data name="HotkeyDescription_IndentModule">
+  <data name="HotkeyDescription_IndentModule" xml:space="preserve">
     <value>Indenter le module</value>
   </data>
-  <data name="RubberduckCommandbarRefreshButtonTooltip">
+  <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Analyser tous les projets ouverts</value>
   </data>
-  <data name="GroupingStyle_ByLocation">
+  <data name="GroupingStyle_ByLocation" xml:space="preserve">
     <value>Par emplacement</value>
   </data>
-  <data name="CommonHotkey_KeyNotRegistered">
+  <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>La combinaison ({0}) n'est pas enregistrée.</value>
   </data>
-  <data name="UnitTestSettings_StrictAssert">
+  <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
     <value>Assertions strictes</value>
   </data>
-  <data name="UnitTest_NewMethod_Rename">
+  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
     <value>Renommer le test</value>
   </data>
-  <data name="ParserState_Resolving">
+  <data name="ParserState_Resolving" xml:space="preserve">
     <value>Résolution...</value>
   </data>
-  <data name="GeneralSettings_AutoSaveEnabled">
+  <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
     <value>Activer la sauvegarde auto</value>
   </data>
-  <data name="SettingsCaption_IndenterSettings">
-    <value>Options d'indentation</value>
+  <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
+    <value>Indentation</value>
   </data>
-  <data name="ParserState_Pending">
+  <data name="ParserState_Pending" xml:space="preserve">
     <value>En attente</value>
   </data>
-  <data name="GeneralSettings_HotkeyCtrl">
+  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
     <value>Ctrl</value>
   </data>
-  <data name="UnitTest_NewModule_RunBeforeTest">
+  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
     <value>cette procédure s'exécute avant chaque test dans le module</value>
   </data>
-  <data name="IndenterSettings_IndentCompilerDirectives">
+  <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
     <value>Indenter les directives du préprocesseur</value>
   </data>
-  <data name="HotkeyDescription_IndentProcedure">
+  <data name="HotkeyDescription_IndentProcedure" xml:space="preserve">
     <value>Indenter la procédure</value>
   </data>
-  <data name="SearchResults_Context">
+  <data name="SearchResults_Context" xml:space="preserve">
     <value>Contexte</value>
   </data>
-  <data name="EndOfLineCommentStyle_SameGap">
+  <data name="EndOfLineCommentStyle_SameGap" xml:space="preserve">
     <value>Même espacement</value>
   </data>
-  <data name="SourceControl_SourceBranch">
+  <data name="SourceControl_SourceBranch" xml:space="preserve">
     <value>Branche source:</value>
   </data>
-  <data name="TestOutcome_Inconclusive">
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
     <value>Non concluant</value>
   </data>
-  <data name="IndenterSettings_AlignDims">
+  <data name="IndenterSettings_AlignDims" xml:space="preserve">
     <value>Aligner les déclarations (Dim)</value>
   </data>
-  <data name="SourceControl_Delete">
+  <data name="SourceControl_Delete" xml:space="preserve">
     <value>Supprimer</value>
   </data>
-  <data name="HotkeyDescription_RefactorExtractMethod">
+  <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
     <value>Refactorer / extraire une méthode</value>
   </data>
-  <data name="SettingsInstructions_IndenterSettings">
+  <data name="SettingsInstructions_IndenterSettings" xml:space="preserve">
     <value>Configuration des options d'indentation</value>
   </data>
-  <data name="GeneralSettings_AutoSaveLabel">
+  <data name="GeneralSettings_AutoSaveLabel" xml:space="preserve">
     <value>Sauvegarde auto:</value>
   </data>
-  <data name="GeneralSettings_HotkeyDescription">
+  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
     <value>Description</value>
   </data>
-  <data name="SourceControl_ExcludeFileButton">
+  <data name="SourceControl_ExcludeFileButton" xml:space="preserve">
     <value>Exclure</value>
   </data>
-  <data name="GeneralSettings_HotkeyKey1">
+  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
     <value>Touche1</value>
   </data>
-  <data name="GeneralSettings_HotkeyKey2">
+  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
     <value>Touche2</value>
   </data>
-  <data name="SourceControl_Author">
+  <data name="SourceControl_Author" xml:space="preserve">
     <value>Auteur</value>
   </data>
-  <data name="IndenterSettings_SpecialOptionsLabel">
+  <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Options spéciales</value>
   </data>
-  <data name="AboutWindow_Caption">
+  <data name="AboutWindow_Caption" xml:space="preserve">
     <value>À propos de Rubberduck</value>
   </data>
-  <data name="RubberduckMenu_Settings">
+  <data name="RubberduckMenu_Settings" xml:space="preserve">
     <value>&amp;Paramètres</value>
   </data>
-  <data name="IndenterSettings_IndentCase">
+  <data name="IndenterSettings_IndentCase" xml:space="preserve">
     <value>Indenter les blocs Case</value>
   </data>
-  <data name="IndenterSettings_EndOfLineCommentStyle">
+  <data name="IndenterSettings_EndOfLineCommentStyle" xml:space="preserve">
     <value>Style des commentaires de fin de ligne:</value>
   </data>
-  <data name="IndenterSettings_IndentSpaces">
+  <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
     <value>Nombre d'espaces:</value>
   </data>
-  <data name="SourceControl_MergeStatus">
+  <data name="SourceControl_MergeStatus" xml:space="preserve">
     <value>Statut</value>
   </data>
-  <data name="AboutWindow_AttributionList">
+  <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Analyse du code propulsée par ANTLR
 Intégration GitHub propulsée par LibGit2Sharp
 Icônes "Fugue" par Yusuke Kamiyamane</value>
   </data>
-  <data name="CommonHotkey_InvalidKey">
+  <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Clé invalide</value>
   </data>
-  <data name="AboutWindow_Copyright">
+  <data name="AboutWindow_Copyright" xml:space="preserve">
     <value>© Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
-  <data name="UnitTest_NewModule_RunOnce">
+  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>cette procédure s'exécute une seule fois par module</value>
   </data>
-  <data name="AboutWindow_ContributorsHeader">
+  <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
     <value>Contributeurs et supporters:</value>
   </data>
-  <data name="SeverityLabelText">
+  <data name="SeverityLabelText" xml:space="preserve">
     <value>Sévérité:</value>
   </data>
-  <data name="TestOutcome_Succeeded">
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
     <value>Succès</value>
   </data>
-  <data name="CodeInspectionResults_Issue">
+  <data name="CodeInspectionResults_Issue" xml:space="preserve">
     <value>Problème</value>
   </data>
-  <data name="IndenterSettings_IndentFirstDeclarationBlock">
+  <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
     <value>Indenter le premier bloc de déclarations</value>
   </data>
-  <data name="SourceControl_RemotePathLabel">
+  <data name="SourceControl_RemotePathLabel" xml:space="preserve">
     <value>Chemin d'accès distant:</value>
   </data>
-  <data name="CommonHotkey_HookAttached">
+  <data name="CommonHotkey_HookAttached" xml:space="preserve">
     <value>L'attache est déjà active.</value>
   </data>
-  <data name="IndenterSettings_IndentEntireProcedureBody">
+  <data name="IndenterSettings_IndentEntireProcedureBody" xml:space="preserve">
     <value>Indenter le contenu entier de la procédure</value>
   </data>
-  <data name="HotkeyDescription_ParseAll">
+  <data name="HotkeyDescription_ParseAll" xml:space="preserve">
     <value>Rafraîchir l'analyseur</value>
   </data>
-  <data name="SourceControl_NoBranchesTitle">
+  <data name="SourceControl_NoBranchesTitle" xml:space="preserve">
     <value>Aucune branche trouvée</value>
   </data>
-  <data name="UnitTestSettings_EarlyBinding">
+  <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
     <value>Directe (early binding)</value>
   </data>
-  <data name="SettingsInstructions_UnitTestSettings">
+  <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
     <value>Configuration du contenu des nouveaux modules et méthodes de test.</value>
   </data>
-  <data name="AboutWindow_SpecialThanksLabel">
+  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Remerciements</value>
   </data>
-  <data name="GroupingStyle_ByMarker">
+  <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Par marqueur</value>
   </data>
-  <data name="SourceControl_BranchName">
+  <data name="SourceControl_BranchName" xml:space="preserve">
     <value>Nom de la branche:</value>
   </data>
-  <data name="DeclarationType_LibraryProcedure">
+  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>la procédure externe</value>
   </data>
-  <data name="AboutWindow_CommunityHeader">
+  <data name="AboutWindow_CommunityHeader" xml:space="preserve">
     <value>Communauté:</value>
   </data>
-  <data name="TestOutcome_Unknown">
+  <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Inconnu</value>
   </data>
-  <data name="IndenterSettings_AlignCommentsWithCode">
+  <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Aligner les commentaires avec le code</value>
   </data>
-  <data name="UnitTestSettings_PermissiveAssert">
+  <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
     <value>Assertions permissives</value>
   </data>
-  <data name="SourceControl_UpdateSettingsMessage">
+  <data name="SourceControl_UpdateSettingsMessage" xml:space="preserve">
     <value>Votre nom d'utilisateur, addresse courriel et emplacement par défaut ont été sauvegardés.</value>
   </data>
-  <data name="CodeInspectionResults_GroupByModule">
+  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
     <value>Par module</value>
   </data>
-  <data name="SearchResults_AllImplementationsTabFormat">
+  <data name="SearchResults_AllImplementationsTabFormat" xml:space="preserve">
     <value>Implémentations: '{0}'</value>
   </data>
-  <data name="CodeInspectionResults_Type">
+  <data name="CodeInspectionResults_Type" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="HotkeyDescription_TestExplorer">
+  <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
     <value>Tests Unitaires</value>
   </data>
-  <data name="IndenterSettings_AlignContinuations">
+  <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
     <value>Aligner les continuations</value>
   </data>
-  <data name="SearchResults_AllReferencesTabFormat">
+  <data name="SearchResults_AllReferencesTabFormat" xml:space="preserve">
     <value>Références: '{0}'</value>
   </data>
-  <data name="EndOfLineCommentStyle_StandardGap">
+  <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
     <value>Espacement standard</value>
   </data>
-  <data name="GeneralSettings_HotkeyEnabled">
+  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
     <value>Active</value>
   </data>
-  <data name="UnitTest_NewMethod_RaisedTestError">
+  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
     <value>Le test a produit une erreur</value>
   </data>
-  <data name="TestOutcome_Failed">
+  <data name="TestOutcome_Failed" xml:space="preserve">
     <value>Échec</value>
   </data>
-  <data name="Rubberduck">
+  <data name="Rubberduck" xml:space="preserve">
     <value>Rubberduck</value>
   </data>
-  <data name="AboutWindow_BlogsHeader">
+  <data name="AboutWindow_BlogsHeader" xml:space="preserve">
     <value>Blogues:</value>
   </data>
-  <data name="SourceControl_UnpublishBranchButton">
+  <data name="SourceControl_UnpublishBranchButton" xml:space="preserve">
     <value>Dépublier</value>
   </data>
-  <data name="GroupingStyle_ByInspectionType">
+  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
     <value>Par type d'inspection</value>
   </data>
-  <data name="SettingsCaption_InspectionSettings">
-    <value>Options des inspections</value>
+  <data name="SettingsCaption_InspectionSettings" xml:space="preserve">
+    <value>Inspections</value>
   </data>
-  <data name="ParserState_Parsing">
+  <data name="ParserState_Parsing" xml:space="preserve">
     <value>Analyse...</value>
   </data>
-  <data name="SourceControl_UndoChangesButton">
+  <data name="SourceControl_UndoChangesButton" xml:space="preserve">
     <value>Annuler</value>
   </data>
-  <data name="CodeInspectionResults_Location">
+  <data name="CodeInspectionResults_Location" xml:space="preserve">
     <value>Emplacement</value>
   </data>
-  <data name="SearchResults_Location">
+  <data name="SearchResults_Location" xml:space="preserve">
     <value>Emplacement</value>
   </data>
-  <data name="AboutWindow_GeneralThanks">
+  <data name="AboutWindow_GeneralThanks" xml:space="preserve">
     <value>Tous les contributeurs à notre repository sur GitHub
 Tous ceux qui nous ont donné une étoile ou un "like"
 ...et quiconque lit ceci!</value>
   </data>
-  <data name="SettingsCaption_UnitTestSettings">
-    <value>Options des tests unitaires</value>
+  <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
+    <value>Tests unitaires</value>
   </data>
-  <data name="SourceControl_IncludeFileButton">
+  <data name="SourceControl_IncludeFileButton" xml:space="preserve">
     <value>Inclure</value>
   </data>
-  <data name="UnitTest_NewMethod_ChangeErrorNo">
+  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
     <value>Changer le numéro d'erreur</value>
   </data>
-  <data name="SourceControl_PublishBranchButton">
+  <data name="SourceControl_PublishBranchButton" xml:space="preserve">
     <value>Publier</value>
   </data>
-  <data name="SearchResults_ModuleName">
+  <data name="SearchResults_ModuleName" xml:space="preserve">
     <value>Module</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt">
+  <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
     <value>Initialisation et nettoyage des modules de test</value>
   </data>
-  <data name="HotkeyDescription_FindSymbol">
+  <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
     <value>Rechercher un symbole</value>
   </data>
-  <data name="GeneralSettings_LanguageLabel">
+  <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
     <value>Langue d'affichage:</value>
   </data>
-  <data name="SourceControl_CommitStatus_CommitAndPushSuccess">
+  <data name="SourceControl_CommitStatus_CommitAndPushSuccess" xml:space="preserve">
     <value>Opération complétée avec succès.</value>
   </data>
-  <data name="GeneralSettings_PeriodDelimiter">
+  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
     <value>Point (.)</value>
   </data>
-  <data name="SortStyle_ByType">
+  <data name="SortStyle_ByType" xml:space="preserve">
     <value>Par type</value>
   </data>
-  <data name="CodeExplorer_AddClassModuleText">
+  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
     <value>Module de classe (.cls)</value>
   </data>
-  <data name="information">
+  <data name="information" xml:space="preserve">
     <value>..\Resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="CodeExplorer_Import">
+  <data name="CodeExplorer_Import" xml:space="preserve">
     <value>Importer...</value>
   </data>
-  <data name="Parser_ParserError">
+  <data name="Parser_ParserError" xml:space="preserve">
     <value>Erreurs d'analyse</value>
   </data>
-  <data name="SortStyle_BySelection">
+  <data name="SortStyle_BySelection" xml:space="preserve">
     <value>Par emplacement</value>
   </data>
-  <data name="SourceControl_MissingCredentials">
+  <data name="SourceControl_MissingCredentials" xml:space="preserve">
     <value>Informations manquantes</value>
   </data>
-  <data name="CodeExplorer_CopyToolTip">
+  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
     <value>Copier au presse-papier</value>
   </data>
-  <data name="CodeExplorer_Undo">
+  <data name="CodeExplorer_Undo" xml:space="preserve">
     <value>Annuler...</value>
   </data>
-  <data name="CodeExplorer_Commit">
+  <data name="CodeExplorer_Commit" xml:space="preserve">
     <value>Consigner...</value>
   </data>
-  <data name="GeneralSettings_WarnLogLevel">
+  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
     <value>Warn</value>
   </data>
-  <data name="cross_circle">
+  <data name="cross_circle" xml:space="preserve">
     <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="GeneralSettings_ShowLogFolder">
+  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Afficher dans le dossier</value>
   </data>
-  <data name="CodeExplorer_Export">
+  <data name="CodeExplorer_Export" xml:space="preserve">
     <value>Exporter...</value>
   </data>
-  <data name="GeneralSettings_ErrorLogLevel">
+  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
     <value>Error</value>
   </data>
-  <data name="NoIndentAnnotation">
+  <data name="NoIndentAnnotation" xml:space="preserve">
     <value>Annoter avec '@NoIndent</value>
   </data>
-  <data name="SourceControl_UndoPrompt">
+  <data name="SourceControl_UndoPrompt" xml:space="preserve">
     <value>Souhaitez-vous annuler les modifications effectuées à {0}?</value>
   </data>
-  <data name="CodeExplorer_Print">
+  <data name="CodeExplorer_Print" xml:space="preserve">
     <value>Imprimer...</value>
   </data>
-  <data name="SortStyle_ByName">
+  <data name="SortStyle_ByName" xml:space="preserve">
     <value>Par nom</value>
   </data>
-  <data name="SourceControl_UndoTitle">
+  <data name="SourceControl_UndoTitle" xml:space="preserve">
     <value>Contrôle des sources - annuler</value>
   </data>
-  <data name="Find">
+  <data name="Find" xml:space="preserve">
     <value>Chercher</value>
   </data>
-  <data name="UnitTest_TotalDuration">
+  <data name="UnitTest_TotalDuration" xml:space="preserve">
     <value>Durée totale</value>
   </data>
-  <data name="GeneralSettings_SlashDelimiter">
+  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>Barre oblique (/)</value>
   </data>
-  <data name="TestOutcome_Ignored">
+  <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignoré</value>
   </data>
-  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess">
+  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess" xml:space="preserve">
     <value>Opération complétée avec succès.</value>
   </data>
-  <data name="GeneralSettings_FatalLogLevel">
+  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
     <value>Fatal</value>
   </data>
-  <data name="SourceControl_CommitStatus_CommitSuccess">
+  <data name="SourceControl_CommitStatus_CommitSuccess" xml:space="preserve">
     <value>Opération complétée avec succès.</value>
   </data>
-  <data name="GeneralSettings_TraceLogLevel">
+  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
     <value>Trace</value>
   </data>
-  <data name="GeneralSettings_DebugLogLevel">
+  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
     <value>Debug</value>
   </data>
-  <data name="CodeExplorer_Remove">
+  <data name="CodeExplorer_Remove" xml:space="preserve">
     <value>Supprimer...</value>
   </data>
-  <data name="GeneralSettings_FolderDelimiterLabel">
+  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
     <value>Délimiteur de dossiers:</value>
   </data>
-  <data name="CodeExplorer_RefreshComponent">
+  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
     <value>Rafraîchir le module</value>
   </data>
-  <data name="GeneralSettings_MinimumLogLevelLabel">
+  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
     <value>Niveau minimum du journal</value>
   </data>
-  <data name="GeneralSettings_OffLogLevel">
+  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
     <value>Désactivé</value>
   </data>
-  <data name="CodeExplorer_Sort">
+  <data name="CodeExplorer_Sort" xml:space="preserve">
     <value>Trier</value>
   </data>
-  <data name="SourceControl_CommitStatus">
+  <data name="SourceControl_CommitStatus" xml:space="preserve">
     <value>Consignation</value>
   </data>
-  <data name="GeneralSettings_InfoLogLevel">
+  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
     <value>Info</value>
   </data>
-  <data name="CodeExplorer_ShowSignaturesToolTip">
+  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
     <value>Activer/désactiver les signatures</value>
   </data>
 </root>
