@@ -50,17 +50,24 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
-            var oldTab = _viewModel.Tabs.FirstOrDefault(tab => tab.Header == RubberduckUI.Parser_ParserError);
-            if (_state.Status == ParserState.Error)
-            {
-                var viewModel = CreateViewModel();
-                _viewModel.AddTab(viewModel);
-                _viewModel.SelectedTab = viewModel;
-            }
+            var vm = CreateViewModel();
 
-            if (oldTab != null)
+            var tab = _viewModel.Tabs.FirstOrDefault(t => t.Header == RubberduckUI.Parser_ParserError);
+            if (tab == null)
             {
-                oldTab.CloseCommand.Execute(null);
+                _viewModel.AddTab(vm);
+                _viewModel.SelectedTab = vm;
+            }
+            else
+            {
+                if (_state.Status != ParserState.Error)
+                {
+                    tab.CloseCommand.Execute(null);
+                }
+                else
+                {
+                    tab.SearchResults = vm.SearchResults;
+                }
             }
         }
 

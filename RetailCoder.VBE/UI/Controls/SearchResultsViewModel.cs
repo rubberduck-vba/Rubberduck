@@ -21,20 +21,31 @@ namespace Rubberduck.UI.Controls
             _header = header;
             _target = target;
             _searchResults = new ObservableCollection<SearchResultItem>(searchResults);
-            _searchResultsSource = new CollectionViewSource();
-            _searchResultsSource.Source = _searchResults;
-            _searchResultsSource.GroupDescriptions.Add(new PropertyGroupDescription("ParentScope.QualifiedName.QualifiedModuleName.Name"));
-            _searchResultsSource.SortDescriptions.Add(new SortDescription("ParentScope.QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
-            _searchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartLine", ListSortDirection.Ascending));
-            _searchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartColumn", ListSortDirection.Ascending));
+
             _closeCommand = new DelegateCommand(ExecuteCloseCommand);
         }
 
-        private readonly ObservableCollection<SearchResultItem> _searchResults;
-        public ObservableCollection<SearchResultItem> SearchResults { get { return _searchResults; } }
+        private ObservableCollection<SearchResultItem> _searchResults;
+        public ObservableCollection<SearchResultItem> SearchResults
+        {
+            get { return _searchResults; }
+            set
+            {
+                _searchResults = value;
 
-        private readonly CollectionViewSource _searchResultsSource;
-        public CollectionViewSource SearchResultsSource { get { return _searchResultsSource; } }
+                SearchResultsSource = new CollectionViewSource();
+                SearchResultsSource.Source = _searchResults;
+                SearchResultsSource.GroupDescriptions.Add(new PropertyGroupDescription("ParentScope.QualifiedName.QualifiedModuleName.Name"));
+                SearchResultsSource.SortDescriptions.Add(new SortDescription("ParentScope.QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
+                SearchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartLine", ListSortDirection.Ascending));
+                SearchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartColumn", ListSortDirection.Ascending));
+
+                OnPropertyChanged();
+                OnPropertyChanged("SearchResultsSource");
+            }
+        }
+
+        public CollectionViewSource SearchResultsSource { get; private set; }
 
         public string Header { get { return _header; } }
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -17,7 +16,7 @@ namespace Rubberduck.UI.Command
     /// A command that finds all implementations of a specified method, or of the active interface module.
     /// </summary>
     [ComVisible(false)]
-    public class FindAllImplementationsCommand : CommandBase
+    public class FindAllImplementationsCommand : CommandBase, IDisposable
     {
         private readonly INavigateCommand _navigateCommand;
         private readonly IMessageBox _messageBox;
@@ -26,7 +25,9 @@ namespace Rubberduck.UI.Command
         private readonly SearchResultPresenterInstanceManager _presenterService;
         private readonly VBE _vbe;
 
-        public FindAllImplementationsCommand(INavigateCommand navigateCommand, IMessageBox messageBox, RubberduckParserState state, VBE vbe, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
+        public FindAllImplementationsCommand(INavigateCommand navigateCommand, IMessageBox messageBox,
+            RubberduckParserState state, VBE vbe, ISearchResultsWindowViewModel viewModel,
+            SearchResultPresenterInstanceManager presenterService)
         {
             _navigateCommand = navigateCommand;
             _messageBox = messageBox;
@@ -34,6 +35,24 @@ namespace Rubberduck.UI.Command
             _vbe = vbe;
             _viewModel = viewModel;
             _presenterService = presenterService;
+
+            _state.StateChanged += _state_StateChanged;
+        }
+
+        private void _state_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State != ParserState.Ready) { return; }
+
+            if (_viewModel == null) { return; }
+
+            var findImplementationsTabs = _viewModel.Tabs.Where(
+                t => t.Header.StartsWith(RubberduckUI.AllImplementations_Caption.Replace("'{0}'", ""))).ToList();
+
+            foreach (var tab in findImplementationsTabs)
+            {
+                Execute(tab.Target);
+                tab.CloseCommand.Execute(null);
+            }
         }
 
         public override bool CanExecute(object parameter)
@@ -169,6 +188,14 @@ namespace Rubberduck.UI.Command
             name = member.ComponentName + "." + member.IdentifierName;
             return items.FindInterfaceImplementationMembers(member.IdentifierName)
                    .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
+        }
+
+        public void Dispose()
+        {
+            if (_state != null)
+            {
+                _state.StateChanged += _state_StateChanged;
+            }
         }
     }
 }
