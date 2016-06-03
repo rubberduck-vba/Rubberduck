@@ -19,11 +19,15 @@ using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
+using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class ReferencedDeclarationsCollector
     {
+        private readonly RubberduckParserState _state;
+
         /// <summary>
         /// Controls how a type library is registered.
         /// </summary>
@@ -43,9 +47,13 @@ namespace Rubberduck.Parsing.Symbols
             REGKIND_NONE = 2
         }
 
-
         [DllImport("oleaut32.dll", CharSet = CharSet.Unicode)]
-        private static extern Int32 LoadTypeLibEx(string strTypeLibName, REGKIND regKind, out ITypeLib TypeLib);
+        private static extern int LoadTypeLibEx(string strTypeLibName, REGKIND regKind, out ITypeLib TypeLib);
+
+        public ReferencedDeclarationsCollector(RubberduckParserState state)
+        {
+            _state = state;
+        }
 
         private static readonly IDictionary<VarEnum, string> TypeNames = new Dictionary<VarEnum, string>
         {
@@ -76,6 +84,8 @@ namespace Rubberduck.Parsing.Symbols
             {VarEnum.VT_R4, "Single"},
             {VarEnum.VT_R8, "Double"},
         };
+
+        private readonly Dictionary<Guid, ComInformation> _comInformation = new Dictionary<Guid, ComInformation>();
 
         private string GetTypeName(TYPEDESC desc, ITypeInfo info)
         {
@@ -224,49 +234,72 @@ namespace Rubberduck.Parsing.Symbols
                         moduleDeclaration = new Declaration(
                             typeQualifiedMemberName,
                             pseudoParentModule,
-                            pseudoParentModule, 
+                            pseudoParentModule,
                             typeName,
                             null,
-                            false, 
-                            false, 
+                            false,
+                            false,
                             Accessibility.Global,
                             typeDeclarationType,
-                            null, 
+                            null,
                             Selection.Home,
                             false,
                             null,
-                            true, 
-                            null, 
+                            true,
+                            null,
                             attributes);
                         break;
                 }
+                ComInformation comInfo;
+                if (_comInformation.TryGetValue(typeAttributes.guid, out comInfo))
+                {
+                    comInfo.TypeQualifiedModuleName = typeQualifiedModuleName;
+                    comInfo.ModuleDeclaration = moduleDeclaration;
+                    comInfo.TypeDeclarationType = typeDeclarationType;
+                }
+                else
+                {
+                    _comInformation.Add(typeAttributes.guid,
+                        new ComInformation(typeAttributes, 0, info, typeName, typeQualifiedModuleName, moduleDeclaration,
+                            typeDeclarationType));
+                }
+
                 info.ReleaseTypeAttr(typeAttributesPointer);
 
                 output.Add(moduleDeclaration);
+            }
 
-                for (var memberIndex = 0; memberIndex < typeAttributes.cFuncs; memberIndex++)
+            foreach (var member in _comInformation.Values)
+            {
+                for (var memberIndex = 0; memberIndex < member.TypeAttributes.cFuncs; memberIndex++)
                 {
                     string[] memberNames;
 
                     IntPtr memberDescriptorPointer;
-                    info.GetFuncDesc(memberIndex, out memberDescriptorPointer);
+                    member.TypeInfo.GetFuncDesc(memberIndex, out memberDescriptorPointer);
                     var memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
-                    var memberDeclaration = CreateMemberDeclaration(memberDescriptor, typeAttributes.typekind, info, memberIndex, typeQualifiedModuleName, moduleDeclaration, out memberNames);
+
+                    var memberDeclaration = CreateMemberDeclaration(memberDescriptor, member.TypeAttributes.typekind, member.TypeInfo, member.ImplTypeFlags,
+                        member.TypeQualifiedModuleName, member.ModuleDeclaration, out memberNames);
                     if (memberDeclaration == null)
                     {
-                        info.ReleaseFuncDesc(memberDescriptorPointer);
+                        member.TypeInfo.ReleaseFuncDesc(memberDescriptorPointer);
                         continue;
                     }
-                    if (moduleDeclaration.DeclarationType == DeclarationType.ClassModule && memberDeclaration is ICanBeDefaultMember && ((ICanBeDefaultMember)memberDeclaration).IsDefaultMember)
+                    if (member.ModuleDeclaration.DeclarationType == DeclarationType.ClassModule &&
+                        memberDeclaration is ICanBeDefaultMember &&
+                        ((ICanBeDefaultMember)memberDeclaration).IsDefaultMember)
                     {
-                        ((ClassModuleDeclaration)moduleDeclaration).DefaultMember = memberDeclaration;
+                        ((ClassModuleDeclaration)member.ModuleDeclaration).DefaultMember = memberDeclaration;
                     }
                     output.Add(memberDeclaration);
 
-                    var parameterCount = memberDescriptor.cParams - (memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET) ? 0 : 1);
+                    var parameterCount = memberDescriptor.cParams -
+                                         (memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET) ? 0 : 1);
                     for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
                     {
-                        var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration, info);
+                        var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor,
+                            member.TypeQualifiedModuleName, memberDeclaration, member.TypeInfo);
                         var declaration = memberDeclaration as IDeclarationWithParameter;
                         if (declaration != null)
                         {
@@ -274,18 +307,20 @@ namespace Rubberduck.Parsing.Symbols
                         }
                         output.Add(parameter);
                     }
-                    info.ReleaseFuncDesc(memberDescriptorPointer);
+                    member.TypeInfo.ReleaseFuncDesc(memberDescriptorPointer);
                 }
 
-                for (var fieldIndex = 0; fieldIndex < typeAttributes.cVars; fieldIndex++)
+                for (var fieldIndex = 0; fieldIndex < member.TypeAttributes.cVars; fieldIndex++)
                 {
-                    output.Add(CreateFieldDeclaration(info, fieldIndex, typeDeclarationType, typeQualifiedModuleName, moduleDeclaration));
+                    output.Add(CreateFieldDeclaration(member.TypeInfo, fieldIndex, member.TypeDeclarationType, member.TypeQualifiedModuleName,
+                        member.ModuleDeclaration));
                 }
             }
+
             return output;
         }
 
-        private Declaration CreateMemberDeclaration(FUNCDESC memberDescriptor, TYPEKIND typeKind, ITypeInfo info, int memberIndex,
+        private Declaration CreateMemberDeclaration(FUNCDESC memberDescriptor, TYPEKIND typeKind, ITypeInfo info, IMPLTYPEFLAGS parentImplFlags,
             QualifiedModuleName typeQualifiedModuleName, Declaration moduleDeclaration, out string[] memberNames)
         {
             if (memberDescriptor.callconv != CALLCONV.CC_STDCALL)
@@ -300,7 +335,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var memberName = memberNames[0];
             var funcValueType = (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt;
-            var memberDeclarationType = GetDeclarationType(memberDescriptor, funcValueType, typeKind);
+            var memberDeclarationType = GetDeclarationType(memberName, memberDescriptor, funcValueType, typeKind, parentImplFlags);
 
             var asTypeName = string.Empty;
             if (memberDeclarationType != DeclarationType.Procedure)
@@ -470,13 +505,41 @@ namespace Rubberduck.Parsing.Symbols
                 ITypeInfo implTypeInfo;
                 info.GetRefTypeInfo(href, out implTypeInfo);
 
+                IntPtr typeAttributesPointer;
+                implTypeInfo.GetTypeAttr(out typeAttributesPointer);
+
+                var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
+
+                IMPLTYPEFLAGS flags = 0;
+                try
+                {
+                    info.GetImplTypeFlags(implIndex, out flags);
+                }
+                catch (COMException) { }
+
                 var implTypeName = GetTypeName(implTypeInfo);
                 if (implTypeName != "IDispatch" && implTypeName != "IUnknown")
                 {
                     // skip IDispatch.. just about everything implements it and RD doesn't need to care about it; don't care about IUnknown either
                     output.Add(implTypeName);
                 }
-                //Debug.WriteLine(string.Format("\tImplements {0}", implTypeName));
+
+                if (flags != 0)
+                {
+                    ComInformation comInfo;
+                    if (_comInformation.TryGetValue(typeAttributes.guid, out comInfo))
+                    {
+                        _comInformation[typeAttributes.guid].ImplTypeFlags =
+                            _comInformation[typeAttributes.guid].ImplTypeFlags | flags;
+                    }
+                    else
+                    {
+                        _comInformation.Add(typeAttributes.guid,
+                            new ComInformation(typeAttributes, flags, implTypeInfo, implTypeName, new QualifiedModuleName(), null, 0));
+                    }
+                }
+
+                info.ReleaseTypeAttr(typeAttributesPointer);
             }
             return output;
         }
@@ -507,7 +570,7 @@ namespace Rubberduck.Parsing.Symbols
             return typeDeclarationType;
         }
 
-        private DeclarationType GetDeclarationType(FUNCDESC funcDesc, VarEnum funcValueType, TYPEKIND typekind)
+        private DeclarationType GetDeclarationType(string memberName, FUNCDESC funcDesc, VarEnum funcValueType, TYPEKIND typekind, IMPLTYPEFLAGS parentImplTypeFlags)
         {
             DeclarationType memberType;
             if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET))
@@ -522,13 +585,15 @@ namespace Rubberduck.Parsing.Symbols
             {
                 memberType = DeclarationType.PropertySet;
             }
+            else if ((parentImplTypeFlags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FSOURCE) ||
+                ((FUNCFLAGS)funcDesc.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FSOURCE)) &&
+                !new[] {"QueryInterface", "AddRef", "Release", "GetTypeInfoCount", "GetTypeInfo", "GetIDsOfNames", "Invoke"}.Contains(memberName))  // quick-and-dirty for beta
+            {
+                memberType = DeclarationType.Event;
+            }
             else if (funcValueType == VarEnum.VT_VOID)
             {
                 memberType = DeclarationType.Procedure;
-            }
-            else if (funcDesc.funckind == FUNCKIND.FUNC_PUREVIRTUAL && typekind == TYPEKIND.TKIND_COCLASS)
-            {
-                memberType = DeclarationType.Event;
             }
             else
             {
