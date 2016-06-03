@@ -17,15 +17,13 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class ShowParserErrorsCommand : CommandBase, IShowParserErrorsCommand
     {
-        private readonly VBE _vbe;
         private readonly INavigateCommand _navigateCommand;
         private readonly RubberduckParserState _state;
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
 
-        public ShowParserErrorsCommand(VBE vbe, INavigateCommand navigateCommand, RubberduckParserState state, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
+        public ShowParserErrorsCommand(INavigateCommand navigateCommand, RubberduckParserState state, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
         {
-            _vbe = vbe;
             _navigateCommand = navigateCommand;
             _state = state;
             _viewModel = viewModel;
@@ -50,17 +48,24 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
-            var oldTab = _viewModel.Tabs.FirstOrDefault(tab => tab.Header == RubberduckUI.Parser_ParserError);
-            if (_state.Status == ParserState.Error)
-            {
-                var viewModel = CreateViewModel();
-                _viewModel.AddTab(viewModel);
-                _viewModel.SelectedTab = viewModel;
-            }
+            var vm = CreateViewModel();
 
-            if (oldTab != null)
+            var tab = _viewModel.Tabs.FirstOrDefault(t => t.Header == RubberduckUI.Parser_ParserError);
+            if (tab != null)
             {
-                oldTab.CloseCommand.Execute(null);
+                if (_state.Status != ParserState.Error)
+                {
+                    tab.CloseCommand.Execute(null);
+                }
+                else
+                {
+                    tab.SearchResults = vm.SearchResults;
+                }
+            }
+            else if (_state.Status == ParserState.Error)
+            {
+                _viewModel.AddTab(vm);
+                _viewModel.SelectedTab = vm;
             }
         }
 
