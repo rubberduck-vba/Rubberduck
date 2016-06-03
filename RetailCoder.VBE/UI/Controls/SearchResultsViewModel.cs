@@ -13,14 +13,19 @@ namespace Rubberduck.UI.Controls
     {
         private readonly INavigateCommand _navigateCommand;
         private readonly string _header;
-        private readonly Declaration _target;
 
         public SearchResultsViewModel(INavigateCommand navigateCommand, string header, Declaration target, IEnumerable<SearchResultItem> searchResults)
         {
             _navigateCommand = navigateCommand;
             _header = header;
-            _target = target;
-            _searchResults = new ObservableCollection<SearchResultItem>(searchResults);
+            Target = target;
+            SearchResultsSource = new CollectionViewSource();
+            SearchResultsSource.GroupDescriptions.Add(new PropertyGroupDescription("ParentScope.QualifiedName.QualifiedModuleName.Name"));
+            SearchResultsSource.SortDescriptions.Add(new SortDescription("ParentScope.QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
+            SearchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartLine", ListSortDirection.Ascending));
+            SearchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartColumn", ListSortDirection.Ascending));
+
+            SearchResults = new ObservableCollection<SearchResultItem>(searchResults);
 
             _closeCommand = new DelegateCommand(ExecuteCloseCommand);
         }
@@ -33,12 +38,7 @@ namespace Rubberduck.UI.Controls
             {
                 _searchResults = value;
 
-                SearchResultsSource = new CollectionViewSource();
                 SearchResultsSource.Source = _searchResults;
-                SearchResultsSource.GroupDescriptions.Add(new PropertyGroupDescription("ParentScope.QualifiedName.QualifiedModuleName.Name"));
-                SearchResultsSource.SortDescriptions.Add(new SortDescription("ParentScope.QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
-                SearchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartLine", ListSortDirection.Ascending));
-                SearchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartColumn", ListSortDirection.Ascending));
 
                 OnPropertyChanged();
                 OnPropertyChanged("SearchResultsSource");
@@ -52,7 +52,7 @@ namespace Rubberduck.UI.Controls
         private readonly ICommand _closeCommand;
         public ICommand CloseCommand { get { return _closeCommand; } }
 
-        public Declaration Target { get {return _target; } }
+        public Declaration Target { get; set; }
 
         private SearchResultItem _selectedItem;
         public SearchResultItem SelectedItem

@@ -51,12 +51,7 @@ namespace Rubberduck.UI.Command
             var vm = CreateViewModel();
 
             var tab = _viewModel.Tabs.FirstOrDefault(t => t.Header == RubberduckUI.Parser_ParserError);
-            if (tab == null)
-            {
-                _viewModel.AddTab(vm);
-                _viewModel.SelectedTab = vm;
-            }
-            else
+            if (tab != null)
             {
                 if (_state.Status != ParserState.Error)
                 {
@@ -66,6 +61,11 @@ namespace Rubberduck.UI.Command
                 {
                     tab.SearchResults = vm.SearchResults;
                 }
+            }
+            else if (_state.Status == ParserState.Error)
+            {
+                _viewModel.AddTab(vm);
+                _viewModel.SelectedTab = vm;
             }
         }
 

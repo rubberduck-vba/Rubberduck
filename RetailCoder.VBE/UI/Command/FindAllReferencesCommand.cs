@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 
 namespace Rubberduck.UI.Command
@@ -36,21 +37,44 @@ namespace Rubberduck.UI.Command
             _state.StateChanged += _state_StateChanged;
         }
 
+        private Declaration FindNewDeclaration(Declaration declaration)
+        {
+            return _state.AllUserDeclarations.SingleOrDefault(item =>
+                        item.ProjectId == declaration.ProjectId && 
+                        item.ComponentName == declaration.ComponentName &&
+                        item.ParentScope == declaration.ParentScope &&
+                        item.IdentifierName == declaration.IdentifierName && 
+                        item.DeclarationType == declaration.DeclarationType);
+        }
+
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
             if (e.State != ParserState.Ready) { return; }
 
             if (_viewModel == null) { return; }
 
+            UiDispatcher.InvokeAsync(UpdateTab);
+        }
+
+        private void UpdateTab()
+        {
             var findReferenceTabs = _viewModel.Tabs.Where(
                 t => t.Header.StartsWith(RubberduckUI.AllReferences_Caption.Replace("'{0}'", ""))).ToList();
 
             foreach (var tab in findReferenceTabs)
             {
-                var vm = CreateViewModel(tab.Target);
+                var newTarget = FindNewDeclaration(tab.Target);
+                if (newTarget == null)
+                {
+                    tab.CloseCommand.Execute(null);
+                    return;
+                }
+
+                var vm = CreateViewModel(newTarget);
                 if (vm.SearchResults.Any())
                 {
                     tab.SearchResults = vm.SearchResults;
+                    tab.Target = vm.Target;
                 }
                 else
                 {
