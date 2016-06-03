@@ -4,13 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public class FunctionReturnValueNotUsedInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
-        private QualifiedMemberName _memberName;
 
         public FunctionReturnValueNotUsedInspectionResult(
             IInspection inspection,
@@ -48,6 +48,11 @@ namespace Rubberduck.Inspections
             {
                 return string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, Target.IdentifierName);
             }
+        }
+
+        public override NavigateCodeEventArgs GetNavigationArgs()
+        {
+            return new NavigateCodeEventArgs(Target);
         }
     }
 }

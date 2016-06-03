@@ -554,7 +554,7 @@
                                ItemsSource="{Binding Source={StaticResource ResultsByInspectionType}}"
                                Visibility="{Binding IsChecked, ElementName=GroupByInspectionType, Converter={StaticResource BoolToVisibility}}">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}">
+                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="Descending">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="inspections:ICodeInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
