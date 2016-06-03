@@ -108,7 +108,7 @@ namespace Rubberduck.Inspections
                 QualifiedSelection.Selection.StartLine);
         }
 
-        public NavigateCodeEventArgs GetNavigationArgs()
+        public virtual NavigateCodeEventArgs GetNavigationArgs()
         {
             return new NavigateCodeEventArgs(QualifiedSelection);
         }
