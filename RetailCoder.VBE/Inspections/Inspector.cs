@@ -55,11 +55,8 @@ namespace Rubberduck.Inspections
                     return new ICodeInspectionResult[] { };
                 }
 
-                await Task.Yield();
-
                 state.OnStatusMessageUpdate(RubberduckUI.CodeInspections_Inspecting);
                 UpdateInspectionSeverity();
-                //OnReset();
 
                 var allIssues = new ConcurrentBag<ICodeInspectionResult>();
 
@@ -72,7 +69,7 @@ namespace Rubberduck.Inspections
 
                 var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
                     .Select(inspection =>
-                        new Task(() =>
+                        Task.Run(() =>
                         {
                             token.ThrowIfCancellationRequested();
                             var inspectionResults = inspection.GetInspectionResults();
@@ -80,23 +77,15 @@ namespace Rubberduck.Inspections
 
                             if (results.Any())
                             {
-                                //OnIssuesFound(results);
-
                                 foreach (var inspectionResult in results)
                                 {
                                     allIssues.Add(inspectionResult);
                                 }
                             }
-                        })).ToArray();
+                        })).ToList();
 
-                foreach (var inspection in inspections)
-                {
-                    inspection.Start();
-                }
-
-                Task.WaitAll(inspections);
+                await Task.WhenAll(inspections);
                 state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status)); // should be "Ready"
-
                 return allIssues;
             }
 
