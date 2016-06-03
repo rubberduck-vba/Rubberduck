@@ -26,7 +26,7 @@ Rubberduck wants to bring VBA into the 21st century, and wants to see more open-
 
 ---
 
-If you're learning VBA, Rubberduck can help you avoid a few common beginner mistakes, and can probably show you a trick or two - even if you're only ever writing *macros*. If you're a more advanced programmer, you will appreciate the richness of [Rubberduck's feature set](https://github.com/retailcoder/Rubberduck/wiki/Features). See the [Installing]((https://github.com/rubberduck-vba/Rubberduck/wiki/Installing) wiki page.
+If you're learning VBA, Rubberduck can help you avoid a few common beginner mistakes, and can probably show you a trick or two - even if you're only ever writing *macros*. If you're a more advanced programmer, you will appreciate the richness of [Rubberduck's feature set](https://github.com/retailcoder/Rubberduck/wiki/Features). See the [Installing](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing) wiki page.
 
 If you're a C# developer looking for a fun project to contribute to, see the [Contributing](https://github.com/rubberduck-vba/Rubberduck/wiki/Contributing) wiki page.
 
