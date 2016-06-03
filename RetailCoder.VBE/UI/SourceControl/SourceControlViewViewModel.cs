@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -91,8 +93,8 @@ namespace Rubberduck.UI.SourceControl
         private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
             new Dictionary<NotificationType, BitmapImage>
             {
-                { NotificationType.Info, GetImageSource(resx.information)},
-                { NotificationType.Error, GetImageSource(resx.cross_circle)}
+                { NotificationType.Info, GetImageSource((Bitmap) resx.ResourceManager.GetObject("information", CultureInfo.InvariantCulture))},
+                { NotificationType.Error, GetImageSource((Bitmap) resx.ResourceManager.GetObject("cross_circle", CultureInfo.InvariantCulture))}
             };
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)

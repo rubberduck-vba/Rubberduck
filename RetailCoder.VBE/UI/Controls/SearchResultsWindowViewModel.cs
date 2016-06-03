@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -21,10 +20,9 @@ namespace Rubberduck.UI.Controls
             RemoveTab(sender as SearchResultsViewModel);
         }
 
-        public IEnumerable<SearchResultsViewModel> Tabs { get { return _tabs; } }
+        public ObservableCollection<SearchResultsViewModel> Tabs { get { return _tabs; } }
 
         private SearchResultsViewModel _selectedTab;
-
         public SearchResultsViewModel SelectedTab
         {
             get { return _selectedTab; }

@@ -98,63 +98,63 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="GitRepoStatusFailed">
-    <value />
+    <value>Impossible d'extraire le statut du repository.</value>
   </data>
   <data name="GitPublishFailed">
-    <value />
+    <value>La publication a échoué.</value>
   </data>
   <data name="GitRepoNotFound">
-    <value />
+    <value>Repository introuvable.</value>
   </data>
   <data name="GitNoInitialCommit">
-    <value />
+    <value>Impossible d'effectuer la consignation initiale.</value>
   </data>
   <data name="GitRepoNotCloned">
-    <value />
+    <value>Impossible de cloner le repository distant.</value>
   </data>
   <data name="GitUnpublishFailed">
-    <value />
+    <value>La dépublication a échoué.</value>
   </data>
   <data name="GitRemoveFileStaging">
-    <value />
+    <value>Impossible de supprimer le fichier '{0}'.</value>
   </data>
   <data name="GitCommitFailed">
-    <value />
+    <value>La consignation a échoué.</value>
   </data>
   <data name="GitPushFailed">
-    <value />
+    <value>L'opération 'push' a échoué.</value>
   </data>
   <data name="GitUndoFailed">
-    <value />
+    <value>L'opération 'undo' a échoué.</value>
   </data>
   <data name="GitBranchDeleteFailed">
-    <value />
+    <value>La suppression de la branche a échoué.</value>
   </data>
   <data name="GitRevertFailed">
-    <value />
+    <value>L'opération 'revert' a échoué.</value>
   </data>
   <data name="GitFileStageFailedMsg">
-    <value />
+    <value>Échec de l'extraction du fichier '{0}'.</value>
   </data>
   <data name="GitCheckoutFailed">
-    <value />
+    <value>L'opération 'checkout' a échoué.</value>
   </data>
   <data name="GitFetchFailed">
-    <value />
+    <value>L'opération 'fetch' a échoué.</value>
   </data>
   <data name="GitNewBranchFailed">
-    <value />
+    <value>La création de la branche a échoué.</value>
   </data>
   <data name="GitRevertConflict">
-    <value />
+    <value>L'opération 'revert' cause des conflits. Échec de l'opération.</value>
   </data>
   <data name="GitNotInit">
-    <value />
+    <value>Impossible d'initialiser le repository.</value>
   </data>
   <data name="GitFileStageFailed">
-    <value />
+    <value>L'extraction du fichier a échoué.</value>
   </data>
   <data name="GitPullFailed">
-    <value />
+    <value>L'opération 'pull' a échoué.</value>
   </data>
 </root>

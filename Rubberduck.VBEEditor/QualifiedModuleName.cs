@@ -52,22 +52,25 @@ namespace Rubberduck.VBEditor
                 // Eg. A PowerPoint Slide is top level, but it's parent is a Presentation (that is NOT a vbComponent)
                 try
                 {
-                    var parentProp = project.VBComponents.Cast<VBComponent>()
+                    var firstOrDefault = project.VBComponents.Cast<VBComponent>()
                         .FirstOrDefault(comp => comp.Type == vbext_ComponentType.vbext_ct_Document
-                                                && comp.Properties.Item("Parent").Value != null)
-                                                .Properties.Cast<Property>().FirstOrDefault(property => property.Name == "Parent");
-
-                    Properties props = null;
-                    Property nameProperty = null;
-                    if (parentProp.Value is Properties)
+                                                && comp.Properties.Item("Parent").Value != null);
+                    if (firstOrDefault != null)
                     {
-                        props = (Properties)parentProp.Value;
-                        nameProperty = props.Cast<Property>().FirstOrDefault(property => property.Name == "Name");
-                    }
+                        var parentProp = firstOrDefault
+                            .Properties.Cast<Property>().FirstOrDefault(property => property.Name == "Parent");
 
-                    return nameProperty == null
-                        ? null
-                        : nameProperty.Value.ToString();
+                        Property nameProperty = null;
+                        if (parentProp != null && parentProp.Value is Properties)
+                        {
+                            var props = (Properties)parentProp.Value;
+                            nameProperty = props.Cast<Property>().FirstOrDefault(property => property.Name == "Name");
+                        }
+
+                        return nameProperty == null
+                            ? null
+                            : nameProperty.Value.ToString();
+                    }
                 }
                 catch
                 {

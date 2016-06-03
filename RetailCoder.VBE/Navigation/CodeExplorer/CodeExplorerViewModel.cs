@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Common;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
@@ -28,18 +24,16 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
-        private readonly IClipboardWriter _clipboard;
 
         public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<ICommand> commands)
         {
             _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += ParserState_StateChanged;
-            _state.ModuleStateChanged += ParserState_ModuleStateChanged;
+            
+            _refreshCommand = new DelegateCommand(param => _state.OnParseRequested(this),
+                param => !IsBusy && _state.IsDirty());
 
-            _clipboard = new ClipboardWriter();
-
-            _refreshCommand = commands.OfType<CodeExplorer_RefreshCommand>().FirstOrDefault();
             _refreshComponentCommand = commands.OfType<CodeExplorer_RefreshComponentCommand>().FirstOrDefault();
             _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().FirstOrDefault();
 
@@ -68,54 +62,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _commitCommand = commands.OfType<CodeExplorer_CommitCommand>().FirstOrDefault();
             _undoCommand = commands.OfType<CodeExplorer_UndoCommand>().FirstOrDefault();
 
-            //_copyResultsCommand = commands.OfType<CodeExplorer_CopyResultsCommand>().FirstOrDefault();
-
-            _copyResultsCommand = new DelegateCommand(param =>
-            {
-                const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
-
-                
-                const long DPI = 96;
-                FrameworkElement element = (FrameworkElement)param;
-                double height = element.ActualHeight;
-                double width = element.ActualWidth;
-                RenderTargetBitmap bmp = new RenderTargetBitmap((int)Math.Round(width), (int)Math.Round(height), DPI, DPI, PixelFormats.Default);
-                DrawingVisual dv = new DrawingVisual();
-                using (DrawingContext dc = dv.RenderOpen())
-                {
-                    VisualBrush vb = new VisualBrush(element);
-                    dc.DrawRectangle(vb, null, new Rect(new Point(), new Size(width, height)));
-                }
-                bmp.Render(dv);
-
-
-
-                ColumnInfo[] ColumnInfos = { new ColumnInfo("Project"), new ColumnInfo("Folder"), new ColumnInfo("Component"), new ColumnInfo("Declaration Type"), new ColumnInfo("Scope"), 
-                                           new ColumnInfo("Name"), new ColumnInfo("Return Type") };
-
-                // this.ProjectName, this.CustomFolder, this.ComponentName, this.DeclarationType.ToString(), this.Scope 
-                var aDeclarations = _state.AllUserDeclarations.Select(declaration => declaration.ToArray()).ToArray();
-
-                var resource = "Rubberduck User Declarations - {0}";
-                var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture));
-
-                //var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
-                var csvResults = ExportFormatter.Csv(aDeclarations, title, ColumnInfos);
-                var htmlResults = ExportFormatter.HtmlClipboardFragment(aDeclarations, title, ColumnInfos);
-                var rtfResults = ExportFormatter.RTF(aDeclarations, title);
-
-                MemoryStream strm1 = ExportFormatter.XmlSpreadsheetNew(aDeclarations, title, ColumnInfos);
-                //Add the formats from richest formatting to least formatting
-                _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
-                _clipboard.AppendString(DataFormats.Rtf, rtfResults);
-                _clipboard.AppendString(DataFormats.Html, htmlResults);
-                _clipboard.AppendImage(bmp);
-                _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
-                //_clipboard.AppendString(DataFormats.UnicodeText, textResults);
-
-                _clipboard.Flush();
-            
-            });
+            _copyResultsCommand = commands.OfType<CodeExplorer_CopyResultsCommand>().FirstOrDefault();
 
             _setNameSortCommand = new DelegateCommand(param =>
             {
@@ -228,18 +175,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             set
             {
                 _isBusy = value;
-                OnPropertyChanged();
-                CanRefresh = !_isBusy;
-            }
-        }
-
-        private bool _canRefresh = true;
-        public bool CanRefresh
-        {
-            get { return _canRefresh; }
-            private set
-            {
-                _canRefresh = value;
                 OnPropertyChanged();
             }
         }

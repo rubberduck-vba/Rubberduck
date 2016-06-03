@@ -18,6 +18,7 @@ namespace Rubberduck.UI.UnitTesting
 {
     public class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
+        private readonly RubberduckParserState _state;
         private readonly ITestEngine _testEngine;
         private readonly TestExplorerModel _model;
         private readonly IClipboardWriter _clipboard;
@@ -34,6 +35,7 @@ namespace Rubberduck.UI.UnitTesting
              IGeneralConfigService configService,
              IOperatingSystem operatingSystem)
         {
+            _state = state;
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
             _model = model;
@@ -220,7 +222,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private bool CanExecuteRefreshCommand(object parameter)
         {
-            return !Model.IsBusy;
+            return !Model.IsBusy && _state.IsDirty();
         }
 
         private void ExecuteRepeatLastRunCommand(object parameter)
