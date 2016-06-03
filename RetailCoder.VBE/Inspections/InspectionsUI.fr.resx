@@ -280,93 +280,93 @@
     <value>'Option Explicit' n'est pas spécifiée.</value>
   </data>
   <data name="ParameterCanBeByValInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Un paramètre qui est passé par référence (ByRef) et qui n'est pas assigné, peut être passé par valeur (ByVal).</value>
   </data>
   <data name="ParameterCanBeByValInspectionName" xml:space="preserve">
-    <value />
+    <value>Le paramètre peut être passé par valeur</value>
   </data>
   <data name="ParameterNotUsedInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Un paramètre est fourni à un membre qui ne l'utilise pas. Considérez supprimer ce paramètre.</value>
   </data>
   <data name="ParameterNotUsedInspectionName" xml:space="preserve">
-    <value />
+    <value>Le paramètre n'est pas utilisé</value>
   </data>
   <data name="ProcedureNotUsedInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Rubberduck n'a pu trouver aucun appelant pour la procédure. Si cette procédure est attachée à un bouton ou une macro, ou utilisée comme une fonction définie par l'utilisateur, ou répond à un événement que Rubberduck n'a pas vu, vous pouvez ignorer ce résultat. Sinon, considérez supprimer la procédure.</value>
   </data>
   <data name="ProcedureNotUsedInspectionName" xml:space="preserve">
-    <value />
+    <value>La procédure n'est pas appelée</value>
   </data>
   <data name="UnassignedVariableUsageInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Probablement un bogue: une variable est utilisée avant d'être assignée.</value>
   </data>
   <data name="UnassignedVariableUsageInspectionName" xml:space="preserve">
-    <value />
+    <value>La variable est utilisée, mais non assignée</value>
   </data>
   <data name="UntypedFunctionUsageInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Une fonction équivalente existe, qui retourne une valeur 'String' et pourrait éviter une conversion implicite de type.</value>
   </data>
   <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
-    <value />
+    <value>Utilisation d'une fonction retournant une 'String' dans une variable 'Variant'</value>
   </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>La procédure '{0}' pourrait être une fonction</value>
     <comment>{0} Procedure name</comment>
   </data>
   <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
-    <value />
+    <value>Implémenter comme une fonction, et mettre à jour les appels</value>
   </data>
   <data name="UseMeaningfulNameInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>Considérez renommer {0} '{1}'</value>
   </data>
   <data name="UseMeaningfulNameInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Les identifiants devrait indiquer ce pour quoi ils sont utilisés, devraient être lisibles; évitez de suprimer les voyelles, évitez les suffixes numériques, et les noms de 1-2 caractères.</value>
   </data>
   <data name="UseMeaningfulNameInspectionName" xml:space="preserve">
-    <value />
+    <value>Utilisez un nom significatif</value>
   </data>
   <data name="VariableNotAssignedInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Une variable est déclarée, mais aucune valeur ou référence n'y est assignée. Si Rubberduck ne se trompe pas, la variable pourrait être supprimée.</value>
   </data>
   <data name="VariableNotAssignedInspectionName" xml:space="preserve">
-    <value />
+    <value>Une variable est déclarée, mais pas assignée</value>
   </data>
   <data name="VariableNotUsedInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Une variable est déclarée, une valeur ou référence y est assignée, mais rien n'y réfère.</value>
   </data>
   <data name="VariableNotUsedInspectionName" xml:space="preserve">
-    <value />
+    <value>La variable n'est pas utilisée</value>
   </data>
   <data name="VariableTypeNotDeclaredInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Une variable dont le type n'est pas déclaré explicitement, est implicitement de type 'Variant'. Considérez spécifier un type explicitement.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspectionName" xml:space="preserve">
-    <value />
+    <value>Variable implicitement de type 'Variant'</value>
   </data>
   <data name="WriteOnlyPropertyInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Une propriété qui expose un mutateur (Let/Set) mais aucun accesseur (Get) constitue généralement un mauvais API. Considérez exposer un accesseur, ou convertissez le mutateur en méthode.</value>
   </data>
   <data name="WriteOnlyPropertyInspectionName" xml:space="preserve">
-    <value />
+    <value>Propriété en écriture seule</value>
   </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Une procédure qui n'a qu'un seul paramètre passé par référence, qui est assigné à une nouvelle valeur dans cette procédure, utilise un paramètre ByRef comme valeur de retour: considérez plutôt une fonction.</value>
   </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspectionName" xml:space="preserve">
-    <value />
+    <value>La procédure pourrait être une fonction</value>
   </data>
   <data name="WriteOnlyPropertyInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>La propriété '{0}' n'a pas d'accesseur (Get)</value>
     <comment>{0} Property name</comment>
   </data>
   <data name="SelfAssignedDeclarationInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>La variable '{0}' est assignée lors de sa déclaration</value>
   </data>
   <data name="SelfAssignedDeclarationInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Une variable objet assignée lors de sa déclaration dans une procédure, modifie comment VBA gère cet objet, ce qui peut mener à un comportement inattendu.</value>
   </data>
   <data name="SelfAssignedDeclarationInspectionName" xml:space="preserve">
-    <value />
+    <value>La variable objet est assignée lors de sa déclaration</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionName" xml:space="preserve">
     <value>La valeur de retour de la fonction n'est jamais utilisée.</value>
@@ -405,16 +405,16 @@
     <value>{0} '{1}' utilise le modificateur obsolète 'Global'</value>
   </data>
   <data name="ParameterCanBeByValInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>Le paramètre '{0}' peut être passé par valeur</value>
   </data>
   <data name="ParameterNotUsedInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>Le paramètre '{0}' n'est pas utilisé</value>
   </data>
   <data name="ProcedureShouldBeFunctionInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>La procédure '{0}' pourrait être une fonction</value>
   </data>
   <data name="UnassignedVariableUsageInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>La variable '{0}' est utilisée, mais non assignée</value>
   </data>
   <data name="ConvertFunctionToProcedureQuickFix" xml:space="preserve">
     <value>Convertir la fonction en procédure</value>
@@ -441,55 +441,55 @@
     <value>Spécifier 'Option Explicit'</value>
   </data>
   <data name="PassParameterByReferenceQuickFix" xml:space="preserve">
-    <value />
+    <value>Passer le paramètre par référence</value>
   </data>
   <data name="PassParameterByValueQuickFix" xml:space="preserve">
-    <value />
+    <value>Passer le paramètre par valeur</value>
   </data>
   <data name="QuickFixUseTypedFunction_" xml:space="preserve">
-    <value />
+    <value>Changer '{0}' pour '{1}'</value>
   </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value />
+    <value>Corriger dans le module</value>
   </data>
   <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value />
+    <value>Corriger dans le projet</value>
   </data>
   <data name="RemoveCommentQuickFix" xml:space="preserve">
-    <value />
+    <value>Supprimer le commentaire</value>
   </data>
   <data name="RemoveObsoleteStatementQuickFix" xml:space="preserve">
-    <value />
+    <value>Supprimer l'instruction obsolète</value>
   </data>
   <data name="RemoveTypeHintsQuickFix" xml:space="preserve">
-    <value />
+    <value>Supprimer les indicateurs de type</value>
   </data>
   <data name="RemoveUnassignedIdentifierQuickFix" xml:space="preserve">
-    <value />
+    <value>Supprimer la variable inutilisée</value>
   </data>
   <data name="RemoveUnassignedVariableUsageQuickFix" xml:space="preserve">
-    <value />
+    <value>Supprimer l'utilisation (brise le code)</value>
   </data>
   <data name="RemoveUnusedDeclarationQuickFix" xml:space="preserve">
-    <value />
+    <value>Supprimer la déclaration inutilisée</value>
   </data>
   <data name="RemoveUnusedParameterQuickFix" xml:space="preserve">
-    <value />
+    <value>Supprimer le paramètre inutilisé</value>
   </data>
   <data name="ReplaceCommentMarkerQuickFix" xml:space="preserve">
-    <value />
+    <value>Remplacer 'Rem' par une apostrophe</value>
   </data>
   <data name="SetExplicitVariantReturnTypeQuickFix" xml:space="preserve">
-    <value />
+    <value>Retourner une valeur 'Variant' explicite</value>
   </data>
   <data name="SpecifyExplicitPublicModifierQuickFix" xml:space="preserve">
-    <value />
+    <value>Spécifier le modificateur 'Public' explicitement</value>
   </data>
   <data name="SplitMultipleDeclarationsQuickFix" xml:space="preserve">
-    <value />
+    <value>Séparer les déclarations en plusieurs instructions</value>
   </data>
   <data name="VariableNotAssignedInspectionResultFormat" xml:space="preserve">
-    <value />
+    <value>La variable '{0}' n'est jamais assignée</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Désactiver cette inspection</value>
@@ -498,10 +498,10 @@
     <value>Le type de contexte '{0}' est invalide pour {1}.</value>
   </data>
   <data name="SetObjectVariableQuickFix">
-    <value />
+    <value>Utiliser le mot-clé 'Set'</value>
   </data>
   <data name="QualifiedSelectionInspection">
-    <value />
+    <value>{0}: {1} - {2},{3}, ligne {4}</value>
   </data>
   <data name="ObjectVariableNotSetInspectionName">
     <value>L'assignation d'une référence d'objet requiert le mot-clé 'Set'</value>
@@ -528,7 +528,7 @@
     <value>Déclaration</value>
   </data>
   <data name="VariableTypeNotDeclaredInspectionResultFormat">
-    <value />
+    <value>{0} '{1}' est implicitement de type 'Variant'</value>
   </data>
   <data name="DefaultProjectNameInspectionResultFormat">
     <value>Le projet '{0}' n'est pas nommé</value>
@@ -552,6 +552,6 @@
     <value>Le membre '{0}' réfère implicitement à la feuille active</value>
   </data>
   <data name="UntypedFunctionUsageInspectionResultFormat">
-    <value />
+    <value>Remplacer la fonction '{0}' par la fonction typée équivalente</value>
   </data>
 </root>
