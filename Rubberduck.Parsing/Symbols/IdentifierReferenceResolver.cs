@@ -550,44 +550,42 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ForNextStmtContext context)
         {
+            // In "For expr1 = expr2" the "expr1 = expr2" part is treated as a single expression.
+            var assignmentExpr = ((VBAParser.RelationalOpContext)context.expression()[0]);
+            var lExpr = assignmentExpr.expression()[0];
             var firstExpression = _bindingService.ResolveDefault(
                 _moduleDeclaration,
                 _currentParent,
-                context.expression()[0],
+                lExpr,
                 GetInnerMostWithExpression(),
                 StatementResolutionContext.Undefined);
-            if (firstExpression.Classification == ExpressionClassification.ResolutionFailed)
+            _boundExpressionVisitor.AddIdentifierReferences(
+                firstExpression,
+                _qualifiedModuleName,
+                _currentScope,
+                _currentParent);
+            if (firstExpression.Classification != ExpressionClassification.ResolutionFailed)
             {
+                // each iteration counts as an assignment
                 _boundExpressionVisitor.AddIdentifierReferences(
                     firstExpression,
                     _qualifiedModuleName,
                     _currentScope,
-                    _currentParent);
-            }
-            else
-            {
-                // In "For expr1 = expr2" the "expr1 = expr2" part is treated as a single expression.
-                var binOp = (BinaryOpExpression)firstExpression;
-                var assignmentExpr = binOp.Left;
-                var fromExpr = binOp.Right;
-                // each iteration counts as an assignment
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    assignmentExpr,
-                    _qualifiedModuleName,
-                    _currentScope,
                     _currentParent,
                     true);
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    assignmentExpr,
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent);
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    fromExpr,
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent);
             }
+            var rExpr = assignmentExpr.expression()[1];
+            var secondExpression = _bindingService.ResolveDefault(
+                _moduleDeclaration,
+                _currentParent,
+                rExpr,
+                GetInnerMostWithExpression(),
+                StatementResolutionContext.Undefined);
+            _boundExpressionVisitor.AddIdentifierReferences(
+                secondExpression,
+                _qualifiedModuleName,
+                _currentScope,
+                _currentParent);
             for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
             {
                 ResolveDefault(context.expression()[exprIndex]);
