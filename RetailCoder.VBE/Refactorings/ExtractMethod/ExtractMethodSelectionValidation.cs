@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private IEnumerable<Declaration> _declarations;
 
 
-        
+
         public ExtractMethodSelectionValidation(IEnumerable<Declaration> declarations)
         {
             _declarations = declarations;
@@ -56,10 +56,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 procStartContext = procStart.Context as VBAParser.SubStmtContext;
             }
+            // TOOD: Doesn't support properties.
+            if (procStartContext == null)
+            {
+                return false;
+            }
             var procEndOfSignature = procStartContext.endOfStatement() as VBAParser.EndOfStatementContext;
             var procSignatureLastLine = procEndOfSignature.Start.Line;
 
-            return (procEnd as Declaration).QualifiedSelection.Equals((procStart as Declaration).QualifiedSelection) 
+            return (procEnd as Declaration).QualifiedSelection.Equals((procStart as Declaration).QualifiedSelection)
                 && (procSignatureLastLine < startLine);
 
         }
