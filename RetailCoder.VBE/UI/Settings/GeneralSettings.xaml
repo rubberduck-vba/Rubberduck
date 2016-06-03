@@ -13,7 +13,6 @@
     <UserControl.Resources>
         <converters:DelimiterValueToTextConverter x:Key="DelimiterValueToText" />
         <converters:DelimiterToTextConverter x:Key="DelimiterToText" />
-        
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -119,17 +118,22 @@
                       ItemsSource="{Binding Source={StaticResource Delimiters}, Converter={StaticResource DelimiterToText}, UpdateSourceTrigger=PropertyChanged}"
                       SelectedItem="{Binding Delimiter, Mode=TwoWay, Converter={StaticResource DelimiterValueToText}}" />
 
-                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_DetailedLoggingEnabledLabel}"
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_MinimumLogLevelLabel}"
                         FontWeight="SemiBold" />
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox
-                          Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_DetailedLoggingEnabled}"
-                          Margin="5,0,0,5"
-                          IsChecked="{Binding DetailedLoggingEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          HorizontalAlignment="Left" />
+                        <ComboBox Width="210"
+                      HorizontalAlignment="Left"
+                      Margin="5"
+                      SelectedItem="{Binding SelectedLogLevel, Mode=TwoWay}"
+                      ItemsSource="{Binding LogLevels, UpdateSourceTrigger=PropertyChanged}"
+                      DisplayMemberPath="Name"/>
+                        <Button 
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ShowLogFolder}"
+                            Padding="5"
+                            Command="{Binding ShowLogFolderCommand}"/>
                     </StackPanel>
 
-                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
 
                 <DataGrid ItemsSource="{Binding Hotkeys}"
                       HorizontalAlignment="Stretch"

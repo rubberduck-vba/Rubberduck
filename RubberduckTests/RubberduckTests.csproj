@@ -153,6 +153,11 @@
     <Compile Include="Settings\SettingsControlTests.cs" />
     <Compile Include="Settings\TodoSettingsTests.cs" />
     <Compile Include="Settings\UnitTestSettingsTests.cs" />
+    <Compile Include="SmartIndenter\EndOfLineCommentTests.cs" />
+    <Compile Include="SmartIndenter\LineContinuationTests.cs" />
+    <Compile Include="SmartIndenter\MiscAndCornerCaseTests.cs" />
+    <Compile Include="SmartIndenter\MultiSegmentLineTests.cs" />
+    <Compile Include="SmartIndenter\SpecificSettingTests.cs" />
     <Compile Include="SourceControlConfig.cs" />
     <Compile Include="SourceControl\BranchesViewModelTests.cs" />
     <Compile Include="SourceControl\ChangesViewModelTests.cs" />
@@ -167,6 +172,7 @@
     <Compile Include="UnitTesting\AssertTests.cs" />
     <Compile Include="UnitTesting\EngineTests.cs" />
     <Compile Include="UnitTesting\DiscoveryTests.cs" />
+    <Compile Include="UnitTesting\ViewModelTests.cs" />
     <Compile Include="VbeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using Rubberduck.Settings;
@@ -28,8 +29,6 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        #region Commands
-
         private ICommand _addTodoCommand;
         public ICommand AddTodoCommand
         {
@@ -41,7 +40,10 @@ namespace Rubberduck.UI.Settings
                 }
                 return _addTodoCommand = new DelegateCommand(_ =>
                 {
-                    TodoSettings.Add(new ToDoMarker("PLACEHOLDER "));
+                    var placeholder = TodoSettings.Count(m => m.Text.StartsWith("PLACEHOLDER")) + 1;
+                    TodoSettings.Add(
+                        new ToDoMarker(string.Format("PLACEHOLDER{0} ",
+                                                     placeholder == 1 ? string.Empty : placeholder.ToString(CultureInfo.InvariantCulture))));
                 });
             }
         }
@@ -58,18 +60,13 @@ namespace Rubberduck.UI.Settings
                 return _deleteTodoCommand = new DelegateCommand(value =>
                 {
                     TodoSettings.Remove(value as ToDoMarker);
-
-                    // ReSharper disable once ExplicitCallerInfoArgument
-                    OnPropertyChanged("TodoSettings");
                 });
             }
         }
 
-        #endregion
-
         public void UpdateConfig(Configuration config)
         {
-            config.UserSettings.ToDoListSettings.ToDoMarkers = TodoSettings.ToArray();
+            config.UserSettings.ToDoListSettings.ToDoMarkers = TodoSettings.Select(m => new ToDoMarker(m.Text.ToUpperInvariant())).Distinct().ToArray();
         }
 
         public void SetToDefaults(Configuration config)

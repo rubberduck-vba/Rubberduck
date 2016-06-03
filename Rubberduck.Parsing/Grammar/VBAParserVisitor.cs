@@ -348,6 +348,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitAnnotation([NotNull] VBAParser.AnnotationContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.mandatoryLineContinuation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMandatoryLineContinuation([NotNull] VBAParser.MandatoryLineContinuationContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.foreignIdentifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -513,19 +520,19 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitCircleSpecialForm([NotNull] VBAParser.CircleSpecialFormContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitStatementKeyword([NotNull] VBAParser.StatementKeywordContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>lExpr</c>
 	/// labeled alternative in <see cref="VBAParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLExpr([NotNull] VBAParser.LExprContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStatementKeyword([NotNull] VBAParser.StatementKeywordContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>logicalAndOp</c>

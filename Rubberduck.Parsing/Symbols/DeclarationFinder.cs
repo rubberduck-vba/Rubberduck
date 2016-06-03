@@ -4,7 +4,6 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
@@ -63,17 +62,6 @@ namespace Rubberduck.Parsing.Symbols
             return _declarations.Where(d => d.DeclarationType == DeclarationType.Project).ToList();
         }
 
-        public IEnumerable<CommentNode> ModuleComments(QualifiedModuleName module)
-        {
-            CommentNode[] result;
-            if (_comments.TryGetValue(module, out result))
-            {
-                return result;
-            }
-
-            return new List<CommentNode>();
-        }
-
         public Declaration FindParameter(Declaration procedure, string parameterName)
         {
             var matches = MatchName(parameterName);
@@ -88,14 +76,6 @@ namespace Rubberduck.Parsing.Symbols
                 return result;
             }
             return new List<IAnnotation>();
-        }
-
-        public IEnumerable<Declaration> MatchTypeName(string name)
-        {
-            return MatchName(name).Where(declaration =>
-                declaration.DeclarationType.HasFlag(DeclarationType.ClassModule) ||
-                declaration.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ||
-                declaration.DeclarationType.HasFlag(DeclarationType.Enumeration));
         }
 
         public bool IsMatch(string declarationName, string potentialMatchName)
@@ -155,59 +135,6 @@ namespace Rubberduck.Parsing.Symbols
             catch (InvalidOperationException exception)
             {
                 _logger.Error(exception, "Multiple matches found for std.module '{0}'.", name);
-            }
-
-            return result;
-        }
-
-        public Declaration FindUserDefinedType(string name, Declaration parent = null, bool includeBuiltIn = false)
-        {
-            Declaration result = null;
-            try
-            {
-                var matches = MatchName(name);
-                result = matches.SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.UserDefinedType)
-                    && (parent == null || parent.Equals(declaration.ParentDeclaration))
-                    && (includeBuiltIn || !declaration.IsBuiltIn));
-            }
-            catch (Exception exception)
-            {
-                _logger.Error(exception, "Multiple matches found for user-defined type '{0}'.", name);
-            }
-
-            return result;
-        }
-
-        public Declaration FindEnum(string name, Declaration parent = null, bool includeBuiltIn = false)
-        {
-            Declaration result = null;
-            try
-            {
-                var matches = MatchName(name);
-                result = matches.SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Enumeration)
-                    && (parent == null || parent.Equals(declaration.ParentDeclaration))
-                    && (includeBuiltIn || !declaration.IsBuiltIn));
-            }
-            catch (Exception exception)
-            {
-                _logger.Error(exception, "Multiple matches found for enum type '{0}'.", name);
-            }
-
-            return result;
-        }
-
-        public Declaration FindClass(Declaration parent, string name, bool includeBuiltIn = false)
-        {
-            Declaration result = null;
-            try
-            {
-                result = MatchName(name).SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
-                    && (parent == null || parent.Equals(declaration.ParentDeclaration))
-                    && (includeBuiltIn || !declaration.IsBuiltIn));
-            }
-            catch (InvalidOperationException exception)
-            {
-                _logger.Error(exception, "Multiple matches found for class '{0}'.", name);
             }
 
             return result;
@@ -353,9 +280,7 @@ namespace Rubberduck.Parsing.Symbols
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
-                // TODO: Fix this?
-                // Assume no module = built-in, not checkable thus we conservatively include it in the matches.
-                && (Declaration.GetModuleParent(m) == null || Declaration.GetModuleParent(m).DeclarationType == DeclarationType.ProceduralModule)
+                && Declaration.GetModuleParent(m).DeclarationType == DeclarationType.ProceduralModule
                 && Declaration.GetProjectParent(m).Equals(callingProject)
                 && !callingModule.Equals(Declaration.GetModuleParent(m)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));

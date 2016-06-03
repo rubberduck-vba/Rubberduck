@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using NLog;
+using System.Xml.Serialization;
 
 namespace Rubberduck.Settings
 {
@@ -8,7 +9,7 @@ namespace Rubberduck.Settings
         bool AutoSaveEnabled { get; set; }
         int AutoSavePeriod { get; set; }
         char Delimiter { get; set; }
-        bool DetailedLoggingEnabled { get; set; }
+        int MinimumLogLevel { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
@@ -18,7 +19,7 @@ namespace Rubberduck.Settings
         public bool AutoSaveEnabled { get; set; }
         public int AutoSavePeriod { get; set; }
         public char Delimiter { get; set; }
-        public bool DetailedLoggingEnabled { get; set; }
+        public int MinimumLogLevel { get; set; }
 
         public GeneralSettings()
         {
@@ -26,7 +27,7 @@ namespace Rubberduck.Settings
             AutoSaveEnabled = false;
             AutoSavePeriod = 10;
             Delimiter = '.';
-            DetailedLoggingEnabled = false;
+            MinimumLogLevel = LogLevel.Off.Ordinal;
         }
 
         public GeneralSettings(
@@ -39,7 +40,6 @@ namespace Rubberduck.Settings
             AutoSaveEnabled = autoSaveEnabled;
             AutoSavePeriod = autoSavePeriod;
             Delimiter = '.';
-            DetailedLoggingEnabled = detailedLoggingEnabled;
         }
     }
 }

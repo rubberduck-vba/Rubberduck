@@ -10,49 +10,94 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
-
-        public static string GetDisplayName(VBProject project)
+        private static string GetDisplayName(VBProject project)
         {
+            //Try reading the filename first
             try
             {
-                return Path.GetFileName(project.FileName);
-            }
-            catch 
-            {
-                //the file hasn't been saved yet
-            }
-            
-            try
-            {
-                //Don't need to check protection, as a protected project is saved, by definition
-                return project.VBComponents.Cast<VBComponent>()
-                    .Where(component => component.Type == vbext_ComponentType.vbext_ct_Document
-                    && component.Properties.Count > 1)
-                    .SelectMany(component => component.Properties.OfType<Property>())
-                    .FirstOrDefault(property => property.Name == "Name").Value.ToString();
+                if (!string.IsNullOrEmpty(Path.GetDirectoryName(project.BuildFileName)))
+                {
+                    return Path.GetFileName(project.FileName);
                 }
-            catch 
-            { 
-              return null;
             }
-        }
+            catch
+            {  //The GetFileName getter probably threw
+            }
 
-        public static string GetDisplayName(VBComponent component)
-        {
-            if (component.Type == vbext_ComponentType.vbext_ct_Document)
+            if (project.Protection == vbext_ProjectProtection.vbext_pp_none)
             {
+                //Try reading the top-most document-type component's Properties("Name") value
+                //Eg. A Workbook's parent is the application, so read the workbook's name
                 try
                 {
-                    return component.Properties.Item("Name").Value.ToString();
+                    var component = project.VBComponents.Cast<VBComponent>()
+                        .FirstOrDefault(comp => comp.Type == vbext_ComponentType.vbext_ct_Document
+                                                && comp.Properties.Item("Name").Value != null
+                                                && comp.Properties.Item("Parent")
+                                                    .Object.Equals(comp.Properties.Item("Application").Object));
+
+                    if (component == null) { return null; }
+
+                    var nameProperty = component.Properties.Cast<Property>().FirstOrDefault(property => property.Name == "Name");
+                    return nameProperty == null
+                        ? null
+                        : nameProperty.Value.ToString();
+                }
+                catch 
+                {
+                  //The Properties collection either wasn't available, or didn't have the expected properties
+                }
+
+                //Try reading the top-most document-type component's parent's Properties("Name") value
+                // Eg. A PowerPoint Slide is top level, but it's parent is a Presentation (that is NOT a vbComponent)
+                try
+                {
+                    var firstOrDefault = project.VBComponents.Cast<VBComponent>()
+                        .FirstOrDefault(comp => comp.Type == vbext_ComponentType.vbext_ct_Document
+                                                && comp.Properties.Item("Parent").Value != null);
+                    if (firstOrDefault != null)
+                    {
+                        var parentProp = firstOrDefault
+                            .Properties.Cast<Property>().FirstOrDefault(property => property.Name == "Parent");
+
+                        Property nameProperty = null;
+                        if (parentProp != null && parentProp.Value is Properties)
+                        {
+                            var props = (Properties)parentProp.Value;
+                            nameProperty = props.Cast<Property>().FirstOrDefault(property => property.Name == "Name");
+                        }
+
+                        return nameProperty == null
+                            ? null
+                            : nameProperty.Value.ToString();
+                    }
                 }
                 catch
                 {
-                    return null;
+                    //The Properties collection either wasn't available, or didn't have the expected properties
                 }
             }
-            else {
-                return null;
+            return null;
+        }
+
+        private static string GetDisplayName(VBComponent component)
+        {
+            if (component.Type == vbext_ComponentType.vbext_ct_Document)
+            {
+                //Check for a valid properties collection (some hosts don't validate the Properties method unless the component's designer is open in the host
+                try
+                {
+                    var nameProperty = component.Properties.Item("Name");
+                    return nameProperty == null
+                        ? null
+                        : nameProperty.Value.ToString();
+                }
+                catch 
+                { 
+                    //The component isn't open in the host, the Properties Collection is probably inaccessible
+                }
             }
+            return null;    
         }
 
         public static string GetProjectId(VBProject project)
@@ -61,7 +106,9 @@ namespace Rubberduck.VBEditor
             {
                 return string.Empty;
             }
-            return string.IsNullOrEmpty(project.HelpFile) ? project.GetHashCode().ToString() : project.HelpFile;
+            return string.IsNullOrEmpty(project.HelpFile) 
+                ? project.GetHashCode().ToString() 
+                : project.HelpFile;
         }
 
         public static string GetProjectId(Reference reference)

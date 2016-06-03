@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Hotkeys;
@@ -106,9 +107,16 @@ namespace Rubberduck.Common
             }
         }
 
+        // keys that change the current selection.
+        private static readonly HashSet<Keys> NavKeys = new HashSet<Keys>
+        {
+            Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.PageDown, Keys.PageUp, Keys.Enter
+        };
+
         private void Keyboard_RawKeyboardInputReceived(object sender, RawKeyEventArgs e)
         {
-            if (e.Message == WM.KEYUP)
+            // note: handling *all* keys causes annoying RTrim of current line, making editing code a PITA.
+            if (e.Message == WM.KEYUP && NavKeys.Contains((Keys)e.VKey))
             {
                 OnMessageReceived(this, HookEventArgs.Empty);
             }

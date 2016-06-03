@@ -28,9 +28,10 @@ namespace Rubberduck.Navigation.CodeExplorer
             _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += ParserState_StateChanged;
-            _state.ModuleStateChanged += ParserState_ModuleStateChanged;
+            
+            _refreshCommand = new DelegateCommand(param => _state.OnParseRequested(this),
+                param => !IsBusy && _state.IsDirty());
 
-            _refreshCommand = commands.OfType<CodeExplorer_RefreshCommand>().FirstOrDefault();
             _refreshComponentCommand = commands.OfType<CodeExplorer_RefreshComponentCommand>().FirstOrDefault();
             _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().FirstOrDefault();
 
@@ -59,6 +60,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             _commitCommand = commands.OfType<CodeExplorer_CommitCommand>().FirstOrDefault();
             _undoCommand = commands.OfType<CodeExplorer_UndoCommand>().FirstOrDefault();
 
+            _copyResultsCommand = commands.OfType<CodeExplorer_CopyResultsCommand>().FirstOrDefault();
+
             _setNameSortCommand = new DelegateCommand(param =>
             {
                 SortByName = (bool)param;
@@ -80,6 +83,18 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _selectedItem = value;
                 OnPropertyChanged();
+
+                if (_selectedItem is CodeExplorerProjectViewModel)
+                {
+                    var vbe = _selectedItem.GetSelectedDeclaration().Project.VBE;
+                    var project = vbe.VBProjects.Cast<VBProject>().FirstOrDefault(f => f.HelpFile == _selectedItem.GetSelectedDeclaration().Project.HelpFile);
+
+                    if (project != null)
+                    {
+                        vbe.ActiveVBProject = project;
+                    }
+                }
+
                 // ReSharper disable ExplicitCallerInfoArgument
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
@@ -126,6 +141,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private readonly ICommand _copyResultsCommand;
+        public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
+
         private readonly ICommand _setNameSortCommand;
         public ICommand SetNameSortCommand { get { return _setNameSortCommand; } }
 
@@ -155,18 +173,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             set
             {
                 _isBusy = value;
-                OnPropertyChanged();
-                CanRefresh = !_isBusy;
-            }
-        }
-
-        private bool _canRefresh = true;
-        public bool CanRefresh
-        {
-            get { return _canRefresh; }
-            private set
-            {
-                _canRefresh = value;
                 OnPropertyChanged();
             }
         }

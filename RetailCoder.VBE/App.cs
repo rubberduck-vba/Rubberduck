@@ -4,6 +4,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
@@ -17,7 +18,7 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Common.Hotkeys;
 
 namespace Rubberduck
 {
@@ -132,40 +133,24 @@ namespace Rubberduck
         private void _configService_SettingsChanged(object sender, EventArgs e)
         {
             _config = _configService.LoadConfiguration();
+            _hooks.HookHotkeys();
             // also updates the ShortcutKey text
             _appMenus.Localize();
-            _hooks.HookHotkeys();
             UpdateLoggingLevel();
         }
 
         private void UpdateLoggingLevel()
         {
-            var fileRule = LogManager.Configuration.LoggingRules.Where(rule => rule.Targets.Any(t => t.Name == FILE_TARGET_NAME)).FirstOrDefault();
-            if (fileRule == null)
-            {
-                return;
-            }
-            if (_config.UserSettings.GeneralSettings.DetailedLoggingEnabled)
-            {
-                // "Enable" should have been called "Add" perhaps?
-                fileRule.EnableLoggingForLevel(LogLevel.Trace);
-                fileRule.EnableLoggingForLevel(LogLevel.Debug);
-            }
-            else
-            {
-                fileRule.DisableLoggingForLevel(LogLevel.Trace);
-                fileRule.DisableLoggingForLevel(LogLevel.Debug);
-            }
-            LogManager.ReconfigExistingLoggers();
+            LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
         }
 
         public void Startup()
         {
             CleanReloadConfig();
             _appMenus.Initialize();
+            _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
             Task.Delay(1000).ContinueWith(t => UiDispatcher.Invoke(() => _parser.State.OnParseRequested(this))).ConfigureAwait(false);
-            _hooks.HookHotkeys();
             UpdateLoggingLevel();
         }
 
@@ -191,6 +176,8 @@ namespace Rubberduck
             }
 
             var projectId = e.Item.HelpFile;
+            Debug.Assert(projectId != null);
+
             _componentsEventsSinks.Remove(projectId);
             _referencesEventsSinks.Remove(projectId);
             _parser.State.RemoveProject(e.Item);
@@ -347,7 +334,9 @@ namespace Rubberduck
             }
 
             _logger.Debug("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
-            _parser.State.RemoveProject(e.Item.HelpFile);
+
+            // note: if a bug is discovered with renaming a project, it may just need to be removed and readded.
+
             _parser.State.OnParseRequested(sender);
         }
 

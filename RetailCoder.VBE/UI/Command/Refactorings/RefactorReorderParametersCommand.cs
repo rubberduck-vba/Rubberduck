@@ -49,7 +49,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var parameters = _state.AllUserDeclarations.Where(item => member.Equals(item.ParentScopeDeclaration)).ToList();
+            var parameters = _state.AllUserDeclarations.Where(item => item.DeclarationType == DeclarationType.Parameter && member.Equals(item.ParentScopeDeclaration)).ToList();
             var canExecute = (member.DeclarationType == DeclarationType.PropertyLet || member.DeclarationType == DeclarationType.PropertySet)
                     ? parameters.Count > 2
                     : parameters.Count > 1;

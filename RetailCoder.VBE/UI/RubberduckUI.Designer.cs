@@ -254,6 +254,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string CodeExplorer_CopyToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_CopyToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         public static string CodeExplorer_DisplayMemberNamesText {
@@ -1265,20 +1274,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detailed logging.
+        ///   Looks up a localized string similar to Debug.
         /// </summary>
-        public static string GeneralSettings_DetailedLoggingEnabled {
+        public static string GeneralSettings_DebugLogLevel {
             get {
-                return ResourceManager.GetString("GeneralSettings_DetailedLoggingEnabled", resourceCulture);
+                return ResourceManager.GetString("GeneralSettings_DebugLogLevel", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable detailed logging.
+        ///   Looks up a localized string similar to Error.
         /// </summary>
-        public static string GeneralSettings_DetailedLoggingEnabledLabel {
+        public static string GeneralSettings_ErrorLogLevel {
             get {
-                return ResourceManager.GetString("GeneralSettings_DetailedLoggingEnabledLabel", resourceCulture);
+                return ResourceManager.GetString("GeneralSettings_ErrorLogLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fatal.
+        /// </summary>
+        public static string GeneralSettings_FatalLogLevel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_FatalLogLevel", resourceCulture);
             }
         }
         
@@ -1364,11 +1382,38 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Info.
+        /// </summary>
+        public static string GeneralSettings_InfoLogLevel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_InfoLogLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display language:.
         /// </summary>
         public static string GeneralSettings_LanguageLabel {
             get {
                 return ResourceManager.GetString("GeneralSettings_LanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum Log Level.
+        /// </summary>
+        public static string GeneralSettings_MinimumLogLevelLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_MinimumLogLevelLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Logging.
+        /// </summary>
+        public static string GeneralSettings_OffLogLevel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_OffLogLevel", resourceCulture);
             }
         }
         
@@ -1382,11 +1427,38 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Log Folder.
+        /// </summary>
+        public static string GeneralSettings_ShowLogFolder {
+            get {
+                return ResourceManager.GetString("GeneralSettings_ShowLogFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Slash (/).
         /// </summary>
         public static string GeneralSettings_SlashDelimiter {
             get {
                 return ResourceManager.GetString("GeneralSettings_SlashDelimiter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace.
+        /// </summary>
+        public static string GeneralSettings_TraceLogLevel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_TraceLogLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warn.
+        /// </summary>
+        public static string GeneralSettings_WarnLogLevel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_WarnLogLevel", resourceCulture);
             }
         }
         

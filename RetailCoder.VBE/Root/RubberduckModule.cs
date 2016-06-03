@@ -21,7 +21,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
-using Rubberduck.UI.CodeInspections;
+using Rubberduck.UI.Inspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
@@ -33,6 +33,8 @@ using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 using NLog;
+using Rubberduck.Parsing.Preprocessing;
+using System.Globalization;
 
 namespace Rubberduck.Root
 {
@@ -71,6 +73,7 @@ namespace Rubberduck.Root
             _kernel.Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
             _kernel.Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
             _kernel.Bind<TestExplorerModel>().ToSelf().InSingletonScope();
+            _kernel.Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
 
             BindCodeInspectionTypes();
 
@@ -94,6 +97,7 @@ namespace Rubberduck.Root
 
             //Bind<TestExplorerModel>().To<StandardModuleTestExplorerModel>().InSingletonScope();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
+            Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)));
 
             _kernel.Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();
             _kernel.Bind<SearchResultPresenterInstanceManager>().ToSelf().InSingletonScope();

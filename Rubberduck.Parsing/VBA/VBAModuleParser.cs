@@ -5,6 +5,7 @@ using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -19,10 +20,6 @@ namespace Rubberduck.Parsing.VBA
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());
-            foreach (var listener in listeners)
-            {
-                parser.AddParseListener(listener);
-            }
             ParserRuleContext tree = null;
             try
             {
@@ -36,6 +33,10 @@ namespace Rubberduck.Parsing.VBA
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
                 tree = parser.startRule();
+            }
+            foreach (var listener in listeners)
+            {
+                ParseTreeWalker.Default.Walk(listener, tree);
             }
             outStream = tokens;
             return tree;
