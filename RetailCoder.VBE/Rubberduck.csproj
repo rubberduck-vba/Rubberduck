@@ -404,6 +404,7 @@
     </Compile>
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddUserFormCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_CopyResultsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RefreshComponentCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RenameCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_FindAllReferencesCommand.cs" />

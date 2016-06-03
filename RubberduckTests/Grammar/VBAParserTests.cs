@@ -88,6 +88,18 @@ Private this As TProgressIndicator
         }
 
         [TestMethod]
+        public void TestAttributeInsideModuleDeclarations()
+        {
+            string code = @"
+Public WithEvents colCBars As Office.CommandBars
+Attribute colCBars.VB_VarHelpID = -1
+Public WithEvents colCBars2 As Office.CommandBars
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
+        }
+
+        [TestMethod]
         public void TestAttributeAfterModuleDeclarations()
         {
             string code = @"
