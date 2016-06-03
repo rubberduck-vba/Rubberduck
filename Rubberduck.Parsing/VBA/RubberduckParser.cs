@@ -53,7 +53,7 @@ namespace Rubberduck.Parsing.VBA
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
 
-            _comReflector = new ReferencedDeclarationsCollector();
+            _comReflector = new ReferencedDeclarationsCollector(_state);
 
             state.ParseRequest += ReparseRequested;
             state.StateChanged += StateOnStateChanged;

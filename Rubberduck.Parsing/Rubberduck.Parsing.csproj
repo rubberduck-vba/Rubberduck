@@ -45,6 +45,7 @@
     <Reference Include="Antlr4.Runtime.net45">
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -126,6 +127,7 @@
     <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseVisitor.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParserListener.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParserVisitor.cs" />
+    <Compile Include="Symbols\ComInformation.cs" />
     <Compile Include="Symbols\Identifier.cs" />
     <Compile Include="Binding\IBindingContext.cs" />
     <Compile Include="Binding\IBoundExpression.cs" />
