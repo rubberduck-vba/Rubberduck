@@ -55,6 +55,8 @@ namespace Rubberduck.Parsing.Symbols
             _state = state;
         }
 
+        private static readonly HashSet<string> IgnoredInterfaceMembers = new HashSet<string> { "QueryInterface", "AddRef", "Release", "GetTypeInfoCount", "GetTypeInfo", "GetIDsOfNames", "Invoke" };
+
         private static readonly IDictionary<VarEnum, string> TypeNames = new Dictionary<VarEnum, string>
         {
             {VarEnum.VT_DISPATCH, "DISPATCH"},
@@ -87,7 +89,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly Dictionary<Guid, ComInformation> _comInformation = new Dictionary<Guid, ComInformation>();
 
-        private string GetTypeName(TYPEDESC desc, ITypeInfo info)
+        private ComParameter GetParameterInfo(TYPEDESC desc, ITypeInfo info)
         {
             var vt = (VarEnum)desc.vt;
             TYPEDESC tdesc;
@@ -96,7 +98,9 @@ namespace Rubberduck.Parsing.Symbols
             {
                 case VarEnum.VT_PTR:
                     tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
-                    return GetTypeName(tdesc, info);
+                    var pointer = GetParameterInfo(tdesc, info);
+                    pointer.IsByRef = true;
+                    return pointer;
                 case VarEnum.VT_USERDEFINED:
                     int href;
                     unchecked
@@ -107,24 +111,29 @@ namespace Rubberduck.Parsing.Symbols
                     {
                         ITypeInfo refTypeInfo;
                         info.GetRefTypeInfo(href, out refTypeInfo);
-                        return GetTypeName(refTypeInfo);
+                        return new ComParameter(GetTypeName(refTypeInfo), false);
                     }
                     catch (Exception)
                     {
-                        return "Object";
+                        return new ComParameter("Object", false);
                     }
+                case VarEnum.VT_SAFEARRAY:
                 case VarEnum.VT_CARRAY:
+                case VarEnum.VT_ARRAY:
                     tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
-                    return GetTypeName(tdesc, info) + "()";
+                    var array = GetParameterInfo(tdesc, info);
+                    array.IsArray = true;
+                    array.Name += "()";
+                    return array;
                 default:
                     string result;
                     if (TypeNames.TryGetValue(vt, out result))
                     {
-                        return result;
+                        return new ComParameter(result, false);
                     }
                     break;
             }
-            return "Object";
+            return new ComParameter("Object", false);
         }
 
         private string GetTypeName(ITypeInfo info)
@@ -191,10 +200,9 @@ namespace Rubberduck.Parsing.Symbols
 
                 IntPtr typeAttributesPointer;
                 info.GetTypeAttr(out typeAttributesPointer);
-
                 var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
-
                 var attributes = new Attributes();
+
                 if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID))
                 {
                     attributes.AddPredeclaredIdTypeAttribute();
@@ -294,8 +302,8 @@ namespace Rubberduck.Parsing.Symbols
                     }
                     output.Add(memberDeclaration);
 
-                    var parameterCount = memberDescriptor.cParams -
-                                         (memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET) ? 0 : 1);
+                    var parameterCount = memberDescriptor.cParams - (memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET) ? 0 : 1);
+                    var parameters = new List<ParameterDeclaration>();
                     for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
                     {
                         var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor,
@@ -303,11 +311,16 @@ namespace Rubberduck.Parsing.Symbols
                         var declaration = memberDeclaration as IDeclarationWithParameter;
                         if (declaration != null)
                         {
+                            parameters.Add(parameter);
                             declaration.AddParameter(parameter);
                         }
                         output.Add(parameter);
                     }
                     member.TypeInfo.ReleaseFuncDesc(memberDescriptorPointer);
+                    if (parameters.Any() && memberDescriptor.cParamsOpt == -1)
+                    {
+                        parameters.Last().IsParamArray = true;
+                    }
                 }
 
                 for (var fieldIndex = 0; fieldIndex < member.TypeAttributes.cVars; fieldIndex++)
@@ -337,10 +350,10 @@ namespace Rubberduck.Parsing.Symbols
             var funcValueType = (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt;
             var memberDeclarationType = GetDeclarationType(memberName, memberDescriptor, funcValueType, typeKind, parentImplFlags);
 
-            var asTypeName = string.Empty;
+            var asTypeName = new ComParameter(string.Empty, false);
             if (memberDeclarationType != DeclarationType.Procedure)
             {
-                asTypeName = GetTypeName(memberDescriptor.elemdescFunc.tdesc, info);
+                asTypeName = GetParameterInfo(memberDescriptor.elemdescFunc.tdesc, info);
             }
             var attributes = new Attributes();
             if (memberName == "_NewEnum" && ((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FNONBROWSABLE))
@@ -363,7 +376,7 @@ namespace Rubberduck.Parsing.Symbols
                         new QualifiedMemberName(typeQualifiedModuleName, memberName),
                         moduleDeclaration,
                         moduleDeclaration,
-                        asTypeName,
+                        asTypeName.Name,
                         Accessibility.Global,
                         null,
                         Selection.Home,
@@ -375,14 +388,13 @@ namespace Rubberduck.Parsing.Symbols
                         new QualifiedMemberName(typeQualifiedModuleName, memberName),
                         moduleDeclaration,
                         moduleDeclaration,
-                        asTypeName,
+                        asTypeName.Name,
                         null,
                         null,
                         Accessibility.Global,
                         null,
                         Selection.Home,
-                        // TODO: how to find out if it's an array?
-                        false,
+                        asTypeName.IsArray,
                         true,
                         null,
                         attributes);
@@ -391,14 +403,13 @@ namespace Rubberduck.Parsing.Symbols
                         new QualifiedMemberName(typeQualifiedModuleName, memberName),
                         moduleDeclaration,
                         moduleDeclaration,
-                        asTypeName,
+                        asTypeName.Name,
                         null,
                         null,
                         Accessibility.Global,
                         null,
                         Selection.Home,
-                        // TODO: how to find out if it's an array?
-                        false,
+                        asTypeName.IsArray,
                         true,
                         null,
                         attributes);
@@ -407,7 +418,7 @@ namespace Rubberduck.Parsing.Symbols
                         new QualifiedMemberName(typeQualifiedModuleName, memberName),
                         moduleDeclaration,
                         moduleDeclaration,
-                        asTypeName,
+                        asTypeName.Name,
                         Accessibility.Global,
                         null,
                         Selection.Home,
@@ -419,7 +430,7 @@ namespace Rubberduck.Parsing.Symbols
                         new QualifiedMemberName(typeQualifiedModuleName, memberName),
                         moduleDeclaration,
                         moduleDeclaration,
-                        asTypeName,
+                        asTypeName.Name,
                         Accessibility.Global,
                         null,
                         Selection.Home,
@@ -431,7 +442,7 @@ namespace Rubberduck.Parsing.Symbols
                         new QualifiedMemberName(typeQualifiedModuleName, memberName),
                         moduleDeclaration,
                         moduleDeclaration,
-                        asTypeName,
+                        asTypeName.Name,
                         null,
                         false,
                         false,
@@ -462,11 +473,11 @@ namespace Rubberduck.Parsing.Symbols
             var fieldName = names[0];
             var memberType = GetDeclarationType(varDesc, typeDeclarationType);
 
-            var asTypeName = GetTypeName(varDesc.elemdescVar.tdesc, info);
+            var asTypeName = GetParameterInfo(varDesc.elemdescVar.tdesc, info);
             info.ReleaseVarDesc(ppVarDesc);
 
             return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName),
-                moduleDeclaration, moduleDeclaration, asTypeName, null, false, false, Accessibility.Global, memberType, null,
+                moduleDeclaration, moduleDeclaration, asTypeName.Name, null, false, false, Accessibility.Global, memberType, null,
                 Selection.Home, false, null);
         }
 
@@ -478,20 +489,10 @@ namespace Rubberduck.Parsing.Symbols
             var paramPointer = new IntPtr(memberDescriptor.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof(ELEMDESC)) * paramIndex);
             var elementDesc = (ELEMDESC)Marshal.PtrToStructure(paramPointer, typeof(ELEMDESC));
             var isOptional = elementDesc.desc.paramdesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOPT);
-
-            var isByRef = elementDesc.desc.paramdesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOUT);
-            var isArray = false;
             var paramDesc = elementDesc.tdesc;
-            var valueType = (VarEnum)paramDesc.vt;
-            if (valueType == VarEnum.VT_CARRAY || valueType == VarEnum.VT_ARRAY || valueType == VarEnum.VT_SAFEARRAY)
-            {
-                // todo: tell ParamArray arrays from normal arrays
-                isArray = true;
-            }
+            var paramInfo = GetParameterInfo(paramDesc, info);
 
-            var asParamTypeName = GetTypeName(paramDesc, info);
-
-            return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, asParamTypeName, null, null, isOptional, isByRef, isArray);
+            return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, paramInfo.Name, null, null, isOptional, paramInfo.IsByRef, paramInfo.IsArray);
         }
 
         private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info)
@@ -587,7 +588,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else if ((parentImplTypeFlags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FSOURCE) ||
                 ((FUNCFLAGS)funcDesc.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FSOURCE)) &&
-                !new[] {"QueryInterface", "AddRef", "Release", "GetTypeInfoCount", "GetTypeInfo", "GetIDsOfNames", "Invoke"}.Contains(memberName))  // quick-and-dirty for beta
+                !IgnoredInterfaceMembers.Contains(memberName))  // quick-and-dirty for beta
             {
                 memberType = DeclarationType.Event;
             }
