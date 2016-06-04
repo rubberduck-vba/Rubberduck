@@ -166,7 +166,12 @@ namespace Rubberduck.Parsing.VBA
                     name = GetAttributeNameWithoutProcedureName((VBAParser.MemberAccessExprContext)expr);
                 }
                 var values = context.attributeValue().Select(e => e.GetText().Replace("\"", string.Empty)).ToList();
-                _currentScopeAttributes.Add(name, values);
+                IEnumerable<string> existingValues;
+                if (_currentScopeAttributes.TryGetValue(name, out existingValues))
+                {
+                    values.InsertRange(0, existingValues);
+                }
+                _currentScopeAttributes[name] = values;
             }
 
             private string GetAttributeNameWithoutProcedureName(VBAParser.MemberAccessExprContext expr)

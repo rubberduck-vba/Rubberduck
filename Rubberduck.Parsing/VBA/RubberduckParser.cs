@@ -53,7 +53,7 @@ namespace Rubberduck.Parsing.VBA
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
 
-            _comReflector = new ReferencedDeclarationsCollector();
+            _comReflector = new ReferencedDeclarationsCollector(_state);
 
             state.ParseRequest += ReparseRequested;
             state.StateChanged += StateOnStateChanged;
@@ -69,15 +69,18 @@ namespace Rubberduck.Parsing.VBA
             if (e.IsFullReparseRequest)
             {
                 Cancel();
-                ParseAll();
+                Task.Run(() => ParseAll());
             }
             else
             {
                 Cancel(e.Component);
-                ParseAsync(e.Component, CancellationToken.None).Wait();
-                
-                Logger.Trace("Starting resolver task");
-                Task.Run(() => Resolve(_central.Token));
+                Task.Run(() =>
+                {
+                    ParseAsync(e.Component, CancellationToken.None).Wait();
+
+                    Logger.Trace("Starting resolver task");
+                    Resolve(_central.Token);
+                });
             }
         }
 
@@ -171,7 +174,7 @@ namespace Rubberduck.Parsing.VBA
             Task.WaitAll(parseTasks);
             
             Logger.Trace("Starting resolver task");
-            Task.Run(() => Resolve(_central.Token));
+            Resolve(_central.Token);
         }
 
         private void AddBuiltInDeclarations(IReadOnlyList<VBProject> projects)
