@@ -753,6 +753,30 @@ End Sub
         }
 
         [TestMethod]
+        public void ForLoop_AddsReferenceEvenIfAssignmentResolutionFailure()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    Dim i As Integer
+    For i = doesntExist To doesntExistEither
+    Next
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && item.IsAssignment));
+        }
+
+        [TestMethod]
         public void ForEachLoop_IsReferenceToIteratorDeclaration()
         {
             var code = @"

@@ -3,6 +3,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -29,6 +30,11 @@ namespace Rubberduck.Inspections
             {
                 return string.Format(InspectionsUI.ImplicitPublicMemberInspectionResultFormat, Target.IdentifierName);
             }
+        }
+
+        public override NavigateCodeEventArgs GetNavigationArgs()
+        {
+            return new NavigateCodeEventArgs(Target);
         }
     }
 
