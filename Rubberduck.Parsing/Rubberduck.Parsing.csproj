@@ -128,6 +128,7 @@
     <Compile Include="Preprocessing\VBAConditionalCompilationParserListener.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParserVisitor.cs" />
     <Compile Include="Symbols\ComInformation.cs" />
+    <Compile Include="Symbols\ComParameter.cs" />
     <Compile Include="Symbols\Identifier.cs" />
     <Compile Include="Binding\IBindingContext.cs" />
     <Compile Include="Binding\IBoundExpression.cs" />

@@ -8,7 +8,6 @@ namespace Rubberduck.Parsing.Symbols
     {
         private readonly bool _isOptional;
         private readonly bool _isByRef;
-        private readonly bool _isParamArray;
 
         /// <summary>
         /// Creates a new built-in parameter declaration.
@@ -39,7 +38,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             _isOptional = isOptional;
             _isByRef = isByRef;
-            _isParamArray = isParamArray;
+            IsParamArray = isParamArray;
         }
 
         /// <summary>
@@ -74,11 +73,11 @@ namespace Rubberduck.Parsing.Symbols
         {
             _isOptional = isOptional;
             _isByRef = isByRef;
-            _isParamArray = isParamArray;
+            IsParamArray = isParamArray;
         }
 
         public bool IsOptional { get { return _isOptional; } }
         public bool IsByRef { get { return _isByRef; } }
-        public bool IsParamArray { get { return _isParamArray; } }
+        public bool IsParamArray { get; set; }
     }
 }
