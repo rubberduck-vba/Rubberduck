@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1586,7 +1586,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value />
   </data>
   <data name="CodeExplorer_CopyToolTip">
-    <value />
+    <value>In Zwischenablage kopieren</value>
   </data>
   <data name="cross_circle">
     <value />
