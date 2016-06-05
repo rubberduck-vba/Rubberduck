@@ -42,6 +42,11 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Office.Interop.Excel.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.MSProject, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\libs\Microsoft.Office.Interop.MSProject.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Outlook, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -114,6 +119,7 @@
     </Compile>
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="VBEHost\CorelDRAWApp.cs" />
+    <Compile Include="VBEHost\ProjectApp.cs" />
     <Compile Include="VBEHost\ExcelApp.cs" />
     <Compile Include="VBEHost\FallbackApp.cs" />
     <Compile Include="VBEHost\HostApplicationBase.cs" />
