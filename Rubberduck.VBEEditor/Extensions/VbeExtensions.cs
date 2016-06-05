@@ -66,6 +66,8 @@ namespace Rubberduck.VBEditor.Extensions
                             return new PowerPointApp();
                         case "Microsoft Outlook":
                             return new OutlookApp();
+                        case "Microsoft Project":
+                            return new ProjectApp();
                         case "Microsoft Publisher":
                             return new PublisherApp();
                         case "Microsoft Visio":
@@ -94,6 +96,8 @@ namespace Rubberduck.VBEditor.Extensions
                         return new PowerPointApp();
                     case "Outlook":
                         return new OutlookApp();
+                    case "MSProject":
+                        return new ProjectApp();
                     case "Publisher":
                         return new PublisherApp();
                     case "Visio":
