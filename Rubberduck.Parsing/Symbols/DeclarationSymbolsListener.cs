@@ -185,6 +185,16 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var argContext = (VBAParser.ArgContext)context;
                 var isOptional = argContext.OPTIONAL() != null;
+                if (isOptional)
+                {
+                    // if parameter is optional, asTypeName may contain the default value
+                    var complexType = asTypeContext.type().complexType();
+                    if (complexType != null && complexType.expression() is VBAParser.RelationalOpContext)
+                    {
+                        asTypeName = complexType.expression().GetChild(0).GetText();
+                    }
+                }
+
                 var isByRef = argContext.BYREF() != null;
                 var isParamArray = argContext.PARAMARRAY() != null;
                 result = new ParameterDeclaration(
