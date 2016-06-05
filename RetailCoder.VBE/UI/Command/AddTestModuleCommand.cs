@@ -32,7 +32,8 @@ namespace Rubberduck.UI.Command
             }
             
             // Outlook requires test methods to be located in [ThisOutlookSession] class.
-            return app.ApplicationName != "Outlook";
+            //return app.ApplicationName != "Outlook";
+            return true;
         }
 
         public override void Execute(object parameter)
