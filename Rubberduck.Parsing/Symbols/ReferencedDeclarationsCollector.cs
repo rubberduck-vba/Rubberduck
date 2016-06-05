@@ -144,7 +144,7 @@ namespace Rubberduck.Parsing.Symbols
             string helpFile;
             info.GetDocumentation(-1, out typeName, out docString, out helpContext, out helpFile);
 
-            return typeName;
+            return typeName.Equals("LONG_PTR") ? "LongPtr" : typeName;  //Quickfix for http://chat.stackexchange.com/transcript/message/30119269#30119269
         }
 
         public List<Declaration> GetDeclarationsForReference(Reference reference)
@@ -349,6 +349,12 @@ namespace Rubberduck.Parsing.Symbols
             var memberName = memberNames[0];
             var funcValueType = (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt;
             var memberDeclarationType = GetDeclarationType(memberName, memberDescriptor, funcValueType, typeKind, parentImplFlags);
+
+            if (((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FRESTRICTED) &&
+                IgnoredInterfaceMembers.Contains(memberName)) // Ignore IDispatch and IUnknown members - quick-and-dirty for beta
+            {
+                return null;
+            }
 
             var asTypeName = new ComParameter(string.Empty, false);
             if (memberDeclarationType != DeclarationType.Procedure)
@@ -587,8 +593,7 @@ namespace Rubberduck.Parsing.Symbols
                 memberType = DeclarationType.PropertySet;
             }
             else if ((parentImplTypeFlags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FSOURCE) ||
-                ((FUNCFLAGS)funcDesc.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FSOURCE)) &&
-                !IgnoredInterfaceMembers.Contains(memberName))  // quick-and-dirty for beta
+                ((FUNCFLAGS)funcDesc.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FSOURCE)))
             {
                 memberType = DeclarationType.Event;
             }
