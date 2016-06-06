@@ -2,13 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
