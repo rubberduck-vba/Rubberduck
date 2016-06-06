@@ -3,7 +3,6 @@ using Microsoft.Vbe.Interop;
 using Microsoft.Vbe.Interop.Forms;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System;
@@ -247,7 +246,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else if (declarationType == DeclarationType.LibraryProcedure || declarationType == DeclarationType.LibraryFunction)
                 {
-                    result = new ExternalProcedureDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, declarationType, asTypeName, accessibility, context, selection, false, annotations);
+                    result = new ExternalProcedureDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, declarationType, asTypeName, asTypeContext, accessibility, context, selection, false, annotations);
                 }
                 else if (declarationType == DeclarationType.PropertyGet)
                 {
