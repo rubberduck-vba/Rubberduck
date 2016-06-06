@@ -38,8 +38,9 @@ namespace Rubberduck.Inspections
             var builtInHandlers = declarations.FindBuiltInEventHandlers();
 
             var parameters = declarations.Where(parameter => parameter.DeclarationType == DeclarationType.Parameter
-                && !(parameter.Context.Parent.Parent is VBAParser.EventStmtContext)
-                && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext));
+                && parameter.ParentDeclaration.DeclarationType != DeclarationType.Event
+                && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryFunction
+                && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryProcedure);
 
             var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
             var quickFixRefactoring =
