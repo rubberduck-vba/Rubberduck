@@ -71,7 +71,8 @@ namespace Rubberduck.Inspections
                     if (declaration == null) { return false; }  // rather be safe than sorry
 
                     return UserDeclarations.Where(item => item.IsWithEvents)
-                            .All(withEvents => UserDeclarations.FindEventProcedures(withEvents) == null);
+                            .All(withEvents => UserDeclarations.FindEventProcedures(withEvents) == null) &&
+                            !UserDeclarations.FindBuiltInEventHandlers().Contains(declaration);
                 });
 
             return ParseTreeResults.ArgListsWithOneByRefParam

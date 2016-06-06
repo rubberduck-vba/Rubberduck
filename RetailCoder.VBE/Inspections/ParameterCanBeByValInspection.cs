@@ -49,7 +49,7 @@ namespace Rubberduck.Inspections
 
             var eventScopes = declarations.Where(item =>
                 !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event)
-                .Select(e => e.Scope);
+                .Select(e => e.Scope).Concat(declarations.FindBuiltInEventHandlers().Select(e => e.Scope));
 
             var declareScopes = declarations.Where(item =>
                     item.DeclarationType == DeclarationType.LibraryFunction

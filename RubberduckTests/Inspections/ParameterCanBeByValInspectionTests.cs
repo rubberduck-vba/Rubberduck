@@ -141,6 +141,32 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ParameterCanByByVal_DoesNotReturnResult_BuiltInEventParam()
+        {
+            const string inputCode =
+@"Sub Foo(ByRef arg1 As String)
+    arg1 = ""test""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_SomeParams()
         {
             const string inputCode =

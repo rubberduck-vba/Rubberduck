@@ -2,13 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
@@ -38,8 +36,9 @@ namespace Rubberduck.Inspections
             var builtInHandlers = declarations.FindBuiltInEventHandlers();
 
             var parameters = declarations.Where(parameter => parameter.DeclarationType == DeclarationType.Parameter
-                && !(parameter.Context.Parent.Parent is VBAParser.EventStmtContext)
-                && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext));
+                && parameter.ParentDeclaration.DeclarationType != DeclarationType.Event
+                && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryFunction
+                && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryProcedure);
 
             var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
             var quickFixRefactoring =
