@@ -53,16 +53,11 @@ namespace Rubberduck.Parsing.VBA
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
 
-            _comReflector = new ReferencedDeclarationsCollector();
+            _comReflector = new ReferencedDeclarationsCollector(_state);
 
             state.ParseRequest += ReparseRequested;
-            state.StateChanged += StateOnStateChanged;
         }
 
-        private void StateOnStateChanged(object sender, EventArgs e)
-        {
-            Logger.Debug("RubberduckParser handles OnStateChanged ({0})", _state.Status);
-        }
 
         private void ReparseRequested(object sender, ParseRequestEventArgs e)
         {
@@ -466,6 +461,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Resolve(CancellationToken token)
         {
+            State.SetStatusAndFireStateChanged(ParserState.Resolving);
             var sharedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_resolverTokenSource.Token, token);
             // tests expect this to be synchronous :/
             //Task.Run(() => ResolveInternal(sharedTokenSource.Token));
@@ -599,8 +595,6 @@ namespace Rubberduck.Parsing.VBA
         public void Dispose()
         {
             State.ParseRequest -= ReparseRequested;
-            State.StateChanged -= StateOnStateChanged;
-
             if (_resolverTokenSource != null)
             {
                 _resolverTokenSource.Dispose();

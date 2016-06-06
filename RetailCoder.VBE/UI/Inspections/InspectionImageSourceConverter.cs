@@ -21,7 +21,8 @@ namespace Rubberduck.UI.Inspections
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            var converter = new InspectionSeverityImageSourceConverter();
+            return converter.ConvertBack(value, targetType, parameter, culture);
         }
     }
 }
