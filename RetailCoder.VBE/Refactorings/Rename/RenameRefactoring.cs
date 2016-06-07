@@ -203,6 +203,7 @@ namespace Rubberduck.Refactorings.Rename
             else if (_model.Target.DeclarationType == DeclarationType.Project)
             {
                 RenameProject();
+                return; // renaming a project automatically triggers a reparse
             }
             else
             {
@@ -263,7 +264,6 @@ namespace Rubberduck.Refactorings.Rename
                 if (project != null)
                 {
                     project.Name = _model.NewName;
-                    _state.RemoveDeclaration(_model.Target);
                 }
             }
             catch (COMException)

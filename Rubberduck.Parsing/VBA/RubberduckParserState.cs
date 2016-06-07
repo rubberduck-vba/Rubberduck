@@ -109,9 +109,15 @@ namespace Rubberduck.Parsing.VBA
 
         public void RemoveProject(string projectId)
         {
+            var project = Projects.FirstOrDefault(f => f.HelpFile == projectId);
             if (_projects.ContainsKey(projectId))
             {
                 _projects.Remove(projectId);
+            }
+
+            if (project != null)
+            {
+                ClearStateCache(project);
             }
         }
 
