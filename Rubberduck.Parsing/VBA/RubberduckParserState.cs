@@ -83,10 +83,6 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            //if (string.IsNullOrEmpty(project.HelpFile))
-            //{
-            //    project.HelpFile = project.GetHashCode().ToString();
-            //}
             while (string.IsNullOrEmpty(project.HelpFile) || _projects.Any(a => a.Key == project.HelpFile))
             {
                 project.HelpFile = (project.GetHashCode() ^ project.HelpFile.GetHashCode()).ToString();
