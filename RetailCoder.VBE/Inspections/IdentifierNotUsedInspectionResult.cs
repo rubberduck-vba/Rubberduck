@@ -56,7 +56,7 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            if (_target.DeclarationType == DeclarationType.Variable)
+            if (_target.DeclarationType == DeclarationType.Variable || _target.DeclarationType == DeclarationType.Constant)
             {
                 RemoveVariable(_target);
             }
@@ -65,9 +65,7 @@ namespace Rubberduck.Inspections
                 var module = Selection.QualifiedName.Component.CodeModule;
                 var selection = Selection.Selection;
 
-                var originalCodeLines = module.Lines[selection.StartLine, selection.LineCount]
-                    .Replace("\r\n", " ")
-                    .Replace("_", string.Empty);
+                var originalCodeLines = module.Lines[selection.StartLine, selection.LineCount];
 
                 var originalInstruction = Context.GetText();
                 module.DeleteLines(selection.StartLine, selection.LineCount);
@@ -84,14 +82,12 @@ namespace Rubberduck.Inspections
         {
             Selection selection;
             var declarationText = target.Context.GetText().Replace(" _" + Environment.NewLine, string.Empty);
-            var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
-
-            var variableStmtContext = target.GetVariableStmtContext();
+            var multipleDeclarations = target.DeclarationType == DeclarationType.Variable && target.HasMultipleDeclarationsInStatement();
 
             if (!multipleDeclarations)
             {
-                declarationText = variableStmtContext.GetText().Replace(" _" + Environment.NewLine, string.Empty);
-                selection = target.GetVariableStmtContextSelection();
+                declarationText = GetStmtContext(target).GetText().Replace(" _" + Environment.NewLine, string.Empty);
+                selection = GetStmtContextSelection(target);
             }
             else
             {
@@ -107,7 +103,7 @@ namespace Rubberduck.Inspections
 
             if (multipleDeclarations)
             {
-                selection = target.GetVariableStmtContextSelection();
+                selection = GetStmtContextSelection(target);
                 newLines = RemoveExtraComma(codeModule.GetLines(selection).Replace(oldLines, newLines),
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
@@ -142,6 +138,20 @@ namespace Rubberduck.Inspections
                 codeModule.InsertLines(selection.StartLine,
                     string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
             }
+        }
+
+        private Selection GetStmtContextSelection(Declaration target)
+        {
+            return target.DeclarationType == DeclarationType.Variable
+                ? target.GetVariableStmtContextSelection()
+                : target.GetConstStmtContextSelection();
+        }
+
+        private ParserRuleContext GetStmtContext(Declaration target)
+        {
+            return target.DeclarationType == DeclarationType.Variable
+                ? (ParserRuleContext)target.GetVariableStmtContext()
+                : (ParserRuleContext)target.GetConstStmtContext();
         }
 
         private string RemoveExtraComma(string str, int numParams, int indexRemoved)
