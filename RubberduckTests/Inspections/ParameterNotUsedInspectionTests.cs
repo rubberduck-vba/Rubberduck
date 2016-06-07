@@ -94,32 +94,6 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ParameterUsed_BuiltInEventHandlerParameter_DoesNotReturnResult()
-        {
-            const string inputCode =
-@"Private Sub UserForm_BeforeDropOrPaste(ByVal Cancel As MSForms.ReturnBoolean, ByVal Control As MSForms.Control, ByVal Action As MSForms.fmAction, ByVal Data As MSForms.DataObject, ByVal X As Single, ByVal Y As Single, ByVal Effect As MSForms.ReturnEffect, ByVal Shift As Integer)
-
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_MSForm, out component, new Rubberduck.VBEditor.Selection());
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
         public void ParameterNotUsed_ReturnsResult_SomeParamsUsed()
         {
             const string inputCode =
