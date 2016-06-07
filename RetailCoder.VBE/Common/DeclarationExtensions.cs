@@ -225,7 +225,13 @@ namespace Rubberduck.Common
             var declarationList = declarations.ToList();
 
             var handlerNames = declarationList.Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
-                                           .Select(e => e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName);
+                                           .SelectMany(e =>
+                                           {
+                                               var parentModuleSubtypes = ((ClassModuleDeclaration) e.ParentDeclaration).Subtypes;
+                                               return parentModuleSubtypes.Any()
+                                                   ? parentModuleSubtypes.Select(v => v.IdentifierName + "_" + e.IdentifierName)
+                                                   : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
+                                           });
 
             // class module built-in events
             var classModuleHandlers = declarationList.Where(item =>
@@ -233,27 +239,11 @@ namespace Rubberduck.Common
                         item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
                         (item.IdentifierName == "Class_Initialize" || item.IdentifierName == "Class_Terminate"));
 
-            // user form built-in events
-            var userFormHandlers = declarationList.Where(item =>
-                item.DeclarationType == DeclarationType.Procedure &&
-                item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
-                item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm &&
-                new[]
-                {
-                    "UserForm_Activate", "UserForm_AddControl", "UserForm_BeforeDragOver", "UserForm_BeforeDropOrPaste",
-                    "UserForm_Click", "UserForm_DblClick", "UserForm_Deactivate", "UserForm_Error",
-                    "UserForm_Initialize", "UserForm_KeyDown", "UserForm_KeyPress", "UserForm_KeyUp", "UserForm_Layout",
-                    "UserForm_MouseDown", "UserForm_MouseMove", "UserForm_MouseUp", "UserForm_QueryClose",
-                    "UserForm_RemoveControl", "UserForm_Resize", "UserForm_Scroll", "UserForm_Terminate",
-                    "UserForm_Zoom"
-                }.Contains(item.IdentifierName));
-
             var handlers = declarationList.Where(declaration => !declaration.IsBuiltIn
                                                      && declaration.DeclarationType == DeclarationType.Procedure
                                                      && handlerNames.Contains(declaration.IdentifierName)).ToList();
 
             handlers.AddRange(classModuleHandlers);
-            handlers.AddRange(userFormHandlers);
 
             return handlers;
         }
