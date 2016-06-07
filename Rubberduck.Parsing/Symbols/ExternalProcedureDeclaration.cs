@@ -3,6 +3,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -16,6 +17,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parentScope,
             DeclarationType declarationType,
             string asTypeName,
+            VBAParser.AsTypeClauseContext asTypeContext,
             Accessibility accessibility,
             ParserRuleContext context,
             Selection selection,
@@ -34,7 +36,7 @@ namespace Rubberduck.Parsing.Symbols
                   context,
                   selection,
                   false,
-                  null,
+                  asTypeContext,
                   isBuiltIn,
                   annotations,
                   null)
