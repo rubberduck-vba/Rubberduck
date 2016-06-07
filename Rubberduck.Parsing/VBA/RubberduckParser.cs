@@ -13,7 +13,6 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor.Extensions;
 using System.IO;
 using NLog;

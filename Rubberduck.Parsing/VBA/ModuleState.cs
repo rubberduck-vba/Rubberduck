@@ -5,7 +5,6 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.VBA
