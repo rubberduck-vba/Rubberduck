@@ -1,19 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Security;
-using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Settings;
-using Rubberduck.SourceControl;
-using Rubberduck.UI;
-using Rubberduck.UI.SourceControl;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
-using RubberduckTests.Mocks;
-
-namespace RubberduckTests.SourceControl
+﻿namespace RubberduckTests.SourceControl
 {
 //    [Ignore]
 //    [TestClass]

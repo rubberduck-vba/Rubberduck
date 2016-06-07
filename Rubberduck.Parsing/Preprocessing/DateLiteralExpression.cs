@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Date;
+﻿using Rubberduck.Parsing.Date;
 using Rubberduck.Parsing.VBA;
 using System;
 using System.Globalization;

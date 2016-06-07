@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections
                 handlers.AddRange(forms.SelectMany(form => declarations.FindFormEventHandlers(form)));
             }
 
-            handlers.AddRange(declarations.FindBuiltInEventHandlers());
+            handlers.AddRange(State.AllDeclarations.FindBuiltInEventHandlers());
 
             var items = declarations
                 .Where(item => !IsIgnoredDeclaration(declarations, item, handlers, classes, modules)

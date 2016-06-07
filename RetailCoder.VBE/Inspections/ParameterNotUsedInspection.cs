@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections
             var interfaceMemberScopes = declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
             var interfaceImplementationMemberScopes = declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();
 
-            var builtInHandlers = declarations.FindBuiltInEventHandlers();
+            var builtInHandlers = State.AllDeclarations.FindBuiltInEventHandlers();
 
             var parameters = declarations.Where(parameter => parameter.DeclarationType == DeclarationType.Parameter
                 && parameter.ParentDeclaration.DeclarationType != DeclarationType.Event

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using Castle.Core.Internal;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;

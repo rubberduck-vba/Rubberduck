@@ -7,7 +7,6 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
@@ -15,12 +14,12 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public UseMeaningfulNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
+        public UseMeaningfulNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, IMessageBox messageBox)
             : base(inspection, target)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new RenameDeclarationQuickFix(target.Context, target.QualifiedSelection, target, parserState, wrapperFactory, messageBox),
+                new RenameDeclarationQuickFix(target.Context, target.QualifiedSelection, target, parserState, messageBox),
                 new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
@@ -40,15 +39,13 @@ namespace Rubberduck.Inspections
     {
         private readonly Declaration _target;
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IMessageBox _messageBox;
 
-        public RenameDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
+        public RenameDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
             : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, RubberduckUI.Culture)))
         {
             _target = target;
             _state = state;
-            _wrapperFactory = wrapperFactory;
             _messageBox = messageBox;
         }
 

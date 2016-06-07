@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
 namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule
 {
     public interface ICodeModuleWrapper
