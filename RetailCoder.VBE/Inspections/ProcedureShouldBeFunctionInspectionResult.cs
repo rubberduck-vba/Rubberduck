@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {

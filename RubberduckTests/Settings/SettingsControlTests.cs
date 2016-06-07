@@ -1,14 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
-using Rubberduck.Settings;
-using Rubberduck.UI.Settings;
-using GeneralSettings = Rubberduck.UI.Settings.GeneralSettings;
-using IndenterSettings = Rubberduck.UI.Settings.IndenterSettings;
-using UnitTestSettings = Rubberduck.UI.Settings.UnitTestSettings;
-
-namespace RubberduckTests.Settings
+﻿namespace RubberduckTests.Settings
 {
     //[TestClass]
     //[Ignore] // these tests incur IO and actually modify the config file.

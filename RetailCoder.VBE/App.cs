@@ -18,7 +18,6 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Rubberduck.Common.Hotkeys;
 
 namespace Rubberduck
 {
