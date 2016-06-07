@@ -83,7 +83,14 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            while (string.IsNullOrEmpty(project.HelpFile) || _projects.Any(a => a.Key == project.HelpFile))
+            //assign a hashcode if no helpfile is present
+            if (string.IsNullOrEmpty(project.HelpFile))
+            {
+                project.HelpFile = project.GetHashCode().ToString();
+            }
+
+            //loop until the helpfile is unique for this host session
+            while (_projects.Any(a => a.Key == project.HelpFile))
             {
                 project.HelpFile = (project.GetHashCode() ^ project.HelpFile.GetHashCode()).ToString();
             }
