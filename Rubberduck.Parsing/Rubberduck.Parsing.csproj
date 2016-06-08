@@ -39,7 +39,10 @@
     </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>RubberduckSigningKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime.net45">
@@ -304,6 +307,7 @@
     <None Include="Preprocessing\VBAConditionalCompilationParser.g4" />
     <None Include="Preprocessing\VBADate.g4" />
     <None Include="Preprocessing\VBALike.g4" />
+    <None Include="RubberduckSigningKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
