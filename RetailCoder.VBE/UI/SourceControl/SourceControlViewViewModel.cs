@@ -25,7 +25,7 @@ namespace Rubberduck.UI.SourceControl
         UnsyncedCommits,
         Settings
     }
-    
+
     public sealed class SourceControlViewViewModel : ViewModelBase, IDisposable
     {
         private readonly VBE _vbe;
@@ -368,11 +368,11 @@ namespace Rubberduck.UI.SourceControl
                 var existing = _config.Repositories.Single(repository => repository.LocalLocation == repo.LocalLocation);
                 if (string.IsNullOrEmpty(repo.RemoteLocation) && !string.IsNullOrEmpty(existing.RemoteLocation))
                 {
-                    // config already has remote location and correct repository name - nothing to update
+                    // config already has remote location and correct repository id - nothing to update
                     return;
                 }
 
-                existing.Name = repo.Name;
+                existing.Id = repo.Id;
                 existing.RemoteLocation = repo.RemoteLocation;
 
                 _configService.Save(_config);
@@ -421,7 +421,7 @@ namespace Rubberduck.UI.SourceControl
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
                 AddOrUpdateLocalPathConfig(new Repository
                 {
-                    Name = _vbe.ActiveVBProject.Name,
+                    Id = _vbe.ActiveVBProject.HelpFile,
                     LocalLocation = repo.LocalLocation,
                     RemoteLocation = repo.RemoteLocation
                 });
@@ -462,7 +462,7 @@ namespace Rubberduck.UI.SourceControl
             {
                 OnOpenRepoStarted();
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Name == _vbe.ActiveVBProject.Name), _wrapperFactory);
+                    _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile), _wrapperFactory);
                 Status = RubberduckUI.Online;
             }
             catch (SourceControlException ex)
@@ -496,7 +496,7 @@ namespace Rubberduck.UI.SourceControl
                 return false;
             }
 
-            var possibleRepos = _config.Repositories.Where(repo => repo.Name == _vbe.ActiveVBProject.Name);
+            var possibleRepos = _config.Repositories.Where(repo => repo.Id == _vbe.ActiveVBProject.HelpFile);
 
             var possibleCount = possibleRepos.Count();
 
@@ -544,7 +544,7 @@ namespace Rubberduck.UI.SourceControl
         {
             get { return _cloneRepoCommand; }
         }
-        
+
         private readonly ICommand _showFilePickerCommand;
         public ICommand ShowFilePickerCommand
         {
