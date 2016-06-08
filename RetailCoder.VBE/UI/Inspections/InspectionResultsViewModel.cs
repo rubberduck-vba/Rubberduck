@@ -124,7 +124,18 @@ namespace Rubberduck.UI.Inspections
             set
             {
                 if (_groupByInspectionType == value) { return; }
-                
+
+                if (value)
+                {
+                    Results = new ObservableCollection<ICodeInspectionResult>(
+                            Results.OrderBy(o => o.Inspection.InspectionType)
+                                .ThenBy(t => t.Inspection.Name)
+                                .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
+                                .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
+                                .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
+                                .ToList());
+                }
+
                 _groupByInspectionType = value;
                 OnPropertyChanged();
             }
@@ -137,7 +148,17 @@ namespace Rubberduck.UI.Inspections
             set
             {
                 if (_groupByLocation == value) { return; }
-                
+
+                if (value)
+                {
+                    Results = new ObservableCollection<ICodeInspectionResult>(
+                            Results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
+                                .ThenBy(t => t.Inspection.Name)
+                                .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
+                                .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
+                                .ToList());
+                }
+
                 _groupByLocation = value;
                 OnPropertyChanged();
             }
@@ -231,6 +252,23 @@ namespace Rubberduck.UI.Inspections
             IsBusy = true;
 
             var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();
+            if (GroupByInspectionType)
+            {
+                results = results.OrderBy(o => o.Inspection.InspectionType)
+                    .ThenBy(t => t.Inspection.Name)
+                    .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
+                    .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
+                    .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
+                    .ToList();
+            }
+            else
+            {
+                results = results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
+                    .ThenBy(t => t.Inspection.Name)
+                    .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
+                    .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
+                    .ToList();
+            }
 
             UiDispatcher.Invoke(() =>
             {
