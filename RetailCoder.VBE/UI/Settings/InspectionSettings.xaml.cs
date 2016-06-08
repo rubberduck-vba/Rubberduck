@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using Rubberduck.Inspections;
-using Rubberduck.Settings;
-using Rubberduck.UI.Controls;
-using Rubberduck.UI.Settings.Converters;
 
 namespace Rubberduck.UI.Settings
 {
@@ -35,9 +31,7 @@ namespace Rubberduck.UI.Settings
             var severities = Enum.GetValues(typeof(CodeInspectionSeverity)).Cast<CodeInspectionSeverity>();
             var selectedSeverity = severities.Single(s => RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + s) == selectedSeverityName);
 
-            var changedSetting = (CodeInspectionSetting) e.Row.Item;
-
-            ((InspectionSettingsViewModel) ViewModel).UpdateCollection(changedSetting.Name, selectedSeverity);
+            ((InspectionSettingsViewModel) ViewModel).UpdateCollection(selectedSeverity);
         }
     }
 }
