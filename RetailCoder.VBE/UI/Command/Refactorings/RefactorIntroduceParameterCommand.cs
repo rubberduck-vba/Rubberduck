@@ -1,24 +1,19 @@
-﻿using System.Diagnostics;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceParameter;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     public class RefactorIntroduceParameterCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorIntroduceParameterCommand (VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory)
-            : base(vbe, editor)
+        public RefactorIntroduceParameterCommand (VBE vbe, RubberduckParserState state)
+            :base(vbe)
         {
             _state = state;
-            _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
         public override bool CanExecute(object parameter)
@@ -28,25 +23,29 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
-            var target = _state.AllUserDeclarations.FindTarget(selection, new []{DeclarationType.Variable, DeclarationType.Constant});
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            if (!selection.HasValue)
+            {
+                return false;
+            }
 
-            var canExecute = target != null && target.ParentScopeDeclaration != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+            var target = _state.AllUserDeclarations.FindVariable(selection.Value);
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            var canExecute = target != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+
             return canExecute;
         }
 
         public override void Execute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null)
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            if (!selection.HasValue)
             {
                 return;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
-            var refactoring = new IntroduceParameterRefactoring(_state, Editor, new MessageBox());
-            refactoring.Refactor(selection);
+            var refactoring = new IntroduceParameterRefactoring(Vbe, _state, new MessageBox());
+            refactoring.Refactor(selection.Value);
         }
     }
 }

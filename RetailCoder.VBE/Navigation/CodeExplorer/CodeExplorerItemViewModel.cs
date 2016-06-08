@@ -1,19 +1,175 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
+    public class CompareByName : Comparer<CodeExplorerItemViewModel>
+    {
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            var nodeComparison = new CompareByNodeType().Compare(x, y);
+            if (nodeComparison != 0)
+            {
+                return nodeComparison;
+            }
+
+            return string.CompareOrdinal(x.NameWithSignature, y.NameWithSignature);
+        }
+    }
+
+    public class CompareByType : Comparer<CodeExplorerItemViewModel>
+    {
+        private static readonly Dictionary<DeclarationType, int> SortOrder = new Dictionary<DeclarationType, int>
+        {
+            {DeclarationType.LibraryFunction, 0},
+            {DeclarationType.LibraryProcedure, 1},
+            {DeclarationType.UserDefinedType, 2},
+            {DeclarationType.Enumeration, 3},
+            {DeclarationType.Event, 4},
+            {DeclarationType.Constant, 5},
+            {DeclarationType.Variable, 6},
+            {DeclarationType.PropertyGet, 7},
+            {DeclarationType.PropertyLet, 8},
+            {DeclarationType.PropertySet, 9},
+            {DeclarationType.Function, 10},
+            {DeclarationType.Procedure, 11}
+        };
+
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            var nodeComparison = new CompareByNodeType().Compare(x, y);
+            if (nodeComparison != 0)
+            {
+                return nodeComparison;
+            }
+
+            var xNode = (ICodeExplorerDeclarationViewModel)x;
+            var yNode = (ICodeExplorerDeclarationViewModel)y;
+
+            // keep separate types separate
+            if (xNode.Declaration.DeclarationType != yNode.Declaration.DeclarationType)
+            {
+                int xValue, yValue;
+
+                if (SortOrder.TryGetValue(xNode.Declaration.DeclarationType, out xValue) &&
+                    SortOrder.TryGetValue(yNode.Declaration.DeclarationType, out yValue))
+                {
+                    return xValue < yValue ? -1 : 1;
+                }
+
+                return xNode.Declaration.DeclarationType < yNode.Declaration.DeclarationType ? -1 : 1;
+            }
+
+            // keep types with different icons and the same declaration type (document/class module) separate
+            // documents come first
+            if (x.ExpandedIcon != y.ExpandedIcon)
+            {
+                // ReSharper disable once PossibleInvalidOperationException - this will have a component
+                return x.QualifiedSelection.Value.QualifiedName.Component.Type ==
+                       Microsoft.Vbe.Interop.vbext_ComponentType.vbext_ct_Document
+                    ? -1
+                    : 1;
+            }
+
+            return 0;
+        }
+    }
+
+    public class CompareBySelection : Comparer<CodeExplorerItemViewModel>
+    {
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            var nodeComparison = new CompareByNodeType().Compare(x, y);
+            if (nodeComparison != 0)
+            {
+                return nodeComparison;
+            }
+
+            if (!x.QualifiedSelection.HasValue && !y.QualifiedSelection.HasValue)
+            {
+                return 0;
+            }
+
+            if (x.QualifiedSelection.HasValue ^ y.QualifiedSelection.HasValue)
+            {
+                return x.QualifiedSelection.HasValue ? -1 : 1;
+            }
+
+            if (x.QualifiedSelection.Value.Selection == y.QualifiedSelection.Value.Selection)
+            {
+                return 0;
+            }
+
+            return x.QualifiedSelection.Value.Selection < y.QualifiedSelection.Value.Selection ? -1 : 1;
+        }
+    }
+
+    public class CompareByNodeType : Comparer<CodeExplorerItemViewModel>
+    {
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            // folders come first
+            if (x is CodeExplorerCustomFolderViewModel ^
+                y is CodeExplorerCustomFolderViewModel)
+            {
+                return x is CodeExplorerCustomFolderViewModel ? -1 : 1;
+            }
+
+            // folders are always sorted by name
+            if (x is CodeExplorerCustomFolderViewModel &&
+                y is CodeExplorerCustomFolderViewModel)
+            {
+                return string.CompareOrdinal(x.NameWithSignature, y.NameWithSignature);
+            }
+
+            return 0;
+        }
+    }
+
     public abstract class CodeExplorerItemViewModel : ViewModelBase
     {
-        private IList<CodeExplorerItemViewModel> _items = new List<CodeExplorerItemViewModel>();
-        public IEnumerable<CodeExplorerItemViewModel> Items { get { return _items; } protected set { _items = value.ToList(); } }
+        private List<CodeExplorerItemViewModel> _items = new List<CodeExplorerItemViewModel>();
+        public List<CodeExplorerItemViewModel> Items
+        {
+            get { return _items; }
+            protected set
+            {
+                _items = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsExpanded { get; set; }
 
         public abstract string Name { get; }
+        public abstract string NameWithSignature { get; }
         public abstract BitmapImage CollapsedIcon { get; }
         public abstract BitmapImage ExpandedIcon { get; }
+        public abstract CodeExplorerItemViewModel Parent { get; }
 
         public abstract QualifiedSelection? QualifiedSelection { get; }
 
@@ -35,9 +191,32 @@ namespace Rubberduck.Navigation.CodeExplorer
             return null;
         }
 
+        public Declaration GetSelectedDeclaration()
+        {
+            return this is ICodeExplorerDeclarationViewModel
+                ? ((ICodeExplorerDeclarationViewModel)this).Declaration
+                : null;
+        }
+
         public void AddChild(CodeExplorerItemViewModel item)
         {
             _items.Add(item);
+        }
+
+        public void ReorderItems(bool sortByName, bool sortByType)
+        {
+            if (sortByType)
+            {
+                Items = sortByName
+                    ? Items.OrderBy(o => o, new CompareByType()).ThenBy(t => t, new CompareByName()).ToList()
+                    : Items.OrderBy(o => o, new CompareByType()).ThenBy(t => t, new CompareBySelection()).ToList();
+
+                return;
+            }
+
+            Items = sortByName
+                ? Items.OrderBy(t => t, new CompareByName()).ToList()
+                : Items.OrderBy(t => t, new CompareBySelection()).ToList();
         }
     }
 }

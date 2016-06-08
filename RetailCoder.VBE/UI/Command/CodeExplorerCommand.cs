@@ -16,11 +16,6 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
-        public override bool CanExecute(object parameter)
-        {
-            return false; // return base.CanExecute(parameter);
-        }
-
         public override void Execute(object parameter)
         {
             _presenter.Show();

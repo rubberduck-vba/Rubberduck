@@ -7,7 +7,7 @@ namespace Rubberduck.UI.CodeExplorer
     /// <summary>
     /// Interaction logic for CodeExplorerControl.xaml
     /// </summary>
-    public partial class CodeExplorerControl : UserControl
+    public partial class CodeExplorerControl
     {
         public CodeExplorerControl()
         {
@@ -18,19 +18,15 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void TreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (ViewModel == null || ViewModel.SelectedItem == null)
+            if (ViewModel != null && ViewModel.SelectedItem != null)
             {
-                return;
+                ViewModel.NavigateCommand.Execute(ViewModel.SelectedItem);
             }
+        }
 
-            var selectedResult = ViewModel.SelectedItem as CodeExplorerItemViewModel;
-            if (selectedResult == null || !selectedResult.QualifiedSelection.HasValue)
-            {
-                return;
-            }
-
-            var arg = selectedResult.QualifiedSelection.Value.GetNavitationArgs();
-            ViewModel.NavigateCommand.Execute(arg);
+        private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ((TreeViewItem)sender).IsSelected = true;
         }
     }
 }

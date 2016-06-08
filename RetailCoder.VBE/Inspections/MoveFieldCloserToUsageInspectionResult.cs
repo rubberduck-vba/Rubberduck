@@ -5,7 +5,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
@@ -13,12 +12,12 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public MoveFieldCloserToUsageInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
+        public MoveFieldCloserToUsageInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
             : base(inspection, target)
         {
             _quickFixes = new[]
             {
-                new MoveFieldCloserToUsageQuickFix(target.Context, target.QualifiedSelection, target, parseResult, wrapperFactory, messageBox),
+                new MoveFieldCloserToUsageQuickFix(target.Context, target.QualifiedSelection, target, state, messageBox),
             };
         }
 
@@ -39,16 +38,14 @@ namespace Rubberduck.Inspections
     public class MoveFieldCloserToUsageQuickFix : CodeInspectionQuickFix
     {
         private readonly Declaration _target;
-        private readonly RubberduckParserState _parseResult;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
+        private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public MoveFieldCloserToUsageQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
+        public MoveFieldCloserToUsageQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
             : base(context, selection, string.Format(InspectionsUI.MoveFieldCloserToUsageInspectionResultFormat, target.IdentifierName))
         {
             _target = target;
-            _parseResult = parseResult;
-            _wrapperFactory = wrapperFactory;
+            _state = state;
             _messageBox = messageBox;
         }
 
@@ -56,8 +53,7 @@ namespace Rubberduck.Inspections
         {
             var vbe = Selection.QualifiedName.Project.VBE;
 
-            var refactoring = new MoveCloserToUsageRefactoring(_parseResult,
-                new ActiveCodePaneEditor(vbe, _wrapperFactory), _messageBox);
+            var refactoring = new MoveCloserToUsageRefactoring(vbe, _state, _messageBox);
 
             refactoring.Refactor(_target);
         }

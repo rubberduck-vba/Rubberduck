@@ -12,7 +12,6 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
-using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
@@ -37,26 +36,29 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -83,26 +85,29 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "val2" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "val2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -126,26 +131,29 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "arg2" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "arg2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -179,26 +187,29 @@ End Sub
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Hoo" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "Hoo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -226,26 +237,29 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "val2" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "val2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -271,26 +285,231 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "arg2" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "arg2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameFirstPropertyParameter_UpdatesAllRelatedParameters()
+        {
+            //Input
+            const string inputCode =
+@"Property Get Foo(ByVal index As Integer) As Variant
+    Dim d As Integer
+    d = index
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property
+
+Property Set Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property";
+            var selection = new Selection(1, 28, 1, 28);
+
+            //Expectation
+            const string expectedCode =
+@"Property Get Foo(ByVal renamed As Integer) As Variant
+    Dim d As Integer
+    d = renamed
+End Property
+
+Property Let Foo(ByVal renamed As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = renamed
+End Property
+
+Property Set Foo(ByVal renamed As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = renamed
+End Property";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "renamed" };
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameLastPropertyParameter_UpdatesAllRelatedParameters()
+        {
+            //Input
+            const string inputCode =
+@"Property Get Foo(ByVal index As Integer) As Variant
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Variant
+    d = value
+End Property
+
+Property Set Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Variant
+    d = value
+End Property";
+            var selection = new Selection(4, 50, 4, 50);
+
+            //Expectation
+            const string expectedCode =
+@"Property Get Foo(ByVal index As Integer) As Variant
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal renamed As Variant)
+    Dim d As Variant
+    d = renamed
+End Property
+
+Property Set Foo(ByVal index As Integer, ByVal renamed As Variant)
+    Dim d As Variant
+    d = renamed
+End Property";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "renamed" };
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameLastPropertyParameter_UpdatesRelatedParametersWithSameName()
+        {
+            //Input
+            const string inputCode =
+@"Property Get Foo(ByVal index As Integer) As Variant
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Variant
+    d = value
+End Property
+
+Property Set Foo(ByVal index As Integer, ByVal fizz As Variant)
+    Dim d As Variant
+    d = fizz
+End Property";
+            var selection = new Selection(4, 50, 4, 50);
+
+            //Expectation
+            const string expectedCode =
+@"Property Get Foo(ByVal index As Integer) As Variant
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal renamed As Variant)
+    Dim d As Variant
+    d = renamed
+End Property
+
+Property Set Foo(ByVal index As Integer, ByVal fizz As Variant)
+    Dim d As Variant
+    d = fizz
+End Property";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "renamed" };
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -320,26 +539,29 @@ End Property";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -369,26 +591,29 @@ End Property";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -414,26 +639,29 @@ End Function";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -471,26 +699,29 @@ End Sub
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Hoo" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "Hoo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -514,16 +745,15 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -532,8 +762,12 @@ End Sub";
             //SetupFactory
             var factory = SetupFactory(model);
 
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert
@@ -574,26 +808,29 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(0);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "DoNothing" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "DoNothing" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -633,26 +870,29 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(0);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -694,13 +934,12 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(0);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -708,9 +947,8 @@ End Sub";
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(
-                m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                .Returns(DialogResult.Yes);
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                      .Returns(DialogResult.Yes);
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, messageBox.Object) { NewName = "DoNothing" };
 
@@ -718,7 +956,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, messageBox.Object, parser.State);
             refactoring.Refactor(model.Selection);
 
             //Assert
@@ -755,7 +993,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -782,13 +1020,12 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -797,10 +1034,10 @@ End Sub";
             codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
-            var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null, codePaneFactory);
+            var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null);
 
             //act
-            var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory, null, parser.State);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, module.Lines());
@@ -821,13 +1058,12 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -836,7 +1072,7 @@ End Sub";
             codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
-            var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null, codePaneFactory);
+            var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -857,16 +1093,12 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -875,7 +1107,7 @@ End Sub";
             codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
-            var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null, codePaneFactory);
+            var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null);
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show());
@@ -895,43 +1127,27 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = project.VBComponents.Item(0).CodeModule;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
-            int startLine, startColumn, endLine, endColumn;
-
-            var codePaneMock = new Mock<CodePane>();
-            codePaneMock.Setup(c => c.CodeModule).Returns(module);
-            codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
-            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
-
-            var rubberduckCodePane = new Mock<ICodePaneWrapper>();
-            rubberduckCodePane.Setup(r => r.CodeModule).Returns(module);
-            rubberduckCodePane.Setup(r => r.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
-            rubberduckCodePane.Setup(r => r.Selection).Returns(selection);
-
-            var codePaneFactoryMock = new Mock<ICodePaneWrapperFactory>();
-            codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
-
-            var view = new Mock<IRenameView>();
+            var view = new Mock<IRenameDialog>();
             view.Setup(v => v.NewName).Returns(newName);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null, codePaneFactoryMock.Object);
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, msgbox.Object);
 
             var presenter = factory.Create();
             Assert.AreEqual(model.NewName, presenter.Show().NewName);
@@ -949,7 +1165,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
@@ -957,12 +1173,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -979,11 +1190,11 @@ End Sub";
             var codePaneFactoryMock = new Mock<ICodePaneWrapperFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
-            var view = new Mock<IRenameView>();
+            var view = new Mock<IRenameDialog>();
             view.Setup(v => v.NewName).Returns("Goo");
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null, codePaneFactoryMock.Object);
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null);
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show());
@@ -1003,7 +1214,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
@@ -1011,14 +1222,11 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -1035,11 +1243,11 @@ End Sub";
             var codePaneFactoryMock = new Mock<ICodePaneWrapperFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
-            var view = new Mock<IRenameView>();
+            var view = new Mock<IRenameDialog>();
             view.Setup(v => v.NewName).Returns(newName);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null, codePaneFactoryMock.Object);
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null);
 
             var presenter = factory.Create();
             Assert.AreEqual(model.NewName, presenter.Show(model.Target).NewName);
@@ -1057,7 +1265,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
@@ -1065,14 +1273,11 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -1089,10 +1294,10 @@ End Sub";
             var codePaneFactoryMock = new Mock<ICodePaneWrapperFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
-            var view = new Mock<IRenameView>();
+            var view = new Mock<IRenameDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null, codePaneFactoryMock.Object);
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null);
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show(model.Target));
@@ -1111,22 +1316,25 @@ End Sub";
                              .MockVbeBuilder()
                              .Build();
             
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var model = new RenameModel(vbe.Object, parser.State, default(QualifiedSelection), null) { NewName = newName };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, default(QualifiedSelection), msgbox.Object) { NewName = newName };
             model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && !i.IsBuiltIn);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert
@@ -1152,16 +1360,15 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1177,7 +1384,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.No);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, messageBox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1203,16 +1410,15 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1228,7 +1434,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.Yes);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, messageBox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1255,24 +1461,27 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(0);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, msgbox.Object) { NewName = newName };
             model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, msgbox.Object, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert

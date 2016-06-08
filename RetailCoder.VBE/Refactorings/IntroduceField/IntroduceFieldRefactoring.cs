@@ -2,33 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.IntroduceField
 {
     public class IntroduceFieldRefactoring : IRefactoring
     {
         private readonly IList<Declaration> _declarations;
-        private readonly IActiveCodePaneEditor _editor;
+        private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceFieldRefactoring(RubberduckParserState parserState, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public IntroduceFieldRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
             _declarations =
-                parserState.AllDeclarations.Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
+                state.AllDeclarations.Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
                     .ToList();
-            _editor = editor;
+            _vbe = vbe;
+            _state = state;
             _messageBox = messageBox;
         }
 
         public void Refactor()
         {
-            var selection = _editor.GetSelection();
-            
+            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+
             if (!selection.HasValue)
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceField_Caption,
@@ -78,6 +82,8 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             RemoveVariable(target);
             AddField(target);
+
+            _state.OnParseRequested(this);
         }
 
         private void AddField(Declaration target)
@@ -89,14 +95,14 @@ namespace Rubberduck.Refactorings.IntroduceField
         private void RemoveVariable(Declaration target)
         {
             Selection selection;
-            var declarationText = target.Context.GetText();
+            var declarationText = target.Context.GetText().Replace(" _" + Environment.NewLine, string.Empty);
             var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
 
             var variableStmtContext = target.GetVariableStmtContext();
 
             if (!multipleDeclarations)
             {
-                declarationText = variableStmtContext.GetText();
+                declarationText = variableStmtContext.GetText().Replace(" _" + Environment.NewLine, string.Empty);
                 selection = target.GetVariableStmtContextSelection();
             }
             else
@@ -105,7 +111,7 @@ namespace Rubberduck.Refactorings.IntroduceField
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            var oldLines = _editor.GetLines(selection);
+            var oldLines = _vbe.ActiveCodePane.CodeModule.GetLines(selection);
 
             var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
                 .Remove(selection.StartColumn, declarationText.Length);
@@ -113,7 +119,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             if (multipleDeclarations)
             {
                 selection = target.GetVariableStmtContextSelection();
-                newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines),
+                newLines = RemoveExtraComma(_vbe.ActiveCodePane.CodeModule.GetLines(selection).Replace(oldLines, newLines),
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
@@ -138,8 +144,8 @@ namespace Rubberduck.Refactorings.IntroduceField
                 break;
             }
 
-            _editor.DeleteLines(selection);
-            _editor.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
+            _vbe.ActiveCodePane.CodeModule.DeleteLines(selection);
+            _vbe.ActiveCodePane.CodeModule.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
         }
 
         private string RemoveExtraComma(string str, int numParams, int indexRemoved)

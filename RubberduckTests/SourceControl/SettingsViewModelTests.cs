@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
@@ -21,8 +19,8 @@ namespace RubberduckTests.SourceControl
         private const string OtherEmail = "king.lear@yahoo.com";
         private const string OtherRepoLocation = @"C:\Users\KingLear\Documents";
 
-        private Mock<IConfigurationService<SourceControlConfiguration>> _configService;
-        private SourceControlConfiguration _config;
+        private Mock<ISourceControlConfigProvider> _configService;
+        private SourceControlSettings _config;
 
         private Mock<IFolderBrowserFactory> _folderBrowserFactory;
         private Mock<IFolderBrowser> _folderBrowser;
@@ -30,10 +28,10 @@ namespace RubberduckTests.SourceControl
         [TestInitialize]
         public void Initialize()
         {
-            _config = new SourceControlConfiguration(Name, Email, RepoLocation, new List<Repository>());
+            _config = new SourceControlSettings(Name, Email, RepoLocation, new List<Repository>());
 
-            _configService = new Mock<IConfigurationService<SourceControlConfiguration>>();
-            _configService.Setup(s => s.LoadConfiguration()).Returns(_config);
+            _configService = new Mock<ISourceControlConfigProvider>();
+            _configService.Setup(s => s.Create()).Returns(_config);
 
             _folderBrowser = new Mock<IFolderBrowser>();
             _folderBrowserFactory = new Mock<IFolderBrowserFactory>();
@@ -87,7 +85,7 @@ namespace RubberduckTests.SourceControl
             vm.UpdateSettingsCommand.Execute(null);
 
             //assert
-            _configService.Verify(s => s.SaveConfiguration(_config));
+            _configService.Verify(s => s.Save(_config));
         }
 
         [TestMethod]

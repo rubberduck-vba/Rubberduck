@@ -7,6 +7,9 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
+using Rubberduck.Settings;
+using Rubberduck.Inspections.Rubberduck.Inspections;
+using System.Threading;
 
 namespace RubberduckTests.Inspections
 {
@@ -14,6 +17,7 @@ namespace RubberduckTests.Inspections
     public class ObsoleteCallStatementInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_ReturnsResult()
         {
             const string inputCode =
@@ -22,6 +26,10 @@ namespace RubberduckTests.Inspections
 End Sub";
 
             //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
@@ -30,15 +38,18 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCallStatementInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_DoesNotReturnResult()
         {
             const string inputCode =
@@ -47,6 +58,10 @@ End Sub";
 End Sub";
 
             //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
@@ -55,15 +70,18 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCallStatementInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -76,6 +94,10 @@ Sub Goo(arg1 As Integer, arg1 As String)
 End Sub";
 
             //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
@@ -84,15 +106,18 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCallStatementInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_ReturnsResults_SomeObsoleteCallStatements()
         {
             const string inputCode =
@@ -105,6 +130,10 @@ Sub Goo(arg1 As Integer, arg1 As String)
 End Sub";
 
             //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
@@ -113,15 +142,18 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCallStatementInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_RemoveCallStatement()
         {
             const string inputCode =
@@ -143,6 +175,10 @@ Sub Goo(arg1 As Integer, arg1 As String)
 End Sub";
 
             //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
@@ -153,10 +189,12 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCallStatementInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             foreach (var inspectionResult in inspectionResults)
             {
@@ -168,6 +206,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ObsoleteCallStatementInspection(null);
@@ -175,12 +214,27 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteCallStatementInspection";
             var inspection = new ObsoleteCallStatementInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        private Configuration GetTestConfig()
+        {
+            var settings = new CodeInspectionSettings();
+            settings.CodeInspections.Add(new CodeInspectionSetting
+            {
+                Description = new ObsoleteCallStatementInspection(null).Description,
+                Severity = CodeInspectionSeverity.Suggestion
+            });
+            return new Configuration
+            {
+                UserSettings = new UserSettings(null, null, null, settings, null, null)
+            };
         }
     }
 }

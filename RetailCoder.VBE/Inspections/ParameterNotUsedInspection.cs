@@ -2,14 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
@@ -17,14 +14,12 @@ namespace Rubberduck.Inspections
     {
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public ParameterNotUsedInspection(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
             : base(state)
         {
             _vbe = vbe;
             _messageBox = messageBox;
-            _wrapperFactory = new CodePaneWrapperFactory();
         }
 
         public override string Meta { get { return InspectionsUI.ParameterNotUsedInspectionName; }}
@@ -38,25 +33,23 @@ namespace Rubberduck.Inspections
             var interfaceMemberScopes = declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
             var interfaceImplementationMemberScopes = declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();
 
-            var builtInHandlers = declarations.FindBuiltInEventHandlers();
+            var builtInHandlers = State.AllDeclarations.FindBuiltInEventHandlers();
 
             var parameters = declarations.Where(parameter => parameter.DeclarationType == DeclarationType.Parameter
-                && !(parameter.Context.Parent.Parent is VBAParser.EventStmtContext)
-                && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext));
+                && parameter.ParentDeclaration.DeclarationType != DeclarationType.Event
+                && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryFunction
+                && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryProcedure);
 
             var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
-            var editor = new ActiveCodePaneEditor(_vbe, _wrapperFactory);
             var quickFixRefactoring =
-                new RemoveParametersRefactoring(
-                    new RemoveParametersPresenterFactory(editor, 
-                        new RemoveParametersDialog(), State, _messageBox), editor);
+                new RemoveParametersRefactoring(_vbe, new RemoveParametersPresenterFactory(_vbe, new RemoveParametersDialog(), State, _messageBox));
 
             var issues = from issue in unused.Where(parameter =>
                 !IsInterfaceMemberParameter(parameter, interfaceMemberScopes)
                 && !builtInHandlers.Contains(parameter.ParentDeclaration))
                 let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
                 select new ParameterNotUsedInspectionResult(this, issue,
-                        ((dynamic) issue.Context).identifier(), issue.QualifiedName,
+                        ((dynamic) issue.Context).unrestrictedIdentifier(), issue.QualifiedName,
                         isInterfaceImplementationMember, quickFixRefactoring, State);
 
             return issues.ToList();

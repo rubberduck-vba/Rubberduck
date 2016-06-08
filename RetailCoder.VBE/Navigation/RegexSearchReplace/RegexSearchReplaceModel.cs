@@ -1,8 +1,4 @@
-﻿using System.Windows.Input;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.UI;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.UI;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {

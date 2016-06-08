@@ -8,7 +8,7 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ObsoleteCallStatementUsageInspectionResult(IInspection inspection, QualifiedContext<VBAParser.ExplicitCallStmtContext> qualifiedContext)
+        public ObsoleteCallStatementUsageInspectionResult(IInspection inspection, QualifiedContext<VBAParser.CallStmtContext> qualifiedContext)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return Inspection.Name; }
+            get { return Inspection.Description; }
         }
     }
 }

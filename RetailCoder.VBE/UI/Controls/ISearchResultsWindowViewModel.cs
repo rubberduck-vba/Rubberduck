@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Rubberduck.UI.Controls
 {
@@ -7,7 +7,7 @@ namespace Rubberduck.UI.Controls
     {
         void AddTab(SearchResultsViewModel viewModel);
         event EventHandler LastTabClosed;
-        IEnumerable<SearchResultsViewModel> Tabs { get; }
+        ObservableCollection<SearchResultsViewModel> Tabs { get; }
         SearchResultsViewModel SelectedTab { get; set; }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Like;
+﻿using Rubberduck.Parsing.Like;
+using Rubberduck.Parsing.VBA;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -26,11 +26,8 @@ namespace Rubberduck.Parsing.Preprocessing
             }
             var exprStr = expr.AsString;
             var patternStr = pattern.AsString;
-            var stream = new AntlrInputStream(patternStr);
-            var lexer = new VBALikeLexer(stream);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBALikeParser(tokens);
-            var likePattern = parser.likePatternString();
+            var parser = new VBALikePatternParser();
+            var likePattern = parser.Parse(patternStr);
             var regex = TranslateToNETRegex(likePattern);
             return new BoolValue(Regex.IsMatch(exprStr, regex));
         }

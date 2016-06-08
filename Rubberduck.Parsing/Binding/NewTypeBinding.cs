@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -8,14 +9,14 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _project;
         private readonly Declaration _module;
         private readonly Declaration _parent;
-        private readonly VBAExpressionParser.NewExpressionContext _expression;
+        private readonly ParserRuleContext _expression;
         private readonly IExpressionBinding _typeExpressionBinding;
 
         public NewTypeBinding(
             DeclarationFinder declarationFinder,
             Declaration module,
             Declaration parent,
-            VBAExpressionParser.NewExpressionContext expression,
+            ParserRuleContext expression,
             IExpressionBinding typeExpressionBinding)
         {
             _declarationFinder = declarationFinder;
@@ -29,9 +30,9 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression Resolve()
         {
             var typeExpression = _typeExpressionBinding.Resolve();
-            if (typeExpression == null)
+            if (typeExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                return null;
+                return typeExpression;
             }
             return new NewExpression(typeExpression.ReferencedDeclaration, _expression, typeExpression);
         }

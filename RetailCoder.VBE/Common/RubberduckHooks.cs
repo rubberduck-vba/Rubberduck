@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Common.WinAPI;
 using Rubberduck.Settings;
+using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.Refactorings;
+using NLog;
 
 namespace Rubberduck.Common
 {
@@ -15,16 +19,19 @@ namespace Rubberduck.Common
     {
         private readonly VBE _vbe;
         private readonly IntPtr _mainWindowHandle;
-
         private readonly IntPtr _oldWndPointer;
         private readonly User32.WndProc _oldWndProc;
         private User32.WndProc _newWndProc;
-
-        //private readonly IAttachable _timerHook;
+        private RawInput _rawinput;
+        private IRawDevice _kb;
+        private IRawDevice _mouse;
         private readonly IGeneralConfigService _config;
+        private readonly IEnumerable<ICommand> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
+        private readonly IDictionary<RubberduckHotkey, ICommand> _mappings;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckHooks(VBE vbe, IGeneralConfigService config)
+        public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<ICommand> commands)
         {
             _vbe = vbe;
             _mainWindowHandle = (IntPtr)vbe.MainWindow.HWnd;
@@ -33,8 +40,31 @@ namespace Rubberduck.Common
             _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
             _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
+            _commands = commands;
             _config = config;
+            _mappings = GetCommandMappings();
+        }
 
+        private ICommand Command<TCommand>() where TCommand : ICommand
+        {
+            return _commands.OfType<TCommand>().SingleOrDefault();
+        }
+
+        private IDictionary<RubberduckHotkey, ICommand> GetCommandMappings()
+        {
+            return new Dictionary<RubberduckHotkey, ICommand>
+            {
+                { RubberduckHotkey.ParseAll, Command<ReparseCommand>() },
+                { RubberduckHotkey.CodeExplorer, Command<CodeExplorerCommand>() },
+                { RubberduckHotkey.IndentModule, Command<IndentCurrentModuleCommand>() },
+                { RubberduckHotkey.IndentProcedure, Command<IndentCurrentProcedureCommand>() },
+                { RubberduckHotkey.FindSymbol, Command<FindSymbolCommand>() },
+                { RubberduckHotkey.RefactorMoveCloserToUsage, Command<RefactorMoveCloserToUsageCommand>() },
+                { RubberduckHotkey.InspectionResults, Command<InspectionResultsCommand>() },
+                { RubberduckHotkey.RefactorExtractMethod, Command<RefactorExtractMethodCommand>() },
+                { RubberduckHotkey.RefactorRename, Command<CodePaneRefactorRenameCommand>() },
+                { RubberduckHotkey.TestExplorer, Command<TestExplorerCommand>() }
+            };
         }
 
         public void HookHotkeys()
@@ -43,16 +73,52 @@ namespace Rubberduck.Common
             _hooks.Clear();
 
             var config = _config.LoadConfiguration();
-            var settings = config.UserSettings.GeneralSettings.HotkeySettings;
+            var settings = config.UserSettings.HotkeySettings;
 
-            AddHook(new KeyboardHook(_vbe));
-            AddHook(new MouseHook(_vbe));
-            foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
+            _rawinput = new RawInput(_mainWindowHandle);
+
+            var kb = (RawKeyboard)_rawinput.CreateKeyboard();
+            _rawinput.AddDevice(kb);
+            kb.RawKeyInputReceived += Keyboard_RawKeyboardInputReceived;
+            _kb = kb;
+
+            var mouse = (RawMouse)_rawinput.CreateMouse();
+            _rawinput.AddDevice(mouse);
+            mouse.RawMouseInputReceived += Mouse_RawMouseInputReceived;
+            _mouse = mouse;
+
+            foreach (var hotkey in settings.Settings.Where(hotkey => hotkey.IsEnabled))
             {
-                AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), hotkey.Command));
+                RubberduckHotkey assigned;
+                if (Enum.TryParse(hotkey.Name, out assigned))
+                {
+                    AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), _mappings[assigned]));
+                }
             }
-
             Attach();
+        }
+
+        private void Mouse_RawMouseInputReceived(object sender, RawMouseEventArgs e)
+        {
+            if (e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_LEFT_BUTTON_UP) || e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_RIGHT_BUTTON_UP))
+            {
+                OnMessageReceived(this, HookEventArgs.Empty);
+            }
+        }
+
+        // keys that change the current selection.
+        private static readonly HashSet<Keys> NavKeys = new HashSet<Keys>
+        {
+            Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.PageDown, Keys.PageUp, Keys.Enter
+        };
+
+        private void Keyboard_RawKeyboardInputReceived(object sender, RawKeyEventArgs e)
+        {
+            // note: handling *all* keys causes annoying RTrim of current line, making editing code a PITA.
+            if (e.Message == WM.KEYUP && NavKeys.Contains((Keys)e.VKey))
+            {
+                OnMessageReceived(this, HookEventArgs.Empty);
+            }
         }
 
         public IEnumerable<IAttachable> Hooks { get { return _hooks; } }
@@ -94,7 +160,7 @@ namespace Rubberduck.Common
             }
             catch (Win32Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception);
             }
         }
 
@@ -115,36 +181,22 @@ namespace Rubberduck.Common
             }
             catch (Win32Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception);
             }
             IsAttached = false;
         }
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
-            if (sender is MouseHook)
-            {
-                Debug.WriteLine("MouseHook message received");
-                OnMessageReceived(sender, e);
-                return;
-            }
-
-            if (sender is KeyboardHook)
-            {
-                Debug.WriteLine("KeyboardHook message received");
-                OnMessageReceived(sender, e);
-                return;
-            }
-
             var hotkey = sender as IHotkey;
             if (hotkey != null)
             {
-                Debug.WriteLine("Hotkey message received");
+                _logger.Debug("Hotkey message received");
                 hotkey.Command.Execute(null);
                 return;
             }
 
-            Debug.WriteLine("Unknown message received");
+            _logger.Debug("Unknown message received");
             OnMessageReceived(sender, e);
         }
 
@@ -178,7 +230,7 @@ namespace Rubberduck.Common
             }
             catch (Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception);
             }
 
             return IntPtr.Zero;
@@ -201,7 +253,7 @@ namespace Rubberduck.Common
             }
             catch (Exception exception)
             {
-                Debug.WriteLine(exception);
+                _logger.Error(exception);
             }
             return processed;
         }

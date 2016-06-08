@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Input;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings
@@ -21,9 +19,6 @@ namespace Rubberduck.Settings
         public bool HasShiftModifier { get; set; }
         public bool HasAltModifier { get; set; }
         public bool HasCtrlModifier { get; set; }
-
-        [XmlIgnore]
-        public ICommand Command { get; set; }
 
         [XmlIgnore]
         public string Prompt

@@ -14,7 +14,14 @@ namespace Rubberduck.Parsing.Preprocessing
         public override IValue Evaluate()
         {
             string literal = _tokenText.Evaluate().AsString;
-            var number = decimal.Parse(literal.Replace("#", "").Replace("&", "").Replace("@", ""), NumberStyles.Float, CultureInfo.InvariantCulture);
+            var number = decimal.Parse(literal
+                .Replace("%", "")
+                .Replace("&", "")
+                .Replace("^", "")
+                .Replace("!", "")
+                .Replace("#", "")
+                .Replace("@", "")
+                , NumberStyles.Float, CultureInfo.InvariantCulture);
             return new DecimalValue(number);
         }
     }

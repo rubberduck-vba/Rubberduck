@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Vbe.Interop;
@@ -11,7 +9,6 @@ using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using FUNCFLAGS = System.Runtime.InteropServices.ComTypes.FUNCFLAGS;
 using TYPEDESC = System.Runtime.InteropServices.ComTypes.TYPEDESC;
 using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
-using FUNCKIND = System.Runtime.InteropServices.ComTypes.FUNCKIND;
 using INVOKEKIND = System.Runtime.InteropServices.ComTypes.INVOKEKIND;
 using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -20,11 +17,16 @@ using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
+using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class ReferencedDeclarationsCollector
     {
+        private readonly RubberduckParserState _state;
+
         /// <summary>
         /// Controls how a type library is registered.
         /// </summary>
@@ -44,9 +46,15 @@ namespace Rubberduck.Parsing.Symbols
             REGKIND_NONE = 2
         }
 
-
         [DllImport("oleaut32.dll", CharSet = CharSet.Unicode)]
-        private static extern Int32 LoadTypeLibEx(string strTypeLibName, REGKIND regKind, out ITypeLib TypeLib);
+        private static extern int LoadTypeLibEx(string strTypeLibName, REGKIND regKind, out ITypeLib TypeLib);
+
+        public ReferencedDeclarationsCollector(RubberduckParserState state)
+        {
+            _state = state;
+        }
+
+        private static readonly HashSet<string> IgnoredInterfaceMembers = new HashSet<string> { "QueryInterface", "AddRef", "Release", "GetTypeInfoCount", "GetTypeInfo", "GetIDsOfNames", "Invoke" };
 
         private static readonly IDictionary<VarEnum, string> TypeNames = new Dictionary<VarEnum, string>
         {
@@ -71,13 +79,16 @@ namespace Rubberduck.Parsing.Symbols
             {VarEnum.VT_INT, "Long"}, // same as I4
             {VarEnum.VT_UINT, "Variant"}, // same as UI4
             {VarEnum.VT_DATE, "Date"},
+            {VarEnum.VT_CY, "Currency"},
             {VarEnum.VT_DECIMAL, "Currency"}, // best match?
             {VarEnum.VT_EMPTY, "Empty"},
             {VarEnum.VT_R4, "Single"},
             {VarEnum.VT_R8, "Double"},
         };
 
-        private string GetTypeName(TYPEDESC desc, ITypeInfo info)
+        private readonly Dictionary<Guid, ComInformation> _comInformation = new Dictionary<Guid, ComInformation>();
+
+        private ComParameter GetParameterInfo(TYPEDESC desc, ITypeInfo info)
         {
             var vt = (VarEnum)desc.vt;
             TYPEDESC tdesc;
@@ -85,29 +96,43 @@ namespace Rubberduck.Parsing.Symbols
             switch (vt)
             {
                 case VarEnum.VT_PTR:
-                    tdesc = (TYPEDESC) Marshal.PtrToStructure(desc.lpValue, typeof (TYPEDESC));
-                    return GetTypeName(tdesc, info);
+                    tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
+                    var pointer = GetParameterInfo(tdesc, info);
+                    pointer.IsByRef = true;
+                    return pointer;
                 case VarEnum.VT_USERDEFINED:
+                    int href;
                     unchecked
                     {
-                        var href = desc.lpValue.ToInt32();
+                        href = (int)(desc.lpValue.ToInt64() & 0xFFFFFFFF);
+                    }
+                    try
+                    {
                         ITypeInfo refTypeInfo;
                         info.GetRefTypeInfo(href, out refTypeInfo);
-                        return GetTypeName(refTypeInfo);
+                        return new ComParameter(GetTypeName(refTypeInfo), false);
                     }
+                    catch (Exception)
+                    {
+                        return new ComParameter("Object", false);
+                    }
+                case VarEnum.VT_SAFEARRAY:
                 case VarEnum.VT_CARRAY:
-                    tdesc = (TYPEDESC) Marshal.PtrToStructure(desc.lpValue, typeof (TYPEDESC));
-                    return GetTypeName(tdesc, info) + "()";
+                case VarEnum.VT_ARRAY:
+                    tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
+                    var array = GetParameterInfo(tdesc, info);
+                    array.IsArray = true;
+                    array.Name += "()";
+                    return array;
                 default:
                     string result;
                     if (TypeNames.TryGetValue(vt, out result))
                     {
-                        return result;
+                        return new ComParameter(result, false);
                     }
                     break;
             }
-
-            return "UNKNOWN";
+            return new ComParameter("Object", false);
         }
 
         private string GetTypeName(ITypeInfo info)
@@ -118,11 +143,12 @@ namespace Rubberduck.Parsing.Symbols
             string helpFile;
             info.GetDocumentation(-1, out typeName, out docString, out helpContext, out helpFile);
 
-            return typeName;
+            return typeName.Equals("LONG_PTR") ? "LongPtr" : typeName;  //Quickfix for http://chat.stackexchange.com/transcript/message/30119269#30119269
         }
 
-        public IEnumerable<Declaration> GetDeclarationsForReference(Reference reference)
+        public List<Declaration> GetDeclarationsForReference(Reference reference)
         {
+            var output = new List<Declaration>();
             var projectName = reference.Name;
             var path = reference.FullPath;
             ITypeLib typeLibrary;
@@ -130,12 +156,12 @@ namespace Rubberduck.Parsing.Symbols
             LoadTypeLibEx(path, REGKIND.REGKIND_NONE, out typeLibrary);
             if (typeLibrary == null)
             {
-                yield break;
+                return output;
             }
             var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
             var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
-            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName);
-            yield return projectDeclaration;
+            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName, isBuiltIn: true);
+            output.Add(projectDeclaration);
 
             var typeCount = typeLibrary.GetTypeInfoCount();
             for (var i = 0; i < typeCount; i++)
@@ -145,9 +171,9 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     typeLibrary.GetTypeInfo(i, out info);
                 }
-                catch(NullReferenceException)
+                catch (NullReferenceException)
                 {
-                    yield break;
+                    return output;
                 }
 
                 if (info == null)
@@ -173,96 +199,167 @@ namespace Rubberduck.Parsing.Symbols
 
                 IntPtr typeAttributesPointer;
                 info.GetTypeAttr(out typeAttributesPointer);
-
-                var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof (TYPEATTR));
-                //var implements = GetImplementedInterfaceNames(typeAttributes, info);
-
+                var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
                 var attributes = new Attributes();
+
                 if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID))
                 {
                     attributes.AddPredeclaredIdTypeAttribute();
                 }
 
                 Declaration moduleDeclaration;
-                if (typeDeclarationType == DeclarationType.ProceduralModule)
+                switch (typeDeclarationType)
                 {
-                    moduleDeclaration = new ProceduralModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                    case DeclarationType.ProceduralModule:
+                        moduleDeclaration = new ProceduralModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                        break;
+                    case DeclarationType.ClassModule:
+                        var module = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                        var implements = GetImplementedInterfaceNames(typeAttributes, info);
+                        foreach (var supertypeName in implements)
+                        {
+                            module.AddSupertype(supertypeName);
+                        }
+                        moduleDeclaration = module;
+                        break;
+                    default:
+                        string pseudoModuleName = string.Format("_{0}", typeName);
+                        var pseudoParentModule = new ProceduralModuleDeclaration(
+                            new QualifiedMemberName(projectQualifiedModuleName, pseudoModuleName),
+                            projectDeclaration,
+                            pseudoModuleName,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                        // Enums don't define their own type but have a declared type of "Long".
+                        if (typeDeclarationType == DeclarationType.Enumeration)
+                        {
+                            typeName = Tokens.Long;
+                        }
+                        // UDTs and ENUMs don't seem to have a module parent that's why we add a "fake" module
+                        // so that the rest of the application can treat it normally.
+                        moduleDeclaration = new Declaration(
+                            typeQualifiedMemberName,
+                            pseudoParentModule,
+                            pseudoParentModule,
+                            typeName,
+                            null,
+                            false,
+                            false,
+                            Accessibility.Global,
+                            typeDeclarationType,
+                            null,
+                            Selection.Home,
+                            false,
+                            null,
+                            true,
+                            null,
+                            attributes);
+                        break;
+                }
+                ComInformation comInfo;
+                if (_comInformation.TryGetValue(typeAttributes.guid, out comInfo))
+                {
+                    comInfo.TypeQualifiedModuleName = typeQualifiedModuleName;
+                    comInfo.ModuleDeclaration = moduleDeclaration;
+                    comInfo.TypeDeclarationType = typeDeclarationType;
                 }
                 else
                 {
-                    moduleDeclaration = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes, isExposed: true);
+                    _comInformation.Add(typeAttributes.guid,
+                        new ComInformation(typeAttributes, 0, info, typeName, typeQualifiedModuleName, moduleDeclaration,
+                            typeDeclarationType));
                 }
-                yield return moduleDeclaration;
-                
-                for (var memberIndex = 0; memberIndex < typeAttributes.cFuncs; memberIndex++)
+
+                info.ReleaseTypeAttr(typeAttributesPointer);
+
+                output.Add(moduleDeclaration);
+            }
+
+            foreach (var member in _comInformation.Values)
+            {
+                for (var memberIndex = 0; memberIndex < member.TypeAttributes.cFuncs; memberIndex++)
                 {
-                    FUNCDESC memberDescriptor;
                     string[] memberNames;
-                    var memberDeclaration = CreateMemberDeclaration(out memberDescriptor, typeAttributes.typekind, info, memberIndex, typeQualifiedModuleName, moduleDeclaration, out memberNames);
+
+                    IntPtr memberDescriptorPointer;
+                    member.TypeInfo.GetFuncDesc(memberIndex, out memberDescriptorPointer);
+                    var memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
+
+                    var memberDeclaration = CreateMemberDeclaration(memberDescriptor, member.TypeAttributes.typekind, member.TypeInfo, member.ImplTypeFlags,
+                        member.TypeQualifiedModuleName, member.ModuleDeclaration, out memberNames);
                     if (memberDeclaration == null)
                     {
+                        member.TypeInfo.ReleaseFuncDesc(memberDescriptorPointer);
                         continue;
                     }
+                    if (member.ModuleDeclaration.DeclarationType == DeclarationType.ClassModule &&
+                        memberDeclaration is ICanBeDefaultMember &&
+                        ((ICanBeDefaultMember)memberDeclaration).IsDefaultMember)
+                    {
+                        ((ClassModuleDeclaration)member.ModuleDeclaration).DefaultMember = memberDeclaration;
+                    }
+                    output.Add(memberDeclaration);
 
-                    yield return memberDeclaration;
-
-                    var parameterCount = memberDescriptor.cParams - 1;
+                    var parameterCount = memberDescriptor.cParams - (memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET) ? 0 : 1);
+                    var parameters = new List<ParameterDeclaration>();
                     for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
                     {
-                        yield return CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration);
+                        var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor,
+                            member.TypeQualifiedModuleName, memberDeclaration, member.TypeInfo);
+                        var declaration = memberDeclaration as IDeclarationWithParameter;
+                        if (declaration != null)
+                        {
+                            parameters.Add(parameter);
+                            declaration.AddParameter(parameter);
+                        }
+                        output.Add(parameter);
+                    }
+                    member.TypeInfo.ReleaseFuncDesc(memberDescriptorPointer);
+                    if (parameters.Any() && memberDescriptor.cParamsOpt == -1)
+                    {
+                        parameters.Last().IsParamArray = true;
                     }
                 }
 
-                for (var fieldIndex = 0; fieldIndex < typeAttributes.cVars; fieldIndex++)
+                for (var fieldIndex = 0; fieldIndex < member.TypeAttributes.cVars; fieldIndex++)
                 {
-                    yield return CreateFieldDeclaration(info, fieldIndex, typeDeclarationType, typeQualifiedModuleName, moduleDeclaration);
+                    output.Add(CreateFieldDeclaration(member.TypeInfo, fieldIndex, member.TypeDeclarationType, member.TypeQualifiedModuleName,
+                        member.ModuleDeclaration));
                 }
-            }           
+            }
+
+            return output;
         }
 
-        private Declaration CreateMemberDeclaration(out FUNCDESC memberDescriptor, TYPEKIND typeKind, ITypeInfo info, int memberIndex,
+        private Declaration CreateMemberDeclaration(FUNCDESC memberDescriptor, TYPEKIND typeKind, ITypeInfo info, IMPLTYPEFLAGS parentImplFlags,
             QualifiedModuleName typeQualifiedModuleName, Declaration moduleDeclaration, out string[] memberNames)
         {
-            IntPtr memberDescriptorPointer;
-            info.GetFuncDesc(memberIndex, out memberDescriptorPointer);
-            memberDescriptor = (FUNCDESC) Marshal.PtrToStructure(memberDescriptorPointer, typeof (FUNCDESC));
-
             if (memberDescriptor.callconv != CALLCONV.CC_STDCALL)
             {
-                memberDescriptor = new FUNCDESC();
-                memberNames = new string[] {};
+                memberNames = new string[] { };
                 return null;
             }
 
             memberNames = new string[255];
             int namesArrayLength;
             info.GetNames(memberDescriptor.memid, memberNames, 255, out namesArrayLength);
-            
-            var memberName = memberNames[0];
-            var funcValueType = (VarEnum) memberDescriptor.elemdescFunc.tdesc.vt;
-            var memberDeclarationType = GetDeclarationType(memberDescriptor, funcValueType, typeKind);
 
-            var asTypeName = string.Empty;
-            if (memberDeclarationType != DeclarationType.Procedure && !TypeNames.TryGetValue(funcValueType, out asTypeName))
+            var memberName = memberNames[0];
+            var funcValueType = (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt;
+            var memberDeclarationType = GetDeclarationType(memberName, memberDescriptor, funcValueType, typeKind, parentImplFlags);
+
+            if (((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FRESTRICTED) &&
+                IgnoredInterfaceMembers.Contains(memberName)) // Ignore IDispatch and IUnknown members - quick-and-dirty for beta
             {
-                if (funcValueType == VarEnum.VT_PTR)
-                {
-                    try
-                    {
-                        var asTypeDesc = (TYPEDESC) Marshal.PtrToStructure(memberDescriptor.elemdescFunc.tdesc.lpValue, typeof (TYPEDESC));
-                        asTypeName = GetTypeName(asTypeDesc, info);
-                    }
-                    catch
-                    {
-                        asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
-                    }
-                }
-                else
-                {
-                    asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
-                }
+                return null;
             }
 
+            var asTypeName = new ComParameter(string.Empty, false);
+            if (memberDeclarationType != DeclarationType.Procedure)
+            {
+                asTypeName = GetParameterInfo(memberDescriptor.elemdescFunc.tdesc, info);
+            }
             var attributes = new Attributes();
             if (memberName == "_NewEnum" && ((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FNONBROWSABLE))
             {
@@ -271,16 +368,99 @@ namespace Rubberduck.Parsing.Symbols
             else if (memberDescriptor.memid == 0)
             {
                 attributes.AddDefaultMemberAttribute(memberName);
-                //Debug.WriteLine("Default member found: {0}.{1} ({2} / {3})", moduleDeclaration.IdentifierName, memberName, memberDeclarationType, (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt);
             }
             else if (((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN))
             {
                 attributes.AddHiddenMemberAttribute(memberName);
             }
 
-            return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, memberName),
-                moduleDeclaration, moduleDeclaration, asTypeName, false, false, Accessibility.Global, memberDeclarationType,
-                null, Selection.Home, true, null, attributes);
+            switch (memberDeclarationType)
+            {
+                case DeclarationType.Procedure:
+                    return new SubroutineDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName.Name,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.Function:
+                    return new FunctionDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName.Name,
+                        null,
+                        null,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        asTypeName.IsArray,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.PropertyGet:
+                    return new PropertyGetDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName.Name,
+                        null,
+                        null,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        asTypeName.IsArray,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.PropertySet:
+                    return new PropertySetDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName.Name,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        true,
+                        null,
+                        attributes);
+                case DeclarationType.PropertyLet:
+                    return new PropertyLetDeclaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName.Name,
+                        Accessibility.Global,
+                        null,
+                        Selection.Home,
+                        true,
+                        null,
+                        attributes);
+                default:
+                    return new Declaration(
+                        new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                        moduleDeclaration,
+                        moduleDeclaration,
+                        asTypeName.Name,
+                        null,
+                        false,
+                        false,
+                        Accessibility.Global,
+                        memberDeclarationType,
+                        null,
+                        Selection.Home,
+                        false,
+                        null,
+                        true,
+                        null,
+                        attributes);
+            }
         }
 
         private Declaration CreateFieldDeclaration(ITypeInfo info, int fieldIndex, DeclarationType typeDeclarationType,
@@ -289,81 +469,86 @@ namespace Rubberduck.Parsing.Symbols
             IntPtr ppVarDesc;
             info.GetVarDesc(fieldIndex, out ppVarDesc);
 
-            var varDesc = (VARDESC) Marshal.PtrToStructure(ppVarDesc, typeof (VARDESC));
+            var varDesc = (VARDESC)Marshal.PtrToStructure(ppVarDesc, typeof(VARDESC));
 
             var names = new string[255];
             int namesArrayLength;
             info.GetNames(varDesc.memid, names, 255, out namesArrayLength);
 
             var fieldName = names[0];
-            var fieldValueType = (VarEnum) varDesc.elemdescVar.tdesc.vt;
             var memberType = GetDeclarationType(varDesc, typeDeclarationType);
 
-            string asTypeName;
-            if (!TypeNames.TryGetValue(fieldValueType, out asTypeName))
-            {
-                asTypeName = TypeNames[VarEnum.VT_VARIANT];
-            }
+            var asTypeName = GetParameterInfo(varDesc.elemdescVar.tdesc, info);
+            info.ReleaseVarDesc(ppVarDesc);
 
             return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName),
-                moduleDeclaration, moduleDeclaration, asTypeName, false, false, Accessibility.Global, memberType, null,
-                Selection.Home);
+                moduleDeclaration, moduleDeclaration, asTypeName.Name, null, false, false, Accessibility.Global, memberType, null,
+                Selection.Home, false, null);
         }
 
-        private static ParameterDeclaration CreateParameterDeclaration(IReadOnlyList<string> memberNames, int paramIndex,
-            FUNCDESC memberDescriptor, QualifiedModuleName typeQualifiedModuleName, Declaration memberDeclaration)
+        private ParameterDeclaration CreateParameterDeclaration(IReadOnlyList<string> memberNames, int paramIndex,
+            FUNCDESC memberDescriptor, QualifiedModuleName typeQualifiedModuleName, Declaration memberDeclaration, ITypeInfo info)
         {
             var paramName = memberNames[paramIndex + 1];
 
-            var paramPointer = new IntPtr(memberDescriptor.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof (ELEMDESC))*paramIndex);
-            var elementDesc = (ELEMDESC) Marshal.PtrToStructure(paramPointer, typeof (ELEMDESC));
+            var paramPointer = new IntPtr(memberDescriptor.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof(ELEMDESC)) * paramIndex);
+            var elementDesc = (ELEMDESC)Marshal.PtrToStructure(paramPointer, typeof(ELEMDESC));
             var isOptional = elementDesc.desc.paramdesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOPT);
-            var asParamTypeName = string.Empty;
-
-            var isByRef = false;
-            var isArray = false;
             var paramDesc = elementDesc.tdesc;
-            var valueType = (VarEnum) paramDesc.vt;
-            if (valueType == VarEnum.VT_PTR || valueType == VarEnum.VT_BYREF)
-            {
-                //var paramTypeDesc = (TYPEDESC) Marshal.PtrToStructure(paramDesc.lpValue, typeof (TYPEDESC));
-                isByRef = true;
-                var paramValueType = (VarEnum) paramDesc.vt;
-                if (!TypeNames.TryGetValue(paramValueType, out asParamTypeName))
-                {
-                    asParamTypeName = TypeNames[VarEnum.VT_VARIANT];
-                }
-                //var href = paramDesc.lpValue.ToInt32();
-                //ITypeInfo refTypeInfo;
-                //info.GetRefTypeInfo(href, out refTypeInfo);
+            var paramInfo = GetParameterInfo(paramDesc, info);
 
-                // todo: get type info?
-            }
-            if (valueType == VarEnum.VT_CARRAY || valueType == VarEnum.VT_ARRAY || valueType == VarEnum.VT_SAFEARRAY)
-            {
-                // todo: tell ParamArray arrays from normal arrays
-                isArray = true;
-            }
-
-            return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, asParamTypeName, isOptional, isByRef, isArray);
+            return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, paramInfo.Name, null, null, isOptional, paramInfo.IsByRef, paramInfo.IsArray);
         }
 
-        //private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info)
-        //{
-        //    for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
-        //    {
-        //        int href;
-        //        info.GetRefTypeOfImplType(implIndex, out href);
+        private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info)
+        {
+            var output = new List<string>();
+            for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
+            {
+                int href;
+                info.GetRefTypeOfImplType(implIndex, out href);
 
-        //        ITypeInfo implTypeInfo;
-        //        info.GetRefTypeInfo(href, out implTypeInfo);
+                ITypeInfo implTypeInfo;
+                info.GetRefTypeInfo(href, out implTypeInfo);
 
-        //        var implTypeName = GetTypeName(implTypeInfo);
+                IntPtr typeAttributesPointer;
+                implTypeInfo.GetTypeAttr(out typeAttributesPointer);
 
-        //        yield return implTypeName;
-        //        //Debug.WriteLine(string.Format("\tImplements {0}", implTypeName));
-        //    }
-        //}
+                var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
+
+                IMPLTYPEFLAGS flags = 0;
+                try
+                {
+                    info.GetImplTypeFlags(implIndex, out flags);
+                }
+                catch (COMException) { }
+
+                var implTypeName = GetTypeName(implTypeInfo);
+                if (implTypeName != "IDispatch" && implTypeName != "IUnknown")
+                {
+                    // skip IDispatch.. just about everything implements it and RD doesn't need to care about it; don't care about IUnknown either
+                    output.Add(implTypeName);
+                }
+
+                if (flags != 0)
+                {
+                    ComInformation comInfo;
+                    if (_comInformation.TryGetValue(typeAttributes.guid, out comInfo))
+                    {
+                        _comInformation[typeAttributes.guid].ImplTypeFlags =
+                            _comInformation[typeAttributes.guid].ImplTypeFlags | flags;
+                    }
+                    else
+                    {
+                        _comInformation.Add(typeAttributes.guid,
+                            new ComInformation(typeAttributes, flags, implTypeInfo, implTypeName, new QualifiedModuleName(), null, 0));
+                    }
+                }
+
+                info.ReleaseTypeAttr(typeAttributesPointer);
+            }
+            return output;
+        }
 
         private DeclarationType GetDeclarationType(ITypeLib typeLibrary, int i)
         {
@@ -391,7 +576,7 @@ namespace Rubberduck.Parsing.Symbols
             return typeDeclarationType;
         }
 
-        private DeclarationType GetDeclarationType(FUNCDESC funcDesc, VarEnum funcValueType, TYPEKIND typekind)
+        private DeclarationType GetDeclarationType(string memberName, FUNCDESC funcDesc, VarEnum funcValueType, TYPEKIND typekind, IMPLTYPEFLAGS parentImplTypeFlags)
         {
             DeclarationType memberType;
             if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET))
@@ -406,13 +591,14 @@ namespace Rubberduck.Parsing.Symbols
             {
                 memberType = DeclarationType.PropertySet;
             }
+            else if ((parentImplTypeFlags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FSOURCE) ||
+                ((FUNCFLAGS)funcDesc.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FSOURCE)))
+            {
+                memberType = DeclarationType.Event;
+            }
             else if (funcValueType == VarEnum.VT_VOID)
             {
                 memberType = DeclarationType.Procedure;
-            }
-            else if (funcDesc.funckind == FUNCKIND.FUNC_PUREVIRTUAL && typekind == TYPEKIND.TKIND_COCLASS)
-            {
-                memberType = DeclarationType.Event;
             }
             else
             {

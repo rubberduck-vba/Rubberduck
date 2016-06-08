@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
@@ -18,8 +17,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorReorderParametersCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
-            : base (vbe, editor)
+        public RefactorReorderParametersCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperWrapperFactory) 
+            : base (vbe)
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
@@ -42,19 +41,18 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
-            var member = _state.AllUserDeclarations.FindTarget(selection, ValidDeclarationTypes);
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            var member = _state.AllUserDeclarations.FindTarget(selection.Value, ValidDeclarationTypes);
             if (member == null)
             {
                 return false;
             }
 
-            var parameters = _state.AllUserDeclarations.Where(item => member.Equals(item.ParentScopeDeclaration)).ToList();
+            var parameters = _state.AllUserDeclarations.Where(item => item.DeclarationType == DeclarationType.Parameter && member.Equals(item.ParentScopeDeclaration)).ToList();
             var canExecute = (member.DeclarationType == DeclarationType.PropertyLet || member.DeclarationType == DeclarationType.PropertySet)
                     ? parameters.Count > 2
                     : parameters.Count > 1;
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 
@@ -69,8 +67,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new ReorderParametersDialog())
             {
-                var factory = new ReorderParametersPresenterFactory(Editor, view, _state, new MessageBox());
-                var refactoring = new ReorderParametersRefactoring(factory, Editor, new MessageBox());
+                var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, new MessageBox());
+                var refactoring = new ReorderParametersRefactoring(Vbe, factory, new MessageBox());
                 refactoring.Refactor(selection);
             }
         }

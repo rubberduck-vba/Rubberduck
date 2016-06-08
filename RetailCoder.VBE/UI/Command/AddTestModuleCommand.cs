@@ -1,9 +1,8 @@
 using System.Runtime.InteropServices;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UI.Command
 {
@@ -14,30 +13,32 @@ namespace Rubberduck.UI.Command
     public class AddTestModuleCommand : CommandBase
     {
         private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
+        private readonly NewUnitTestModuleCommand _command;
 
-        public AddTestModuleCommand(VBE vbe)
+        public AddTestModuleCommand(VBE vbe, RubberduckParserState state, NewUnitTestModuleCommand command)
         {
             _vbe = vbe;
+            _state = state;
+            _command = command;
         }
 
         public override bool CanExecute(object parameter)
         {
             var app = _vbe.HostApplication();
-            if (app == null)
+            if (app == null || _state.Status != ParserState.Ready)
             {
                 return false;
             }
-            else
-            {
-                // Outlook requires test methods to be located in [ThisOutlookSession] class.
-                return app.ApplicationName != "Outlook";
-            }
+            
+            // Outlook requires test methods to be located in [ThisOutlookSession] class.
+            //return app.ApplicationName != "Outlook";
+            return true;
         }
 
         public override void Execute(object parameter)
         {
-            // legacy static class...
-            NewUnitTestModuleCommand.NewUnitTestModule(_vbe);
+            _command.NewUnitTestModule(_vbe.ActiveVBProject);
         }
     }
 }

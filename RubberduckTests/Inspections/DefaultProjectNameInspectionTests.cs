@@ -13,6 +13,7 @@ namespace RubberduckTests.Inspections
     public class DefaultProjectNameInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void DefaultProjectName_ReturnsResult()
         {
             const string inputCode = @"";
@@ -29,7 +30,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new DefaultProjectNameInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -38,6 +39,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void DefaultProjectName_DoesNotReturnResult()
         {
             const string inputCode = @"";
@@ -54,7 +56,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new DefaultProjectNameInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -63,6 +65,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new DefaultProjectNameInspection(null);
@@ -70,6 +73,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "DefaultProjectNameInspection";

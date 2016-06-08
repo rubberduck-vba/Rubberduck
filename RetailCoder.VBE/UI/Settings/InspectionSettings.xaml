@@ -62,18 +62,19 @@
                                    HeadersVisibility="None"
                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                    ColumnHeaderHeight="22"
-                                   BorderThickness="0">
+                                   BorderThickness="0"
+                                   CellEditEnding="GroupingGrid_CellEditEnding">
                 <controls:GroupingGrid.Columns>
                     <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}"
                                             Width="2.75*"
                                             IsReadOnly="True"
-                                            SortMemberPath="{Binding Description}">
+                                            SortMemberPath="{Binding LocalizedName}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Description}">
+                                <TextBlock Text="{Binding LocalizedName}">
                                     <TextBlock.ToolTip>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Description}"
+                                            <TextBlock Text="{Binding LocalizedName}"
                                                        FontWeight="SemiBold"
                                                        MaxWidth="300"
                                                        TextWrapping="WrapWithOverflow" />
@@ -89,7 +90,7 @@
                     <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}"
                                             Width="*"
                                             ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}"
-                                            SelectedItemBinding="{Binding Path=SeverityLabel, Mode=TwoWay}" />
+                                            SelectedItemBinding="{Binding Path=SeverityLabel}" />
                 </controls:GroupingGrid.Columns>
             </controls:GroupingGrid>
         </DockPanel>

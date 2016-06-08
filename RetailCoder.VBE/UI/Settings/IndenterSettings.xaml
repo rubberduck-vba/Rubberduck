@@ -27,7 +27,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height="100" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="200" />
         </Grid.RowDefinitions>
         <ScrollViewer>
             <StackPanel Margin="5">
@@ -178,13 +179,18 @@
             </StackPanel>
         </ScrollViewer>
 
-        <TextBlock Grid.Row="1"
-                   Background="White"
-                   Height="100"
-                   xml:space="preserve"
-                   Margin="5,0"
-                   FontFamily="Consolas"
-                   VerticalAlignment="Bottom"
-                   Text="{Binding PreviewSampleCode}"/>
+        <GridSplitter Grid.Row="1" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
+
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto">
+            <TextBlock Background="White"
+                       xml:space="preserve"
+                       Margin="5,0"
+                       FontFamily="Consolas"
+                       VerticalAlignment="Top"
+                       Text="{Binding PreviewSampleCode}"
+                       ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+        </ScrollViewer>
     </Grid>
 </UserControl>

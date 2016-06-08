@@ -11,103 +11,10 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class ObjectVariableNotSetInspectionTests
-    {
-        [TestMethod]
-        public void ObjectVariableNotSet_GivenStringVariable_ReturnsNoResult()
-        {
-            const string inputCode = @"
-Private Sub Workbook_Open()
-    
-    Dim target As String
-    target = Range(""A1"")
-    
-    target.Value = ""all good""
-
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ObjectVariableNotSetInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void ObjectVariableNotSet_GivenObjectVariableNotSet_ReturnsResult()
-        {
-            const string inputCode = @"
-Private Sub Workbook_Open()
-    
-    Dim target As Range
-    target = Range(""A1"")
-    
-    target.Value = ""forgot something?""
-
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ObjectVariableNotSetInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void ObjectVariableNotSet_GivenSetObjectVariable_ReturnsNoResult()
-        {
-            const string inputCode = @"
-Private Sub Workbook_Open()
-    
-    Dim target As Range
-    Set target = Range(""A1"")
-    
-    target.Value = ""All good""
-
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ObjectVariableNotSetInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-    }
-
-    [TestClass]
     public class ConstantNotUsedInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ConstantNotUsed_ReturnsResult()
         {
             const string inputCode =
@@ -124,7 +31,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ConstantNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -133,6 +40,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ConstantNotUsed_ReturnsResult_MultipleConsts()
         {
             const string inputCode =
@@ -150,7 +58,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ConstantNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -159,6 +67,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenReferencedConstant_ReturnsNoInspectionResult()
         {
             const string inputCode =
@@ -179,7 +88,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ConstantNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -188,6 +97,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenConstantNotUsed_ReturnsResultForUnusedConstant()
         {
             const string inputCode =
@@ -210,7 +120,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ConstantNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -219,6 +129,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ConstantNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -241,7 +152,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ConstantNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -252,6 +163,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ConstantNotUsedInspection(null);
@@ -259,6 +171,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ConstantNotUsedInspection";

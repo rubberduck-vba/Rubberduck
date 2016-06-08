@@ -46,10 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbsoluteCodeLine.cs" />
+    <Compile Include="AlignmentToken.cs" />
     <Compile Include="IIndenterSettings.cs" />
     <Compile Include="Indenter.cs" />
     <Compile Include="IIndenter.cs" />
+    <Compile Include="IndenterConfigProvider.cs" />
     <Compile Include="IndenterProgressEventArgs.cs" />
+    <Compile Include="IndenterSettings.cs" />
+    <Compile Include="LogicalCodeLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selection.cs" />
   </ItemGroup>
@@ -69,6 +74,16 @@
     <None Include="Legacy\frmOptions.frm" />
     <None Include="Legacy\frmProgress.frm" />
     <None Include="Legacy\frmVBEOnKey.frm" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
+      <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
+      <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
+      <Name>Rubberduck.SettingsProvider</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

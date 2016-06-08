@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -49,7 +47,7 @@ namespace Rubberduck.Inspections
         public override void Fix()
         {
             var codeModule = Selection.QualifiedName.Component.CodeModule;
-            var codeLine = codeModule.get_Lines(Selection.Selection.StartLine, 1);
+            var codeLine = codeModule.Lines[Selection.Selection.StartLine, 1];
 
             var letStatementLeftSide = Context.GetText();
             var setStatementLeftSide = Tokens.Set + ' ' + letStatementLeftSide;
@@ -82,25 +80,32 @@ namespace Rubberduck.Inspections
             Tokens.Long,
             Tokens.LongLong,
             Tokens.Single,
-            Tokens.String
+            Tokens.String,
+            Tokens.Variant
         };
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            return State.AllUserDeclarations
-                .Where(item => !ValueTypes.Contains(item.AsTypeName)
-                    && !item.IsSelfAssigned
-                               && (item.DeclarationType == DeclarationType.Variable
-                                   || item.DeclarationType == DeclarationType.Parameter))
+            var interestingDeclarations =
+                State.AllUserDeclarations.Where(item =>
+                        !item.IsSelfAssigned &&
+                        !ValueTypes.Contains(item.AsTypeName) &&
+                        (item.AsTypeDeclaration == null ||
+                        item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration &&
+                        item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType) &&
+                        (item.DeclarationType == DeclarationType.Variable ||
+                         item.DeclarationType == DeclarationType.Parameter));
+
+            var interestingReferences = interestingDeclarations
                 .SelectMany(declaration =>
                     declaration.References.Where(reference =>
                     {
-                        var setStmtContext = reference.Context.Parent.Parent.Parent as VBAParser.LetStmtContext;
-                        return setStmtContext != null && setStmtContext.LET() == null;
-                    }))
-                .Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
+                        var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+                        return reference.IsAssignment && setStmtContext != null && setStmtContext.LET() == null;
+                    }));
 
 
+            return interestingReferences.Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
         }
     }
 }

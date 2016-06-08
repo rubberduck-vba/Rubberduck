@@ -13,6 +13,7 @@ namespace RubberduckTests.Inspections
     public class OptionBaseInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void OptionBaseOneSpecified_ReturnsResult()
         {
             const string inputCode = @"Option Base 1";
@@ -26,7 +27,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionBaseInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -35,6 +36,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void OptionBaseNotSpecified_DoesNotReturnResult()
         {
             const string inputCode = @"";
@@ -48,7 +50,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionBaseInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -57,6 +59,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void OptionBaseZeroSpecified_DoesNotReturnResult()
         {
             const string inputCode = @"Option Base 0";
@@ -70,7 +73,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionBaseInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -79,6 +82,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void OptionBaseOneSpecified_ReturnsMultipleResults()
         {
             const string inputCode = @"Option Base 1";
@@ -96,7 +100,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionBaseInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -105,6 +109,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void OptionBaseOnePartiallySpecified_ReturnsResults()
         {
             const string inputCode1 = @"";
@@ -123,7 +128,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionBaseInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -132,6 +137,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new OptionBaseInspection(null);
@@ -139,6 +145,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "OptionBaseInspection";

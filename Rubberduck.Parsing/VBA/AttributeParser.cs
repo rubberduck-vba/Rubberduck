@@ -1,22 +1,27 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using Microsoft.Vbe.Interop;
+using NLog;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Preprocessing;
+using Rubberduck.Parsing.Symbols;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.VBA
 {
     public class AttributeParser : IAttributeParser
     {
         private readonly IModuleExporter _exporter;
+        private readonly Func<IVBAPreprocessor> _preprocessorFactory;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public AttributeParser(IModuleExporter exporter)
+        public AttributeParser(IModuleExporter exporter, Func<IVBAPreprocessor> preprocessorFactory)
         {
             _exporter = exporter;
+            _preprocessorFactory = preprocessorFactory;
         }
 
         /// <summary>
@@ -31,35 +36,28 @@ namespace Rubberduck.Parsing.VBA
                 // a document component without any code wouldn't be exported (file would be empty anyway).
                 return new Dictionary<Tuple<string, DeclarationType>, Attributes>();
             }
-
             var code = File.ReadAllText(path);
             File.Delete(path);
-
             var type = component.Type == vbext_ComponentType.vbext_ct_StdModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
+            var preprocessor = _preprocessorFactory();
+            var preprocessed = preprocessor.Execute(component.Name, code);
             var listener = new AttributeListener(Tuple.Create(component.Name, type));
-
-            var stream = new AntlrInputStream(code);
-            var lexer = new VBALexer(stream);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBAParser(tokens);
-
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
-            var tree = parser.startRule();
-            ParseTreeWalker.Default.Walk(listener, tree);
-
+            ITokenStream tokenStream;
+            new VBAModuleParser().Parse(component.Name, preprocessed, new IParseTreeListener[] { listener }, out tokenStream);
             return listener.Attributes;
         }
 
         private class AttributeListener : VBAParserBaseListener
         {
-            private readonly Dictionary<Tuple<string, DeclarationType>, Attributes> _attributes = 
+            private readonly Dictionary<Tuple<string, DeclarationType>, Attributes> _attributes =
                 new Dictionary<Tuple<string, DeclarationType>, Attributes>();
 
-            public AttributeListener(Tuple<string,DeclarationType> scope)
+            public AttributeListener(Tuple<string, DeclarationType> scope)
             {
                 _currentScope = scope;
                 _currentScopeAttributes = new Attributes();
@@ -70,44 +68,26 @@ namespace Rubberduck.Parsing.VBA
                 get { return _attributes; }
             }
 
-            private Tuple<string,DeclarationType> _currentScope;
+            private Tuple<string, DeclarationType> _currentScope;
             private Attributes _currentScopeAttributes;
 
             public override void ExitModuleAttributes(VBAParser.ModuleAttributesContext context)
             {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
-            }
-
-            private static readonly IReadOnlyDictionary<Type, DeclarationType> ScopingContextTypes =
-                new Dictionary<Type, DeclarationType>
-            {
-                {typeof(VBAParser.SubStmtContext), DeclarationType.Procedure},
-                {typeof(VBAParser.FunctionStmtContext), DeclarationType.Function},
-                {typeof(VBAParser.PropertyGetStmtContext), DeclarationType.PropertyGet},
-                {typeof(VBAParser.PropertyLetStmtContext), DeclarationType.PropertyLet},
-                {typeof(VBAParser.PropertySetStmtContext), DeclarationType.PropertySet}
-            };
-
-            public override void EnterIdentifier(VBAParser.IdentifierContext context)
-            {
-                DeclarationType type;
-                if (!ScopingContextTypes.TryGetValue(context.Parent.GetType(), out type))
+                if (_currentScopeAttributes.Any() && !_attributes.ContainsKey(_currentScope))
                 {
-                    return;
+                    _attributes.Add(_currentScope, _currentScopeAttributes);
                 }
-
-                _currentScope = Tuple.Create(context.GetText(), type);
             }
 
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
-                _currentScope = Tuple.Create(context.identifier().GetText(), DeclarationType.Procedure);
+                _currentScope = Tuple.Create(Identifier.GetName(context.subroutineName()), DeclarationType.Procedure);
             }
 
             public override void ExitSubStmt(VBAParser.SubStmtContext context)
             {
-                if (!string.IsNullOrEmpty(_currentScope.Item1) && _currentScopeAttributes.Any())
+                if (_currentScopeAttributes.Any())
                 {
                     _attributes.Add(_currentScope, _currentScopeAttributes);
                 }
@@ -116,12 +96,12 @@ namespace Rubberduck.Parsing.VBA
             public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
-                _currentScope = Tuple.Create(context.identifier().GetText(), DeclarationType.Function);
+                _currentScope = Tuple.Create(Identifier.GetName(context.functionName()), DeclarationType.Function);
             }
 
             public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
             {
-                if (!string.IsNullOrEmpty(_currentScope.Item1) && _currentScopeAttributes.Any())
+                if (_currentScopeAttributes.Any())
                 {
                     _attributes.Add(_currentScope, _currentScopeAttributes);
                 }
@@ -130,12 +110,12 @@ namespace Rubberduck.Parsing.VBA
             public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
-                _currentScope = Tuple.Create(context.identifier().GetText(), DeclarationType.PropertyGet);
+                _currentScope = Tuple.Create(Identifier.GetName(context.functionName()), DeclarationType.PropertyGet);
             }
 
             public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
             {
-                if (!string.IsNullOrEmpty(_currentScope.Item1) && _currentScopeAttributes.Any())
+                if (_currentScopeAttributes.Any())
                 {
                     _attributes.Add(_currentScope, _currentScopeAttributes);
                 }
@@ -144,12 +124,12 @@ namespace Rubberduck.Parsing.VBA
             public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
-                _currentScope = Tuple.Create(context.identifier().GetText(), DeclarationType.PropertyLet);
+                _currentScope = Tuple.Create(Identifier.GetName(context.subroutineName()), DeclarationType.PropertyLet);
             }
 
             public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
             {
-                if (!string.IsNullOrEmpty(_currentScope.Item1) && _currentScopeAttributes.Any())
+                if (_currentScopeAttributes.Any())
                 {
                     _attributes.Add(_currentScope, _currentScopeAttributes);
                 }
@@ -158,12 +138,12 @@ namespace Rubberduck.Parsing.VBA
             public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
-                _currentScope = Tuple.Create(context.identifier().GetText(), DeclarationType.PropertySet);
+                _currentScope = Tuple.Create(Identifier.GetName(context.subroutineName()), DeclarationType.PropertySet);
             }
 
             public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
-                if (!string.IsNullOrEmpty(_currentScope.Item1) && _currentScopeAttributes.Any())
+                if (_currentScopeAttributes.Any())
                 {
                     _attributes.Add(_currentScope, _currentScopeAttributes);
                 }
@@ -171,16 +151,46 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)
             {
-                var name = context.implicitCallStmt_InStmt().GetText().Trim();
-                var values = context.literal().Select(e => e.GetText().Replace("\"", string.Empty)).ToList();
-                _currentScopeAttributes.Add(name, values);
+                // We assume attributes can either be simple names (VB_Name) or, if they are inside procedures, member access expressions
+                // (e.g. Foo.VB_UserMemId = 0)
+                var expr = context.attributeName().lExpression();
+                string name;
+                if (expr is VBAParser.SimpleNameExprContext)
+                {
+                    name = ((VBAParser.SimpleNameExprContext)expr).identifier().GetText();
+                }
+                else
+                {
+                    // Turns "Foo.VB_ProcData.VB_Invoke_Func" into "VB_ProcData.VB_Invoke_Func",
+                    // because we are not interested in the subroutine name Foo.
+                    name = GetAttributeNameWithoutProcedureName((VBAParser.MemberAccessExprContext)expr);
+                }
+                var values = context.attributeValue().Select(e => e.GetText().Replace("\"", string.Empty)).ToList();
+                IEnumerable<string> existingValues;
+                if (_currentScopeAttributes.TryGetValue(name, out existingValues))
+                {
+                    values.InsertRange(0, existingValues);
+                }
+                _currentScopeAttributes[name] = values;
+            }
+
+            private string GetAttributeNameWithoutProcedureName(VBAParser.MemberAccessExprContext expr)
+            {
+                string name = expr.unrestrictedIdentifier().GetText();
+                // The simple name expression represents the procedure's name.
+                // We don't want that one though so we simply ignore it.
+                if (expr.lExpression() is VBAParser.SimpleNameExprContext)
+                {
+                    return name;
+                }
+                return string.Format("{0}.{1}", GetAttributeNameWithoutProcedureName((VBAParser.MemberAccessExprContext)expr.lExpression()), name);
             }
 
             public override void ExitModuleConfigElement(VBAParser.ModuleConfigElementContext context)
             {
-                var name = context.identifier().GetText();
-                var literal = context.literal();
-                var values = new[] { literal == null ? string.Empty : literal.GetText()};
+                var name = context.unrestrictedIdentifier().GetText();
+                var literal = context.expression();
+                var values = new[] { literal == null ? string.Empty : literal.GetText() };
                 _currentScopeAttributes.Add(name, values);
             }
         }

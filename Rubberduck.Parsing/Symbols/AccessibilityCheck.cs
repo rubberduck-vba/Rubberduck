@@ -35,23 +35,23 @@
             }
             else
             {
-                bool isExposed = ((ClassModuleDeclaration)calleeModule).IsExposed;
+                bool isExposed = calleeModule != null && ((ClassModuleDeclaration)calleeModule).IsExposed;
                 return validAccessibility && isExposed;
             }
         }
 
         public static bool IsValidAccessibility(Declaration moduleOrMember)
         {
-            return moduleOrMember.Accessibility == Accessibility.Global
-                            || moduleOrMember.Accessibility == Accessibility.Public
-                            || moduleOrMember.Accessibility == Accessibility.Friend
-                            || moduleOrMember.Accessibility == Accessibility.Implicit;
+            return moduleOrMember != null
+                   && (moduleOrMember.Accessibility == Accessibility.Global
+                       || moduleOrMember.Accessibility == Accessibility.Public
+                       || moduleOrMember.Accessibility == Accessibility.Friend
+                       || moduleOrMember.Accessibility == Accessibility.Implicit);
         }
 
         public static bool IsMemberAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration calleeMember)
         {
-            bool enclosingModule = callingModule.Equals(calleeMember.ParentScopeDeclaration);
-            if (enclosingModule)
+            if (IsEnclosingModule(callingModule, calleeMember))
             {
                 return true;
             }
@@ -63,8 +63,8 @@
             {
                 return calleeHasSameParent;
             }
-            var memberModule = Declaration.GetMemberModule(calleeMember);
-            if (IsModuleAccessible(callingProject, callingModule, memberModule) && calleeMember.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+            var memberModule = Declaration.GetModuleParent(calleeMember);
+            if (IsModuleAccessible(callingProject, callingModule, memberModule))
             {
                 if (calleeMember.DeclarationType.HasFlag(DeclarationType.EnumerationMember) || calleeMember.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember))
                 {
@@ -73,6 +73,22 @@
                 else
                 {
                     return IsValidAccessibility(calleeMember);
+                }
+            }
+            return false;
+        }
+
+        private static bool IsEnclosingModule(Declaration callingModule, Declaration calleeMember)
+        {
+            if (callingModule.Equals(calleeMember.ParentScopeDeclaration))
+            {
+                return true;
+            }
+            foreach (var supertype in ClassModuleDeclaration.GetSupertypes(callingModule))
+            {
+                if (IsEnclosingModule(supertype, calleeMember))
+                {
+                    return true;
                 }
             }
             return false;

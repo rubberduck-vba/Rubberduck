@@ -159,7 +159,7 @@ namespace Rubberduck.Common
                     path = "VSObject_Enum.png";
                     break;
 
-                case DeclarationType.EnumerationMember | DeclarationType.Constant:
+                case DeclarationType.EnumerationMember:
                     path = "VSObject_EnumItem.png";
                     break;
 
@@ -193,7 +193,7 @@ namespace Rubberduck.Common
                     path = "VSObject_ValueType.png";
                     break;
 
-                case DeclarationType.UserDefinedTypeMember | DeclarationType.Variable:
+                case DeclarationType.UserDefinedTypeMember:
                     path = "VSObject_Field.png";
                     break;
 

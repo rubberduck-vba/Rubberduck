@@ -1,5 +1,5 @@
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return Inspection.Name; }
+            get { return string.Format(Inspection.Description, QualifiedName.ComponentName); }
         }
     }
 }

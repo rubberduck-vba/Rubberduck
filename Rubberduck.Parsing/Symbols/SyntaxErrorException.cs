@@ -1,6 +1,6 @@
 using System;
-using System.Diagnostics;
 using Antlr4.Runtime;
+using NLog;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -11,14 +11,16 @@ namespace Rubberduck.Parsing.Symbols
     [Serializable]
     public class SyntaxErrorException : Exception
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public SyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position)
             : base(message, innerException)
         {
             _token = offendingSymbol;
             _line = line;
             _position = position;
-            Debug.WriteLine(innerException.ToString());
-            Debug.WriteLine("Token: {0} (L{1}C{2})", offendingSymbol.Text, line, position);
+            _logger.Debug(innerException == null ? "" : innerException.ToString());
+            _logger.Debug("Token: {0} (L{1}C{2})", offendingSymbol.Text, line, position);
         }
 
         private readonly IToken _token;

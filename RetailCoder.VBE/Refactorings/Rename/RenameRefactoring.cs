@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Antlr4.Runtime;
@@ -12,21 +13,22 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.Rename
 {
     public class RenameRefactoring : IRefactoring
     {
+        private readonly VBE _vbe;
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
-        private readonly IActiveCodePaneEditor _editor;
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private RenameModel _model;
 
-        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IActiveCodePaneEditor editor, IMessageBox messageBox, RubberduckParserState state)
+        public RenameRefactoring(VBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, RubberduckParserState state)
         {
+            _vbe = vbe;
             _factory = factory;
-            _editor = editor;
             _messageBox = messageBox;
             _state = state;
         }
@@ -44,7 +46,7 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor(QualifiedSelection target)
         {
-            _editor.SetSelection(target);
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
             Refactor();
         }
 
@@ -131,18 +133,24 @@ namespace Rubberduck.Refactorings.Rename
             var declaration = FindDeclarationForIdentifier();
             if (declaration != null)
             {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, declaration.IdentifierName);
-                var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption,
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
+                    declaration.IdentifierName);
+                var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Exclamation);
 
                 if (rename == DialogResult.No)
                 {
                     return;
                 }
             }
+            else if(_model.Target == null)
+            {
+                return;
+            }
 
             // must rename usages first; if target is a module or a project,
             // then renaming the declaration first would invalidate the parse results.
+            Debug.Assert(_model.Target != null);
 
             if (_model.Target.DeclarationType.HasFlag(DeclarationType.Property))
             {
@@ -154,6 +162,33 @@ namespace Rubberduck.Refactorings.Rename
                 foreach (var member in members)
                 {
                     RenameUsages(member);
+                }
+            }
+            else if (_model.Target.DeclarationType == DeclarationType.Parameter && _model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
+            {
+                var getter = _model.Target.DeclarationType == DeclarationType.PropertyGet
+                    ? _model.Target
+                    : GetProperty(_model.Target.ParentDeclaration, DeclarationType.PropertyGet);
+
+                var letter = _model.Target.DeclarationType == DeclarationType.PropertyLet
+                    ? _model.Target
+                    : GetProperty(_model.Target.ParentDeclaration, DeclarationType.PropertyLet);
+
+                var setter = _model.Target.DeclarationType == DeclarationType.PropertySet
+                    ? _model.Target
+                    : GetProperty(_model.Target.ParentDeclaration, DeclarationType.PropertySet);
+
+                var properties = new[] {getter, letter, setter};
+
+                var parameters = _model.Declarations.Where(d =>
+                    d.DeclarationType == DeclarationType.Parameter &&
+                    properties.Contains(d.ParentDeclaration) &&
+                    d.IdentifierName == _model.Target.IdentifierName);
+
+                foreach (var param in parameters)
+                {
+                    RenameUsages(param);
+                    RenameDeclaration(param, _model.NewName);
                 }
             }
             else
@@ -168,11 +203,25 @@ namespace Rubberduck.Refactorings.Rename
             else if (_model.Target.DeclarationType == DeclarationType.Project)
             {
                 RenameProject();
+                return; // renaming a project automatically triggers a reparse
             }
             else
             {
-                RenameDeclaration(_model.Target, _model.NewName);
+                // we handled properties above
+                if (!_model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
+                {
+                    RenameDeclaration(_model.Target, _model.NewName);
+                }
             }
+
+            _state.OnParseRequested(this);
+        }
+        
+        private Declaration GetProperty(Declaration declaration, DeclarationType declarationType)
+        {
+            return _model.Declarations.FirstOrDefault(item => item.Scope == declaration.Scope &&
+                              item.IdentifierName == declaration.IdentifierName &&
+                              item.DeclarationType == declarationType);
         }
 
         private void RenameModule()
@@ -215,7 +264,6 @@ namespace Rubberduck.Refactorings.Rename
                 if (project != null)
                 {
                     project.Name = _model.NewName;
-                    _state.RemoveDeclaration(_model.Target);
                 }
             }
             catch (COMException)
@@ -392,8 +440,8 @@ namespace Rubberduck.Refactorings.Rename
             if (target.DeclarationType == DeclarationType.Parameter)
             {
                 var argContext = (VBAParser.ArgContext)target.Context;
-                var rewriter = _model.ParseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
-                rewriter.Replace(argContext.identifier().Start.TokenIndex, _model.NewName);
+                var rewriter = _model.State.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
+                rewriter.Replace(argContext.unrestrictedIdentifier().Start.TokenIndex, _model.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.

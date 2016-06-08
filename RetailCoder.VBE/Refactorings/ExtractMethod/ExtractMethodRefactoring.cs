@@ -1,9 +1,7 @@
 using System;
-using System.Linq;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -14,17 +12,27 @@ namespace Rubberduck.Refactorings.ExtractMethod
     /// </summary>
     public class ExtractMethodRefactoring : IRefactoring
     {
-        private readonly IActiveCodePaneEditor _editor;
-        private readonly IRefactoringPresenterFactory<IExtractMethodPresenter> _factory;
-
-        public ExtractMethodRefactoring(IRefactoringPresenterFactory<IExtractMethodPresenter> factory, IActiveCodePaneEditor editor)
+        private readonly ICodeModuleWrapper _codeModule;
+        private Func<QualifiedSelection?, string, IExtractMethodModel> _createMethodModel;
+        private IExtractMethodExtraction _extraction;
+        private Action<Object> _onParseRequest;
+        
+        public ExtractMethodRefactoring(
+            ICodeModuleWrapper codeModule,
+            Action<Object> onParseRequest,
+            Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
+            IExtractMethodExtraction extraction)
         {
-            _factory = factory;
-            _editor = editor;
+            _codeModule = codeModule;
+            _createMethodModel = createMethodModel;
+            _extraction = extraction;
+            _onParseRequest = onParseRequest;
         }
 
         public void Refactor()
         {
+            // TODO : move all this presenter code out
+            /*
             var presenter = _factory.Create();
             if (presenter == null)
             {
@@ -32,18 +40,37 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 return;
             }
 
-            var model = presenter.Show();
+            */
+            var qualifiedSelection = _codeModule.QualifiedSelection;
+            if (qualifiedSelection == null)
+            {
+                return;
+            }
+
+            var selection = qualifiedSelection.Value.Selection;
+            var selectedCode = _codeModule.GetLines(selection);
+            var model = _createMethodModel(qualifiedSelection, selectedCode);
             if (model == null)
             {
                 return;
             }
 
-            ExtractMethod(model);
+            /*
+            var success = presenter.Show(model,_createProc);
+            if (!success)
+            {
+                return;
+            }
+            */
+
+            _extraction.apply(_codeModule, model, selection);
+
+            _onParseRequest(this);
         }
 
         public void Refactor(QualifiedSelection target)
         {
-            _editor.SetSelection(target);
+            _codeModule.SetSelection(target);
             Refactor();
         }
 
@@ -52,16 +79,11 @@ namespace Rubberduck.Refactorings.ExtractMethod
             OnInvalidSelection();
         }
 
-        private void ExtractMethod(ExtractMethodModel model)
+        private void ExtractMethod()
         {
-            var selection = model.Selection.Selection;
 
-            _editor.DeleteLines(selection);
-            _editor.InsertLines(selection.StartLine, GetMethodCall(model));
-
-            var insertionLine = model.SourceMember.Context.GetSelection().EndLine - selection.LineCount + 2;
-            _editor.InsertLines(insertionLine, GetExtractedMethod(model));
-
+            #region to be put back when allow subs and functions
+            /* Remove this entirely for now.
             // assumes these are declared *before* the selection...
             var offset = 0;
             foreach (var declaration in model.DeclarationsToMove.OrderBy(e => e.Selection.StartLine))
@@ -72,28 +94,14 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     declaration.Selection.EndLine - offset,
                     declaration.Selection.EndColumn);
 
-                _editor.DeleteLines(target);
+                _codeModule.DeleteLines(target);
                 offset += declaration.Selection.LineCount;
             }
+            */
+            #endregion
+
         }
 
-        private string GetMethodCall(ExtractMethodModel model)
-        {
-            string result;
-            var returnValueName = model.Method.ReturnValue.Name;
-            var argsList = string.Join(", ", model.Method.Parameters.Select(p => p.Name));
-            if (returnValueName != ExtractedParameter.None)
-            {
-                var setter = model.Method.SetReturnValue ? Tokens.Set + ' ' : string.Empty;
-                result = setter + returnValueName + " = " + model.Method.MethodName + '(' + argsList + ')';
-            }
-            else
-            {
-                result = model.Method.MethodName + ' ' + argsList;
-            }
-
-            return "    " + result; // todo: smarter indentation
-        }
 
         /// <summary>
         /// An event that is raised when refactoring is not possible due to an invalid selection.
@@ -108,53 +116,5 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
         }
 
-        public static string GetExtractedMethod(ExtractMethodModel model)
-        {
-            var newLine = Environment.NewLine;
-
-            var access = model.Method.Accessibility.ToString();
-            var keyword = Tokens.Sub;
-            var asTypeClause = string.Empty;
-
-            var isFunction = model.Method.ReturnValue != null && model.Method.ReturnValue.Name != ExtractedParameter.None;
-            if (isFunction)
-            {
-                keyword = Tokens.Function;
-                asTypeClause = Tokens.As + ' ' + model.Method.ReturnValue.TypeName;
-            }
-
-            var parameters = "(" + string.Join(", ", model.Method.Parameters) + ")";
-
-            var result = access + ' ' + keyword + ' ' + model.Method.MethodName + parameters + ' ' + asTypeClause + newLine;
-
-            var localConsts = model.Locals.Where(e => e.DeclarationType == DeclarationType.Constant)
-                .Cast<ValuedDeclaration>()
-                .Select(e => "    " + Tokens.Const + ' ' + e.IdentifierName + ' ' + Tokens.As + ' ' + e.AsTypeName + " = " + e.Value);
-
-            var localVariables = model.Locals.Where(e => e.DeclarationType == DeclarationType.Variable)
-                .Where(e => model.Method.Parameters.All(param => param.Name != e.IdentifierName))
-                .Select(e => e.Context)
-                .Cast<VBAParser.VariableSubStmtContext>()
-                .Select(e => "    " + Tokens.Dim + ' ' + e.identifier().GetText() +
-                    (e.LPAREN() == null
-                        ? string.Empty
-                        : e.LPAREN().GetText() + (e.subscripts() == null ? string.Empty : e.subscripts().GetText()) + e.RPAREN().GetText()) + ' ' +
-                        (e.asTypeClause() == null ? string.Empty : e.asTypeClause().GetText()));
-            var locals = string.Join(newLine, localConsts.Union(localVariables)
-                            .Where(local => !model.SelectedCode.Contains(local)).ToArray()) + newLine;
-
-            result += locals + model.SelectedCode + newLine;
-
-            if (isFunction)
-            {
-                // return value by assigning the method itself:
-                var setter = model.Method.SetReturnValue ? Tokens.Set + ' ' : string.Empty;
-                result += "    " + setter + model.Method.MethodName + " = " + model.Method.ReturnValue.Name + newLine;
-            }
-
-            result += Tokens.End + ' ' + keyword + newLine;
-
-            return newLine + result + newLine;
-        }
     }
 }

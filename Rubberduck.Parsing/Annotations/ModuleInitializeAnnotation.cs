@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.VBEditor;
 using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Annotations
@@ -9,7 +8,7 @@ namespace Rubberduck.Parsing.Annotations
         public ModuleInitializeAnnotation(
             QualifiedSelection qualifiedSelection,
             IEnumerable<string> parameters)
-            : base(AnnotationType.TestMethod, qualifiedSelection)
+            : base(AnnotationType.ModuleInitialize, qualifiedSelection)
         {
         }
     }

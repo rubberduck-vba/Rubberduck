@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -120,7 +120,7 @@
   <data name="CancelButtonText" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="DeclarationType_Class" xml:space="preserve">
+  <data name="DeclarationType_ClassModule" xml:space="preserve">
     <value>class</value>
   </data>
   <data name="DeclarationType_Constant" xml:space="preserve">
@@ -141,7 +141,7 @@
   <data name="DeclarationType_LibraryFunction" xml:space="preserve">
     <value>library function</value>
   </data>
-  <data name="DeclarationType_Module" xml:space="preserve">
+  <data name="DeclarationType_ProceduralModule" xml:space="preserve">
     <value>module</value>
   </data>
   <data name="DeclarationType_Parameter" xml:space="preserve">
@@ -512,17 +512,20 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Parser Errors</value>
   </data>
-  <data name="CodeExplorer_AddClassText" xml:space="preserve">
-    <value>&amp;Class module (.cls)</value>
+  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
+    <value>Class module (.cls)</value>
   </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>User &amp;form</value>
+    <value>User form (.frm)</value>
+    <comment>TC</comment>
   </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>&amp;Standard module (.bas)</value>
+    <value>Standard module (.bas)</value>
+    <comment>TC</comment>
   </data>
   <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>&amp;Test module</value>
+    <value>Test module</value>
+    <comment>TC</comment>
   </data>
   <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
     <value>Display member &amp;names</value>
@@ -531,10 +534,12 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Display full &amp;signatures</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Find &amp;All Implementations...</value>
+    <value>Find All Implementations...</value>
+    <comment>TC</comment>
   </data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>&amp;Find All References...</value>
+    <value>Find All References...</value>
+    <comment>TC</comment>
   </data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspect</value>
@@ -551,14 +556,14 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
     <value>Run All &amp;Tests</value>
   </data>
-  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
-    <value>&amp;Show Designer</value>
-  </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
     <value>Open Designer</value>
   </data>
   <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
     <value>Toggle folders</value>
+  </data>
+  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
+    <value>Copy to clipboard</value>
   </data>
   <data name="CodeInspections_CopyToolTip" xml:space="preserve">
     <value>Copy inspection results to clipboard</value>
@@ -846,9 +851,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_UntrackedFiles" xml:space="preserve">
     <value>Untracked files</value>
   </data>
-  <data name="CodeExplorer_Inspect" xml:space="preserve">
-    <value>&amp;Inspect</value>
-  </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
     <value>Na&amp;vigate</value>
   </data>
@@ -949,7 +951,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RegexSearchReplace_Caption" xml:space="preserve">
     <value>Regex Search &amp; Replace</value>
   </data>
-  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
+  <data name="Find" xml:space="preserve">
     <value>Find</value>
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
@@ -1411,7 +1413,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Contributors &amp; supporters:</value>
   </data>
   <data name="SourceControl_MergeStatus" xml:space="preserve">
-    <value>Merge status</value>
+    <value>Merge status.</value>
   </data>
   <data name="SourceControl_UpdateSettingsMessage" xml:space="preserve">
     <value>Your user name, email address, and default repository location have been saved.</value>
@@ -1454,12 +1456,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
     <value>Test Explorer</value>
-  </data>
-  <data name="UnitTest_NewModule_UncommentLateBinding" xml:space="preserve">
-    <value>uncomment for late-binding</value>
-  </data>
-  <data name="UnitTest_NewModule_CommentEarlyBinding" xml:space="preserve">
-    <value>early-binding requires reference to Rubberduck.UnitTesting.tlb</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>this method runs once per module</value>
@@ -1508,5 +1504,120 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>By marker</value>
+  </data>
+  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
+    <value>Library procedure</value>
+  </data>
+  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
+    <value>Toggle signatures</value>
+  </data>
+  <data name="CodeExplorer_Export" xml:space="preserve">
+    <value>Export...</value>
+  </data>
+  <data name="CodeExplorer_Import" xml:space="preserve">
+    <value>Import...</value>
+  </data>
+  <data name="CodeExplorer_Print" xml:space="preserve">
+    <value>Print...</value>
+  </data>
+  <data name="CodeExplorer_Remove" xml:space="preserve">
+    <value>Remove...</value>
+  </data>
+  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
+    <value>Folder Delimiter:</value>
+  </data>
+  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
+    <value>Period (.)</value>
+  </data>
+  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
+    <value>Slash (/)</value>
+  </data>
+  <data name="CodeExplorer_Commit" xml:space="preserve">
+    <value>Commit...</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="cross_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="information" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SourceControl_CommitStatus" xml:space="preserve">
+    <value>Commit status.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndPushSuccess" xml:space="preserve">
+    <value>Commit and push succeeded.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess" xml:space="preserve">
+    <value>Commit and sync succeeded.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitSuccess" xml:space="preserve">
+    <value>Commit succeeded.</value>
+  </data>
+  <data name="SourceControl_MissingCredentials" xml:space="preserve">
+    <value>Missing credentials.</value>
+  </data>
+  <data name="CodeExplorer_Undo" xml:space="preserve">
+    <value>Undo...</value>
+  </data>
+  <data name="SourceControl_UndoPrompt" xml:space="preserve">
+    <value>Do you want to undo your changes to {0}?</value>
+  </data>
+  <data name="SourceControl_UndoTitle" xml:space="preserve">
+    <value>Source Control - Undo</value>
+  </data>
+  <data name="NoIndentAnnotation" xml:space="preserve">
+    <value>Add '@NoIndent</value>
+  </data>
+  <data name="CodeExplorer_Sort" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="SortStyle_ByName" xml:space="preserve">
+    <value>By name</value>
+  </data>
+  <data name="SortStyle_ByType" xml:space="preserve">
+    <value>By type</value>
+  </data>
+  <data name="SortStyle_BySelection" xml:space="preserve">
+    <value>By selection</value>
+  </data>
+  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
+    <value>Refresh component</value>
+  </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignored</value>
+  </data>
+  <data name="UnitTest_TotalDuration" xml:space="preserve">
+    <value>Total Duration</value>
+  </data>
+  <data name="Parser_ParserError" xml:space="preserve">
+    <value>Parser Errors</value>
+  </data>
+  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
+    <value>Minimum Log Level</value>
+  </data>
+  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
+    <value>Fatal</value>
+  </data>
+  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
+    <value>No Logging</value>
+  </data>
+  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
+    <value>Trace</value>
+  </data>
+  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
+    <value>Warn</value>
+  </data>
+  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
+    <value>Show Log Folder</value>
   </data>
 </root>

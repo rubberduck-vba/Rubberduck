@@ -1,4 +1,7 @@
-﻿using System.Xml.Serialization;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Serialization;
+using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
@@ -10,17 +13,31 @@ namespace Rubberduck.Settings
     [XmlType(AnonymousType = true)]
     public class ToDoListSettings : IToDoListSettings
     {
+        private IEnumerable<ToDoMarker> _markers;
+
         [XmlArrayItem("ToDoMarker", IsNullable = false)]
-        public ToDoMarker[] ToDoMarkers { get; set; }
+        public ToDoMarker[] ToDoMarkers
+        {
+            get { return _markers.ToArray(); }
+            set
+            {
+                //Only take the first marker if there are duplicates.
+                _markers = value.GroupBy(m => m.Text).Select(marker => marker.First()).ToArray();
+            }
+        }
 
         public ToDoListSettings()
         {
-            //empty constructor needed for serialization
+            var note = new ToDoMarker(RubberduckUI.TodoMarkerNote);
+            var todo = new ToDoMarker(RubberduckUI.TodoMarkerTodo);
+            var bug = new ToDoMarker(RubberduckUI.TodoMarkerBug);
+
+            ToDoMarkers = new[] { note, todo, bug };
         }
 
-        public ToDoListSettings(ToDoMarker[] markers)
+        public ToDoListSettings(IEnumerable<ToDoMarker> markers)
         {
-            ToDoMarkers = markers;
+            _markers = markers;
         }
     }
 }

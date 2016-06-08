@@ -3,7 +3,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA.Nodes;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -13,8 +13,8 @@ namespace Rubberduck.Inspections
         private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string identifierName, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
+        public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string identifierName, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration target)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, target)
         {
             _identifierName = identifierName;
             _quickFixes = new CodeInspectionQuickFix[]
@@ -34,6 +34,11 @@ namespace Rubberduck.Inspections
                     _identifierName);
             }
         }
+
+        public override NavigateCodeEventArgs GetNavigationArgs()
+        {
+            return new NavigateCodeEventArgs(Target);
+        }
     }
 
     public class SetExplicitVariantReturnTypeQuickFix : CodeInspectionQuickFix
@@ -45,16 +50,12 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            // note: turns a multiline signature into a one-liner signature.
-            // bug: removes all comments.
-
-            var node = GetNode(Context as VBAParser.FunctionStmtContext)
-                    ?? GetNode(Context as VBAParser.PropertyGetStmtContext);
-
-            var signature = node.Signature.TrimEnd();
-
             var procedure = Context.GetText();
-            var result = procedure.Replace(signature, signature + ' ' + Tokens.As + ' ' + Tokens.Variant);
+            var indexOfLastClosingParen = procedure.LastIndexOf(')');
+
+            var result = indexOfLastClosingParen == procedure.Length
+                ? procedure + ' ' + Tokens.As + ' ' + Tokens.Variant
+                : procedure.Insert(procedure.LastIndexOf(')') + 1, ' ' + Tokens.As + ' ' + Tokens.Variant);
             
             var module = Selection.QualifiedName.Component.CodeModule;
             var selection = Context.GetSelection();
@@ -63,28 +64,49 @@ namespace Rubberduck.Inspections
             module.InsertLines(selection.StartLine, result);
         }
 
-        private ProcedureNode GetNode(VBAParser.FunctionStmtContext context)
+        private string GetSignature(VBAParser.FunctionStmtContext context)
         {
             if (context == null)
             {
                 return null;
             }
 
-            var scope = Selection.QualifiedName.ToString();
-            var localScope = scope + "." + context.identifier().GetText();
-            return new ProcedureNode(context, scope, localScope);
+            var @static = context.STATIC() == null ? string.Empty : context.STATIC().GetText() + ' ';
+            var keyword = context.FUNCTION().GetText() + ' ';
+            var args = context.argList() == null ? "()" : context.argList().GetText() + ' ';
+            var asTypeClause = context.asTypeClause() == null ? string.Empty : context.asTypeClause().GetText();
+            var visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
+
+            return visibility + @static + keyword + context.functionName().identifier().GetText() + args + asTypeClause;
         }
 
-        private ProcedureNode GetNode(VBAParser.PropertyGetStmtContext context)
+        private string GetSignature(VBAParser.PropertyGetStmtContext context)
         {
             if (context == null)
             {
                 return null;
             }
 
-            var scope = Selection.QualifiedName.ToString();
-            var localScope = scope + "." + context.identifier().GetText();
-            return new ProcedureNode(context, scope, localScope);
+            var @static = context.STATIC() == null ? string.Empty : context.STATIC().GetText() + ' ';
+            var keyword = context.PROPERTY_GET().GetText() + ' ';
+            var args = context.argList() == null ? "()" : context.argList().GetText() + ' ';
+            var asTypeClause = context.asTypeClause() == null ? string.Empty : context.asTypeClause().GetText();
+            var visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
+
+            return visibility + @static + keyword + context.functionName().identifier().GetText() + args + asTypeClause;
+        }
+
+        private string GetSignature(VBAParser.DeclareStmtContext context)
+        {
+            if (context == null)
+            {
+                return null;
+            }
+
+            var args = context.argList() == null ? "()" : context.argList().GetText() + ' ';
+            var asTypeClause = context.asTypeClause() == null ? string.Empty : context.asTypeClause().GetText();
+
+            return args + asTypeClause;
         }
     }
 }

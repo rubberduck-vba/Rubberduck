@@ -2,7 +2,6 @@
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
@@ -63,7 +62,7 @@ namespace Rubberduck.Inspections
         public CommentNode Comment { get { return _comment; } }
 
         private readonly Declaration _target;
-        protected virtual Declaration Target { get { return _target; } }
+        public Declaration Target { get { return _target; } }
 
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
@@ -108,7 +107,7 @@ namespace Rubberduck.Inspections
                 QualifiedSelection.Selection.StartLine);
         }
 
-        public NavigateCodeEventArgs GetNavigationArgs()
+        public virtual NavigateCodeEventArgs GetNavigationArgs()
         {
             return new NavigateCodeEventArgs(QualifiedSelection);
         }
@@ -121,7 +120,7 @@ namespace Rubberduck.Inspections
         public object[] ToArray()
         {
             var module = QualifiedSelection.QualifiedName;
-            return new object[] {Inspection.Severity.ToString(), Description, module.ProjectId, module.ComponentName, QualifiedSelection.Selection.StartLine };
+            return new object[] { Inspection.Severity.ToString(), module.ProjectTitle, module.ComponentTitle, Description, QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.StartColumn };
         }
 
         public string ToCsvString()

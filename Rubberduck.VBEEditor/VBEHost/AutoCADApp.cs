@@ -1,6 +1,3 @@
-using Autodesk.AutoCAD.Interop;
-using Autodesk.AutoCAD.Interop.Common;
-
 namespace Rubberduck.VBEditor.VBEHost
 {
     public class AutoCADApp : HostApplicationBase<Autodesk.AutoCAD.Interop.AcadApplication>

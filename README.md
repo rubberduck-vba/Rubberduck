@@ -8,36 +8,31 @@
 [nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
 [masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
 
-Rubberduck is a COM Add-In for the VBA IDE that makes VBA development even more enjoyable, by extending the Visual Basic Editor (VBE) with menus, toolbars and toolwindows that enable things we didn't even think were possible when we first started this project.
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/rubberduck "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/rubberduck "Percentage of issues still open") 
 
-If you're learning VBA, Rubberduck can help you avoid a few common beginner mistakes, and can probably show you a trick or two - even if you're only ever writing *macros*. If you're a more advanced programmer, you will appreciate the richness of [Rubberduck's feature set](https://github.com/retailcoder/Rubberduck/wiki/Features).
-
-[**Follow us on Twitter!**](https://twitter.com/rubberduckvba)
-
-[**Rubberduck Wiki**](https://github.com/retailcoder/Rubberduck/wiki)
+> **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/retailcoder/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
+> contact@rubberduckvba.com  
+> Follow [@rubberduckvba](https://twitter.com/rubberduckvba) on Twitter 
 
 ---
 
-#[Contributing](https://github.com/rubberduck-vba/Rubberduck/wiki/Contributing)
+##What is Rubberduck?
 
-If you're a C# developer looking for a fun project to contribute to, feel free to fork the project and 
-[come meet the devs in Code Review's "VBA Rubberducking" chatroom][chat] - we'll be happy to answer your questions and help you help us!
+It's an add-in for the VBA IDE, the glorious *Visual Basic Editor* (VBE) - which hasn't seen an update in this century, but that's still in use everywhere around the world. Rubberduck wants to give its users access to features you would find in the VBE if it had kept up with the features of Visual Studio and other IDE's in the past, oh, *decade* or so.
 
-We follow a [development branch workflow][branch], so please submit any Pull Requests to the `next` branch.
+Rubberduck wants to help its users write better, cleaner, maintainable code. The many **code inspections** and **refactoring tools** help harmlessly making changes to the code, and **unit testing** helps writing a *safety net* that makes it easy to know exactly what broke when you made that *small little harmless modification*.
 
-  [chat]:http://chat.stackexchange.com/rooms/14929
-  [helpwanted]:https://github.com/rubberduck-vba/Rubberduck/labels/help-wanted
-  [branch]:https://github.com/rubberduck-vba/Rubberduck/issues/288
+Rubberduck wants to bring VBA into the 21st century, and wants to see more open-source VBA repositories on [GitHub](https://github.com/) - VBA code and **source control** don't traditionally exactly work hand in hand; unless you've automated it, exporting each module one by one to your local repository, fetching the remote changes, re-importing every module one by one back into the project, ...is *a little bit* tedious. Rubberduck integrates Git into the IDE, and handles all the file handling behind the scenes - a bit like Visual Studio's *Team Explorer*.
 
 ---
 
-#[Installing](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing)
+If you're learning VBA, Rubberduck can help you avoid a few common beginner mistakes, and can probably show you a trick or two - even if you're only ever writing *macros*. If you're a more advanced programmer, you will appreciate the richness of [Rubberduck's feature set](https://github.com/retailcoder/Rubberduck/wiki/Features). See the [Installing](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing) wiki page.
 
-This section was moved to a dedicated wiki page.
+If you're a C# developer looking for a fun project to contribute to, see the [Contributing](https://github.com/rubberduck-vba/Rubberduck/wiki/Contributing) wiki page.
 
 ---
 
-#License
+##License
 
 Rubberduck is a COM add-in for the VBA IDE (VBE).
 
@@ -89,6 +84,12 @@ Which basically means it's a reimplementation of Git in C. It also [happens to b
 ###[WPF Localization Using RESX Files](http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files)
 
 This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
+
+> Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx).
+
+###[Using Raw Input from C# to handle multiple keyboards](http://www.codeproject.com/Articles/17123/Using-Raw-Input-from-C-to-handle-multiple-keyboard)
+
+A library using the Raw Input API for reacting to low level keyboard/mouse events.
 
 > Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx).
 

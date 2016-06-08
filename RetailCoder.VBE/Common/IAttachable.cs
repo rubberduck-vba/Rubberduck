@@ -6,7 +6,6 @@ namespace Rubberduck.Common
     {
         bool IsAttached { get; }
         event EventHandler<HookEventArgs> MessageReceived;
-
         void Attach();
         void Detach();
     }

@@ -1,27 +1,24 @@
 using System.Linq;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
     public class FormDesignerRefactorRenameCommand : RefactorCommandBase
     {
+        private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public FormDesignerRefactorRenameCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
-            : base (vbe, editor)
+        public FormDesignerRefactorRenameCommand(VBE vbe, RubberduckParserState state) 
+            : base (vbe)
         {
+            _vbe = vbe;
             _state = state;
-            _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
         public override bool CanExecute(object parameter)
@@ -33,8 +30,8 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox(), _wrapperWrapperFactory);
-                var refactoring = new RenameRefactoring(factory, Editor, new MessageBox(), _state);
+                var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox());
+                var refactoring = new RenameRefactoring(Vbe, factory, new MessageBox(), _state);
 
                 var target = GetTarget();
 

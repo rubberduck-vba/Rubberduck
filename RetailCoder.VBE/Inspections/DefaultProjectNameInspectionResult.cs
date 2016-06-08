@@ -7,7 +7,6 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using MessageBox = Rubberduck.UI.MessageBox;
 
 namespace Rubberduck.Inspections
@@ -16,12 +15,12 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
-        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
+        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state)
             : base(inspection, target)
         {
             _quickFixes = new[]
             {
-                new RenameProjectQuickFix(target.Context, target.QualifiedSelection, target, parseResult, wrapperFactory),
+                new RenameProjectQuickFix(target.Context, target.QualifiedSelection, target, state),
             };
         }
 
@@ -40,14 +39,12 @@ namespace Rubberduck.Inspections
     {
         private readonly Declaration _target;
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory)
+        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state)
             : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, RubberduckUI.Culture)))
         {
             _target = target;
             _state = state;
-            _wrapperFactory = wrapperFactory;
         }
 
         public override void Fix()
@@ -56,8 +53,8 @@ namespace Rubberduck.Inspections
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox(), _wrapperFactory);
-                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new MessageBox(), _state);
+                var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox());
+                var refactoring = new RenameRefactoring(vbe, factory, new MessageBox(), _state);
                 refactoring.Refactor(_target);
                 IsCancelled = view.DialogResult == DialogResult.Cancel;
             }

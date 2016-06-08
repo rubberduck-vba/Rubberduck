@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Rubberduck.UI.ToDoItems;
 
 namespace Rubberduck.UI.Command
 {

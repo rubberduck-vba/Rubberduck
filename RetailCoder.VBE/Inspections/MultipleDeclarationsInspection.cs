@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.MultipleDeclarationsInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.MultipleDeclarationsInspectionName; } }
+        public override string Description { get { return InspectionsUI.MultipleDeclarationsInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

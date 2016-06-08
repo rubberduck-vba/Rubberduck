@@ -1,11 +1,7 @@
 ﻿using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -15,7 +11,7 @@ namespace Rubberduck.Parsing.Symbols
             QualifiedMemberName qualifiedName,
             Declaration projectDeclaration,
             string name,
-                  bool isBuiltIn,
+            bool isBuiltIn,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
@@ -23,12 +19,15 @@ namespace Rubberduck.Parsing.Symbols
                   projectDeclaration,
                   projectDeclaration,
                   name,
+                  null,
                   false,
                   false,
                   Accessibility.Public,
                   DeclarationType.ProceduralModule,
                   null,
                   Selection.Home,
+                  false,
+                  null,
                   isBuiltIn,
                   annotations,
                   attributes)

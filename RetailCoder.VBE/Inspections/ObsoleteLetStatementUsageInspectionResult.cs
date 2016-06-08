@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return Inspection.Name; }
+            get { return Inspection.Description; }
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }
@@ -52,8 +52,8 @@ namespace Rubberduck.Inspections
                                           .Replace("_", string.Empty);
             var originalInstruction = Context.GetText();
 
-            var identifier = context.implicitCallStmt_InStmt().GetText();
-            var value = context.valueStmt().GetText();
+            var identifier = context.lExpression().GetText();
+            var value = context.expression().GetText();
 
             module.DeleteLines(selection.StartLine, selection.LineCount);
 

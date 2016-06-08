@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace Rubberduck.Common
 {
     public interface IClipboardWriter
     {
         void Write(string text);
-        void AppendData(string format, object data);
+        void AppendImage(BitmapSource image);
+        void AppendString(string formatName, string data);
+        void AppendStream(string formatName, MemoryStream stream);
         void Flush();
     }
 
@@ -20,17 +19,36 @@ namespace Rubberduck.Common
 
         public void Write(string text)
         {
-            this.AppendData(DataFormats.UnicodeText, text);
+            this.AppendString(DataFormats.UnicodeText, text);
             this.Flush();
         }
 
-        public void AppendData(string format, object data)
+        public void AppendImage(BitmapSource image)
         {
             if (_data == null)
             {
                 _data = new DataObject();
             }
-            _data.SetData(format, data);
+            _data.SetImage(image);
+        }
+
+
+        public void AppendString(string formatName, string data)
+        {
+            if (_data == null)
+            {
+                _data = new DataObject();
+            }
+            _data.SetData(formatName, data);
+        }
+
+        public void AppendStream(string formatName, MemoryStream stream)
+        {
+            if (_data == null)
+            {
+                _data = new DataObject();
+            }
+            _data.SetData(formatName, stream);
         }
         
         public void Flush()

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -54,7 +53,7 @@ namespace Rubberduck.UI
             }
             catch (NullReferenceException exception)
             {
-                Debug.Print(exception.ToString());
+                _logger.Error(exception);
                 return null; //throw;
             }
 
@@ -103,12 +102,11 @@ namespace Rubberduck.UI
         private bool _disposed;
         public void Dispose()
         {
-            Dispose(true);
+            Dispose(_disposed);
             _disposed = true;
         }
 
         public bool IsDisposed { get { return _disposed; } }
-
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing) { return; }
@@ -116,11 +114,13 @@ namespace Rubberduck.UI
             if (UserControl != null)
             {
                 UserControl.Dispose();
+                GC.SuppressFinalize(UserControl);
             }
 
             if (_window != null)
-            { 
-                Marshal.ReleaseComObject(_window);
+            {
+                _window.Close();
+                Marshal.FinalReleaseComObject(_window);
             }
         }
     }

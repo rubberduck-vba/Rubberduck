@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class MultipleDeclarationsInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_ReturnsResult_Variables()
         {
             const string inputCode =
@@ -30,7 +31,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultipleDeclarationsInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -39,6 +40,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_ReturnsResult_Constants()
         {
             const string inputCode =
@@ -55,7 +57,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultipleDeclarationsInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -64,6 +66,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_ReturnsResult_StaticVariables()
         {
             const string inputCode =
@@ -80,7 +83,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultipleDeclarationsInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -89,6 +92,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_ReturnsResult_MultipleDeclarations()
         {
             const string inputCode =
@@ -106,7 +110,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultipleDeclarationsInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -115,6 +119,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_ReturnsResult_SomeDeclarationsSeparate()
         {
             const string inputCode =
@@ -132,7 +137,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultipleDeclarationsInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -141,6 +146,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_QuickFixWorks_Variables()
         {
             const string inputCode =
@@ -166,7 +172,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultipleDeclarationsInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -177,6 +183,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_QuickFixWorks_Constants()
         {
             const string inputCode =
@@ -202,7 +209,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultipleDeclarationsInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -213,6 +220,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_QuickFixWorks_StaticVariables()
         {
             const string inputCode =
@@ -238,7 +246,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultipleDeclarationsInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -249,6 +257,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new MultipleDeclarationsInspection(null);
@@ -256,6 +265,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "MultipleDeclarationsInspection";

@@ -10,7 +10,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerCustomFolderViewModel : CodeExplorerItemViewModel
     {
+        private readonly string _fullPath;
         private readonly string _name;
+        private readonly string _folderAttribute;
         private static readonly DeclarationType[] ComponentTypes =
         {
             DeclarationType.ClassModule, 
@@ -19,27 +21,31 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserForm, 
         };
 
-        public CodeExplorerCustomFolderViewModel(string name, IEnumerable<Declaration> declarations)
+        public CodeExplorerCustomFolderViewModel(CodeExplorerItemViewModel parent, string name, string fullPath)
         {
-            _name = name;
+            _parent = parent;
+            _fullPath = fullPath;
+            _name = name.Replace("\"", string.Empty);
+            _folderAttribute = string.Format("@Folder(\"{0}\")", fullPath.Replace("\"", string.Empty));
 
             _collapsedIcon = GetImageSource(resx.folder_horizontal);
             _expandedIcon = GetImageSource(resx.folder_horizontal_open);
+        }
 
-            var items = declarations.ToList();
-
-            var parents = items.GroupBy(item => item.ComponentName).OrderBy(item => item.Key).ToList();
+        public void AddNodes(List<Declaration> declarations)
+        {
+            var parents = declarations.GroupBy(item => item.ComponentName).OrderBy(item => item.Key).ToList();
             foreach (var component in parents)
             {
                 try
                 {
                     var moduleName = component.Key;
-                    var parent = items.Single(item =>
+                    var parent = declarations.Single(item =>
                         ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
-                    var members = items.Where(item =>
+                    var members = declarations.Where(item =>
                         !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
 
-                    AddChild(new CodeExplorerComponentViewModel(parent, members));
+                    AddChild(new CodeExplorerComponentViewModel(this, parent, members));
                 }
                 catch (InvalidOperationException exception)
                 {
@@ -48,7 +54,12 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        public string FolderAttribute { get { return _folderAttribute; } }
+
+        public string FullPath { get { return _fullPath; } }
+
         public override string Name { get { return _name; } }
+        public override string NameWithSignature { get { return Name; } }
 
         public override QualifiedSelection? QualifiedSelection { get { return null; } }
 
@@ -57,5 +68,15 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly BitmapImage _expandedIcon;
         public override BitmapImage ExpandedIcon { get { return _expandedIcon; } }
+
+        // I have to set the parent from a different location than
+        // the node is created because of the folder helper
+        internal void SetParent(CodeExplorerItemViewModel parent)
+        {
+            _parent = parent;
+        }
+
+        private CodeExplorerItemViewModel _parent;
+        public override CodeExplorerItemViewModel Parent { get { return _parent; } }
     }
 }

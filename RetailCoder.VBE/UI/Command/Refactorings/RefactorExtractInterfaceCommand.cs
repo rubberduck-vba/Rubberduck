@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
@@ -6,8 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -17,8 +14,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, IMessageBox messageBox)
-            : base(vbe, editor)
+        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+            :base(vbe)
         {
             _state = state;
             _messageBox = messageBox;
@@ -39,17 +36,21 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = activePane.GetSelection();
+            var selection = activePane.GetQualifiedSelection();
+            if (!selection.HasValue)
+            {
+                return false;
+            }
+
             var target = _state.AllUserDeclarations.SingleOrDefault(item =>
-                item.QualifiedName.QualifiedModuleName.Equals(selection.QualifiedName)
-                && item.IdentifierName == selection.QualifiedName.ComponentName
+                item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName)
+                && item.IdentifierName == selection.Value.QualifiedName.ComponentName
                 && (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.Document || item.DeclarationType == DeclarationType.UserForm));
             var hasMembers = _state.AllUserDeclarations.Any(item => item.DeclarationType.HasFlag(DeclarationType.Member) && item.ParentDeclaration != null && item.ParentDeclaration.Equals(target));
 
             // true if active code pane is for a class/document/form module
             var canExecute = ModuleTypes.Contains(Vbe.ActiveCodePane.CodeModule.Parent.Type) && target != null && hasMembers;
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 
@@ -62,8 +63,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new ExtractInterfaceDialog())
             {
-                var factory = new ExtractInterfacePresenterFactory(_state, Editor, view);
-                var refactoring = new ExtractInterfaceRefactoring(_state, _messageBox, factory, Editor);
+                var factory = new ExtractInterfacePresenterFactory(Vbe, _state, view);
+                var refactoring = new ExtractInterfaceRefactoring(Vbe, _state, _messageBox, factory);
                 refactoring.Refactor();
             }
         }

@@ -7,7 +7,7 @@ using Rubberduck.Refactorings.RemoveParameters;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class RemoveParametersDialog : Form, IRemoveParametersView
+    public partial class RemoveParametersDialog : Form, IRemoveParametersDialog
     {
         public List<Parameter> Parameters { get; set; }
         private Parameter _selectedItem;

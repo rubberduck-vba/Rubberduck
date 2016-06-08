@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using Rubberduck.Settings;
+using Rubberduck.Common;
 
 namespace Rubberduck.UI.Settings
 {
@@ -10,7 +11,7 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public SettingsForm(IGeneralConfigService configService, SettingsViews activeView = SettingsViews.GeneralSettings) : this()
+        public SettingsForm(IGeneralConfigService configService, IOperatingSystem operatingSystem, SettingsViews activeView = SettingsViews.GeneralSettings) : this()
         {
             var config = configService.LoadConfiguration();
 
@@ -18,7 +19,7 @@ namespace Rubberduck.UI.Settings
                 config,
                 new SettingsView
                 {
-                    Control = new GeneralSettings(new GeneralSettingsViewModel(config)),
+                    Control = new GeneralSettings(new GeneralSettingsViewModel(config, operatingSystem)),
                     View = SettingsViews.GeneralSettings
                 },
                 new SettingsView

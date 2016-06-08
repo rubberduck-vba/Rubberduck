@@ -13,35 +13,46 @@ namespace Rubberduck.UI.Controls
     {
         private readonly INavigateCommand _navigateCommand;
         private readonly string _header;
-        private readonly Declaration _target;
 
         public SearchResultsViewModel(INavigateCommand navigateCommand, string header, Declaration target, IEnumerable<SearchResultItem> searchResults)
         {
             _navigateCommand = navigateCommand;
             _header = header;
-            _target = target;
-            _searchResults = new ObservableCollection<SearchResultItem>(searchResults);
-            _searchResultsSource = new CollectionViewSource();
-            _searchResultsSource.Source = _searchResults;
-            _searchResultsSource.GroupDescriptions.Add(new PropertyGroupDescription("ParentScope.QualifiedName.QualifiedModuleName.Name"));
-            _searchResultsSource.SortDescriptions.Add(new SortDescription("ParentScope.QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
-            _searchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartLine", ListSortDirection.Ascending));
-            _searchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartColumn", ListSortDirection.Ascending));
+            Target = target;
+            SearchResultsSource = new CollectionViewSource();
+            SearchResultsSource.GroupDescriptions.Add(new PropertyGroupDescription("ParentScope.QualifiedName.QualifiedModuleName.Name"));
+            SearchResultsSource.SortDescriptions.Add(new SortDescription("ParentScope.QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
+            SearchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartLine", ListSortDirection.Ascending));
+            SearchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartColumn", ListSortDirection.Ascending));
+
+            SearchResults = new ObservableCollection<SearchResultItem>(searchResults);
+
             _closeCommand = new DelegateCommand(ExecuteCloseCommand);
         }
 
-        private readonly ObservableCollection<SearchResultItem> _searchResults;
-        public ObservableCollection<SearchResultItem> SearchResults { get { return _searchResults; } }
+        private ObservableCollection<SearchResultItem> _searchResults;
+        public ObservableCollection<SearchResultItem> SearchResults
+        {
+            get { return _searchResults; }
+            set
+            {
+                _searchResults = value;
 
-        private readonly CollectionViewSource _searchResultsSource;
-        public CollectionViewSource SearchResultsSource { get { return _searchResultsSource; } }
+                SearchResultsSource.Source = _searchResults;
+
+                OnPropertyChanged();
+                OnPropertyChanged("SearchResultsSource");
+            }
+        }
+
+        public CollectionViewSource SearchResultsSource { get; private set; }
 
         public string Header { get { return _header; } }
 
         private readonly ICommand _closeCommand;
         public ICommand CloseCommand { get { return _closeCommand; } }
 
-        public Declaration Target { get {return _target; } }
+        public Declaration Target { get; set; }
 
         private SearchResultItem _selectedItem;
         public SearchResultItem SelectedItem

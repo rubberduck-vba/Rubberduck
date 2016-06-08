@@ -6,7 +6,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
@@ -14,12 +13,12 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
+        public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state)
             : base(inspection, target)
         {
             _quickFixes = new[]
             {
-                new EncapsulateFieldQuickFix(target.Context, target.QualifiedSelection, target, parseResult, wrapperFactory),
+                new EncapsulateFieldQuickFix(target.Context, target.QualifiedSelection, target, state),
             };
         }
 
@@ -37,15 +36,13 @@ namespace Rubberduck.Inspections
     public class EncapsulateFieldQuickFix : CodeInspectionQuickFix
     {
         private readonly Declaration _target;
-        private readonly RubberduckParserState _parseResult;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
+        private readonly RubberduckParserState _state;
 
-        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
+        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state)
             : base(context, selection, string.Format(InspectionsUI.EncapsulatePublicFieldInspectionQuickFix, target.IdentifierName))
         {
             _target = target;
-            _parseResult = parseResult;
-            _wrapperFactory = wrapperFactory;
+            _state = state;
         }
 
         public override void Fix()
@@ -54,8 +51,8 @@ namespace Rubberduck.Inspections
 
             using (var view = new EncapsulateFieldDialog())
             {
-                var factory = new EncapsulateFieldPresenterFactory(_parseResult, new ActiveCodePaneEditor(vbe, _wrapperFactory), view);
-                var refactoring = new EncapsulateFieldRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory));
+                var factory = new EncapsulateFieldPresenterFactory(vbe, _state, view);
+                var refactoring = new EncapsulateFieldRefactoring(vbe, factory);
                 refactoring.Refactor(_target);
                 IsCancelled = view.DialogResult != DialogResult.OK;
             }

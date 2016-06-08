@@ -11,10 +11,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
     public class ExtractInterfacePresenter : IExtractInterfacePresenter
     {
-        private readonly IExtractInterfaceView _view;
+        private readonly IExtractInterfaceDialog _view;
         private readonly ExtractInterfaceModel _model;
 
-        public ExtractInterfacePresenter(IExtractInterfaceView view, ExtractInterfaceModel model)
+        public ExtractInterfacePresenter(IExtractInterfaceDialog view, ExtractInterfaceModel model)
         {
             _view = view;
             _model = model;

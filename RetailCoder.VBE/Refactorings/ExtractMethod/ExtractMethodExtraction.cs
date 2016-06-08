@@ -1,0 +1,72 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
+
+namespace Rubberduck.Refactorings.ExtractMethod
+{
+    public class ExtractMethodExtraction : IExtractMethodExtraction
+    {
+
+        public void apply(ICodeModuleWrapper codeModule, IExtractMethodModel model, Selection selection)
+        {
+            var newMethodCall = model.Method.NewMethodCall();
+            var positionToInsertNewMethod = model.PositionForNewMethod;
+            var positionForMethodCall = model.PositionForMethodCall;
+            var selectionToRemove = model.SelectionToRemove;
+
+            // The next 4 lines are dependent on the positions of the various parts,
+            // so have to be applied in the correct order.
+            var newMethod = constructLinesOfProc(codeModule, model);
+            codeModule.InsertLines(positionToInsertNewMethod.StartLine, newMethod);
+            removeSelection(codeModule, selectionToRemove);
+            codeModule.InsertLines(selection.StartLine, newMethodCall);
+        }
+
+        public virtual void removeSelection(ICodeModuleWrapper codeModule, IEnumerable<Selection> selection)
+        {
+            foreach (var item in selection)
+            {
+                var start = item.StartLine;
+                var end = item.EndLine;
+                var lineCount = end - start + 1;
+
+                codeModule.DeleteLines(start,lineCount);
+
+            }
+        }
+        public virtual string constructLinesOfProc(ICodeModuleWrapper codeModule, IExtractMethodModel model)
+        {
+
+            var newLine = Environment.NewLine;
+            var method = model.Method;
+            var keyword = Tokens.Sub;
+            var asTypeClause = string.Empty;
+            var selection = model.SelectionToRemove;
+            
+
+            var access = method.Accessibility.ToString();
+            var extractedParams = method.Parameters.Select(p => ExtractedParameter.PassedBy.ByRef + " " + p.Name + " " + Tokens.As + " " + p.TypeName);
+            var parameters = "(" + string.Join(", ", extractedParams) + ")";
+
+            //method signature
+            var result = access + ' ' + keyword + ' ' + method.MethodName + parameters + ' ' + asTypeClause + newLine;
+
+            // method body
+            string textToMove = "";
+            foreach (var item in selection)
+            {
+                textToMove += codeModule.get_Lines(item.StartLine, item.EndLine - item.StartLine + 1);
+                textToMove += Environment.NewLine;
+            }
+
+            // method end;
+            result += textToMove;
+            result += Tokens.End + " " + Tokens.Sub;
+            return result;
+        }
+
+    }
+}

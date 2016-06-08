@@ -4,7 +4,6 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
-using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.VBEditor;
 
@@ -39,7 +38,7 @@ namespace Rubberduck.Inspections
             return from interfaceMember in interfaceMembers
                    let implementationMembers =
                        UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName).ToList()
-                   where
+                   where interfaceMember.DeclarationType == DeclarationType.Function &&
                        !IsReturnValueUsed(interfaceMember) &&
                        implementationMembers.All(member => !IsReturnValueUsed(member))
                    let implementationMemberIssues =
@@ -56,7 +55,7 @@ namespace Rubberduck.Inspections
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
         {
-            var returnValueNotUsedFunctions = nonInterfaceFunctions.Where(function => !IsReturnValueUsed(function));
+            var returnValueNotUsedFunctions = nonInterfaceFunctions.Where(function => function.DeclarationType == DeclarationType.Function && !IsReturnValueUsed(function));
             var nonInterfaceIssues = returnValueNotUsedFunctions
                 .Select(function =>
                         new FunctionReturnValueNotUsedInspectionResult(
@@ -77,25 +76,88 @@ namespace Rubberduck.Inspections
 
         private bool IsReturnValueUsed(Declaration function)
         {
-            return function.References.Any(usage =>
-                            !IsReturnStatement(function, usage) && !IsAddressOfCall(usage) && !IsCallWithoutAssignment(usage));
+            foreach (var usage in function.References)
+            {
+                if (IsReturnStatement(function, usage))
+                {
+                    continue;
+                }
+                if (IsAddressOfCall(usage))
+                {
+                    continue;
+                }
+                if (IsTypeOfExpression(usage))
+                {
+                    continue;
+                }
+                if (IsCallStmt(usage))
+                {
+                    continue;
+                }
+                if (IsLet(usage))
+                {
+                    continue;
+                }
+                if (IsSet(usage))
+                {
+                    continue;
+                }
+                return true;
+            }
+            return false;
         }
 
         private bool IsAddressOfCall(IdentifierReference usage)
         {
-            RuleContext current = usage.Context;
-            while (current != null && !(current is VBAParser.VsAddressOfContext)) current = current.Parent;
-            return current != null;
+            return ParserRuleContextHelper.HasParent<VBAParser.AddressOfExpressionContext>(usage.Context);
+        }
+
+        private bool IsTypeOfExpression(IdentifierReference usage)
+        {
+            return ParserRuleContextHelper.HasParent<VBAParser.TypeofexprContext>(usage.Context);
         }
 
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
         {
-            return assignment.ParentScoping.Equals(function);
+            return assignment.ParentScoping.Equals(function) && assignment.Declaration.Equals(function);
         }
 
-        private bool IsCallWithoutAssignment(IdentifierReference usage)
+        private bool IsCallStmt(IdentifierReference usage)
         {
-            return usage.Context.Parent != null && usage.Context.Parent.Parent is VBAParser.ImplicitCallStmt_InBlockContext;
+            var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(usage.Context);
+            if (callStmt == null)
+            {
+                return false;
+            }
+            var argumentList = CallStatement.GetArgumentList(callStmt);
+            if (argumentList == null)
+            {
+                return true;
+            }
+            bool isUsedAsArgumentThusReturnValueIsUsed = ParserRuleContextHelper.HasParent(usage.Context, argumentList);
+            return !isUsedAsArgumentThusReturnValueIsUsed;
+        }
+
+        private bool IsLet(IdentifierReference usage)
+        {
+            var letStmt = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(usage.Context);
+            if (letStmt == null)
+            {
+                return false;
+            }
+            bool isLetAssignmentTarget = letStmt == usage.Context;
+            return isLetAssignmentTarget;
+        }
+
+        private bool IsSet(IdentifierReference usage)
+        {
+            var setStmt = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(usage.Context);
+            if (setStmt == null)
+            {
+                return false;
+            }
+            bool isSetAssignmentTarget = setStmt == usage.Context;
+            return isSetAssignmentTarget;
         }
     }
 }

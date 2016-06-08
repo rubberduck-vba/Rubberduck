@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ParameterCanBeByValInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_PassedByNotSpecified()
         {
             const string inputCode =
@@ -29,7 +30,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -38,6 +39,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_PassedByRef_Unassigned()
         {
             const string inputCode =
@@ -53,7 +55,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -62,6 +64,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_Multiple()
         {
             const string inputCode =
@@ -77,7 +80,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -86,6 +89,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_DoesNotReturnResult_PassedByValExplicitly()
         {
             const string inputCode =
@@ -101,7 +105,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -110,6 +114,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_DoesNotReturnResult_PassedByRefAndAssigned()
         {
             const string inputCode =
@@ -126,7 +131,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -135,6 +140,33 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanByByVal_DoesNotReturnResult_BuiltInEventParam()
+        {
+            const string inputCode =
+@"Sub Foo(ByRef arg1 As String)
+    arg1 = ""test""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_SomeParams()
         {
             const string inputCode =
@@ -150,7 +182,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -159,6 +191,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByUnspecified()
         {
             const string inputCode =
@@ -180,7 +213,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
@@ -189,10 +222,11 @@ End Sub";
         }
 
         [TestMethod]
-        public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByRefUnassigned()
+        [TestCategory("Inspections")]
+        public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByRef()
         {
             const string inputCode =
-@"Sub Foo(arg1 As String)
+@"Sub Foo(ByRef arg1 As String)
 End Sub";
 
             const string expectedCode =
@@ -210,7 +244,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
@@ -219,6 +253,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenArrayParameter_ReturnsNoResult()
         {
             const string inputCode =
@@ -229,14 +264,12 @@ End Sub";
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
             
@@ -246,6 +279,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ParameterCanBeByValInspection(null);
@@ -253,6 +287,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ParameterCanBeByValInspection";

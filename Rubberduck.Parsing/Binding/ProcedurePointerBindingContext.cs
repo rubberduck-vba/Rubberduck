@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
@@ -12,10 +13,9 @@ namespace Rubberduck.Parsing.Binding
             _declarationFinder = declarationFinder;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression)
+        public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            dynamic dynamicExpression = expression;
-            IExpressionBinding bindingTree = Visit(module, parent, dynamicExpression);
+            IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
             if (bindingTree != null)
             {
                 return bindingTree.Resolve();
@@ -23,35 +23,38 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.LExprContext expression)
+        public IExpressionBinding BuildTree(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        {
+            dynamic dynamicExpression = expression;
+            return Visit(module, parent, dynamicExpression);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.ExpressionContext expression)
+        {
+            return Visit(module, parent, (dynamic)expression);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.AddressOfExpressionContext expression)
+        {
+            return Visit(module, parent, (dynamic)expression.expression());
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LExprContext expression)
         {
             dynamic lexpr = expression.lExpression();
             return Visit(module, parent, lexpr);
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExprContext expression)
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.SimpleNameExprContext expression)
         {
-            var simpleNameExpression = expression.simpleNameExpression();
-            return Visit(module, parent, simpleNameExpression);
+            return new SimpleNameProcedurePointerBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression);
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExpressionContext expression)
-        {
-            return new SimpleNameProcedurePointerBinding(_declarationFinder, module, parent, expression);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExprContext expression)
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.MemberAccessExprContext expression)
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
-            return new MemberAccessProcedurePointerBinding(_declarationFinder, module, parent, expression, lExpressionBinding);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExpressionContext expression)
-        {
-            dynamic lExpression = expression.lExpression();
-            var lExpressionBinding = Visit(module, parent, lExpression);
-            return new MemberAccessProcedurePointerBinding(_declarationFinder, module, parent, expression, lExpressionBinding);
+            return new MemberAccessProcedurePointerBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, expression.unrestrictedIdentifier(), lExpressionBinding);
         }
     }
 }

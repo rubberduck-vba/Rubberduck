@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class MultilineParameterInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultilineParameter_ReturnsResult()
         {
             const string inputCode =
@@ -32,7 +33,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultilineParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -41,6 +42,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultilineParameter_DoesNotReturnResult()
         {
             const string inputCode =
@@ -56,7 +58,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultilineParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -65,6 +67,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultilineParameter_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -88,7 +91,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultilineParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -97,6 +100,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultilineParameter_ReturnsResults_SomeParams()
         {
             const string inputCode =
@@ -115,7 +119,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultilineParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -124,6 +128,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void MultilineParameter_QuickFixWorks()
         {
             const string inputCode =
@@ -150,7 +155,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultilineParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -161,6 +166,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new MultilineParameterInspection(null);
@@ -168,6 +174,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "MultilineParameterInspection";

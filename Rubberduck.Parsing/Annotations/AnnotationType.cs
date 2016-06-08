@@ -8,7 +8,9 @@
         TestMethod,
         TestInitialize,
         TestCleanup,
+        IgnoreTest,
         Ignore,
-        Folder
+        Folder,
+        NoIndent
     }
 }

@@ -42,6 +42,11 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Office.Interop.Excel.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.MSProject, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\libs\Microsoft.Office.Interop.MSProject.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Outlook, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -68,6 +73,11 @@
       <HintPath>..\libs\Corel.GraphicsSuite.Interop.CorelDRAW.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Visio, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\libs\Microsoft.Office.Interop.Visio.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Word, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -88,11 +98,10 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActiveCodePaneEditor.cs" />
     <Compile Include="DocumentEventHandlerPrefixes.cs" />
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="CodeModuleSelection.cs" />
-    <Compile Include="IActiveCodePaneEditor.cs" />
+    <Compile Include="Extensions\CodePaneExtensions.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="QualifiedMemberName.cs" />
     <Compile Include="QualifiedModuleName.cs" />
@@ -110,6 +119,7 @@
     </Compile>
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="VBEHost\CorelDRAWApp.cs" />
+    <Compile Include="VBEHost\ProjectApp.cs" />
     <Compile Include="VBEHost\ExcelApp.cs" />
     <Compile Include="VBEHost\FallbackApp.cs" />
     <Compile Include="VBEHost\HostApplicationBase.cs" />
@@ -117,11 +127,14 @@
     <Compile Include="VBEHost\OutlookApp.cs" />
     <Compile Include="VBEHost\PowerPointApp.cs" />
     <Compile Include="VBEHost\PublisherApp.cs" />
+    <Compile Include="VBEHost\Visio.cs" />
     <Compile Include="VBEHost\WordApp.cs" />
     <Compile Include="VBEHost\AutoCADApp.cs" />
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\WindowExtensions.cs" />
+    <Compile Include="VBEInterfaces\RubberduckCodeModule\CodeModuleWrapper.cs" />
+    <Compile Include="VBEInterfaces\RubberduckCodeModule\ICodeModuleWrapper.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapper.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapperFactory.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapperFactory.cs" />

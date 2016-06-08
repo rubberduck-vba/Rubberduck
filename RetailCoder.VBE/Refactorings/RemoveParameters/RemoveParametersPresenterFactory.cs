@@ -1,34 +1,35 @@
-﻿using Rubberduck.Parsing.VBA;
+﻿using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersPresenterFactory : IRefactoringPresenterFactory<RemoveParametersPresenter>
     {
-        private readonly IActiveCodePaneEditor _editor;
-        private readonly IRemoveParametersView _view;
-        private readonly RubberduckParserState _parseResult;
+        private readonly VBE _vbe;
+        private readonly IRemoveParametersDialog _view;
+        private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public RemoveParametersPresenterFactory(IActiveCodePaneEditor editor, IRemoveParametersView view,
-            RubberduckParserState parseResult, IMessageBox messageBox)
+        public RemoveParametersPresenterFactory(VBE vbe, IRemoveParametersDialog view,
+            RubberduckParserState state, IMessageBox messageBox)
         {
-            _editor = editor;
+            _vbe = vbe;
             _view = view;
-            _parseResult = parseResult;
+            _state = state;
             _messageBox = messageBox;
         }
 
         public RemoveParametersPresenter Create()
         {
-            var selection = _editor.GetSelection();
-            if (selection == null)
+            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+
+            if (!selection.HasValue)
             {
                 return null;
             }
 
-            var model = new RemoveParametersModel(_parseResult, selection.Value, _messageBox);
+            var model = new RemoveParametersModel(_state, selection.Value, _messageBox);
             return new RemoveParametersPresenter(_view, model, _messageBox);
         }
     }

@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class VariableIsNeverAssignedInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void VariableNotAssigned_ReturnsResult()
         {
             const string inputCode =
@@ -30,7 +31,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -39,6 +40,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_ReturnsResult_MultipleVariables()
         {
             const string inputCode =
@@ -56,7 +58,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -65,6 +67,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_DoesNotReturnResult()
         {
             const string inputCode =
@@ -82,7 +85,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -91,6 +94,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_ReturnsResult_MultipleVariables_SomeAssigned()
         {
             const string inputCode =
@@ -110,7 +114,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -119,6 +123,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_QuickFixWorks()
         {
             const string inputCode =
@@ -141,7 +146,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
@@ -150,6 +155,107 @@ End Sub";
         }
 
         [TestMethod]
+        public void UnassignedVariable_VariableOnMultipleLines_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim _
+    var1 _
+    as _
+    Integer
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new VariableNotAssignedInspection(parser.State);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void UnassignedVariable_MultipleVariablesOnSingleLine_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 As Integer, var2 As Boolean
+End Sub";
+
+            // note the extra space after "Integer"--the VBE will remove it
+            const string expectedCode =
+@"Sub Foo()
+    Dim var1 As Integer 
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new VariableNotAssignedInspection(parser.State);
+            inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void UnassignedVariable_MultipleVariablesOnMultipleLines_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 As Integer, _
+        var2 As Boolean
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    Dim var1 As Integer
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new VariableNotAssignedInspection(parser.State);
+            inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new VariableNotAssignedInspection(null);
@@ -157,6 +263,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "VariableNotAssignedInspection";

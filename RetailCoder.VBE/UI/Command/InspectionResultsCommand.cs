@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {

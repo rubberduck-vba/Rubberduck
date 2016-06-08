@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class ObsoleteTypeHintInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithLongTypeHintReturnsResult()
         {
             const string inputCode =
@@ -28,7 +29,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -37,6 +38,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithIntegerTypeHintReturnsResult()
         {
             const string inputCode =
@@ -51,7 +53,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -60,6 +62,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithDoubleTypeHintReturnsResult()
         {
             const string inputCode =
@@ -74,7 +77,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -83,6 +86,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithSingleTypeHintReturnsResult()
         {
             const string inputCode =
@@ -97,7 +101,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -106,6 +110,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithDecimalTypeHintReturnsResult()
         {
             const string inputCode =
@@ -120,7 +125,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -129,6 +134,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldWithStringTypeHintReturnsResult()
         {
             const string inputCode =
@@ -143,7 +149,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -152,6 +158,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FunctionReturnsResult()
         {
             const string inputCode =
@@ -167,7 +174,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -176,6 +183,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_PropertyGetReturnsResult()
         {
             const string inputCode =
@@ -191,7 +199,7 @@ End Property";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -200,6 +208,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_ParameterReturnsResult()
         {
             const string inputCode =
@@ -215,7 +224,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -224,6 +233,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_VariableReturnsResult()
         {
             const string inputCode =
@@ -241,7 +251,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -250,6 +260,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_StringValueDoesNotReturnsResult()
         {
             const string inputCode =
@@ -267,7 +278,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -276,6 +287,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_FieldsReturnMultipleResults()
         {
             const string inputCode =
@@ -291,7 +303,7 @@ Public Bar$";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -300,6 +312,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_LongTypeHint()
         {
             const string inputCode =
@@ -319,7 +332,7 @@ Public Bar$";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -333,6 +346,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_IntegerTypeHint()
         {
             const string inputCode =
@@ -352,7 +366,7 @@ Public Bar$";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -366,6 +380,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_DoubleTypeHint()
         {
             const string inputCode =
@@ -385,7 +400,7 @@ Public Bar$";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -399,6 +414,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_SingleTypeHint()
         {
             const string inputCode =
@@ -418,7 +434,7 @@ Public Bar$";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -432,6 +448,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_DecimalTypeHint()
         {
             const string inputCode =
@@ -451,7 +468,7 @@ Public Bar$";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -465,6 +482,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Field_StringTypeHint()
         {
             const string inputCode =
@@ -484,7 +502,7 @@ Public Bar$";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -498,6 +516,7 @@ Public Bar$";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Function_StringTypeHint()
         {
             const string inputCode =
@@ -521,7 +540,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -535,6 +554,7 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_PropertyGet_StringTypeHint()
         {
             const string inputCode =
@@ -558,7 +578,7 @@ End Property";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -572,6 +592,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Parameter_StringTypeHint()
         {
             const string inputCode =
@@ -595,7 +616,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -609,6 +630,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_Variable_StringTypeHint()
         {
             const string inputCode =
@@ -632,7 +654,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteTypeHintInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -646,100 +668,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_FunctionReferencesAreUpdated_StringTypeHint()
-        {
-            const string inputCode =
-@"Public Function Foo$(ByVal bar as Boolean)
-    Foo$ = ""test""
-End Function
-
-Public Sub Buzz()
-    Dim bat As String
-    bat = Foo$()
-End Sub";
-
-            const string expectedCode =
-@"Public Function Foo(ByVal bar as Boolean) As String
-    Foo = ""test""
-End Function
-
-Public Sub Buzz()
-    Dim bat As String
-    bat = Foo()
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = project.VBComponents.Item(0).CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ObsoleteTypeHintInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            foreach (var inspectionResult in inspectionResults)
-            {
-                inspectionResult.QuickFixes.First().Fix();
-            }
-
-            Assert.AreEqual(expectedCode, module.Lines());
-        }
-
-        [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_FunctionReferencesAreUpdated_ParentIsNotChanged_StringTypeHint()
-        {
-            const string inputCode =
-@"Public Function Foo(ByVal bar as Boolean) As String
-    Foo$ = ""test""
-End Function
-
-Public Sub Buzz()
-    Dim bat As String
-    bat$ = Foo$()
-End Sub";
-
-            const string expectedCode =
-@"Public Function Foo(ByVal bar as Boolean) As String
-    Foo = ""test""
-End Function
-
-Public Sub Buzz()
-    Dim bat As String
-    bat = Foo()
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = project.VBComponents.Item(0).CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ObsoleteTypeHintInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            foreach (var inspectionResult in inspectionResults)
-            {
-                inspectionResult.QuickFixes.First().Fix();
-            }
-
-            Assert.AreEqual(expectedCode, module.Lines());
-        }
-
-        [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ObsoleteTypeHintInspection(null);
@@ -747,6 +676,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteTypeHintInspection";

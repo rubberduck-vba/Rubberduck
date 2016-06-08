@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
@@ -15,8 +13,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorMoveCloserToUsageCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory)
-            : base(vbe, editor)
+        public RefactorMoveCloserToUsageCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperWrapperFactory)
+            :base(vbe)
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
@@ -34,7 +32,6 @@ namespace Rubberduck.UI.Command.Refactorings
                 && (target.DeclarationType == DeclarationType.Variable || target.DeclarationType == DeclarationType.Constant)
                 && target.References.Any();
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 
@@ -47,7 +44,7 @@ namespace Rubberduck.UI.Command.Refactorings
             var codePane = _wrapperWrapperFactory.Create(Vbe.ActiveCodePane);
             var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
 
-            var refactoring = new MoveCloserToUsageRefactoring(_state, Editor, new MessageBox());
+            var refactoring = new MoveCloserToUsageRefactoring(Vbe, _state, new MessageBox());
             refactoring.Refactor(selection);
         }
     }

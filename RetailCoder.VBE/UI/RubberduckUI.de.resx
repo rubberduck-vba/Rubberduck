@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -120,7 +120,7 @@
   <data name="CancelButtonText" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
-  <data name="DeclarationType_Class" xml:space="preserve">
+  <data name="DeclarationType_ClassModule" xml:space="preserve">
     <value>Klasse</value>
   </data>
   <data name="DeclarationType_Constant" xml:space="preserve">
@@ -141,7 +141,7 @@
   <data name="DeclarationType_LibraryFunction" xml:space="preserve">
     <value>Bibliotheks-Funktion</value>
   </data>
-  <data name="DeclarationType_Module" xml:space="preserve">
+  <data name="DeclarationType_ProceduralModule" xml:space="preserve">
     <value>Modul</value>
   </data>
   <data name="DeclarationType_Parameter" xml:space="preserve">
@@ -489,19 +489,16 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Wiederherstellen</value>
   </data>
   <data name="ParseErrors_Caption" xml:space="preserve">
-    <value>Rubberduck - Parser Fehler</value>
-  </data>
-  <data name="CodeExplorer_AddClassText" xml:space="preserve">
-    <value>&amp;Klassenmodul (.cls)</value>
+    <value>Rubberduck - Parserfehler</value>
   </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>Nutzer&amp;formular</value>
+    <value>Benutzerdefiniertes Formular</value>
   </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>&amp;Standardmodul (.bas)</value>
+    <value>Standardmodul (.bas)</value>
   </data>
   <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>&amp;Testmodul</value>
+    <value>Testmodul</value>
   </data>
   <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
     <value>Member&amp;namen anzeigen</value>
@@ -510,10 +507,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Volle &amp;Signaturen anzeigen</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>&amp;Alle Implementierungen finden...</value>
+    <value>Alle Implementierungen finden...</value>
   </data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Alle Referenzen &amp;finden...</value>
+    <value>Alle Referenzen finden...</value>
   </data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspizieren</value>
@@ -529,9 +526,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
     <value>Alle &amp;Tests ausführen</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
-    <value>Designer &amp;Anzeigen</value>
   </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
     <value>Designer öffnen</value>
@@ -642,10 +636,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Rubberduck Einstellungen</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Token Text:</value>
+    <value>Markierungstext:</value>
   </data>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Token List:</value>
+    <value>Markierungen:</value>
   </data>
   <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
     <value>Code-Qualitätsprobleme</value>
@@ -858,9 +852,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
     <value>Bitte geben sie einen Zweignamen an.</value>
   </data>
-  <data name="CodeExplorer_Inspect" xml:space="preserve">
-    <value>&amp;Inspizieren</value>
-  </data>
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} Probleme</value>
   </data>
@@ -911,9 +902,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
     <value>Alles Ersetzen</value>
-  </data>
-  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
-    <value>Suche</value>
   </data>
   <data name="RegexSearchReplace_Caption" xml:space="preserve">
     <value>Regex Suchen &amp; Ersetzen</value>
@@ -1234,7 +1222,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Autospeicherung:</value>
   </data>
   <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
-    <value>Hotkeys:</value>
+    <value>Tastenkürzel:</value>
   </data>
   <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
     <value>Autospeicherung aktivieren</value>
@@ -1272,7 +1260,7 @@ Fugue Icons von Yusuke Kamiyamane</value>
     <value>Rubberduck</value>
   </data>
   <data name="SearchResults_MemberType" xml:space="preserve">
-    <value>Type</value>
+    <value>Typ</value>
   </data>
   <data name="SourceControl_CommitAndPush" xml:space="preserve">
     <value>Commit und Push</value>
@@ -1352,7 +1340,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Referenzen werden geladen</value>
   </data>
   <data name="ParserState_Parsed" xml:space="preserve">
-    <value>Analysiert</value>
+    <value>Fertig analysiert</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
     <value>Parsing …</value>
@@ -1409,10 +1397,10 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Alt</value>
   </data>
   <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
-    <value>Key2</value>
+    <value>Taste2</value>
   </data>
   <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
-    <value>Key1</value>
+    <value>Taste1</value>
   </data>
   <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
     <value>Umschalt</value>
@@ -1431,12 +1419,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
     <value>Refactor / Methode extrahieren</value>
-  </data>
-  <data name="UnitTest_NewModule_UncommentLateBinding" xml:space="preserve">
-    <value>Für die späte Bindung einkommentieren</value>
-  </data>
-  <data name="UnitTest_NewModule_CommentEarlyBinding" xml:space="preserve">
-    <value>Die frühe Bindung benötigt eine Referenz auf Rubberduck.UnitTesting.tlb </value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>Diese Methode wird einmal pro Modul ausgeführt</value>
@@ -1485,5 +1467,128 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Nach Markierung</value>
+  </data>
+  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
+    <value>Bibliotheksprozedur</value>
+  </data>
+  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
+    <value>Klassenmodul (.cls)</value>
+  </data>
+  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
+    <value>Wechsele Signatur</value>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="CodeExplorer_Remove" xml:space="preserve">
+    <value>Entfernen...</value>
+  </data>
+  <data name="CodeExplorer_Print" xml:space="preserve">
+    <value>Drucken...</value>
+  </data>
+  <data name="CodeExplorer_Import" xml:space="preserve">
+    <value>Importieren...</value>
+  </data>
+  <data name="CodeExplorer_Export" xml:space="preserve">
+    <value>Exportieren...</value>
+  </data>
+  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
+    <value>Punkte (.)</value>
+  </data>
+  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
+    <value>Ordner-Trennzeichen:</value>
+  </data>
+  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
+    <value>Slash (/)</value>
+  </data>
+  <data name="SourceControl_MissingCredentials" xml:space="preserve">
+    <value>Fehlende Zugangsdaten</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess" xml:space="preserve">
+    <value>Commit und Synchronisation erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitSuccess" xml:space="preserve">
+    <value>Commit erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndPushSuccess" xml:space="preserve">
+    <value>Commit und Push erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus" xml:space="preserve">
+    <value>Commit Status.</value>
+  </data>
+  <data name="SortStyle_BySelection" xml:space="preserve">
+    <value>Nach Auswahl</value>
+  </data>
+  <data name="SortStyle_ByType" xml:space="preserve">
+    <value>Nach Typ</value>
+  </data>
+  <data name="SortStyle_ByName" xml:space="preserve">
+    <value>Nach Name</value>
+  </data>
+  <data name="CodeExplorer_Sort" xml:space="preserve">
+    <value>Sortieren</value>
+  </data>
+  <data name="NoIndentAnnotation" xml:space="preserve">
+    <value>Füge '@NoIndent hinzu</value>
+  </data>
+  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
+    <value>Aktualisiere Komponente</value>
+  </data>
+  <data name="SourceControl_UndoTitle" xml:space="preserve">
+    <value>Versionskontrolle - Rückgänig</value>
+  </data>
+  <data name="SourceControl_UndoPrompt" xml:space="preserve">
+    <value>Sollen die Änderungen in {0} rückgängig gemacht werden?</value>
+  </data>
+  <data name="CodeExplorer_Undo" xml:space="preserve">
+    <value>Rückgängig ...</value>
+  </data>
+  <data name="CodeExplorer_Commit" xml:space="preserve">
+    <value>Commit...</value>
+  </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ingoriert</value>
+  </data>
+  <data name="UnitTest_TotalDuration" xml:space="preserve">
+    <value>Gesamtdauer</value>
+  </data>
+  <data name="Parser_ParserError" xml:space="preserve">
+    <value>Parserfehler</value>
+  </data>
+  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
+    <value>Minimum Log Level</value>
+  </data>
+  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
+    <value>Fatal</value>
+  </data>
+  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
+    <value>Kein Logging</value>
+  </data>
+  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
+    <value>Trace</value>
+  </data>
+  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
+    <value>Logging-Ordner anzeigen</value>
+  </data>
+  <data name="information">
+    <value />
+  </data>
+  <data name="CodeExplorer_CopyToolTip">
+    <value>In Zwischenablage kopieren</value>
+  </data>
+  <data name="cross_circle">
+    <value />
   </data>
 </root>

@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.Office.Interop.Excel;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
