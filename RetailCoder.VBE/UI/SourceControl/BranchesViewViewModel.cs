@@ -279,6 +279,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void MergeBranchOk()
         {
+            OnMergeStarted();
+
             try
             {
                 Provider.Merge(SourceBranch, DestinationBranch);
@@ -286,10 +288,13 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
+                OnMergeCompleted();
+                return;
             }
 
             DisplayMergeBranchesGrid = false;
             RaiseErrorEvent(RubberduckUI.SourceControl_MergeStatus, string.Format(RubberduckUI.SourceControl_SuccessfulMerge, SourceBranch, DestinationBranch), NotificationType.Info);
+            OnMergeCompleted();
         }
 
         private void MergeBranchCancel()
@@ -421,6 +426,26 @@ namespace Rubberduck.UI.SourceControl
             if (handler != null)
             {
                 handler(this, new ErrorEventArgs(message, innerMessage, notificationType));
+            }
+        }
+        
+        public event EventHandler<EventArgs> MergeStarted;
+        private void OnMergeStarted()
+        {
+            var handler = MergeStarted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler<EventArgs> MergeCompleted;
+        private void OnMergeCompleted()
+        {
+            var handler = MergeCompleted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
             }
         }
     }
