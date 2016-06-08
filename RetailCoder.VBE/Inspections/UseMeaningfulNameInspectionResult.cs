@@ -30,6 +30,11 @@ namespace Rubberduck.Inspections
         {
             get { return string.Format(InspectionsUI.UseMeaningfulNameInspectionResultFormat, RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType), Target.IdentifierName); }
         }
+
+        public override NavigateCodeEventArgs GetNavigationArgs()
+        {
+            return new NavigateCodeEventArgs(Target);
+        }
     }
 
     /// <summary>
