@@ -7,7 +7,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
-using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
@@ -18,6 +17,7 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck
 {
@@ -29,10 +29,11 @@ namespace Rubberduck
         private readonly IRubberduckParser _parser;
         private AutoSave.AutoSave _autoSave;
         private IGeneralConfigService _configService;
-        private IAppMenu _appMenus;
+        private readonly IAppMenu _appMenus;
         private RubberduckCommandBar _stateBar;
-        private readonly IIndenter _indenter;
         private IRubberduckHooks _hooks;
+        private bool _handleSinkEvents = true;
+        private readonly BranchesViewViewModel _branchesVM;
 
         private readonly Logger _logger;
 
@@ -52,8 +53,8 @@ namespace Rubberduck
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
-            IIndenter indenter,
-            IRubberduckHooks hooks)
+            IRubberduckHooks hooks,
+            SourceControlDockablePresenter sourceControlPresenter)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -62,9 +63,15 @@ namespace Rubberduck
             _autoSave = new AutoSave.AutoSave(_vbe, _configService);
             _appMenus = appMenus;
             _stateBar = stateBar;
-            _indenter = indenter;
             _hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
+
+            var sourceControlPanel = (SourceControlPanel) sourceControlPresenter.Window();
+            var panelVM = (SourceControlViewViewModel) sourceControlPanel.ViewModel;
+            _branchesVM = (BranchesViewViewModel) panelVM.TabItems.Single(t => t.ViewModel.Tab == SourceControlTab.Branches).ViewModel;
+
+            _branchesVM.MergeStarted += _branchesVM_MergeStarted;
+            _branchesVM.MergeCompleted += _branchesVM_MergeCompleted;
 
             _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -85,6 +92,22 @@ namespace Rubberduck
 
             _projectsEventsConnectionPoint.Advise(_sink, out _projectsEventsCookie);
             UiDispatcher.Initialize();
+        }
+
+        private void _branchesVM_MergeCompleted(object sender, EventArgs e)
+        {
+            _handleSinkEvents = true;
+
+            // update cache
+            _parser.State.RemoveProject(_vbe.ActiveVBProject.HelpFile);
+            _parser.State.AddProject(_vbe.ActiveVBProject);
+
+            _parser.State.OnParseRequested(this);
+        }
+
+        private void _branchesVM_MergeStarted(object sender, EventArgs e)
+        {
+            _handleSinkEvents = false;
         }
 
         private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
@@ -168,6 +191,8 @@ namespace Rubberduck
         #region sink handlers. todo: move to another class
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
                 _logger.Debug("Locked project '{0}' was removed.", e.Item.Name);
@@ -205,6 +230,8 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             _logger.Debug("Project '{0}' was added.", e.Item.Name);
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
@@ -260,6 +287,8 @@ namespace Rubberduck
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -271,6 +300,8 @@ namespace Rubberduck
 
         async void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -283,6 +314,8 @@ namespace Rubberduck
 
         async void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -294,6 +327,8 @@ namespace Rubberduck
 
         async void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -305,6 +340,8 @@ namespace Rubberduck
 
         async void sink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -316,6 +353,8 @@ namespace Rubberduck
 
         async void sink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -327,6 +366,8 @@ namespace Rubberduck
 
         async void sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -342,6 +383,8 @@ namespace Rubberduck
 
         async void sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -395,11 +438,18 @@ namespace Rubberduck
         }
 
         private bool _disposed;
+
         public void Dispose()
         {
             if (_disposed)
             {
                 return;
+            }
+
+            if (_branchesVM != null)
+            {
+                _branchesVM.MergeStarted -= _branchesVM_MergeStarted;
+                _branchesVM.MergeCompleted -= _branchesVM_MergeCompleted;
             }
 
             if (_hooks != null)
