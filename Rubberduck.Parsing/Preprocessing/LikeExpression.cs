@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Like;
+﻿using Rubberduck.Parsing.Like;
 using Rubberduck.Parsing.VBA;
 using System.Text;
 using System.Text.RegularExpressions;

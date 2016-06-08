@@ -83,10 +83,18 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
+            //assign a hashcode if no helpfile is present
             if (string.IsNullOrEmpty(project.HelpFile))
             {
                 project.HelpFile = project.GetHashCode().ToString();
             }
+
+            //loop until the helpfile is unique for this host session
+            while (_projects.Any(a => a.Key == project.HelpFile))
+            {
+                project.HelpFile = (project.GetHashCode() ^ project.HelpFile.GetHashCode()).ToString();
+            }
+
             var projectId = project.HelpFile;
             if (!_projects.ContainsKey(projectId))
             {
@@ -101,9 +109,15 @@ namespace Rubberduck.Parsing.VBA
 
         public void RemoveProject(string projectId)
         {
+            var project = Projects.FirstOrDefault(f => f.HelpFile == projectId);
             if (_projects.ContainsKey(projectId))
             {
                 _projects.Remove(projectId);
+            }
+
+            if (project != null)
+            {
+                ClearStateCache(project);
             }
         }
 

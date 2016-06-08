@@ -9,7 +9,6 @@ using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using FUNCFLAGS = System.Runtime.InteropServices.ComTypes.FUNCFLAGS;
 using TYPEDESC = System.Runtime.InteropServices.ComTypes.TYPEDESC;
 using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
-using FUNCKIND = System.Runtime.InteropServices.ComTypes.FUNCKIND;
 using INVOKEKIND = System.Runtime.InteropServices.ComTypes.INVOKEKIND;
 using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;

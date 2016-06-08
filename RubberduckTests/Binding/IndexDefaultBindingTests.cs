@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
-using System;
 using System.Linq;
 
 namespace RubberduckTests.Binding

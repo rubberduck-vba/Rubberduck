@@ -5,7 +5,6 @@ using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
-using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.VBA
 {

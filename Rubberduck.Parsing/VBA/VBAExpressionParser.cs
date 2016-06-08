@@ -4,7 +4,6 @@ using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
-using System.Diagnostics;
 
 namespace Rubberduck.Parsing.VBA
 {

@@ -6,7 +6,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
@@ -14,12 +13,12 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory)
+        public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state)
             : base(inspection, target)
         {
             _quickFixes = new[]
             {
-                new EncapsulateFieldQuickFix(target.Context, target.QualifiedSelection, target, state, wrapperFactory),
+                new EncapsulateFieldQuickFix(target.Context, target.QualifiedSelection, target, state),
             };
         }
 
@@ -38,14 +37,12 @@ namespace Rubberduck.Inspections
     {
         private readonly Declaration _target;
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory)
+        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state)
             : base(context, selection, string.Format(InspectionsUI.EncapsulatePublicFieldInspectionQuickFix, target.IdentifierName))
         {
             _target = target;
             _state = state;
-            _wrapperFactory = wrapperFactory;
         }
 
         public override void Fix()

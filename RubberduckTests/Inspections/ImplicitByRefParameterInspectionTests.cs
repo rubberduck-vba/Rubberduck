@@ -175,36 +175,6 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ImplicitByRefParameter_DoesNotReturnResult_BuiltInEvent()
-        {
-            //Input
-            const string inputCode =
-@"Private Sub UserForm_Zoom(Percent As Integer)
-
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_MSForm, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ImplicitByRefParameterInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_QuickFixWorks_PassByRef()
         {
             const string inputCode =

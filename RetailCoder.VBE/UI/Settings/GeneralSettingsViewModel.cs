@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using Rubberduck.Settings;
-using NLog;
 using Rubberduck.Common;
 using System.Windows.Input;
 using Rubberduck.UI.Command;

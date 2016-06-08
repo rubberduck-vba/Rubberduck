@@ -18,7 +18,6 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Rubberduck.Common.Hotkeys;
 
 namespace Rubberduck
 {
@@ -335,7 +334,8 @@ namespace Rubberduck
 
             _logger.Debug("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
 
-            // note: if a bug is discovered with renaming a project, it may just need to be removed and readded.
+            _parser.State.RemoveProject(e.Item.HelpFile);
+            _parser.State.AddProject(e.Item);
 
             _parser.State.OnParseRequested(sender);
         }

@@ -1,7 +1,5 @@
-using System;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
-using Microsoft.Office.Interop.Outlook;
 
 namespace Rubberduck.VBEditor.VBEHost
 {

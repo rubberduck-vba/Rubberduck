@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;

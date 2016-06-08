@@ -2,7 +2,6 @@
 using Moq;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI;
 using Rubberduck.UI.Settings;
 
 namespace RubberduckTests.Settings
