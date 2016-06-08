@@ -90,6 +90,17 @@ namespace Rubberduck.UI.SourceControl
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
+        public void AddComponent(VBComponent component)
+        {
+            if (Provider == null) { return; }
+
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
+            if (fileStatus != null)
+            {
+                Provider.AddFile(fileStatus.FilePath);
+            }
+        }
+
         private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
             new Dictionary<NotificationType, BitmapImage>
             {

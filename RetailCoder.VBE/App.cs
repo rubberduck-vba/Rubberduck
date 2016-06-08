@@ -351,6 +351,8 @@ namespace Rubberduck
                 return;
             }
 
+            _panelVM.AddComponent(e.Item);
+
             _logger.Debug("Component '{0}' was added.", e.Item.Name);
             _parser.State.OnParseRequested(sender, e.Item);
         }
