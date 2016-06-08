@@ -35,7 +35,7 @@ namespace Rubberduck.SourceControl
         public abstract void Push();
         public abstract void Fetch(string remoteName);
         public abstract void AddFile(string filePath);
-        public abstract void RemoveFile(string filePath);
+        public abstract void RemoveFile(string filePath, bool removeFromWorkingDirectory);
         public abstract void CreateBranch(string branch);
         public abstract void DeleteBranch(string branch);
         public abstract IRepository Init(string directory, bool bare = false);

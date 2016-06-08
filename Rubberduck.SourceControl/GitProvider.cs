@@ -37,6 +37,7 @@ namespace Rubberduck.SourceControl
             }
             catch (RepositoryNotFoundException ex)
             {
+                repository = null;
                 throw new SourceControlException(SourceControlText.GitRepoNotFound, ex);
             }
         }
@@ -437,14 +438,15 @@ namespace Rubberduck.SourceControl
         }
 
         /// <summary>
-        /// Removes file from staging area, but leaves the file in the working directory.
+        /// Removes file from staging area.
         /// </summary>
         /// <param name="filePath"></param>
-        public override void RemoveFile(string filePath)
+        /// <param name="removeFromWorkingDirectory"></param>
+        public override void RemoveFile(string filePath, bool removeFromWorkingDirectory)
         {
             try
             {
-                _repo.Remove(filePath, false);
+                _repo.Remove(filePath, removeFromWorkingDirectory);
             }
             catch (LibGit2SharpException ex)
             {
@@ -457,7 +459,8 @@ namespace Rubberduck.SourceControl
             try
             {
                 base.Status();
-                return _repo.RetrieveStatus().Select(item => new FileStatusEntry(item));
+                return _repo.RetrieveStatus(new StatusOptions {IncludeUnaltered = true})
+                        .Select(item => new FileStatusEntry(item));
             }
             catch (LibGit2SharpException ex)
             {

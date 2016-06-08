@@ -325,6 +325,8 @@ namespace Rubberduck
                 return;
             }
 
+            _panelVM.RemoveComponent(e.Item);
+
             _logger.Debug("Component '{0}' was removed.", e.Item.Name);
             _parser.State.ClearStateCache(e.Item, true);
         }

@@ -101,6 +101,17 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        public void RemoveComponent(VBComponent component)
+        {
+            if (Provider == null) { return; }
+
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
+            if (fileStatus != null)
+            {
+                Provider.RemoveFile(fileStatus.FilePath, true);
+            }
+        }
+
         private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
             new Dictionary<NotificationType, BitmapImage>
             {
