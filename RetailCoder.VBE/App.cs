@@ -34,6 +34,7 @@ namespace Rubberduck
         private IRubberduckHooks _hooks;
         private bool _handleSinkEvents = true;
         private readonly BranchesViewViewModel _branchesVM;
+        private readonly SourceControlViewViewModel _panelVM;
 
         private readonly Logger _logger;
 
@@ -67,11 +68,14 @@ namespace Rubberduck
             _logger = LogManager.GetCurrentClassLogger();
 
             var sourceControlPanel = (SourceControlPanel) sourceControlPresenter.Window();
-            var panelVM = (SourceControlViewViewModel) sourceControlPanel.ViewModel;
-            _branchesVM = (BranchesViewViewModel) panelVM.TabItems.Single(t => t.ViewModel.Tab == SourceControlTab.Branches).ViewModel;
+            _panelVM = (SourceControlViewViewModel) sourceControlPanel.ViewModel;
+            _branchesVM = (BranchesViewViewModel) _panelVM.TabItems.Single(t => t.ViewModel.Tab == SourceControlTab.Branches).ViewModel;
 
-            _branchesVM.MergeStarted += _branchesVM_MergeStarted;
-            _branchesVM.MergeCompleted += _branchesVM_MergeCompleted;
+            _panelVM.OpenRepoStarted += DisableSinkEventHandlers;
+            _panelVM.OpenRepoCompleted += EnableSinkEventHandlersAndUpdateCache;
+
+            _branchesVM.MergeStarted += DisableSinkEventHandlers;
+            _branchesVM.MergeCompleted += EnableSinkEventHandlersAndUpdateCache;
 
             _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -94,7 +98,7 @@ namespace Rubberduck
             UiDispatcher.Initialize();
         }
 
-        private void _branchesVM_MergeCompleted(object sender, EventArgs e)
+        private void EnableSinkEventHandlersAndUpdateCache(object sender, EventArgs e)
         {
             _handleSinkEvents = true;
 
@@ -105,7 +109,7 @@ namespace Rubberduck
             _parser.State.OnParseRequested(this);
         }
 
-        private void _branchesVM_MergeStarted(object sender, EventArgs e)
+        private void DisableSinkEventHandlers(object sender, EventArgs e)
         {
             _handleSinkEvents = false;
         }
@@ -446,10 +450,16 @@ namespace Rubberduck
                 return;
             }
 
+            if (_panelVM != null)
+            {
+                _panelVM.OpenRepoStarted -= DisableSinkEventHandlers;
+                _panelVM.OpenRepoCompleted -= EnableSinkEventHandlersAndUpdateCache;
+            }
+
             if (_branchesVM != null)
             {
-                _branchesVM.MergeStarted -= _branchesVM_MergeStarted;
-                _branchesVM.MergeCompleted -= _branchesVM_MergeCompleted;
+                _branchesVM.MergeStarted -= DisableSinkEventHandlers;
+                _branchesVM.MergeCompleted -= EnableSinkEventHandlersAndUpdateCache;
             }
 
             if (_hooks != null)

@@ -391,15 +391,18 @@ namespace Rubberduck.UI.SourceControl
                 var project = _vbe.ActiveVBProject;
                 var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
 
+                OnOpenRepoStarted();
                 try
                 {
                     Provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
                 }
                 catch (SourceControlException ex)
                 {
+                    OnOpenRepoCompleted();
                     ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                     return;
                 }
+                OnOpenRepoCompleted();
 
                 AddOrUpdateLocalPathConfig(repo);
 
@@ -409,6 +412,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void CloneRepo()
         {
+            OnOpenRepoStarted();
+
             try
             {
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
@@ -427,6 +432,7 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
+            OnOpenRepoCompleted();
             CloseCloneRepoGrid();
 
             SetChildPresenterSourceControlProviders(_provider);
@@ -454,6 +460,7 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
+                OnOpenRepoStarted();
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
                     _config.Repositories.First(repo => repo.Name == _vbe.ActiveVBProject.Name), _wrapperFactory);
                 Status = RubberduckUI.Online;
@@ -463,6 +470,8 @@ namespace Rubberduck.UI.SourceControl
                 ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 Status = RubberduckUI.Offline;
             }
+
+            OnOpenRepoCompleted();
         }
 
         private void Refresh()
@@ -587,6 +596,26 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _loginGridCancelCommand;
+            }
+        }
+
+        public event EventHandler<EventArgs> OpenRepoStarted;
+        private void OnOpenRepoStarted()
+        {
+            var handler = OpenRepoStarted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler<EventArgs> OpenRepoCompleted;
+        private void OnOpenRepoCompleted()
+        {
+            var handler = OpenRepoCompleted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
             }
         }
 
