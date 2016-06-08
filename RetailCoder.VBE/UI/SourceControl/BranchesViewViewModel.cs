@@ -21,9 +21,12 @@ namespace Rubberduck.UI.SourceControl
             _mergeBranchesOkButtonCommand = new DelegateCommand(_ => MergeBranchOk(), _ => SourceBranch != DestinationBranch);
             _mergeBranchesCancelButtonCommand = new DelegateCommand(_ => MergeBranchCancel());
 
-            _deleteBranchToolbarButtonCommand = new DelegateCommand(branch => DeleteBranch((string)branch), branch => (string) branch != CurrentBranch);
-            _publishBranchToolbarButtonCommand = new DelegateCommand(branch => PublishBranch((string) branch));
-            _unpublishBranchToolbarButtonCommand = new DelegateCommand(branch => UnpublishBranch((string)branch));
+            _deleteBranchToolbarButtonCommand =
+                new DelegateCommand(isBranchPublished => DeleteBranch(bool.Parse((string) isBranchPublished)),
+                    isBranchPublished => CanDeleteBranch(bool.Parse((string)isBranchPublished)));
+
+            _publishBranchToolbarButtonCommand = new DelegateCommand(_ => PublishBranch(), _ => !string.IsNullOrEmpty(CurrentUnpublishedBranch));
+            _unpublishBranchToolbarButtonCommand = new DelegateCommand(_ => UnpublishBranch(), _ => !string.IsNullOrEmpty(CurrentPublishedBranch));
         }
 
         private ISourceControlProvider _provider;
@@ -116,6 +119,28 @@ namespace Rubberduck.UI.SourceControl
                     }
                     OnLoadingComponentsCompleted();
                 }
+            }
+        }
+
+        private string _currentPublishedBranch;
+        public string CurrentPublishedBranch
+        {
+            get { return _currentPublishedBranch; }
+            set
+            {
+                _currentPublishedBranch = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _currentUnpublishedBranch;
+        public string CurrentUnpublishedBranch
+        {
+            get { return _currentUnpublishedBranch; }
+            set
+            {
+                _currentUnpublishedBranch = value;
+                OnPropertyChanged();
             }
         }
 
@@ -304,11 +329,11 @@ namespace Rubberduck.UI.SourceControl
             DisplayMergeBranchesGrid = false;
         }
 
-        private void DeleteBranch(string branch)
+        private void DeleteBranch(bool isBranchPublished)
         {
             try
             {
-                Provider.DeleteBranch(branch);
+                Provider.DeleteBranch(isBranchPublished ? CurrentPublishedBranch : CurrentUnpublishedBranch);
             }
             catch (SourceControlException ex)
             {
@@ -318,11 +343,19 @@ namespace Rubberduck.UI.SourceControl
             RefreshView();
         }
 
-        private void PublishBranch(string branch)
+
+        private bool CanDeleteBranch(bool isBranchPublished)
+        {
+            return isBranchPublished
+                ? !string.IsNullOrEmpty(CurrentPublishedBranch) && CurrentPublishedBranch != CurrentBranch
+                : !string.IsNullOrEmpty(CurrentUnpublishedBranch) && CurrentUnpublishedBranch != CurrentBranch;
+        }
+
+        private void PublishBranch()
         {
             try
             {
-                Provider.Publish(branch);
+                Provider.Publish(CurrentUnpublishedBranch);
             }
             catch (SourceControlException ex)
             {
@@ -332,11 +365,11 @@ namespace Rubberduck.UI.SourceControl
             RefreshView();
         }
 
-        private void UnpublishBranch(string branch)
+        private void UnpublishBranch()
         {
             try
             {
-                Provider.Unpublish(Provider.Branches.First(b => b.Name == branch).TrackingName);
+                Provider.Unpublish(Provider.Branches.First(b => b.Name == CurrentPublishedBranch).TrackingName);
             }
             catch (SourceControlException ex)
             {
