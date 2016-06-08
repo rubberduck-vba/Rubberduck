@@ -37,7 +37,6 @@ namespace Rubberduck.SourceControl
             }
             catch (RepositoryNotFoundException ex)
             {
-                repository = null;
                 throw new SourceControlException(SourceControlText.GitRepoNotFound, ex);
             }
         }

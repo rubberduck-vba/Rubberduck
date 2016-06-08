@@ -491,6 +491,9 @@ namespace Rubberduck.UI.SourceControl
             {
                 ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 Status = RubberduckUI.Offline;
+
+                _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
+                _configService.Save(_config);
             }
 
             OnOpenRepoCompleted();
@@ -519,12 +522,10 @@ namespace Rubberduck.UI.SourceControl
             }
 
             var possibleRepos = _config.Repositories.Where(repo => repo.Id == _vbe.ActiveVBProject.HelpFile);
-
             var possibleCount = possibleRepos.Count();
 
             //todo: if none are found, prompt user to create one
-            //todo: more than one are found, prompt for correct one
-            return possibleCount != 0 && possibleCount <= 1;
+            return possibleCount == 1;
         }
 
         private void ShowFilePicker()
