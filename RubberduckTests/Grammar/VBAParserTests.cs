@@ -224,6 +224,19 @@ End Sub
         }
 
         [TestMethod]
+        public void TestModuleOption_Indented()
+        {
+            string code = @"
+    Option Explicit
+
+    Sub DoSomething()
+    End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
+        }
+
+        [TestMethod]
         public void TestModuleConfig()
         {
             string code = @"
@@ -929,6 +942,37 @@ End Sub";
         }
 
         [TestMethod]
+        public void TestFunction_Indented()
+        {
+            string code = @"
+    Private Function Foo() As Boolean
+        Foo = True
+    End Function";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//functionStmt");
+        }
+
+        [TestMethod]
+        public void TestSub_Indented()
+        {
+            string code = @"
+    Private Sub Foo()
+    End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
+        }
+
+        [TestMethod]
+        public void TestSub_InconsistentlyIndented()
+        {
+            string code = @"
+    Private Sub Foo()
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
+        }
+
+        [TestMethod]
         public void TestPtrSafeAsVariable()
         {
             string code = @"
@@ -963,7 +1007,6 @@ End Sub";
             // If SLL fails we want to get notified ASAP so we can fix it, that's why we don't retry using LL.
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             var tree = parser.startRule();
-            var k = tree.ToStringTree(parser);
             return Tuple.Create<VBAParser, ParserRuleContext>(parser, tree);
         }
 
