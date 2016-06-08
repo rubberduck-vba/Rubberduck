@@ -19,15 +19,16 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        public void UpdateCollection(string name, CodeInspectionSeverity severity)
+        public void UpdateCollection(CodeInspectionSeverity severity)
         {
+            // commit UI edit
+            var item = (CodeInspectionSetting)InspectionSettings.CurrentEditItem;
             InspectionSettings.CommitEdit();
-            var changedItem = _inspectionSettings.SourceCollection.Cast<CodeInspectionSetting>().First(f => f.Name == name);
 
-            InspectionSettings.Remove(changedItem);
-
-            changedItem.Severity = severity;
-            InspectionSettings.AddNewItem(changedItem);
+            // update the collection
+            InspectionSettings.EditItem(item);
+            item.Severity = severity;
+            InspectionSettings.CommitEdit();
         }
 
         private ListCollectionView _inspectionSettings;
