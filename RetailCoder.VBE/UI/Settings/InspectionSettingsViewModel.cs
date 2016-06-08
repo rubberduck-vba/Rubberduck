@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
+using Rubberduck.Inspections;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
@@ -18,9 +19,15 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        public void UpdateCollection()
+        public void UpdateCollection(string name, CodeInspectionSeverity severity)
         {
             InspectionSettings.CommitEdit();
+            var changedItem = _inspectionSettings.SourceCollection.Cast<CodeInspectionSetting>().First(f => f.Name == name);
+
+            InspectionSettings.Remove(changedItem);
+
+            changedItem.Severity = severity;
+            InspectionSettings.AddNewItem(changedItem);
         }
 
         private ListCollectionView _inspectionSettings;
