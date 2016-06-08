@@ -107,12 +107,14 @@ namespace Rubberduck.UI.SourceControl
 
                     try
                     {
+                        OnLoadingComponentsStarted();
                         Provider.Checkout(_currentBranch);
                     }
                     catch (SourceControlException ex)
                     {
                         RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
                     }
+                    OnLoadingComponentsCompleted();
                 }
             }
         }
@@ -279,7 +281,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void MergeBranchOk()
         {
-            OnMergeStarted();
+            OnLoadingComponentsStarted();
 
             try
             {
@@ -288,13 +290,13 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
-                OnMergeCompleted();
+                OnLoadingComponentsCompleted();
                 return;
             }
 
             DisplayMergeBranchesGrid = false;
             RaiseErrorEvent(RubberduckUI.SourceControl_MergeStatus, string.Format(RubberduckUI.SourceControl_SuccessfulMerge, SourceBranch, DestinationBranch), NotificationType.Info);
-            OnMergeCompleted();
+            OnLoadingComponentsCompleted();
         }
 
         private void MergeBranchCancel()
@@ -429,20 +431,20 @@ namespace Rubberduck.UI.SourceControl
             }
         }
         
-        public event EventHandler<EventArgs> MergeStarted;
-        private void OnMergeStarted()
+        public event EventHandler<EventArgs> LoadingComponentsStarted;
+        private void OnLoadingComponentsStarted()
         {
-            var handler = MergeStarted;
+            var handler = LoadingComponentsStarted;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
             }
         }
 
-        public event EventHandler<EventArgs> MergeCompleted;
-        private void OnMergeCompleted()
+        public event EventHandler<EventArgs> LoadingComponentsCompleted;
+        private void OnLoadingComponentsCompleted()
         {
-            var handler = MergeCompleted;
+            var handler = LoadingComponentsCompleted;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
