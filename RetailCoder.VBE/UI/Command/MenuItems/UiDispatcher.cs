@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace Rubberduck.UI.Command.MenuItems
 {

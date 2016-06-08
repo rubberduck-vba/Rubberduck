@@ -201,7 +201,7 @@
                                 <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_SourceLabel}"
                                            FontWeight="SemiBold"
                                            Margin="0,0,0,5" />
-                                <ComboBox ItemsSource="{Binding Branches}"
+                                <ComboBox ItemsSource="{Binding LocalBranches}"
                                           SelectedItem="{Binding SourceBranch, Mode=TwoWay}" />
                             </StackPanel>
                             <Image Source="{StaticResource MergeArrowImage}"
@@ -213,7 +213,7 @@
                                 <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DestinationLabel}"
                                            FontWeight="SemiBold"
                                            Margin="0,0,0,5" />
-                                <ComboBox ItemsSource="{Binding Branches}"
+                                <ComboBox ItemsSource="{Binding LocalBranches}"
                                           SelectedItem="{Binding DestinationBranch, Mode=TwoWay}" />
                             </StackPanel>
                         </Grid>
