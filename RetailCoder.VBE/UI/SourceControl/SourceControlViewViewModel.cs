@@ -90,6 +90,28 @@ namespace Rubberduck.UI.SourceControl
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
+        public void AddComponent(VBComponent component)
+        {
+            if (Provider == null) { return; }
+
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
+            if (fileStatus != null)
+            {
+                Provider.AddFile(fileStatus.FilePath);
+            }
+        }
+
+        public void RemoveComponent(VBComponent component)
+        {
+            if (Provider == null) { return; }
+
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
+            if (fileStatus != null)
+            {
+                Provider.RemoveFile(fileStatus.FilePath, true);
+            }
+        }
+
         private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
             new Dictionary<NotificationType, BitmapImage>
             {
@@ -469,6 +491,9 @@ namespace Rubberduck.UI.SourceControl
             {
                 ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 Status = RubberduckUI.Offline;
+
+                _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
+                _configService.Save(_config);
             }
 
             OnOpenRepoCompleted();
@@ -497,12 +522,10 @@ namespace Rubberduck.UI.SourceControl
             }
 
             var possibleRepos = _config.Repositories.Where(repo => repo.Id == _vbe.ActiveVBProject.HelpFile);
-
             var possibleCount = possibleRepos.Count();
 
             //todo: if none are found, prompt user to create one
-            //todo: more than one are found, prompt for correct one
-            return possibleCount != 0 && possibleCount <= 1;
+            return possibleCount == 1;
         }
 
         private void ShowFilePicker()

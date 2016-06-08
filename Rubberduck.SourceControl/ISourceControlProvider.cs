@@ -112,7 +112,7 @@ namespace Rubberduck.SourceControl
         /// Removes file from tracking.
         /// </summary>
         /// <param name="filePath"></param>
-        void RemoveFile(string filePath);
+        void RemoveFile(string filePath, bool removeFromWorkingDirectory);
 
         /// <summary>
         /// Returns a collection of file status entries.
