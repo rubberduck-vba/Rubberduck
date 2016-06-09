@@ -245,36 +245,39 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ParserState_StateChanged(object sender, EventArgs e)
         {
-            if (Projects == null)
+            UiDispatcher.InvokeAsync(() =>
             {
-                Projects = new ObservableCollection<CodeExplorerItemViewModel>();
-            }
+                if (Projects == null)
+                {
+                    Projects = new ObservableCollection<CodeExplorerItemViewModel>();
+                }
 
-            IsBusy = _state.Status == ParserState.Parsing;
-            if (_state.Status != ParserState.Ready)
-            {
-                return;
-            }
-            
-            var userDeclarations = _state.AllUserDeclarations
-                .GroupBy(declaration => declaration.Project)
-                .Where(grouping => grouping.Key != null)
-                .ToList();
+                IsBusy = _state.Status < ParserState.ResolvedDeclarations;
+                if (_state.Status != ParserState.ResolvedDeclarations)
+                {
+                    return;
+                }
 
-            if (userDeclarations.Any(
+                var userDeclarations = _state.AllUserDeclarations
+                    .GroupBy(declaration => declaration.Project)
+                    .Where(grouping => grouping.Key != null)
+                    .ToList();
+
+                if (userDeclarations.Any(
                     grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
-            {
-                return;
-            }
+                {
+                    return;
+                }
 
-            var newProjects = userDeclarations.Select(grouping =>
-                new CodeExplorerProjectViewModel(_folderHelper,
-                    grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
-                    grouping)).ToList();
+                var newProjects = userDeclarations.Select(grouping =>
+                    new CodeExplorerProjectViewModel(_folderHelper,
+                        grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
+                        grouping)).ToList();
 
-            UpdateNodes(Projects, newProjects);
-            
-            Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
+                UpdateNodes(Projects, newProjects);
+
+                Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
+            });
         }
 
         private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList,
