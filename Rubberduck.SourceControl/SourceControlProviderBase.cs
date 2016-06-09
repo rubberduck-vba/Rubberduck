@@ -62,7 +62,7 @@ namespace Rubberduck.SourceControl
             }
 
             Project.ExportSourceFiles(directory);
-            CurrentRepository = new Repository(Project.Name, directory, directory);
+            CurrentRepository = new Repository(Project.HelpFile, directory, directory);
             return CurrentRepository;
         }
 
