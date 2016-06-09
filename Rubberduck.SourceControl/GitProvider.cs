@@ -126,7 +126,7 @@ namespace Rubberduck.SourceControl
 
                 LibGit2Sharp.Repository.Init(directory, bare);
 
-                return new Repository(Project.Name, workingDir, directory);
+                return new Repository(Project.HelpFile, workingDir, directory);
             }
             catch (LibGit2SharpException ex)
             {
