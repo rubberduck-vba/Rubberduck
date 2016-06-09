@@ -411,7 +411,7 @@ namespace Rubberduck.UI.SourceControl
                 }
 
                 var project = _vbe.ActiveVBProject;
-                var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
+                var repo = new Repository(project.HelpFile, folderPicker.SelectedPath, string.Empty);
 
                 OnOpenRepoStarted();
                 try
