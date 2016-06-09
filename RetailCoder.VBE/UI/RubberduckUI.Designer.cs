@@ -3343,6 +3343,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Upload repository to GitHub.
+        /// </summary>
+        public static string SourceControl_CreateNewRemoteRepoButtonToolTip {
+            get {
+                return ResourceManager.GetString("SourceControl_CreateNewRemoteRepoButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create New Repository.
         /// </summary>
         public static string SourceControl_CreateNewRepo {

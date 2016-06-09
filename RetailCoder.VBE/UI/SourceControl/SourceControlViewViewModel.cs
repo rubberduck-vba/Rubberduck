@@ -62,14 +62,18 @@ namespace Rubberduck.UI.SourceControl
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
             _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid());
+            _createNewRemoteRepoCommand = new DelegateCommand(_ => ShowCreateNewRemoteRepoGrid());
             _refreshCommand = new DelegateCommand(_ => Refresh());
             _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
             _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
             _loginGridOkCommand = new DelegateCommand(_ => CloseLoginGrid(), text => !string.IsNullOrEmpty((string)text));
             _loginGridCancelCommand = new DelegateCommand(_ => CloseLoginGrid());
 
-            _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidRemotePath);
+            _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidCloneRemotePath);
             _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
+
+            _createNewRemoteRepoOkButtonCommand = new DelegateCommand(_ => CreateNewRemoteRepo(), _ => !IsNotValidCreateNewRemoteRemotePath && IsValidBranchName(RemoteBranchName));
+            _createNewRemoteRepoCancelButtonCommand = new DelegateCommand(_ => CloseCreateNewRemoteRepoGrid());
 
             TabItems = new ObservableCollection<IControlView>
             {
@@ -186,32 +190,131 @@ namespace Rubberduck.UI.SourceControl
             get { return _displayCloneRepoGrid; }
             set
             {
+                if (DisplayCreateNewRemoteRepoGrid)
+                {
+                    _displayCreateNewRemoteRepoGrid = false;
+                    OnPropertyChanged("DisplayCreateNewRemoteRepoGrid");
+                }
+
                 if (_displayCloneRepoGrid != value)
                 {
                     _displayCloneRepoGrid = value;
+
                     OnPropertyChanged();
                 }
             }
         }
 
-        private string _remotePath;
-        public string RemotePath
+        private bool _displayCreateNewRemoteRepoGrid;
+        public bool DisplayCreateNewRemoteRepoGrid
         {
-            get { return _remotePath; }
+            get { return _displayCreateNewRemoteRepoGrid; }
             set
             {
-                if (_remotePath != value)
+                if (DisplayCloneRepoGrid)
                 {
-                    _remotePath = value;
+                    _displayCloneRepoGrid = false;
+                    OnPropertyChanged("DisplayCloneRepoGrid");
+                }
+
+                if (_displayCreateNewRemoteRepoGrid != value)
+                {
+                    _displayCreateNewRemoteRepoGrid = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _cloneRemotePath;
+        public string CloneRemotePath
+        {
+            get { return _cloneRemotePath; }
+            set
+            {
+                if (_cloneRemotePath != value)
+                {
+                    _cloneRemotePath = value;
                     LocalDirectory =
                         _config.DefaultRepositoryLocation +
                         (_config.DefaultRepositoryLocation.EndsWith("\\") ? string.Empty : "\\") +
-                        _remotePath.Split('/').Last().Replace(".git", string.Empty);
+                        _cloneRemotePath.Split('/').Last().Replace(".git", string.Empty);
 
                     OnPropertyChanged();
-                    OnPropertyChanged("IsNotValidRemotePath");
+                    OnPropertyChanged("IsNotValidCloneRemotePath");
                 }
             }
+        }
+
+        private string _createNewRemoteRemotePath;
+        public string CreateNewRemoteRemotePath
+        {
+            get { return _createNewRemoteRemotePath; }
+            set
+            {
+                if (_createNewRemoteRemotePath != value)
+                {
+                    _createNewRemoteRemotePath = value;
+
+                    OnPropertyChanged();
+                    OnPropertyChanged("IsNotValidCreateNewRemoteRemotePath");
+                }
+            }
+        }
+
+        private string _remoteBranchName;
+        public string RemoteBranchName
+        {
+            get { return _remoteBranchName; }
+            set
+            {
+                if (_remoteBranchName != value)
+                {
+                    _remoteBranchName = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged("IsNotValidBranchName");
+                }
+            }
+        }
+
+        public bool IsNotValidBranchName
+        {
+            get
+            {
+                return !IsValidBranchName(RemoteBranchName);
+            }
+        }
+
+        public bool IsValidBranchName(string name)
+        {
+            // Rules taken from https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
+            var isValidName = !string.IsNullOrEmpty(name) &&
+                              !name.Any(char.IsWhiteSpace) &&
+                              !name.Contains("..") &&
+                              !name.Contains("~") &&
+                              !name.Contains("^") &&
+                              !name.Contains(":") &&
+                              !name.Contains("?") &&
+                              !name.Contains("*") &&
+                              !name.Contains("[") &&
+                              !name.Contains("//") &&
+                              name.FirstOrDefault() != '/' &&
+                              name.LastOrDefault() != '/' &&
+                              name.LastOrDefault() != '.' &&
+                              name != "@" &&
+                              !name.Contains("@{") &&
+                              !name.Contains("\\");
+
+            if (!isValidName)
+            {
+                return false;
+            }
+            foreach (var section in name.Split('/'))
+            {
+                isValidName = section.FirstOrDefault() != '.' &&
+                              !section.EndsWith(".lock");
+            }
+
+            return isValidName;
         }
 
         private string _localDirectory;
@@ -284,13 +387,20 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        public bool IsNotValidRemotePath
+        public bool IsNotValidCloneRemotePath
         {
-            get
-            {
-                Uri uri;
-                return !Uri.TryCreate(RemotePath, UriKind.Absolute, out uri);
-            }
+            get { return !IsValidUri(CloneRemotePath); }
+        }
+
+        public bool IsNotValidCreateNewRemoteRemotePath
+        {
+            get { return !IsValidUri(CreateNewRemoteRemotePath); }
+        }
+
+        private bool IsValidUri(string path)
+        {
+            Uri uri;
+            return Uri.TryCreate(path, UriKind.Absolute, out uri);
         }
 
         private bool _displayLoginGrid;
@@ -439,7 +549,7 @@ namespace Rubberduck.UI.SourceControl
             try
             {
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
-                var repo = _provider.Clone(RemotePath, LocalDirectory);
+                var repo = _provider.Clone(CloneRemotePath, LocalDirectory);
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
                 AddOrUpdateLocalPathConfig(new Repository
                 {
@@ -461,6 +571,21 @@ namespace Rubberduck.UI.SourceControl
             Status = RubberduckUI.Online;
         }
 
+        private void CreateNewRemoteRepo()
+        {
+            try
+            {
+                Provider.AddOrigin(CreateNewRemoteRemotePath, RemoteBranchName);
+
+                Provider.Publish(RemoteBranchName);
+                DisplayCreateNewRemoteRepoGrid = false;
+            }
+            catch (SourceControlException ex)
+            {
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+            }
+        }
+
         private void ShowCloneRepoGrid()
         {
             DisplayCloneRepoGrid = true;
@@ -468,9 +593,21 @@ namespace Rubberduck.UI.SourceControl
 
         private void CloseCloneRepoGrid()
         {
-            RemotePath = string.Empty;
+            CloneRemotePath = string.Empty;
 
             DisplayCloneRepoGrid = false;
+        }
+
+        private void ShowCreateNewRemoteRepoGrid()
+        {
+            DisplayCreateNewRemoteRepoGrid = true;
+        }
+
+        private void CloseCreateNewRemoteRepoGrid()
+        {
+            CloneRemotePath = string.Empty;
+
+            DisplayCreateNewRemoteRepoGrid = false;
         }
 
         private void OpenRepoAssignedToProject()
@@ -592,6 +729,30 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _cloneRepoCancelButtonCommand;
+            }
+        }
+
+        private readonly ICommand _createNewRemoteRepoCommand;
+        public ICommand CreateNewRemoteRepoCommand
+        {
+            get { return _createNewRemoteRepoCommand; }
+        }
+
+        private readonly ICommand _createNewRemoteRepoOkButtonCommand;
+        public ICommand CreateNewRemoteRepoOkButtonCommand
+        {
+            get
+            {
+                return _createNewRemoteRepoOkButtonCommand;
+            }
+        }
+
+        private readonly ICommand _createNewRemoteRepoCancelButtonCommand;
+        public ICommand CreateNewRemoteRepoCancelButtonCommand
+        {
+            get
+            {
+                return _createNewRemoteRepoCancelButtonCommand;
             }
         }
 

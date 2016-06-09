@@ -39,9 +39,11 @@ namespace Rubberduck.SourceControl
         public abstract void CreateBranch(string branch);
         public abstract void DeleteBranch(string branch);
         public abstract IRepository Init(string directory, bool bare = false);
+        public abstract void AddOrigin(string path, string trackingBranchName);
         public abstract void Commit(string message);
         public abstract void Publish(string branch);
         public abstract void Unpublish(string branch);
+        public abstract bool HasCredentials();
 
         public virtual void CreateBranch(string sourceBranch, string branch)
         {
