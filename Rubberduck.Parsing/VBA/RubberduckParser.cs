@@ -147,7 +147,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-
+            
             lock (_state)  // note, method is invoked from UI thread... really need the lock here?
             {
                 foreach (var component in toParse)
