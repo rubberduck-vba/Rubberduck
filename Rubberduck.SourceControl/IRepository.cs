@@ -8,7 +8,7 @@ namespace Rubberduck.SourceControl
     public interface IRepository
     {
         [DispId(0)]
-        string Name { get; }
+        string Id { get; }
 
         [DispId(1)]
         [Description("FilePath of local repository.")]

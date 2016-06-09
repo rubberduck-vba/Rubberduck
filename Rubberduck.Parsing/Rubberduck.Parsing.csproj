@@ -115,6 +115,8 @@
     <Compile Include="Binding\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="Grammar\Annotations.cs" />
+    <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
     <Compile Include="Grammar\VBAParser.cs" />
     <Compile Include="Grammar\VBAParserBaseListener.cs" />
@@ -137,8 +139,6 @@
     <Compile Include="Binding\SimpleNameExpression.cs" />
     <Compile Include="Binding\SimpleNameTypeBinding.cs" />
     <Compile Include="ComHelper.cs" />
-    <Compile Include="Grammar\Annotations.cs" />
-    <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
     <Compile Include="ParsingText.Designer.cs">
