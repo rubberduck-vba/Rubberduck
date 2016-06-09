@@ -7,6 +7,7 @@
          xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
          mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Branches}"
+         Name="SourceControlBranchesTab"
          d:DesignHeight="450" d:DesignWidth="300"
          d:DataContext="{d:DesignInstance {x:Type sourceControl:BranchesViewViewModel}, IsDesignTimeCreatable=False}">
     <TabItem.Resources>
@@ -18,6 +19,46 @@
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
+
+        <Style x:Key="PublishedBranchesContextMenu" TargetType="ListBox">
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu DataContext="{Binding DataContext, Source={x:Reference SourceControlBranchesTab}}">
+                        <MenuItem Command="{Binding UnpublishBranchToolbarButtonCommand}"
+                                  CommandParameter="{Binding CurrentPublishedBranch}"
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnpublishBranchButton}">
+                        </MenuItem>
+                        <MenuItem Command="{Binding DeleteBranchToolbarButtonCommand}"
+                                  CommandParameter="True"
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteButton}">
+                            <MenuItem.Icon>
+                                <Image Source="{StaticResource DeleteImage}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="UnpublishedBranchesContextMenu" TargetType="ListBox">
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu DataContext="{Binding DataContext, Source={x:Reference SourceControlBranchesTab}}">
+                        <MenuItem Command="{Binding PublishBranchToolbarButtonCommand}"
+                                  CommandParameter="{Binding CurrentUnpublishedBranch}"
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PublishBranchButton}">
+                        </MenuItem>
+                        <MenuItem Command="{Binding DeleteBranchToolbarButtonCommand}"
+                                  CommandParameter="False"
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteButton}">
+                            <MenuItem.Icon>
+                                <Image Source="{StaticResource DeleteImage}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -246,13 +287,11 @@
                             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
                                      Background="Transparent">
                                 <Button Command="{Binding UnpublishBranchToolbarButtonCommand}"
-                                        CommandParameter="{Binding ElementName=PublishedBranchList, Path=SelectedItem}"
-                                        IsEnabled="{Binding ElementName=PublishedBranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        CommandParameter="{Binding CurrentPublishedBranch}"
                                         Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnpublishBranchButton}"
                                         Height="22" />
                                 <Button Command="{Binding DeleteBranchToolbarButtonCommand}"
-                                        CommandParameter="{Binding ElementName=PublishedBranchList, Path=SelectedItem}"
-                                        IsEnabled="{Binding ElementName=PublishedBranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        CommandParameter="True"
                                         Height="22">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="{StaticResource DeleteImage}" />
@@ -263,10 +302,11 @@
                                 </Button>
                             </ToolBar>
                         </ToolBarTray>
-                        <ListBox Name="PublishedBranchList"
-                                 Height="175"
+                        <ListBox Height="175"
                                  ItemContainerStyle="{StaticResource PrettyListBoxItem}"
-                                 ItemsSource="{Binding PublishedBranches}" />
+                                 ItemsSource="{Binding PublishedBranches}"
+                                 SelectedItem="{Binding CurrentPublishedBranch, Mode=OneWayToSource}"
+                                 Style="{StaticResource PublishedBranchesContextMenu}" />
                     </DockPanel>
                 </GroupBox>
 
@@ -278,13 +318,11 @@
                             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
                                      Background="Transparent">
                                 <Button Command="{Binding PublishBranchToolbarButtonCommand}"
-                                        CommandParameter="{Binding ElementName=UnpublishedBranchList, Path=SelectedItem}"
-                                        IsEnabled="{Binding ElementName=UnpublishedBranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        CommandParameter="{Binding CurrentUnpublishedBranch}"
                                         Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PublishBranchButton}"
                                         Height="22" />
                                 <Button Command="{Binding DeleteBranchToolbarButtonCommand}"
-                                        CommandParameter="{Binding ElementName=UnpublishedBranchList, Path=SelectedItem}"
-                                        IsEnabled="{Binding ElementName=UnpublishedBranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        CommandParameter="False"
                                         Height="22">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="{StaticResource DeleteImage}" />
@@ -295,10 +333,11 @@
                                 </Button>
                             </ToolBar>
                         </ToolBarTray>
-                        <ListBox Name="UnpublishedBranchList"
-                                 Height="175"
+                        <ListBox Height="175"
                                  ItemContainerStyle="{StaticResource PrettyListBoxItem}"
-                                 ItemsSource="{Binding UnpublishedBranches}" />
+                                 ItemsSource="{Binding UnpublishedBranches}"
+                                 SelectedItem="{Binding CurrentUnpublishedBranch, Mode=OneWayToSource}"
+                                 Style="{StaticResource UnpublishedBranchesContextMenu}" />
                     </DockPanel>
                 </GroupBox>
             </StackPanel>
