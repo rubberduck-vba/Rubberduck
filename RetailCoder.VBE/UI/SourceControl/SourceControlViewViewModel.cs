@@ -479,6 +479,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 ViewModel_ErrorThrown(null,
                     new ErrorEventArgs(RubberduckUI.SourceControl_NoBranchesTitle, RubberduckUI.SourceControl_NoBranchesMessage, NotificationType.Error));
+
+                _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
+                _configService.Save(_config);
+
+                _provider = null;
+                Status = RubberduckUI.Offline;
                 return;
             }
 
@@ -550,13 +556,14 @@ namespace Rubberduck.UI.SourceControl
             {
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
                 var repo = _provider.Clone(CloneRemotePath, LocalDirectory);
-                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
                 AddOrUpdateLocalPathConfig(new Repository
                 {
                     Id = _vbe.ActiveVBProject.HelpFile,
                     LocalLocation = repo.LocalLocation,
                     RemoteLocation = repo.RemoteLocation
                 });
+
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
             }
             catch (SourceControlException ex)
             {
@@ -566,25 +573,23 @@ namespace Rubberduck.UI.SourceControl
 
             OnOpenRepoCompleted();
             CloseCloneRepoGrid();
-
-            SetChildPresenterSourceControlProviders(_provider);
+            
             Status = RubberduckUI.Online;
         }
 
         private void CreateNewRemoteRepo()
         {
+            if (Provider == null)
+            {
+                ViewModel_ErrorThrown(null,
+                    new ErrorEventArgs(RubberduckUI.SourceControl_CreateNewRemoteRepo_FailureTitle,
+                        RubberduckUI.SourceControl_CreateNewRemoteRepo_NoOpenRepo, NotificationType.Error));
+                return;
+            }
+
             try
             {
-                if (Provider == null)
-                {
-                    ViewModel_ErrorThrown(null,
-                        new ErrorEventArgs(RubberduckUI.SourceControl_CreateNewRemoteRepo_FailureTitle,
-                            RubberduckUI.SourceControl_CreateNewRemoteRepo_NoOpenRepo, NotificationType.Error));
-                    return;
-                }
-
                 Provider.AddOrigin(CreateNewRemoteRemotePath, RemoteBranchName);
-
                 Provider.Publish(RemoteBranchName);
             }
             catch (SourceControlException ex)
