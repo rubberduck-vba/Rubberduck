@@ -74,8 +74,8 @@ namespace Rubberduck
             _panelVM.OpenRepoStarted += DisableSinkEventHandlers;
             _panelVM.OpenRepoCompleted += EnableSinkEventHandlersAndUpdateCache;
 
-            _branchesVM.MergeStarted += DisableSinkEventHandlers;
-            _branchesVM.MergeCompleted += EnableSinkEventHandlersAndUpdateCache;
+            _branchesVM.LoadingComponentsStarted += DisableSinkEventHandlers;
+            _branchesVM.LoadingComponentsCompleted += EnableSinkEventHandlersAndUpdateCache;
 
             _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -462,8 +462,8 @@ namespace Rubberduck
 
             if (_branchesVM != null)
             {
-                _branchesVM.MergeStarted -= DisableSinkEventHandlers;
-                _branchesVM.MergeCompleted -= EnableSinkEventHandlersAndUpdateCache;
+                _branchesVM.LoadingComponentsStarted -= DisableSinkEventHandlers;
+                _branchesVM.LoadingComponentsCompleted -= EnableSinkEventHandlersAndUpdateCache;
             }
 
             if (_hooks != null)
