@@ -575,15 +575,24 @@ namespace Rubberduck.UI.SourceControl
         {
             try
             {
+                if (Provider == null)
+                {
+                    ViewModel_ErrorThrown(null,
+                        new ErrorEventArgs(RubberduckUI.SourceControl_CreateNewRemoteRepo_FailureTitle,
+                            RubberduckUI.SourceControl_CreateNewRemoteRepo_NoOpenRepo, NotificationType.Error));
+                    return;
+                }
+
                 Provider.AddOrigin(CreateNewRemoteRemotePath, RemoteBranchName);
 
                 Provider.Publish(RemoteBranchName);
-                DisplayCreateNewRemoteRepoGrid = false;
             }
             catch (SourceControlException ex)
             {
                 ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
             }
+
+            CloseCreateNewRemoteRepoGrid();
         }
 
         private void ShowCloneRepoGrid()
@@ -605,7 +614,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void CloseCreateNewRemoteRepoGrid()
         {
-            CloneRemotePath = string.Empty;
+            CreateNewRemoteRemotePath = string.Empty;
+            RemoteBranchName = string.Empty;
 
             DisplayCreateNewRemoteRepoGrid = false;
         }
