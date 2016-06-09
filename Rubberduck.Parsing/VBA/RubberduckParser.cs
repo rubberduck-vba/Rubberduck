@@ -72,8 +72,11 @@ namespace Rubberduck.Parsing.VBA
                 {
                     ParseAsync(e.Component, CancellationToken.None).Wait();
 
-                    Logger.Trace("Starting resolver task");
-                    Resolve(_central.Token);
+                    if (_state.Status != ParserState.Error)
+                    {
+                        Logger.Trace("Starting resolver task");
+                        Resolve(_central.Token);
+                    }
                 });
             }
         }
@@ -110,8 +113,11 @@ namespace Rubberduck.Parsing.VBA
             var parseTasks = components.Select(vbComponent => ParseAsync(vbComponent, CancellationToken.None)).ToArray();
             Task.WaitAll(parseTasks);
 
-            Logger.Trace("Starting resolver task");
-            Resolve(_central.Token); // Tests expect this to be synchronous
+            if (_state.Status != ParserState.Error)
+            {
+                Logger.Trace("Starting resolver task");
+                Resolve(_central.Token); // Tests expect this to be synchronous
+            }
         }
 
         /// <summary>
@@ -166,9 +172,12 @@ namespace Rubberduck.Parsing.VBA
 
             var parseTasks = toParse.Select(vbComponent => ParseAsync(vbComponent, CancellationToken.None)).ToArray();
             Task.WaitAll(parseTasks);
-            
-            Logger.Trace("Starting resolver task");
-            Resolve(_central.Token);
+
+            if (_state.Status != ParserState.Error)
+            {
+                Logger.Trace("Starting resolver task");
+                Resolve(_central.Token);
+            }
         }
 
         private void AddBuiltInDeclarations(IReadOnlyList<VBProject> projects)
