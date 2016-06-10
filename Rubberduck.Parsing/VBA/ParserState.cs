@@ -24,6 +24,10 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         Resolving,
         /// <summary>
+        /// Resolving identifier references.
+        /// </summary>
+        ResolvedDeclarations,
+        /// <summary>
         /// Parser state is in sync with the actual code in the VBE.
         /// </summary>
         Ready,
