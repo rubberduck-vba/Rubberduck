@@ -7,13 +7,14 @@
              xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="600" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type sourceControl:SourceControlViewViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
         <BitmapImage x:Key="OpenRepoImage" UriSource="../../Resources/folder-horizontal-open.png" />
         <BitmapImage x:Key="CreateRepoImage" UriSource="../../Resources/init-repo.png" />
         <BitmapImage x:Key="CloneRepoImage" UriSource="../../Resources/drive-download.png" />
+        <BitmapImage x:Key="PublishRepoImage" UriSource="../../Resources/drive-upload.png" />
         <BitmapImage x:Key="GitIcon" UriSource="../../Resources/icon-github.png" />
         <BitmapImage x:Key="ErrorImage" UriSource="../../Resources/cross-circle.png" />
         <BitmapImage x:Key="WarningIcon" UriSource="../../Resources/exclamation-white.png" />
@@ -246,6 +247,13 @@
                             Background="Transparent">
                         <Image Source="{StaticResource CloneRepoImage}" />
                     </Button>
+                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PublishRepoButtonToolTip}"
+                            Command="{Binding PublishRepoCommand, Mode=OneWay}"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            Visibility="{Binding RepoDoesNotHaveRemoteLocation, Converter={StaticResource BoolToVisibility}}">
+                        <Image Source="{StaticResource PublishRepoImage}" />
+                    </Button>
                     <Separator />
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource GitIcon}" Height="25" />
@@ -356,7 +364,7 @@
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_RemotePathLabel}"
                                FontWeight="SemiBold"
                                Margin="0,0,0,5" />
-                    <TextBox Text="{Binding RemotePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox Text="{Binding CloneRemotePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Margin="0,0,0,10"
                              Height="18"
                              VerticalContentAlignment="Center" />
@@ -364,7 +372,7 @@
                            HorizontalAlignment="Right"
                            Margin="0,-57,-7.8,0"
                            Width="16"
-                           Visibility="{Binding IsNotValidRemotePath, Converter={StaticResource BoolToVisibility}}" />
+                           Visibility="{Binding IsNotValidCloneRemotePath, Converter={StaticResource BoolToVisibility}}" />
                     
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_LocalDirectoryLabel}"
                                FontWeight="SemiBold"
@@ -401,6 +409,47 @@
                                 Margin="10,0,0,0"
                                 Padding="5"
                                 Command="{Binding CloneRepoCancelButtonCommand}">
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+
+            <Grid Visibility="{Binding DisplayPublishRepoGrid, Converter={StaticResource BoolToVisibility}}"
+                  DockPanel.Dock="Top">
+                <StackPanel VerticalAlignment="Top"
+                            Margin="10,5">
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_RemotePathLabel}"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,5" />
+                    <TextBox Text="{Binding PublishRemotePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,0,0,10"
+                             Height="18"
+                             VerticalContentAlignment="Center" />
+                    <Image Source="{StaticResource ErrorImage}"
+                           HorizontalAlignment="Right"
+                           Margin="0,-57,-7.8,0"
+                           Width="16"
+                           Visibility="{Binding IsNotValidPublishRemotePath, Converter={StaticResource BoolToVisibility}}" />
+                    <Image Source="{StaticResource ErrorImage}"
+                               HorizontalAlignment="Right"
+                               Margin="0,-57,-7.8,0"
+                               Width="16"
+                               Visibility="{Binding IsNotValidBranchName, Converter={StaticResource BoolToVisibility}}" />
+                    <Grid Grid.IsSharedSizeScope="True"
+                          HorizontalAlignment="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="CreateRemoteRepoButtons" />
+                            <ColumnDefinition SharedSizeGroup="CreateRemoteRepoButtons" />
+                        </Grid.ColumnDefinitions>
+                        <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                                Padding="5"
+                                Command="{Binding PublishRepoOkButtonCommand}">
+                        </Button>
+                        <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Padding="5"
+                                Command="{Binding PublishRepoCancelButtonCommand}">
                         </Button>
                     </Grid>
                 </StackPanel>

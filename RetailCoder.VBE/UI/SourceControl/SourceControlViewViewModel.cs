@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Ninject;
+using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -25,7 +27,7 @@ namespace Rubberduck.UI.SourceControl
         UnsyncedCommits,
         Settings
     }
-    
+
     public sealed class SourceControlViewViewModel : ViewModelBase, IDisposable
     {
         private readonly VBE _vbe;
@@ -35,6 +37,10 @@ namespace Rubberduck.UI.SourceControl
         private readonly ISourceControlConfigProvider _configService;
         private readonly SourceControlSettings _config;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
+        private readonly IMessageBox _messageBox;
+        private readonly FileSystemWatcher _fileSystemWatcher;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly IEnumerable<string> VbFileExtensions = new[] { "cls", "bas", "frm" };
 
         public SourceControlViewViewModel(
             VBE vbe,
@@ -46,7 +52,8 @@ namespace Rubberduck.UI.SourceControl
             [Named("branchesView")] IControlView branchesView,
             [Named("unsyncedCommitsView")] IControlView unsyncedCommitsView,
             [Named("settingsView")] IControlView settingsView,
-            ICodePaneWrapperFactory wrapperFactory)
+            ICodePaneWrapperFactory wrapperFactory,
+            IMessageBox messageBox)
         {
             _vbe = vbe;
             _state = state;
@@ -58,18 +65,23 @@ namespace Rubberduck.UI.SourceControl
             _configService = configService;
             _config = _configService.Create();
             _wrapperFactory = wrapperFactory;
+            _messageBox = messageBox;
 
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
             _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid());
+            _publishRepoCommand = new DelegateCommand(_ => ShowPublishRepoGrid());
             _refreshCommand = new DelegateCommand(_ => Refresh());
             _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
             _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
             _loginGridOkCommand = new DelegateCommand(_ => CloseLoginGrid(), text => !string.IsNullOrEmpty((string)text));
             _loginGridCancelCommand = new DelegateCommand(_ => CloseLoginGrid());
 
-            _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidRemotePath);
+            _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidCloneRemotePath);
             _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
+
+            _publishRepoOkButtonCommand = new DelegateCommand(_ => PublishRepo(), _ => !IsNotValidPublishRemotePath);
+            _publishRepoCancelButtonCommand = new DelegateCommand(_ => ClosePublishRepoGrid());
 
             TabItems = new ObservableCollection<IControlView>
             {
@@ -83,11 +95,56 @@ namespace Rubberduck.UI.SourceControl
             Status = RubberduckUI.Offline;
 
             ListenForErrors();
+
+            _fileSystemWatcher = new FileSystemWatcher();
         }
 
         public void SetTab(SourceControlTab tab)
         {
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
+        }
+
+        public void HandleAddedComponent(VBComponent component)
+        {
+            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
+
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
+            if (fileStatus != null)
+            {
+                Provider.AddFile(fileStatus.FilePath);
+            }
+        }
+
+        public void HandleRemovedComponent(VBComponent component)
+        {
+            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
+
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
+            if (fileStatus != null)
+            {
+                Provider.RemoveFile(fileStatus.FilePath, true);
+            }
+        }
+
+        public void HandleRenamedComponent(VBComponent component, string oldName)
+        {
+            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
+
+            var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == oldName);
+            if (fileStatus != null)
+            {
+                var directory = Provider.CurrentRepository.LocalLocation;
+                directory += directory.EndsWith("\\") ? string.Empty : "\\";
+
+                var fileExt = "." + fileStatus.FilePath.Split('.').Last();
+
+                _fileSystemWatcher.EnableRaisingEvents = false;
+                File.Move(directory + fileStatus.FilePath, directory + component.Name + fileExt);
+                _fileSystemWatcher.EnableRaisingEvents = true;
+
+                Provider.RemoveFile(oldName + fileExt, false);
+                Provider.AddFile(component.Name + fileExt);
+            }
         }
 
         private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
@@ -99,7 +156,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State == ParserState.Parsed)
+            if (e.State == ParserState.Pending)
             {
                 UiDispatcher.InvokeAsync(Refresh);
             }
@@ -112,7 +169,109 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _provider = value;
+                OnPropertyChanged("RepoDoesNotHaveRemoteLocation");
                 SetChildPresenterSourceControlProviders(_provider);
+
+                if (_fileSystemWatcher.Path != LocalDirectory && Directory.Exists(_provider.CurrentRepository.LocalLocation))
+                {
+                    _fileSystemWatcher.Path = _provider.CurrentRepository.LocalLocation;
+                    _fileSystemWatcher.EnableRaisingEvents = true;
+                    _fileSystemWatcher.IncludeSubdirectories = true;
+
+                    _fileSystemWatcher.Created += _fileSystemWatcher_Created;
+                    _fileSystemWatcher.Deleted += _fileSystemWatcher_Deleted;
+                    _fileSystemWatcher.Renamed += _fileSystemWatcher_Renamed;
+                    _fileSystemWatcher.Changed += _fileSystemWatcher_Changed;
+                }
+            }
+        }
+
+        private void _fileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            // the file system filter doesn't support multiple filters
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            {
+                return;
+            }
+
+            if (!Provider.NotifyExternalFileChanges)
+            {
+                return;
+            }
+
+            Logger.Trace("File system watcher detected file changed");
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
+            {
+                Provider.ReloadComponent(e.Name);
+                UiDispatcher.InvokeAsync(Refresh);
+            }
+        }
+
+        private void _fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
+        {
+            // the file system filter doesn't support multiple filters
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            {
+                return;
+            }
+
+            if (!Provider.NotifyExternalFileChanges)
+            {
+                return;
+            }
+
+            Logger.Trace("File system watcher detected file renamed");
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
+            {
+                Provider.RemoveFile(e.OldFullPath, true);
+                Provider.AddFile(e.FullPath);
+                UiDispatcher.InvokeAsync(Refresh);
+            }
+        }
+
+        private void _fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
+        {
+            // the file system filter doesn't support multiple filters
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            {
+                return;
+            }
+
+            if (!Provider.NotifyExternalFileChanges)
+            {
+                return;
+            }
+
+            Logger.Trace("File system watcher detected file deleted");
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
+            {
+                Provider.RemoveFile(e.FullPath, true);
+                UiDispatcher.InvokeAsync(Refresh);
+            }
+        }
+
+        private void _fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
+        {
+            // the file system filter doesn't support multiple filters
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            {
+                return;
+            }
+
+            if (!Provider.NotifyExternalFileChanges)
+            {
+                return;
+            }
+
+            Logger.Trace("File system watcher detected file created");
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
+            {
+                Provider.AddFile(e.FullPath);
+                UiDispatcher.InvokeAsync(Refresh);
             }
         }
 
@@ -164,31 +323,82 @@ namespace Rubberduck.UI.SourceControl
             get { return _displayCloneRepoGrid; }
             set
             {
+                if (DisplayPublishRepoGrid)
+                {
+                    _displayPublishRepoGrid = false;
+                    OnPropertyChanged("DisplayPublishRepoGrid");
+                }
+
                 if (_displayCloneRepoGrid != value)
                 {
                     _displayCloneRepoGrid = value;
+
                     OnPropertyChanged();
                 }
             }
         }
 
-        private string _remotePath;
-        public string RemotePath
+        private bool _displayPublishRepoGrid;
+        public bool DisplayPublishRepoGrid
         {
-            get { return _remotePath; }
+            get { return _displayPublishRepoGrid; }
             set
             {
-                if (_remotePath != value)
+                if (DisplayCloneRepoGrid)
                 {
-                    _remotePath = value;
+                    _displayCloneRepoGrid = false;
+                    OnPropertyChanged("DisplayCloneRepoGrid");
+                }
+
+                if (_displayPublishRepoGrid != value)
+                {
+                    _displayPublishRepoGrid = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _cloneRemotePath;
+        public string CloneRemotePath
+        {
+            get { return _cloneRemotePath; }
+            set
+            {
+                if (_cloneRemotePath != value)
+                {
+                    _cloneRemotePath = value;
                     LocalDirectory =
                         _config.DefaultRepositoryLocation +
                         (_config.DefaultRepositoryLocation.EndsWith("\\") ? string.Empty : "\\") +
-                        _remotePath.Split('/').Last().Replace(".git", string.Empty);
+                        _cloneRemotePath.Split('/').Last().Replace(".git", string.Empty);
 
                     OnPropertyChanged();
-                    OnPropertyChanged("IsNotValidRemotePath");
+                    OnPropertyChanged("IsNotValidCloneRemotePath");
                 }
+            }
+        }
+
+        private string _publishRemotePath;
+        public string PublishRemotePath
+        {
+            get { return _publishRemotePath; }
+            set
+            {
+                if (_publishRemotePath != value)
+                {
+                    _publishRemotePath = value;
+
+                    OnPropertyChanged();
+                    OnPropertyChanged("IsNotValidPublishRemotePath");
+                }
+            }
+        }
+
+        public bool RepoDoesNotHaveRemoteLocation
+        {
+            get
+            {
+                return !(Provider != null && Provider.RepoHasRemoteOrigin());
             }
         }
 
@@ -262,13 +472,20 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        public bool IsNotValidRemotePath
+        public bool IsNotValidCloneRemotePath
         {
-            get
-            {
-                Uri uri;
-                return !Uri.TryCreate(RemotePath, UriKind.Absolute, out uri);
-            }
+            get { return !IsValidUri(CloneRemotePath); }
+        }
+
+        public bool IsNotValidPublishRemotePath
+        {
+            get { return !IsValidUri(PublishRemotePath); }
+        }
+
+        private bool IsValidUri(string path)
+        {
+            Uri uri;
+            return Uri.TryCreate(path, UriKind.Absolute, out uri);
         }
 
         private bool _displayLoginGrid;
@@ -347,6 +564,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 ViewModel_ErrorThrown(null,
                     new ErrorEventArgs(RubberduckUI.SourceControl_NoBranchesTitle, RubberduckUI.SourceControl_NoBranchesMessage, NotificationType.Error));
+
+                _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
+                _configService.Save(_config);
+
+                _provider = null;
+                Status = RubberduckUI.Offline;
                 return;
             }
 
@@ -368,11 +591,11 @@ namespace Rubberduck.UI.SourceControl
                 var existing = _config.Repositories.Single(repository => repository.LocalLocation == repo.LocalLocation);
                 if (string.IsNullOrEmpty(repo.RemoteLocation) && !string.IsNullOrEmpty(existing.RemoteLocation))
                 {
-                    // config already has remote location and correct repository name - nothing to update
+                    // config already has remote location and correct repository id - nothing to update
                     return;
                 }
 
-                existing.Name = repo.Name;
+                existing.Id = repo.Id;
                 existing.RemoteLocation = repo.RemoteLocation;
 
                 _configService.Save(_config);
@@ -389,17 +612,20 @@ namespace Rubberduck.UI.SourceControl
                 }
 
                 var project = _vbe.ActiveVBProject;
-                var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
+                var repo = new Repository(project.HelpFile, folderPicker.SelectedPath, string.Empty);
 
+                OnOpenRepoStarted();
                 try
                 {
                     Provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
                 }
                 catch (SourceControlException ex)
                 {
+                    OnOpenRepoCompleted();
                     ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                     return;
                 }
+                OnOpenRepoCompleted();
 
                 AddOrUpdateLocalPathConfig(repo);
 
@@ -409,17 +635,20 @@ namespace Rubberduck.UI.SourceControl
 
         private void CloneRepo()
         {
+            OnOpenRepoStarted();
+
             try
             {
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
-                var repo = _provider.Clone(RemotePath, LocalDirectory);
-                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
+                var repo = _provider.Clone(CloneRemotePath, LocalDirectory);
                 AddOrUpdateLocalPathConfig(new Repository
                 {
-                    Name = _vbe.ActiveVBProject.Name,
+                    Id = _vbe.ActiveVBProject.HelpFile,
                     LocalLocation = repo.LocalLocation,
                     RemoteLocation = repo.RemoteLocation
                 });
+
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
             }
             catch (SourceControlException ex)
             {
@@ -427,10 +656,34 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
+            OnOpenRepoCompleted();
             CloseCloneRepoGrid();
-
-            SetChildPresenterSourceControlProviders(_provider);
+            
             Status = RubberduckUI.Online;
+        }
+
+        private void PublishRepo()
+        {
+            if (Provider == null)
+            {
+                ViewModel_ErrorThrown(null,
+                    new ErrorEventArgs(RubberduckUI.SourceControl_PublishRepo_FailureTitle,
+                        RubberduckUI.SourceControl_PublishRepo_NoOpenRepo, NotificationType.Error));
+                return;
+            }
+
+            try
+            {
+                Provider.AddOrigin(PublishRemotePath, Provider.CurrentBranch.Name);
+                Provider.Publish(Provider.CurrentBranch.Name);
+            }
+            catch (SourceControlException ex)
+            {
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+            }
+
+            OnPropertyChanged("RepoDoesNotHaveRemoteLocation");
+            ClosePublishRepoGrid();
         }
 
         private void ShowCloneRepoGrid()
@@ -440,9 +693,21 @@ namespace Rubberduck.UI.SourceControl
 
         private void CloseCloneRepoGrid()
         {
-            RemotePath = string.Empty;
+            CloneRemotePath = string.Empty;
 
             DisplayCloneRepoGrid = false;
+        }
+
+        private void ShowPublishRepoGrid()
+        {
+            DisplayPublishRepoGrid = true;
+        }
+
+        private void ClosePublishRepoGrid()
+        {
+            PublishRemotePath = string.Empty;
+
+            DisplayPublishRepoGrid = false;
         }
 
         private void OpenRepoAssignedToProject()
@@ -454,19 +719,26 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
+                OnOpenRepoStarted();
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Name == _vbe.ActiveVBProject.Name), _wrapperFactory);
+                    _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile), _wrapperFactory);
                 Status = RubberduckUI.Online;
             }
             catch (SourceControlException ex)
             {
                 ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 Status = RubberduckUI.Offline;
+
+                _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
+                _configService.Save(_config);
             }
+
+            OnOpenRepoCompleted();
         }
 
         private void Refresh()
         {
+            _fileSystemWatcher.EnableRaisingEvents = false;
             if (Provider == null)
             {
                 OpenRepoAssignedToProject();
@@ -478,6 +750,11 @@ namespace Rubberduck.UI.SourceControl
                     tab.ViewModel.RefreshView();
                 }
             }
+
+            if (Provider != null && Directory.Exists(Provider.CurrentRepository.LocalLocation))
+            {
+                _fileSystemWatcher.EnableRaisingEvents = true;
+            }
         }
 
         private bool ValidRepoExists()
@@ -487,13 +764,11 @@ namespace Rubberduck.UI.SourceControl
                 return false;
             }
 
-            var possibleRepos = _config.Repositories.Where(repo => repo.Name == _vbe.ActiveVBProject.Name);
-
+            var possibleRepos = _config.Repositories.Where(repo => repo.Id == _vbe.ActiveVBProject.HelpFile);
             var possibleCount = possibleRepos.Count();
 
             //todo: if none are found, prompt user to create one
-            //todo: more than one are found, prompt for correct one
-            return possibleCount != 0 && possibleCount <= 1;
+            return possibleCount == 1;
         }
 
         private void ShowFilePicker()
@@ -535,7 +810,7 @@ namespace Rubberduck.UI.SourceControl
         {
             get { return _cloneRepoCommand; }
         }
-        
+
         private readonly ICommand _showFilePickerCommand;
         public ICommand ShowFilePickerCommand
         {
@@ -560,6 +835,30 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _cloneRepoCancelButtonCommand;
+            }
+        }
+
+        private readonly ICommand _publishRepoCommand;
+        public ICommand PublishRepoCommand
+        {
+            get { return _publishRepoCommand; }
+        }
+
+        private readonly ICommand _publishRepoOkButtonCommand;
+        public ICommand PublishRepoOkButtonCommand
+        {
+            get
+            {
+                return _publishRepoOkButtonCommand;
+            }
+        }
+
+        private readonly ICommand _publishRepoCancelButtonCommand;
+        public ICommand PublishRepoCancelButtonCommand
+        {
+            get
+            {
+                return _publishRepoCancelButtonCommand;
             }
         }
 
@@ -590,11 +889,40 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        public event EventHandler<EventArgs> OpenRepoStarted;
+        private void OnOpenRepoStarted()
+        {
+            var handler = OpenRepoStarted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler<EventArgs> OpenRepoCompleted;
+        private void OnOpenRepoCompleted()
+        {
+            var handler = OpenRepoCompleted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
         public void Dispose()
         {
             if (_state != null)
             {
                 _state.StateChanged -= _state_StateChanged;
+            }
+
+            if (_fileSystemWatcher != null)
+            {
+                _fileSystemWatcher.Created -= _fileSystemWatcher_Created;
+                _fileSystemWatcher.Deleted -= _fileSystemWatcher_Deleted;
+                _fileSystemWatcher.Renamed -= _fileSystemWatcher_Renamed;
+                _fileSystemWatcher.Changed -= _fileSystemWatcher_Changed;
+                _fileSystemWatcher.Dispose();
             }
         }
     }

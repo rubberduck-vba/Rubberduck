@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -34,7 +35,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
         public virtual bool BeginGroup { get { return false; } }
         public virtual int DisplayOrder { get { return default(int); } }
-        
+
         public void Localize()
         {
             if (Item == null)
@@ -79,6 +80,23 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             }
 
             _logger.Debug("'{0}' ({1}) parent menu initialized, hash code {2}.", _key, GetHashCode(), Item.GetHashCode());
+        }
+
+        public void RemoveChildren()
+        {
+            foreach (var child in _items.Keys.Select(item => item as IParentMenuItem).Where(child => child != null))
+            {
+                Debug.WriteLine("Deleting menu item {0}.", child.Caption);
+                child.RemoveChildren();
+                Debug.Assert(_items[child] is CommandBarPopup);
+                (_items[child] as CommandBarPopup).Delete();
+            }
+            foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
+            {
+                child.Click -= child_Click;
+                Debug.WriteLine("Deleting child menu item {0}.", child.Caption);
+                child.Delete();
+            }
         }
 
         public void EvaluateCanExecute(RubberduckParserState state)

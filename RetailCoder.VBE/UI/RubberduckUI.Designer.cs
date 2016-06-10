@@ -3469,6 +3469,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A source file was modified out of the editor; should Rubberduck reload it?.
+        /// </summary>
+        public static string SourceControl_ExternalModifications {
+            get {
+                return ResourceManager.GetString("SourceControl_ExternalModifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fetch.
         /// </summary>
         public static string SourceControl_FetchCommitsLabel {
@@ -3717,6 +3726,33 @@ namespace Rubberduck.UI {
         public static string SourceControl_PublishedBranchesLabel {
             get {
                 return ResourceManager.GetString("SourceControl_PublishedBranchesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish repository..
+        /// </summary>
+        public static string SourceControl_PublishRepo_FailureTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishRepo_FailureTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No open repository to push to specified remote location..
+        /// </summary>
+        public static string SourceControl_PublishRepo_NoOpenRepo {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishRepo_NoOpenRepo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish repository to GitHub.
+        /// </summary>
+        public static string SourceControl_PublishRepoButtonToolTip {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishRepoButtonToolTip", resourceCulture);
             }
         }
         

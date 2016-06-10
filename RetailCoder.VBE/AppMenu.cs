@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
@@ -43,6 +44,7 @@ namespace Rubberduck
         {
             foreach (var menu in _menus)
             {
+                menu.RemoveChildren();
                 if (menu.Item != null)
                 {
                     menu.Item.Delete();

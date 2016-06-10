@@ -501,7 +501,7 @@
     <value>Utiliser le mot-clé 'Set'</value>
   </data>
   <data name="QualifiedSelectionInspection">
-    <value>{0}: {1} - {2},{3}, ligne {4}</value>
+    <value>{0}: {1} - {2} {3}.{4}, ligne {5}</value>
   </data>
   <data name="ObjectVariableNotSetInspectionName">
     <value>L'assignation d'une référence d'objet requiert le mot-clé 'Set'</value>

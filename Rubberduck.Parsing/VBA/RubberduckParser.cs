@@ -19,7 +19,7 @@ using NLog;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParser : IRubberduckParser, IDisposable
+    public class RubberduckParser : IRubberduckParser
     {
         public RubberduckParserState State { get { return _state; } }
 
@@ -72,8 +72,11 @@ namespace Rubberduck.Parsing.VBA
                 {
                     ParseAsync(e.Component, CancellationToken.None).Wait();
 
-                    Logger.Trace("Starting resolver task");
-                    Resolve(_central.Token);
+                    if (_state.Status != ParserState.Error)
+                    {
+                        Logger.Trace("Starting resolver task");
+                        Resolve(_central.Token);
+                    }
                 });
             }
         }
@@ -110,8 +113,11 @@ namespace Rubberduck.Parsing.VBA
             var parseTasks = components.Select(vbComponent => ParseAsync(vbComponent, CancellationToken.None)).ToArray();
             Task.WaitAll(parseTasks);
 
-            Logger.Trace("Starting resolver task");
-            Resolve(_central.Token); // Tests expect this to be synchronous
+            if (_state.Status != ParserState.Error)
+            {
+                Logger.Trace("Starting resolver task");
+                Resolve(_central.Token); // Tests expect this to be synchronous
+            }
         }
 
         /// <summary>
@@ -137,11 +143,11 @@ namespace Rubberduck.Parsing.VBA
 
             if (!toParse.Any())
             {
-                State.SetStatusAndFireStateChanged(ParserState.Ready);
+                State.SetStatusAndFireStateChanged(_state.Status);
                 return;
             }
 
-
+            
             lock (_state)  // note, method is invoked from UI thread... really need the lock here?
             {
                 foreach (var component in toParse)
@@ -166,9 +172,12 @@ namespace Rubberduck.Parsing.VBA
 
             var parseTasks = toParse.Select(vbComponent => ParseAsync(vbComponent, CancellationToken.None)).ToArray();
             Task.WaitAll(parseTasks);
-            
-            Logger.Trace("Starting resolver task");
-            Resolve(_central.Token);
+
+            if (_state.Status != ParserState.Error)
+            {
+                Logger.Trace("Starting resolver task");
+                Resolve(_central.Token);
+            }
         }
 
         private void AddBuiltInDeclarations(IReadOnlyList<VBProject> projects)
@@ -487,6 +496,8 @@ namespace Rubberduck.Parsing.VBA
                 ResolveDeclarations(qualifiedName.Component, kvp.Value);
             }
 
+            _state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+
             // walk all parse trees (modified or not) for identifier references
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
             var passes = new List<ICompilationPass>
@@ -594,15 +605,16 @@ namespace Rubberduck.Parsing.VBA
         public void Dispose()
         {
             State.ParseRequest -= ReparseRequested;
-            if (_resolverTokenSource != null)
-            {
-                _resolverTokenSource.Dispose();
-            }
 
             if (_central != null)
             {
-                _central.Cancel();
+                //_central.Cancel();
                 _central.Dispose();
+            }
+
+            if (_resolverTokenSource != null)
+            {
+                _resolverTokenSource.Dispose();
             }
         }
     }

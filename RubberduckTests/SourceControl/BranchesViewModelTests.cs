@@ -118,11 +118,12 @@ namespace RubberduckTests.SourceControl
             //arrange
             var vm = new BranchesViewViewModel
             {
-                Provider = _provider.Object
+                Provider = _provider.Object,
+                CurrentPublishedBranch = "master"
             };
 
             //Assert
-            Assert.IsFalse(vm.DeleteBranchToolbarButtonCommand.CanExecute("master"));
+            Assert.IsFalse(vm.DeleteBranchToolbarButtonCommand.CanExecute(bool.TrueString));
         }
 
         [TestMethod]
@@ -131,11 +132,12 @@ namespace RubberduckTests.SourceControl
             //arrange
             var vm = new BranchesViewViewModel
             {
-                Provider = _provider.Object
+                Provider = _provider.Object,
+                CurrentPublishedBranch = "bugbranch"
             };
 
             //Assert
-            Assert.IsTrue(vm.DeleteBranchToolbarButtonCommand.CanExecute("bugbranch"));
+            Assert.IsTrue(vm.DeleteBranchToolbarButtonCommand.CanExecute(bool.TrueString));
         }
 
         [TestMethod]
@@ -151,7 +153,7 @@ namespace RubberduckTests.SourceControl
             };
 
             //Assert
-            Assert.IsFalse(vm.DeleteBranchToolbarButtonCommand.CanExecute("master"));
+            Assert.IsFalse(vm.DeleteBranchToolbarButtonCommand.CanExecute(bool.FalseString));
 
             _provider.SetupGet(p => p.Branches).Returns(
                 new List<IBranch>
@@ -159,10 +161,14 @@ namespace RubberduckTests.SourceControl
                     new Branch(firstBranchName, "ref/Heads/" + firstBranchName, false, true, null),
                     new Branch(secondBranchName, "ref/Heads/" + secondBranchName, false, false, null)
                 });
+
+            vm.CurrentPublishedBranch = firstBranchName;
+            vm.CurrentUnpublishedBranch = secondBranchName;
+
             _provider.Setup(p => p.DeleteBranch(It.IsAny<string>()));
 
             //act
-            vm.DeleteBranchToolbarButtonCommand.Execute(secondBranchName);
+            vm.DeleteBranchToolbarButtonCommand.Execute(bool.FalseString);
 
             //Assert
             _provider.Verify(p => p.DeleteBranch(secondBranchName));
@@ -737,13 +743,15 @@ namespace RubberduckTests.SourceControl
         public void OnDeleteBranch_WhenDeleteFails_ActionFailedEventIsRaised()
         {
             //arrange
+            var branchName = "dev";
+
             var wasRaised = false;
             var vm = new BranchesViewViewModel
             {
-                Provider = _provider.Object
+                Provider = _provider.Object,
+                CurrentPublishedBranch = branchName
             };
 
-            var branchName = "dev";
             _provider.Setup(p => p.DeleteBranch(It.Is<string>(b => b == branchName)))
                 .Throws(
                     new SourceControlException("A source control exception was thrown.",
@@ -753,7 +761,7 @@ namespace RubberduckTests.SourceControl
             vm.ErrorThrown += (sender, error) => wasRaised = true;
 
             //act
-            vm.DeleteBranchToolbarButtonCommand.Execute(branchName);
+            vm.DeleteBranchToolbarButtonCommand.Execute(bool.TrueString);
 
             //assert
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
@@ -794,11 +802,12 @@ namespace RubberduckTests.SourceControl
             var branch = "dev";
             var vm = new BranchesViewViewModel
             {
-                Provider = _provider.Object
+                Provider = _provider.Object,
+                CurrentUnpublishedBranch = branch
             };
 
             //act
-            vm.PublishBranchToolbarButtonCommand.Execute(branch);
+            vm.PublishBranchToolbarButtonCommand.Execute(null);
 
             //Assert
             _provider.Verify(git => git.Publish(branch));
@@ -811,11 +820,12 @@ namespace RubberduckTests.SourceControl
             var branch = "master";
             var vm = new BranchesViewViewModel
             {
-                Provider = _provider.Object
+                Provider = _provider.Object,
+                CurrentPublishedBranch = branch
             };
 
             //act
-            vm.UnpublishBranchToolbarButtonCommand.Execute(branch);
+            vm.UnpublishBranchToolbarButtonCommand.Execute(null);
 
             //Assert
             _provider.Verify(git => git.Unpublish(branch));
@@ -852,7 +862,8 @@ namespace RubberduckTests.SourceControl
             //arrange
             var vm = new BranchesViewViewModel
             {
-                Provider = _provider.Object
+                Provider = _provider.Object,
+                CurrentPublishedBranch = "master"
             };
             var wasRaised = false;
 
@@ -865,7 +876,7 @@ namespace RubberduckTests.SourceControl
             vm.ErrorThrown += (sender, error) => wasRaised = true;
 
             //act
-            vm.UnpublishBranchToolbarButtonCommand.Execute("master");
+            vm.UnpublishBranchToolbarButtonCommand.Execute(null);
 
             //assert
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
