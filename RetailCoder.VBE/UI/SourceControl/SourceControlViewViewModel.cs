@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Ninject;
+using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -35,6 +37,10 @@ namespace Rubberduck.UI.SourceControl
         private readonly ISourceControlConfigProvider _configService;
         private readonly SourceControlSettings _config;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
+        private readonly IMessageBox _messageBox;
+        private readonly FileSystemWatcher _fileSystemWatcher;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly IEnumerable<string> VbFileExtensions = new[] { "cls", "bas", "frm" };
 
         public SourceControlViewViewModel(
             VBE vbe,
@@ -46,7 +52,8 @@ namespace Rubberduck.UI.SourceControl
             [Named("branchesView")] IControlView branchesView,
             [Named("unsyncedCommitsView")] IControlView unsyncedCommitsView,
             [Named("settingsView")] IControlView settingsView,
-            ICodePaneWrapperFactory wrapperFactory)
+            ICodePaneWrapperFactory wrapperFactory,
+            IMessageBox messageBox)
         {
             _vbe = vbe;
             _state = state;
@@ -58,6 +65,7 @@ namespace Rubberduck.UI.SourceControl
             _configService = configService;
             _config = _configService.Create();
             _wrapperFactory = wrapperFactory;
+            _messageBox = messageBox;
 
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
@@ -87,6 +95,8 @@ namespace Rubberduck.UI.SourceControl
             Status = RubberduckUI.Offline;
 
             ListenForErrors();
+
+            _fileSystemWatcher = new FileSystemWatcher();
         }
 
         public void SetTab(SourceControlTab tab)
@@ -94,9 +104,9 @@ namespace Rubberduck.UI.SourceControl
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
-        public void AddComponent(VBComponent component)
+        public void HandleAddedComponent(VBComponent component)
         {
-            if (Provider == null) { return; }
+            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
             var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
             if (fileStatus != null)
@@ -105,14 +115,35 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        public void RemoveComponent(VBComponent component)
+        public void HandleRemovedComponent(VBComponent component)
         {
-            if (Provider == null) { return; }
+            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
             var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
             if (fileStatus != null)
             {
                 Provider.RemoveFile(fileStatus.FilePath, true);
+            }
+        }
+
+        public void HandleRenamedComponent(VBComponent component, string oldName)
+        {
+            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
+
+            var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == oldName);
+            if (fileStatus != null)
+            {
+                var directory = Provider.CurrentRepository.LocalLocation;
+                directory += directory.EndsWith("\\") ? string.Empty : "\\";
+
+                var fileExt = "." + fileStatus.FilePath.Split('.').Last();
+
+                _fileSystemWatcher.EnableRaisingEvents = false;
+                File.Move(directory + fileStatus.FilePath, directory + component.Name + fileExt);
+                _fileSystemWatcher.EnableRaisingEvents = true;
+
+                Provider.RemoveFile(oldName + fileExt, false);
+                Provider.AddFile(component.Name + fileExt);
             }
         }
 
@@ -125,7 +156,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State == ParserState.Parsed)
+            if (e.State == ParserState.Pending)
             {
                 UiDispatcher.InvokeAsync(Refresh);
             }
@@ -139,6 +170,107 @@ namespace Rubberduck.UI.SourceControl
             {
                 _provider = value;
                 SetChildPresenterSourceControlProviders(_provider);
+
+                if (_fileSystemWatcher.Path != LocalDirectory && Directory.Exists(_provider.CurrentRepository.LocalLocation))
+                {
+                    _fileSystemWatcher.Path = _provider.CurrentRepository.LocalLocation;
+                    _fileSystemWatcher.EnableRaisingEvents = true;
+                    _fileSystemWatcher.IncludeSubdirectories = true;
+
+                    _fileSystemWatcher.Created += _fileSystemWatcher_Created;
+                    _fileSystemWatcher.Deleted += _fileSystemWatcher_Deleted;
+                    _fileSystemWatcher.Renamed += _fileSystemWatcher_Renamed;
+                    _fileSystemWatcher.Changed += _fileSystemWatcher_Changed;
+                }
+            }
+        }
+
+        private void _fileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            // the file system filter doesn't support multiple filters
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            {
+                return;
+            }
+
+            if (!Provider.NotifyExternalFileChanges)
+            {
+                return;
+            }
+
+            Logger.Trace("File system watcher detected file changed");
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
+            {
+                Provider.ReloadComponent(e.Name);
+                UiDispatcher.InvokeAsync(Refresh);
+            }
+        }
+
+        private void _fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
+        {
+            // the file system filter doesn't support multiple filters
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            {
+                return;
+            }
+
+            if (!Provider.NotifyExternalFileChanges)
+            {
+                return;
+            }
+
+            Logger.Trace("File system watcher detected file renamed");
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
+            {
+                Provider.RemoveFile(e.OldFullPath, true);
+                Provider.AddFile(e.FullPath);
+                UiDispatcher.InvokeAsync(Refresh);
+            }
+        }
+
+        private void _fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
+        {
+            // the file system filter doesn't support multiple filters
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            {
+                return;
+            }
+
+            if (!Provider.NotifyExternalFileChanges)
+            {
+                return;
+            }
+
+            Logger.Trace("File system watcher detected file deleted");
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
+            {
+                Provider.RemoveFile(e.FullPath, true);
+                UiDispatcher.InvokeAsync(Refresh);
+            }
+        }
+
+        private void _fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
+        {
+            // the file system filter doesn't support multiple filters
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            {
+                return;
+            }
+
+            if (!Provider.NotifyExternalFileChanges)
+            {
+                return;
+            }
+
+            Logger.Trace("File system watcher detected file created");
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
+            {
+                Provider.AddFile(e.FullPath);
+                UiDispatcher.InvokeAsync(Refresh);
             }
         }
 
@@ -653,6 +785,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void Refresh()
         {
+            _fileSystemWatcher.EnableRaisingEvents = false;
             if (Provider == null)
             {
                 OpenRepoAssignedToProject();
@@ -663,6 +796,11 @@ namespace Rubberduck.UI.SourceControl
                 {
                     tab.ViewModel.RefreshView();
                 }
+            }
+
+            if (Provider != null && Directory.Exists(Provider.CurrentRepository.LocalLocation))
+            {
+                _fileSystemWatcher.EnableRaisingEvents = true;
             }
         }
 
@@ -823,6 +961,15 @@ namespace Rubberduck.UI.SourceControl
             if (_state != null)
             {
                 _state.StateChanged -= _state_StateChanged;
+            }
+
+            if (_fileSystemWatcher != null)
+            {
+                _fileSystemWatcher.Created -= _fileSystemWatcher_Created;
+                _fileSystemWatcher.Deleted -= _fileSystemWatcher_Deleted;
+                _fileSystemWatcher.Renamed -= _fileSystemWatcher_Renamed;
+                _fileSystemWatcher.Changed -= _fileSystemWatcher_Changed;
+                _fileSystemWatcher.Dispose();
             }
         }
     }

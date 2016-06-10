@@ -71,6 +71,7 @@ namespace RubberduckTests.SourceControl
             _provider.SetupGet(git => git.UnsyncedRemoteCommits).Returns(new List<ICommit>());
             _provider.Setup(git => git.InitVBAProject(It.IsAny<string>())).Returns(GetDummyRepo());
             _provider.Setup(git => git.Clone(It.IsAny<string>(), It.IsAny<string>())).Returns(GetDummyRepo());
+            _provider.Setup(git => git.CurrentRepository).Returns(GetDummyRepo());
 
             _providerFactory = new Mock<ISourceControlProviderFactory>();
             _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>()))
@@ -109,7 +110,7 @@ namespace RubberduckTests.SourceControl
         {
             _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(), _providerFactory.Object, _folderBrowserFactory.Object,
                 _configService.Object, new ChangesView(_changesVM), new BranchesView(_branchesVM),
-                new UnsyncedCommitsView(_unsyncedVM), new SettingsView(_settingsVM), new CodePaneWrapperFactory());
+                new UnsyncedCommitsView(_unsyncedVM), new SettingsView(_settingsVM), new CodePaneWrapperFactory(), new Mock<IMessageBox>().Object);
         }
 
         [TestMethod]

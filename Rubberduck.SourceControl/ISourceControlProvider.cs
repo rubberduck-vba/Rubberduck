@@ -11,6 +11,8 @@ namespace Rubberduck.SourceControl
         IEnumerable<IBranch> Branches { get; }
         IList<ICommit> UnsyncedLocalCommits { get; }
         IList<ICommit> UnsyncedRemoteCommits { get; }
+        bool NotifyExternalFileChanges { get; }
+        bool HandleVbeSinkEvents { get; }
 
         event EventHandler<EventArgs> BranchChanged;
 
@@ -157,5 +159,17 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <returns>Returns true if repo can log into GitHub.</returns>
         bool HasCredentials();
+
+        /// <summary>
+        /// Gets the last known status without refreshing
+        /// </summary>
+        /// <returns>Collection of statuses.</returns>
+        IEnumerable<IFileStatusEntry> LastKnownStatus();
+
+        /// <summary>
+        /// Reloads the component into the VBE
+        /// </summary>
+        /// <param name="fileName"></param>
+        void ReloadComponent(string fileName);
     }
 }
