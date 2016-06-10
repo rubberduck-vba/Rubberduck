@@ -12,6 +12,7 @@ namespace Rubberduck.SourceControl
         IList<ICommit> UnsyncedLocalCommits { get; }
         IList<ICommit> UnsyncedRemoteCommits { get; }
         bool NotifyExternalFileChanges { get; }
+        bool NotifyVBAChanges { get; }
 
         event EventHandler<EventArgs> BranchChanged;
 
@@ -164,5 +165,11 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <returns>Collection of statuses.</returns>
         IEnumerable<IFileStatusEntry> LastKnownStatus();
+
+        /// <summary>
+        /// Reloads the component into the VBE
+        /// </summary>
+        /// <param name="fileName"></param>
+        void ReloadComponent(string fileName);
     }
 }

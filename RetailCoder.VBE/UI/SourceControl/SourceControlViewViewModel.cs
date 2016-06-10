@@ -105,33 +105,29 @@ namespace Rubberduck.UI.SourceControl
 
         public void AddComponent(VBComponent component)
         {
-            if (Provider == null) { return; }
+            if (Provider == null || !Provider.NotifyVBAChanges) { return; }
 
-            //_fileSystemWatcher.EnableRaisingEvents = false;
             var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
             if (fileStatus != null)
             {
                 Provider.AddFile(fileStatus.FilePath);
             }
-            //_fileSystemWatcher.EnableRaisingEvents = true;
         }
 
         public void RemoveComponent(VBComponent component)
         {
-            if (Provider == null) { return; }
+            if (Provider == null || !Provider.NotifyVBAChanges) { return; }
 
-            //_fileSystemWatcher.EnableRaisingEvents = false;
             var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
             if (fileStatus != null)
             {
                 Provider.RemoveFile(fileStatus.FilePath, true);
             }
-            //_fileSystemWatcher.EnableRaisingEvents = true;
         }
 
         public void RenameComponent(VBComponent component, string oldName)
         {
-            if (Provider == null) { return; }
+            if (Provider == null || !Provider.NotifyVBAChanges) { return; }
 
             var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == oldName);
             if (fileStatus != null)
@@ -205,6 +201,7 @@ namespace Rubberduck.UI.SourceControl
             if (_messageBox.Show("file changed", RubberduckUI.SourceControlPanel_Caption,
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
             {
+                Provider.ReloadComponent(e.Name);
                 UiDispatcher.InvokeAsync(Refresh);
             }
         }
