@@ -40,6 +40,7 @@ namespace Rubberduck.UI.SourceControl
         private readonly IMessageBox _messageBox;
         private readonly FileSystemWatcher _fileSystemWatcher;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly IEnumerable<string> VbFileExtensions = new[] { "cls", "bas", "frm" };
 
         public SourceControlViewViewModel(
             VBE vbe,
@@ -103,7 +104,7 @@ namespace Rubberduck.UI.SourceControl
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
-        public void AddComponent(VBComponent component)
+        public void HandleAddedComponent(VBComponent component)
         {
             if (Provider == null || !Provider.NotifyVBAChanges) { return; }
 
@@ -114,7 +115,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        public void RemoveComponent(VBComponent component)
+        public void HandleRemovedComponent(VBComponent component)
         {
             if (Provider == null || !Provider.NotifyVBAChanges) { return; }
 
@@ -125,7 +126,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        public void RenameComponent(VBComponent component, string oldName)
+        public void HandleRenamedComponent(VBComponent component, string oldName)
         {
             if (Provider == null || !Provider.NotifyVBAChanges) { return; }
 
@@ -187,7 +188,7 @@ namespace Rubberduck.UI.SourceControl
         private void _fileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             // the file system filter doesn't support multiple filters
-            if (!new[] { "cls", "bas", "frm" }.Contains(e.Name.Split('.').Last()))
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
             {
                 return;
             }
@@ -209,7 +210,7 @@ namespace Rubberduck.UI.SourceControl
         private void _fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
             // the file system filter doesn't support multiple filters
-            if (!new[] { "cls", "bas", "frm" }.Contains(e.Name.Split('.').Last()))
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
             {
                 return;
             }
@@ -232,7 +233,7 @@ namespace Rubberduck.UI.SourceControl
         private void _fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
             // the file system filter doesn't support multiple filters
-            if (!new[] { "cls", "bas", "frm" }.Contains(e.Name.Split('.').Last()))
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
             {
                 return;
             }
@@ -254,7 +255,7 @@ namespace Rubberduck.UI.SourceControl
         private void _fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
             // the file system filter doesn't support multiple filters
-            if (!new[] { "cls", "bas", "frm" }.Contains(e.Name.Split('.').Last()))
+            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
             {
                 return;
             }

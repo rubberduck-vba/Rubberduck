@@ -3496,7 +3496,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Some source files were modified out of the editor; should Rubberduck reload them?.
+        ///   Looks up a localized string similar to A source file was modified out of the editor; should Rubberduck reload it?.
         /// </summary>
         public static string SourceControl_ExternalModifications {
             get {
