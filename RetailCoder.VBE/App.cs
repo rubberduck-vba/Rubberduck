@@ -26,7 +26,7 @@ namespace Rubberduck
         private const string FILE_TARGET_NAME = "file";
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly IRubberduckParser _parser;
+        private IRubberduckParser _parser;
         private AutoSave.AutoSave _autoSave;
         private IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
@@ -466,6 +466,16 @@ namespace Rubberduck
                 _branchesVM.LoadingComponentsCompleted -= EnableSinkEventHandlersAndUpdateCache;
             }
 
+            _handleSinkEvents = false;
+
+            if (_parser != null && _parser.State != null)
+            {
+                _parser.State.StateChanged -= Parser_StateChanged;
+                _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
+                _parser.Dispose();
+                // I won't set this to null because other components may try to release things
+            }
+
             if (_hooks != null)
             {
                 _hooks.MessageReceived -= _hooks_MessageReceived;
@@ -478,13 +488,6 @@ namespace Rubberduck
                 _configService.SettingsChanged -= _configService_SettingsChanged;
                 _configService.LanguageChanged -= ConfigServiceLanguageChanged;
                 _configService = null;
-            }
-
-            if (_parser != null && _parser.State != null)
-            {
-                _parser.State.StateChanged -= Parser_StateChanged;
-                _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
-                // I won't set this to null because other components may try to release things
             }
 
             if (_stateBar != null)
@@ -528,6 +531,8 @@ namespace Rubberduck
             {
                 item.Value.Item1.Unadvise(item.Value.Item2);
             }
+
+            UiDispatcher.Shutdown();
 
             _disposed = true;
         }

@@ -19,7 +19,7 @@ using NLog;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParser : IRubberduckParser, IDisposable
+    public class RubberduckParser : IRubberduckParser
     {
         public RubberduckParserState State { get { return _state; } }
 
@@ -603,15 +603,16 @@ namespace Rubberduck.Parsing.VBA
         public void Dispose()
         {
             State.ParseRequest -= ReparseRequested;
-            if (_resolverTokenSource != null)
-            {
-                _resolverTokenSource.Dispose();
-            }
 
             if (_central != null)
             {
-                _central.Cancel();
+                //_central.Cancel();
                 _central.Dispose();
+            }
+
+            if (_resolverTokenSource != null)
+            {
+                _resolverTokenSource.Dispose();
             }
         }
     }
