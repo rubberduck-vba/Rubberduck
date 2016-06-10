@@ -171,7 +171,7 @@ namespace Rubberduck.SourceControl
             //add a master branch to newly created repo
             using (var repo = new LibGit2Sharp.Repository(repository.LocalLocation))
             {
-                var status = repo.RetrieveStatus(new StatusOptions());
+                var status = repo.RetrieveStatus(new StatusOptions {DetectRenamesInWorkDir = true});
                 foreach (var stat in status.Untracked)
                 {
                     repo.Stage(stat.FilePath);
@@ -482,7 +482,7 @@ namespace Rubberduck.SourceControl
             try
             {
                 base.Status();
-                return _repo.RetrieveStatus(new StatusOptions {IncludeUnaltered = true})
+                return _repo.RetrieveStatus(new StatusOptions {IncludeUnaltered = true, DetectRenamesInWorkDir = true })
                         .Select(item => new FileStatusEntry(item));
             }
             catch (LibGit2SharpException ex)
@@ -491,6 +491,19 @@ namespace Rubberduck.SourceControl
             }
         }
 
+
+        public override IEnumerable<IFileStatusEntry> LastKnownStatus()
+        {
+            try
+            {
+                return _repo.RetrieveStatus(new StatusOptions { IncludeUnaltered = true, DetectRenamesInWorkDir = true})
+                        .Select(item => new FileStatusEntry(item));
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitRepoStatusFailed, ex);
+            }
+        }
         public override void Undo(string filePath)
         {
             try

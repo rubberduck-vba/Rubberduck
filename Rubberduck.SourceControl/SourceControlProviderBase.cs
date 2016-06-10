@@ -44,6 +44,7 @@ namespace Rubberduck.SourceControl
         public abstract void Publish(string branch);
         public abstract void Unpublish(string branch);
         public abstract bool HasCredentials();
+        public abstract IEnumerable<IFileStatusEntry> LastKnownStatus();
 
         public virtual void CreateBranch(string sourceBranch, string branch)
         {

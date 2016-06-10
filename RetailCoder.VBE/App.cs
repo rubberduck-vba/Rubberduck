@@ -311,6 +311,8 @@ namespace Rubberduck
                 return;
             }
 
+            _panelVM.RenameComponent(e.Item, e.OldName);
+
             _logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
 
             _parser.State.RemoveRenamedComponent(e.Item, e.OldName);

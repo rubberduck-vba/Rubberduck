@@ -109,7 +109,7 @@ namespace RubberduckTests.SourceControl
         {
             _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(), _providerFactory.Object, _folderBrowserFactory.Object,
                 _configService.Object, new ChangesView(_changesVM), new BranchesView(_branchesVM),
-                new UnsyncedCommitsView(_unsyncedVM), new SettingsView(_settingsVM), new CodePaneWrapperFactory());
+                new UnsyncedCommitsView(_unsyncedVM), new SettingsView(_settingsVM), new CodePaneWrapperFactory(), new Mock<IMessageBox>().Object);
         }
 
         [TestMethod]

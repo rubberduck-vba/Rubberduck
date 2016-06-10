@@ -157,5 +157,11 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <returns>Returns true if repo can log into GitHub.</returns>
         bool HasCredentials();
+
+        /// <summary>
+        /// Gets the last known status without refreshing
+        /// </summary>
+        /// <returns>Collection of statuses.</returns>
+        IEnumerable<IFileStatusEntry> LastKnownStatus();
     }
 }
