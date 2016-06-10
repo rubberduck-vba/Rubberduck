@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Office.Core;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
@@ -6,5 +7,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
     {
         CommandBarControls Parent { get; set; }
         CommandBarPopup Item { get; }
+        void RemoveChildren();
     }
 }
