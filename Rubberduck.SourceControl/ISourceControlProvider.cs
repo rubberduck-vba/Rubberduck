@@ -12,7 +12,7 @@ namespace Rubberduck.SourceControl
         IList<ICommit> UnsyncedLocalCommits { get; }
         IList<ICommit> UnsyncedRemoteCommits { get; }
         bool NotifyExternalFileChanges { get; }
-        bool NotifyVBAChanges { get; }
+        bool HandleVbeSinkEvents { get; }
 
         event EventHandler<EventArgs> BranchChanged;
 

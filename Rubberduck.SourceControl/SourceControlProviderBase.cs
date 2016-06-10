@@ -32,7 +32,7 @@ namespace Rubberduck.SourceControl
         public abstract IList<ICommit> UnsyncedLocalCommits { get; }
         public abstract IList<ICommit> UnsyncedRemoteCommits { get; }
         public bool NotifyExternalFileChanges { get; protected set; }
-        public bool NotifyVBAChanges { get; protected set; }
+        public bool HandleVbeSinkEvents { get; protected set; }
         public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory);
         public abstract void Push();
         public abstract void Fetch(string remoteName);
@@ -119,10 +119,10 @@ namespace Rubberduck.SourceControl
             {
                 var component = Project.VBComponents.OfType<VBComponent>().FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
 
-                NotifyVBAChanges = false;
+                HandleVbeSinkEvents = false;
                 Project.VBComponents.RemoveSafely(component);
                 Project.VBComponents.ImportSourceFile(filePath);
-                NotifyVBAChanges = true;
+                HandleVbeSinkEvents = true;
             }
         }
 
@@ -148,7 +148,7 @@ namespace Rubberduck.SourceControl
 
         public void ReloadComponent(string filePath)
         {
-            NotifyVBAChanges = false;
+            HandleVbeSinkEvents = false;
 
             var codePane = Project.VBE.ActiveCodePane;
 
@@ -182,7 +182,7 @@ namespace Rubberduck.SourceControl
                 Project.VBComponents.Import(directory + filePath);
             }
 
-            NotifyVBAChanges = true;
+            HandleVbeSinkEvents = true;
         }
 
         private void Refresh()
@@ -190,7 +190,7 @@ namespace Rubberduck.SourceControl
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
 
-            NotifyVBAChanges = false;
+            HandleVbeSinkEvents = false;
 
             var codePane = Project.VBE.ActiveCodePane;
 
@@ -216,7 +216,7 @@ namespace Rubberduck.SourceControl
                 Project.ImportSourceFiles(CurrentRepository.LocalLocation);
             }
 
-            NotifyVBAChanges = true;
+            HandleVbeSinkEvents = true;
         }
     }
 }

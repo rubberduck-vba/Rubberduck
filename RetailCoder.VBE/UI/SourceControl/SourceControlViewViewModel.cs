@@ -106,7 +106,7 @@ namespace Rubberduck.UI.SourceControl
 
         public void HandleAddedComponent(VBComponent component)
         {
-            if (Provider == null || !Provider.NotifyVBAChanges) { return; }
+            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
             var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
             if (fileStatus != null)
@@ -117,7 +117,7 @@ namespace Rubberduck.UI.SourceControl
 
         public void HandleRemovedComponent(VBComponent component)
         {
-            if (Provider == null || !Provider.NotifyVBAChanges) { return; }
+            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
             var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
             if (fileStatus != null)
@@ -128,7 +128,7 @@ namespace Rubberduck.UI.SourceControl
 
         public void HandleRenamedComponent(VBComponent component, string oldName)
         {
-            if (Provider == null || !Provider.NotifyVBAChanges) { return; }
+            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
             var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == oldName);
             if (fileStatus != null)
