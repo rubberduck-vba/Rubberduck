@@ -469,7 +469,9 @@ namespace Rubberduck.SourceControl
         {
             try
             {
+                NotifyExternalFileChanges = false;
                 _repo.Remove(filePath, removeFromWorkingDirectory);
+                NotifyExternalFileChanges = true;
             }
             catch (LibGit2SharpException ex)
             {

@@ -31,6 +31,7 @@ namespace Rubberduck.SourceControl
         public abstract IEnumerable<IBranch> Branches { get; }
         public abstract IList<ICommit> UnsyncedLocalCommits { get; }
         public abstract IList<ICommit> UnsyncedRemoteCommits { get; }
+        public bool NotifyExternalFileChanges { get; protected set; }
         public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory);
         public abstract void Push();
         public abstract void Fetch(string remoteName);
@@ -64,9 +65,9 @@ namespace Rubberduck.SourceControl
                 Directory.CreateDirectory(directory);
             }
 
-            OnExportFilesStarted();
+            NotifyExternalFileChanges = false;
             Project.ExportSourceFiles(directory);
-            OnExportFilesCompleted();
+            NotifyExternalFileChanges = true;
 
             CurrentRepository = new Repository(Project.HelpFile, directory, directory);
             return CurrentRepository;
@@ -81,16 +82,16 @@ namespace Rubberduck.SourceControl
 
         public virtual void Stage(string filePath)
         {
-            OnExportFilesStarted();
+            NotifyExternalFileChanges = false;
             Project.ExportSourceFiles(CurrentRepository.LocalLocation);
-            OnExportFilesCompleted();
+            NotifyExternalFileChanges = true;
         }
 
         public virtual void Stage(IEnumerable<string> filePaths)
         {
-            OnExportFilesStarted();
+            NotifyExternalFileChanges = false;
             Project.ExportSourceFiles(CurrentRepository.LocalLocation);
-            OnExportFilesCompleted();
+            NotifyExternalFileChanges = true;
         }
 
         public virtual void Merge(string sourceBranch, string destinationBranch)
@@ -128,9 +129,9 @@ namespace Rubberduck.SourceControl
 
         public virtual IEnumerable<IFileStatusEntry> Status()
         {
-            OnExportFilesStarted();
+            NotifyExternalFileChanges = false;
             Project.ExportSourceFiles(CurrentRepository.LocalLocation);
-            OnExportFilesCompleted();
+            NotifyExternalFileChanges = true;
             return null;
         }
 
@@ -168,26 +169,6 @@ namespace Rubberduck.SourceControl
             {
                 Project.RemoveAllComponents();
                 Project.ImportSourceFiles(CurrentRepository.LocalLocation);
-            }
-        }
-
-        public event EventHandler<EventArgs> ExportFilesStarted;
-        private void OnExportFilesStarted()
-        {
-            var handler = ExportFilesStarted;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
-
-        public event EventHandler<EventArgs> ExportFilesCompleted;
-        private void OnExportFilesCompleted()
-        {
-            var handler = ExportFilesCompleted;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
             }
         }
     }
