@@ -168,24 +168,26 @@ namespace Rubberduck.UI.SourceControl
                 }
 
                 RefreshView();
+
+                switch (CommitAction)
+                {
+                    case CommitAction.Commit:
+                        RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitSuccess, NotificationType.Info);
+                        return;
+                    case CommitAction.CommitAndPush:
+                        RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitAndPushSuccess, NotificationType.Info);
+                        return;
+                    case CommitAction.CommitAndSync:
+                        RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitAndSyncSuccess, NotificationType.Info);
+                        return;
+                }
             }
             catch (SourceControlException ex)
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
 
-            switch (CommitAction)
-            {
-                case CommitAction.Commit:
-                    RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitSuccess, NotificationType.Info);
-                    return;
-                case CommitAction.CommitAndPush:
-                    RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitAndPushSuccess, NotificationType.Info);
-                    return;
-                case CommitAction.CommitAndSync:
-                    RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitAndSyncSuccess, NotificationType.Info);
-                    return;
-            }
+            CommitMessage = string.Empty;
         }
 
         private void IncludeChanges(IFileStatusEntry fileStatusEntry)

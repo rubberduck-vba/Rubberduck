@@ -11,6 +11,8 @@ namespace Rubberduck.SourceControl
         IEnumerable<IBranch> Branches { get; }
         IList<ICommit> UnsyncedLocalCommits { get; }
         IList<ICommit> UnsyncedRemoteCommits { get; }
+        bool NotifyExternalFileChanges { get; }
+        bool HandleVbeSinkEvents { get; }
 
         event EventHandler<EventArgs> BranchChanged;
 
@@ -27,6 +29,13 @@ namespace Rubberduck.SourceControl
         /// <param name="bare">Specifies whether or not the new repository will be intialized as a bare repo.</param>
         /// <returns>Newly created repository.</returns>
         IRepository Init(string directory, bool bare = false);
+
+        /// <summary>
+        /// Publishes to a remote repo.
+        /// </summary>
+        /// <param name="path">The remote path to the repo</param>
+        /// <param name="trackingBranchName">The branch name to publish to</param>
+        void AddOrigin(string path, string trackingBranchName);
 
         /// <summary>
         /// Creates a new repository and sets the CurrentRepository property from the VBProject passed to the ISourceControlProvider upon creation.
@@ -112,6 +121,7 @@ namespace Rubberduck.SourceControl
         /// Removes file from tracking.
         /// </summary>
         /// <param name="filePath"></param>
+        /// <param name="removeFromWorkingDirectory"></param>
         void RemoveFile(string filePath, bool removeFromWorkingDirectory);
 
         /// <summary>
@@ -143,5 +153,23 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <param name="branch">The name of the branch to unpublish</param>
         void Unpublish(string branch);
+
+        /// <summary>
+        /// Returns whether user has credentials to log into credentials.
+        /// </summary>
+        /// <returns>Returns true if repo can log into GitHub.</returns>
+        bool HasCredentials();
+
+        /// <summary>
+        /// Gets the last known status without refreshing
+        /// </summary>
+        /// <returns>Collection of statuses.</returns>
+        IEnumerable<IFileStatusEntry> LastKnownStatus();
+
+        /// <summary>
+        /// Reloads the component into the VBE
+        /// </summary>
+        /// <param name="fileName"></param>
+        void ReloadComponent(string fileName);
     }
 }

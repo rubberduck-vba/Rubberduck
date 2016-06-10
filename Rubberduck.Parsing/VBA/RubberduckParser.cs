@@ -143,11 +143,11 @@ namespace Rubberduck.Parsing.VBA
 
             if (!toParse.Any())
             {
-                State.SetStatusAndFireStateChanged(ParserState.Ready);
+                State.SetStatusAndFireStateChanged(_state.Status);
                 return;
             }
 
-
+            
             lock (_state)  // note, method is invoked from UI thread... really need the lock here?
             {
                 foreach (var component in toParse)
@@ -495,6 +495,8 @@ namespace Rubberduck.Parsing.VBA
                 if (token.IsCancellationRequested) return;
                 ResolveDeclarations(qualifiedName.Component, kvp.Value);
             }
+
+            _state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             // walk all parse trees (modified or not) for identifier references
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);

@@ -3343,6 +3343,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create new remote repository..
+        /// </summary>
+        public static string SourceControl_CreateNewRemoteRepo_FailureTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_CreateNewRemoteRepo_FailureTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No open repository to push to specified remote location..
+        /// </summary>
+        public static string SourceControl_CreateNewRemoteRepo_NoOpenRepo {
+            get {
+                return ResourceManager.GetString("SourceControl_CreateNewRemoteRepo_NoOpenRepo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload repository to GitHub.
+        /// </summary>
+        public static string SourceControl_CreateNewRemoteRepoButtonToolTip {
+            get {
+                return ResourceManager.GetString("SourceControl_CreateNewRemoteRepoButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create New Repository.
         /// </summary>
         public static string SourceControl_CreateNewRepo {
@@ -3465,6 +3492,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_ExcludeFileButton {
             get {
                 return ResourceManager.GetString("SourceControl_ExcludeFileButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A source file was modified out of the editor; should Rubberduck reload it?.
+        /// </summary>
+        public static string SourceControl_ExternalModifications {
+            get {
+                return ResourceManager.GetString("SourceControl_ExternalModifications", resourceCulture);
             }
         }
         
