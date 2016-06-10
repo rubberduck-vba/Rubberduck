@@ -3496,6 +3496,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Some source files were modified out of the editor; should Rubberduck reload them?.
+        /// </summary>
+        public static string SourceControl_ExternalModifications {
+            get {
+                return ResourceManager.GetString("SourceControl_ExternalModifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fetch.
         /// </summary>
         public static string SourceControl_FetchCommitsLabel {

@@ -198,7 +198,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             Logger.Trace("File system watcher detected file changed");
-            if (_messageBox.Show("file changed", RubberduckUI.SourceControlPanel_Caption,
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
             {
                 Provider.ReloadComponent(e.Name);
@@ -220,7 +220,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             Logger.Trace("File system watcher detected file renamed");
-            if (_messageBox.Show("file changed", RubberduckUI.SourceControlPanel_Caption,
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
             {
                 Provider.RemoveFile(e.OldFullPath, true);
@@ -243,7 +243,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             Logger.Trace("File system watcher detected file deleted");
-            if (_messageBox.Show("file changed", RubberduckUI.SourceControlPanel_Caption,
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
             {
                 Provider.RemoveFile(e.FullPath, true);
@@ -265,7 +265,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             Logger.Trace("File system watcher detected file created");
-            if (_messageBox.Show("file changed", RubberduckUI.SourceControlPanel_Caption,
+            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
             {
                 Provider.AddFile(e.FullPath);
