@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1619,5 +1619,17 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Show Log Folder</value>
+  </data>
+  <data name="SourceControl_CreateNewRemoteRepoButtonToolTip" xml:space="preserve">
+    <value>Upload repository to GitHub</value>
+  </data>
+  <data name="SourceControl_CreateNewRemoteRepo_FailureTitle" xml:space="preserve">
+    <value>Create new remote repository.</value>
+  </data>
+  <data name="SourceControl_CreateNewRemoteRepo_NoOpenRepo" xml:space="preserve">
+    <value>No open repository to push to specified remote location.</value>
+  </data>
+  <data name="SourceControl_ExternalModifications" xml:space="preserve">
+    <value>A source file was modified out of the editor; should Rubberduck reload it?</value>
   </data>
 </root>
