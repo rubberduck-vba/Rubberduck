@@ -507,7 +507,7 @@
     <value>Context type '{0}' is not valid for {1}.</value>
   </data>
   <data name="QualifiedSelectionInspection" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3}, line {4}</value>
+    <value>{0}: {1} - {2} {3}.{4}, line {5}</value>
   </data>
   <data name="ObjectVariableNotSetInspectionMeta" xml:space="preserve">
     <value>As far as Rubberduck can tell, this variable is an object variable, assigned without the 'Set' keyword. This causes run-time error 91 'Object or With block variable not set'.</value>

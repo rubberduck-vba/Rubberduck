@@ -1015,7 +1015,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}: {1} - {2}.{3}, line {4}.
+        ///   Looks up a localized string similar to {0}: {1} - {2} {3}.{4}, line {5}.
         /// </summary>
         public static string QualifiedSelectionInspection {
             get {
