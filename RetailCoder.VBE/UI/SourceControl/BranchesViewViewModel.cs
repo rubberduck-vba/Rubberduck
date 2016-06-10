@@ -189,39 +189,41 @@ namespace Rubberduck.UI.SourceControl
 
         public bool IsNotValidBranchName
         {
-            get
+            get { return !IsValidBranchName(NewBranchName); }
+        }
+
+        public bool IsValidBranchName(string name)
+        {
+            // Rules taken from https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
+            var isValidName = !string.IsNullOrEmpty(name) &&
+                              !LocalBranches.Contains(name) &&
+                              !name.Any(char.IsWhiteSpace) &&
+                              !name.Contains("..") &&
+                              !name.Contains("~") &&
+                              !name.Contains("^") &&
+                              !name.Contains(":") &&
+                              !name.Contains("?") &&
+                              !name.Contains("*") &&
+                              !name.Contains("[") &&
+                              !name.Contains("//") &&
+                              name.FirstOrDefault() != '/' &&
+                              name.LastOrDefault() != '/' &&
+                              name.LastOrDefault() != '.' &&
+                              name != "@" &&
+                              !name.Contains("@{") &&
+                              !name.Contains("\\");
+
+            if (!isValidName)
             {
-                // Rules taken from https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
-                var isValidName = !string.IsNullOrEmpty(NewBranchName) &&
-                                  !LocalBranches.Contains(NewBranchName) &&
-                                  !NewBranchName.Any(char.IsWhiteSpace) &&
-                                  !NewBranchName.Contains("..") &&
-                                  !NewBranchName.Contains("~") &&
-                                  !NewBranchName.Contains("^") &&
-                                  !NewBranchName.Contains(":") &&
-                                  !NewBranchName.Contains("?") &&
-                                  !NewBranchName.Contains("*") &&
-                                  !NewBranchName.Contains("[") &&
-                                  !NewBranchName.Contains("//") &&
-                                  NewBranchName.FirstOrDefault() != '/' &&
-                                  NewBranchName.LastOrDefault() != '/' &&
-                                  NewBranchName.LastOrDefault() != '.' &&
-                                  NewBranchName != "@" &&
-                                  !NewBranchName.Contains("@{") &&
-                                  !NewBranchName.Contains("\\");
-
-                if (!isValidName)
-                {
-                    return true;
-                }
-                foreach (var section in NewBranchName.Split('/'))
-                {
-                    isValidName = section.FirstOrDefault() != '.' &&
-                                  !section.EndsWith(".lock");
-                }
-
-                return !isValidName;
+                return false;
             }
+            foreach (var section in name.Split('/'))
+            {
+                isValidName = section.FirstOrDefault() != '.' &&
+                              !section.EndsWith(".lock");
+            }
+
+            return isValidName;
         }
 
         private bool _displayMergeBranchesGrid;

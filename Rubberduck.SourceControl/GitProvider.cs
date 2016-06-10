@@ -134,6 +134,30 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        public override void AddOrigin(string path, string trackingBranchName)
+        {
+            try
+            {
+                if (_repo.Network.Remotes.Any(r => r.Name == "origin"))
+                {
+                    _repo.Network.Remotes.Remove("origin"); // todo prompt that remote is already taken
+                }
+
+                _repo.Network.Remotes.Add("origin", path);
+                _repo.Branches.Update(_repo.Branches[CurrentBranch.Name], c => c.Remote = "origin",
+                        c => c.UpstreamBranch = "refs/heads/" + trackingBranchName);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Failed to add remote location.", ex);
+            }
+        }
+
+        public override bool HasCredentials()
+        {
+            return _credentials != null;
+        }
+
         /// <summary>
         /// Exports files from VBProject to the file system, initalizes the repository, and creates an inital commit of those files to the repo.
         /// </summary>
