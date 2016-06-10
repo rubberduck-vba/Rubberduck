@@ -174,7 +174,10 @@ namespace Rubberduck.UI.SourceControl
                 _provider = value;
                 SetChildPresenterSourceControlProviders(_provider);
 
-                if (_fileSystemWatcher.Path != LocalDirectory)
+                Provider.ExportFilesStarted += Provider_ExportFilesStarted;
+                Provider.ExportFilesCompleted += Provider_ExportFilesCompleted;
+
+                if (_fileSystemWatcher.Path != LocalDirectory && Directory.Exists(_provider.CurrentRepository.LocalLocation))
                 {
                     _fileSystemWatcher.Path = _provider.CurrentRepository.LocalLocation;
                     _fileSystemWatcher.EnableRaisingEvents = true;
@@ -186,6 +189,16 @@ namespace Rubberduck.UI.SourceControl
                     _fileSystemWatcher.Changed += _fileSystemWatcher_Changed;
                 }
             }
+        }
+
+        private void Provider_ExportFilesCompleted(object sender, EventArgs e)
+        {
+            _fileSystemWatcher.EnableRaisingEvents = true;
+        }
+
+        private void Provider_ExportFilesStarted(object sender, EventArgs e)
+        {
+            _fileSystemWatcher.EnableRaisingEvents = false;
         }
 
         private void _fileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
@@ -780,7 +793,7 @@ namespace Rubberduck.UI.SourceControl
                 }
             }
 
-            if (Provider != null)
+            if (Provider != null && Directory.Exists(Provider.CurrentRepository.LocalLocation))
             {
                 _fileSystemWatcher.EnableRaisingEvents = true;
             }

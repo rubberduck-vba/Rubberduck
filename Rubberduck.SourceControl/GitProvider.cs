@@ -491,7 +491,6 @@ namespace Rubberduck.SourceControl
             }
         }
 
-
         public override IEnumerable<IFileStatusEntry> LastKnownStatus()
         {
             try

@@ -186,6 +186,8 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
+
+            CommitMessage = string.Empty;
         }
 
         private void IncludeChanges(IFileStatusEntry fileStatusEntry)

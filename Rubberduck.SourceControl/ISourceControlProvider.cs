@@ -13,6 +13,8 @@ namespace Rubberduck.SourceControl
         IList<ICommit> UnsyncedRemoteCommits { get; }
 
         event EventHandler<EventArgs> BranchChanged;
+        event EventHandler<EventArgs> ExportFilesStarted;
+        event EventHandler<EventArgs> ExportFilesCompleted;
 
         /// <summary>Clone a remote repository.</summary>
         /// <param name="remotePathOrUrl">Either a Url "https://github.com/retailcoder/Rubberduck.git" or a UNC path. "//server/share/path/to/repo.git"</param>

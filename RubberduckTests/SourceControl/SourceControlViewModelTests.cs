@@ -71,6 +71,7 @@ namespace RubberduckTests.SourceControl
             _provider.SetupGet(git => git.UnsyncedRemoteCommits).Returns(new List<ICommit>());
             _provider.Setup(git => git.InitVBAProject(It.IsAny<string>())).Returns(GetDummyRepo());
             _provider.Setup(git => git.Clone(It.IsAny<string>(), It.IsAny<string>())).Returns(GetDummyRepo());
+            _provider.Setup(git => git.CurrentRepository).Returns(GetDummyRepo());
 
             _providerFactory = new Mock<ISourceControlProviderFactory>();
             _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>()))

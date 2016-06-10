@@ -64,7 +64,10 @@ namespace Rubberduck.SourceControl
                 Directory.CreateDirectory(directory);
             }
 
+            OnExportFilesStarted();
             Project.ExportSourceFiles(directory);
+            OnExportFilesCompleted();
+
             CurrentRepository = new Repository(Project.HelpFile, directory, directory);
             return CurrentRepository;
         }
@@ -78,12 +81,16 @@ namespace Rubberduck.SourceControl
 
         public virtual void Stage(string filePath)
         {
+            OnExportFilesStarted();
             Project.ExportSourceFiles(CurrentRepository.LocalLocation);
+            OnExportFilesCompleted();
         }
 
         public virtual void Stage(IEnumerable<string> filePaths)
         {
+            OnExportFilesStarted();
             Project.ExportSourceFiles(CurrentRepository.LocalLocation);
+            OnExportFilesCompleted();
         }
 
         public virtual void Merge(string sourceBranch, string destinationBranch)
@@ -121,7 +128,9 @@ namespace Rubberduck.SourceControl
 
         public virtual IEnumerable<IFileStatusEntry> Status()
         {
+            OnExportFilesStarted();
             Project.ExportSourceFiles(CurrentRepository.LocalLocation);
+            OnExportFilesCompleted();
             return null;
         }
 
@@ -159,6 +168,26 @@ namespace Rubberduck.SourceControl
             {
                 Project.RemoveAllComponents();
                 Project.ImportSourceFiles(CurrentRepository.LocalLocation);
+            }
+        }
+
+        public event EventHandler<EventArgs> ExportFilesStarted;
+        private void OnExportFilesStarted()
+        {
+            var handler = ExportFilesStarted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler<EventArgs> ExportFilesCompleted;
+        private void OnExportFilesCompleted()
+        {
+            var handler = ExportFilesCompleted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
             }
         }
     }
