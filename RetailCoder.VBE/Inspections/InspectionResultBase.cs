@@ -102,7 +102,8 @@ namespace Rubberduck.Inspections
                 InspectionsUI.QualifiedSelectionInspection,
                 Inspection.Severity,
                 Description,
-                module.ProjectId,
+                "(" + module.ProjectDisplayName + ")",
+                module.ProjectName,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
         }
