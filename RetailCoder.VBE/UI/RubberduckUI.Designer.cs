@@ -3343,33 +3343,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create new remote repository..
-        /// </summary>
-        public static string SourceControl_CreateNewRemoteRepo_FailureTitle {
-            get {
-                return ResourceManager.GetString("SourceControl_CreateNewRemoteRepo_FailureTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No open repository to push to specified remote location..
-        /// </summary>
-        public static string SourceControl_CreateNewRemoteRepo_NoOpenRepo {
-            get {
-                return ResourceManager.GetString("SourceControl_CreateNewRemoteRepo_NoOpenRepo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Upload repository to GitHub.
-        /// </summary>
-        public static string SourceControl_CreateNewRemoteRepoButtonToolTip {
-            get {
-                return ResourceManager.GetString("SourceControl_CreateNewRemoteRepoButtonToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Create New Repository.
         /// </summary>
         public static string SourceControl_CreateNewRepo {
@@ -3753,6 +3726,33 @@ namespace Rubberduck.UI {
         public static string SourceControl_PublishedBranchesLabel {
             get {
                 return ResourceManager.GetString("SourceControl_PublishedBranchesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish repository..
+        /// </summary>
+        public static string SourceControl_PublishRepo_FailureTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishRepo_FailureTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No open repository to push to specified remote location..
+        /// </summary>
+        public static string SourceControl_PublishRepo_NoOpenRepo {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishRepo_NoOpenRepo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish repository to GitHub.
+        /// </summary>
+        public static string SourceControl_PublishRepoButtonToolTip {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishRepoButtonToolTip", resourceCulture);
             }
         }
         

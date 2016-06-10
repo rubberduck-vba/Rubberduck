@@ -171,5 +171,11 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <param name="fileName"></param>
         void ReloadComponent(string fileName);
+
+        /// <summary>
+        /// Returns whether the repo has a remote named "origin"
+        /// </summary>
+        /// <returns></returns>
+        bool RepoHasRemoteOrigin();
     }
 }
