@@ -755,21 +755,21 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
-        public void CreateNewRemote_DisplaysGrid()
+        public void Publish_DisplaysGrid()
         {
             //arrange
             SetupVM();
             _vm.Provider = _provider.Object;
 
             //act
-            _vm.CreateNewRemoteRepoCommand.Execute(null);
+            _vm.PublishRepoCommand.Execute(null);
 
             //Assert
-            Assert.IsTrue(_vm.DisplayCreateNewRemoteRepoGrid);
+            Assert.IsTrue(_vm.DisplayPublishRepoGrid);
         }
 
         [TestMethod]
-        public void CreateNewRemote_AddsOrigin()
+        public void Publish_AddsOrigin()
         {
             //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
@@ -779,144 +779,93 @@ namespace RubberduckTests.SourceControl
             SetupVM();
             _vm.Provider = _provider.Object;
 
-            _vm.CreateNewRemoteRemotePath = remotePath;
-            _vm.RemoteBranchName = branchName;
+            _vm.PublishRemotePath = remotePath;
 
             //act
-            _vm.CreateNewRemoteRepoOkButtonCommand.Execute(null);
+            _vm.PublishRepoOkButtonCommand.Execute(null);
 
             //Assert
             _provider.Verify(git => git.AddOrigin(remotePath, branchName));
         }
 
         [TestMethod]
-        public void CreateNewRemote_HideGridOnClone()
+        public void Publish_HideGridOnClone()
         {
             //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
-            var branchName = "master";
 
             SetupValidVbProject();
             SetupVM();
             _vm.Provider = _provider.Object;
 
-            _vm.CreateNewRemoteRemotePath = remotePath;
-            _vm.RemoteBranchName = branchName;
+            _vm.PublishRemotePath = remotePath;
 
             //act
-            _vm.CreateNewRemoteRepoOkButtonCommand.Execute(null);
+            _vm.PublishRepoOkButtonCommand.Execute(null);
 
             //Assert
-            Assert.IsFalse(_vm.DisplayCreateNewRemoteRepoGrid);
+            Assert.IsFalse(_vm.DisplayPublishRepoGrid);
         }
 
         [TestMethod]
-        public void CreateNewRemote_HideGridOnCancel()
+        public void Publish_HideGridOnCancel()
         {
             //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
-            var branchName = "master";
 
             SetupValidVbProject();
             SetupVM();
             _vm.Provider = _provider.Object;
 
-            _vm.CreateNewRemoteRemotePath = remotePath;
-            _vm.RemoteBranchName = branchName;
+            _vm.PublishRemotePath = remotePath;
 
             //act
-            _vm.CreateNewRemoteRepoCancelButtonCommand.Execute(null);
+            _vm.PublishRepoCancelButtonCommand.Execute(null);
 
             //Assert
-            Assert.IsFalse(_vm.DisplayCreateNewRemoteRepoGrid);
+            Assert.IsFalse(_vm.DisplayPublishRepoGrid);
         }
 
         [TestMethod]
-        public void CreateNewRemote_ClearsRemoteOnCreate()
+        public void Publish_ClearsRemoteOnCreate()
         {
             //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
-            var localDirectory = "master";
 
             SetupValidVbProject();
             SetupVM();
             _vm.Provider = _provider.Object;
 
-            _vm.CreateNewRemoteRemotePath = remotePath;
-            _vm.RemoteBranchName = localDirectory;
+            _vm.PublishRemotePath = remotePath;
 
             //act
-            _vm.CreateNewRemoteRepoOkButtonCommand.Execute(null);
+            _vm.PublishRepoOkButtonCommand.Execute(null);
 
             //Assert
-            Assert.AreEqual(string.Empty, _vm.CreateNewRemoteRemotePath);
+            Assert.AreEqual(string.Empty, _vm.PublishRemotePath);
         }
 
         [TestMethod]
-        public void CreateNewRemote_ClearsRemoteOnClose()
+        public void Publish_ClearsRemoteOnClose()
         {
             //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
-            var branchName = "master";
 
             SetupValidVbProject();
             SetupVM();
             _vm.Provider = _provider.Object;
 
-            _vm.CreateNewRemoteRemotePath = remotePath;
-            _vm.RemoteBranchName = branchName;
+            _vm.PublishRemotePath = remotePath;
 
             //act
-            _vm.CreateNewRemoteRepoCancelButtonCommand.Execute(null);
+            _vm.PublishRepoCancelButtonCommand.Execute(null);
 
             //Assert
-            Assert.AreEqual(string.Empty, _vm.CreateNewRemoteRemotePath);
+            Assert.AreEqual(string.Empty, _vm.PublishRemotePath);
         }
 
         [TestMethod]
-        public void CreateNewRemote_ClearsBranchNameOnCreate()
-        {
-            //arrange
-            var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
-            var localDirectory = "master";
-
-            SetupValidVbProject();
-            SetupVM();
-            _vm.Provider = _provider.Object;
-
-            _vm.CreateNewRemoteRemotePath = remotePath;
-            _vm.RemoteBranchName = localDirectory;
-
-            //act
-            _vm.CreateNewRemoteRepoOkButtonCommand.Execute(null);
-
-            //Assert
-            Assert.AreEqual(string.Empty, _vm.RemoteBranchName);
-        }
-
-        [TestMethod]
-        public void CreateNewRemote_ClearsBranchNameOnClose()
-        {
-            //arrange
-            var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
-            var branchName = "master";
-
-            SetupValidVbProject();
-            SetupVM();
-            _vm.Provider = _provider.Object;
-
-            _vm.CreateNewRemoteRemotePath = remotePath;
-            _vm.RemoteBranchName = branchName;
-
-            //act
-            _vm.CreateNewRemoteRepoCancelButtonCommand.Execute(null);
-
-            //Assert
-            Assert.AreEqual(_vm.RemoteBranchName, string.Empty);
-        }
-
-        [TestMethod]
-        public void CreateNewRemote_NoOpenRepo_ErrorReported()
+        public void Publish_NoOpenRepo_ErrorReported()
         {
             //arrange
             _configService.Setup(c => c.Create()).Returns(new SourceControlSettings());
@@ -931,14 +880,14 @@ namespace RubberduckTests.SourceControl
                     );
 
             //act
-            _vm.CreateNewRemoteRepoOkButtonCommand.Execute(null);
+            _vm.PublishRepoOkButtonCommand.Execute(null);
 
             //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid, "ActionFailedEvent was not raised.");
         }
 
         [TestMethod]
-        public void CreateNewRemote_ActionFailedEventIsRaised()
+        public void Publish_ActionFailedEventIsRaised()
         {
             //arrange
             SetupValidVbProject();
@@ -953,7 +902,7 @@ namespace RubberduckTests.SourceControl
             _vm.Provider = _provider.Object;
 
             //act
-            _vm.CreateNewRemoteRepoOkButtonCommand.Execute(null);
+            _vm.PublishRepoOkButtonCommand.Execute(null);
 
             //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid, "ActionFailedEvent was not raised.");

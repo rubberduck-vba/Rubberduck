@@ -14,7 +14,7 @@
         <BitmapImage x:Key="OpenRepoImage" UriSource="../../Resources/folder-horizontal-open.png" />
         <BitmapImage x:Key="CreateRepoImage" UriSource="../../Resources/init-repo.png" />
         <BitmapImage x:Key="CloneRepoImage" UriSource="../../Resources/drive-download.png" />
-        <BitmapImage x:Key="CreateNewRemoteRepoImage" UriSource="../../Resources/drive-upload.png" />
+        <BitmapImage x:Key="PublishRepoImage" UriSource="../../Resources/drive-upload.png" />
         <BitmapImage x:Key="GitIcon" UriSource="../../Resources/icon-github.png" />
         <BitmapImage x:Key="ErrorImage" UriSource="../../Resources/cross-circle.png" />
         <BitmapImage x:Key="WarningIcon" UriSource="../../Resources/exclamation-white.png" />
@@ -247,11 +247,12 @@
                             Background="Transparent">
                         <Image Source="{StaticResource CloneRepoImage}" />
                     </Button>
-                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CreateNewRemoteRepoButtonToolTip}"
-                            Command="{Binding CreateNewRemoteRepoCommand, Mode=OneWay}"
+                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PublishRepoButtonToolTip}"
+                            Command="{Binding PublishRepoCommand, Mode=OneWay}"
                             BorderThickness="0"
-                            Background="Transparent">
-                        <Image Source="{StaticResource CreateNewRemoteRepoImage}" />
+                            Background="Transparent"
+                            Visibility="{Binding RepoDoesNotHaveRemoteLocation, Converter={StaticResource BoolToVisibility}}">
+                        <Image Source="{StaticResource PublishRepoImage}" />
                     </Button>
                     <Separator />
                     <StackPanel Orientation="Horizontal">
@@ -413,14 +414,14 @@
                 </StackPanel>
             </Grid>
 
-            <Grid Visibility="{Binding DisplayCreateNewRemoteRepoGrid, Converter={StaticResource BoolToVisibility}}"
+            <Grid Visibility="{Binding DisplayPublishRepoGrid, Converter={StaticResource BoolToVisibility}}"
                   DockPanel.Dock="Top">
                 <StackPanel VerticalAlignment="Top"
                             Margin="10,5">
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_RemotePathLabel}"
                                FontWeight="SemiBold"
                                Margin="0,0,0,5" />
-                    <TextBox Text="{Binding CreateNewRemoteRemotePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox Text="{Binding PublishRemotePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Margin="0,0,0,10"
                              Height="18"
                              VerticalContentAlignment="Center" />
@@ -428,15 +429,7 @@
                            HorizontalAlignment="Right"
                            Margin="0,-57,-7.8,0"
                            Width="16"
-                           Visibility="{Binding IsNotValidCreateNewRemoteRemotePath, Converter={StaticResource BoolToVisibility}}" />
-                    
-                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_BranchName}"
-                                   FontWeight="SemiBold"
-                                   Margin="0,0,0,5" />
-                    <TextBox Text="{Binding RemoteBranchName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Margin="0,0,0,10"
-                                 Height="18"
-                                 VerticalContentAlignment="Center" />
+                           Visibility="{Binding IsNotValidPublishRemotePath, Converter={StaticResource BoolToVisibility}}" />
                     <Image Source="{StaticResource ErrorImage}"
                                HorizontalAlignment="Right"
                                Margin="0,-57,-7.8,0"
@@ -450,13 +443,13 @@
                         </Grid.ColumnDefinitions>
                         <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
                                 Padding="5"
-                                Command="{Binding CreateNewRemoteRepoOkButtonCommand}">
+                                Command="{Binding PublishRepoOkButtonCommand}">
                         </Button>
                         <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
                                 Padding="5"
-                                Command="{Binding CreateNewRemoteRepoCancelButtonCommand}">
+                                Command="{Binding PublishRepoCancelButtonCommand}">
                         </Button>
                     </Grid>
                 </StackPanel>

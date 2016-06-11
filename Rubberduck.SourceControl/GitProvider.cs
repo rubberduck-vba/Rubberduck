@@ -552,6 +552,18 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        public override bool RepoHasRemoteOrigin()
+        {
+            try
+            {
+                return _repo.Network.Remotes.Any(a => a.Name == "origin");
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitPublishFailed, ex);
+            }
+        }
+
         private Signature GetSignature(LibGit2Sharp.IRepository repo)
         {
             return repo.Config.BuildSignature(DateTimeOffset.Now);
