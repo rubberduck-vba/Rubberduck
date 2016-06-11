@@ -188,6 +188,12 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
+            var active = User32.GetForegroundWindow();
+            if (active != _mainWindowHandle)
+            {
+                return;
+            }
+
             var hotkey = sender as IHotkey;
             if (hotkey != null)
             {
