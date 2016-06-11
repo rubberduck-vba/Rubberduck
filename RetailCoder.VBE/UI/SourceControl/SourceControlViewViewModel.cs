@@ -70,7 +70,7 @@ namespace Rubberduck.UI.SourceControl
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
             _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid());
-            _createNewRemoteRepoCommand = new DelegateCommand(_ => ShowCreateNewRemoteRepoGrid());
+            _publishRepoCommand = new DelegateCommand(_ => ShowPublishRepoGrid());
             _refreshCommand = new DelegateCommand(_ => Refresh());
             _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
             _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
@@ -80,8 +80,8 @@ namespace Rubberduck.UI.SourceControl
             _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidCloneRemotePath);
             _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
 
-            _createNewRemoteRepoOkButtonCommand = new DelegateCommand(_ => CreateNewRemoteRepo(), _ => !IsNotValidCreateNewRemoteRemotePath && IsValidBranchName(RemoteBranchName));
-            _createNewRemoteRepoCancelButtonCommand = new DelegateCommand(_ => CloseCreateNewRemoteRepoGrid());
+            _publishRepoOkButtonCommand = new DelegateCommand(_ => PublishRepo(), _ => !IsNotValidPublishRemotePath);
+            _publishRepoCancelButtonCommand = new DelegateCommand(_ => ClosePublishRepoGrid());
 
             TabItems = new ObservableCollection<IControlView>
             {
@@ -169,6 +169,7 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _provider = value;
+                OnPropertyChanged("RepoDoesNotHaveRemoteLocation");
                 SetChildPresenterSourceControlProviders(_provider);
 
                 if (_fileSystemWatcher.Path != LocalDirectory && Directory.Exists(_provider.CurrentRepository.LocalLocation))
@@ -322,10 +323,10 @@ namespace Rubberduck.UI.SourceControl
             get { return _displayCloneRepoGrid; }
             set
             {
-                if (DisplayCreateNewRemoteRepoGrid)
+                if (DisplayPublishRepoGrid)
                 {
-                    _displayCreateNewRemoteRepoGrid = false;
-                    OnPropertyChanged("DisplayCreateNewRemoteRepoGrid");
+                    _displayPublishRepoGrid = false;
+                    OnPropertyChanged("DisplayPublishRepoGrid");
                 }
 
                 if (_displayCloneRepoGrid != value)
@@ -337,10 +338,10 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private bool _displayCreateNewRemoteRepoGrid;
-        public bool DisplayCreateNewRemoteRepoGrid
+        private bool _displayPublishRepoGrid;
+        public bool DisplayPublishRepoGrid
         {
-            get { return _displayCreateNewRemoteRepoGrid; }
+            get { return _displayPublishRepoGrid; }
             set
             {
                 if (DisplayCloneRepoGrid)
@@ -349,9 +350,9 @@ namespace Rubberduck.UI.SourceControl
                     OnPropertyChanged("DisplayCloneRepoGrid");
                 }
 
-                if (_displayCreateNewRemoteRepoGrid != value)
+                if (_displayPublishRepoGrid != value)
                 {
-                    _displayCreateNewRemoteRepoGrid = value;
+                    _displayPublishRepoGrid = value;
                     OnPropertyChanged();
                 }
             }
@@ -377,76 +378,28 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private string _createNewRemoteRemotePath;
-        public string CreateNewRemoteRemotePath
+        private string _publishRemotePath;
+        public string PublishRemotePath
         {
-            get { return _createNewRemoteRemotePath; }
+            get { return _publishRemotePath; }
             set
             {
-                if (_createNewRemoteRemotePath != value)
+                if (_publishRemotePath != value)
                 {
-                    _createNewRemoteRemotePath = value;
+                    _publishRemotePath = value;
 
                     OnPropertyChanged();
-                    OnPropertyChanged("IsNotValidCreateNewRemoteRemotePath");
+                    OnPropertyChanged("IsNotValidPublishRemotePath");
                 }
             }
         }
 
-        private string _remoteBranchName;
-        public string RemoteBranchName
-        {
-            get { return _remoteBranchName; }
-            set
-            {
-                if (_remoteBranchName != value)
-                {
-                    _remoteBranchName = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged("IsNotValidBranchName");
-                }
-            }
-        }
-
-        public bool IsNotValidBranchName
+        public bool RepoDoesNotHaveRemoteLocation
         {
             get
             {
-                return !IsValidBranchName(RemoteBranchName);
+                return !(Provider != null && Provider.RepoHasRemoteOrigin());
             }
-        }
-
-        public bool IsValidBranchName(string name)
-        {
-            // Rules taken from https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
-            var isValidName = !string.IsNullOrEmpty(name) &&
-                              !name.Any(char.IsWhiteSpace) &&
-                              !name.Contains("..") &&
-                              !name.Contains("~") &&
-                              !name.Contains("^") &&
-                              !name.Contains(":") &&
-                              !name.Contains("?") &&
-                              !name.Contains("*") &&
-                              !name.Contains("[") &&
-                              !name.Contains("//") &&
-                              name.FirstOrDefault() != '/' &&
-                              name.LastOrDefault() != '/' &&
-                              name.LastOrDefault() != '.' &&
-                              name != "@" &&
-                              !name.Contains("@{") &&
-                              !name.Contains("\\");
-
-            if (!isValidName)
-            {
-                return false;
-            }
-            foreach (var section in name.Split('/'))
-            {
-                isValidName = section.FirstOrDefault() != '.' &&
-                              !section.EndsWith(".lock");
-            }
-
-            return isValidName;
         }
 
         private string _localDirectory;
@@ -524,9 +477,9 @@ namespace Rubberduck.UI.SourceControl
             get { return !IsValidUri(CloneRemotePath); }
         }
 
-        public bool IsNotValidCreateNewRemoteRemotePath
+        public bool IsNotValidPublishRemotePath
         {
-            get { return !IsValidUri(CreateNewRemoteRemotePath); }
+            get { return !IsValidUri(PublishRemotePath); }
         }
 
         private bool IsValidUri(string path)
@@ -709,27 +662,28 @@ namespace Rubberduck.UI.SourceControl
             Status = RubberduckUI.Online;
         }
 
-        private void CreateNewRemoteRepo()
+        private void PublishRepo()
         {
             if (Provider == null)
             {
                 ViewModel_ErrorThrown(null,
-                    new ErrorEventArgs(RubberduckUI.SourceControl_CreateNewRemoteRepo_FailureTitle,
-                        RubberduckUI.SourceControl_CreateNewRemoteRepo_NoOpenRepo, NotificationType.Error));
+                    new ErrorEventArgs(RubberduckUI.SourceControl_PublishRepo_FailureTitle,
+                        RubberduckUI.SourceControl_PublishRepo_NoOpenRepo, NotificationType.Error));
                 return;
             }
 
             try
             {
-                Provider.AddOrigin(CreateNewRemoteRemotePath, RemoteBranchName);
-                Provider.Publish(RemoteBranchName);
+                Provider.AddOrigin(PublishRemotePath, Provider.CurrentBranch.Name);
+                Provider.Publish(Provider.CurrentBranch.Name);
             }
             catch (SourceControlException ex)
             {
                 ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
             }
 
-            CloseCreateNewRemoteRepoGrid();
+            OnPropertyChanged("RepoDoesNotHaveRemoteLocation");
+            ClosePublishRepoGrid();
         }
 
         private void ShowCloneRepoGrid()
@@ -744,17 +698,16 @@ namespace Rubberduck.UI.SourceControl
             DisplayCloneRepoGrid = false;
         }
 
-        private void ShowCreateNewRemoteRepoGrid()
+        private void ShowPublishRepoGrid()
         {
-            DisplayCreateNewRemoteRepoGrid = true;
+            DisplayPublishRepoGrid = true;
         }
 
-        private void CloseCreateNewRemoteRepoGrid()
+        private void ClosePublishRepoGrid()
         {
-            CreateNewRemoteRemotePath = string.Empty;
-            RemoteBranchName = string.Empty;
+            PublishRemotePath = string.Empty;
 
-            DisplayCreateNewRemoteRepoGrid = false;
+            DisplayPublishRepoGrid = false;
         }
 
         private void OpenRepoAssignedToProject()
@@ -885,27 +838,27 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _createNewRemoteRepoCommand;
-        public ICommand CreateNewRemoteRepoCommand
+        private readonly ICommand _publishRepoCommand;
+        public ICommand PublishRepoCommand
         {
-            get { return _createNewRemoteRepoCommand; }
+            get { return _publishRepoCommand; }
         }
 
-        private readonly ICommand _createNewRemoteRepoOkButtonCommand;
-        public ICommand CreateNewRemoteRepoOkButtonCommand
+        private readonly ICommand _publishRepoOkButtonCommand;
+        public ICommand PublishRepoOkButtonCommand
         {
             get
             {
-                return _createNewRemoteRepoOkButtonCommand;
+                return _publishRepoOkButtonCommand;
             }
         }
 
-        private readonly ICommand _createNewRemoteRepoCancelButtonCommand;
-        public ICommand CreateNewRemoteRepoCancelButtonCommand
+        private readonly ICommand _publishRepoCancelButtonCommand;
+        public ICommand PublishRepoCancelButtonCommand
         {
             get
             {
-                return _createNewRemoteRepoCancelButtonCommand;
+                return _publishRepoCancelButtonCommand;
             }
         }
 
