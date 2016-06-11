@@ -139,6 +139,7 @@ namespace Rubberduck.Parsing.VBA
             var toParse = components.Where(c => _state.IsNewOrModified(c)).ToList();
             var unchanged = components.Where(c => !_state.IsNewOrModified(c)).ToList();
 
+            SyncComReferences(projects);
             AddBuiltInDeclarations(projects);
 
             if (!toParse.Any())
@@ -147,7 +148,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            
+
             lock (_state)  // note, method is invoked from UI thread... really need the lock here?
             {
                 foreach (var component in toParse)
@@ -182,16 +183,13 @@ namespace Rubberduck.Parsing.VBA
 
         private void AddBuiltInDeclarations(IReadOnlyList<VBProject> projects)
         {
-            SyncComReferences(projects);
-
             var finder = new DeclarationFinder(_state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
             if (finder.MatchName(Tokens.Err).Any(item => item.IsBuiltIn
-                && item.DeclarationType == DeclarationType.Variable
-                && item.Accessibility == Accessibility.Global))
+                    && item.DeclarationType == DeclarationType.Variable
+                    && item.Accessibility == Accessibility.Global))
             {
                 return;
             }
-
             var vba = finder.FindProject("VBA");
             if (vba == null)
             {
@@ -199,101 +197,15 @@ namespace Rubberduck.Parsing.VBA
                 // we're in a unit test and mock project didn't setup any references.
                 return;
             }
-
-            Debug.Assert(vba != null);
-
-            var debugModuleName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
-            var debugModule = new ProceduralModuleDeclaration(new QualifiedMemberName(debugModuleName, "DebugModule"), vba, "DebugModule", true, new List<IAnnotation>(), new Attributes());
-            var debugClassName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
-            var debugClass = new ClassModuleDeclaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "DebugClass", true, new List<IAnnotation>(), new Attributes(), true);
-            var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), debugModule, "Global", "DebugClass", null, true, false, Accessibility.Global, DeclarationType.Variable, false, null);
-            var debugAssert = new SubroutineDeclaration(new QualifiedMemberName(debugClassName, "Assert"), debugClass, debugClass, null, Accessibility.Global, null, Selection.Home, true, null, new Attributes());
-            var debugPrint = new SubroutineDeclaration(new QualifiedMemberName(debugClassName, "Print"), debugClass, debugClass, null, Accessibility.Global, null, Selection.Home, true, null, new Attributes());
-
-            lock (_state)
-            {
-                _state.AddDeclaration(debugModule);
-                _state.AddDeclaration(debugClass);
-                _state.AddDeclaration(debugObject);
-                _state.AddDeclaration(debugAssert);
-                _state.AddDeclaration(debugPrint);
-            }
-
-            AddSpecialFormDeclarations(finder, vba);
-        }
-
-        private void AddSpecialFormDeclarations(DeclarationFinder finder, Declaration vba)
-        {
-            // The Err function is inside this module as well.
             var informationModule = finder.FindStdModule("Information", vba, true);
-            Debug.Assert(informationModule != null);
-            var arrayFunction = new FunctionDeclaration(
-                new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Array"),
-                informationModule,
-                informationModule,
-                "Variant",
-                null,
-                null,
-                Accessibility.Public,
-                null,
-                Selection.Home,
-                false,
-                true,
-                null,
-                new Attributes());
-            var inputFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Input"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            var numberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputFunction, "Integer", null, null, false, false);
-            var filenumberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputFunction, "Integer", null, null, false, false);
-            inputFunction.AddParameter(numberParam);
-            inputFunction.AddParameter(filenumberParam);
-            var inputBFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "InputB"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            var numberBParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputBFunction, "Integer", null, null, false, false);
-            var filenumberBParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputBFunction, "Integer", null, null, false, false);
-            inputBFunction.AddParameter(numberBParam);
-            inputBFunction.AddParameter(filenumberBParam);
-            var lboundFunction = new FunctionDeclaration(
-                new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "LBound"),
-                informationModule,
-                informationModule,
-                "Long",
-                null,
-                null,
-                Accessibility.Public,
-                null,
-                Selection.Home,
-                false,
-                true,
-                null,
-                new Attributes());
-            var arrayNameParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Arrayname"), lboundFunction, "Integer", null, null, false, false);
-            var dimensionParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Dimension"), lboundFunction, "Integer", null, null, true, false);
-            lboundFunction.AddParameter(arrayNameParam);
-            lboundFunction.AddParameter(dimensionParam);
-            var uboundFunction = new FunctionDeclaration(
-                new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "UBound"),
-                informationModule,
-                informationModule,
-                "Integer",
-                null,
-                null,
-                Accessibility.Public,
-                null,
-                Selection.Home,
-                false,
-                true,
-                null,
-                new Attributes());
-            var arrayParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Array"), uboundFunction, "Variant", null, null, false, false, true);
-            var rankParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Rank"), uboundFunction, "Integer", null, null, true, false);
-            uboundFunction.AddParameter(arrayParam);
-            uboundFunction.AddParameter(rankParam);
+            Debug.Assert(informationModule != null, "We expect the information module to exist in the VBA project.");
+            var customDeclarations = CustomDeclarations.Load(vba, informationModule);
             lock (_state)
             {
-                _state.AddDeclaration(arrayFunction);
-                _state.AddDeclaration(inputFunction);
-                _state.AddDeclaration(inputBFunction);
-                _state.AddDeclaration(lboundFunction);
-                _state.AddDeclaration(uboundFunction);
+                foreach (var customDeclaration in customDeclarations)
+                {
+                    _state.AddDeclaration(customDeclaration);
+                }
             }
         }
 
