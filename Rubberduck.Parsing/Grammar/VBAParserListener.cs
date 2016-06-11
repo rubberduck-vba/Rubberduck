@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\hosch\Documents\Visual Studio 2015\Projects\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\RubberduckParserTest\RubberduckParserTest\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -151,6 +151,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitFieldLength([NotNull] VBAParser.FieldLengthContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.debugModule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDebugModule([NotNull] VBAParser.DebugModuleContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.debugModule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDebugModule([NotNull] VBAParser.DebugModuleContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.goSubStmt"/>.
@@ -1348,6 +1359,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitCallStmt([NotNull] VBAParser.CallStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.debugPrintSub"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDebugPrintSub([NotNull] VBAParser.DebugPrintSubContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.debugPrintSub"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDebugPrintSub([NotNull] VBAParser.DebugPrintSubContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.enumerationStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1875,6 +1897,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitResumeStmt([NotNull] VBAParser.ResumeStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.debugPrint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDebugPrint([NotNull] VBAParser.DebugPrintContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.debugPrint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDebugPrint([NotNull] VBAParser.DebugPrintContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.endOfLine"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -2312,6 +2345,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitRaiseEventStmt([NotNull] VBAParser.RaiseEventStmtContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.debugPrintStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDebugPrintStmt([NotNull] VBAParser.DebugPrintStmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.debugPrintStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDebugPrintStmt([NotNull] VBAParser.DebugPrintStmtContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.sameLineStatement"/>.
