@@ -94,7 +94,11 @@ namespace Rubberduck.UI.Command.MenuItems
         private void State_StateChanged(object sender, EventArgs e)
         {
             _logger.Debug("RubberduckCommandBar handles StateChanged...");
-            SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status));
+            
+            if (_state.Status != ParserState.ResolvedDeclarations)
+            {
+                SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status));
+            }
         }
 
         public event EventHandler Refresh;

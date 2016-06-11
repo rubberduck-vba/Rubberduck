@@ -12,7 +12,7 @@ namespace Rubberduck.SourceControl
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
         private readonly ICodePaneWrapperFactory _wrapperFactory;
-        protected VBProject Project;
+        protected readonly VBProject Project;
 
         protected SourceControlProviderBase(VBProject project)
         {
@@ -31,6 +31,8 @@ namespace Rubberduck.SourceControl
         public abstract IEnumerable<IBranch> Branches { get; }
         public abstract IList<ICommit> UnsyncedLocalCommits { get; }
         public abstract IList<ICommit> UnsyncedRemoteCommits { get; }
+        public bool NotifyExternalFileChanges { get; protected set; }
+        public bool HandleVbeSinkEvents { get; protected set; }
         public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory);
         public abstract void Push();
         public abstract void Fetch(string remoteName);
@@ -39,9 +41,12 @@ namespace Rubberduck.SourceControl
         public abstract void CreateBranch(string branch);
         public abstract void DeleteBranch(string branch);
         public abstract IRepository Init(string directory, bool bare = false);
+        public abstract void AddOrigin(string path, string trackingBranchName);
         public abstract void Commit(string message);
         public abstract void Publish(string branch);
         public abstract void Unpublish(string branch);
+        public abstract bool HasCredentials();
+        public abstract IEnumerable<IFileStatusEntry> LastKnownStatus();
 
         public virtual void CreateBranch(string sourceBranch, string branch)
         {
@@ -61,7 +66,10 @@ namespace Rubberduck.SourceControl
                 Directory.CreateDirectory(directory);
             }
 
+            NotifyExternalFileChanges = false;
             Project.ExportSourceFiles(directory);
+            NotifyExternalFileChanges = true;
+
             CurrentRepository = new Repository(Project.HelpFile, directory, directory);
             return CurrentRepository;
         }
@@ -75,12 +83,16 @@ namespace Rubberduck.SourceControl
 
         public virtual void Stage(string filePath)
         {
+            NotifyExternalFileChanges = false;
             Project.ExportSourceFiles(CurrentRepository.LocalLocation);
+            NotifyExternalFileChanges = true;
         }
 
         public virtual void Stage(IEnumerable<string> filePaths)
         {
+            NotifyExternalFileChanges = false;
             Project.ExportSourceFiles(CurrentRepository.LocalLocation);
+            NotifyExternalFileChanges = true;
         }
 
         public virtual void Merge(string sourceBranch, string destinationBranch)
@@ -105,9 +117,12 @@ namespace Rubberduck.SourceControl
 
             if (File.Exists(filePath))
             {
-                var component = Project.VBComponents.Item(componentName);
+                var component = Project.VBComponents.OfType<VBComponent>().FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
+
+                HandleVbeSinkEvents = false;
                 Project.VBComponents.RemoveSafely(component);
                 Project.VBComponents.ImportSourceFile(filePath);
+                HandleVbeSinkEvents = true;
             }
         }
 
@@ -118,7 +133,9 @@ namespace Rubberduck.SourceControl
 
         public virtual IEnumerable<IFileStatusEntry> Status()
         {
+            NotifyExternalFileChanges = false;
             Project.ExportSourceFiles(CurrentRepository.LocalLocation);
+            NotifyExternalFileChanges = true;
             return null;
         }
 
@@ -129,10 +146,51 @@ namespace Rubberduck.SourceControl
                             .LastOrDefault(c => c != "git");
         }
 
+        public void ReloadComponent(string filePath)
+        {
+            HandleVbeSinkEvents = false;
+
+            var codePane = Project.VBE.ActiveCodePane;
+
+            if (codePane != null)
+            {
+                var codePaneWrapper = _wrapperFactory.Create(codePane);
+                var selection = new QualifiedSelection(new QualifiedModuleName(codePaneWrapper.CodeModule.Parent),
+                    codePaneWrapper.Selection);
+                string name = null;
+                if (selection.QualifiedName.Component != null)
+                {
+                    name = selection.QualifiedName.Component.Name;
+                }
+
+                var component = Project.VBComponents.OfType<VBComponent>().FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
+                Project.VBComponents.RemoveSafely(component);
+
+                var directory = CurrentRepository.LocalLocation;
+                directory += directory.EndsWith("\\") ? string.Empty : "\\";
+                Project.VBComponents.Import(directory + filePath);
+
+                Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name, _wrapperFactory);
+            }
+            else
+            {
+                var component = Project.VBComponents.OfType<VBComponent>().FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
+                Project.VBComponents.RemoveSafely(component);
+
+                var directory = CurrentRepository.LocalLocation;
+                directory += directory.EndsWith("\\") ? string.Empty : "\\";
+                Project.VBComponents.Import(directory + filePath);
+            }
+
+            HandleVbeSinkEvents = true;
+        }
+
         private void Refresh()
         {
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
+
+            HandleVbeSinkEvents = false;
 
             var codePane = Project.VBE.ActiveCodePane;
 
@@ -157,6 +215,8 @@ namespace Rubberduck.SourceControl
                 Project.RemoveAllComponents();
                 Project.ImportSourceFiles(CurrentRepository.LocalLocation);
             }
+
+            HandleVbeSinkEvents = true;
         }
     }
 }
