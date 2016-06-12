@@ -1,4 +1,4 @@
-﻿using Rubberduck.Parsing.Nodes;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;

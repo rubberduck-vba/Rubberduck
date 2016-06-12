@@ -3,7 +3,6 @@ using Microsoft.Vbe.Interop;
 using Microsoft.Vbe.Interop.Forms;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System;
@@ -185,6 +184,17 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var argContext = (VBAParser.ArgContext)context;
                 var isOptional = argContext.OPTIONAL() != null;
+                // TODO: "As Type" could be missing. Temp solution until default values are parsed correctly.
+                if (isOptional && asTypeContext != null)
+                {
+                    // if parameter is optional, asTypeName may contain the default value
+                    var complexType = asTypeContext.type().complexType();
+                    if (complexType != null && complexType.expression() is VBAParser.RelationalOpContext)
+                    {
+                        asTypeName = complexType.expression().GetChild(0).GetText();
+                    }
+                }
+
                 var isByRef = argContext.BYREF() != null;
                 var isParamArray = argContext.PARAMARRAY() != null;
                 result = new ParameterDeclaration(
@@ -237,7 +247,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else if (declarationType == DeclarationType.LibraryProcedure || declarationType == DeclarationType.LibraryFunction)
                 {
-                    result = new ExternalProcedureDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, declarationType, asTypeName, accessibility, context, selection, false, annotations);
+                    result = new ExternalProcedureDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, declarationType, asTypeName, asTypeContext, accessibility, context, selection, false, annotations);
                 }
                 else if (declarationType == DeclarationType.PropertyGet)
                 {

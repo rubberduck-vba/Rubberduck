@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -189,6 +188,12 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
+            var active = User32.GetForegroundWindow();
+            if (active != _mainWindowHandle)
+            {
+                return;
+            }
+
             var hotkey = sender as IHotkey;
             if (hotkey != null)
             {

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
@@ -7,7 +6,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {

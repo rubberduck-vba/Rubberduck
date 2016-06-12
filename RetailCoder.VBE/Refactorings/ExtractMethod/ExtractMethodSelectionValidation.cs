@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;

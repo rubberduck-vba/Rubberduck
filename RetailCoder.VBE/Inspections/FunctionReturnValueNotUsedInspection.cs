@@ -4,7 +4,6 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
-using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.VBEditor;
 
@@ -32,8 +31,6 @@ namespace Rubberduck.Inspections
             var nonInterfaceFunctions = functions.Except(interfaceMembers.Union(interfaceImplementationMembers));
             var nonInterfaceIssues = GetNonInterfaceIssues(nonInterfaceFunctions);
             return interfaceMemberIssues.Union(nonInterfaceIssues);
-            //// Temporarily disabled until fix for lack of context because of new resolver is found...
-            //return new List<InspectionResultBase>();
         }
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetInterfaceMemberIssues(IEnumerable<Declaration> interfaceMembers)
@@ -41,7 +38,7 @@ namespace Rubberduck.Inspections
             return from interfaceMember in interfaceMembers
                    let implementationMembers =
                        UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName).ToList()
-                   where
+                   where interfaceMember.DeclarationType == DeclarationType.Function &&
                        !IsReturnValueUsed(interfaceMember) &&
                        implementationMembers.All(member => !IsReturnValueUsed(member))
                    let implementationMemberIssues =
@@ -58,7 +55,7 @@ namespace Rubberduck.Inspections
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
         {
-            var returnValueNotUsedFunctions = nonInterfaceFunctions.Where(function => !IsReturnValueUsed(function));
+            var returnValueNotUsedFunctions = nonInterfaceFunctions.Where(function => function.DeclarationType == DeclarationType.Function && !IsReturnValueUsed(function));
             var nonInterfaceIssues = returnValueNotUsedFunctions
                 .Select(function =>
                         new FunctionReturnValueNotUsedInspectionResult(
@@ -112,7 +109,6 @@ namespace Rubberduck.Inspections
 
         private bool IsAddressOfCall(IdentifierReference usage)
         {
-            var what = usage.Context.GetType();
             return ParserRuleContextHelper.HasParent<VBAParser.AddressOfExpressionContext>(usage.Context);
         }
 

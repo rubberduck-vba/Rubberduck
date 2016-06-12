@@ -1,13 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
 
 namespace Rubberduck.Refactorings.ExtractMethod

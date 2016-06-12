@@ -5,7 +5,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
@@ -27,18 +26,17 @@ namespace Rubberduck.UI.UnitTesting
 
         private void State_StateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State != ParserState.Ready) { return; }
-
-            var tests = UnitTestHelpers.GetAllTests(_vbe, _state).ToList();
-
-            var removedTests = Tests.Where(test =>
-                         !tests.Any(t =>
-                                 t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                                 t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                                 t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
+            if (e.State != ParserState.ResolvedDeclarations) { return; }
 
             _dispatcher.Invoke(() =>
             {
+                var tests = UnitTestHelpers.GetAllTests(_vbe, _state).ToList();
+
+                var removedTests = Tests.Where(test =>
+                             !tests.Any(t =>
+                                     t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                                     t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                                     t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
 
                 // remove old tests
                 foreach (var test in removedTests)

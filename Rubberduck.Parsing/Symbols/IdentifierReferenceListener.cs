@@ -1,5 +1,4 @@
 using Antlr4.Runtime.Misc;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -296,6 +295,11 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public override void EnterScaleSpecialForm(VBAParser.ScaleSpecialFormContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterDebugPrintStmt([NotNull] VBAParser.DebugPrintStmtContext context)
         {
             _resolver.Resolve(context);
         }

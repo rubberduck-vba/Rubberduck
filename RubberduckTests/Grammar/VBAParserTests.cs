@@ -224,6 +224,19 @@ End Sub
         }
 
         [TestMethod]
+        public void TestModuleOption_Indented()
+        {
+            string code = @"
+    Option Explicit
+
+    Sub DoSomething()
+    End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
+        }
+
+        [TestMethod]
         public void TestModuleConfig()
         {
             string code = @"
@@ -838,15 +851,90 @@ End Sub";
         }
 
         [TestMethod]
-        public void TestDebugPrintStmt()
+        public void TestDebugPrintStmtNoArguments()
         {
-            // Sanity check so that we don't break Debug.Print because of the Print statement.
+            string code = @"
+Sub Test()
+    Debug.Print
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt");
+        }
+
+        [TestMethod]
+        public void TestDebugPrintStmtNormalArgumentSyntax()
+        {
             string code = @"
 Sub Test()
     Debug.Print ""Anything""
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+        }
+
+        [TestMethod]
+        public void TestDebugPrintStmtOutputItemSemicolon()
+        {
+            string code = @"
+Sub Test()
+    Debug.Print 1;
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+        }
+
+        [TestMethod]
+        public void TestDebugPrintStmtOutputItemComma()
+        {
+            string code = @"
+Sub Test()
+    Debug.Print 1,
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+        }
+
+        [TestMethod]
+        public void TestDebugPrintRealWorldExample1()
+        {
+            string code = @"
+Sub Test()
+    For Each fld In tdf.Fields
+        Debug.Print fld.Name,
+        Debug.Print FieldTypeName(fld),
+        Debug.Print fld.Size,
+        Debug.Print GetDescrip(fld)
+    Next
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 4);
+        }
+
+        [TestMethod]
+        public void TestDebugPrintRealWorldExample2()
+        {
+            string code = @"
+Sub Test()
+    If Not pFault Then
+        Debug.Print ""FirstO: "" & vbCr & ans(0) & vbCr
+        Debug.Print ""SecondO:""; ans(1)
+    End If
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 2);
+        }
+
+        [TestMethod]
+        public void TestDebugPrintRealWorldExample3()
+        {
+            string code = @"
+Sub Test()
+    For i = LBound(sortedArray) To UBound(sortedArray)
+        Debug.Print sortedArray(i) & "":"";
+    Next i
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 1);
         }
 
         [TestMethod]
@@ -929,6 +1017,37 @@ End Sub";
         }
 
         [TestMethod]
+        public void TestFunction_Indented()
+        {
+            string code = @"
+    Private Function Foo() As Boolean
+        Foo = True
+    End Function";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//functionStmt");
+        }
+
+        [TestMethod]
+        public void TestSub_Indented()
+        {
+            string code = @"
+    Private Sub Foo()
+    End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
+        }
+
+        [TestMethod]
+        public void TestSub_InconsistentlyIndented()
+        {
+            string code = @"
+    Private Sub Foo()
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
+        }
+
+        [TestMethod]
         public void TestPtrSafeAsVariable()
         {
             string code = @"
@@ -963,7 +1082,6 @@ End Sub";
             // If SLL fails we want to get notified ASAP so we can fix it, that's why we don't retry using LL.
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             var tree = parser.startRule();
-            var k = tree.ToStringTree(parser);
             return Tuple.Create<VBAParser, ParserRuleContext>(parser, tree);
         }
 

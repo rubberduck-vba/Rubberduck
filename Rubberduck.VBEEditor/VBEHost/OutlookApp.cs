@@ -1,6 +1,5 @@
-using System;
 using System.Runtime.InteropServices;
-//using Microsoft.Office.Interop.Outlook;
+using Microsoft.Office.Core;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
@@ -23,7 +22,18 @@ namespace Rubberduck.VBEditor.VBEHost
             //taskitem.Subject = "Rubberduck";
             //taskitem.Body = qualifiedMemberName.MemberName;
 
-            throw new NotImplementedException();
+            try
+            {
+                var app = Application;
+                var exp = app.ActiveExplorer();
+                CommandBar cb = exp.CommandBars.Add("RubberduckCallbackProxy", Temporary: true);
+                CommandBarControl btn = cb.Controls.Add(MsoControlType.msoControlButton, 1);
+                btn.OnAction = qualifiedMemberName.ToString();
+                btn.Execute();
+                cb.Delete();
+            }
+            catch {             
+            }
         }
     }
 }

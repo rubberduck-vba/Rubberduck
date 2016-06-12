@@ -10,7 +10,6 @@ using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using Rubberduck.Inspections.Rubberduck.Inspections;
 using System.Threading;
-using System;
 
 namespace RubberduckTests.Inspections
 {

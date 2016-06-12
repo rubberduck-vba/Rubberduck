@@ -95,7 +95,7 @@ end;
 function GetOfficeBitness(): Integer;
 var
   appBitness: Integer;
-  officeExeNames: array[0..4] of String;
+  officeExeNames: array[0..6] of String;
   i: Integer;
 begin
   officeExeNames[0] := 'excel.exe';
@@ -103,6 +103,8 @@ begin
   officeExeNames[2] := 'winword.exe';
   officeExeNames[3] := 'outlook.exe';
   officeExeNames[4] := 'powerpnt.exe';
+  officeExeNames[5] := 'mspub.exe';
+  officeExeNames[6] := 'winproj.exe';
 
   for i := 0 to 4 do begin
     appBitness := GetOfficeAppBitness(officeExeNames[i]);

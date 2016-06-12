@@ -109,6 +109,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitFieldLength([NotNull] VBAParser.FieldLengthContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.debugModule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDebugModule([NotNull] VBAParser.DebugModuleContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.goSubStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -864,6 +871,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitCallStmt([NotNull] VBAParser.CallStmtContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.debugPrintSub"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDebugPrintSub([NotNull] VBAParser.DebugPrintSubContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.enumerationStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1198,6 +1212,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitResumeStmt([NotNull] VBAParser.ResumeStmtContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.debugPrint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDebugPrint([NotNull] VBAParser.DebugPrintContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.endOfLine"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1474,6 +1495,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitRaiseEventStmt([NotNull] VBAParser.RaiseEventStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.debugPrintStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDebugPrintStmt([NotNull] VBAParser.DebugPrintStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.sameLineStatement"/>.

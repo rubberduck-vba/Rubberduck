@@ -27,7 +27,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height="100" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="200" />
         </Grid.RowDefinitions>
         <ScrollViewer>
             <StackPanel Margin="5">
@@ -178,7 +179,9 @@
             </StackPanel>
         </ScrollViewer>
 
-        <ScrollViewer Grid.Row="1"
+        <GridSplitter Grid.Row="1" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
+
+        <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto">
             <TextBlock Background="White"

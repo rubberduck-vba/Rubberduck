@@ -90,7 +90,7 @@
                     <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}"
                                             Width="*"
                                             ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}"
-                                            SelectedItemBinding="{Binding Path=SeverityLabel, Mode=TwoWay}" />
+                                            SelectedItemBinding="{Binding Path=SeverityLabel}" />
                 </controls:GroupingGrid.Columns>
             </controls:GroupingGrid>
         </DockPanel>

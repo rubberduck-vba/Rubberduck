@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -15,7 +16,6 @@ namespace Rubberduck.UI.Inspections
         private static readonly IDictionary<CodeInspectionSeverity,ImageSource> Icons = 
             new Dictionary<CodeInspectionSeverity, ImageSource>
             {
-                { CodeInspectionSeverity.DoNotShow, null },
                 { CodeInspectionSeverity.Hint, ToImageSource(Properties.Resources.information_white) },
                 { CodeInspectionSeverity.Suggestion, ToImageSource(Properties.Resources.information) },
                 { CodeInspectionSeverity.Warning, ToImageSource(Properties.Resources.exclamation) },
@@ -35,7 +35,7 @@ namespace Rubberduck.UI.Inspections
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return Icons.First(f => f.Value == value).Key;
         }
 
         private static ImageSource ToImageSource(Image source)

@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
@@ -39,7 +40,13 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression ResolveType(Declaration module, Declaration parent, ParserRuleContext expression)
         {
-            return _typedBindingContext.Resolve(module, parent, expression, null, StatementResolutionContext.Undefined);
+            var context = expression;
+            var opContext = expression as VBAParser.RelationalOpContext;
+            if (opContext != null && opContext.Parent is VBAParser.ComplexTypeContext)
+            {
+                context = opContext.GetChild<VBAParser.LExprContext>(0);
+            }
+            return _typedBindingContext.Resolve(module, parent, context, null, StatementResolutionContext.Undefined);
         }
 
         public IBoundExpression ResolveProcedurePointer(Declaration module, Declaration parent, ParserRuleContext expression)

@@ -126,12 +126,36 @@ namespace Rubberduck.SourceControl
 
                 LibGit2Sharp.Repository.Init(directory, bare);
 
-                return new Repository(Project.Name, workingDir, directory);
+                return new Repository(Project.HelpFile, workingDir, directory);
             }
             catch (LibGit2SharpException ex)
             {
                 throw new SourceControlException(SourceControlText.GitNotInit, ex);
             }
+        }
+
+        public override void AddOrigin(string path, string trackingBranchName)
+        {
+            try
+            {
+                if (_repo.Network.Remotes.Any(r => r.Name == "origin"))
+                {
+                    _repo.Network.Remotes.Remove("origin"); // todo prompt that remote is already taken
+                }
+
+                _repo.Network.Remotes.Add("origin", path);
+                _repo.Branches.Update(_repo.Branches[CurrentBranch.Name], c => c.Remote = "origin",
+                        c => c.UpstreamBranch = "refs/heads/" + trackingBranchName);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Failed to add remote location.", ex);
+            }
+        }
+
+        public override bool HasCredentials()
+        {
+            return _credentials != null;
         }
 
         /// <summary>
@@ -147,7 +171,7 @@ namespace Rubberduck.SourceControl
             //add a master branch to newly created repo
             using (var repo = new LibGit2Sharp.Repository(repository.LocalLocation))
             {
-                var status = repo.RetrieveStatus(new StatusOptions());
+                var status = repo.RetrieveStatus(new StatusOptions {DetectRenamesInWorkDir = true});
                 foreach (var stat in status.Untracked)
                 {
                     repo.Stage(stat.FilePath);
@@ -437,14 +461,17 @@ namespace Rubberduck.SourceControl
         }
 
         /// <summary>
-        /// Removes file from staging area, but leaves the file in the working directory.
+        /// Removes file from staging area.
         /// </summary>
         /// <param name="filePath"></param>
-        public override void RemoveFile(string filePath)
+        /// <param name="removeFromWorkingDirectory"></param>
+        public override void RemoveFile(string filePath, bool removeFromWorkingDirectory)
         {
             try
             {
-                _repo.Remove(filePath, false);
+                NotifyExternalFileChanges = false;
+                _repo.Remove(filePath, removeFromWorkingDirectory);
+                NotifyExternalFileChanges = true;
             }
             catch (LibGit2SharpException ex)
             {
@@ -457,7 +484,8 @@ namespace Rubberduck.SourceControl
             try
             {
                 base.Status();
-                return _repo.RetrieveStatus().Select(item => new FileStatusEntry(item));
+                return _repo.RetrieveStatus(new StatusOptions {IncludeUnaltered = true, DetectRenamesInWorkDir = true })
+                        .Select(item => new FileStatusEntry(item));
             }
             catch (LibGit2SharpException ex)
             {
@@ -465,6 +493,18 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        public override IEnumerable<IFileStatusEntry> LastKnownStatus()
+        {
+            try
+            {
+                return _repo.RetrieveStatus(new StatusOptions { IncludeUnaltered = true, DetectRenamesInWorkDir = true})
+                        .Select(item => new FileStatusEntry(item));
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitRepoStatusFailed, ex);
+            }
+        }
         public override void Undo(string filePath)
         {
             try
@@ -509,6 +549,18 @@ namespace Rubberduck.SourceControl
             catch(LibGit2SharpException ex)
             {
                 throw new SourceControlException(SourceControlText.GitBranchDeleteFailed, ex);
+            }
+        }
+
+        public override bool RepoHasRemoteOrigin()
+        {
+            try
+            {
+                return _repo.Network.Remotes.Any(a => a.Name == "origin");
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitPublishFailed, ex);
             }
         }
 

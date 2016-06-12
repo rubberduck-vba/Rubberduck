@@ -2,7 +2,6 @@
 using Moq;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI;
 using Rubberduck.UI.Settings;
 
 namespace RubberduckTests.Settings
@@ -91,52 +90,12 @@ namespace RubberduckTests.Settings
 
         private Configuration GetDefaultConfig()
         {
-            //var indenterSettings = GetTestIndenterSettings();
-            //{
-            //    indenterSettings.IndentEntireProcedureBody = true,
-            //    indenterSettings.IndentFirstCommentBlock = true,
-            //    indenterSettings.IndentFirstDeclarationBlock = true,
-            //    indenterSettings.AlignCommentsWithCode = true,
-            //    indenterSettings.AlignContinuations = true,
-            //    IgnoreOperatorsInContinuations = true,
-            //    IndentCase = false,
-            //    ForceDebugStatementsInColumn1 = false,
-            //    ForceCompilerDirectivesInColumn1 = false,
-            //    IndentCompilerDirectives = true,
-            //    AlignDims = false,
-            //    AlignDimColumn = 15,
-            //    EnableUndo = true,
-            //    EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn,
-            //    EndOfLineCommentColumnSpaceAlignment = 50,
-            //    IndentSpaces = 4
-            //};
-
             var userSettings = new UserSettings(null, null, null, null, null, GetMockIndenterSettings());
             return new Configuration(userSettings);
         }
 
         private Configuration GetNondefaultConfig()
         {
-            //var indenterSettings = new Rubberduck.SmartIndenter.IndenterSettings
-            //{
-            //    IndentEntireProcedureBody = false,
-            //    IndentFirstCommentBlock = false,
-            //    IndentFirstDeclarationBlock = false,
-            //    AlignCommentsWithCode = false,
-            //    AlignContinuations = false,
-            //    IgnoreOperatorsInContinuations = false,
-            //    IndentCase = true,
-            //    ForceDebugStatementsInColumn1 = true,
-            //    ForceCompilerDirectivesInColumn1 = true,
-            //    IndentCompilerDirectives = false,
-            //    AlignDims = true,
-            //    AlignDimColumn = 16,
-            //    EnableUndo = false,
-            //    EndOfLineCommentStyle = EndOfLineCommentStyle.Absolute,
-            //    EndOfLineCommentColumnSpaceAlignment = 60,
-            //    IndentSpaces = 2
-            //};
-
             var userSettings = new UserSettings(null, null, null, null, null, GetMockIndenterSettings(true));
             return new Configuration(userSettings);
         }

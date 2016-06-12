@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -56,6 +57,11 @@ namespace Rubberduck.UI.Command.MenuItems
         private static void CheckInitialization()
         {
             if (UiContext == null) throw new InvalidOperationException("UiDispatcher is not initialized. Invoke Initialize() from UI thread first.");
+        }
+
+        public static void Shutdown()
+        {
+            Invoke(() => Dispatcher.CurrentDispatcher.InvokeShutdown());
         }
     }
 }

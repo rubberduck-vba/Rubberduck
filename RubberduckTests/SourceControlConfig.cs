@@ -1,8 +1,3 @@
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Settings;
-using Rubberduck.SourceControl;
-
 namespace RubberduckTests
 {
     // Tests disabled because they aren't meant to be unit tests.

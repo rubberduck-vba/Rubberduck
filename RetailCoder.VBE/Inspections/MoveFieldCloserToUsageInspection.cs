@@ -3,18 +3,14 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public sealed class MoveFieldCloserToUsageInspection : InspectionBase
     {
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
-
         public MoveFieldCloserToUsageInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
-            _wrapperFactory = new CodePaneWrapperFactory();
         }
 
         public override string Meta { get { return InspectionsUI.MoveFieldCloserToUsageInspectionMeta; } }
@@ -52,7 +48,7 @@ namespace Rubberduck.Inspections
                            }.Contains(parentDeclaration.DeclarationType);
                 })
                 .Select(issue =>
-                        new MoveFieldCloserToUsageInspectionResult(this, issue, State, _wrapperFactory, new MessageBox()));
+                        new MoveFieldCloserToUsageInspectionResult(this, issue, State, new MessageBox()));
         }
 
         private Declaration ParentDeclaration(IdentifierReference reference)

@@ -13,14 +13,13 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor.Extensions;
 using System.IO;
 using NLog;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParser : IRubberduckParser, IDisposable
+    public class RubberduckParser : IRubberduckParser
     {
         public RubberduckParserState State { get { return _state; } }
 
@@ -56,13 +55,8 @@ namespace Rubberduck.Parsing.VBA
             _comReflector = new ReferencedDeclarationsCollector(_state);
 
             state.ParseRequest += ReparseRequested;
-            state.StateChanged += StateOnStateChanged;
         }
 
-        private void StateOnStateChanged(object sender, EventArgs e)
-        {
-            Logger.Debug("RubberduckParser handles OnStateChanged ({0})", _state.Status);
-        }
 
         private void ReparseRequested(object sender, ParseRequestEventArgs e)
         {
@@ -78,8 +72,11 @@ namespace Rubberduck.Parsing.VBA
                 {
                     ParseAsync(e.Component, CancellationToken.None).Wait();
 
-                    Logger.Trace("Starting resolver task");
-                    Resolve(_central.Token);
+                    if (_state.Status != ParserState.Error)
+                    {
+                        Logger.Trace("Starting resolver task");
+                        Resolve(_central.Token);
+                    }
                 });
             }
         }
@@ -116,8 +113,11 @@ namespace Rubberduck.Parsing.VBA
             var parseTasks = components.Select(vbComponent => ParseAsync(vbComponent, CancellationToken.None)).ToArray();
             Task.WaitAll(parseTasks);
 
-            Logger.Trace("Starting resolver task");
-            Resolve(_central.Token); // Tests expect this to be synchronous
+            if (_state.Status != ParserState.Error)
+            {
+                Logger.Trace("Starting resolver task");
+                Resolve(_central.Token); // Tests expect this to be synchronous
+            }
         }
 
         /// <summary>
@@ -139,11 +139,12 @@ namespace Rubberduck.Parsing.VBA
             var toParse = components.Where(c => _state.IsNewOrModified(c)).ToList();
             var unchanged = components.Where(c => !_state.IsNewOrModified(c)).ToList();
 
+            SyncComReferences(projects);
             AddBuiltInDeclarations(projects);
 
             if (!toParse.Any())
             {
-                State.SetStatusAndFireStateChanged(ParserState.Ready);
+                State.SetStatusAndFireStateChanged(_state.Status);
                 return;
             }
 
@@ -172,23 +173,23 @@ namespace Rubberduck.Parsing.VBA
 
             var parseTasks = toParse.Select(vbComponent => ParseAsync(vbComponent, CancellationToken.None)).ToArray();
             Task.WaitAll(parseTasks);
-            
-            Logger.Trace("Starting resolver task");
-            Resolve(_central.Token);
+
+            if (_state.Status != ParserState.Error)
+            {
+                Logger.Trace("Starting resolver task");
+                Resolve(_central.Token);
+            }
         }
 
         private void AddBuiltInDeclarations(IReadOnlyList<VBProject> projects)
         {
-            SyncComReferences(projects);
-
             var finder = new DeclarationFinder(_state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
             if (finder.MatchName(Tokens.Err).Any(item => item.IsBuiltIn
-                && item.DeclarationType == DeclarationType.Variable
-                && item.Accessibility == Accessibility.Global))
+                    && item.DeclarationType == DeclarationType.Variable
+                    && item.Accessibility == Accessibility.Global))
             {
                 return;
             }
-
             var vba = finder.FindProject("VBA");
             if (vba == null)
             {
@@ -196,101 +197,15 @@ namespace Rubberduck.Parsing.VBA
                 // we're in a unit test and mock project didn't setup any references.
                 return;
             }
-
-            Debug.Assert(vba != null);
-
-            var debugModuleName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
-            var debugModule = new ProceduralModuleDeclaration(new QualifiedMemberName(debugModuleName, "DebugModule"), vba, "DebugModule", true, new List<IAnnotation>(), new Attributes());
-            var debugClassName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
-            var debugClass = new ClassModuleDeclaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "DebugClass", true, new List<IAnnotation>(), new Attributes(), true);
-            var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), debugModule, "Global", "DebugClass", null, true, false, Accessibility.Global, DeclarationType.Variable, false, null);
-            var debugAssert = new SubroutineDeclaration(new QualifiedMemberName(debugClassName, "Assert"), debugClass, debugClass, null, Accessibility.Global, null, Selection.Home, true, null, new Attributes());
-            var debugPrint = new SubroutineDeclaration(new QualifiedMemberName(debugClassName, "Print"), debugClass, debugClass, null, Accessibility.Global, null, Selection.Home, true, null, new Attributes());
-
-            lock (_state)
-            {
-                _state.AddDeclaration(debugModule);
-                _state.AddDeclaration(debugClass);
-                _state.AddDeclaration(debugObject);
-                _state.AddDeclaration(debugAssert);
-                _state.AddDeclaration(debugPrint);
-            }
-
-            AddSpecialFormDeclarations(finder, vba);
-        }
-
-        private void AddSpecialFormDeclarations(DeclarationFinder finder, Declaration vba)
-        {
-            // The Err function is inside this module as well.
             var informationModule = finder.FindStdModule("Information", vba, true);
-            Debug.Assert(informationModule != null);
-            var arrayFunction = new FunctionDeclaration(
-                new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Array"),
-                informationModule,
-                informationModule,
-                "Variant",
-                null,
-                null,
-                Accessibility.Public,
-                null,
-                Selection.Home,
-                false,
-                true,
-                null,
-                new Attributes());
-            var inputFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Input"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            var numberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputFunction, "Integer", null, null, false, false);
-            var filenumberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputFunction, "Integer", null, null, false, false);
-            inputFunction.AddParameter(numberParam);
-            inputFunction.AddParameter(filenumberParam);
-            var inputBFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "InputB"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            var numberBParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputBFunction, "Integer", null, null, false, false);
-            var filenumberBParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputBFunction, "Integer", null, null, false, false);
-            inputBFunction.AddParameter(numberBParam);
-            inputBFunction.AddParameter(filenumberBParam);
-            var lboundFunction = new FunctionDeclaration(
-                new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "LBound"),
-                informationModule,
-                informationModule,
-                "Long",
-                null,
-                null,
-                Accessibility.Public,
-                null,
-                Selection.Home,
-                false,
-                true,
-                null,
-                new Attributes());
-            var arrayNameParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Arrayname"), lboundFunction, "Integer", null, null, false, false);
-            var dimensionParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Dimension"), lboundFunction, "Integer", null, null, true, false);
-            lboundFunction.AddParameter(arrayNameParam);
-            lboundFunction.AddParameter(dimensionParam);
-            var uboundFunction = new FunctionDeclaration(
-                new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "UBound"),
-                informationModule,
-                informationModule,
-                "Integer",
-                null,
-                null,
-                Accessibility.Public,
-                null,
-                Selection.Home,
-                false,
-                true,
-                null,
-                new Attributes());
-            var arrayParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Array"), uboundFunction, "Variant", null, null, false, false, true);
-            var rankParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Rank"), uboundFunction, "Integer", null, null, true, false);
-            uboundFunction.AddParameter(arrayParam);
-            uboundFunction.AddParameter(rankParam);
+            Debug.Assert(informationModule != null, "We expect the information module to exist in the VBA project.");
+            var customDeclarations = CustomDeclarations.Load(vba, informationModule);
             lock (_state)
             {
-                _state.AddDeclaration(arrayFunction);
-                _state.AddDeclaration(inputFunction);
-                _state.AddDeclaration(inputBFunction);
-                _state.AddDeclaration(lboundFunction);
-                _state.AddDeclaration(uboundFunction);
+                foreach (var customDeclaration in customDeclarations)
+                {
+                    _state.AddDeclaration(customDeclaration);
+                }
             }
         }
 
@@ -466,6 +381,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Resolve(CancellationToken token)
         {
+            State.SetStatusAndFireStateChanged(ParserState.Resolving);
             var sharedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_resolverTokenSource.Token, token);
             // tests expect this to be synchronous :/
             //Task.Run(() => ResolveInternal(sharedTokenSource.Token));
@@ -491,6 +407,8 @@ namespace Rubberduck.Parsing.VBA
                 if (token.IsCancellationRequested) return;
                 ResolveDeclarations(qualifiedName.Component, kvp.Value);
             }
+
+            _state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             // walk all parse trees (modified or not) for identifier references
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
@@ -599,17 +517,16 @@ namespace Rubberduck.Parsing.VBA
         public void Dispose()
         {
             State.ParseRequest -= ReparseRequested;
-            State.StateChanged -= StateOnStateChanged;
+
+            if (_central != null)
+            {
+                //_central.Cancel();
+                _central.Dispose();
+            }
 
             if (_resolverTokenSource != null)
             {
                 _resolverTokenSource.Dispose();
-            }
-
-            if (_central != null)
-            {
-                _central.Cancel();
-                _central.Dispose();
             }
         }
     }

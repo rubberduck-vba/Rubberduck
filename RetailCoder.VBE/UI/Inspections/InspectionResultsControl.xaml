@@ -264,27 +264,14 @@
             <Setter Property="Width" Value="16" />
             <Setter Property="Margin" Value="4" />
         </Style>
-        
+
         <CollectionViewSource x:Key="ResultsByInspectionType" Source="{Binding Results}">
-            <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="Inspection.InspectionType"/>
-                <componentModel:SortDescription PropertyName="Inspection.Name"/>
-                <componentModel:SortDescription PropertyName="QualifiedSelection.QualifiedName.Name"/>
-                <componentModel:SortDescription PropertyName="QualifiedSelection.Selection.StartLine"/>
-                <componentModel:SortDescription PropertyName="QualifiedSelection.Selection.StartColumn"/>
-            </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Inspection" Converter="{StaticResource InspectionTypeConverter}" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
         <CollectionViewSource x:Key="ResultsByModule" Source="{Binding Results}">
-            <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="QualifiedSelection.QualifiedName.Name"/>
-                <componentModel:SortDescription PropertyName="Inspection.Name"/>
-                <componentModel:SortDescription PropertyName="QualifiedSelection.Selection.StartLine"/>
-                <componentModel:SortDescription PropertyName="QualifiedSelection.Selection.StartColumn"/>
-            </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="QualifiedSelection.QualifiedName" />
             </CollectionViewSource.GroupDescriptions>
@@ -554,7 +541,7 @@
                                ItemsSource="{Binding Source={StaticResource ResultsByInspectionType}}"
                                Visibility="{Binding IsChecked, ElementName=GroupByInspectionType, Converter={StaticResource BoolToVisibility}}">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}">
+                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="Descending">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="inspections:ICodeInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />

@@ -4,6 +4,7 @@
     {
         Undefined,
         SetStatement,
-        LetStatement
+        LetStatement,
+        DefaultParamValue,
     }
 }

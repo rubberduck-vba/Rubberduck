@@ -1,16 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {

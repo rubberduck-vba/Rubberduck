@@ -5,14 +5,13 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using System.Diagnostics;
 using NLog;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : InspectionBase, IParseTreeInspection
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
@@ -29,7 +28,7 @@ namespace Rubberduck.Inspections
         {
             if (ParseTreeResults == null)
             {
-                _logger.Debug("Aborting GetInspectionResults because ParseTree results were not passed");
+                Logger.Debug("Aborting GetInspectionResults because ParseTree results were not passed");
                 return new InspectionResultBase[] { };
             }
             var subStmts = ParseTreeResults.ArgListsWithOneByRefParam
@@ -71,7 +70,8 @@ namespace Rubberduck.Inspections
                     if (declaration == null) { return false; }  // rather be safe than sorry
 
                     return UserDeclarations.Where(item => item.IsWithEvents)
-                            .All(withEvents => UserDeclarations.FindEventProcedures(withEvents) == null);
+                            .All(withEvents => UserDeclarations.FindEventProcedures(withEvents) == null) &&
+                            !State.AllDeclarations.FindBuiltInEventHandlers().Contains(declaration);
                 });
 
             return ParseTreeResults.ArgListsWithOneByRefParam
