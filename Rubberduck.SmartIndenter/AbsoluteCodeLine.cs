@@ -19,11 +19,11 @@ namespace Rubberduck.SmartIndenter
         private static readonly Regex ProcedureEndRegex = new Regex(@"^End\s(Sub|Function|Property)");
         private static readonly Regex TypeEnumStartRegex = new Regex(@"^(Public\s|Private\s)?(Enum\s|Type\s)");
         private static readonly Regex TypeEnumEndRegex = new Regex(@"^End\s(Enum|Type)");
-        private static readonly Regex InProcedureInRegex = new Regex(@"^If\s.*\sThen|^ElseIf\s.+\sThen$|^Else$|^Case\s|^With|^For\s|^Do$|^Do\s|^While$|^While\s|^Select Case");
-        private static readonly Regex InProcedureOutRegex = new Regex(@"^(Else)?If\s.*\sThen\s|^Else$|^Case\s|^End With|^Next\s|^Next$|^Loop$|^Loop\s|^Wend$|^End If$|^End Select");
+        private static readonly Regex InProcedureInRegex = new Regex(@"^(Else)?If\s.*\sThen|^Else$|^Case\s|^With|^For\s|^Do$|^Do\s|^While$|^While\s|^Select Case");
+        private static readonly Regex InProcedureOutRegex = new Regex(@"^If\s.*\sThen\s|^Else$|^ElseIf\s.*\sThen|^Case\s|^End With|^Next\s|^Next$|^Loop$|^Loop\s|^Wend$|^End If$|^End Select");
         private static readonly Regex DeclarationRegex = new Regex(@"^(Dim|Const|Static|Public|Private)\s.*\sAs\s");
         private static readonly Regex PrecompilerInRegex = new Regex(@"^#(Else)?If\s.+Then$|^#Else$");
-        private static readonly Regex PrecompilerOutRegex = new Regex(@"^#ElseIf\s.+Then$|^#Else$|#End\sIf$");
+        private static readonly Regex PrecompilerOutRegex = new Regex(@"^#ElseIf\s.+Then|^#Else$|#End\sIf$");
         private static readonly Regex SingleLineIfRegex = new Regex(@"^If\s.*\sThen\s.*$");
 
         private readonly IIndenterSettings _settings;

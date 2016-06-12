@@ -141,6 +141,7 @@ fileStmt :
     | unlockStmt
     | lineInputStmt
     | widthStmt
+    | debugPrintStmt
     | printStmt
     | writeStmt
     | inputStmt
@@ -211,7 +212,15 @@ widthStmt : WIDTH whiteSpace markedFileNumber whiteSpace? COMMA whiteSpace? line
 lineWidth : expression;
 
 
-// 5.4.5.8   Print Statement 
+// 5.4.5.8   Print Statement
+// Debug.Print is special because it seems to take an output list as argument.
+// To shield the rest of the parsing/binding from this peculiarity, we treat it as a statement
+// and let the resolver handle it.
+debugPrintStmt : debugPrint (whiteSpace outputList)?;
+// We split it up into separate rules so that we have context classes generated that can be used in declarations/references.
+debugPrint : debugModule whiteSpace? DOT whiteSpace? debugPrintSub;
+debugModule : DEBUG;
+debugPrintSub : PRINT;
 printStmt : PRINT whiteSpace markedFileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
 
 // 5.4.5.8.1 Output Lists

@@ -716,5 +716,41 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
         }
+
+        public void Resolve(VBAParser.DebugPrintStmtContext context)
+        {
+            if (CustomDeclarations.DEBUG_PRINT == null)
+            {
+                _logger.Warn("Debug.Print (custom declaration) has not been loaded, skipping resolving Debug.Print call.");
+                return;
+            }
+            // Because Debug.Print has a special argument (an output list) instead
+            // of normal arguments we can't treat it as a function call.
+            var debugPrint = CustomDeclarations.DEBUG_PRINT;
+            var debugModule = debugPrint.ParentDeclaration;
+            debugModule.AddReference(
+                _qualifiedModuleName,
+                _currentScope,
+                _currentParent,
+                context.debugPrint().debugModule(),
+                context.debugPrint().debugModule().GetText(),
+                debugModule,
+                context.debugPrint().debugModule().GetSelection(),
+                _annotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugModule().GetSelection().StartLine));
+            debugPrint.AddReference(
+                _qualifiedModuleName,
+                _currentScope,
+                _currentParent,
+                context.debugPrint().debugPrintSub(),
+                context.debugPrint().debugPrintSub().GetText(),
+                debugPrint,
+                context.debugPrint().debugPrintSub().GetSelection(),
+                _annotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugPrintSub().GetSelection().StartLine));
+            var outputList = context.outputList();            
+            if (outputList != null)
+            {
+                ResolveOutputList(outputList);
+            }
+        }
     }
 }
