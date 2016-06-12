@@ -307,6 +307,331 @@ End Sub";
         }
 
         [TestMethod]
+        public void TestEndEnumMultipleWhiteSpace()
+        {
+            string code = @"
+Enum Test
+    anything
+End               Enum";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//enumerationStmt");
+        }
+
+        [TestMethod]
+        public void TestEndTypeMultipleWhiteSpace()
+        {
+            string code = @"
+Type Test
+    anything As Integer
+End             Type";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeStmt");
+        }
+
+        [TestMethod]
+        public void TestEndFunctionLineContinuation()
+        {
+            string code = @"
+Function Test()
+
+End _
+Function";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//functionStmt");
+        }
+
+        [TestMethod]
+        public void TestExitFunctionLineContinuation()
+        {
+            string code = @"
+Public Function Test()
+    Exit _
+    Function
+End Function";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//functionStmt");
+        }
+
+        [TestMethod]
+        public void TestEndSubroutineLineContinuation()
+        {
+            string code = @"
+Sub Test()
+
+End _
+Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
+        }
+
+        [TestMethod]
+        public void TestExitSubroutineLineContinuation()
+        {
+            string code = @"
+Sub Test()
+    Exit _
+    Sub
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
+        }
+
+        [TestMethod]
+        public void TestPropertyGetLineContinuation()
+        {
+            string code = @"
+Property _
+Get Test()
+End Property";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//propertyGetStmt");
+        }
+
+        [TestMethod]
+        public void TestPropertyLetLineContinuation()
+        {
+            string code = @"
+Property _
+Let Test(anything As Integer)
+End Property";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//propertyLetStmt");
+        }
+
+        [TestMethod]
+        public void TestPropertySetLineContinuation()
+        {
+            string code = @"
+Property _
+Set Test(anything As Application)
+End Property";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//propertySetStmt");
+        }
+
+        [TestMethod]
+        public void TestEndPropertyLineContinuation()
+        {
+            string code = @"
+Property Get Test()
+
+End _
+Property";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//propertyGetStmt");
+        }
+
+        [TestMethod]
+        public void TestExitPropertyLineContinuation()
+        {
+            string code = @"
+Public Property Get Test()
+    Exit _
+    Property
+End Property";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//propertyGetStmt");
+        }
+
+        [TestMethod]
+        public void TestEndIfLineContinuation()
+        {
+            string code = @"
+Function Test()
+    If 1 = 1 Then
+    End _
+    If
+End Function";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt");
+        }
+
+        [TestMethod]
+        public void TestEndSelectLineContinuation()
+        {
+            string code = @"
+Property Get Test()
+    Select Case 1 = 2
+    End _
+    Select
+End Property";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//selectCaseStmt");
+        }
+
+        [TestMethod]
+        public void TestEndWithContinuation()
+        {
+            string code = @"
+Sub Test()
+  With Application
+  End _
+  With
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//withStmt");
+        }
+
+        [TestMethod]
+        public void TestExitDoContinuation()
+        {
+            string code = @"
+Sub Test()
+    Do While True
+        Exit _
+        Do
+    Loop
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//doLoopStmt");
+        }
+
+        [TestMethod]
+        public void TestExitForContinuation()
+        {
+            string code = @"
+Sub Test()
+    For i = 1 To 2
+        Exit _
+        For
+    Next i
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt");
+        }
+
+        [TestMethod]
+        public void TestLineInputLineContinuation()
+        {
+            string code = @"
+Sub Test()
+    Line _
+    Input #1, TextLine
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lineInputStmt");
+        }
+
+        [TestMethod]
+        public void TestReadWriteKeywordLineContinuation()
+        {
+            string code = @"
+Sub Test()
+    Open ""TESTFILE"" For Random Access Read _
+    Write As #1
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//openStmt");
+        }
+
+        [TestMethod]
+        public void TestLockReadKeywordLineContinuation()
+        {
+            string code = @"
+Sub Test()
+    Open ""TESTFILE"" For Random Lock _
+    Read As #1
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//openStmt");
+        }
+
+        [TestMethod]
+        public void TestLockWriteKeywordLineContinuation()
+        {
+            string code = @"
+Sub Test()
+    Open ""TESTFILE"" For Random Lock _
+    Write As #1
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//openStmt");
+        }
+
+        [TestMethod]
+        public void TestLockReadWriteKeywordLineContinuation()
+        {
+            string code = @"
+Sub Test()
+    Open ""TESTFILE"" For Random Lock _
+    Read _
+    Write As #1
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//openStmt");
+        }
+
+        [TestMethod]
+        public void TestOnErrorLineContinuation()
+        {
+            string code = @"
+Sub Test()
+On _
+Error GoTo a
+a:
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//onErrorStmt");
+        }
+
+        [TestMethod]
+        public void TestOnLocalErrorLineContinuation()
+        {
+            string code = @"
+Sub Test()
+On _
+Local _
+Error GoTo a
+a:
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//onErrorStmt");
+        }
+
+        [TestMethod]
+        public void TestOptionBaseLineContinuation()
+        {
+            string code = @"
+Option _
+Base _
+1";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
+        }
+
+        [TestMethod]
+        public void TestOptionExplicitLineContinuation()
+        {
+            string code = @"
+Option _
+Explicit";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
+        }
+
+        [TestMethod]
+        public void TestOptionCompareLineContinuation()
+        {
+            string code = @"
+Option _
+Compare _
+Text";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
+        }
+
+        [TestMethod]
+        public void TestOptionPrivateModuleLineContinuation()
+        {
+            string code = @"
+Option _
+Private _
+Module";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
+        }
+
+        [TestMethod]
         public void TestDictionaryAccessExprLineContinuation()
         {
             string code = @"
