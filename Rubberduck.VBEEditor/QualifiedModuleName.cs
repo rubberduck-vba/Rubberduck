@@ -12,17 +12,6 @@ namespace Rubberduck.VBEditor
     {
         private static string GetDisplayName(VBProject project)
         {
-            //Try reading the filename first
-            try
-            {
-                if (!string.IsNullOrEmpty(Path.GetDirectoryName(project.BuildFileName)))
-                {
-                    return Path.GetFileName(project.FileName);
-                }
-            }
-            catch
-            {  //The GetFileName getter probably threw
-            }
 
             if (project.Protection == vbext_ProjectProtection.vbext_pp_none)
             {
@@ -77,6 +66,19 @@ namespace Rubberduck.VBEditor
                     //The Properties collection either wasn't available, or didn't have the expected properties
                 }
             }
+
+            //Try reading the filename
+            try
+            {
+                if (!string.IsNullOrEmpty(Path.GetDirectoryName(project.BuildFileName)))
+                {
+                    return Path.GetFileName(project.FileName);
+                }
+            }
+            catch
+            {  //The GetFileName getter probably threw
+            }
+
             return null;
         }
 
