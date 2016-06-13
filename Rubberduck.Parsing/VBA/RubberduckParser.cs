@@ -134,7 +134,6 @@ namespace Rubberduck.Parsing.VBA
                 parseTasks[i] = ParseAsync(components[i], CancellationToken.None);
             }
 
-
             Task.WaitAll(parseTasks);
 
             if (_state.Status != ParserState.Error)
