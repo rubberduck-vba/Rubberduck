@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Antlr4.Runtime;
@@ -11,7 +12,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
-// ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -55,7 +55,7 @@ namespace Rubberduck.Parsing.VBA
     public sealed class RubberduckParserState : IDisposable
     {
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
-        private readonly IDictionary<string, VBProject> _projects = new Dictionary<string, VBProject>();
+        private readonly IDictionary<string, Func<VBProject>> _projects = new Dictionary<string, Func<VBProject>>();
 
         private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates =
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
@@ -63,18 +63,7 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParseRequestEventArgs> ParseRequest;
         public event EventHandler<RubberduckStatusMessageEventArgs> StatusMessageUpdate;
 
-        private static readonly List<ParserState> States = new List<ParserState>();
-
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        static RubberduckParserState()
-        {
-            var values = Enum.GetValues(typeof(ParserState));
-            foreach (var value in values)
-            {
-                States.Add((ParserState) value);
-            }
-        }
 
         public void OnStatusMessageUpdate(string message)
         {
@@ -101,7 +90,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             //loop until the helpfile is unique for this host session
-            while (!IsProjectIdUnique(project.HelpFile))
+            while (_projects.Any(a => a.Key == project.HelpFile))
             {
                 project.HelpFile = (project.GetHashCode() ^ project.HelpFile.GetHashCode()).ToString();
             }
@@ -109,40 +98,18 @@ namespace Rubberduck.Parsing.VBA
             var projectId = project.HelpFile;
             if (!_projects.ContainsKey(projectId))
             {
-                _projects.Add(projectId, project);
+                _projects.Add(projectId, () => project);
             }
 
-            foreach (VBComponent component in project.VBComponents)
+            foreach (var component in project.VBComponents.Cast<VBComponent>())
             {
                 _moduleStates.TryAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending));
             }
         }
 
-        private bool IsProjectIdUnique(string id)
-        {
-            foreach (var project in _projects)
-            {
-                if (project.Key == id)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         public void RemoveProject(string projectId)
         {
-            VBProject project = null;
-            foreach (var p in Projects)
-            {
-                if (p.HelpFile == projectId)
-                {
-                    project = p;
-                    break;
-                }
-            }
-
+            var project = Projects.FirstOrDefault(f => f.HelpFile == projectId);
             if (_projects.ContainsKey(projectId))
             {
                 _projects.Remove(projectId);
@@ -160,17 +127,11 @@ namespace Rubberduck.Parsing.VBA
             ClearStateCache(project);
         }
 
-        public List<VBProject> Projects
+        public IEnumerable<VBProject> Projects
         {
             get
             {
-                var projects = new List<VBProject>();
-                foreach (var project in _projects.Values)
-                {
-                    projects.Add(project);
-                }
-
-                return projects;
+                return _projects.Values.Select(project => project.Invoke());
             }
         }
 
@@ -178,18 +139,9 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                var exceptions = new List<Tuple<VBComponent, SyntaxErrorException>>();
-                foreach (var kvp in _moduleStates)
-                {
-                    if (kvp.Value.ModuleException == null)
-                    {
-                        continue;
-                    }
-
-                    exceptions.Add(Tuple.Create(kvp.Key.Component, kvp.Value.ModuleException));
-                }
-
-                return exceptions;
+                return _moduleStates.Select(kvp => Tuple.Create(kvp.Key.Component, kvp.Value.ModuleException))
+                    .Where(item => item.Item2 != null)
+                    .ToList();
             }
         }
 
@@ -217,18 +169,10 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
-            if (AllUserDeclarations.Count > 0)
+            if (AllUserDeclarations.Any())
             {
                 var projectId = component.Collection.Parent.HelpFile;
-
-                VBProject project = null;
-                foreach (var item in _projects)
-                {
-                    if (item.Value.HelpFile == projectId)
-                    {
-                        project = project != null ? null : item.Value;
-                    }
-                }
+                var project = _projects.SingleOrDefault(item => item.Value().HelpFile == projectId).Value();
 
                 if (project == null)
                 {
@@ -247,6 +191,7 @@ namespace Rubberduck.Parsing.VBA
             Status = EvaluateParserState();
         }
 
+        private static readonly ParserState[] States = Enum.GetValues(typeof(ParserState)).Cast<ParserState>().ToArray();
         private ParserState EvaluateParserState()
         {
             if (_moduleStates.IsEmpty)
@@ -254,31 +199,16 @@ namespace Rubberduck.Parsing.VBA
                 return ParserState.Pending;
             }
 
-            var moduleStates = new List<ParserState>();
-            foreach (var moduleState in _moduleStates)
-            {
-                if (moduleState.Key.Component == null || moduleState.Key.ComponentName == string.Empty)
-                {
-                    continue;
-                }
+            var moduleStates = _moduleStates.Where(s => s.Key.Component != null && s.Key.ComponentName != string.Empty)
+                    .Select(s => s.Value.State)
+                    .ToList();
 
-                moduleStates.Add(moduleState.Value.State);
-            }
-
-            if (moduleStates.Count == 0)
+            if (!moduleStates.Any())
             {
                 return ParserState.Pending;
             }
 
-            var state = moduleStates[0];
-            foreach (var moduleState in moduleStates)
-            {
-                if (moduleState != moduleStates[0])
-                {
-                    state = default(ParserState);
-                    break;
-                }
-            }
+            var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
 
             if (state != default(ParserState))
             {
@@ -287,20 +217,14 @@ namespace Rubberduck.Parsing.VBA
                 return state;
             }
 
-            var stateCounts = new int[States.Count];
-            foreach (var moduleState in moduleStates)
-            {
-                stateCounts[(int) moduleState]++;
-            }
-
             // error state takes precedence over every other state
-            if (stateCounts[(int) ParserState.Error] > 0)
+            if (moduleStates.Any(ms => ms == ParserState.Error))
             {
                 Logger.Debug("ParserState evaluates to '{0}' (thread {1})", ParserState.Error,
                 Thread.CurrentThread.ManagedThreadId);
                 return ParserState.Error;
             }
-            if (stateCounts[(int)ParserState.ResolverError] > 0)
+            if (moduleStates.Any(ms => ms == ParserState.ResolverError))
             {
                 Logger.Debug("ParserState evaluates to '{0}' (thread {1})", ParserState.ResolverError,
                 Thread.CurrentThread.ManagedThreadId);
@@ -308,57 +232,22 @@ namespace Rubberduck.Parsing.VBA
             }
 
             // intermediate states are toggled when *any* module has them.
-            var result = ParserState.None;
-            foreach (var item in moduleStates)
-            {
-                if (item < result)
-                {
-                    result = item;
-                }
-            }
-
-            if (stateCounts[(int)ParserState.Parsing] > 0)
+            var result = moduleStates.Min();
+            if (moduleStates.Any(ms => ms == ParserState.Parsing))
             {
                 result = ParserState.Parsing;
             }
-            if (stateCounts[(int)ParserState.Resolving] > 0)
+            if (moduleStates.Any(ms => ms == ParserState.Resolving))
             {
                 result = ParserState.Resolving;
             }
 
-            if (result == ParserState.Ready)
+            if (result == ParserState.Ready && moduleStates.Any(item => item != ParserState.Ready && item != ParserState.None))
             {
-                for (var i = 0; i < stateCounts.Length; i++)
-                {
-                    if (i == (int) ParserState.Ready || i == (int) ParserState.None)
-                    {
-                        continue;
-                    }
-                    
-                    if (stateCounts[i] != 0)
-                    {
-                        result = (ParserState) i;
-                    }
-                }
+                result = moduleStates.Except(new[] { ParserState.Ready, ParserState.None }).Max();
             }
 
-#if DEBUG
-            if (state == ParserState.Ready)
-            {
-                for (var i = 0; i < stateCounts.Length; i++)
-                {
-                    if (i == (int) ParserState.Ready || i == (int) ParserState.None)
-                    {
-                        continue;
-                    }
-
-                    if (stateCounts[i] != 0)
-                    {
-                        Debug.Assert(false, "State is ready, but component has non-ready/non-none state");
-                    }
-                }
-            }
-#endif
+            Debug.Assert(result != ParserState.Ready || moduleStates.All(item => item == ParserState.Ready || item == ParserState.None));
 
             Logger.Debug("ParserState evaluates to '{0}' (thread {1})", result,
             Thread.CurrentThread.ManagedThreadId);
@@ -421,17 +310,11 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates.AddOrUpdate(new QualifiedModuleName(component), new ModuleState(attributes), (c, s) => s.SetModuleAttributes(attributes));
         }
 
-        public List<CommentNode> AllComments
+        public IEnumerable<CommentNode> AllComments
         {
             get
             {
-                var comments = new List<CommentNode>();
-                foreach (var state in _moduleStates.Values)
-                {
-                    comments.AddRange(state.Comments);
-                }
-
-                return comments;
+                return _moduleStates.Values.SelectMany(states => states.Comments).ToList();
             }
         }
 
@@ -448,20 +331,14 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleComments(VBComponent component, IEnumerable<CommentNode> comments)
         {
-            _moduleStates[new QualifiedModuleName(component)].SetComments(new List<CommentNode>(comments));
+            _moduleStates[new QualifiedModuleName(component)].SetComments(comments.ToList());
         }
 
-        public List<IAnnotation> AllAnnotations
+        public IEnumerable<IAnnotation> AllAnnotations
         {
             get
             {
-                var annotations = new List<IAnnotation>();
-                foreach (var state in _moduleStates.Values)
-                {
-                    annotations.AddRange(state.Annotations);
-                }
-
-                return annotations;
+                return _moduleStates.Values.SelectMany(a => a.Annotations).ToList();
             }
         }
 
@@ -478,7 +355,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleAnnotations(VBComponent component, IEnumerable<IAnnotation> annotations)
         {
-            _moduleStates[new QualifiedModuleName(component)].SetAnnotations(new List<IAnnotation>(annotations));
+            _moduleStates[new QualifiedModuleName(component)].SetAnnotations(annotations.ToList());
         }
 
         /// <summary>
@@ -488,18 +365,7 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                var declarations = new List<Declaration>();
-                foreach (var state in _moduleStates.Values)
-                {
-                    if (state.Declarations == null)
-                    {
-                        continue;
-                    }
-
-                    declarations.AddRange(state.Declarations.Keys);
-                }
-
-                return declarations;
+                return _moduleStates.Values.Where(d => d.Declarations != null).SelectMany(d => d.Declarations.Keys).ToList();
             }
         }
 
@@ -510,31 +376,9 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                var declarations = new List<Declaration>();
-                foreach (var state in _moduleStates.Values)
-                {
-                    if (state.Declarations == null)
-                    {
-                        continue;
-                    }
-
-                    var hasBuiltInDeclaration = false;
-                    foreach (var declaration in state.Declarations.Keys)
-                    {
-                        if (declaration.IsBuiltIn)
-                        {
-                            hasBuiltInDeclaration = true;
-                            break;
-                        }
-                    }
-
-                    if (!hasBuiltInDeclaration)
-                    {
-                        declarations.AddRange(state.Declarations.Keys);
-                    }
-                }
-
-                return declarations;
+                return _moduleStates.Values.Where(item => item.Declarations != null && item.Declarations.Keys.Any(d => !d.IsBuiltIn))
+                        .SelectMany(d => d.Declarations.Keys)
+                    .ToList();
             }
         }
 
@@ -569,7 +413,7 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
-                foreach (VBComponent component in project.VBComponents)
+                foreach (var component in project.VBComponents.Cast<VBComponent>())
                 {
                     while (!ClearStateCache(component))
                     {
@@ -590,24 +434,9 @@ namespace Rubberduck.Parsing.VBA
 
         public void ClearBuiltInReferences()
         {
-            foreach (var declaration in AllDeclarations)
+            foreach (var item in AllDeclarations.Where(item => item.IsBuiltIn && item.References.Any()))
             {
-                if (!declaration.IsBuiltIn)
-                {
-                    continue;
-                }
-
-                var hasReference = false;
-                foreach (var reference in declaration.References)
-                {
-                    hasReference = true;
-                    break;
-                }
-
-                if (hasReference)
-                {
-                    declaration.ClearReferences();
-                }
+                item.ClearReferences();
             }
         }
 
@@ -616,54 +445,19 @@ namespace Rubberduck.Parsing.VBA
             if (component == null) { return false; }
 
             var match = new QualifiedModuleName(component);
+            var keys = _moduleStates.Keys.Where(kvp => kvp.Equals(match))
+                .Union(new[] { match }).Distinct(); // make sure the key is present, even if there are no declarations left
 
-            var keys = new List<QualifiedModuleName> {match};
-            foreach (var key in _moduleStates.Keys)
-            {
-                if (key.Equals(match) && !keys.Contains(key))
-                {
-                    keys.Add(key);
-                }
-            }
-            
             var success = RemoveKeysFromCollections(keys);
 
             var projectId = component.Collection.Parent.HelpFile;
-            var sameProjectDeclarations = new List<KeyValuePair<QualifiedModuleName, ModuleState>>();
-            foreach (var item in _moduleStates)
-            {
-                if (item.Key.ProjectId == projectId)
-                {
-                    sameProjectDeclarations.Add(new KeyValuePair<QualifiedModuleName, ModuleState>(item.Key, item.Value));
-                }
-            }
-
-            var projectCount = 0;
-            foreach (var item in sameProjectDeclarations)
-            {
-                if (item.Value.Declarations == null) { continue; }
-
-                foreach (var declaration in item.Value.Declarations)
-                {
-                    if (declaration.Key.DeclarationType == DeclarationType.Project)
-                    {
-                        projectCount++;
-                        break;
-                    }
-                }
-            }
-
-            if (sameProjectDeclarations.Count > 0 &&
-                projectCount == sameProjectDeclarations.Count)
+            var sameProjectDeclarations = _moduleStates.Where(item => item.Key.ProjectId == projectId).ToList();
+            if (sameProjectDeclarations.Any() &&
+                sameProjectDeclarations.Count(item => item.Value.Declarations != null && item.Value.Declarations.Any(key => key.Key.DeclarationType == DeclarationType.Project)) == sameProjectDeclarations.Count)
             {
                 // only the project declaration is left; remove it.
-                if (sameProjectDeclarations.Count != 1)
-                {
-                    throw new InvalidOperationException("Collection contains more than one item");
-                }
-
                 ModuleState moduleState;
-                _moduleStates.TryRemove(sameProjectDeclarations[0].Key, out moduleState);
+                _moduleStates.TryRemove(sameProjectDeclarations.Single().Key, out moduleState);
                 if (moduleState != null)
                 {
                     moduleState.Dispose();
@@ -684,16 +478,9 @@ namespace Rubberduck.Parsing.VBA
         public bool RemoveRenamedComponent(VBComponent component, string oldComponentName)
         {
             var match = new QualifiedModuleName(component, oldComponentName);
-            var keys = new List<QualifiedModuleName>();
-            foreach (var key in _moduleStates.Keys)
-            {
-                if (key.ComponentName == oldComponentName && key.ProjectId == match.ProjectId)
-                {
-                    keys.Add(key);
-                }
-            }
+            var keys = _moduleStates.Keys.Where(kvp => kvp.ComponentName == oldComponentName && kvp.ProjectId == match.ProjectId).ToList();
 
-            var success = keys.Count != 0 && RemoveKeysFromCollections(keys);
+            var success = keys.Any() && RemoveKeysFromCollections(keys);
 
             if (success)
             {
@@ -736,68 +523,32 @@ namespace Rubberduck.Parsing.VBA
             return _moduleStates[new QualifiedModuleName(component)].ParseTree;
         }
 
-        public List<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees
+        public IEnumerable<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees
         {
             get
             {
-                var parseTrees = new List<KeyValuePair<QualifiedModuleName, IParseTree>>();
-                foreach (var state in _moduleStates)
-                {
-                    if (state.Value.ParseTree != null)
-                    {
-                        parseTrees.Add(new KeyValuePair<QualifiedModuleName, IParseTree>(state.Key,
-                            state.Value.ParseTree));
-                    }
-                }
-                
-                return parseTrees;
+                return _moduleStates.Where(state => state.Value.ParseTree != null)
+                                    .Select(item => new KeyValuePair<QualifiedModuleName, IParseTree>(item.Key, item.Value.ParseTree));
             }
         }
 
         public bool IsDirty()
         {
-            foreach (var project in Projects)
-            {
-                foreach (VBComponent component in project.VBComponents)
-                {
-                    if (IsNewOrModified(component))
-                    {
-                        return true;
-                    }
-                }
-            }
+            var projects = Projects.ToList();
+            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
 
-            return false;
+            return components.Where(IsNewOrModified).Any();
         }
 
         public bool HasAllParseTrees(IReadOnlyList<VBComponent> expected)
         {
-            var expectedModules = new List<QualifiedModuleName>();
-            foreach (var component in expected)
+            var expectedModules = expected.Select(module => new QualifiedModuleName(module));
+            foreach (var module in _moduleStates.Keys.Where(item => item.Component != null && !expectedModules.Contains(item)))
             {
-                expectedModules.Add(new QualifiedModuleName(component));
+                ClearStateCache(module.Component);
             }
 
-            foreach (var key in _moduleStates.Keys)
-            {
-                if (key.Component == null || expectedModules.Contains(key))
-                {
-                    continue;
-                }
-
-                ClearStateCache(key.Component);
-            }
-
-            var parseTreeCount = 0;
-            foreach (var state in _moduleStates)
-            {
-                if (state.Value.ParseTree != null)
-                {
-                    parseTreeCount++;
-                }
-            }
-
-            return parseTreeCount == expected.Count;
+            return _moduleStates.Count(item => item.Value.ParseTree != null) == expected.Count;
         }
 
         public TokenStreamRewriter GetRewriter(VBComponent component)
@@ -862,25 +613,12 @@ namespace Rubberduck.Parsing.VBA
 
         public void RebuildSelectionCache()
         {
-            var selections = new List<Tuple<Declaration, Selection, QualifiedModuleName>>();
-            foreach (var declaration in AllUserDeclarations)
-            {
-                selections.Add(Tuple.Create(declaration, declaration.Selection,
-                    declaration.QualifiedSelection.QualifiedName));
-            }
-
-            foreach (var declaration in AllDeclarations)
-            {
-                foreach (var reference in declaration.References)
-                {
-                    selections.Add(Tuple.Create(declaration, reference.Selection, reference.QualifiedModuleName));
-                }
-            }
-            
+            var declarations = AllDeclarations.Where(d => !d.IsBuiltIn).Select(d => Tuple.Create(d, d.Selection, d.QualifiedSelection.QualifiedName));
+            var references = AllDeclarations.SelectMany(d => d.References.Select(r => Tuple.Create(d, r.Selection, r.QualifiedModuleName)));
             lock (_declarationSelections)
             {
                 _declarationSelections.Clear();
-                _declarationSelections.AddRange(selections);
+                _declarationSelections.AddRange(declarations.Union(references));
             }
         }
 
@@ -902,84 +640,50 @@ namespace Rubberduck.Parsing.VBA
 
             if (!selection.Equals(default(QualifiedSelection)))
             {
-                var matches = new List<Tuple<Declaration, Selection, QualifiedModuleName>>();
+                List<Tuple<Declaration, Selection, QualifiedModuleName>> matches;
                 lock (_declarationSelections)
                 {
-                    foreach (var item in _declarationSelections)
-                    {
-                        if (item.Item3.Equals(selection.Value.QualifiedName) &&
-                            item.Item2.ContainsFirstCharacter(selection.Value.Selection))
-                        {
-                            matches.Add(item);
-                        }
-                    }
+                    matches = _declarationSelections.Where(t =>
+                                                    t.Item3.Equals(selection.Value.QualifiedName)
+                                                    && (t.Item2.ContainsFirstCharacter(selection.Value.Selection))).ToList();
                 }
                 try
                 {
                     if (matches.Count == 1)
                     {
-                        _selectedDeclaration = matches[0].Item1;
+                        _selectedDeclaration = matches.Single().Item1;
                     }
                     else
                     {
                         Declaration match = null;
                         if (procedureLevelOnly)
                         {
-                            foreach (var item in matches)
-                            {
-                                if (item.Item1.DeclarationType.HasFlag(DeclarationType.Member))
-                                {
-                                    match = match != null ? null : item.Item1;
-                                }
-                            }
+                            match = matches.Select(p => p.Item1).SingleOrDefault(item => item.DeclarationType.HasFlag(DeclarationType.Member));
                         }
 
                         // No match
                         if (matches.Count == 0)
                         {
-                            if (match == null)
-                            {
-                                foreach (var item in AllUserDeclarations)
-                                {
-                                    if ((item.DeclarationType == DeclarationType.ClassModule ||
-                                         item.DeclarationType == DeclarationType.ProceduralModule) &&
-                                        item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName))
-                                    {
-                                        match = match != null ? null : item;
-                                    }
-                                }
-                            }
+                            match = match ?? AllUserDeclarations.SingleOrDefault(item =>
+                                (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
+                                && item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName));
                         }
                         else
                         {
                             // Idiotic approach to find the best declaration out of a set of overlapping declarations.
                             // The one closest to the start of the user selection with the smallest width wins.
                             var userSelection = selection.Value.Selection;
-
-                            var currentSelection = matches[0].Item2;
-                            match = matches[0].Item1;
-
-                            foreach (var item in matches)
+                            var groupedByStartDistance = matches
+                                .GroupBy(d => Tuple.Create(Math.Abs(userSelection.StartLine - d.Item2.StartLine), Math.Abs(userSelection.StartColumn - d.Item2.StartColumn)))
+                                .OrderBy(g => g.Key.Item1)
+                                .ThenBy(g => g.Key.Item2);
+                            foreach (var closeMatch in groupedByStartDistance)
                             {
-                                var itemDifferenceInStart = Math.Abs(userSelection.StartLine - item.Item2.StartLine);
-                                var currentSelectionDifferenceInStart = Math.Abs(userSelection.StartLine - currentSelection.StartLine);
-
-                                if (itemDifferenceInStart < currentSelectionDifferenceInStart)
-                                {
-                                    currentSelection = item.Item2;
-                                    match = item.Item1;
-                                }
-
-                                if (itemDifferenceInStart == currentSelectionDifferenceInStart)
-                                {
-                                    if (Math.Abs(userSelection.StartColumn - item.Item2.StartColumn) <
-                                        Math.Abs(userSelection.StartColumn - currentSelection.StartColumn))
-                                    {
-                                        currentSelection = item.Item2;
-                                        match = item.Item1;
-                                    }
-                                }
-
+                                var groupedByLength = closeMatch.Select(d => Tuple.Create(d.Item1, Tuple.Create(Math.Abs(d.Item2.EndLine - d.Item2.StartLine), Math.Abs(d.Item2.EndColumn - d.Item2.StartColumn))))
+                                    .OrderBy(d => d.Item2.Item1)
+                                    .ThenBy(d => d.Item2.Item2).ToList();
+                                match = groupedByLength.Select(p => p.Item1).FirstOrDefault();
+                                break;
                             }
                         }
 
