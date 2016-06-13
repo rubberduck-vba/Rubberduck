@@ -38,13 +38,6 @@ public interface IVBAConditionalCompilationParserVisitor<Result> : IParseTreeVis
 	Result VisitCcBlock([NotNull] VBAConditionalCompilationParser.CcBlockContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.logicalLine"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitLogicalLine([NotNull] VBAConditionalCompilationParser.LogicalLineContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.typeHint"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -52,11 +45,25 @@ public interface IVBAConditionalCompilationParserVisitor<Result> : IParseTreeVis
 	Result VisitTypeHint([NotNull] VBAConditionalCompilationParser.TypeHintContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.hashIf"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitHashIf([NotNull] VBAConditionalCompilationParser.HashIfContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.literal"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLiteral([NotNull] VBAConditionalCompilationParser.LiteralContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.hashConst"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitHashConst([NotNull] VBAConditionalCompilationParser.HashConstContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.statementKeyword"/>.
@@ -136,6 +143,20 @@ public interface IVBAConditionalCompilationParserVisitor<Result> : IParseTreeVis
 	Result VisitForeignIdentifier([NotNull] VBAConditionalCompilationParser.ForeignIdentifierContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.hashElse"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitHashElse([NotNull] VBAConditionalCompilationParser.HashElseContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.hashEndIf"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitHashEndIf([NotNull] VBAConditionalCompilationParser.HashEndIfContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.ccExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -204,6 +225,20 @@ public interface IVBAConditionalCompilationParserVisitor<Result> : IParseTreeVis
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitComment([NotNull] VBAConditionalCompilationParser.CommentContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.hashElseIf"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitHashElseIf([NotNull] VBAConditionalCompilationParser.HashElseIfContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.physicalLine"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPhysicalLine([NotNull] VBAConditionalCompilationParser.PhysicalLineContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.ccConst"/>.

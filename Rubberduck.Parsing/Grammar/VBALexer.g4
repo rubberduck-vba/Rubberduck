@@ -106,9 +106,11 @@ EACH : E A C H;
 ELSE : E L S E;
 ELSEIF : E L S E I F;
 EMPTY : E M P T Y;
+// Apparently END_ENUM and END_TYPE don't allow line continuations (in the VB editor)
 END_ENUM : E N D WS+ E N U M;
 END_FUNCTION : E N D (WS | LINE_CONTINUATION)+ F U N C T I O N;
-END_IF : E N D (WS | LINE_CONTINUATION)+ I F;
+// We allow "EndIf" without the whitespace as well for the preprocessor.
+END_IF : E N D (WS | LINE_CONTINUATION)* I F;
 END_PROPERTY : E N D (WS | LINE_CONTINUATION)+ P R O P E R T Y;
 END_SELECT : E N D (WS | LINE_CONTINUATION)+ S E L E C T;
 END_SUB : E N D (WS | LINE_CONTINUATION)+ S U B;
@@ -235,11 +237,6 @@ NEQ : '<>' | '><';
 PLUS : '+';
 POW : '^';
 RPAREN : ')';
-HASHCONST : WS* HASH CONST WS+;
-HASHIF : WS* HASH I F WS+;
-HASHELSEIF : WS* HASH E L S E I F WS+;
-HASHELSE : WS* HASH E L S E WS* (SINGLEQUOTE (LINE_CONTINUATION | ~[\r\n\u2028\u2029])*)? (NEWLINE | EOF);
-HASHENDIF : WS* HASH E N D WS* I F WS* (SINGLEQUOTE (LINE_CONTINUATION | ~[\r\n\u2028\u2029])*)? (NEWLINE | EOF);
 L_SQUARE_BRACKET : '[';
 R_SQUARE_BRACKET : ']';
 STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
