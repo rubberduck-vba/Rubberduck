@@ -19,8 +19,9 @@
         private string Preprocess(string moduleName, string unprocessedCode)
         {
             SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion));
             var tree = _parser.Parse(moduleName, unprocessedCode);
+            var stream = tree.Start.InputStream;
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), stream);
             var expr = evaluator.Visit(tree);
             return expr.Evaluate().AsString;
         }

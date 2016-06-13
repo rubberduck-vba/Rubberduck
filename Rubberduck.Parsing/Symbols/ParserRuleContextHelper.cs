@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using System;
 
 namespace Rubberduck.Parsing.Symbols
@@ -34,6 +35,17 @@ namespace Rubberduck.Parsing.Symbols
                 return (T)Convert.ChangeType(context, typeof(T));
             }
             return GetParent<T>(context.Parent);
+        }
+
+        public static string GetText(ParserRuleContext context, ICharStream stream)
+        {
+            // Can be null if the input is empty it seems.
+            if (context.Stop == null)
+            {
+                return string.Empty;
+            }
+            // Gets the original source, without "synthetic" text such as "<EOF>".
+            return stream.GetText(new Interval(context.Start.StartIndex, context.Stop.StopIndex));
         }
     }
 }
