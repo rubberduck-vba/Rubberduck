@@ -55,7 +55,7 @@ namespace Rubberduck.Parsing.VBA
     public sealed class RubberduckParserState : IDisposable
     {
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
-        private readonly IDictionary<string, Func<VBProject>> _projects = new Dictionary<string, Func<VBProject>>();
+        private readonly IDictionary<string, VBProject> _projects = new Dictionary<string, VBProject>();
 
         private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates =
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
@@ -98,7 +98,7 @@ namespace Rubberduck.Parsing.VBA
             var projectId = project.HelpFile;
             if (!_projects.ContainsKey(projectId))
             {
-                _projects.Add(projectId, () => project);
+                _projects.Add(projectId, project);
             }
 
             foreach (var component in project.VBComponents.Cast<VBComponent>())
@@ -127,11 +127,11 @@ namespace Rubberduck.Parsing.VBA
             ClearStateCache(project);
         }
 
-        public IEnumerable<VBProject> Projects
+        public List<VBProject> Projects
         {
             get
             {
-                return _projects.Values.Select(project => project.Invoke());
+                return _projects.Values.ToList();
             }
         }
 
@@ -172,7 +172,7 @@ namespace Rubberduck.Parsing.VBA
             if (AllUserDeclarations.Any())
             {
                 var projectId = component.Collection.Parent.HelpFile;
-                var project = _projects.SingleOrDefault(item => item.Value().HelpFile == projectId).Value();
+                var project = _projects.SingleOrDefault(item => item.Value.HelpFile == projectId).Value;
 
                 if (project == null)
                 {
