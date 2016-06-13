@@ -75,7 +75,8 @@ namespace Rubberduck.Parsing.VBA
                     Tokens = stream,
                     Attributes = attributes,
                     Comments = comments,
-                    Annotations = annotationListener.Annotations
+                    Annotations = annotationListener.Annotations,
+                    Component = _component
                 });
             }
             catch (COMException exception)
@@ -83,7 +84,8 @@ namespace Rubberduck.Parsing.VBA
                 _logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
                 ParseFailure.Invoke(this, new ParseFailureArgs
                 {
-                    Cause = exception
+                    Cause = exception,
+                    Component = _component
                 });
             }
             catch (SyntaxErrorException exception)
@@ -91,7 +93,8 @@ namespace Rubberduck.Parsing.VBA
                 _logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
                 ParseFailure.Invoke(this, new ParseFailureArgs
                 {
-                    Cause = exception
+                    Cause = exception,
+                    Component = _component
                 });
             }
             catch (OperationCanceledException)
@@ -124,6 +127,7 @@ namespace Rubberduck.Parsing.VBA
         
         public class ParseCompletionArgs
         {
+            public VBComponent Component { get; internal set; }
             public ITokenStream Tokens { get; internal set; }
             public IParseTree ParseTree { get; internal set; }
             public IDictionary<Tuple<string, DeclarationType>, Attributes> Attributes { get; internal set; }
@@ -133,6 +137,7 @@ namespace Rubberduck.Parsing.VBA
 
         public class ParseFailureArgs
         {
+            public VBComponent Component { get; internal set; }
             public Exception Cause { get; internal set; }
         }
 
