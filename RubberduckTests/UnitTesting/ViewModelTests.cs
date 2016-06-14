@@ -42,7 +42,7 @@ End Sub";
         public void UIRemovesRemovedTestMethods()
         {
             var testMethods = @"'@TestMethod
-Public Sub TestMethod{0}()
+Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
