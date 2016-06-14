@@ -28,7 +28,7 @@ namespace RubberduckTests.SourceControl
         [TestInitialize]
         public void Initialize()
         {
-            _config = new SourceControlSettings(Name, Email, RepoLocation, new List<Repository>());
+            _config = new SourceControlSettings(Name, Email, RepoLocation, new List<Repository>(), "cmd.exe");
 
             _configService = new Mock<ISourceControlConfigProvider>();
             _configService.Setup(s => s.Create()).Returns(_config);
@@ -43,7 +43,7 @@ namespace RubberduckTests.SourceControl
         public void ViewIsPopulatedOnRefresh()
         {
             //arrange
-            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object);
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, new Rubberduck.UI.OpenFileDialog());
 
             //act
             vm.RefreshView();
@@ -58,7 +58,7 @@ namespace RubberduckTests.SourceControl
         public void ConfigIsPopulatedFromViewOnSave()
         {
             //arrange
-            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object);
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, new Rubberduck.UI.OpenFileDialog());
 
             //simulate user input
             vm.UserName = OtherName;
@@ -78,7 +78,7 @@ namespace RubberduckTests.SourceControl
         public void ConfigIsSavedOnSave()
         {
             //arrange
-            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object);
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, new Rubberduck.UI.OpenFileDialog());
 
             //act
             //simulate Update button click
@@ -92,7 +92,7 @@ namespace RubberduckTests.SourceControl
         public void ChangesToViewAreRevertedOnCancel()
         {
             //arrange
-            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object);
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, new Rubberduck.UI.OpenFileDialog());
 
             //simulate user input
             vm.UserName = OtherName;
@@ -113,7 +113,7 @@ namespace RubberduckTests.SourceControl
         public void OnBrowseDefaultRepoLocation_WhenUserConfirms_ViewMatchesSelectedPath()
         {
             //arrange
-            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object)
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, new Rubberduck.UI.OpenFileDialog())
             {
                 DefaultRepositoryLocation = RepoLocation
             };
@@ -121,7 +121,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowser.Setup(f => f.ShowDialog()).Returns(DialogResult.OK);
             
             //act
-            vm.ShowFilePickerCommand.Execute(null);
+            vm.ShowDefaultRepoFolderPickerCommand.Execute(null);
 
             //assert
             Assert.AreEqual(_folderBrowser.Object.SelectedPath, vm.DefaultRepositoryLocation);
@@ -131,7 +131,7 @@ namespace RubberduckTests.SourceControl
         public void OnBrowserDefaultRepoLocation_WhenUserCancels_ViewRemainsUnchanged()
         {
             //arrange
-            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object)
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, new Rubberduck.UI.OpenFileDialog())
             {
                 DefaultRepositoryLocation = RepoLocation
             };
@@ -139,7 +139,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowser.Setup(f => f.ShowDialog()).Returns(DialogResult.Cancel);
 
             //act
-            vm.ShowFilePickerCommand.Execute(null);
+            vm.ShowDefaultRepoFolderPickerCommand.Execute(null);
 
             //assert
             Assert.AreEqual(RepoLocation, vm.DefaultRepositoryLocation);
