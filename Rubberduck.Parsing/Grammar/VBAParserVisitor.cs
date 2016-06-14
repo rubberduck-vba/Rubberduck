@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\hosch\Documents\Visual Studio 2015\Projects\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\RubberduckParserTest\RubberduckParserTest\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -130,6 +130,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitModule([NotNull] VBAParser.ModuleContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.complexType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitComplexType([NotNull] VBAParser.ComplexTypeContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.moduleHeader"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -187,14 +194,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitModuleBody([NotNull] VBAParser.ModuleBodyContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ctLiteralExpr</c>
-	/// labeled alternative in <see cref="VBAParser.complexType"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCtLiteralExpr([NotNull] VBAParser.CtLiteralExprContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.letterRange"/>.
@@ -376,14 +375,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSimpleNameExpr([NotNull] VBAParser.SimpleNameExprContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ctParenthesizedExpr</c>
-	/// labeled alternative in <see cref="VBAParser.complexType"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCtParenthesizedExpr([NotNull] VBAParser.CtParenthesizedExprContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.writeStmt"/>.
@@ -929,14 +920,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitListOrLabel([NotNull] VBAParser.ListOrLabelContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>ctTypeofexpr</c>
-	/// labeled alternative in <see cref="VBAParser.complexType"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCtTypeofexpr([NotNull] VBAParser.CtTypeofexprContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.fileNumber"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1437,14 +1420,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVariableStmt([NotNull] VBAParser.VariableStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>ctMarkedFileNumberExpr</c>
-	/// labeled alternative in <see cref="VBAParser.complexType"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCtMarkedFileNumberExpr([NotNull] VBAParser.CtMarkedFileNumberExprContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.subscript"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1478,14 +1453,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ctNewExpr</c>
-	/// labeled alternative in <see cref="VBAParser.complexType"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCtNewExpr([NotNull] VBAParser.CtNewExprContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.objectLiteralIdentifier"/>.
@@ -1601,14 +1568,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitMarkedFileNumber([NotNull] VBAParser.MarkedFileNumberContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>ctLExpr</c>
-	/// labeled alternative in <see cref="VBAParser.complexType"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCtLExpr([NotNull] VBAParser.CtLExprContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.accessClause"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1628,14 +1587,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIdentifierStatementLabel([NotNull] VBAParser.IdentifierStatementLabelContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ctBuiltInTypeExpr</c>
-	/// labeled alternative in <see cref="VBAParser.complexType"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCtBuiltInTypeExpr([NotNull] VBAParser.CtBuiltInTypeExprContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.functionName"/>.

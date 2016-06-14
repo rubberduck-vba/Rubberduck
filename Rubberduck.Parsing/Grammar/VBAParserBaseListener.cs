@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\hosch\Documents\Visual Studio 2015\Projects\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\RubberduckParserTest\RubberduckParserTest\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -216,6 +216,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitModule([NotNull] VBAParser.ModuleContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.complexType"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterComplexType([NotNull] VBAParser.ComplexTypeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.complexType"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitComplexType([NotNull] VBAParser.ComplexTypeContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.moduleHeader"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -318,19 +331,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitModuleBody([NotNull] VBAParser.ModuleBodyContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.ctLiteralExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCtLiteralExpr([NotNull] VBAParser.CtLiteralExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.ctLiteralExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCtLiteralExpr([NotNull] VBAParser.CtLiteralExprContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.letterRange"/>.
@@ -656,19 +656,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitSimpleNameExpr([NotNull] VBAParser.SimpleNameExprContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.ctParenthesizedExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCtParenthesizedExpr([NotNull] VBAParser.CtParenthesizedExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.ctParenthesizedExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCtParenthesizedExpr([NotNull] VBAParser.CtParenthesizedExprContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.writeStmt"/>.
@@ -1659,19 +1646,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitListOrLabel([NotNull] VBAParser.ListOrLabelContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.ctTypeofexpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCtTypeofexpr([NotNull] VBAParser.CtTypeofexprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.ctTypeofexpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCtTypeofexpr([NotNull] VBAParser.CtTypeofexprContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.fileNumber"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2582,19 +2556,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitVariableStmt([NotNull] VBAParser.VariableStmtContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.ctMarkedFileNumberExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCtMarkedFileNumberExpr([NotNull] VBAParser.CtMarkedFileNumberExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.ctMarkedFileNumberExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCtMarkedFileNumberExpr([NotNull] VBAParser.CtMarkedFileNumberExprContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.subscript"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2658,19 +2619,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.ctNewExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCtNewExpr([NotNull] VBAParser.CtNewExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.ctNewExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCtNewExpr([NotNull] VBAParser.CtNewExprContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.objectLiteralIdentifier"/>.
@@ -2881,19 +2829,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitMarkedFileNumber([NotNull] VBAParser.MarkedFileNumberContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.ctLExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCtLExpr([NotNull] VBAParser.CtLExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.ctLExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCtLExpr([NotNull] VBAParser.CtLExprContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.accessClause"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2931,19 +2866,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitIdentifierStatementLabel([NotNull] VBAParser.IdentifierStatementLabelContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.ctBuiltInTypeExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCtBuiltInTypeExpr([NotNull] VBAParser.CtBuiltInTypeExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.ctBuiltInTypeExpr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCtBuiltInTypeExpr([NotNull] VBAParser.CtBuiltInTypeExprContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.functionName"/>.
