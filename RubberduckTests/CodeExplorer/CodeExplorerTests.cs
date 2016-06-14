@@ -36,7 +36,7 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var commands = new List<ICommand> { new CodeExplorer_AddStdModuleCommand() };
+            var commands = new List<ICommand> { new CodeExplorer_AddStdModuleCommand(vbe.Object) };
 
             var state = new RubberduckParserState();
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -64,7 +64,7 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var commands = new List<ICommand> { new CodeExplorer_AddClassModuleCommand() };
+            var commands = new List<ICommand> { new CodeExplorer_AddClassModuleCommand(vbe.Object) };
 
             var state = new RubberduckParserState();
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -92,7 +92,7 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var commands = new List<ICommand> { new CodeExplorer_AddUserFormCommand() };
+            var commands = new List<ICommand> { new CodeExplorer_AddUserFormCommand(vbe.Object) };
 
             var state = new RubberduckParserState();
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -126,7 +126,7 @@ namespace RubberduckTests.CodeExplorer
             var state = new RubberduckParserState();
             var commands = new List<ICommand>
             {
-                new CodeExplorer_AddTestModuleCommand(new NewUnitTestModuleCommand(state, configLoader.Object))
+                new CodeExplorer_AddTestModuleCommand(vbe.Object, new NewUnitTestModuleCommand(state, configLoader.Object))
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
