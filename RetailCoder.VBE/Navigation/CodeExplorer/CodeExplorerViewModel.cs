@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Annotations;
@@ -30,7 +28,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += ParserState_StateChanged;
-            
+
             _refreshCommand = new DelegateCommand(param => _state.OnParseRequested(this),
                 param => !IsBusy && _state.IsDirty());
 
@@ -190,38 +188,38 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 if (SelectedItem is CodeExplorerProjectViewModel)
                 {
-                    var node = (CodeExplorerProjectViewModel) SelectedItem;
+                    var node = (CodeExplorerProjectViewModel)SelectedItem;
                     return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
                 }
 
                 if (SelectedItem is CodeExplorerComponentViewModel)
                 {
-                    var node = (CodeExplorerComponentViewModel) SelectedItem;
+                    var node = (CodeExplorerComponentViewModel)SelectedItem;
                     return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
                 }
 
                 if (SelectedItem is CodeExplorerMemberViewModel)
                 {
-                    var node = (CodeExplorerMemberViewModel) SelectedItem;
+                    var node = (CodeExplorerMemberViewModel)SelectedItem;
                     return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
                 }
 
                 return SelectedItem.Name;
             }
         }
-        
+
         public string Description
         {
             get
             {
                 if (SelectedItem is ICodeExplorerDeclarationViewModel)
                 {
-                    return ((ICodeExplorerDeclarationViewModel) SelectedItem).Declaration.DescriptionString;
+                    return ((ICodeExplorerDeclarationViewModel)SelectedItem).Declaration.DescriptionString;
                 }
 
                 if (SelectedItem is CodeExplorerCustomFolderViewModel)
                 {
-                    return ((CodeExplorerCustomFolderViewModel) SelectedItem).FolderAttribute;
+                    return ((CodeExplorerCustomFolderViewModel)SelectedItem).FolderAttribute;
                 }
 
                 return string.Empty;
@@ -239,7 +237,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             set
             {
                 _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
-                
+
                 ReorderChildNodes(_projects);
                 OnPropertyChanged();
             }
@@ -252,12 +250,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                 Projects = new ObservableCollection<CodeExplorerItemViewModel>();
             }
 
-            IsBusy = _state.Status == ParserState.Parsing;
-            if (_state.Status != ParserState.Ready)
+            IsBusy = _state.Status < ParserState.ResolvedDeclarations;
+            if (_state.Status != ParserState.ResolvedDeclarations)
             {
                 return;
             }
-            
+
             var userDeclarations = _state.AllUserDeclarations
                 .GroupBy(declaration => declaration.Project)
                 .Where(grouping => grouping.Key != null)
@@ -275,7 +273,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     grouping)).ToList();
 
             UpdateNodes(Projects, newProjects);
-            
+
             Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
         }
 
@@ -405,7 +403,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 if (node is CodeExplorerComponentViewModel)
                 {
-                    var componentNode = (CodeExplorerComponentViewModel) node;
+                    var componentNode = (CodeExplorerComponentViewModel)node;
                     if (componentNode.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component == component)
                     {
                         componentNode.IsErrorState = true;
@@ -474,8 +472,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         // this is a special case--we have to reset SelectedItem to prevent a crash
         private void ExecuteRemoveComand(object param)
         {
-            var node = (CodeExplorerComponentViewModel) SelectedItem;
-            SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel) p).Declaration.Project == node.Declaration.Project);
+            var node = (CodeExplorerComponentViewModel)SelectedItem;
+            SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel)p).Declaration.Project == node.Declaration.Project);
 
             _externalRemoveCommand.Execute(param);
         }

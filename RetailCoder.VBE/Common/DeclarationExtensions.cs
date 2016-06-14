@@ -49,6 +49,25 @@ namespace Rubberduck.Common
         }
 
         /// <summary>
+        /// Returns the Selection of a ConstStmtContext.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Constant.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static Selection GetConstStmtContextSelection(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Constant)
+            {
+                throw new ArgumentException("Target DeclarationType is not Constant.", "target");
+            }
+
+            var statement = GetConstStmtContext(target);
+
+            return new Selection(statement.Start.Line, statement.Start.Column,
+                    statement.Stop.Line, statement.Stop.Column);
+        }
+
+        /// <summary>
         /// Returns a VariableStmtContext.
         /// </summary>
         /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
@@ -62,6 +81,28 @@ namespace Rubberduck.Common
             }
 
             var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
+            if (statement == null)
+            {
+                throw new MissingMemberException("Statement not found");
+            }
+
+            return statement;
+        }
+
+        /// <summary>
+        /// Returns a ConstStmtContext.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Constant.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static VBAParser.ConstStmtContext GetConstStmtContext(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Constant)
+            {
+                throw new ArgumentException("Target DeclarationType is not Constant.", "target");
+            }
+
+            var statement = target.Context.Parent as VBAParser.ConstStmtContext;
             if (statement == null)
             {
                 throw new MissingMemberException("Statement not found");
@@ -222,12 +263,30 @@ namespace Rubberduck.Common
 
         public static IEnumerable<Declaration> FindBuiltInEventHandlers(this IEnumerable<Declaration> declarations)
         {
-            var handlerNames = declarations.Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
-                                           .Select(e => e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName);
+            var declarationList = declarations.ToList();
 
-            return declarations.Where(declaration => !declaration.IsBuiltIn
+            var handlerNames = declarationList.Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
+                                           .SelectMany(e =>
+                                           {
+                                               var parentModuleSubtypes = ((ClassModuleDeclaration) e.ParentDeclaration).Subtypes;
+                                               return parentModuleSubtypes.Any()
+                                                   ? parentModuleSubtypes.Select(v => v.IdentifierName + "_" + e.IdentifierName)
+                                                   : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
+                                           });
+
+            // class module built-in events
+            var classModuleHandlers = declarationList.Where(item =>
+                        item.DeclarationType == DeclarationType.Procedure &&
+                        item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
+                        (item.IdentifierName == "Class_Initialize" || item.IdentifierName == "Class_Terminate"));
+
+            var handlers = declarationList.Where(declaration => !declaration.IsBuiltIn
                                                      && declaration.DeclarationType == DeclarationType.Procedure
-                                                     && handlerNames.Contains(declaration.IdentifierName));
+                                                     && handlerNames.Contains(declaration.IdentifierName)).ToList();
+
+            handlers.AddRange(classModuleHandlers);
+
+            return handlers;
         }
 
         /// <summary>

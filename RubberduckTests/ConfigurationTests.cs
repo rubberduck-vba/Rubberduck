@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Settings;
-using Rubberduck.SettingsProvider;
 
 namespace RubberduckTests
 {

@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceParameter;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

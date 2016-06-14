@@ -1226,6 +1226,40 @@ End Sub
             Assert.AreEqual(evaluated, result.Item2.AsString);
         }
 
+        [TestMethod]
+        public void TestIgnoresComment()
+        {
+            string code = @"
+       ' #if defined(WIN32)
+        '    unsigned long cbElements;   // Size of an element of the array.
+        '                                // Does not include size of
+        '                                // pointed-to data.
+        '    unsigned long cLocks;       // Number of times the array has been
+        '                                // locked without corresponding unlock.
+        ' #Else
+        '    unsigned short cbElements;
+        '    unsigned short cLocks;
+        '    unsigned long handle;       // Used on Macintosh only.
+        ' #End If
+";
+
+            string evaluated = @"
+       ' #if defined(WIN32)
+        '    unsigned long cbElements;   // Size of an element of the array.
+        '                                // Does not include size of
+        '                                // pointed-to data.
+        '    unsigned long cLocks;       // Number of times the array has been
+        '                                // locked without corresponding unlock.
+        ' #Else
+        '    unsigned short cbElements;
+        '    unsigned short cLocks;
+        '    unsigned long handle;       // Used on Macintosh only.
+        ' #End If
+";
+            var result = Preprocess(code);
+            Assert.AreEqual(evaluated, result.Item2.AsString);
+        }
+
         private Tuple<SymbolTable<string, IValue>, IValue> Preprocess(string code)
         {
             SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
@@ -1234,8 +1268,8 @@ End Sub
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01));
             var tree = parser.compilationUnit();
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream);
             var expr = evaluator.Visit(tree);
             return Tuple.Create(symbolTable, expr.Evaluate());
         }

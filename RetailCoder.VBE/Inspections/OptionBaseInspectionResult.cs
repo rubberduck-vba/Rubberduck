@@ -1,5 +1,5 @@
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections

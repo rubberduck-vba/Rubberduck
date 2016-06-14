@@ -30,6 +30,7 @@ namespace Rubberduck.Inspections
                     // ParamArray parameters do not allow an explicit "ByRef" parameter mechanism.               
                     && !((ParameterDeclaration)item).IsParamArray
                     && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
+                    && !State.AllDeclarations.FindBuiltInEventHandlers().Contains(item.ParentDeclaration)
                 let arg = item.Context as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null
                 select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))

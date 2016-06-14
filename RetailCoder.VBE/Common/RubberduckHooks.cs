@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -189,6 +188,12 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
+            var active = User32.GetForegroundWindow();
+            if (active != _mainWindowHandle)
+            {
+                return;
+            }
+
             var hotkey = sender as IHotkey;
             if (hotkey != null)
             {
@@ -211,18 +216,9 @@ namespace Rubberduck.Common
             try
             {
                 var suppress = false;
-                if (hWnd == _mainWindowHandle)
+                if (hWnd == _mainWindowHandle && (WM)uMsg == WM.HOTKEY)
                 {
-                    switch ((WM)uMsg)
-                    {
-                        case WM.HOTKEY:
-                            suppress = HandleHotkeyMessage(wParam);
-                            break;
-
-                        case WM.ACTIVATEAPP:
-                            HandleActivateAppMessage(wParam);
-                            break;
-                    }
+                    suppress = HandleHotkeyMessage(wParam);
                 }
 
                 return suppress 
@@ -257,30 +253,6 @@ namespace Rubberduck.Common
                 _logger.Error(exception);
             }
             return processed;
-        }
-
-        private void HandleActivateAppMessage(IntPtr wParam)
-        {
-            const int WA_INACTIVE = 0;
-            const int WA_ACTIVE = 1;
-            const int WA_CLICKACTIVE = 2;
-
-            switch (LoWord(wParam))
-            {
-                case WA_ACTIVE:
-                case WA_CLICKACTIVE:
-                    Attach();
-                    break;
-
-                case WA_INACTIVE:
-                    Detach();
-                    break;
-            }
-        }
-
-        private static int LoWord(IntPtr dw)
-        {
-            return unchecked((short)(uint)dw);
         }
     }
 }

@@ -501,7 +501,7 @@
     <value>Kontexttyp '{0}' ist nicht gültig für {1}.</value>
   </data>
   <data name="QualifiedSelectionInspection" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3}, Zeile {4}</value>
+    <value>{0}: {1} - {2} {3}.{4}, Zeile {5}</value>
   </data>
   <data name="SetObjectVariableQuickFix" xml:space="preserve">
     <value>Benutze das Schlüsselwort 'Set'</value>

@@ -7,7 +7,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
-using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
@@ -18,7 +17,7 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Rubberduck.Common.Hotkeys;
+using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck
 {
@@ -27,13 +26,15 @@ namespace Rubberduck
         private const string FILE_TARGET_NAME = "file";
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly IRubberduckParser _parser;
+        private IRubberduckParser _parser;
         private AutoSave.AutoSave _autoSave;
         private IGeneralConfigService _configService;
-        private IAppMenu _appMenus;
+        private readonly IAppMenu _appMenus;
         private RubberduckCommandBar _stateBar;
-        private readonly IIndenter _indenter;
         private IRubberduckHooks _hooks;
+        private bool _handleSinkEvents = true;
+        private readonly BranchesViewViewModel _branchesVM;
+        private readonly SourceControlViewViewModel _sourceControlPanelVM;
 
         private readonly Logger _logger;
 
@@ -53,8 +54,8 @@ namespace Rubberduck
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
-            IIndenter indenter,
-            IRubberduckHooks hooks)
+            IRubberduckHooks hooks,
+            SourceControlDockablePresenter sourceControlPresenter)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -63,9 +64,18 @@ namespace Rubberduck
             _autoSave = new AutoSave.AutoSave(_vbe, _configService);
             _appMenus = appMenus;
             _stateBar = stateBar;
-            _indenter = indenter;
             _hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
+
+            var sourceControlPanel = (SourceControlPanel) sourceControlPresenter.Window();
+            _sourceControlPanelVM = (SourceControlViewViewModel) sourceControlPanel.ViewModel;
+            _branchesVM = (BranchesViewViewModel) _sourceControlPanelVM.TabItems.Single(t => t.ViewModel.Tab == SourceControlTab.Branches).ViewModel;
+
+            _sourceControlPanelVM.OpenRepoStarted += DisableSinkEventHandlers;
+            _sourceControlPanelVM.OpenRepoCompleted += EnableSinkEventHandlersAndUpdateCache;
+
+            _branchesVM.LoadingComponentsStarted += DisableSinkEventHandlers;
+            _branchesVM.LoadingComponentsCompleted += EnableSinkEventHandlersAndUpdateCache;
 
             _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -86,6 +96,22 @@ namespace Rubberduck
 
             _projectsEventsConnectionPoint.Advise(_sink, out _projectsEventsCookie);
             UiDispatcher.Initialize();
+        }
+
+        private void EnableSinkEventHandlersAndUpdateCache(object sender, EventArgs e)
+        {
+            _handleSinkEvents = true;
+
+            // update cache
+            _parser.State.RemoveProject(_vbe.ActiveVBProject.HelpFile);
+            _parser.State.AddProject(_vbe.ActiveVBProject);
+
+            _parser.State.OnParseRequested(this);
+        }
+
+        private void DisableSinkEventHandlers(object sender, EventArgs e)
+        {
+            _handleSinkEvents = false;
         }
 
         private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
@@ -169,6 +195,8 @@ namespace Rubberduck
         #region sink handlers. todo: move to another class
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
                 _logger.Debug("Locked project '{0}' was removed.", e.Item.Name);
@@ -206,6 +234,8 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             _logger.Debug("Project '{0}' was added.", e.Item.Name);
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
@@ -261,6 +291,8 @@ namespace Rubberduck
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -272,10 +304,14 @@ namespace Rubberduck
 
         async void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
             }
+
+            _sourceControlPanelVM.HandleRenamedComponent(e.Item, e.OldName);
 
             _logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
 
@@ -284,10 +320,14 @@ namespace Rubberduck
 
         async void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
             }
+
+            _sourceControlPanelVM.HandleRemovedComponent(e.Item);
 
             _logger.Debug("Component '{0}' was removed.", e.Item.Name);
             _parser.State.ClearStateCache(e.Item, true);
@@ -295,6 +335,8 @@ namespace Rubberduck
 
         async void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -306,10 +348,14 @@ namespace Rubberduck
 
         async void sink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
             }
+
+            _sourceControlPanelVM.HandleAddedComponent(e.Item);
 
             _logger.Debug("Component '{0}' was added.", e.Item.Name);
             _parser.State.OnParseRequested(sender, e.Item);
@@ -317,6 +363,8 @@ namespace Rubberduck
 
         async void sink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -328,6 +376,8 @@ namespace Rubberduck
 
         async void sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -335,13 +385,16 @@ namespace Rubberduck
 
             _logger.Debug("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
 
-            // note: if a bug is discovered with renaming a project, it may just need to be removed and readded.
+            _parser.State.RemoveProject(e.Item.HelpFile);
+            _parser.State.AddProject(e.Item);
 
             _parser.State.OnParseRequested(sender);
         }
 
         async void sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
         {
+            if (!_handleSinkEvents) { return; }
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 return;
@@ -395,11 +448,34 @@ namespace Rubberduck
         }
 
         private bool _disposed;
+
         public void Dispose()
         {
             if (_disposed)
             {
                 return;
+            }
+
+            if (_sourceControlPanelVM != null)
+            {
+                _sourceControlPanelVM.OpenRepoStarted -= DisableSinkEventHandlers;
+                _sourceControlPanelVM.OpenRepoCompleted -= EnableSinkEventHandlersAndUpdateCache;
+            }
+
+            if (_branchesVM != null)
+            {
+                _branchesVM.LoadingComponentsStarted -= DisableSinkEventHandlers;
+                _branchesVM.LoadingComponentsCompleted -= EnableSinkEventHandlersAndUpdateCache;
+            }
+
+            _handleSinkEvents = false;
+
+            if (_parser != null && _parser.State != null)
+            {
+                _parser.State.StateChanged -= Parser_StateChanged;
+                _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
+                _parser.Dispose();
+                // I won't set this to null because other components may try to release things
             }
 
             if (_hooks != null)
@@ -414,13 +490,6 @@ namespace Rubberduck
                 _configService.SettingsChanged -= _configService_SettingsChanged;
                 _configService.LanguageChanged -= ConfigServiceLanguageChanged;
                 _configService = null;
-            }
-
-            if (_parser != null && _parser.State != null)
-            {
-                _parser.State.StateChanged -= Parser_StateChanged;
-                _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
-                // I won't set this to null because other components may try to release things
             }
 
             if (_stateBar != null)
@@ -464,6 +533,8 @@ namespace Rubberduck
             {
                 item.Value.Item1.Unadvise(item.Value.Item2);
             }
+
+            UiDispatcher.Shutdown();
 
             _disposed = true;
         }

@@ -1,6 +1,6 @@
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Parsing.Nodes
+namespace Rubberduck.Parsing.Symbols
 {
     /// <summary>
     /// Represents a comment.

@@ -2,7 +2,6 @@
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
@@ -103,7 +102,8 @@ namespace Rubberduck.Inspections
                 InspectionsUI.QualifiedSelectionInspection,
                 Inspection.Severity,
                 Description,
-                module.ProjectId,
+                "(" + module.ProjectDisplayName + ")",
+                module.ProjectName,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
         }

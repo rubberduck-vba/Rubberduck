@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {

@@ -4,52 +4,52 @@ options { tokenVocab = VBALexer; }
 
 compilationUnit : ccBlock EOF;
 
-ccBlock : (ccConst | ccIfBlock | logicalLine)*;
-
-ccConst : HASHCONST ccVarLhs WS+ EQ WS+ ccExpression ccEol;
-
-logicalLine :
-    ~(HASHCONST | HASHIF | HASHELSEIF | HASHELSE | HASHENDIF)+
-    | NEWLINE
+ccBlock :
+    // We use the non-greedy operator so that we stop consuming EOFs as soon as possible.
+    // EOFs can be used in other places than the start rule since they're "emitted as long as someone takes them".
+    (ccConst | ccIfBlock | physicalLine)*?
 ;
 
+ccConst : WS* hashConst WS+ ccVarLhs WS* EQ WS* ccExpression ccEol;
 ccVarLhs : name;
+
+ccIfBlock : ccIf ccBlock ccElseIfBlock* ccElseBlock? ccEndIf;
+ccIf : WS* hashIf WS+ ccExpression WS+ THEN ccEol;
+ccElseIfBlock : ccElseIf ccBlock;
+ccElseIf : WS* hashElseIf WS+ ccExpression WS+ THEN ccEol;
+ccElseBlock : ccElse ccBlock;
+ccElse : WS* hashElse ccEol;
+ccEndIf : WS* hashEndIf ccEol;
+ccEol : WS* comment? (NEWLINE | EOF);
+// We use parser rules instead of tokens (such as HASHCONST) because
+// marked file numbers have a similar format and cause conflicts.
+hashConst : HASH CONST;
+hashIf : HASH IF;
+hashElseIf : HASH ELSEIF;
+hashElse : HASH ELSE;
+hashEndIf : HASH END_IF;
+
+physicalLine : ~(NEWLINE | EOF)* (NEWLINE | EOF);
 
 ccExpression :
     LPAREN WS* ccExpression WS* RPAREN
-	| ccExpression WS* POW WS* ccExpression
-	| MINUS WS* ccExpression
-	| ccExpression WS* (MULT | DIV) WS* ccExpression
-	| ccExpression WS* INTDIV WS* ccExpression
-	| ccExpression WS* MOD WS* ccExpression
-	| ccExpression WS* (PLUS | MINUS) WS* ccExpression
-	| ccExpression WS* AMPERSAND WS* ccExpression
-	| ccExpression WS* (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) WS* ccExpression
-	| NOT WS* ccExpression
-	| ccExpression WS* AND WS* ccExpression
-	| ccExpression WS* OR WS* ccExpression
-	| ccExpression WS* XOR WS* ccExpression
-	| ccExpression WS* EQV WS* ccExpression
-	| ccExpression WS* IMP WS* ccExpression
+    | ccExpression WS* POW WS* ccExpression
+    | MINUS WS* ccExpression
+    | ccExpression WS* (MULT | DIV) WS* ccExpression
+    | ccExpression WS* INTDIV WS* ccExpression
+    | ccExpression WS* MOD WS* ccExpression
+    | ccExpression WS* (PLUS | MINUS) WS* ccExpression
+    | ccExpression WS* AMPERSAND WS* ccExpression
+    | ccExpression WS* (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) WS* ccExpression
+    | NOT WS* ccExpression
+    | ccExpression WS* AND WS* ccExpression
+    | ccExpression WS* OR WS* ccExpression
+    | ccExpression WS* XOR WS* ccExpression
+    | ccExpression WS* EQV WS* ccExpression
+    | ccExpression WS* IMP WS* ccExpression
     | intrinsicFunction
     | literal
     | name;
-
-ccIfBlock : ccIf ccBlock ccElseIfBlock* ccElseBlock? ccEndIf;
-
-ccIf : HASHIF ccExpression WS+ THEN WS* ccEol;
-
-ccElseIfBlock : ccElseIf ccBlock;
-
-ccElseIf : HASHELSEIF ccExpression WS+ THEN WS* ccEol;
-
-ccElseBlock : ccElse ccBlock;
-
-ccElse : HASHELSE;
-
-ccEndIf : HASHENDIF;
-
-ccEol : comment? (NEWLINE | EOF);
 
 intrinsicFunction : intrinsicFunctionName LPAREN WS* ccExpression WS* RPAREN;
 

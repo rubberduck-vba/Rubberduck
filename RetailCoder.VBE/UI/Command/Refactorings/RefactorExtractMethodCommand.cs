@@ -1,9 +1,5 @@
-using System.Diagnostics;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
-using Antlr4.Runtime;
-using Rubberduck.Common;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.SmartIndenter;

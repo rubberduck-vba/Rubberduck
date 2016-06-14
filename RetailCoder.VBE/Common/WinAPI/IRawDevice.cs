@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rubberduck.Common.WinAPI
+﻿namespace Rubberduck.Common.WinAPI
 {
     public interface IRawDevice
     {

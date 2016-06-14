@@ -4,7 +4,6 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
-using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.VBEditor;
 
@@ -110,7 +109,6 @@ namespace Rubberduck.Inspections
 
         private bool IsAddressOfCall(IdentifierReference usage)
         {
-            var what = usage.Context.GetType();
             return ParserRuleContextHelper.HasParent<VBAParser.AddressOfExpressionContext>(usage.Context);
         }
 
