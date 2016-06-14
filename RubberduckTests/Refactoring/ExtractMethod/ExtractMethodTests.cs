@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
+using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
