@@ -179,8 +179,7 @@ namespace Rubberduck.Parsing.VBA
                 State.SetStatusAndFireStateChanged(_state.Status);
                 return;
             }
-
-
+            
             lock (_state)  // note, method is invoked from UI thread... really need the lock here?
             {
                 foreach (var component in toParse)
@@ -192,9 +191,6 @@ namespace Rubberduck.Parsing.VBA
                     // note: seting to 'Parsed' would include them in the resolver walk. 'Ready' excludes them.
                     _state.SetModuleState(component, ParserState.Ready);
                 }
-
-                //Debug.Assert(unchanged.All(component => _state.GetModuleState(component) == ParserState.Ready));
-                //Debug.Assert(toParse.All(component => _state.GetModuleState(component) == ParserState.Pending));
             }
 
             // invalidation cleanup should go into ParseAsync?
@@ -206,18 +202,65 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var parseTasks = new Task[components.Count];
-            for (var i = 0; i < components.Count; i++)
+            _projectDeclarations.Clear();
+            _state.ClearBuiltInReferences();
+
+            var parseTasks = new Task[toParse.Count];
+            for (var i = 0; i < toParse.Count; i++)
             {
-                parseTasks[i] = ParseAsync(components[i], CancellationToken.None);
+                var index = i;
+                parseTasks[i] = new Task(() =>
+                {
+                    ParseAsync(toParse[index], CancellationToken.None).Wait();
+
+                    if (_resolverTokenSource.IsCancellationRequested || _central.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
+                    if (_state.Status == ParserState.Error) { return; }
+
+                    var qualifiedName = new QualifiedModuleName(toParse[index]);
+                    Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName,
+                        _state.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
+
+                    _state.SetModuleState(toParse[index], ParserState.Resolving);
+                    ResolveDeclarations(qualifiedName.Component,
+                        _state.ParseTrees.Find(s => s.Key == qualifiedName).Value);
+                });
+
+                parseTasks[i].Start();
             }
 
             Task.WaitAll(parseTasks);
+            _state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
-            if (_state.Status != ParserState.Error)
+            if (_state.Status < ParserState.Error)
             {
-                Logger.Trace("Starting resolver task");
-                Resolve(_central.Token);
+                ResolveReferencesAsync();
+            }
+        }
+
+        private void ResolveReferencesAsync()
+        {
+            var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
+            var passes = new List<ICompilationPass>
+                {
+                    // This pass has to come first because the type binding resolution depends on it.
+                    new ProjectReferencePass(finder),
+                    new TypeHierarchyPass(finder, new VBAExpressionParser()),
+                    new TypeAnnotationPass(finder, new VBAExpressionParser())
+                };
+            passes.ForEach(p => p.Execute());
+
+            foreach (var kvp in _state.ParseTrees)
+            {
+                if (_resolverTokenSource.IsCancellationRequested || _central.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                Task.Run(() => ResolveReferences(finder, kvp.Key.Component, kvp.Value));
             }
         }
 
@@ -584,7 +627,7 @@ namespace Rubberduck.Parsing.VBA
         private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {
             var state = _state.GetModuleState(component);
-            if (_state.Status == ParserState.ResolverError || (state != ParserState.Parsed))
+            if (state != ParserState.Resolving)
             {
                 return;
             }
