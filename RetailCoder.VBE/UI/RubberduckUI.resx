@@ -1632,4 +1632,19 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SourceControl_ExternalModifications" xml:space="preserve">
     <value>A source file was modified out of the editor; should Rubberduck reload it?</value>
   </data>
+  <data name="SourceControl_OpenCommandPromptButtonToolTip" xml:space="preserve">
+    <value>Open Command Prompt</value>
+  </data>
+  <data name="SourceControl_CommandPromptExeLabel" xml:space="preserve">
+    <value>Command Prompt Exe location</value>
+  </data>
+  <data name="SourceControl_FilePickerCommandPromptHeader" xml:space="preserve">
+    <value>Command Prompt Executable</value>
+  </data>
+  <data name="SourceControl_FilePickerDefaultRepoHeader" xml:space="preserve">
+    <value>Default Repository Directory</value>
+  </data>
+  <data name="SourceControl_OpenCommandPromptFailureTitle" xml:space="preserve">
+    <value>Failure opening command prompt</value>
+  </data>
 </root>
