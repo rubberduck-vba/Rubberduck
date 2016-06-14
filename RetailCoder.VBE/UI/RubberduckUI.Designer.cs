@@ -3235,6 +3235,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command Prompt Exe location.
+        /// </summary>
+        public static string SourceControl_CommandPromptExeLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_CommandPromptExeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commit.
         /// </summary>
         public static string SourceControl_Commit {
@@ -3496,6 +3505,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command Prompt Executable.
+        /// </summary>
+        public static string SourceControl_FilePickerCommandPromptHeader {
+            get {
+                return ResourceManager.GetString("SourceControl_FilePickerCommandPromptHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default Repository Directory.
+        /// </summary>
+        public static string SourceControl_FilePickerDefaultRepoHeader {
+            get {
+                return ResourceManager.GetString("SourceControl_FilePickerDefaultRepoHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File Status.
         /// </summary>
         public static string SourceControl_FileStatus {
@@ -3681,6 +3708,24 @@ namespace Rubberduck.UI {
         public static string SourceControl_NoRepoFound {
             get {
                 return ResourceManager.GetString("SourceControl_NoRepoFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Command Prompt.
+        /// </summary>
+        public static string SourceControl_OpenCommandPromptButtonToolTip {
+            get {
+                return ResourceManager.GetString("SourceControl_OpenCommandPromptButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failure opening command prompt.
+        /// </summary>
+        public static string SourceControl_OpenCommandPromptFailureTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_OpenCommandPromptFailureTitle", resourceCulture);
             }
         }
         

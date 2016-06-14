@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -16,7 +17,6 @@ using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
-using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -35,12 +35,13 @@ namespace Rubberduck.UI.SourceControl
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly ISourceControlConfigProvider _configService;
-        private readonly SourceControlSettings _config;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IMessageBox _messageBox;
         private readonly FileSystemWatcher _fileSystemWatcher;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static readonly IEnumerable<string> VbFileExtensions = new[] { "cls", "bas", "frm" };
+
+        private SourceControlSettings _config;
 
         public SourceControlViewViewModel(
             VBE vbe,
@@ -82,6 +83,8 @@ namespace Rubberduck.UI.SourceControl
 
             _publishRepoOkButtonCommand = new DelegateCommand(_ => PublishRepo(), _ => !IsNotValidPublishRemotePath);
             _publishRepoCancelButtonCommand = new DelegateCommand(_ => ClosePublishRepoGrid());
+
+            _openCommandPromptCommand = new DelegateCommand(_ => OpenCommandPrompt());
 
             TabItems = new ObservableCollection<IControlView>
             {
@@ -165,8 +168,8 @@ namespace Rubberduck.UI.SourceControl
         private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
             new Dictionary<NotificationType, BitmapImage>
             {
-                { NotificationType.Info, GetImageSource((Bitmap) resx.ResourceManager.GetObject("information", CultureInfo.InvariantCulture))},
-                { NotificationType.Error, GetImageSource((Bitmap) resx.ResourceManager.GetObject("cross_circle", CultureInfo.InvariantCulture))}
+                { NotificationType.Info, GetImageSource((Bitmap) RubberduckUI.ResourceManager.GetObject("information", CultureInfo.InvariantCulture))},
+                { NotificationType.Error, GetImageSource((Bitmap) RubberduckUI.ResourceManager.GetObject("cross_circle", CultureInfo.InvariantCulture))}
             };
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
@@ -543,6 +546,11 @@ namespace Rubberduck.UI.SourceControl
 
                 DisplayErrorMessageGrid = true;
             }
+
+            if (e.InnerMessage == RubberduckUI.SourceControl_UpdateSettingsMessage)
+            {
+                _config = _configService.Create();
+            }
         }
 
         private void DismissErrorMessage()
@@ -725,6 +733,20 @@ namespace Rubberduck.UI.SourceControl
             DisplayPublishRepoGrid = false;
         }
 
+        private void OpenCommandPrompt()
+        {
+            try
+            {
+                Process.Start(_config.CommandPromptLocation);
+            }
+            catch (Exception e)
+            {
+                ViewModel_ErrorThrown(this,
+                    new ErrorEventArgs(RubberduckUI.SourceControl_OpenCommandPromptFailureTitle, e.Message,
+                        NotificationType.Error));
+            }
+        }
+
         private void OpenRepoAssignedToProject()
         {
             if (!ValidRepoExists())
@@ -874,6 +896,15 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _publishRepoCancelButtonCommand;
+            }
+        }
+
+        private readonly ICommand _openCommandPromptCommand;
+        public ICommand OpenCommandPromptCommand
+        {
+            get
+            {
+                return _openCommandPromptCommand;
             }
         }
 
