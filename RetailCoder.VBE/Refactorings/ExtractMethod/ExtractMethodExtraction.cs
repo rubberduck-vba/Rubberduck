@@ -16,8 +16,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var newMethodCall = model.Method.NewMethodCall();
             var positionToInsertNewMethod = model.PositionForNewMethod;
             var positionForMethodCall = model.PositionForMethodCall;
-            var selectionToRemove = model.SelectionToRemove;
-
+            var selectionToRemove = model.RowsToRemove;
             // The next 4 lines are dependent on the positions of the various parts,
             // so have to be applied in the correct order.
             var newMethod = constructLinesOfProc(codeModule, model);
@@ -28,16 +27,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public virtual void removeSelection(ICodeModuleWrapper codeModule, IEnumerable<Selection> selection)
         {
-            foreach (var item in selection)
+            foreach (var item in selection.OrderBy(x => -x.StartLine))
             {
                 var start = item.StartLine;
                 var end = item.EndLine;
                 var lineCount = end - start + 1;
-
                 codeModule.DeleteLines(start,lineCount);
-
             }
         }
+
         public virtual string constructLinesOfProc(ICodeModuleWrapper codeModule, IExtractMethodModel model)
         {
 
@@ -45,16 +43,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var method = model.Method;
             var keyword = Tokens.Sub;
             var asTypeClause = string.Empty;
-            var selection = model.SelectionToRemove;
-            
+            var selection = model.RowsToRemove;
 
             var access = method.Accessibility.ToString();
             var extractedParams = method.Parameters.Select(p => ExtractedParameter.PassedBy.ByRef + " " + p.Name + " " + Tokens.As + " " + p.TypeName);
             var parameters = "(" + string.Join(", ", extractedParams) + ")";
-
             //method signature
             var result = access + ' ' + keyword + ' ' + method.MethodName + parameters + ' ' + asTypeClause + newLine;
-
             // method body
             string textToMove = "";
             foreach (var item in selection)
@@ -62,12 +57,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 textToMove += codeModule.get_Lines(item.StartLine, item.EndLine - item.StartLine + 1);
                 textToMove += Environment.NewLine;
             }
-
             // method end;
             result += textToMove;
             result += Tokens.End + " " + Tokens.Sub;
             return result;
         }
-
     }
 }

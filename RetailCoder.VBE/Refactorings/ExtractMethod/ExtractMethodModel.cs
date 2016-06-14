@@ -12,111 +12,128 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
+
+public static class IEnumerableExt
+{
+    /// <summary>
+    /// Yields an Enumeration of selector Type, 
+    /// by checking for gaps between elements 
+    /// using the supplied increment function to work out the next value
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="U"></typeparam>
+    /// <param name="inputs"></param>
+    /// <param name="getIncr"></param>
+    /// <param name="selector"></param>
+    /// <param name="comparisonFunc"></param>
+    /// <returns></returns>
+    public static IEnumerable<U> GroupByMissing<T, U>(this IEnumerable<T> inputs, Func<T, T> getIncr, Func<T, T, U> selector, Func<T, T, int> comparisonFunc)
+    {
+
+        var initialized = false;
+        T first = default(T);
+        T last = default(T);
+        T next = default(T);
+        Tuple<T, T> tuple = null;
+
+        foreach (var input in inputs)
+        {
+            if (!initialized)
+            {
+                first = input;
+                last = input;
+                initialized = true;
+                continue;
+            }
+            if (comparisonFunc(last, input) < 0)
+            {
+                throw new ArgumentException(string.Format("Values are not monotonically increasing. {0} should be less than {1}", last, input));
+            }
+            var inc = getIncr(last);
+            if (!input.Equals(inc))
+            {
+                yield return selector(first, last);
+                first = input;
+            }
+            last = input;
+        }
+        if (initialized)
+        {
+            yield return selector(first, last);
+        }
+    }
+}
+
 namespace Rubberduck.Refactorings.ExtractMethod
 {
-
     public class ExtractMethodModel : IExtractMethodModel
     {
-        private const string NEW_METHOD = "NewMethod";
+        private List<Declaration> _extractDeclarations;
+        private IExtractMethodParameterClassification _paramClassify;
+        private IExtractedMethod _extractedMethod;
 
-        public ExtractMethodModel(List<IExtractMethodRule> emRules, IExtractedMethod extractedMethod)
+        public ExtractMethodModel(IExtractedMethod extractedMethod, IExtractMethodParameterClassification paramClassify)
         {
-            _rules = emRules;
             _extractedMethod = extractedMethod;
+            _paramClassify = paramClassify;
         }
-
 
         public void extract(IEnumerable<Declaration> declarations, QualifiedSelection selection, string selectedCode)
         {
             var items = declarations.ToList();
-            var sourceMember = items.FindSelectedDeclaration(selection, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+            _selection = selection;
+            _selectedCode = selectedCode;
+            _rowsToRemove = new List<Selection>();
+
+            var sourceMember = items.FindSelectedDeclaration(
+                selection,
+                DeclarationExtensions.ProcedureTypes,
+                d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+
             if (sourceMember == null)
             {
                 throw new InvalidOperationException("Invalid selection.");
             }
 
             var inScopeDeclarations = items.Where(item => item.ParentScope == sourceMember.Scope).ToList();
-
-            _byref = new List<Declaration>();
-            _byval = new List<Declaration>();
-            _declarationsToMove = new List<Declaration>();
-            _extractDeclarations = new List<Tuple<Declaration, bool>>();
-            _extractedMethod = new ExtractedMethod();
-
-
-            var selectionToRemove = new List<Selection>();
             var selectionStartLine = selection.Selection.StartLine;
             var selectionEndLine = selection.Selection.EndLine;
-
             var methodInsertLine = sourceMember.Context.Stop.Line + 1;
+
             _positionForNewMethod = new Selection(methodInsertLine, 1, methodInsertLine, 1);
 
-            // https://github.com/rubberduck-vba/Rubberduck/wiki/Extract-Method-Refactoring-%3A-Workings---Determining-what-params-to-move
             foreach (var item in inScopeDeclarations)
             {
-                var flags = new Byte();
-
-                foreach (var oRef in item.References)
-                {
-                    foreach (var rule in _rules)
-                    {
-                        rule.setValidFlag(ref flags, oRef, selection.Selection);
-                    }
-                }
-
-                //TODO: extract this to seperate class.
-                if (flags < 4) { /*ignore the variable*/ }
-                else if (flags < 12)
-                    _byref.Add(item);
-                else if (flags == 12)
-                    _declarationsToMove.Add(item);
-                else if (flags > 12)
-                    _byval.Add(item);
-
-                if (flags >= 18)
-                {
-                    _extractDeclarations.Add(Tuple.Create(item, true));
-                }
-
+                _paramClassify.classifyDeclarations(selection, item);
             }
+            _declarationsToMove = _paramClassify.DeclarationsToMove.ToList();
 
+            _rowsToRemove = splitSelection(selection.Selection, _declarationsToMove).ToList();
 
-            _declarationsToMove.ForEach(d => selectionToRemove.Add(d.Selection));
-            selectionToRemove.Add(selection.Selection);
-
-            var methodCallPositionStartLine = selectionStartLine - selectionToRemove.Count(s => s.StartLine < selectionStartLine);
+            var methodCallPositionStartLine = selectionStartLine - _declarationsToMove.Count(d => d.Selection.StartLine < selectionStartLine);
             _positionForMethodCall = new Selection(methodCallPositionStartLine, 1, methodCallPositionStartLine, 1);
-
-            var methodParams = _byref.Select(dec => new ExtractedParameter(dec.AsTypeName, ExtractedParameter.PassedBy.ByRef, dec.IdentifierName))
-                                .Union(_byval.Select(dec => new ExtractedParameter(dec.AsTypeName, ExtractedParameter.PassedBy.ByVal, dec.IdentifierName)));
-
-            // iterate until we have a non-clashing method name.
-            var newMethodName = NEW_METHOD;
-
-            var newMethodInc = 0;
-            while (declarations.FirstOrDefault(d =>
-                DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)
-                && d.IdentifierName.Equals(newMethodName)) != null)
-            {
-                newMethodInc++;
-                newMethodName = NEW_METHOD + newMethodInc;
-            }
-
-            _extractedMethod.MethodName = newMethodName;
             _extractedMethod.ReturnValue = null;
             _extractedMethod.Accessibility = Accessibility.Private;
             _extractedMethod.SetReturnValue = false;
-            _extractedMethod.Parameters = methodParams.ToList();
-
-            _selection = selection;
-            _selectedCode = selectedCode;
-            _selectionToRemove = selectionToRemove.ToList();
+            _extractedMethod.Parameters = _paramClassify.ExtractedParameters.ToList();
 
         }
 
-        private List<Declaration> _byref;
-        private List<Declaration> _byval;
-        private List<Declaration> _moveIn;
+        public IEnumerable<Selection> splitSelection(Selection selection, IEnumerable<Declaration> declarations)
+        {
+            var tupleList = new List<Tuple<int, int>>();
+            var declarationRows = declarations
+                .Where(decl =>
+                    selection.StartLine <= decl.Selection.StartLine &&
+                    decl.Selection.StartLine <= selection.EndLine)
+                .Select(decl => decl.Selection.StartLine)
+                .OrderBy(x => x)
+                .ToList();
+
+            var gappedSelectionRows = Enumerable.Range(selection.StartLine, selection.EndLine - selection.StartLine + 1).Except(declarationRows).ToList();
+            var returnList = gappedSelectionRows.GroupByMissing(x => (x + 1), (x, y) => new Selection(x, 1, y, 1), (x, y) => y - x);
+            return returnList;
+        }
 
         private Declaration _sourceMember;
         public Declaration SourceMember { get { return _sourceMember; } }
@@ -132,19 +149,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         private IEnumerable<ExtractedParameter> _input;
         public IEnumerable<ExtractedParameter> Inputs { get { return _input; } }
-
         private IEnumerable<ExtractedParameter> _output;
         public IEnumerable<ExtractedParameter> Outputs { get { return _output; } }
 
         private List<Declaration> _declarationsToMove;
         public IEnumerable<Declaration> DeclarationsToMove { get { return _declarationsToMove; } }
 
-        private IExtractedMethod _extractedMethod;
-
-        private IEnumerable<IExtractMethodRule> _rules;
-
         public IExtractedMethod Method { get { return _extractedMethod; } }
-
 
         private Selection _positionForMethodCall;
         public Selection PositionForMethodCall { get { return _positionForMethodCall; } }
@@ -153,13 +164,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         private Selection _positionForNewMethod;
         public Selection PositionForNewMethod { get { return _positionForNewMethod; } }
-        IEnumerable<Selection> _selectionToRemove;
-        private List<IExtractMethodRule> emRules;
+        IList<Selection> _rowsToRemove;
+        public IEnumerable<Selection> RowsToRemove
+        {
+            // we need to split selectionToRemove around any declarations that
+            // are within the selection.
+            get { return _declarationsToMove.Select(decl => decl.Selection).Union(_rowsToRemove)
+                                      .Select( x => new Selection(x.StartLine,1,x.EndLine,1)) ; }
+        }
 
-        public IEnumerable<Selection> SelectionToRemove { get { return _selectionToRemove; } }
-
-        private List<Tuple<Declaration, bool>> _extractDeclarations;
-        public IEnumerable<Tuple<Declaration, bool>> ExtractDeclarations { get { return _extractDeclarations; } }
-
+        public IEnumerable<Declaration> DeclarationsToExtract
+        {
+            get { return _extractDeclarations; }
+        }
     }
 }

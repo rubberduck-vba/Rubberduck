@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
@@ -44,8 +45,10 @@ End Sub
         [TestClass]
         public class WhenRemoveSelectionIsCalledWithValidSelection
         {
+
             [TestMethod]
-            public void shouldRemoveLinesFromCodeModule()
+            [TestCategory("ExtractedMethodRefactoringTests")]
+            public void shouldRemoveLinesFromCodeModuleFromBottomUp()
             {
 
                 var notifyCalls = new List<Tuple<int, int>>();
@@ -54,17 +57,21 @@ End Sub
                     .Callback<int, int>((start, count) => notifyCalls.Add(Tuple.Create(start, count)));
                 var selections = new List<Selection>() { new Selection(5, 1, 5, 20), new Selection(10, 1, 12, 20) };
                 var SUT = new ExtractMethodExtraction();
+
+                //Act
                 SUT.removeSelection(codeModule.Object, selections);
 
-                Assert.AreEqual(Tuple.Create(5, 1), notifyCalls[0]);
-                Assert.AreEqual(Tuple.Create(10, 3), notifyCalls[1]);
-
+                //Assert
+                Assert.AreEqual(Tuple.Create(5, 1), notifyCalls[1]);
+                Assert.AreEqual(Tuple.Create(10, 3), notifyCalls[0]);
             }
+
         }
 
         [TestClass]
         public class WhenApplyIsCalled
         {
+
             [TestMethod]
             [TestCategory("ExtractedMethodRefactoringTests")]
             public void shouldExtractTheTextForTheNewProcByCallingConstructLinesOfProc()
@@ -118,7 +125,7 @@ End Sub";
                 var model = new Mock<IExtractMethodModel>();
                 model.Setup(m => m.PositionForNewMethod).Returns(selection);
                 model.Setup(m => m.Method).Returns(method);
-                model.Setup(m => m.SelectionToRemove).Returns(selections);
+                model.Setup(m => m.RowsToRemove).Returns(selections);
 
                 extraction.Setup(em => em.constructLinesOfProc(It.IsAny<ICodeModuleWrapper>(), It.IsAny<IExtractMethodModel>())).Returns("theMethodCall");
 
@@ -194,10 +201,13 @@ End Sub";
                 Assert.AreEqual(expected, actual);
 
             }
+
         }
+
         [TestClass]
         public class WhenConstructLinesOfProcIsCalledWithAListOfSelections
         {
+
             [TestMethod]
             [TestCategory("ExtractedMethodRefactoringTests")]
             public void shouldConcatenateASeriesOfLines()
@@ -213,21 +223,115 @@ End Sub";
                 method.Accessibility = Accessibility.Private;
                 method.Parameters = new List<ExtractedParameter>();
                 method.MethodName = "NewMethod";
-                model.Setup(m => m.SelectionToRemove).Returns(selections);
+                model.Setup(m => m.RowsToRemove).Returns(selections);
                 model.Setup(m => m.Method).Returns(method);
 
                 var SUT = new ExtractMethodExtraction();
+                //Act
                 SUT.constructLinesOfProc(codeModule.Object, model.Object);
 
+                //Assert
                 Assert.AreEqual(Tuple.Create(5, 1), notifyCalls[0]);
                 Assert.AreEqual(Tuple.Create(10, 3), notifyCalls[1]);
-
-
             }
 
         }
 
-        
+        /// <summary>
+        /// https://github.com/rubberduck-vba/Rubberduck/issues/844
+        /// </summary>
+        [TestMethod]
+        [TestCategory("ExtractMethodModelTests")]
+        public void shouldNotProduceDuplicateDimOfz()
+        {
 
+            #region inputCode
+            var inputCode = @"
+Option explicit
+Public Sub CodeWithDeclaration()
+    Dim x as long
+    Dim y as long
+
+    x = 1 + 2
+    DebugPrint x                      '8
+    y = x + 1
+    Dim z as long
+    z = x  
+    DebugPrint z                      '12
+    x = 2
+    DebugPrint y
+
+
+End Sub                                '17
+Public Sub DebugPrint(byval g as long)
+End Sub
+                                       '20
+
+";
+
+            var selectedCode = @"
+    DebugPrint x                      '8
+    y = x + 1
+    Dim z as long
+    z = x  
+    DebugPrint z                      '12
+";
+            var expectedCode = @"
+Option explicit
+Public Sub CodeWithDeclaration()
+    Dim x as long
+    Dim y as long
+
+    x = 1 + 2
+NewMethod x, y
+    x = 2
+    DebugPrint y
+
+
+End Sub                                '17
+Private Sub NewMethod(ByRef x As long, ByRef y As long) 
+    Dim z as long
+    DebugPrint x                      '8
+    y = x + 1
+    z = x  
+    DebugPrint z                      '12
+End Sub
+Public Sub DebugPrint(byval g as long)
+End Sub
+                                       '20
+
+";
+            #endregion
+
+            QualifiedModuleName qualifiedModuleName;
+            RubberduckParserState state;
+            MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+            var declarations = state.AllDeclarations;
+
+            var selection = new Selection(8, 1, 12, 50);
+            QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+
+            List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
+                        new ExtractMethodRuleInSelection(),
+                        new ExtractMethodRuleIsAssignedInSelection(),
+                        new ExtractMethodRuleUsedBefore(),
+                        new ExtractMethodRuleUsedAfter(),
+                        new ExtractMethodRuleExternalReference()};
+
+            var codeModule = new CodeModuleWrapper(qualifiedModuleName.Component.CodeModule);
+            var extractedMethod = new ExtractedMethod();
+            var paramClassify = new ExtractMethodParameterClassification(emRules);
+            var model = new ExtractMethodModel(extractedMethod, paramClassify);
+            model.extract(declarations, qSelection.Value, selectedCode);
+
+            var SUT = new ExtractMethodExtraction();
+
+            //Act
+            SUT.apply(codeModule, model, selection);
+
+            //Assert
+            var actual = codeModule.get_Lines(1, 1000);
+            Assert.AreEqual(expectedCode, actual);
+        }
     }
 }

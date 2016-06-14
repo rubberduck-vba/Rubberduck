@@ -89,8 +89,10 @@ namespace Rubberduck.UI.Command.Refactorings
                     new ExtractMethodRuleUsedAfter(),
                     new ExtractMethodRuleUsedBefore()};
 
+                var paramClassify = new ExtractMethodParameterClassification(rules);
+
                 var extractedMethod = new ExtractedMethod();
-                var extractedMethodModel = new ExtractMethodModel(rules,extractedMethod);
+                var extractedMethodModel = new ExtractMethodModel(extractedMethod,paramClassify);
                 extractedMethodModel.extract(declarations, qs.Value, code);
                 return extractedMethodModel;
             };

@@ -10,7 +10,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 {
     public interface IExtractMethodRule
     {
-        void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection);
+        Byte setValidFlag(IdentifierReference reference, Selection selection);
     }
 
     public enum ExtractMethodRuleFlags
@@ -25,57 +25,63 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
     public class ExtractMethodRuleUsedBefore : IExtractMethodRule
     {
-        public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
+        public Byte setValidFlag(IdentifierReference reference, Selection selection)
         {
             if (reference.Selection.StartLine < selection.StartLine)
-                flags = (byte)(flags | (byte)ExtractMethodRuleFlags.UsedBefore);
+                return ((byte)ExtractMethodRuleFlags.UsedBefore);
+            return 0; 
         }
     }
 
     public class ExtractMethodRuleExternalReference : IExtractMethodRule
     {
-        public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
+        public Byte setValidFlag(IdentifierReference reference, Selection selection)
         {
             var decStartLine = reference.Declaration.Selection.StartLine;
             if (reference.Selection.StartLine > selection.EndLine &&
                 selection.StartLine <= decStartLine &&  decStartLine <= selection.EndLine)
             {
-                flags = (byte)(flags | (byte)ExtractMethodRuleFlags.IsExternallyReferenced);
+                return ((byte)ExtractMethodRuleFlags.IsExternallyReferenced);
             }
+            return 0;
         }
     }
 
     public class ExtractMethodRuleUsedAfter : IExtractMethodRule
     {
-        public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
+        public Byte setValidFlag(IdentifierReference reference, Selection selection)
         {
             if (reference.Selection.StartLine > selection.EndLine)
-                flags = (byte)(flags | (byte)ExtractMethodRuleFlags.UsedAfter);
+                return ((byte)ExtractMethodRuleFlags.UsedAfter);
+            return 0;
         }
     }
 
     public class ExtractMethodRuleIsAssignedInSelection : IExtractMethodRule
     {
-        public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
+        public Byte setValidFlag(IdentifierReference reference, Selection selection)
         {
             if (selection.StartLine <= reference.Selection.StartLine && reference.Selection.StartLine <= selection.EndLine)
             {
                 if (reference.IsAssignment)
-                    flags = (byte)(flags | ((byte)ExtractMethodRuleFlags.IsAssigned));
+                    return ((byte)ExtractMethodRuleFlags.IsAssigned);
             }
+            return 0;
         }
     }
 
     public class ExtractMethodRuleInSelection : IExtractMethodRule
     {
-        public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
+        public Byte setValidFlag(IdentifierReference reference, Selection selection)
         {
             if (selection.StartLine <= reference.Selection.StartLine &&
                 reference.Selection.StartLine <= selection.EndLine &&
                 ((reference.Declaration == null) ? false : reference.Declaration.Selection.StartLine != reference.Selection.StartLine))
             {
-                flags = (byte)(flags | ((byte)ExtractMethodRuleFlags.InSelection));
+                return ((byte)ExtractMethodRuleFlags.InSelection);
+
             }
+            return 0;
         }
     }
 }
