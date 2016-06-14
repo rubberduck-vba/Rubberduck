@@ -57,8 +57,8 @@ End Sub
                 SUT.classifyDeclarations(qSelection, declaration);
 
                 //Assert
-                // 2 rules on 2 referencdes = 4 validation checks
-                var expectedToVerify = 4;
+                // 2 rules on 1 referencdes = 2 validation checks
+                var expectedToVerify = 2;
                 emRule.Verify(emr => emr.setValidFlag(It.IsAny<IdentifierReference>(), selection),
                     Times.Exactly(expectedToVerify));
 
