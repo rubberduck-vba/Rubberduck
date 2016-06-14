@@ -75,7 +75,8 @@ moduleDeclarationsElement :
     | implementsStmt
     | variableStmt
     | moduleOption
-    | typeStmt)
+    | publicTypeDeclaration
+    | privateTypeDeclaration)
 ;
 
 moduleBody : 
@@ -471,13 +472,24 @@ subStmt :
 ;
 subroutineName : identifier;
 
-typeStmt : 
-    (visibility whiteSpace)? TYPE whiteSpace identifier endOfStatement
-    typeStmt_Element*
-    END_TYPE
-;
+// 5.2.3.3 User Defined Type Declarations
+publicTypeDeclaration : ((GLOBAL | PUBLIC) whiteSpace)? udtDeclaration;
+privateTypeDeclaration : PRIVATE whiteSpace udtDeclaration;
+udtDeclaration : TYPE whiteSpace untypedIdentifier endOfStatement udtMemberList endOfStatement END_TYPE;  
+udtMemberList : udtMember (endOfStatement udtMember)*; 
+udtMember : reservedNameMemberDeclaration | untypedNameMemberDeclaration;
+untypedNameMemberDeclaration : untypedIdentifier whiteSpace? optionalArrayClause;
+reservedNameMemberDeclaration : unrestrictedIdentifier whiteSpace asTypeClause;
+optionalArrayClause : (arrayDim whiteSpace)? asTypeClause;
 
-typeStmt_Element : identifier (whiteSpace? LPAREN (whiteSpace? subscripts)? whiteSpace? RPAREN)? (whiteSpace asTypeClause)? endOfStatement;
+// 5.2.3.1.3 Array Dimensions and Bounds
+arrayDim : LPAREN whiteSpace? boundsList? whiteSpace? RPAREN;
+boundsList : dimSpec (whiteSpace? COMMA whiteSpace? dimSpec)*;
+dimSpec : (lowerBound whiteSpace?)? upperBound;
+lowerBound : constantExpression whiteSpace? TO;
+upperBound : constantExpression;
+
+constantExpression : expression;
 
 variableStmt : (DIM | STATIC | visibility) whiteSpace (WITHEVENTS whiteSpace)? variableListStmt;
 variableListStmt : variableSubStmt (whiteSpace? COMMA whiteSpace? variableSubStmt)*;

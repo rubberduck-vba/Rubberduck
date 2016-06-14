@@ -94,6 +94,22 @@ namespace Rubberduck.Parsing.Symbols
             _withBlockExpressions.Pop();
         }
 
+        public void Resolve(VBAParser.ArrayDimContext context)
+        {
+            if (context.boundsList() == null)
+            {
+                return;
+            }
+            foreach (var dimSpec in context.boundsList().dimSpec())
+            {
+                if (dimSpec.lowerBound() != null)
+                {
+                    ResolveDefault(dimSpec.lowerBound().constantExpression().expression());
+                }
+                ResolveDefault(dimSpec.upperBound().constantExpression().expression());
+            }
+        }
+
         public void Resolve(VBAParser.OnErrorStmtContext context)
         {
             if (context.expression() == null)
@@ -746,7 +762,7 @@ namespace Rubberduck.Parsing.Symbols
                 debugPrint,
                 context.debugPrint().debugPrintSub().GetSelection(),
                 _annotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugPrintSub().GetSelection().StartLine));
-            var outputList = context.outputList();            
+            var outputList = context.outputList();
             if (outputList != null)
             {
                 ResolveOutputList(outputList);
