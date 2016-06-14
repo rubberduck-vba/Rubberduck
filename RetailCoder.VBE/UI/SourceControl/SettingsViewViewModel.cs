@@ -128,6 +128,7 @@ namespace Rubberduck.UI.SourceControl
             UserName = _config.UserName;
             EmailAddress = _config.EmailAddress;
             DefaultRepositoryLocation = _config.DefaultRepositoryLocation;
+            CommandPromptLocation = _config.CommandPromptLocation;
         }
 
         private void UpdateSettings()
