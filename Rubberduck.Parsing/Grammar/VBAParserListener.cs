@@ -54,6 +54,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitPowOp([NotNull] VBAParser.PowOpContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.udtMember"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUdtMember([NotNull] VBAParser.UdtMemberContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.udtMember"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUdtMember([NotNull] VBAParser.UdtMemberContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.tabNumber"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -258,6 +269,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitIndexExpr([NotNull] VBAParser.IndexExprContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.untypedNameMemberDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUntypedNameMemberDeclaration([NotNull] VBAParser.UntypedNameMemberDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.untypedNameMemberDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUntypedNameMemberDeclaration([NotNull] VBAParser.UntypedNameMemberDeclarationContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.inputList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -289,6 +311,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitModuleBody([NotNull] VBAParser.ModuleBodyContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.udtMemberList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUdtMemberList([NotNull] VBAParser.UdtMemberListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.udtMemberList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUdtMemberList([NotNull] VBAParser.UdtMemberListContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.letterRange"/>.
@@ -427,6 +460,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitLineWidth([NotNull] VBAParser.LineWidthContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.publicTypeDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPublicTypeDeclaration([NotNull] VBAParser.PublicTypeDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.publicTypeDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPublicTypeDeclaration([NotNull] VBAParser.PublicTypeDeclarationContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.asTypeClause"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -541,6 +585,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitAnnotation([NotNull] VBAParser.AnnotationContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.reservedNameMemberDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterReservedNameMemberDeclaration([NotNull] VBAParser.ReservedNameMemberDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.reservedNameMemberDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitReservedNameMemberDeclaration([NotNull] VBAParser.ReservedNameMemberDeclarationContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.mandatoryLineContinuation"/>.
@@ -1080,6 +1135,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitAnnotationArgList([NotNull] VBAParser.AnnotationArgListContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.upperBound"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUpperBound([NotNull] VBAParser.UpperBoundContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.upperBound"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUpperBound([NotNull] VBAParser.UpperBoundContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>specifiedPositionalArgument</c>
 	/// labeled alternative in <see cref="VBAParser.positionalArgumentOrMissing"/>.
 	/// </summary>
@@ -1359,6 +1425,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitCallStmt([NotNull] VBAParser.CallStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.optionalArrayClause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterOptionalArrayClause([NotNull] VBAParser.OptionalArrayClauseContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.optionalArrayClause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitOptionalArrayClause([NotNull] VBAParser.OptionalArrayClauseContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.debugPrintSub"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1412,6 +1489,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitModuleBodyElement([NotNull] VBAParser.ModuleBodyElementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.udtDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUdtDeclaration([NotNull] VBAParser.UdtDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.udtDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUdtDeclaration([NotNull] VBAParser.UdtDeclarationContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.seekStmt"/>.
@@ -1489,17 +1577,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitModuleAttributes([NotNull] VBAParser.ModuleAttributesContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.typeStmt_Element"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterTypeStmt_Element([NotNull] VBAParser.TypeStmt_ElementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.typeStmt_Element"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitTypeStmt_Element([NotNull] VBAParser.TypeStmt_ElementContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.type"/>.
@@ -1636,6 +1713,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitOnErrorStmt([NotNull] VBAParser.OnErrorStmtContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.dimSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDimSpec([NotNull] VBAParser.DimSpecContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.dimSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDimSpec([NotNull] VBAParser.DimSpecContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.identifier"/>.
@@ -1798,6 +1886,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitRedimStmt([NotNull] VBAParser.RedimStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.boundsList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBoundsList([NotNull] VBAParser.BoundsListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.boundsList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBoundsList([NotNull] VBAParser.BoundsListContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.literalIdentifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1895,6 +1994,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitResumeStmt([NotNull] VBAParser.ResumeStmtContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.constantExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterConstantExpression([NotNull] VBAParser.ConstantExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.constantExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitConstantExpression([NotNull] VBAParser.ConstantExpressionContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.debugPrint"/>.
@@ -2022,6 +2132,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitCaseClause([NotNull] VBAParser.CaseClauseContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.lowerBound"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLowerBound([NotNull] VBAParser.LowerBoundContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.lowerBound"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLowerBound([NotNull] VBAParser.LowerBoundContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.exitStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -2053,6 +2174,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitArgList([NotNull] VBAParser.ArgListContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.arrayDim"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayDim([NotNull] VBAParser.ArrayDimContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.arrayDim"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayDim([NotNull] VBAParser.ArrayDimContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.eventArgumentList"/>.
@@ -2134,17 +2266,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitMissingPositionalArgument([NotNull] VBAParser.MissingPositionalArgumentContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.typeStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterTypeStmt([NotNull] VBAParser.TypeStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.typeStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitTypeStmt([NotNull] VBAParser.TypeStmtContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>multOp</c>
@@ -2446,6 +2567,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitIntegerExpression([NotNull] VBAParser.IntegerExpressionContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.privateTypeDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPrivateTypeDeclaration([NotNull] VBAParser.PrivateTypeDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.privateTypeDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPrivateTypeDeclaration([NotNull] VBAParser.PrivateTypeDeclarationContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.markedFileNumber"/>.
