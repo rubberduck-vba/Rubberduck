@@ -50,6 +50,39 @@ namespace RubberduckTests.SmartIndenter
 
         [TestMethod]
         [TestCategory("Indenter")]
+        public void ElseIfStatementWorks()
+        {
+            var code = new[]
+            {
+                "Public Function Test() As Integer",
+                "If Foo = 1 Then",
+                "Bar = 3",
+                "ElseIf Foo = 3 Then",
+                "Bar = 1",
+                "End If",
+                "Test = Bar",
+                "End Function"
+            };
+
+            var expected = new[]
+            {
+                "Public Function Test() As Integer",
+                "    If Foo = 1 Then",
+                "        Bar = 3",
+                "    ElseIf Foo = 3 Then",
+                "        Bar = 1",
+                "    End If",
+                "    Test = Bar",
+                "End Function"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
         public void SingleLineElseIfStatementWorks()
         {
             var code = new[]

@@ -26,7 +26,7 @@ namespace Rubberduck
         private const string FILE_TARGET_NAME = "file";
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly IRubberduckParser _parser;
+        private IRubberduckParser _parser;
         private AutoSave.AutoSave _autoSave;
         private IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
@@ -34,7 +34,7 @@ namespace Rubberduck
         private IRubberduckHooks _hooks;
         private bool _handleSinkEvents = true;
         private readonly BranchesViewViewModel _branchesVM;
-        private readonly SourceControlViewViewModel _panelVM;
+        private readonly SourceControlViewViewModel _sourceControlPanelVM;
 
         private readonly Logger _logger;
 
@@ -68,11 +68,11 @@ namespace Rubberduck
             _logger = LogManager.GetCurrentClassLogger();
 
             var sourceControlPanel = (SourceControlPanel) sourceControlPresenter.Window();
-            _panelVM = (SourceControlViewViewModel) sourceControlPanel.ViewModel;
-            _branchesVM = (BranchesViewViewModel) _panelVM.TabItems.Single(t => t.ViewModel.Tab == SourceControlTab.Branches).ViewModel;
+            _sourceControlPanelVM = (SourceControlViewViewModel) sourceControlPanel.ViewModel;
+            _branchesVM = (BranchesViewViewModel) _sourceControlPanelVM.TabItems.Single(t => t.ViewModel.Tab == SourceControlTab.Branches).ViewModel;
 
-            _panelVM.OpenRepoStarted += DisableSinkEventHandlers;
-            _panelVM.OpenRepoCompleted += EnableSinkEventHandlersAndUpdateCache;
+            _sourceControlPanelVM.OpenRepoStarted += DisableSinkEventHandlers;
+            _sourceControlPanelVM.OpenRepoCompleted += EnableSinkEventHandlersAndUpdateCache;
 
             _branchesVM.LoadingComponentsStarted += DisableSinkEventHandlers;
             _branchesVM.LoadingComponentsCompleted += EnableSinkEventHandlersAndUpdateCache;
@@ -311,6 +311,8 @@ namespace Rubberduck
                 return;
             }
 
+            _sourceControlPanelVM.HandleRenamedComponent(e.Item, e.OldName);
+
             _logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
 
             _parser.State.RemoveRenamedComponent(e.Item, e.OldName);
@@ -325,7 +327,7 @@ namespace Rubberduck
                 return;
             }
 
-            _panelVM.RemoveComponent(e.Item);
+            _sourceControlPanelVM.HandleRemovedComponent(e.Item);
 
             _logger.Debug("Component '{0}' was removed.", e.Item.Name);
             _parser.State.ClearStateCache(e.Item, true);
@@ -353,7 +355,7 @@ namespace Rubberduck
                 return;
             }
 
-            _panelVM.AddComponent(e.Item);
+            _sourceControlPanelVM.HandleAddedComponent(e.Item);
 
             _logger.Debug("Component '{0}' was added.", e.Item.Name);
             _parser.State.OnParseRequested(sender, e.Item);
@@ -454,16 +456,26 @@ namespace Rubberduck
                 return;
             }
 
-            if (_panelVM != null)
+            if (_sourceControlPanelVM != null)
             {
-                _panelVM.OpenRepoStarted -= DisableSinkEventHandlers;
-                _panelVM.OpenRepoCompleted -= EnableSinkEventHandlersAndUpdateCache;
+                _sourceControlPanelVM.OpenRepoStarted -= DisableSinkEventHandlers;
+                _sourceControlPanelVM.OpenRepoCompleted -= EnableSinkEventHandlersAndUpdateCache;
             }
 
             if (_branchesVM != null)
             {
                 _branchesVM.LoadingComponentsStarted -= DisableSinkEventHandlers;
                 _branchesVM.LoadingComponentsCompleted -= EnableSinkEventHandlersAndUpdateCache;
+            }
+
+            _handleSinkEvents = false;
+
+            if (_parser != null && _parser.State != null)
+            {
+                _parser.State.StateChanged -= Parser_StateChanged;
+                _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
+                _parser.Dispose();
+                // I won't set this to null because other components may try to release things
             }
 
             if (_hooks != null)
@@ -478,13 +490,6 @@ namespace Rubberduck
                 _configService.SettingsChanged -= _configService_SettingsChanged;
                 _configService.LanguageChanged -= ConfigServiceLanguageChanged;
                 _configService = null;
-            }
-
-            if (_parser != null && _parser.State != null)
-            {
-                _parser.State.StateChanged -= Parser_StateChanged;
-                _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
-                // I won't set this to null because other components may try to release things
             }
 
             if (_stateBar != null)
@@ -528,6 +533,8 @@ namespace Rubberduck
             {
                 item.Value.Item1.Unadvise(item.Value.Item2);
             }
+
+            UiDispatcher.Shutdown();
 
             _disposed = true;
         }

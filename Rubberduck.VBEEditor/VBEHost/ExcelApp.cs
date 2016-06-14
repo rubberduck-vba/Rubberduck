@@ -9,7 +9,14 @@ namespace Rubberduck.VBEditor.VBEHost
 
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            Application.Run(qualifiedMemberName.ToString());
+            string call = GenerateMethodCall(qualifiedMemberName);
+            Application.Run(call);
+        }
+
+       protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
+        {
+            var documentName = qualifiedMemberName.QualifiedModuleName.ProjectDisplayName;
+            return string.Concat(documentName, "!", qualifiedMemberName.ToString());
         }
     }
 }

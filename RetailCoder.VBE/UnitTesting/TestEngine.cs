@@ -67,7 +67,8 @@ namespace Rubberduck.UnitTesting
                 var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
 
                 var moduleTestMethods = testMethods
-                    .Where(test => test.QualifiedMemberName.QualifiedModuleName.ComponentName == module.Key.ComponentName);
+                    .Where(test => test.QualifiedMemberName.QualifiedModuleName.ProjectId == module.Key.ProjectId
+                                && test.QualifiedMemberName.QualifiedModuleName.ComponentName == module.Key.ComponentName);
 
                 Run(module.Key.FindModuleInitializeMethods(_state));
                 foreach (var test in moduleTestMethods)

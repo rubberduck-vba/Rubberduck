@@ -3,7 +3,7 @@
     internal enum AlignmentTokenType
     {
         Function,
-        Paramater,
+        Parameter,
         Equals,
         Variable
     }

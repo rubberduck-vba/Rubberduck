@@ -184,7 +184,8 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var argContext = (VBAParser.ArgContext)context;
                 var isOptional = argContext.OPTIONAL() != null;
-                if (isOptional)
+                // TODO: "As Type" could be missing. Temp solution until default values are parsed correctly.
+                if (isOptional && asTypeContext != null)
                 {
                     // if parameter is optional, asTypeName may contain the default value
                     var complexType = asTypeContext.type().complexType();
