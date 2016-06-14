@@ -545,7 +545,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 return;
             }
-            ResolveType(asType.complexType().expression());
+            ResolveType(asType.complexType());
         }
 
         public void Resolve(VBAParser.ForNextStmtContext context)

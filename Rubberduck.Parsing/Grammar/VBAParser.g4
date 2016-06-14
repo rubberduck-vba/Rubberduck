@@ -518,7 +518,16 @@ baseType : BOOLEAN | BYTE | CURRENCY | DATE | DOUBLE | INTEGER | LONG | LONGLONG
 
 comparisonOperator : LT | LEQ | GT | GEQ | EQ | NEQ | IS | LIKE;
 
-complexType : expression;
+complexType :
+    // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
+    literalExpression                                                                               # ctLiteralExpr
+    | lExpression                                                                                   # ctLExpr
+    | builtInType                                                                                   # ctBuiltInTypeExpr
+    | LPAREN whiteSpace? complexType whiteSpace? RPAREN                                             # ctParenthesizedExpr
+    | TYPEOF whiteSpace complexType                                                                 # ctTypeofexpr        // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
+    | NEW whiteSpace complexType                                                                    # ctNewExpr
+    | HASH expression                                                                               # ctMarkedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
+;
 
 fieldLength : MULT whiteSpace? expression;
 
