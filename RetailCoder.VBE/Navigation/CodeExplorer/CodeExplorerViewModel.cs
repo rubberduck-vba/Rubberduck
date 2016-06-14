@@ -28,6 +28,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += ParserState_StateChanged;
+            _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
             _refreshCommand = new DelegateCommand(param => _state.OnParseRequested(this),
                 param => !IsBusy && _state.IsDirty());
