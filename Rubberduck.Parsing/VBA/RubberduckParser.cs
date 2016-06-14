@@ -123,7 +123,6 @@ namespace Rubberduck.Parsing.VBA
             for (var i = 0; i < components.Count; i++)
             {
                 parseTasks[i] = ParseAsync(components[i], CancellationToken.None);
-                parseTasks[i].Start();
             }
 
             Task.WaitAll(parseTasks);
