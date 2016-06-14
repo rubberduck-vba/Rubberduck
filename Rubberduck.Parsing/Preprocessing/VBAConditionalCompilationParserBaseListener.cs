@@ -47,19 +47,6 @@ public partial class VBAConditionalCompilationParserBaseListener : IVBACondition
 	public virtual void ExitCcBlock([NotNull] VBAConditionalCompilationParser.CcBlockContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.logicalLine"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLogicalLine([NotNull] VBAConditionalCompilationParser.LogicalLineContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAConditionalCompilationParser.logicalLine"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLogicalLine([NotNull] VBAConditionalCompilationParser.LogicalLineContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.typeHint"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -73,6 +60,19 @@ public partial class VBAConditionalCompilationParserBaseListener : IVBACondition
 	public virtual void ExitTypeHint([NotNull] VBAConditionalCompilationParser.TypeHintContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.hashIf"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHashIf([NotNull] VBAConditionalCompilationParser.HashIfContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAConditionalCompilationParser.hashIf"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHashIf([NotNull] VBAConditionalCompilationParser.HashIfContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.literal"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -84,6 +84,19 @@ public partial class VBAConditionalCompilationParserBaseListener : IVBACondition
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitLiteral([NotNull] VBAConditionalCompilationParser.LiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.hashConst"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHashConst([NotNull] VBAConditionalCompilationParser.HashConstContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAConditionalCompilationParser.hashConst"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHashConst([NotNull] VBAConditionalCompilationParser.HashConstContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.statementKeyword"/>.
@@ -229,6 +242,32 @@ public partial class VBAConditionalCompilationParserBaseListener : IVBACondition
 	public virtual void ExitForeignIdentifier([NotNull] VBAConditionalCompilationParser.ForeignIdentifierContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.hashElse"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHashElse([NotNull] VBAConditionalCompilationParser.HashElseContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAConditionalCompilationParser.hashElse"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHashElse([NotNull] VBAConditionalCompilationParser.HashElseContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.hashEndIf"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHashEndIf([NotNull] VBAConditionalCompilationParser.HashEndIfContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAConditionalCompilationParser.hashEndIf"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHashEndIf([NotNull] VBAConditionalCompilationParser.HashEndIfContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.ccExpression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -357,6 +396,32 @@ public partial class VBAConditionalCompilationParserBaseListener : IVBACondition
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitComment([NotNull] VBAConditionalCompilationParser.CommentContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.hashElseIf"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHashElseIf([NotNull] VBAConditionalCompilationParser.HashElseIfContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAConditionalCompilationParser.hashElseIf"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHashElseIf([NotNull] VBAConditionalCompilationParser.HashElseIfContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.physicalLine"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPhysicalLine([NotNull] VBAConditionalCompilationParser.PhysicalLineContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAConditionalCompilationParser.physicalLine"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPhysicalLine([NotNull] VBAConditionalCompilationParser.PhysicalLineContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.ccConst"/>.

@@ -135,6 +135,7 @@
     <Compile Include="Symbols\ComInformation.cs" />
     <Compile Include="Symbols\CommentNode.cs" />
     <Compile Include="Symbols\ComParameter.cs" />
+    <Compile Include="Symbols\CustomDeclarations.cs" />
     <Compile Include="Symbols\Identifier.cs" />
     <Compile Include="Binding\IBindingContext.cs" />
     <Compile Include="Binding\IBoundExpression.cs" />

@@ -75,7 +75,8 @@ moduleDeclarationsElement :
     | implementsStmt
     | variableStmt
     | moduleOption
-    | typeStmt)
+    | publicTypeDeclaration
+    | privateTypeDeclaration)
 ;
 
 moduleBody : 
@@ -141,6 +142,7 @@ fileStmt :
     | unlockStmt
     | lineInputStmt
     | widthStmt
+    | debugPrintStmt
     | printStmt
     | writeStmt
     | inputStmt
@@ -211,7 +213,15 @@ widthStmt : WIDTH whiteSpace markedFileNumber whiteSpace? COMMA whiteSpace? line
 lineWidth : expression;
 
 
-// 5.4.5.8   Print Statement 
+// 5.4.5.8   Print Statement
+// Debug.Print is special because it seems to take an output list as argument.
+// To shield the rest of the parsing/binding from this peculiarity, we treat it as a statement
+// and let the resolver handle it.
+debugPrintStmt : debugPrint (whiteSpace outputList)?;
+// We split it up into separate rules so that we have context classes generated that can be used in declarations/references.
+debugPrint : debugModule whiteSpace? DOT whiteSpace? debugPrintSub;
+debugModule : DEBUG;
+debugPrintSub : PRINT;
 printStmt : PRINT whiteSpace markedFileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
 
 // 5.4.5.8.1 Output Lists
@@ -462,13 +472,24 @@ subStmt :
 ;
 subroutineName : identifier;
 
-typeStmt : 
-    (visibility whiteSpace)? TYPE whiteSpace identifier endOfStatement
-    typeStmt_Element*
-    END_TYPE
-;
+// 5.2.3.3 User Defined Type Declarations
+publicTypeDeclaration : ((GLOBAL | PUBLIC) whiteSpace)? udtDeclaration;
+privateTypeDeclaration : PRIVATE whiteSpace udtDeclaration;
+udtDeclaration : TYPE whiteSpace untypedIdentifier endOfStatement udtMemberList endOfStatement END_TYPE;  
+udtMemberList : udtMember (endOfStatement udtMember)*; 
+udtMember : reservedNameMemberDeclaration | untypedNameMemberDeclaration;
+untypedNameMemberDeclaration : untypedIdentifier whiteSpace? optionalArrayClause;
+reservedNameMemberDeclaration : unrestrictedIdentifier whiteSpace asTypeClause;
+optionalArrayClause : (arrayDim whiteSpace)? asTypeClause;
 
-typeStmt_Element : identifier (whiteSpace? LPAREN (whiteSpace? subscripts)? whiteSpace? RPAREN)? (whiteSpace asTypeClause)? endOfStatement;
+// 5.2.3.1.3 Array Dimensions and Bounds
+arrayDim : LPAREN whiteSpace? boundsList? whiteSpace? RPAREN;
+boundsList : dimSpec (whiteSpace? COMMA whiteSpace? dimSpec)*;
+dimSpec : (lowerBound whiteSpace?)? upperBound;
+lowerBound : constantExpression whiteSpace? TO;
+upperBound : constantExpression;
+
+constantExpression : expression;
 
 variableStmt : (DIM | STATIC | visibility) whiteSpace (WITHEVENTS whiteSpace)? variableListStmt;
 variableListStmt : variableSubStmt (whiteSpace? COMMA whiteSpace? variableSubStmt)*;

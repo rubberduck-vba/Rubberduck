@@ -1620,13 +1620,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Show Log Folder</value>
   </data>
-  <data name="SourceControl_CreateNewRemoteRepoButtonToolTip" xml:space="preserve">
-    <value>Upload repository to GitHub</value>
+  <data name="SourceControl_PublishRepoButtonToolTip" xml:space="preserve">
+    <value>Publish repository to GitHub</value>
   </data>
-  <data name="SourceControl_CreateNewRemoteRepo_FailureTitle" xml:space="preserve">
-    <value>Create new remote repository.</value>
+  <data name="SourceControl_PublishRepo_FailureTitle" xml:space="preserve">
+    <value>Publish repository.</value>
   </data>
-  <data name="SourceControl_CreateNewRemoteRepo_NoOpenRepo" xml:space="preserve">
+  <data name="SourceControl_PublishRepo_NoOpenRepo" xml:space="preserve">
     <value>No open repository to push to specified remote location.</value>
   </data>
   <data name="SourceControl_ExternalModifications" xml:space="preserve">

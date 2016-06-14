@@ -58,5 +58,10 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             if (UiContext == null) throw new InvalidOperationException("UiDispatcher is not initialized. Invoke Initialize() from UI thread first.");
         }
+
+        public static void Shutdown()
+        {
+            Invoke(() => Dispatcher.CurrentDispatcher.InvokeShutdown());
+        }
     }
 }
