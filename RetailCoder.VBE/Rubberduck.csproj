@@ -376,11 +376,13 @@
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodParameterClassification.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodSelectionValidation.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractedMethod.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodExtraction.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodExtraction.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodModel.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodParameterClassification.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
@@ -1229,6 +1231,7 @@
     <Resource Include="Resources\flask_mask.png" />
     <Resource Include="Resources\disk.png" />
     <Resource Include="Resources\arrow-circle-left.png" />
+    <Resource Include="Resources\terminal.png" />
     <Content Include="Resources\arrow_circle_double_mask.bmp" />
     <Content Include="Resources\balloon_ellipsis.bmp" />
     <Content Include="Resources\balloon_mask.bmp" />

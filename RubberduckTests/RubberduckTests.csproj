@@ -136,6 +136,12 @@
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractedMethodRefactoringTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractMethodExtractionTests.cs" />
+    <Compile Include="Refactoring\ExtractMethod\ExtractMethodParameterClassificationTests.cs" />
+    <Compile Include="Refactoring\ExtractMethod\ExtractMethodRuleExternalReferenceTests.cs" />
+    <Compile Include="Refactoring\ExtractMethod\ExtractMethodRuleInSelectionTests.cs" />
+    <Compile Include="Refactoring\ExtractMethod\ExtractMethodRuleIsAssignedInSelectionTests.cs" />
+    <Compile Include="Refactoring\ExtractMethod\ExtractMethodRuleUsedAfterTests.cs" />
+    <Compile Include="Refactoring\ExtractMethod\ExtractMethodRuleUsedBeforeTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractMethodSelectionValidationTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractMethodTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractMethodModelTests.cs" />

@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
+using Rubberduck.VBEditor;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
@@ -33,6 +34,11 @@ namespace Rubberduck.Parsing.Symbols
             return GetName(GetIdentifierValueContext(context));
         }
 
+        public static string GetName(VBAParser.UntypedIdentifierContext context)
+        {
+            return GetName(GetIdentifierValueContext(context));
+        }
+
         public static string GetName(VBAParser.IdentifierValueContext value)
         {
             string name;
@@ -55,18 +61,6 @@ namespace Rubberduck.Parsing.Symbols
                 name = value.GetText();
             }
             return name;
-        }
-
-        public static VBAParser.IdentifierValueContext GetIdentifierValueContext(VBAParser.IdentifierContext context)
-        {
-            if (context.untypedIdentifier() != null)
-            {
-                return context.untypedIdentifier().identifierValue();
-            }
-            else
-            {
-                return context.typedIdentifier().identifierValue();
-            }
         }
 
         public static string GetName(VBAConditionalCompilationParser.NameContext context)
@@ -92,6 +86,45 @@ namespace Rubberduck.Parsing.Symbols
                 name = value.GetText();
             }
             return name;
+        }
+
+        public static Selection GetNameSelection(VBAParser.UnrestrictedIdentifierContext context)
+        {
+            if (context.identifier() != null)
+            {
+                return GetNameSelection(context.identifier());
+            }
+            else
+            {
+                return context.GetSelection();
+            }
+        }
+
+        public static Selection GetNameSelection(VBAParser.IdentifierContext context)
+        {
+            return GetIdentifierValueContext(context).GetSelection();
+        }
+
+        public static Selection GetNameSelection(VBAParser.UntypedIdentifierContext context)
+        {
+            return GetIdentifierValueContext(context).GetSelection();
+        }
+
+        public static VBAParser.IdentifierValueContext GetIdentifierValueContext(VBAParser.IdentifierContext context)
+        {
+            if (context.untypedIdentifier() != null)
+            {
+                return GetIdentifierValueContext(context.untypedIdentifier());
+            }
+            else
+            {
+                return context.typedIdentifier().identifierValue();
+            }
+        }
+
+        public static VBAParser.IdentifierValueContext GetIdentifierValueContext(VBAParser.UntypedIdentifierContext context)
+        {
+            return context.identifierValue();
         }
 
         public static string GetTypeHintValue(VBAParser.IdentifierContext identifier)

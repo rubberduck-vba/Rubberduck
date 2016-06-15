@@ -325,7 +325,7 @@ Type Test
     anything As Integer
 End             Type";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//typeStmt");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//udtDeclaration");
         }
 
         [TestMethod]
@@ -1394,6 +1394,30 @@ Private Sub Foo()
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//literalExpression");
+        }
+
+        [TestMethod]
+        public void TestUdtReservedKeywords()
+        {
+            string code = @"
+Private Type Foo
+    If As Integer
+    Select As Integer
+    Split As String
+    For As Integer
+    Dim As Integer
+    Then As Integer
+    UBound As Variant
+    To As Integer
+    Or As Integer
+    Case As Integer
+    Type As Integer
+    Enum As Integer
+    End As Integer
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//udtMember", matches => matches.Count == 13);
         }
 
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
