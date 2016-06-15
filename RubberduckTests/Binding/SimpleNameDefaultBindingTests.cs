@@ -18,20 +18,21 @@ namespace RubberduckTests.Binding
         [TestMethod]
         public void EnclosingProcedureComesBeforeEnclosingModule()
         {
-            string testCode = string.Format(@"
+            var code = string.Format(@"
 Public Sub Test()
-    Dim {0} As Long
+    Const {0} As Integer = 4
     Dim a As String * {0}
-End Sub", BINDING_TARGET_NAME);
+End Sub
+", BINDING_TARGET_NAME);
 
             var builder = new MockVbeBuilder();
             var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, testCode);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, code);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
             var state = Parse(vbe);
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Variable && d.IdentifierName == BINDING_TARGET_NAME);
+            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Constant && d.IdentifierName == BINDING_TARGET_NAME);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
@@ -40,28 +41,19 @@ End Sub", BINDING_TARGET_NAME);
         {
             var builder = new MockVbeBuilder();
             var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
-            string code = CreateEnumType(BINDING_TARGET_NAME) + Environment.NewLine + CreateTestProcedure(BINDING_TARGET_NAME);
+            string code = string.Format(@"
+Public Enum {0}
+    TestEnumMember
+End Enum
+
+Public Function Fizz() As {0}
+End Function", BINDING_TARGET_NAME);
             enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, code);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
             var state = Parse(vbe);
             var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Enumeration && d.IdentifierName == BINDING_TARGET_NAME);
-            Assert.AreEqual(1, declaration.References.Count());
-        }
-
-        [TestMethod]
-        public void EnclosingProjectComesBeforeOtherModuleInEnclosingProject()
-        {
-            var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
-            enclosingProjectBuilder.AddComponent("AnyModule", vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
-            var enclosingProject = enclosingProjectBuilder.Build();
-            builder.AddProject(enclosingProject);
-            var vbe = builder.Build();
-            var state = Parse(vbe);
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.IdentifierName == BINDING_TARGET_NAME);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
@@ -76,9 +68,13 @@ End Sub", BINDING_TARGET_NAME);
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
 
+            string function = string.Format(@"
+Public Function Fizz() As {0}
+End Function", BINDING_TARGET_NAME);
+
             var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", vbext_ProjectProtection.vbext_pp_none);
             enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, function);
             enclosingProjectBuilder.AddComponent("AnyModule", vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
@@ -97,6 +93,11 @@ End Sub", BINDING_TARGET_NAME);
             var builder = new MockVbeBuilder();
             const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
 
+            var function = string.Format(@"
+Public Function foo() As {0}
+End Function
+", BINDING_TARGET_NAME);
+
             var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, vbext_ProjectProtection.vbext_pp_none);
             referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
             var referencedProject = referencedProjectBuilder.Build();
@@ -104,7 +105,7 @@ End Sub", BINDING_TARGET_NAME);
 
             var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", vbext_ProjectProtection.vbext_pp_none);
             enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, function);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
 
@@ -157,6 +158,7 @@ End Sub", BINDING_TARGET_NAME);
         {
             return string.Format(@"
 Public Sub Test()
+    Const {0} As Integer = 4
     Dim a As String * {0}
 End Sub
 ", bindingTarget);
