@@ -244,7 +244,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private void ParserState_StateChanged(object sender, EventArgs e)
+        private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
             if (Projects == null)
             {
@@ -252,7 +252,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             IsBusy = _state.Status < ParserState.ResolvedDeclarations;
-            if (_state.Status != ParserState.ResolvedDeclarations)
+            if (e.State != ParserState.ResolvedDeclarations)
             {
                 return;
             }
