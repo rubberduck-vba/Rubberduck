@@ -84,11 +84,10 @@ namespace Rubberduck.Parsing.VBA
                     _state.SetModuleState(e.Component, ParserState.Resolving);
                     ResolveDeclarations(qualifiedName.Component,
                         _state.ParseTrees.Find(s => s.Key == qualifiedName).Value);
-
-                    _state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
-
+                    
                     if (_state.Status < ParserState.Error)
                     {
+                        _state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
                         ResolveReferencesAsync();
                     }
                 });
@@ -170,10 +169,10 @@ namespace Rubberduck.Parsing.VBA
             }
 
             Task.WaitAll(parseTasks);
-            _state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             if (_state.Status < ParserState.Error)
             {
+                _state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
                 Task.WaitAll(ResolveReferencesAsync());
             }
         }
@@ -277,10 +276,10 @@ namespace Rubberduck.Parsing.VBA
             }
 
             Task.WaitAll(parseTasks);
-            _state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             if (_state.Status < ParserState.Error)
             {
+                _state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
                 ResolveReferencesAsync();
             }
         }
