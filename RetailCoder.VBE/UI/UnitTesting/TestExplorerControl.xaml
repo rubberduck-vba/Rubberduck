@@ -593,8 +593,8 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedMemberName.QualifiedModuleName}" />
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_MethodName}" Binding="{Binding QualifiedMemberName.MemberName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding Declaration.QualifiedName.QualifiedModuleName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_MethodName}" Binding="{Binding Declaration.IdentifierName}" />
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
                         </DataGrid.Columns>

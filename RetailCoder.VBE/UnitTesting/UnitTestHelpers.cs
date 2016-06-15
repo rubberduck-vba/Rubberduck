@@ -22,7 +22,7 @@ namespace Rubberduck.UnitTesting
             // apparently, sometimes it thinks the components are different but knows the modules are the same
             // if the modules are the same, then the component is the same as far as we are concerned
             return GetAllTests(vbe, state)
-                    .Where(test => test.QualifiedMemberName.QualifiedModuleName.Component.CodeModule == component.CodeModule);
+                    .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.Component.CodeModule == component.CodeModule);
         }
 
         public static bool IsTestMethod(RubberduckParserState state, Declaration item)
