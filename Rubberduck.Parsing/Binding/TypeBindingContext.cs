@@ -37,6 +37,13 @@ namespace Rubberduck.Parsing.Binding
             return Visit(module, parent, lexpr);
         }
 
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.CtLExprContext expression)
+        {
+            dynamic lexpr = expression.lExpression();
+            var type = expression.lExpression().GetType();
+            return Visit(module, parent, lexpr);
+        }
+
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.SimpleNameExprContext expression)
         {
             return new SimpleNameTypeBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression);
