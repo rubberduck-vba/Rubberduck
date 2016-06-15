@@ -555,13 +555,13 @@ namespace Rubberduck.Parsing.Symbols
             {
                 // Fixed-Length strings can have a constant-name as length that is a simple-name-expression that also has to be resolved.
                 var length = context.fieldLength();
-                if (context.fieldLength() != null)
+                if (context.fieldLength() != null && context.fieldLength().identifierValue() != null)
                 {
-                    ResolveDefault(context.fieldLength().expression());
+                    ResolveDefault(context.fieldLength().identifierValue());
                 }
                 return;
             }
-            ResolveType(asType.complexType().expression());
+            ResolveType(asType.complexType());
         }
 
         public void Resolve(VBAParser.ForNextStmtContext context)
