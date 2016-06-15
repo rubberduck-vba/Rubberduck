@@ -24,14 +24,27 @@ namespace Rubberduck.UI.Command
 
         public override void Execute(object parameter)
         {
+            _model.TestsRefreshed += TestsRefreshed;
             _state.StateChanged += StateChanged;
 
             _model.Refresh();
         }
 
+        private void TestsRefreshed(object sender, EventArgs e)
+        {
+            RunTests();
+        }
+
         private void StateChanged(object sender, ParserStateEventArgs e)
         {
             if (e.State != ParserState.Ready) { return; }
+            RunTests();
+        }
+
+        private void RunTests()
+        {
+            _state.StateChanged -= StateChanged;
+            _model.TestsRefreshed -= TestsRefreshed;
 
             var stopwatch = new Stopwatch();
 
@@ -41,9 +54,8 @@ namespace Rubberduck.UI.Command
             stopwatch.Start();
             _engine.Run(_model.Tests);
             stopwatch.Stop();
-            
+
             _model.IsBusy = false;
-            _state.StateChanged -= StateChanged;
 
             OnRunCompleted(new TestRunEventArgs(stopwatch.ElapsedMilliseconds));
         }
