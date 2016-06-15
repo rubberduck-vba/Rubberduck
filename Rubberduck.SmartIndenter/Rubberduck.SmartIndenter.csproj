@@ -30,6 +30,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>RubberduckSigningKey.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
@@ -68,6 +74,7 @@
     <None Include="Legacy\modMenus.bas" />
     <None Include="Legacy\modRegistry.bas" />
     <None Include="Legacy\modVBEOnKey.bas" />
+    <None Include="RubberduckSigningKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Legacy\frmAbout.frm" />
