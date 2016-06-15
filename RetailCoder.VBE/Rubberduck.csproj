@@ -1241,6 +1241,7 @@
     <Resource Include="Resources\flask_mask.png" />
     <Resource Include="Resources\disk.png" />
     <Resource Include="Resources\arrow-circle-left.png" />
+    <Resource Include="Resources\terminal.png" />
     <Content Include="Resources\arrow_circle_double_mask.bmp" />
     <Content Include="Resources\balloon_ellipsis.bmp" />
     <Content Include="Resources\balloon_mask.bmp" />

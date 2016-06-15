@@ -84,7 +84,7 @@ namespace RubberduckTests.SourceControl
             _changesVM = new ChangesViewViewModel();
             _branchesVM = new BranchesViewViewModel();
             _unsyncedVM = new UnsyncedCommitsViewViewModel();
-            _settingsVM = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object);
+            _settingsVM = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, new Rubberduck.UI.OpenFileDialog());
         }
 
         private void SetupValidVbProject()
@@ -980,7 +980,7 @@ namespace RubberduckTests.SourceControl
         private SourceControlSettings GetDummyConfig()
         {
             return new SourceControlSettings("username", "username@email.com", string.Empty,
-                    new List<Repository> { GetDummyRepo() });
+                    new List<Repository> { GetDummyRepo() }, "ps.exe");
         }
 
         private static Repository GetDummyRepo()
