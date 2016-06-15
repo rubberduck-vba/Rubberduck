@@ -69,7 +69,7 @@ namespace Rubberduck.AutoSave
 
             if (_configService != null)
             {
-                _configService.LanguageChanged -= ConfigServiceSettingsChanged;
+                _configService.SettingsChanged -= ConfigServiceSettingsChanged;
             }
 
             if (_timer != null)
