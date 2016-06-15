@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using NLog;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 // ReSharper disable ExplicitCallerInfoArgument
@@ -10,6 +11,8 @@ namespace Rubberduck.UI.SourceControl
 {
     public class ChangesViewViewModel : ViewModelBase, IControlViewModel
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public ChangesViewViewModel()
         {
             _commitCommand = new DelegateCommand(_ => Commit(), _ => !string.IsNullOrEmpty(CommitMessage) && IncludedChanges != null && IncludedChanges.Any());
@@ -48,6 +51,8 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
+            Logger.Trace("Refreshing view");
+
             OnPropertyChanged("CurrentBranch");
 
             IncludedChanges = Provider == null
@@ -127,6 +132,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void UndoChanges(IFileStatusEntry fileStatusEntry)
         {
+            Logger.Trace("Undoing changes to file {0}", fileStatusEntry.FilePath);
+
             try
             {
                 var localLocation = Provider.CurrentRepository.LocalLocation.EndsWith("\\")
@@ -145,6 +152,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void Commit()
         {
+            Logger.Trace("Committing");
+
             var changes = IncludedChanges.Select(c => c.FilePath).ToList();
             if (!changes.Any())
             {
@@ -158,12 +167,14 @@ namespace Rubberduck.UI.SourceControl
 
                 if (CommitAction == CommitAction.CommitAndSync)
                 {
+                    Logger.Trace("Commit and sync (pull + push)");
                     Provider.Pull();
                     Provider.Push();
                 }
 
                 if (CommitAction == CommitAction.CommitAndPush)
                 {
+                    Logger.Trace("Commit and push");
                     Provider.Push();
                 }
 
@@ -194,10 +205,12 @@ namespace Rubberduck.UI.SourceControl
         {
             if (UntrackedFiles.FirstOrDefault(f => f.FilePath == fileStatusEntry.FilePath) != null)
             {
+                Logger.Trace("Tracking file {0}", fileStatusEntry.FilePath);
                 Provider.AddFile(fileStatusEntry.FilePath);
             }
             else
             {
+                Logger.Trace("Removing file {0} from excluded changes", fileStatusEntry.FilePath);
                 ExcludedChanges.Remove(ExcludedChanges.FirstOrDefault(f => f.FilePath == fileStatusEntry.FilePath));
             }
 
@@ -206,6 +219,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void ExcludeChanges(IFileStatusEntry fileStatusEntry)
         {
+            Logger.Trace("Adding file {0} to excluded changes", fileStatusEntry.FilePath);
             ExcludedChanges.Add(fileStatusEntry);
 
             RefreshView();

@@ -104,6 +104,7 @@ namespace Rubberduck.UI.SourceControl
 
         public void SetTab(SourceControlTab tab)
         {
+            Logger.Trace("Setting active tab to {0}", tab);
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
@@ -116,6 +117,7 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
+            Logger.Trace("Component {0} added", component.Name);
             var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
             if (fileStatus != null)
             {
@@ -132,6 +134,7 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
+            Logger.Trace("Component {0] removed", component.Name);
             var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
             if (fileStatus != null)
             {
@@ -148,6 +151,7 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
+            Logger.Trace("Component {0} renamed to {1}", oldName, component.Name);
             var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == oldName);
             if (fileStatus != null)
             {
@@ -186,6 +190,8 @@ namespace Rubberduck.UI.SourceControl
             get { return _provider; }
             set
             {
+                Logger.Trace("Provider changed");
+
                 _provider = value;
                 OnPropertyChanged("RepoDoesNotHaveRemoteLocation");
                 SetChildPresenterSourceControlProviders(_provider);
@@ -216,7 +222,7 @@ namespace Rubberduck.UI.SourceControl
             {
                 return;
             }
-
+            
             Logger.Trace("File system watcher detected file changed");
             if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
@@ -534,10 +540,13 @@ namespace Rubberduck.UI.SourceControl
 
             if (e.InnerMessage == unauthorizedMessage)
             {
+                Logger.Trace("Requesting login");
                 DisplayLoginGrid = true;
             }
             else
             {
+                Logger.Trace("Displaying {0} with title '{1}' and message '{2}'", e.NotificationType, e.Message, e.InnerMessage);
+
                 ErrorTitle = e.Message;
                 ErrorMessage = e.InnerMessage;
 
@@ -572,6 +581,7 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
+                Logger.Trace("Initializing repo");
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
@@ -634,6 +644,7 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
+                Logger.Trace("Opening existing repo");
                 var project = _vbe.ActiveVBProject;
                 var repo = new Repository(project.HelpFile, folderPicker.SelectedPath, string.Empty);
 
@@ -660,6 +671,7 @@ namespace Rubberduck.UI.SourceControl
         {
             OnOpenRepoStarted();
 
+            Logger.Trace("Cloning repo");
             try
             {
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
@@ -695,6 +707,7 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
+            Logger.Trace("Publishing repo to remote");
             try
             {
                 Provider.AddOrigin(PublishRemotePath, Provider.CurrentBranch.Name);
@@ -735,6 +748,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OpenCommandPrompt()
         {
+            Logger.Trace("Opening command prompt");
             try
             {
                 Process.Start(_config.CommandPromptLocation);
@@ -754,6 +768,7 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
+            Logger.Trace("Opening repo assigned to project");
             try
             {
                 OnOpenRepoStarted();
@@ -775,6 +790,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void Refresh()
         {
+            Logger.Trace("Refreshing display");
+
             _fileSystemWatcher.EnableRaisingEvents = false;
             if (Provider == null)
             {
