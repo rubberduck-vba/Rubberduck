@@ -1647,4 +1647,10 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SourceControl_OpenCommandPromptFailureTitle" xml:space="preserve">
     <value>Failure opening command prompt</value>
   </data>
+  <data name="SourceControl_ActivateProject" xml:space="preserve">
+    <value>Please open or activate a project and try again.</value>
+  </data>
+  <data name="SourceControl_NoActiveProject" xml:space="preserve">
+    <value>No active VBProject</value>
+  </data>
 </root>
