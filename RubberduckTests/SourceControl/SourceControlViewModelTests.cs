@@ -975,6 +975,22 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(originalPath, _vm.LocalDirectory);
         }
 
+        [TestMethod]
+        public void NullProject_DisplaysError()
+        {
+            //arrange
+            SetupValidVbProject();
+            SetupVM();
+            _vbe.Setup(v => v.ActiveVBProject).Returns((VBProject)null);
+            _vbe.Setup(v => v.VBProjects).Returns(new Mock<VBProjects>().Object);
+
+            //act
+            _vm.RefreshCommand.Execute(null);
+
+            //assert
+            Assert.IsTrue(_vm.DisplayErrorMessageGrid, "Null ActiveProject did not raise error.");
+        }
+
         private const string DummyRepoId = "SourceControlTest";
 
         private SourceControlSettings GetDummyConfig()

@@ -3172,6 +3172,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please open or activate a project and try again..
+        /// </summary>
+        public static string SourceControl_ActivateProject {
+            get {
+                return ResourceManager.GetString("SourceControl_ActivateProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;.gitattributes&apos; File.
         /// </summary>
         public static string SourceControl_AttributesFile {
@@ -3681,6 +3690,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_NewBranch {
             get {
                 return ResourceManager.GetString("SourceControl_NewBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No active VBProject.
+        /// </summary>
+        public static string SourceControl_NoActiveProject {
+            get {
+                return ResourceManager.GetString("SourceControl_NoActiveProject", resourceCulture);
             }
         }
         
