@@ -818,11 +818,18 @@ namespace Rubberduck.UI.SourceControl
                 return false;
             }
 
-            var possibleRepos = _config.Repositories.Where(repo => repo.Id == _vbe.ActiveVBProject.HelpFile);
-            var possibleCount = possibleRepos.Count();
+            var project = _vbe.ActiveVBProject ?? (_vbe.VBProjects.Count == 1 ? _vbe.VBProjects.Item(1) : null);
 
-            //todo: if none are found, prompt user to create one
-            return possibleCount == 1;
+            if (project != null)
+            {
+                var possibleRepos = _config.Repositories.Where(repo => repo.Id == _vbe.ActiveVBProject.HelpFile);
+                return possibleRepos.Count() == 1;
+            }
+
+            ViewModel_ErrorThrown(this,
+                new ErrorEventArgs(RubberduckUI.SourceControl_NoActiveProject,
+                    RubberduckUI.SourceControl_ActivateProject, NotificationType.Error));
+            return false;
         }
 
         private void ShowFilePicker()
