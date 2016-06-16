@@ -103,6 +103,10 @@ namespace Rubberduck.Settings
         
         public void SaveConfiguration(Configuration toSerialize)
         {
+            var langChanged = _generalProvider.Create().Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
+            var oldInspectionSettings = _inspectionProvider.Create(_inspections).CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
+            var newInspectionSettings = toSerialize.UserSettings.CodeInspectionSettings.CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
+
             _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
             _hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);
             _todoProvider.Save(toSerialize.UserSettings.ToDoListSettings);
@@ -110,11 +114,7 @@ namespace Rubberduck.Settings
             _unitTestProvider.Save(toSerialize.UserSettings.UnitTestSettings);
             _indenterProvider.Save(toSerialize.UserSettings.IndenterSettings);
 
-            var langChanged = _generalProvider.Create().Language.Code == toSerialize.UserSettings.GeneralSettings.Language.Code;
-            var oldInspectionSettings = _inspectionProvider.Create(_inspections).CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
-            var newInspectionSettings = toSerialize.UserSettings.CodeInspectionSettings.CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
-
-            OnSettingsChanged(new ConfigurationChangedEventArgs(langChanged, oldInspectionSettings.SequenceEqual(newInspectionSettings)));
+            OnSettingsChanged(new ConfigurationChangedEventArgs(langChanged, !oldInspectionSettings.SequenceEqual(newInspectionSettings)));
         }
 
         public event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;
