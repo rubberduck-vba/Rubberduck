@@ -376,6 +376,23 @@ namespace Rubberduck.Parsing.Symbols
 
         private IEnumerable<Declaration> FindAllInReferencedProjectByPriority(Declaration enclosingProject, string name, Func<Declaration, bool> predicate)
         {
+            var v =
+                MatchName(name)
+                    .Where(
+                        p =>
+                            p.DeclarationType.HasFlag(DeclarationType.Property) &&
+                            (Declaration.GetModuleParent(p) == null ||
+                             Declaration.GetModuleParent(p).DeclarationType == DeclarationType.ClassModule) &&
+                            ((ClassModuleDeclaration) Declaration.GetModuleParent(p)).IsGlobalClassModule);
+
+            var x =
+                MatchName(name)
+                    .Where(
+                        p =>
+                            p.DeclarationType.HasFlag(DeclarationType.Property) &&
+                            (Declaration.GetModuleParent(p) == null ||
+                             Declaration.GetModuleParent(p).DeclarationType == DeclarationType.ClassModule));
+
             var interprojectMatches = MatchName(name).Where(predicate).ToList();
             var projectReferences = ((ProjectDeclaration)enclosingProject).ProjectReferences.ToList();
             if (interprojectMatches.Count == 0)
