@@ -84,9 +84,11 @@ namespace Rubberduck.VBEditor
         /// <param name="parentWindowHandle">   Handle of the parent window. </param>
         internal static void ActivateWindow(IntPtr windowHandle, IntPtr parentWindowHandle)
         {
-            const int WM_MDIACTIVATE = 0x0222;
+            const int WM_MOUSEACTIVATE = 0x21;
+            const int HTCAPTION = 2;
+            const int WM_LBUTTONDOWN = 0x201;
 
-            SendMessage(parentWindowHandle, WM_MDIACTIVATE, windowHandle, IntPtr.Zero);
+            SendMessage(windowHandle, WM_MOUSEACTIVATE, parentWindowHandle, new IntPtr(HTCAPTION + WM_LBUTTONDOWN * 0x10000));
         }
 
         internal static void EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate callBackEnumWindows)
