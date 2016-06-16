@@ -1578,8 +1578,8 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SortStyle_ByType" xml:space="preserve">
     <value>By type</value>
   </data>
-  <data name="SortStyle_BySelection" xml:space="preserve">
-    <value>By selection</value>
+  <data name="SortStyle_ByCodeOrder" xml:space="preserve">
+    <value>By code order</value>
   </data>
   <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
     <value>Refresh component</value>
