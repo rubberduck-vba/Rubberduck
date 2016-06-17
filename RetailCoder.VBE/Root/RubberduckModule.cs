@@ -34,6 +34,7 @@ using Rubberduck.VBEditor.VBEHost;
 using NLog;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Root
 {
@@ -94,7 +95,7 @@ namespace Rubberduck.Root
             Rebind<IIndenterSettings>().To<IndenterSettings>();
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => _kernel.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
 
-            //Bind<TestExplorerModel>().To<StandardModuleTestExplorerModel>().InSingletonScope();
+            BindCustomDeclarationLoadersToParser();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
             Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)));
 
@@ -353,6 +354,18 @@ namespace Rubberduck.Root
             foreach (var command in commands)
             {
                 _kernel.Bind<ICommand>().To(command).InSingletonScope();
+            }
+        }
+
+        private void BindCustomDeclarationLoadersToParser()
+        {
+            var loaders = Assembly.GetAssembly(typeof(ICustomDeclarationLoader))
+                          .GetTypes()
+                          .Where(type => type.GetInterfaces().Contains(typeof(ICustomDeclarationLoader)));
+
+            foreach (var loader in loaders)
+            {
+                _kernel.Bind<ICustomDeclarationLoader>().To(loader).InSingletonScope();
             }
         }
 

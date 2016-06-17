@@ -257,6 +257,7 @@ namespace Rubberduck.Parsing.Symbols
                             attributes);
                         break;
                 }
+
                 ComInformation comInfo;
                 if (_comInformation.TryGetValue(typeAttributes.guid, out comInfo))
                 {

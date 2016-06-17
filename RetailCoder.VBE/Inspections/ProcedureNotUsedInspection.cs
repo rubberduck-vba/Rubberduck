@@ -24,13 +24,13 @@ namespace Rubberduck.Inspections
         {
             var declarations = UserDeclarations.ToList();
 
-            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule).ToList();
-            var modules = declarations.Where(item => item.DeclarationType == DeclarationType.ProceduralModule).ToList();
+            var classes = UserDeclarations.Where(item => item.DeclarationType == DeclarationType.ClassModule).ToList();
+            var modules = UserDeclarations.Where(item => item.DeclarationType == DeclarationType.ProceduralModule).ToList();
 
             var handlers = declarations.Where(item => item.DeclarationType == DeclarationType.Control)
                 .SelectMany(control => declarations.FindEventHandlers(control)).ToList();
 
-            var withEventFields = declarations.Where(item => item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
+            var withEventFields = UserDeclarations.Where(item => item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
             handlers.AddRange(withEventFields.SelectMany(field => declarations.FindEventProcedures(field)));
 
             var forms = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule
@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections
 
             if (forms.Any())
             {
-                handlers.AddRange(forms.SelectMany(form => declarations.FindFormEventHandlers(form)));
+                handlers.AddRange(forms.SelectMany(form => State.FindFormEventHandlers(form)));
             }
 
             handlers.AddRange(State.AllDeclarations.FindBuiltInEventHandlers());
