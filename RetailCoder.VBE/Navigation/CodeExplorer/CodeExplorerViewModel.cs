@@ -244,6 +244,23 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private Declaration FindNewProjectDeclaration(string id)
+        {
+            return _state.AllUserDeclarations.SingleOrDefault(item =>
+                        item.ProjectId == id &&
+                        item.DeclarationType == DeclarationType.Project);
+        }
+
+        private Declaration FindNewDeclaration(Declaration declaration)
+        {
+            return _state.AllUserDeclarations.SingleOrDefault(item =>
+                        item.ProjectId == declaration.ProjectId &&
+                        item.ComponentName == declaration.ComponentName &&
+                        item.ParentScope == declaration.ParentScope &&
+                        item.IdentifierName == declaration.IdentifierName &&
+                        item.DeclarationType == declaration.DeclarationType);
+        }
+
         private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
             if (Projects == null)
@@ -274,7 +291,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     grouping)).ToList();
 
             UpdateNodes(Projects, newProjects);
-
+            
             Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
         }
 
@@ -303,6 +320,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 if (oldItem != null)
                 {
                     item.IsExpanded = oldItem.IsExpanded;
+                    item.IsSelected = oldItem.IsSelected;
 
                     if (oldItem.Items.Any() && item.Items.Any())
                     {

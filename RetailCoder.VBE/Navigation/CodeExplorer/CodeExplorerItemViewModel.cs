@@ -164,6 +164,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         public bool IsExpanded { get; set; }
+        public bool IsSelected { get; set; }
 
         public abstract string Name { get; }
         public abstract string NameWithSignature { get; }

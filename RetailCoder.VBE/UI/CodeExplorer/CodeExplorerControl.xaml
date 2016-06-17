@@ -271,6 +271,7 @@
                TargetType="{x:Type TreeViewItem}">
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
             <Style.Triggers>
