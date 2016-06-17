@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections
                 .Concat(declarations.FindInterfaceImplementationMembers())
                 .ToList();
 
-            var formEventHandlerScopes = declarations.FindFormEventHandlers()
+            var formEventHandlerScopes = State.FindFormEventHandlers()
                 .Select(handler => handler.Scope);
 
             var eventScopes = declarations.Where(item =>

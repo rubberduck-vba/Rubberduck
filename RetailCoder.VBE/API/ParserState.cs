@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -8,6 +9,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.API
 {
@@ -65,7 +67,8 @@ namespace Rubberduck.API
             }
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
-            _parser = new RubberduckParser(vbe, _state, _attributeParser, preprocessorFactory);
+            _parser = new RubberduckParser(vbe, _state, _attributeParser, preprocessorFactory,
+                new List<ICustomDeclarationLoader> { new DebugDeclarations(_state), new FormEventDeclarations(_state) });
         }
 
         /// <summary>
