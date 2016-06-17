@@ -17,7 +17,7 @@
         <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
         <BitmapImage x:Key="UndoImage" UriSource="../../Resources/arrow-circle-left.png" />
         <BitmapImage x:Key="PrintImage" UriSource="../../Resources/printer.png" />
-        
+
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
         <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
@@ -255,7 +255,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -271,6 +271,7 @@
                TargetType="{x:Type TreeViewItem}">
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
             <Style.Triggers>
@@ -291,16 +292,17 @@
                 </Style>
             </Style.Resources>
         </Style>
-        
+
         <Style x:Key="IconStyle" TargetType="Image">
             <Setter Property="Height" Value="16" />
             <Setter Property="Width" Value="16" />
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Top" />
         </Style>
-        
+
         <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
             <Setter Property="Text" Value="{Binding Name}" />
+            <Setter Property="FontSize" Value="10" />
             <Setter Property="MaxWidth" Value="200" />
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -311,6 +313,7 @@
 
         <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
             <Setter Property="Text" Value="{Binding NameWithSignature}" />
+            <Setter Property="FontSize" Value="10" />
             <Setter Property="MaxWidth" Value="200" />
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -337,7 +340,7 @@
                 <TextBlock Style="{StaticResource TreeViewItemStyleWithSignatures}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" />
             </StackPanel>
         </HierarchicalDataTemplate>
-        
+
         <HierarchicalDataTemplate x:Key="CodeExplorerTemplate" 
                                   DataType="codeExplorer:CodeExplorerProjectViewModel"
                                   ItemsSource="{Binding Items}">
@@ -681,9 +684,9 @@
                                   Command="{Binding SetSelectionSortCommand}"
                                   CommandParameter="{Binding ElementName=SortBySelection, Path=IsChecked}"
                                   IsCheckable="True" />
-                        
+
                         <Separator />
-                        
+
                         <MenuItem Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
                                   Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SortStyle_ByType}"
                                   IsChecked="{Binding SortByType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
@@ -695,7 +698,7 @@
                 </ToggleButton>
 
                 <Separator />
-                
+
                 <Button Command="{Binding OpenDesignerCommand}" CommandParameter="{Binding SelectedItem}">
                     <Image Height="16" Source="../../Resources/Microsoft/PNG/VSProject_form.png" />
                     <Button.ToolTip>
@@ -734,39 +737,44 @@
 
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
 
-            <StackPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
+            <ScrollViewer Background="WhiteSmoke" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
 
-                <Grid Margin="4" HorizontalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Top"
-                           Source="{Binding SelectedItem.CollapsedIcon}" Grid.Column="0"/>
-                    <TextBlock Margin="4" Text="{Binding PanelTitle}" FontWeight="Bold"
-                               TextWrapping="WrapWithOverflow" Grid.Column="1"/>
-                </Grid>
+                    <Grid Margin="4" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Image Style="{StaticResource IconStyle}"
+                               Source="{Binding SelectedItem.CollapsedIcon}" Grid.Column="0"/>
+                        <TextBox IsReadOnly="True" Margin="4" Text="{Binding PanelTitle, Mode=OneWay}" FontWeight="Bold"
+                                 TextWrapping="WrapWithOverflow" Grid.Column="1" FontSize="10"
+                                 Background="WhiteSmoke" BorderThickness="0" Foreground="Black" />
+                    </Grid>
 
-                <TextBlock Margin="4" Text="{Binding Description}" FontSize="10" TextWrapping="WrapWithOverflow"/>
+                    <TextBox IsReadOnly="True" Margin="4" Text="{Binding Description, Mode=OneWay}"
+                             BorderThickness="0" Background="WhiteSmoke" Foreground="Black"
+                             FontSize="10" TextWrapping="WrapWithOverflow" />
 
-                <WrapPanel>
-                    <controls:LinkButton Margin="4"
-                            Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
-                            Command="{Binding IndenterCommand}"
-                            CommandParameter="{Binding SelectedItem}"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}" />
-                    <controls:LinkButton Margin="4"
-                            Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding RenameCommand}"
-                            CommandParameter="{Binding SelectedItem}"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}" />
-                    <controls:LinkButton Margin="4"
-                            Visibility="{Binding CanExecuteFindAllReferencesCommand, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding FindAllReferencesCommand}"
-                            CommandParameter="{Binding SelectedItem}"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}" />
-                </WrapPanel>
-            </StackPanel>
+                    <WrapPanel>
+                        <controls:LinkButton Margin="4"
+                                Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
+                                Command="{Binding IndenterCommand}"
+                                CommandParameter="{Binding SelectedItem}"
+                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}" />
+                        <controls:LinkButton Margin="4"
+                                Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding RenameCommand}"
+                                CommandParameter="{Binding SelectedItem}"
+                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}" />
+                        <controls:LinkButton Margin="4"
+                                Visibility="{Binding CanExecuteFindAllReferencesCommand, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding FindAllReferencesCommand}"
+                                CommandParameter="{Binding SelectedItem}"
+                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}" />
+                    </WrapPanel>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
     </Grid>
 </UserControl>
