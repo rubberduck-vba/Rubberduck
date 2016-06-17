@@ -6,6 +6,18 @@ using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Settings
 {
+    public class ConfigurationChangedEventArgs : EventArgs
+    {
+        public bool LanguageChanged { get; private set; }
+        public bool InspectionSettingsChanged { get; private set; }
+
+        public ConfigurationChangedEventArgs(bool languageChanged, bool inspectionSettingsChanged)
+        {
+            LanguageChanged = languageChanged;
+            InspectionSettingsChanged = inspectionSettingsChanged;
+        }
+    }
+
     public interface IGeneralConfigService : IConfigurationService<Configuration>
     {
         Configuration GetDefaultConfiguration();
@@ -88,42 +100,25 @@ namespace Rubberduck.Settings
                 )
             };
         }
-
-
+        
         public void SaveConfiguration(Configuration toSerialize)
         {
+            var langChanged = _generalProvider.Create().Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
+            var oldInspectionSettings = _inspectionProvider.Create(_inspections).CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
+            var newInspectionSettings = toSerialize.UserSettings.CodeInspectionSettings.CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
+
             _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
             _hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);
             _todoProvider.Save(toSerialize.UserSettings.ToDoListSettings);
             _inspectionProvider.Save(toSerialize.UserSettings.CodeInspectionSettings);
             _unitTestProvider.Save(toSerialize.UserSettings.UnitTestSettings);
             _indenterProvider.Save(toSerialize.UserSettings.IndenterSettings);
+
+            OnSettingsChanged(new ConfigurationChangedEventArgs(langChanged, !oldInspectionSettings.SequenceEqual(newInspectionSettings)));
         }
 
-        public void SaveConfiguration(Configuration toSerialize, bool languageChanged)
-        {
-            SaveConfiguration(toSerialize);
-
-            if (languageChanged)
-            {
-                OnLanguageChanged(EventArgs.Empty);
-            }
-
-            OnSettingsChanged(EventArgs.Empty);
-        }
-
-        public event EventHandler LanguageChanged;
-        protected virtual void OnLanguageChanged(EventArgs e)
-        {
-            var handler = LanguageChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        public event EventHandler SettingsChanged;
-        protected virtual void OnSettingsChanged(EventArgs e)
+        public event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;
+        protected virtual void OnSettingsChanged(ConfigurationChangedEventArgs e)
         {
             var handler = SettingsChanged;
             if (handler != null)

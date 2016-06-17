@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections
                 _inspections = inspections;
 
                 _configService = configService;
-                configService.LanguageChanged += ConfigServiceLanguageChanged;
+                configService.SettingsChanged += ConfigServiceLanguageChanged;
             }
 
             private void ConfigServiceLanguageChanged(object sender, EventArgs e)
@@ -121,7 +121,7 @@ namespace Rubberduck.Inspections
             {
                 if (_configService != null)
                 {
-                    _configService.LanguageChanged -= ConfigServiceLanguageChanged;
+                    _configService.SettingsChanged -= ConfigServiceLanguageChanged;
                 }
             }
         }
