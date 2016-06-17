@@ -10,8 +10,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
-using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.Extensions;
 using System.IO;
 using NLog;
@@ -37,19 +35,22 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
+        private readonly IEnumerable<ICustomDeclarationLoader> _customDeclarationLoaders;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckParser(
             VBE vbe,
             RubberduckParserState state,
             IAttributeParser attributeParser,
-            Func<IVBAPreprocessor> preprocessorFactory)
+            Func<IVBAPreprocessor> preprocessorFactory,
+            IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders)
         {
             _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
             _vbe = vbe;
             _state = state;
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
+            _customDeclarationLoaders = customDeclarationLoaders;
 
             _comReflector = new ReferencedDeclarationsCollector(_state);
 
@@ -215,7 +216,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             SyncComReferences(_state.Projects);
-            AddBuiltInDeclarations(_state.Projects);
+            AddBuiltInDeclarations();
 
             if (toParse.Count == 0)
             {
@@ -312,34 +313,16 @@ namespace Rubberduck.Parsing.VBA
             return tasks;
         }
 
-        private void AddBuiltInDeclarations(IReadOnlyList<VBProject> projects)
+        private void AddBuiltInDeclarations()
         {
-            var finder = new DeclarationFinder(_state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
-
-            foreach (var item in finder.MatchName(Tokens.Err))
-            {
-                if (item.IsBuiltIn && item.DeclarationType == DeclarationType.Variable &&
-                    item.Accessibility == Accessibility.Global)
-                {
-                    return;
-                }
-            }
-
-            var vba = finder.FindProject("VBA");
-            if (vba == null)
-            {
-                // if VBA project is null, we haven't loaded any COM references;
-                // we're in a unit test and mock project didn't setup any references.
-                return;
-            }
-            var informationModule = finder.FindStdModule("Information", vba, true);
-            Debug.Assert(informationModule != null, "We expect the information module to exist in the VBA project.");
-            var customDeclarations = CustomDeclarations.Load(vba, informationModule);
             lock (_state)
             {
-                foreach (var customDeclaration in customDeclarations)
+                foreach (var customDeclarationLoader in _customDeclarationLoaders)
                 {
-                    _state.AddDeclaration(customDeclaration);
+                    foreach (var declaration in customDeclarationLoader.Load())
+                    {
+                        _state.AddDeclaration(declaration);
+                    }
                 }
             }
         }
