@@ -27,6 +27,11 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
 
+            if (formsClassModule == null)
+            {
+                return new List<Declaration>();
+            }
+
             return AddHiddenMSFormDeclarations(formsClassModule);
         }
 
