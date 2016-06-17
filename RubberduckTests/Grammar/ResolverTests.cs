@@ -1957,6 +1957,26 @@ End Sub
             Assert.AreEqual(4, declaration.References.Count());
         }
 
+        [TestMethod]
+        public void FieldLengthStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Const Len As Integer = 4
+    Dim a As String * Len
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Constant && item.IdentifierName == "Len");
+
+            Assert.AreEqual(1, declaration.References.Count());
+        }
+
         // Ignored because handling forms/hierarchies is an open issue.
         [Ignore]
         [TestMethod]

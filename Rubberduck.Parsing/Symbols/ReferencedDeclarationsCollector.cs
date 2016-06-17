@@ -207,6 +207,11 @@ namespace Rubberduck.Parsing.Symbols
                     attributes.AddPredeclaredIdTypeAttribute();
                 }
 
+                if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FAPPOBJECT))
+                {
+                    attributes.AddGlobalClassAttribute();
+                }
+
                 Declaration moduleDeclaration;
                 switch (typeDeclarationType)
                 {
