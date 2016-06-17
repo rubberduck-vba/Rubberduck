@@ -79,7 +79,6 @@ namespace Rubberduck
 
             _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
-            _configService.LanguageChanged += ConfigServiceLanguageChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
             _stateBar.Refresh += _stateBar_Refresh;
@@ -156,13 +155,18 @@ namespace Rubberduck
                    (selectedDeclaration == null && _lastSelectedDeclaration != null);
         }
 
-        private void _configService_SettingsChanged(object sender, EventArgs e)
+        private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
             _config = _configService.LoadConfiguration();
             _hooks.HookHotkeys();
             // also updates the ShortcutKey text
             _appMenus.Localize();
             UpdateLoggingLevel();
+
+            if (e.LanguageChanged)
+            {
+                LoadConfig();
+            }
         }
 
         private void UpdateLoggingLevel()
@@ -172,7 +176,7 @@ namespace Rubberduck
 
         public void Startup()
         {
-            CleanReloadConfig();
+            LoadConfig();
             _appMenus.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
@@ -417,16 +421,6 @@ namespace Rubberduck
             _appMenus.EvaluateCanExecute(_parser.State);
         }
 
-        private void CleanReloadConfig()
-        {
-            LoadConfig();
-        }
-
-        private void ConfigServiceLanguageChanged(object sender, EventArgs e)
-        {
-            CleanReloadConfig();
-        }
-
         private void LoadConfig()
         {
             _logger.Debug("Loading configuration");
@@ -488,7 +482,6 @@ namespace Rubberduck
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
-                _configService.LanguageChanged -= ConfigServiceLanguageChanged;
                 _configService = null;
             }
 
