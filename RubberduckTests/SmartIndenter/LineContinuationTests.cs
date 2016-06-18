@@ -261,7 +261,7 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
-        [TestMethod, Ignore]    // Broken in VB6 SmartIndenter. Should be same fix as IfThenElseOnSameLineWorks()
+        [TestMethod]        // Broken in VB6 SmartIndenter.
         [TestCategory("Indenter")]
         public void DoWhileOnTwoLinesWorks()
         {
@@ -274,12 +274,11 @@ namespace RubberduckTests.SmartIndenter
                 "End Sub"
             };
 
-            //TODO: Not sure if this is what should be expected...
             var expected = new[]
             {
                 "Public Sub Test()",
                 "    Do _",
-                "    While X < 10: X = X + 1: Loop",
+                "        While X < 10: X = X + 1: Loop",
                 "    Debug.Print X",
                 "End Sub"
             };
@@ -289,7 +288,7 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod] // Broken in VB6 SmartIndenter.
+        [TestMethod]        // Broken in VB6 SmartIndenter.
         [TestCategory("Indenter")]
         public void ContinuedIfThenWorks()
         {

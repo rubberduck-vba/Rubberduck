@@ -87,7 +87,13 @@ namespace Rubberduck.SmartIndenter
         }
 
         public string Original { get; private set; }
+        
         public string EndOfLineComment { get; private set; }
+
+        public IEnumerable<string> Segments
+        {
+            get { return _segments; }
+        }
 
         public string ContinuationRebuildText
         {
