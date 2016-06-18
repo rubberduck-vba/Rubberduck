@@ -68,7 +68,7 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
-        [TestMethod, Ignore]    // Broken in VB6 SmartIndenter. Should be same fix as DoWhileOnTwoLinesWorks()
+        [TestMethod]        // Broken in VB6 SmartIndenter.
         [TestCategory("Indenter")]
         public void IfThenElseOnSameLineWorks()
         {

@@ -35,7 +35,9 @@ namespace Rubberduck.SmartIndenter
             get
             {
                 RebuildContinuedLine();
-                return _rebuilt.NextLineIndents;
+                return _rebuilt.Segments.Count() < 2
+                    ? _rebuilt.NextLineIndents
+                    : _rebuilt.Segments.Select(s => new AbsoluteCodeLine(s, _settings)).Select(a => a.NextLineIndents).Sum();
             }
         }
 
@@ -44,7 +46,12 @@ namespace Rubberduck.SmartIndenter
             get
             {
                 RebuildContinuedLine();
-                return _rebuilt.Outdents;
+                if (_rebuilt.Segments.Count() < 2)
+                {
+                    return _rebuilt.Outdents;
+                }
+                var baseSegment = new AbsoluteCodeLine(_rebuilt.Segments.First(), _settings);
+                return baseSegment.Outdents;
             }
         }
 
