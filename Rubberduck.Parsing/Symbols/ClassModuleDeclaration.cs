@@ -104,6 +104,19 @@ namespace Rubberduck.Parsing.Symbols
                     attributeIsGlobalClassModule = value.Single() == "True";
                 }
                 _isGlobal = attributeIsGlobalClassModule;
+
+                if (!_isGlobal.Value)
+                {
+                    foreach (var type in Subtypes)
+                    {
+                        if (type is ClassModuleDeclaration && ((ClassModuleDeclaration) type).IsGlobalClassModule)
+                        {
+                            _isGlobal = true;
+                            break;
+                        }
+                    }
+                }
+
                 return _isGlobal.Value;
             }
         }

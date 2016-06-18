@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using NLog;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 // ReSharper disable ExplicitCallerInfoArgument
@@ -10,6 +11,8 @@ namespace Rubberduck.UI.SourceControl
 {
     public class BranchesViewViewModel : ViewModelBase, IControlViewModel
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public BranchesViewViewModel()
         {
             _newBranchCommand = new DelegateCommand(_ => CreateBranch(), _ => Provider != null);
@@ -35,6 +38,8 @@ namespace Rubberduck.UI.SourceControl
             get { return _provider; }
             set
             {
+                Logger.Trace("Provider changed");
+
                 _provider = value;
                 RefreshView();
             }
@@ -42,6 +47,8 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
+            Logger.Trace("Refreshing view");
+
             OnPropertyChanged("LocalBranches");
             OnPropertyChanged("PublishedBranches");
             OnPropertyChanged("UnpublishedBranches");
@@ -192,7 +199,7 @@ namespace Rubberduck.UI.SourceControl
             get { return !IsValidBranchName(NewBranchName); }
         }
 
-        public bool IsValidBranchName(string name)
+        private bool IsValidBranchName(string name)
         {
             // Rules taken from https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
             var isValidName = !string.IsNullOrEmpty(name) &&
@@ -285,6 +292,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void CreateBranchOk()
         {
+            Logger.Trace("Creating branch {0}", NewBranchName);
             try
             {
                 Provider.CreateBranch(CreateBranchSource, NewBranchName);
@@ -308,6 +316,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void MergeBranchOk()
         {
+            Logger.Trace("Merging branch {0} into branch {1}", SourceBranch, DestinationBranch);
+
             OnLoadingComponentsStarted();
 
             try
@@ -333,6 +343,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void DeleteBranch(bool isBranchPublished)
         {
+            Logger.Trace("Deleting {0}published branch {1}", isBranchPublished ? "" : "un",
+                isBranchPublished ? CurrentPublishedBranch : CurrentUnpublishedBranch);
             try
             {
                 Provider.DeleteBranch(isBranchPublished ? CurrentPublishedBranch : CurrentUnpublishedBranch);
@@ -355,6 +367,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void PublishBranch()
         {
+            Logger.Trace("Publishing branch {0}", CurrentUnpublishedBranch);
             try
             {
                 Provider.Publish(CurrentUnpublishedBranch);
@@ -369,6 +382,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void UnpublishBranch()
         {
+            Logger.Trace("Unpublishing branch {0}", CurrentPublishedBranch);
             try
             {
                 Provider.Unpublish(Provider.Branches.First(b => b.Name == CurrentPublishedBranch).TrackingName);

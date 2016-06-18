@@ -735,14 +735,14 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.DebugPrintStmtContext context)
         {
-            if (CustomDeclarations.DEBUG_PRINT == null)
+            if (DebugDeclarations.DebugPrint == null)
             {
                 _logger.Warn("Debug.Print (custom declaration) has not been loaded, skipping resolving Debug.Print call.");
                 return;
             }
             // Because Debug.Print has a special argument (an output list) instead
             // of normal arguments we can't treat it as a function call.
-            var debugPrint = CustomDeclarations.DEBUG_PRINT;
+            var debugPrint = DebugDeclarations.DebugPrint;
             var debugModule = debugPrint.ParentDeclaration;
             debugModule.AddReference(
                 _qualifiedModuleName,

@@ -53,6 +53,14 @@ namespace Rubberduck.Navigation.CodeExplorer
                                .GroupBy(item => item.CustomFolder)
                                .OrderBy(item => item.Key);
 
+            // set parent so we can walk up to the project node
+            // we haven't added the nodes yet, so this cast is valid
+            // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
+            foreach (CodeExplorerCustomFolderViewModel item in _folderTree.Items)
+            {
+                item.SetParent(this);
+            }
+
             foreach (var grouping in groupedItems)
             {
                 AddNodesToTree(_folderTree, items, grouping);
@@ -66,11 +74,6 @@ namespace Rubberduck.Navigation.CodeExplorer
                 if (grouping.Key.Replace("\"", string.Empty) != folder.FullPath)
                 {
                     continue;
-                }
-
-                if (folder.Parent.Name == string.Empty)
-                {
-                    folder.SetParent(this);
                 }
 
                 var parents = grouping.Where(

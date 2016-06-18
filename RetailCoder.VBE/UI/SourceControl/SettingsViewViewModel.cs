@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Input;
+using NLog;
 using Rubberduck.UI.Command;
 using Rubberduck.SourceControl;
 
@@ -10,6 +11,8 @@ namespace Rubberduck.UI.SourceControl
 {
     public class SettingsViewViewModel : ViewModelBase, IControlViewModel, IDisposable
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly ISourceControlConfigProvider _configService;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly IOpenFileDialog _openFileDialog;
@@ -125,6 +128,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void CancelSettingsChanges()
         {
+            Logger.Trace("Settings changes canceled");
+
             UserName = _config.UserName;
             EmailAddress = _config.EmailAddress;
             DefaultRepositoryLocation = _config.DefaultRepositoryLocation;
@@ -133,6 +138,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void UpdateSettings()
         {
+            Logger.Trace("Settings changes saved");
+
             _config.UserName = UserName;
             _config.EmailAddress = EmailAddress;
             _config.DefaultRepositoryLocation = DefaultRepositoryLocation;

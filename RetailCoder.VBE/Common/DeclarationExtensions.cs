@@ -8,6 +8,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
@@ -330,9 +331,9 @@ namespace Rubberduck.Common
             return declaration;
         }
 
-        public static IEnumerable<Declaration> FindFormEventHandlers(this IEnumerable<Declaration> declarations)
+        public static IEnumerable<Declaration> FindFormEventHandlers(this RubberduckParserState state)
         {
-            var items = declarations.ToList();
+            var items = state.AllDeclarations.ToList();
 
             var forms = items.Where(item => item.DeclarationType == DeclarationType.ClassModule
                 && item.QualifiedName.QualifiedModuleName.Component != null
@@ -342,18 +343,24 @@ namespace Rubberduck.Common
             var result = new List<Declaration>();
             foreach (var declaration in forms)
             {
-                result.AddRange(FindFormEventHandlers(items, declaration));
+                result.AddRange(FindFormEventHandlers(state, declaration));
             }
 
             return result;
         }
 
-        public static IEnumerable<Declaration> FindFormEventHandlers(this IEnumerable<Declaration> declarations, Declaration userForm)
+        public static IEnumerable<Declaration> FindFormEventHandlers(this RubberduckParserState state, Declaration userForm)
         {
-            var items = declarations as IList<Declaration> ?? declarations.ToList();
+            var items = state.AllDeclarations.ToList();
             var events = items.Where(item => item.IsBuiltIn
-                                                     && item.ParentScope == "MSForms.UserForm"
+                                                     && item.ParentScope == "FM20.DLL;MSForms.FormEvents"
                                                      && item.DeclarationType == DeclarationType.Event).ToList();
+
+            var e = items.Where(item => item.DeclarationType == DeclarationType.Event).ToList();
+            var e1 = items.Where(item => item.DeclarationType == DeclarationType.Event && item.IdentifierName == "QueryClose").ToList();
+
+            var s = items.Where(item => item.IdentifierName.Contains("QueryClose") || item.IdentifierName.Contains("Initialize") || item.IdentifierName.Contains("Activate")).ToList();
+
             var handlerNames = events.Select(item => "UserForm_" + item.IdentifierName);
             var handlers = items.Where(item => item.ParentScope == userForm.Scope
                                                        && item.DeclarationType == DeclarationType.Procedure

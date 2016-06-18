@@ -36,7 +36,9 @@ namespace Rubberduck.Inspections
             }
 
             var matches = BuiltInDeclarations.Where(item =>
-                Targets.Contains(item.IdentifierName)).ToList();
+                        Targets.Contains(item.IdentifierName) &&
+                        item.ParentScope == "EXCEL.EXE;Excel._Global" &&
+                        item.AsTypeName == "Range").ToList();
 
             var issues = matches.Where(item => item.References.Any())
                 .SelectMany(declaration => declaration.References);
