@@ -33,8 +33,14 @@ namespace Rubberduck.SettingsProvider
 
         public T Load(T toDeserialize)
         {
-            var doc = GetConfigurationDoc(FilePath);
             var type = typeof(T);
+
+            if (!File.Exists(FilePath))
+            {
+                return (T)Convert.ChangeType(null, type);
+            }
+            var doc = GetConfigurationDoc(FilePath);
+            
             var node = doc.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(type.Name));
             if (node == null)
             {
