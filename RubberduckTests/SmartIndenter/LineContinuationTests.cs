@@ -484,7 +484,7 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1287
-        [TestMethod, Ignore]    // Broken in VB6 SmartIndenter.
+        [TestMethod]        // Broken in VB6 SmartIndenter.
         [TestCategory("Indenter")]
         public void ContinuationsInProcedureDeclarationsWorks()
         {
@@ -510,26 +510,25 @@ namespace RubberduckTests.SmartIndenter
                 "End Sub"
             };
 
-            //TODO: Not sure if this is what should be expected...
             var expected = new[]
             {
                 "Sub MySub()",
                 "    Dim x1 As Integer",
                 "    Dim _",
-                "    x2 _",
-                "    As Integer",
+                "        x2 _",
+                "        As Integer",
                 "    Dim x3 As _",
-                "    Integer",
+                "        Integer",
                 "    Dim x4 _",
-                "    As _",
-                "    Integer",
+                "        As _",
+                "        Integer",
                 "    Dim x5 As Integer: _",
-                "    Dim x6 As _",
-                "    Integer",
+                "        Dim x6 As _",
+                "        Integer",
                 "    Dim x7 As Integer _",
-                "    'Comment _",
-                "    as _",
-                "    integer",
+                "        'Comment _",
+                "        as _",
+                "        integer",
                 "End Sub"
             };
 
@@ -545,7 +544,7 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1287
-        [TestMethod, Ignore]    // Broken in VB6 SmartIndenter.
+        [TestMethod]        // Broken in VB6 SmartIndenter.
         [TestCategory("Indenter")]
         public void ContinuationsInProcedureDeclarationsNoCommentAlignWorks()
         {
@@ -571,26 +570,55 @@ namespace RubberduckTests.SmartIndenter
                 "End Sub"
             };
 
-            //TODO: Not sure if this is what should be expected...
             var expected = new[]
             {
                 "Sub MySub()",
                 "    Dim x1 As Integer",
                 "    Dim _",
-                "    x2 _",
-                "    As Integer",
+                "        x2 _",
+                "        As Integer",
                 "    Dim x3 As _",
-                "    Integer",
+                "        Integer",
                 "    Dim x4 _",
-                "    As _",
-                "    Integer",
+                "        As _",
+                "        Integer",
                 "    Dim x5 As Integer: _",
-                "    Dim x6 As _",
-                "    Integer",
+                "        Dim x6 As _",
+                "        Integer",
                 "    Dim x7 As Integer _",
-                "'Comment _",
-                "as _",
-                "integer",
+                "        'Comment _",
+                "        as _",
+                "        integer",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.AlignCommentsWithCode = false;
+                s.IndentFirstDeclarationBlock = true;
+                return s;
+            });
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        public void ContinuationWithOnlyCommentWorks()
+        {
+            var code = new[]
+            {
+                "Sub MySub()",
+                "Debug.Print Foo _",
+                "'Is this and end of line comment or not...?",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub MySub()",
+                "    Debug.Print Foo _",
+                "                'Is this and end of line comment or not...?",
                 "End Sub"
             };
 
