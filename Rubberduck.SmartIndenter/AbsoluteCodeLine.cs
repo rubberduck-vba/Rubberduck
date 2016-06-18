@@ -199,7 +199,7 @@ namespace Rubberduck.SmartIndenter
 
         public string Indent(int indents, bool atProcStart, bool absolute = false)
         {
-            if (IsEmpty || (ContainsOnlyComment && !_settings.AlignCommentsWithCode))
+            if (IsEmpty || (ContainsOnlyComment && !_settings.AlignCommentsWithCode && !absolute))
             {
                 return Original;
             }
