@@ -79,7 +79,12 @@ namespace Rubberduck.SettingsProvider
                     parent.Add(settings);
                 }                
             }
-            
+
+            if (!Directory.Exists(_rootPath))
+            {
+                Directory.CreateDirectory(_rootPath);
+            }
+
             using (var xml = XmlWriter.Create(FilePath, _outputXmlSettings))
             {
                 doc.WriteTo(xml);
