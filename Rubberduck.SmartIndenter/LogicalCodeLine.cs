@@ -35,7 +35,9 @@ namespace Rubberduck.SmartIndenter
             get
             {
                 RebuildContinuedLine();
-                return _rebuilt.NextLineIndents;
+                return _rebuilt.Segments.Count() < 2
+                    ? _rebuilt.NextLineIndents
+                    : _rebuilt.Segments.Select(s => new AbsoluteCodeLine(s, _settings)).Select(a => a.NextLineIndents).Sum();
             }
         }
 
@@ -44,7 +46,12 @@ namespace Rubberduck.SmartIndenter
             get
             {
                 RebuildContinuedLine();
-                return _rebuilt.Outdents;
+                if (_rebuilt.Segments.Count() < 2)
+                {
+                    return _rebuilt.Outdents;
+                }
+                var baseSegment = new AbsoluteCodeLine(_rebuilt.Segments.First(), _settings);
+                return baseSegment.Outdents;
             }
         }
 
@@ -144,7 +151,7 @@ namespace Rubberduck.SmartIndenter
                     case "(":
                         //Start of another function => remember this position
                         _alignment.Push(new AlignmentToken(AlignmentTokenType.Function, index));
-                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Paramater, index + 1));
+                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1));
                         break;
                     case ")":
                         //Function finished => Remove back to the previous open bracket
@@ -184,13 +191,13 @@ namespace Rubberduck.SmartIndenter
                         break;
                     case ",":
                         //Start of a new parameter => remember it to align to
-                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Paramater, index + 1));
+                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1));
                         break;
                     case ":":
                         if (line.Substring(index - 1, 2).Equals(":="))
                         {
                             //A named paremeter => remember to align to after the name
-                            _alignment.Push(new AlignmentToken(AlignmentTokenType.Paramater, index + 3));
+                            _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 3));
                         }
                         else if (line.Substring(index, 2).Equals(": "))
                         {
@@ -204,7 +211,7 @@ namespace Rubberduck.SmartIndenter
             //If we end with a comma or a named parameter, get rid of all other comma alignments
             if (line.EndsWith(", _") || line.EndsWith(":= _"))
             {
-                while (_alignment.Any() && _alignment.Peek().Type == AlignmentTokenType.Paramater)
+                while (_alignment.Any() && _alignment.Peek().Type == AlignmentTokenType.Parameter)
                 {
                     _alignment.Pop();
                 }
@@ -224,7 +231,7 @@ namespace Rubberduck.SmartIndenter
             {
                 switch (align.Type)
                 {
-                    case AlignmentTokenType.Paramater:
+                    case AlignmentTokenType.Parameter:
                         output = align.Position - 1;
                         break;
                     case AlignmentTokenType.Function:

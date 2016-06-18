@@ -1578,8 +1578,8 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SortStyle_ByType" xml:space="preserve">
     <value>By type</value>
   </data>
-  <data name="SortStyle_BySelection" xml:space="preserve">
-    <value>By selection</value>
+  <data name="SortStyle_ByCodeOrder" xml:space="preserve">
+    <value>By code order</value>
   </data>
   <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
     <value>Refresh component</value>
@@ -1631,5 +1631,26 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="SourceControl_ExternalModifications" xml:space="preserve">
     <value>A source file was modified out of the editor; should Rubberduck reload it?</value>
+  </data>
+  <data name="SourceControl_OpenCommandPromptButtonToolTip" xml:space="preserve">
+    <value>Open Command Prompt</value>
+  </data>
+  <data name="SourceControl_CommandPromptExeLabel" xml:space="preserve">
+    <value>Command Prompt Exe location</value>
+  </data>
+  <data name="SourceControl_FilePickerCommandPromptHeader" xml:space="preserve">
+    <value>Command Prompt Executable</value>
+  </data>
+  <data name="SourceControl_FilePickerDefaultRepoHeader" xml:space="preserve">
+    <value>Default Repository Directory</value>
+  </data>
+  <data name="SourceControl_OpenCommandPromptFailureTitle" xml:space="preserve">
+    <value>Failure opening command prompt</value>
+  </data>
+  <data name="SourceControl_ActivateProject" xml:space="preserve">
+    <value>Please open or activate a project and try again.</value>
+  </data>
+  <data name="SourceControl_NoActiveProject" xml:space="preserve">
+    <value>No active VBProject</value>
   </data>
 </root>

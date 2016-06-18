@@ -116,7 +116,7 @@ namespace Rubberduck.UnitTesting
 
         private string GetNextTestMethodName(VBComponent component)
         {
-            var names = component.GetTests(_vbe, _state).Select(test => test.QualifiedMemberName.MemberName);
+            var names = component.GetTests(_vbe, _state).Select(test => test.Declaration.IdentifierName);
             var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;
 
             return string.Concat(TestMethodBaseName, index);

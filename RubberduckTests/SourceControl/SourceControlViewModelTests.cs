@@ -84,7 +84,7 @@ namespace RubberduckTests.SourceControl
             _changesVM = new ChangesViewViewModel();
             _branchesVM = new BranchesViewViewModel();
             _unsyncedVM = new UnsyncedCommitsViewViewModel();
-            _settingsVM = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object);
+            _settingsVM = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, new Rubberduck.UI.OpenFileDialog());
         }
 
         private void SetupValidVbProject()
@@ -975,12 +975,28 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(originalPath, _vm.LocalDirectory);
         }
 
+        [TestMethod]
+        public void NullProject_DisplaysError()
+        {
+            //arrange
+            SetupValidVbProject();
+            SetupVM();
+            _vbe.Setup(v => v.ActiveVBProject).Returns((VBProject)null);
+            _vbe.Setup(v => v.VBProjects).Returns(new Mock<VBProjects>().Object);
+
+            //act
+            _vm.RefreshCommand.Execute(null);
+
+            //assert
+            Assert.IsTrue(_vm.DisplayErrorMessageGrid, "Null ActiveProject did not raise error.");
+        }
+
         private const string DummyRepoId = "SourceControlTest";
 
         private SourceControlSettings GetDummyConfig()
         {
             return new SourceControlSettings("username", "username@email.com", string.Empty,
-                    new List<Repository> { GetDummyRepo() });
+                    new List<Repository> { GetDummyRepo() }, "ps.exe");
         }
 
         private static Repository GetDummyRepo()

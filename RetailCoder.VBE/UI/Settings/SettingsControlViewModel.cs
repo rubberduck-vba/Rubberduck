@@ -76,7 +76,7 @@ namespace Rubberduck.UI.Settings
                 vm.UpdateConfig(_config);
             }
 
-            _configService.SaveConfiguration(_config, _config.UserSettings.GeneralSettings.Language.Code != oldLangCode);
+            _configService.SaveConfiguration(_config);
         }
 
         private void CloseWindow()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -67,6 +68,8 @@ namespace Rubberduck.UI.UnitTesting
                     }
                 }
             });
+
+            OnTestsRefreshed();
         }
 
         private readonly ObservableCollection<TestMethod> _tests = new ObservableCollection<TestMethod>();
@@ -153,6 +156,16 @@ namespace Rubberduck.UI.UnitTesting
             {
                 _isReady = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public event EventHandler<EventArgs> TestsRefreshed;
+        private void OnTestsRefreshed()
+        {
+            var handler = TestsRefreshed;
+            if (handler != null)
+            {
+                handler.Invoke(this, EventArgs.Empty);
             }
         }
     }

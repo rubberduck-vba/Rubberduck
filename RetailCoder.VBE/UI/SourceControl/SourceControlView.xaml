@@ -18,6 +18,7 @@
         <BitmapImage x:Key="GitIcon" UriSource="../../Resources/icon-github.png" />
         <BitmapImage x:Key="ErrorImage" UriSource="../../Resources/cross-circle.png" />
         <BitmapImage x:Key="WarningIcon" UriSource="../../Resources/exclamation-white.png" />
+        <BitmapImage x:Key="OpenCommandPromptImage" UriSource="../../Resources/Terminal.png" />
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
@@ -253,6 +254,13 @@
                             Background="Transparent"
                             Visibility="{Binding RepoDoesNotHaveRemoteLocation, Converter={StaticResource BoolToVisibility}}">
                         <Image Source="{StaticResource PublishRepoImage}" />
+                    </Button>
+                    <Separator />
+                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_OpenCommandPromptButtonToolTip}"
+                            Command="{Binding OpenCommandPromptCommand, Mode=OneWay}"
+                            BorderThickness="0"
+                            Background="Transparent">
+                        <Image Source="{StaticResource OpenCommandPromptImage}" />
                     </Button>
                     <Separator />
                     <StackPanel Orientation="Horizontal">

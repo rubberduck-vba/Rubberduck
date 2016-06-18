@@ -3145,6 +3145,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By code order.
+        /// </summary>
+        public static string SortStyle_ByCodeOrder {
+            get {
+                return ResourceManager.GetString("SortStyle_ByCodeOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By name.
         /// </summary>
         public static string SortStyle_ByName {
@@ -3154,20 +3163,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By selection.
-        /// </summary>
-        public static string SortStyle_BySelection {
-            get {
-                return ResourceManager.GetString("SortStyle_BySelection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to By type.
         /// </summary>
         public static string SortStyle_ByType {
             get {
                 return ResourceManager.GetString("SortStyle_ByType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please open or activate a project and try again..
+        /// </summary>
+        public static string SourceControl_ActivateProject {
+            get {
+                return ResourceManager.GetString("SourceControl_ActivateProject", resourceCulture);
             }
         }
         
@@ -3231,6 +3240,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_CloneRepoButtonToolTip {
             get {
                 return ResourceManager.GetString("SourceControl_CloneRepoButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command Prompt Exe location.
+        /// </summary>
+        public static string SourceControl_CommandPromptExeLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_CommandPromptExeLabel", resourceCulture);
             }
         }
         
@@ -3496,6 +3514,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command Prompt Executable.
+        /// </summary>
+        public static string SourceControl_FilePickerCommandPromptHeader {
+            get {
+                return ResourceManager.GetString("SourceControl_FilePickerCommandPromptHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default Repository Directory.
+        /// </summary>
+        public static string SourceControl_FilePickerDefaultRepoHeader {
+            get {
+                return ResourceManager.GetString("SourceControl_FilePickerDefaultRepoHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File Status.
         /// </summary>
         public static string SourceControl_FileStatus {
@@ -3658,6 +3694,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No active VBProject.
+        /// </summary>
+        public static string SourceControl_NoActiveProject {
+            get {
+                return ResourceManager.GetString("SourceControl_NoActiveProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repository does not contain any branches..
         /// </summary>
         public static string SourceControl_NoBranchesMessage {
@@ -3681,6 +3726,24 @@ namespace Rubberduck.UI {
         public static string SourceControl_NoRepoFound {
             get {
                 return ResourceManager.GetString("SourceControl_NoRepoFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Command Prompt.
+        /// </summary>
+        public static string SourceControl_OpenCommandPromptButtonToolTip {
+            get {
+                return ResourceManager.GetString("SourceControl_OpenCommandPromptButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failure opening command prompt.
+        /// </summary>
+        public static string SourceControl_OpenCommandPromptFailureTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_OpenCommandPromptFailureTitle", resourceCulture);
             }
         }
         

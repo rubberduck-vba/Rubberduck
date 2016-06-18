@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using NLog;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 
@@ -8,6 +9,8 @@ namespace Rubberduck.UI.SourceControl
 {
     public class UnsyncedCommitsViewViewModel : ViewModelBase, IControlViewModel
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public UnsyncedCommitsViewViewModel()
         {
             _fetchCommitsCommand = new DelegateCommand(_ => FetchCommits(), _ => Provider != null);
@@ -22,6 +25,8 @@ namespace Rubberduck.UI.SourceControl
             get { return _provider; }
             set
             {
+                Logger.Trace("Provider changed");
+
                 _provider = value;
                 _provider.BranchChanged += Provider_BranchChanged;
 
@@ -31,6 +36,8 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
+            Logger.Trace("Refreshing view");
+
             CurrentBranch = Provider.CurrentBranch.Name;
 
             IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
@@ -90,6 +97,7 @@ namespace Rubberduck.UI.SourceControl
         {
             try
             {
+                Logger.Trace("Fetching");
                 Provider.Fetch();
 
                 RefreshView();
@@ -104,6 +112,7 @@ namespace Rubberduck.UI.SourceControl
         {
             try
             {
+                Logger.Trace("Pulling");
                 Provider.Pull();
 
                 RefreshView();
@@ -118,6 +127,7 @@ namespace Rubberduck.UI.SourceControl
         {
             try
             {
+                Logger.Trace("Pushing");
                 Provider.Push();
 
                 RefreshView();
@@ -132,6 +142,7 @@ namespace Rubberduck.UI.SourceControl
         {
             try
             {
+                Logger.Trace("Syncing (pull + push)");
                 Provider.Pull();
                 Provider.Push();
 

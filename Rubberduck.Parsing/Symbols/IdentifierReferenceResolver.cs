@@ -94,6 +94,22 @@ namespace Rubberduck.Parsing.Symbols
             _withBlockExpressions.Pop();
         }
 
+        public void Resolve(VBAParser.ArrayDimContext context)
+        {
+            if (context.boundsList() == null)
+            {
+                return;
+            }
+            foreach (var dimSpec in context.boundsList().dimSpec())
+            {
+                if (dimSpec.lowerBound() != null)
+                {
+                    ResolveDefault(dimSpec.lowerBound().constantExpression().expression());
+                }
+                ResolveDefault(dimSpec.upperBound().constantExpression().expression());
+            }
+        }
+
         public void Resolve(VBAParser.OnErrorStmtContext context)
         {
             if (context.expression() == null)
@@ -539,13 +555,13 @@ namespace Rubberduck.Parsing.Symbols
             {
                 // Fixed-Length strings can have a constant-name as length that is a simple-name-expression that also has to be resolved.
                 var length = context.fieldLength();
-                if (context.fieldLength() != null)
+                if (context.fieldLength() != null && context.fieldLength().identifierValue() != null)
                 {
-                    ResolveDefault(context.fieldLength().expression());
+                    ResolveDefault(context.fieldLength().identifierValue());
                 }
                 return;
             }
-            ResolveType(asType.complexType().expression());
+            ResolveType(asType.complexType());
         }
 
         public void Resolve(VBAParser.ForNextStmtContext context)
@@ -714,6 +730,42 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     ResolveDefault(enumMember.expression());
                 }
+            }
+        }
+
+        public void Resolve(VBAParser.DebugPrintStmtContext context)
+        {
+            if (DebugDeclarations.DebugPrint == null)
+            {
+                _logger.Warn("Debug.Print (custom declaration) has not been loaded, skipping resolving Debug.Print call.");
+                return;
+            }
+            // Because Debug.Print has a special argument (an output list) instead
+            // of normal arguments we can't treat it as a function call.
+            var debugPrint = DebugDeclarations.DebugPrint;
+            var debugModule = debugPrint.ParentDeclaration;
+            debugModule.AddReference(
+                _qualifiedModuleName,
+                _currentScope,
+                _currentParent,
+                context.debugPrint().debugModule(),
+                context.debugPrint().debugModule().GetText(),
+                debugModule,
+                context.debugPrint().debugModule().GetSelection(),
+                _annotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugModule().GetSelection().StartLine));
+            debugPrint.AddReference(
+                _qualifiedModuleName,
+                _currentScope,
+                _currentParent,
+                context.debugPrint().debugPrintSub(),
+                context.debugPrint().debugPrintSub().GetText(),
+                debugPrint,
+                context.debugPrint().debugPrintSub().GetSelection(),
+                _annotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugPrintSub().GetSelection().StartLine));
+            var outputList = context.outputList();
+            if (outputList != null)
+            {
+                ResolveOutputList(outputList);
             }
         }
     }

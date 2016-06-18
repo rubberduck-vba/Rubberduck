@@ -9,9 +9,6 @@ namespace Rubberduck.Settings
         GeneralSettings CreateDefaults();
 
         void Save(GeneralSettings settings);
-
-        event EventHandler LanguageChanged;
-        event EventHandler AutoSaveSettingsChanged;
     }
 
     public class GeneralConfigProvider : IGeneralConfigProvider

@@ -8,8 +8,6 @@
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Settings}"
          d:DesignHeight="300" d:DesignWidth="300"
          d:DataContext="{d:DesignInstance {x:Type sourceControl:SettingsViewViewModel}, IsDesignTimeCreatable=False}">
-    <TabItem.Resources>
-    </TabItem.Resources>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="5"
@@ -38,7 +36,22 @@
                                     Margin="5,0"
                                     Grid.Column="1"
                                     FontSize="15"
-                                    Command="{Binding ShowFilePickerCommand}" />
+                                    Command="{Binding ShowDefaultRepoFolderPickerCommand}" />
+                        </Grid>
+                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CommandPromptExeLabel}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="40" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Margin="5,0,0,0"
+                                     Padding="2"
+                                     Text="{Binding CommandPromptLocation, Mode=TwoWay}" />
+                            <Button Content="&#8230;"
+                                    Margin="5,0"
+                                    Grid.Column="1"
+                                    FontSize="15"
+                                    Command="{Binding ShowCommandPromptExePickerCommand}" />
                         </Grid>
                         <WrapPanel Orientation="Horizontal"
                                    Margin="0,5">

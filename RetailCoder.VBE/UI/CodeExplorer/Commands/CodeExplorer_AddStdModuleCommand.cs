@@ -7,14 +7,28 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class CodeExplorer_AddStdModuleCommand : CommandBase
     {
+        private readonly VBE _vbe;
+
+        public CodeExplorer_AddStdModuleCommand(VBE vbe)
+        {
+            _vbe = vbe;
+        }
+
         public override bool CanExecute(object parameter)
         {
-            return GetDeclaration(parameter) != null;
+            return GetDeclaration(parameter) != null || _vbe.VBProjects.Count == 1;
         }
 
         public override void Execute(object parameter)
         {
-            GetDeclaration(parameter).Project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
+            if (parameter != null)
+            {
+                GetDeclaration(parameter).Project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
+            }
+            else
+            {
+                _vbe.VBProjects.Item(1).VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
+            }
         }
 
         private Declaration GetDeclaration(object parameter)

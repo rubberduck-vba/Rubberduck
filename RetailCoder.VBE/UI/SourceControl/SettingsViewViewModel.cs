@@ -3,30 +3,43 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Input;
+using NLog;
 using Rubberduck.UI.Command;
 using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class SettingsViewViewModel : ViewModelBase, IControlViewModel
+    public class SettingsViewViewModel : ViewModelBase, IControlViewModel, IDisposable
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly ISourceControlConfigProvider _configService;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
+        private readonly IOpenFileDialog _openFileDialog;
         private readonly SourceControlSettings _config;
 
         public SettingsViewViewModel(
             ISourceControlConfigProvider configService,
-            IFolderBrowserFactory folderBrowserFactory)
+            IFolderBrowserFactory folderBrowserFactory,
+            IOpenFileDialog openFileDialog)
         {
             _configService = configService;
             _folderBrowserFactory = folderBrowserFactory;
             _config = _configService.Create();
 
+            _openFileDialog = openFileDialog;
+            _openFileDialog.Filter = "Executables (*.exe)|*.exe|All files (*.*)|*.*";
+            _openFileDialog.Multiselect = false;
+            _openFileDialog.ReadOnlyChecked = true;
+            _openFileDialog.CheckFileExists = true;
+
             UserName = _config.UserName;
             EmailAddress = _config.EmailAddress;
             DefaultRepositoryLocation = _config.DefaultRepositoryLocation;
+            CommandPromptLocation = _config.CommandPromptLocation;
 
-            _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
+            _showDefaultRepoFolderPickerCommand = new DelegateCommand(_ => ShowDefaultRepoFolderPicker());
+            _showCommandPromptExePickerCommand = new DelegateCommand(_ => ShowCommandPromptExePicker());
             _cancelSettingsChangesCommand = new DelegateCommand(_ => CancelSettingsChanges());
             _updateSettingsCommand = new DelegateCommand(_ => UpdateSettings());
             _showGitIgnoreCommand = new DelegateCommand(_ => ShowGitIgnore(), _ => Provider != null);
@@ -80,9 +93,23 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void ShowFilePicker()
+        private string _commandPromptExeLocation;
+        public string CommandPromptLocation
         {
-            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory"))
+            get { return _commandPromptExeLocation; }
+            set
+            {
+                if (_commandPromptExeLocation != value)
+                {
+                    _commandPromptExeLocation = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private void ShowDefaultRepoFolderPicker()
+        {
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_FilePickerDefaultRepoHeader))
             {
                 if (folderPicker.ShowDialog() == DialogResult.OK)
                 {
@@ -91,18 +118,32 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private void ShowCommandPromptExePicker()
+        {
+            if (_openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                CommandPromptLocation = _openFileDialog.FileName;
+            }
+        }
+
         private void CancelSettingsChanges()
         {
+            Logger.Trace("Settings changes canceled");
+
             UserName = _config.UserName;
             EmailAddress = _config.EmailAddress;
             DefaultRepositoryLocation = _config.DefaultRepositoryLocation;
+            CommandPromptLocation = _config.CommandPromptLocation;
         }
 
         private void UpdateSettings()
         {
+            Logger.Trace("Settings changes saved");
+
             _config.UserName = UserName;
             _config.EmailAddress = EmailAddress;
             _config.DefaultRepositoryLocation = DefaultRepositoryLocation;
+            _config.CommandPromptLocation = CommandPromptLocation;
 
             _configService.Save(_config);
 
@@ -147,12 +188,21 @@ namespace Rubberduck.UI.SourceControl
             Process.Start(filePath);
         }
 
-        private readonly ICommand _showFilePickerCommand;
-        public ICommand ShowFilePickerCommand
+        private readonly ICommand _showDefaultRepoFolderPickerCommand;
+        public ICommand ShowDefaultRepoFolderPickerCommand
         {
             get
             {
-                return _showFilePickerCommand;
+                return _showDefaultRepoFolderPickerCommand;
+            }
+        }
+
+        private readonly ICommand _showCommandPromptExePickerCommand;
+        public ICommand ShowCommandPromptExePickerCommand
+        {
+            get
+            {
+                return _showCommandPromptExePickerCommand;
             }
         }
 
@@ -199,6 +249,14 @@ namespace Rubberduck.UI.SourceControl
             if (handler != null)
             {
                 handler(this, new ErrorEventArgs(message, innerMessage, notificationType));
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_openFileDialog != null)
+            {
+                _openFileDialog.Dispose();
             }
         }
     }

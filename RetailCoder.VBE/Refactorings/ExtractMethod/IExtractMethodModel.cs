@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         QualifiedSelection Selection { get; }
         Declaration SourceMember { get; }
 
-        IEnumerable<Selection> SelectionToRemove { get; }
+        IEnumerable<Selection> RowsToRemove { get; }
         Selection PositionForMethodCall { get; }
         Selection PositionForNewMethod { get; }
         string NewMethodCall { get; }
