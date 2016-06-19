@@ -6,8 +6,8 @@ namespace Rubberduck.RegexAssistant
 {
     public class Quantifier
     {
-        public static readonly Regex QuantifierMatch = new Regex(@"(?<!\\)[\?\*\+]|\{(\d+)(,\d*)?\}");
-        private static readonly Regex _expressionPattern = new Regex(@"^\{(?<min>\d+)(?<max>,\d*)?\}$");
+        public static readonly string Pattern = @"(?<quantifier>(?<!\\)[\?\*\+]|(?<!\\)\{(\d+)(,\d*)?(?<!\\)\})";
+        private static readonly Regex Matcher = new Regex(@"^\{(?<min>\d+)(?<max>,\d*)?\}$");
 
         public readonly QuantifierKind Kind;
         public readonly int MinimumMatches;
@@ -24,11 +24,11 @@ namespace Rubberduck.RegexAssistant
             else if (expression.Length > 1)
             {
                 Kind = QuantifierKind.Expression;
-                if (!_expressionPattern.IsMatch(expression))
+                Match m = Matcher.Match(expression);
+                if (!m.Success)
                 {
                     throw new ArgumentException(String.Format("Cannot extract a Quantifier from the expression {1}", expression));
                 }
-                Match m = _expressionPattern.Match(expression);
                 int minimum;
                 // shouldn't ever happen
                 if (!int.TryParse(m.Groups["min"].Value, out minimum))
