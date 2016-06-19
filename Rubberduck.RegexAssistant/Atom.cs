@@ -82,19 +82,27 @@ namespace Rubberduck.RegexAssistant
 
     class Group : Atom
     {
+        public static readonly string Pattern = @"(?<!\\)\((?<expression>.*)(?<!\\)\)";
+        private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
+
+        private readonly IRegularExpression subexpression;
+        private readonly string specifier;
+
+        public Group(string specifier) {
+            Match m = Matcher.Match(specifier);
+            if (!m.Success)
+            {
+                throw new ArgumentException("The given specifier does not denote a Group");
+            }
+            subexpression = RegularExpression.Parse(m.Groups["expression"].Value);
+            this.specifier = specifier;
+        }
+
         public string Description
         {
             get
             {
-                throw new NotImplementedException();
-            }
-        }
-
-        public Quantifier Quantifier
-        {
-            get
-            {
-                throw new NotImplementedException();
+                return string.Format(AssistantResources.AtomDescription_Group, specifier) + "\r\n" + subexpression.Description;
             }
         }
 
