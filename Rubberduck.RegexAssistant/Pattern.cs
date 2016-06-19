@@ -16,7 +16,7 @@ namespace Rubberduck.RegexAssistant
             Flags = ignoreCase ? MatcherFlags.IgnoreCase : 0;
             Flags = global ? Flags | MatcherFlags.Global : Flags;
 
-            // FIXME build expression from string
+            RootExpression = RegularExpression.Parse(expression);
         }
 
     }
