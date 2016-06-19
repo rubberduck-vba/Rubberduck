@@ -43,8 +43,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SettingsProvider
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.RegexAssistant", "Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj", "{40CC03E3-756C-4674-AF07-384115DEAEE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegexAssistantTests", "RegexAssistantTests\RegexAssistantTests.csproj", "{ADBFEE9A-3E20-4D24-939A-12C143A065F2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -243,36 +241,6 @@ Global
 		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release64|x64.Build.0 = Release|Any CPU
 		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release64|x86.ActiveCfg = Release|Any CPU
 		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release64|x86.Build.0 = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug|x64.Build.0 = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug|x86.Build.0 = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug64|Any CPU.ActiveCfg = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug64|Any CPU.Build.0 = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug64|x64.ActiveCfg = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug64|x64.Build.0 = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug64|x86.ActiveCfg = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Debug64|x86.Build.0 = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.DebugAccess|Any CPU.ActiveCfg = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.DebugAccess|Any CPU.Build.0 = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.DebugAccess|x64.ActiveCfg = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.DebugAccess|x64.Build.0 = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.DebugAccess|x86.ActiveCfg = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.DebugAccess|x86.Build.0 = Debug|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release|x64.ActiveCfg = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release|x64.Build.0 = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release|x86.ActiveCfg = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release|x86.Build.0 = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release64|Any CPU.ActiveCfg = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release64|Any CPU.Build.0 = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release64|x64.ActiveCfg = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release64|x64.Build.0 = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release64|x86.ActiveCfg = Release|Any CPU
-		{ADBFEE9A-3E20-4D24-939A-12C143A065F2}.Release64|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

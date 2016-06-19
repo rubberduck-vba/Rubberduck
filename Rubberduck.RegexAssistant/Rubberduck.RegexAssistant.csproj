@@ -47,6 +47,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssistantResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="IDescribable.cs" />
     <Compile Include="IRegularExpression.cs" />
     <Compile Include="Pattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

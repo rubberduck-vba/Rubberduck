@@ -1,12 +1,11 @@
-﻿using Rubberduck.RegexAssistant.Extensions;
-using Rubberduck.RegexAssistant.i18n;
+﻿using Rubberduck.RegexAssistant.i18n;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant
 {
-    public interface Atom : IRegularExpression
+    public interface Atom : IDescribable
     {
 
     }
@@ -24,7 +23,7 @@ namespace Rubberduck.RegexAssistant
             Match m = Matcher.Match(specifier);
             if (!m.Success)
             {
-                throw new ArgumentException("The give specifier does not denote a character class");
+                throw new ArgumentException("The given specifier does not denote a character class");
             }
             string actualSpecifier = m.Groups["expression"].Value;
             InverseMatching = actualSpecifier.StartsWith("^");
@@ -63,21 +62,16 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return string.Format(InverseMatching ? AssistantResources.AtomDescription_CharacterClass_Inverted : AssistantResources.AtomDescription_CharacterClass, HumanReadableClass(), Quantifier.HumanReadable());
+                return string.Format(InverseMatching 
+                    ? AssistantResources.AtomDescription_CharacterClass_Inverted 
+                    : AssistantResources.AtomDescription_CharacterClass
+                    , HumanReadableClass());
             }
         }
 
         private string HumanReadableClass()
         {
             return string.Join(", ", CharacterSpecifiers); // join last with and?
-        }
-
-        public Quantifier Quantifier
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
         }
 
         public bool TryMatch(ref string text)

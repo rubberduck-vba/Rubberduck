@@ -184,5 +184,20 @@ namespace RegexAssistantTests
             }
 
         }
+
+        [TestMethod]
+        public void IgnoresBackreferenceSpecifiers()
+        {
+            CharacterClass cut = new CharacterClass(@"[\1]");
+            Assert.IsFalse(cut.InverseMatching);
+
+            List<string> expectedSpecifiers = new List<string>();
+            expectedSpecifiers.Add("1");
+            Assert.AreEqual(expectedSpecifiers.Count, cut.CharacterSpecifiers.Count);
+            for (int i = 0; i < expectedSpecifiers.Count; i++)
+            {
+                Assert.AreEqual(expectedSpecifiers[i], cut.CharacterSpecifiers[i]);
+            }
+        }
     }
 }

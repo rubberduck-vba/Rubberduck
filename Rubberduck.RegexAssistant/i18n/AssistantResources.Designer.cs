@@ -61,7 +61,16 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches any of the following characters {0} {1}..
+        ///   Looks up a localized string similar to Matches the ASCII character CR.
+        /// </summary>
+        internal static string AtomDescription_CarriageReturn {
+            get {
+                return ResourceManager.GetString("AtomDescription_CarriageReturn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches any of the following characters {0}.
         /// </summary>
         internal static string AtomDescription_CharacterClass {
             get {
@@ -70,11 +79,191 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches any character that is not one of {0} {1}..
+        ///   Looks up a localized string similar to Matches any character that is not one of {0}.
         /// </summary>
         internal static string AtomDescription_CharacterClass_Inverted {
             get {
                 return ResourceManager.GetString("AtomDescription_CharacterClass_Inverted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches any digit. Equivalent to &quot;[0-9]&quot;.
+        /// </summary>
+        internal static string AtomDescription_Digit {
+            get {
+                return ResourceManager.GetString("AtomDescription_Digit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches anything.
+        /// </summary>
+        internal static string AtomDescription_Dot {
+            get {
+                return ResourceManager.GetString("AtomDescription_Dot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches the &quot;Form-Feed&quot;-character.
+        /// </summary>
+        internal static string AtomDescription_FormFeed {
+            get {
+                return ResourceManager.GetString("AtomDescription_FormFeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches the group {0} as follows.
+        /// </summary>
+        internal static string AtomDescription_Group {
+            get {
+                return ResourceManager.GetString("AtomDescription_Group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches the horizontal &quot;Tab&quot;-character.
+        /// </summary>
+        internal static string AtomDescription_HTab {
+            get {
+                return ResourceManager.GetString("AtomDescription_HTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Literally matches {0}.
+        /// </summary>
+        internal static string AtomDescription_Literal_ActualLiteral {
+            get {
+                return ResourceManager.GetString("AtomDescription_Literal_ActualLiteral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exactly matches what the capture group at position {0} matched again.
+        /// </summary>
+        internal static string AtomDescription_Literal_Backreference {
+            get {
+                return ResourceManager.GetString("AtomDescription_Literal_Backreference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches the escaped literal {0}.
+        /// </summary>
+        internal static string AtomDescription_Literal_EscapedLiteral {
+            get {
+                return ResourceManager.GetString("AtomDescription_Literal_EscapedLiteral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches the Hexadecimal ASCII value {0}.
+        /// </summary>
+        internal static string AtomDescription_Literal_HexCodepoint {
+            get {
+                return ResourceManager.GetString("AtomDescription_Literal_HexCodepoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches the Octal ASCII value {0}.
+        /// </summary>
+        internal static string AtomDescription_Literal_OctalCodepoint {
+            get {
+                return ResourceManager.GetString("AtomDescription_Literal_OctalCodepoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches the Unicode Codepoint {0}.
+        /// </summary>
+        internal static string AtomDescription_Literal_UnicodePoint {
+            get {
+                return ResourceManager.GetString("AtomDescription_Literal_UnicodePoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches the ASCII character LF, also known as newline.
+        /// </summary>
+        internal static string AtomDescription_Newline {
+            get {
+                return ResourceManager.GetString("AtomDescription_Newline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches non-digits. Equivalent to &quot;[^\d]&quot;.
+        /// </summary>
+        internal static string AtomDescription_NonDigit {
+            get {
+                return ResourceManager.GetString("AtomDescription_NonDigit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches non-whitespace characters. Equivalent to &quot;[^\s]&quot;.
+        /// </summary>
+        internal static string AtomDescription_NonWhitespace {
+            get {
+                return ResourceManager.GetString("AtomDescription_NonWhitespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ensures that the current position is at a &quot;non-word-boundary&quot;.
+        /// </summary>
+        internal static string AtomDescription_NonWordBoundary {
+            get {
+                return ResourceManager.GetString("AtomDescription_NonWordBoundary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches &quot;non-word characters&quot;. Equivalent to &quot;[^\w]&quot;.
+        /// </summary>
+        internal static string AtomDescription_NonWordCharacter {
+            get {
+                return ResourceManager.GetString("AtomDescription_NonWordCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches the vertical &quot;Tab&quot;-character.
+        /// </summary>
+        internal static string AtomDescription_VTab {
+            get {
+                return ResourceManager.GetString("AtomDescription_VTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches any whitespace character. Equivalent to &quot;[ \t\r\n\v\f]&quot;..
+        /// </summary>
+        internal static string AtomDescription_Whitespace {
+            get {
+                return ResourceManager.GetString("AtomDescription_Whitespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ensures that the current position is at a &quot;word boundary&quot;.
+        /// </summary>
+        internal static string AtomDescription_WordBoundary {
+            get {
+                return ResourceManager.GetString("AtomDescription_WordBoundary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches any &quot;word character&quot;. Equivalent to &quot;[a-zA-Z_0-9]&quot;.
+        /// </summary>
+        internal static string AtomDescription_WordCharacter {
+            get {
+                return ResourceManager.GetString("AtomDescription_WordCharacter", resourceCulture);
             }
         }
         
