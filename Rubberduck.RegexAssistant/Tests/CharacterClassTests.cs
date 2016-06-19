@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.RegexAssistant;
+using System;
 using System.Collections.Generic;
 
 namespace RegexAssistantTests

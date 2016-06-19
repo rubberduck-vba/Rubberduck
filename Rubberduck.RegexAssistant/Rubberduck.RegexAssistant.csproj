@@ -54,6 +54,7 @@
     <Compile Include="Quantifier.cs" />
     <Compile Include="QuantifierExtensions.cs" />
     <Compile Include="Tests\CharacterClassTests.cs" />
+    <Compile Include="Tests\LiteralTests.cs" />
     <Compile Include="Tests\QuantifierTests.cs" />
   </ItemGroup>
   <ItemGroup>

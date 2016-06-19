@@ -7,7 +7,7 @@ namespace Rubberduck.RegexAssistant
 {
     public interface Atom : IDescribable
     {
-
+        string Specifier { get; }
     }
 
     public class CharacterClass : Atom
@@ -17,6 +17,7 @@ namespace Rubberduck.RegexAssistant
 
         public bool InverseMatching { get; }
         public IList<string> CharacterSpecifiers { get; }
+        private readonly string specifier;
 
         public CharacterClass(string specifier)
         {
@@ -25,12 +26,22 @@ namespace Rubberduck.RegexAssistant
             {
                 throw new ArgumentException("The given specifier does not denote a character class");
             }
+            this.specifier = specifier;
             string actualSpecifier = m.Groups["expression"].Value;
             InverseMatching = actualSpecifier.StartsWith("^");
             CharacterSpecifiers = new List<string>();
 
             ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier);
         }
+
+        public string Specifier
+        {
+            get
+            {
+                return specifier;
+            }
+        }
+
 
         private static readonly Regex CharacterRanges = new Regex(@"(\\[dDwWsS]|(\\[ntfvr]|\\([0-7]{3}|x[\dA-F]{2}|u[\dA-F]{4}|[\\\.\[\]])|.)(-(\\[ntfvr]|\\([0-7]{3}|x[A-F]{2}|u[\dA-F]{4}|[\.\\\[\]])|.))?)");
         private void ExtractCharacterSpecifiers(string characterClass)
@@ -98,6 +109,14 @@ namespace Rubberduck.RegexAssistant
             this.specifier = specifier;
         }
 
+        public string Specifier
+        {
+            get
+            {
+                return specifier;
+            }
+        }
+
         public string Description
         {
             get
@@ -114,7 +133,7 @@ namespace Rubberduck.RegexAssistant
 
     class Literal : Atom
     {
-        public static readonly string Pattern = @"\(?:[bB(){}\\\[\]\.+*?\dnftvrdDwWsS]|u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3})|.";
+        public static readonly string Pattern = @"(\\([bB\(\){}\\\[\]\.+*?1-9nftvrdDwWsS]|u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3})|.)";
         private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
         private static readonly ISet<char> EscapeLiterals = new HashSet<char>();
         private readonly string specifier;
@@ -126,7 +145,6 @@ namespace Rubberduck.RegexAssistant
             }
         }
 
-
         public Literal(string specifier)
         {
             Match m = Matcher.Match(specifier);
@@ -135,6 +153,14 @@ namespace Rubberduck.RegexAssistant
                 throw new ArgumentException("The given specifier does not denote a Literal");
             }
             this.specifier = specifier;
+        }
+
+        public string Specifier
+        {
+            get
+            {
+                return specifier;
+            }
         }
 
         public string Description
