@@ -29,8 +29,6 @@ namespace Rubberduck.Parsing.VBA
         private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
 
-        private readonly ReferencedDeclarationsCollector _comReflector;
-
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
@@ -52,8 +50,6 @@ namespace Rubberduck.Parsing.VBA
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
 
-            _comReflector = new ReferencedDeclarationsCollector(_state);
-
             state.ParseRequest += ReparseRequested;
         }
 
@@ -69,6 +65,14 @@ namespace Rubberduck.Parsing.VBA
                 Cancel(e.Component);
                 Task.Run(() =>
                 {
+                    SyncComReferences(_state.Projects);
+                    AddBuiltInDeclarations();
+
+                    if (_resolverTokenSource.IsCancellationRequested || _central.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
                     ParseAsync(e.Component, CancellationToken.None).Wait();
 
                     if (_resolverTokenSource.IsCancellationRequested || _central.IsCancellationRequested)
@@ -388,11 +392,17 @@ namespace Rubberduck.Parsing.VBA
                     if (!map.IsLoaded)
                     {
                         _state.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
-                        var items = _comReflector.GetDeclarationsForReference(reference);
-                        foreach (var declaration in items)
+
+                        Task.Run(() =>
                         {
-                            _state.AddDeclaration(declaration);
-                        }
+                            var comReflector = new ReferencedDeclarationsCollector(_state);
+                            var items = comReflector.GetDeclarationsForReference(reference);
+
+                            foreach (var declaration in items)
+                            {
+                                _state.AddDeclaration(declaration);
+                            }
+                        });
                         map.IsLoaded = true;
                     }
                 }
