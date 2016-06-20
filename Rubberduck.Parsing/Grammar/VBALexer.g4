@@ -156,6 +156,7 @@ LSET : L S E T;
 ME : M E;
 MID : M I D;
 MOD : M O D;
+NAME : N A M E;
 NEXT : N E X T;
 NEW : N E W;
 NOT : N O T;

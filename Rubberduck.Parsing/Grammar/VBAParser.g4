@@ -129,6 +129,7 @@ blockStmt :
     | circleSpecialForm
     | scaleSpecialForm
     | callStmt
+	| nameStmt
 ;
 
 
@@ -443,6 +444,8 @@ rsetStmt : RSET whiteSpace expression whiteSpace? EQ whiteSpace? expression;
 // 5.4.2.11 Stop Statement
 stopStmt : STOP;
 
+nameStmt : NAME whiteSpace expression whiteSpace AS whiteSpace expression;
+
 // 5.4.2.10 Select Case Statement
 selectCaseStmt :
     SELECT whiteSpace? CASE whiteSpace? selectExpression endOfStatement
@@ -756,6 +759,7 @@ keyword :
      | SEEK
      | UNLOCK
      | WRITE
+	 | NAME
 ;
 
 markerKeyword : AS;
