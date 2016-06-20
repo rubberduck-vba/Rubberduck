@@ -1194,6 +1194,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitDefDirective([NotNull] VBAParser.DefDirectiveContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.nameStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNameStmt([NotNull] VBAParser.NameStmtContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.typeHint"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
