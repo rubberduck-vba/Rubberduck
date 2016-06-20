@@ -42,7 +42,6 @@ namespace Rubberduck.RegexAssistant
             }
         }
 
-
         private static readonly Regex CharacterRanges = new Regex(@"(\\[dDwWsS]|(\\[ntfvr]|\\([0-7]{3}|x[\dA-F]{2}|u[\dA-F]{4}|[\\\.\[\]])|.)(-(\\[ntfvr]|\\([0-7]{3}|x[A-F]{2}|u[\dA-F]{4}|[\.\\\[\]])|.))?)");
         private void ExtractCharacterSpecifiers(string characterClass)
         {
@@ -89,6 +88,15 @@ namespace Rubberduck.RegexAssistant
         {
             throw new NotImplementedException();
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is CharacterClass)
+            {
+                return (obj as CharacterClass).specifier.Equals(specifier);
+            }
+            return false;
+        }
     }
 
     class Group : Atom
@@ -129,11 +137,20 @@ namespace Rubberduck.RegexAssistant
         {
             throw new NotImplementedException();
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Group)
+            {
+                return (obj as Group).specifier.Equals(specifier);
+            }
+            return false;
+        }
     }
 
     class Literal : Atom
     {
-        public static readonly string Pattern = @"(\\([bB\(\){}\\\[\]\.+*?1-9nftvrdDwWsS]|u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3})|.)";
+        public static readonly string Pattern = @"(?<expression>\\(u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3}|[bB\(\){}\\\[\]\.+*?1-9nftvrdDwWsS])|[^()\[\]{}\\*+?])";
         private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
         private static readonly ISet<char> EscapeLiterals = new HashSet<char>();
         private readonly string specifier;
@@ -253,6 +270,15 @@ namespace Rubberduck.RegexAssistant
         public bool TryMatch(ref string text)
         {
             throw new NotImplementedException();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Literal)
+            {
+                return (obj as Literal).specifier.Equals(specifier);
+            }
+            return false;
         }
     }
 }

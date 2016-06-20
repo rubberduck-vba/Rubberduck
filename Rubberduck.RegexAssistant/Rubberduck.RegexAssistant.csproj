@@ -56,6 +56,7 @@
     <Compile Include="Tests\CharacterClassTests.cs" />
     <Compile Include="Tests\LiteralTests.cs" />
     <Compile Include="Tests\QuantifierTests.cs" />
+    <Compile Include="Tests\RegularExpressionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant
 {
@@ -15,19 +16,19 @@ namespace Rubberduck.RegexAssistant
     public class ConcatenatedExpression : IRegularExpression
     {
         private readonly Quantifier quant;
-        private readonly IList<IRegularExpression> subexpressions;
+        internal readonly IList<IRegularExpression> Subexpressions;
 
         public ConcatenatedExpression(IList<IRegularExpression> subexpressions)
         {
-            this.subexpressions = subexpressions;
-            this.quant = new Quantifier(""); // these are always exactly once. Quantifying happens through groups
+            Subexpressions = subexpressions;
+            quant = new Quantifier(""); // these are always exactly once. Quantifying happens through groups
         }
 
         public string Description
         {
             get
             {
-                return string.Join(", ", subexpressions.Select(exp => exp.Description)) + " " + Quantifier.HumanReadable();
+                return string.Join(", ", Subexpressions.Select(exp => exp.Description)) + " " + Quantifier.HumanReadable();
             }
         }
 
@@ -48,12 +49,12 @@ namespace Rubberduck.RegexAssistant
     public class AlternativesExpression : IRegularExpression
     {
         private readonly Quantifier quant;
-        private readonly IList<IRegularExpression> subexpressions;
+        internal readonly IList<IRegularExpression> Subexpressions;
 
         public AlternativesExpression(IList<IRegularExpression> subexpressions)
         {
-            this.subexpressions = subexpressions;
-            this.quant = new Quantifier(""); // these are always exactly once. Quantifying happens through groups
+            Subexpressions = subexpressions;
+            quant = new Quantifier(""); // these are always exactly once. Quantifying happens through groups
         }
 
         public string Description
@@ -80,12 +81,12 @@ namespace Rubberduck.RegexAssistant
 
     public class SingleAtomExpression : IRegularExpression
     {
-        private readonly Atom atom;
+        public readonly Atom Atom;
         private readonly Quantifier quant;
 
         public SingleAtomExpression(Atom atom, Quantifier quant)
         {
-            this.atom = atom;
+            Atom = atom;
             this.quant = quant;
         }
 
@@ -93,7 +94,7 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return string.Format("{0} {1}.", atom.Description, Quantifier.HumanReadable());
+                return string.Format("{0} {1}.", Atom.Description, Quantifier.HumanReadable());
             }
         
         }
@@ -110,6 +111,16 @@ namespace Rubberduck.RegexAssistant
         {
             // try to match the atom a given number of times.. 
             throw new NotImplementedException();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is SingleAtomExpression)
+            {
+                SingleAtomExpression other = obj as SingleAtomExpression;
+                return other.Atom.Equals(Atom) && other.Quantifier.Equals(Quantifier);
+            }
+            return false;
         }
     }
         
@@ -134,20 +145,74 @@ namespace Rubberduck.RegexAssistant
             if (pipeIndices.Count == 0)
             { // assume ConcatenatedExpression when trying to parse all as a single atom fails
                 IRegularExpression expression;
-                if (TryParseAsAtom(specifier, out expression))
+                string specifierCopy = specifier;
+                if (TryParseAsAtom(ref specifierCopy, out expression) && specifierCopy.Length == 0)
                 {
                     return expression;
                 }
                 else
                 {
-                    expression = ParseIntoConcatenatedExpression(specifier);
-                    return expression;
+                    return ParseIntoConcatenatedExpression(specifier);
                 }
             }
             else
             {
                 return ParseIntoAlternativesExpression(pipeIndices, specifier); 
             }
+        }
+
+        //private static readonly ISet<char> escapeCharacters
+        // successively parse everything into atoms
+        private static IRegularExpression ParseIntoConcatenatedExpression(string specifier)
+        {
+            List<IRegularExpression> subexpressions = new List<IRegularExpression>();
+            string currentSpecifier = specifier;
+            while (currentSpecifier.Length > 0)
+            {
+                IRegularExpression expression;
+                if (TryParseAsAtom(ref currentSpecifier, out expression))
+                {
+                    subexpressions.Add(expression);
+                }
+            }
+            //subexpressions.Reverse();
+            return new ConcatenatedExpression(subexpressions);
+        }
+
+        private static readonly Regex groupWithQuantifier = new Regex("^" + Group.Pattern + Quantifier.Pattern + "?");
+        private static readonly Regex characterClassWithQuantifier = new Regex("^" + CharacterClass.Pattern + Quantifier.Pattern + "?");
+        private static readonly Regex literalWithQuantifier = new Regex("^" + Literal.Pattern + Quantifier.Pattern + "?");
+        internal static bool TryParseAsAtom(ref string specifier, out IRegularExpression expression)
+        {
+            Match m = groupWithQuantifier.Match(specifier);
+            if (m.Success)
+            {
+                string atom = m.Groups["expression"].Value;
+                string quantifier = m.Groups["quantifier"].Value;
+                specifier = specifier.Substring(atom.Length + 2 + quantifier.Length);
+                expression = new SingleAtomExpression(new Group("("+atom+")"), new Quantifier(quantifier));
+                return true;
+            }
+            m = characterClassWithQuantifier.Match(specifier);
+            if (m.Success)
+            {
+                string atom = m.Groups["expression"].Value;
+                string quantifier = m.Groups["quantifier"].Value;
+                specifier = specifier.Substring(atom.Length + 2 + quantifier.Length);
+                expression = new SingleAtomExpression(new CharacterClass("["+atom+"]"), new Quantifier(quantifier));
+                return true;
+            }
+            m = literalWithQuantifier.Match(specifier);
+            if (m.Success)
+            {
+                string atom = m.Groups["expression"].Value;
+                string quantifier = m.Groups["quantifier"].Value;
+                specifier = specifier.Substring(atom.Length + quantifier.Length);
+                expression = new SingleAtomExpression(new Literal(atom), new Quantifier(quantifier));
+                return true;
+            }
+            expression = null;
+            return false;
         }
 
         private static IRegularExpression ParseIntoAlternativesExpression(List<int> pipeIndices, string specifier)
@@ -163,7 +228,50 @@ namespace Rubberduck.RegexAssistant
             return new AlternativesExpression(expressions);
         }
 
-            return null;
+
+        /// <summary>
+        /// Finds all Pipes in the given specifier that are not escaped
+        /// </summary>
+        /// <param name="specifier">the regex specifier to search for unescaped pipes</param>
+        /// <returns>A list populated with the indices of all pipes</returns>
+        private static List<int> GrabPipeIndices(string specifier)
+        {
+            if (!specifier.Contains("|")) {
+                return new List<int>();
+            }
+            int currentIndex = 0;
+            List<int> result = new List<int>();
+            while (true)
+            {
+                currentIndex = specifier.IndexOf("|", currentIndex);
+                if(currentIndex == -1)
+                {
+                    break;
+                }
+                if (!specifier.Substring(currentIndex - 1, 2).Equals("\\|"))
+                {
+                    result.Add(currentIndex);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Weeds out pipe indices that do not signify alternatives at the current "top level" from the given String.
+        /// </summary>
+        /// <param name="pipeIndices">indices of unescaped pipes in the given specifier</param>
+        /// <param name="specifier">the regex specifier under scrutiny</param>
+        private static void WeedPipeIndices(ref List<int> pipeIndices, string specifier)
+        {
+            if (pipeIndices.Count == 0)
+            {
+                return;
+            }
+            foreach (int pipeIndex in pipeIndices)
+            {
+                // must not be between () or [] braces, else we just weed it out
+                
+            }
         }
     }
 }

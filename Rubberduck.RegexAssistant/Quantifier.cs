@@ -81,6 +81,27 @@ namespace Rubberduck.RegexAssistant
                 }
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Quantifier)
+            {
+                var other = obj as Quantifier;
+                return other.Kind == Kind && other.MinimumMatches == MinimumMatches && other.MaximumMatches == MaximumMatches;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            // FIXME get a proper has function
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Quantifier[{0}: {1} to {2}", Kind, MinimumMatches, MaximumMatches);
+        }
     }
 
     public enum QuantifierKind
