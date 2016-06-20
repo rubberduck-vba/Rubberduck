@@ -1,7 +1,7 @@
 #VBAGroceries Tutorial
 ##Introduction
 ###What is this tutorial about?
-Although Rubberduck maintains a Wiki for users regarding many technical points about each feature implemented, this tutorial is presented in context of running a business with many Microsoft Office product with VBA.
+Although Rubberduck maintains a Wiki and announcements by RubberVBA website for users regarding many technical points about each feature implemented, this tutorial is presented in context of running a business with many Microsoft Office product with VBA.
 
 This tutorial was created and adapted from Peter Taylor's fictional business framework named VBAGroceries for Rubberduck users to gain a perspective using this software as part of their development work.
 
