@@ -8,12 +8,14 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Antlr4.Runtime.Misc;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class DeclarationSymbolsListener : VBAParserBaseListener
     {
+        private readonly RubberduckParserState _state;
         private readonly QualifiedModuleName _qualifiedName;
         private readonly Declaration _moduleDeclaration;
         private readonly Declaration _projectDeclaration;
@@ -22,25 +24,22 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _currentScopeDeclaration;
         private Declaration _parentDeclaration;
 
-        private readonly IEnumerable<CommentNode> _comments;
         private readonly IEnumerable<IAnnotation> _annotations;
         private readonly IDictionary<Tuple<string, DeclarationType>, Attributes> _attributes;
-        private readonly HashSet<ReferencePriorityMap> _projectReferences;
 
         private readonly List<Declaration> _createdDeclarations = new List<Declaration>();
         public IReadOnlyList<Declaration> CreatedDeclarations { get { return _createdDeclarations; } }
 
         public DeclarationSymbolsListener(
+            RubberduckParserState state,
             QualifiedModuleName qualifiedName,
             vbext_ComponentType type,
-            IEnumerable<CommentNode> comments,
             IEnumerable<IAnnotation> annotations,
             IDictionary<Tuple<string, DeclarationType>, Attributes> attributes,
-            HashSet<ReferencePriorityMap> projectReferences,
             Declaration projectDeclaration)
         {
+            _state = state;
             _qualifiedName = qualifiedName;
-            _comments = comments;
             _annotations = annotations;
             _attributes = attributes;
 
@@ -48,7 +47,6 @@ namespace Rubberduck.Parsing.Symbols
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
 
-            _projectReferences = projectReferences;
             _projectDeclaration = projectDeclaration;
 
             var key = Tuple.Create(_qualifiedName.ComponentName, declarationType);
@@ -69,6 +67,41 @@ namespace Rubberduck.Parsing.Symbols
             else
             {
                 bool hasDefaultInstanceVariable = type != vbext_ComponentType.vbext_ct_ClassModule && type != vbext_ComponentType.vbext_ct_StdModule;
+
+                Declaration superType = null;
+                if (type == vbext_ComponentType.vbext_ct_Document)
+                {
+                    foreach (var coclass in _state.CoClasses)
+                    {
+                        try
+                        {
+                            if (coclass.Key.Count != _qualifiedName.Component.Properties.Count)
+                            {
+                                continue;
+                            }
+
+                            var allNamesMatch = true;
+                            for (var i = 0; i < coclass.Key.Count; i++)
+                            {
+                                if (coclass.Key[i] != _qualifiedName.Component.Properties.Item(i + 1).Name)
+                                {
+                                    allNamesMatch = false;
+                                    break;
+                                }
+                            }
+                            
+                            if (allNamesMatch)
+                            {
+                                superType = coclass.Value;
+                                break;
+                            }
+                        }
+                        catch (COMException)
+                        {
+                        }
+                    }
+                }
+
                 _moduleDeclaration = new ClassModuleDeclaration(
                     _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
                     _projectDeclaration,
@@ -77,6 +110,11 @@ namespace Rubberduck.Parsing.Symbols
                     FindAnnotations(),
                     moduleAttributes,
                     hasDefaultInstanceVariable: hasDefaultInstanceVariable);
+
+                if (superType != null)
+                {
+                    ((ClassModuleDeclaration) _moduleDeclaration).AddSupertype(superType);
+                }
             }
             SetCurrentScope();
             AddDeclaration(_moduleDeclaration);

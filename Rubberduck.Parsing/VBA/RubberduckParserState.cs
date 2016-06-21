@@ -67,6 +67,8 @@ namespace Rubberduck.Parsing.VBA
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
+
         static RubberduckParserState()
         {
             var values = Enum.GetValues(typeof(ParserState));
@@ -1030,6 +1032,11 @@ namespace Rubberduck.Parsing.VBA
             foreach (var item in _moduleStates)
             {
                 item.Value.Dispose();
+            }
+
+            if (CoClasses != null)
+            {
+                CoClasses.Clear();
             }
 
             _moduleStates.Clear();
