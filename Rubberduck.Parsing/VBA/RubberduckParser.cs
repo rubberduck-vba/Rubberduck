@@ -613,11 +613,9 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {
+            Debug.Assert(State.Status == ParserState.ResolvedDeclarations);
+
             var state = _state.GetModuleState(component);
-            if (state != ParserState.Resolving)
-            {
-                return;
-            }
             var qualifiedName = new QualifiedModuleName(component);
             Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
