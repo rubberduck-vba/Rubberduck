@@ -298,7 +298,7 @@ End Sub
             // arrange
             var code = @"
 Public Sub DoSomething()
-    If True Then foo
+    If True Then GoTo foo
 foo:
 End Sub
 ";
