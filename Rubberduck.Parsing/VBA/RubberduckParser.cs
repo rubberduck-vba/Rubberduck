@@ -360,6 +360,8 @@ namespace Rubberduck.Parsing.VBA
 
         private void SyncComReferences(IReadOnlyList<VBProject> projects)
         {
+            var loadTasks = new List<Task>();
+
             foreach (var vbProject in projects)
             {
                 var projectId = QualifiedModuleName.GetProjectId(vbProject);
@@ -393,6 +395,7 @@ namespace Rubberduck.Parsing.VBA
                     {
                         _state.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
 
+                        loadTasks.Add(
                         Task.Run(() =>
                         {
                             var comReflector = new ReferencedDeclarationsCollector(_state);
@@ -402,7 +405,7 @@ namespace Rubberduck.Parsing.VBA
                             {
                                 _state.AddDeclaration(declaration);
                             }
-                        });
+                        }));
                         map.IsLoaded = true;
                     }
                 }
@@ -425,6 +428,8 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
             }
+
+            Task.WaitAll(loadTasks.ToArray());
 
             foreach (var reference in unmapped)
             {
