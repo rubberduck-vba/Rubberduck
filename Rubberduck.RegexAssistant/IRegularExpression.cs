@@ -126,25 +126,27 @@ namespace Rubberduck.RegexAssistant
         
     public static class RegularExpression
     {
+
+        /// <summary>
+        /// We basically run a Chain of Responsibility here.At the outermost level, we need to check whether this is an AlternativesExpression.
+        /// If it isn't, we assume it's a ConcatenatedExpression and proceed to create one of these.
+        /// The next step is attempting to parse Atoms. Those are packed into a SingleAtomExpression with their respective Quantifier.
+        /// Note that Atoms can request a Parse of their subexpressions. Prominent example here would be Groups.
+        /// Also note that this here is responsible for separating atoms and Quantifiers. When we matched an Atom we need to try to match a Quantifier and pack them together. 
+        /// If there is no Quantifier following (either because the input is exhausted or there directly is the next atom) then we instead pair with `new Quantifier("")` 
+        /// </summary>
+        /// <param name="specifier"></param>
+        /// <returns></returns>
         public static IRegularExpression Parse(string specifier)
         {
-            /*
-             We basically run a Chain of Responsibility here. At the outermost level, we need to check whether this is an AlternativesExpression.
-             If it isn't, we assume it's a ConcatenatedExpression and proceed to create one of these.
-             The next step is attempting to parse Atoms. Those are packed into a SingleAtomExpression with their respective Quantifier.
-
-             Note that Atoms can request a Parse of their subexpressions. Prominent example here would be Groups.
-             Also note that this here is responsible for separating atoms and Quantifiers. When we matched an Atom we need to try to match a Quantifier and pack them together. 
-             If there is no Quantifier following (either because the input is exhausted or there directly is the next atom) then we instead pair with `new Quantifier("")`
-             */
-            // KISS: Alternatives is when you can split at 
-            // grab all indices where we have a pipe
-            List<int> pipeIndices = GrabPipeIndices(specifier);
+            // KISS: Alternatives is when you have unescaped |s at the toplevel
+            List<int> pipeIndices = GrabPipeIndices(specifier); // grabs unescaped pipes
             // and now weed out those inside character classes or groups
             WeedPipeIndices(ref pipeIndices, specifier);
             if (pipeIndices.Count == 0)
             { // assume ConcatenatedExpression when trying to parse all as a single atom fails
                 IRegularExpression expression;
+                // ByRef requires us to hack around here, because TryParseAsAtom doesn't fail when it doesn't consume the specifier anymore
                 string specifierCopy = specifier;
                 if (TryParseAsAtom(ref specifierCopy, out expression) && specifierCopy.Length == 0)
                 {
@@ -160,9 +162,12 @@ namespace Rubberduck.RegexAssistant
                 return ParseIntoAlternativesExpression(pipeIndices, specifier); 
             }
         }
-
-        //private static readonly ISet<char> escapeCharacters
-        // successively parse everything into atoms
+        /// <summary>
+        /// Successively parses the complete specifer into Atoms and returns a ConcatenatedExpression after the specifier has been exhausted.
+        /// Note: may loop infinitely when the passed specifier is a malformed Regular Expression
+        /// </summary>
+        /// <param name="specifier">The specifier to Parse into a concatenated expression</param>
+        /// <returns>The ConcatenatedExpression resulting from parsing the given specifier</returns>
         private static IRegularExpression ParseIntoConcatenatedExpression(string specifier)
         {
             List<IRegularExpression> subexpressions = new List<IRegularExpression>();
@@ -175,13 +180,25 @@ namespace Rubberduck.RegexAssistant
                     subexpressions.Add(expression);
                 }
             }
-            //subexpressions.Reverse();
             return new ConcatenatedExpression(subexpressions);
         }
 
         private static readonly Regex groupWithQuantifier = new Regex("^" + Group.Pattern + Quantifier.Pattern + "?");
         private static readonly Regex characterClassWithQuantifier = new Regex("^" + CharacterClass.Pattern + Quantifier.Pattern + "?");
         private static readonly Regex literalWithQuantifier = new Regex("^" + Literal.Pattern + Quantifier.Pattern + "?");
+        /// <summary>
+        /// Tries to parse the given specifier into an Atom. For that all categories of Atoms are checked in the following order:
+        ///  1. Group
+        ///  2. Class
+        ///  3. Literal
+        /// When it succeeds, the given expression will be assigned a SingleAtomExpression containing the Atom and it's Quantifier.
+        /// The parsed atom will be removed from the specifier and the method returns true. To check whether the complete specifier was an Atom, 
+        /// one needs to examine the specifier after calling this method. If it was, the specifier is empty after calling.
+        /// </summary>
+        /// <param name="specifier">The specifier to extract the leading Atom out of. Will be shortened if an Atom was successfully extracted</param>
+        /// <param name="expression">The resulting SingleAtomExpression</param>
+        /// <returns>True, if an Atom could be extracted, false otherwise</returns>
+        // Note: could be rewritten to not consume the specifier and instead return an integer specifying the consumed length of specifier. This would remove the by-ref passed string hack
         internal static bool TryParseAsAtom(ref string specifier, out IRegularExpression expression)
         {
             Match m = groupWithQuantifier.Match(specifier);
@@ -215,6 +232,12 @@ namespace Rubberduck.RegexAssistant
             return false;
         }
 
+        /// <summary>
+        /// Makes the given specifier with the given pipeIndices into an AlternativesExpression 
+        /// </summary>
+        /// <param name="pipeIndices">The indices of Alternative-indicating pipes on the current expression level</param>
+        /// <param name="specifier">The specifier to split into subexpressions</param>
+        /// <returns>An AlternativesExpression consisting of the split alternatives in the specifier, in order of encounter</returns>
         private static IRegularExpression ParseIntoAlternativesExpression(List<int> pipeIndices, string specifier)
         {
             List<IRegularExpression> expressions = new List<IRegularExpression>();
@@ -236,6 +259,10 @@ namespace Rubberduck.RegexAssistant
         /// <returns>A list populated with the indices of all pipes</returns>
         private static List<int> GrabPipeIndices(string specifier)
         {
+            // FIXME: Check assumptions: 
+            // - | is never encountered at index 0
+            // - | is never preceded by \\
+
             if (!specifier.Contains("|")) {
                 return new List<int>();
             }
@@ -248,6 +275,7 @@ namespace Rubberduck.RegexAssistant
                 {
                     break;
                 }
+                // ignore escaped literals
                 if (!specifier.Substring(currentIndex - 1, 2).Equals("\\|"))
                 {
                     result.Add(currentIndex);
@@ -261,7 +289,7 @@ namespace Rubberduck.RegexAssistant
         /// </summary>
         /// <param name="pipeIndices">indices of unescaped pipes in the given specifier</param>
         /// <param name="specifier">the regex specifier under scrutiny</param>
-        private static void WeedPipeIndices(ref List<int> pipeIndices, string specifier)
+        internal static void WeedPipeIndices(ref List<int> pipeIndices, string specifier)
         {
             if (pipeIndices.Count == 0)
             {
