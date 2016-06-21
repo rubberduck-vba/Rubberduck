@@ -1,4 +1,5 @@
 ﻿using Rubberduck.RegexAssistant.Extensions;
+using Rubberduck.RegexAssistant.i18n;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,17 @@ namespace Rubberduck.RegexAssistant
     public interface IRegularExpression : IDescribable
     {
         Quantifier Quantifier { get; }
-
-        bool TryMatch(string text, out string remaining);
     }
 
     public class ConcatenatedExpression : IRegularExpression
     {
-        private readonly Quantifier quant;
+        private readonly Quantifier _quantifier;
         internal readonly IList<IRegularExpression> Subexpressions;
 
         public ConcatenatedExpression(IList<IRegularExpression> subexpressions)
         {
             Subexpressions = subexpressions;
-            quant = new Quantifier(""); // these are always exactly once. Quantifying happens through groups
+            _quantifier = new Quantifier(string.Empty); // these are always exactly once. Quantifying happens through groups
         }
 
         public string Description
@@ -36,32 +35,27 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return quant;
+                return _quantifier;
             }
-        }
-
-        public bool TryMatch(string text, out string remaining)
-        {
-            throw new NotImplementedException();
         }
     }
 
     public class AlternativesExpression : IRegularExpression
     {
-        private readonly Quantifier quant;
+        private readonly Quantifier _quantifier;
         internal readonly IList<IRegularExpression> Subexpressions;
 
         public AlternativesExpression(IList<IRegularExpression> subexpressions)
         {
             Subexpressions = subexpressions;
-            quant = new Quantifier(""); // these are always exactly once. Quantifying happens through groups
+            _quantifier = new Quantifier(string.Empty); // these are always exactly once. Quantifying happens through groups
         }
 
         public string Description
         {
             get
             {
-                throw new NotImplementedException();
+                return string.Format(AssistantResources.ExpressionDescription_AlternativesExpression, Quantifier.HumanReadable()) + string.Join(Environment.NewLine, Subexpressions);
             }
         }
 
@@ -69,25 +63,20 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return quant;
+                return _quantifier;
             }
-        }
-
-        public bool TryMatch(string text, out string remaining)
-        {
-            throw new NotImplementedException();
         }
     }
 
     public class SingleAtomExpression : IRegularExpression
     {
-        public readonly Atom Atom;
-        private readonly Quantifier quant;
+        public readonly IAtom Atom;
+        private readonly Quantifier _quantifier;
 
-        public SingleAtomExpression(Atom atom, Quantifier quant)
+        public SingleAtomExpression(IAtom atom, Quantifier quantifier)
         {
             Atom = atom;
-            this.quant = quant;
+            _quantifier = quantifier;
         }
 
         public string Description
@@ -96,21 +85,14 @@ namespace Rubberduck.RegexAssistant
             {
                 return string.Format("{0} {1}.", Atom.Description, Quantifier.HumanReadable());
             }
-        
         }
 
         public Quantifier Quantifier
         {
             get
             {
-                return quant;
+                return _quantifier;
             }
-        }
-
-        public bool TryMatch(string text, out string remaining)
-        {
-            // try to match the atom a given number of times.. 
-            throw new NotImplementedException();
         }
 
         public override bool Equals(object obj)
@@ -128,15 +110,18 @@ namespace Rubberduck.RegexAssistant
     {
 
         /// <summary>
-        /// We basically run a Chain of Responsibility here.At the outermost level, we need to check whether this is an AlternativesExpression.
-        /// If it isn't, we assume it's a ConcatenatedExpression and proceed to create one of these.
-        /// The next step is attempting to parse Atoms. Those are packed into a SingleAtomExpression with their respective Quantifier.
-        /// Note that Atoms can request a Parse of their subexpressions. Prominent example here would be Groups.
-        /// Also note that this here is responsible for separating atoms and Quantifiers. When we matched an Atom we need to try to match a Quantifier and pack them together. 
+        /// We basically run a Chain of Responsibility here. At first we try to parse the whole specifier as one Atom.
+        /// If this fails, we assume it's a ConcatenatedExpression and proceed to create one of these.
+        /// That works well until we encounter a non-escaped '|' outside of a CharacterClass. Then we know that we actually have an AlternativesExpression.
+        /// This means we have to check what we got back and add it to a List of subexpressions to the AlternativesExpression. 
+        /// We then proceed to the next alternative (ParseIntoConcatenatedExpression consumes the tokens it uses) and keep adding to our subexpressions.
+        /// 
+        /// Note that Atoms (or more specifically Groups) can request a Parse of their subexpressions. 
+        /// Also note that TryParseAtom is responsible for grabbing an Atom <b>and</b> it's Quantifier.
         /// If there is no Quantifier following (either because the input is exhausted or there directly is the next atom) then we instead pair with `new Quantifier("")` 
         /// </summary>
-        /// <param name="specifier"></param>
-        /// <returns></returns>
+        /// <param name="specifier">The full Regular Expression specifier to Parse</param>
+        /// <returns>An IRegularExpression that encompasses the complete given specifier</returns>
         public static IRegularExpression Parse(string specifier)
         {
             IRegularExpression expression;
@@ -146,38 +131,27 @@ namespace Rubberduck.RegexAssistant
             {
                 return expression;
             }
-            else
+            List<IRegularExpression> subexpressions = new List<IRegularExpression>();
+            while (specifier.Length != 0)
             {
-                List<IRegularExpression> subexpressions = new List<IRegularExpression>();
-                while (specifier.Length != 0)
+                expression = ParseIntoConcatenatedExpression(ref specifier);
+                // ! actually an AlternativesExpression
+                if (specifier.Length != 0 || subexpressions.Count != 0)
                 {
-                    expression = ParseIntoConcatenatedExpression(ref specifier);
-                    // ! actually an AlternativesExpression
-                    if (specifier.Length != 0 || subexpressions.Count != 0)
+                    // flatten hierarchy
+                    var parsedSubexpressions = (expression as ConcatenatedExpression).Subexpressions;
+                    if (parsedSubexpressions.Count == 1)
                     {
-                        // flatten hierarchy
-                        var parsedSubexpressions = (expression as ConcatenatedExpression).Subexpressions;
-                        if (parsedSubexpressions.Count == 1)
-                        {
-                            expression = parsedSubexpressions[0];
-                        }
-                        subexpressions.Add(expression);
+                        expression = parsedSubexpressions[0];
                     }
-                }
-                if (subexpressions.Count == 0)
-                {
-                    return expression;
-                }
-                else
-                {
-                    return new AlternativesExpression(subexpressions);
+                    subexpressions.Add(expression);
                 }
             }
-
+            return (subexpressions.Count == 0) ? expression : new AlternativesExpression(subexpressions);
         }
         /// <summary>
         /// Successively parses the complete specifer into Atoms and returns a ConcatenatedExpression after the specifier has been exhausted or a single '|' is encountered at the start of the remaining specifier.
-        /// Note: may loop infinitely when the passed specifier is a malformed Regular Expression
+        /// Note: this may fail to work if the last encountered token cannot be parsed into an Atom, but the remaining specifier has nonzero lenght
         /// </summary>
         /// <param name="specifier">The specifier to Parse into a concatenated expression</param>
         /// <returns>The ConcatenatedExpression resulting from parsing the given specifier, either completely or up to the first encountered '|'</returns>
@@ -199,7 +173,7 @@ namespace Rubberduck.RegexAssistant
                     subexpressions.Add(expression);
                 }
             }
-            specifier = ""; // we've exhausted the specifier, tell Parse about it
+            specifier = ""; // we've exhausted the specifier, tell Parse about it to prevent infinite looping
             return new ConcatenatedExpression(subexpressions);
         }
 

@@ -186,6 +186,9 @@
   <data name="AtomDescription_WordCharacter" xml:space="preserve">
     <value>Matches any "word character". Equivalent to "[a-zA-Z_0-9]"</value>
   </data>
+  <data name="ExpressionDescription_AlternativesExpression" xml:space="preserve">
+    <value>Matches one of the following alternatives {0}.</value>
+  </data>
   <data name="Quantifer_Plus" xml:space="preserve">
     <value>at least once</value>
   </data>

@@ -268,6 +268,15 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Matches one of the following alternatives {0}..
+        /// </summary>
+        internal static string ExpressionDescription_AlternativesExpression {
+            get {
+                return ResourceManager.GetString("ExpressionDescription_AlternativesExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to at least once.
         /// </summary>
         internal static string Quantifer_Plus {
