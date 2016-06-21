@@ -613,35 +613,35 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {
-            var state = _state.GetModuleState(component);
-            if (state != ParserState.Resolving)
-            {
-                return;
-            }
+            Debug.Assert(State.Status == ParserState.ResolvedDeclarations);
+            
             var qualifiedName = new QualifiedModuleName(component);
             Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
+
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
             var listener = new IdentifierReferenceListener(resolver);
+
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
             {
                 var walker = new ParseTreeWalker();
                 try
                 {
-                    Stopwatch watch = Stopwatch.StartNew();
+                    var watch = Stopwatch.StartNew();
                     walker.Walk(listener, tree);
                     watch.Stop();
-                    Logger.Debug("Binding Resolution done for component '{0}' in {1}ms (thread {2})", component.Name, watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+                    Logger.Debug("Binding Resolution done for component '{0}' in {1}ms (thread {2})", component.Name,
+                        watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+
                     _state.RebuildSelectionCache();
-                    state = ParserState.Ready;
+                    _state.SetModuleState(component, ParserState.Ready);
                 }
                 catch (Exception exception)
                 {
                     Logger.Error(exception, "Exception thrown resolving '{0}' (thread {1}).", component.Name, Thread.CurrentThread.ManagedThreadId);
-                    state = ParserState.ResolverError;
+                    _state.SetModuleState(component, ParserState.ResolverError);
                 }
             }
-
-            _state.SetModuleState(component, state);
+            
             Logger.Debug("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
         }
 
