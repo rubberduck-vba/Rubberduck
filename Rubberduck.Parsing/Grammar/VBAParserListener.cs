@@ -2737,17 +2737,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.statementLabel"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterStatementLabel([NotNull] VBAParser.StatementLabelContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.statementLabel"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitStatementLabel([NotNull] VBAParser.StatementLabelContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>addOp</c>
 	/// labeled alternative in <see cref="VBAParser.expression"/>.
 	/// </summary>

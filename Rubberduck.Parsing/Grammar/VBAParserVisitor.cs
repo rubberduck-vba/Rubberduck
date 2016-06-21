@@ -1743,13 +1743,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.statementLabel"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitStatementLabel([NotNull] VBAParser.StatementLabelContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>addOp</c>
 	/// labeled alternative in <see cref="VBAParser.expression"/>.
 	/// </summary>
