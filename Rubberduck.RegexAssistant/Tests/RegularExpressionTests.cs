@@ -152,22 +152,37 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        //[TestMethod]
-        //public void ParseSimplisticCharacterClassConcatenationAsConcatenatedExpression()
-        //{
-        //    List<IRegularExpression> expected = new List<IRegularExpression>();
-        //    expected.Add(new SingleAtomExpression(new Literal("a"), new Quantifier("")));
-        //    expected.Add(new SingleAtomExpression(new CharacterClass("[abc]"), new Quantifier("*")));
-        //    expected.Add(new SingleAtomExpression(new Literal("b"), new Quantifier("")));
+        [TestMethod]
+        public void ParseSimplisticAlternativesExpression()
+        {
+            List<IRegularExpression> expected = new List<IRegularExpression>();
+            expected.Add(new SingleAtomExpression(new Literal("a"), new Quantifier("")));
+            expected.Add(new SingleAtomExpression(new Literal("b"), new Quantifier("")));
 
-        //    IRegularExpression expression = RegularExpression.Parse("a[abc]*b");
-        //    Assert.IsInstanceOfType(expression, typeof(ConcatenatedExpression));
-        //    var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
-        //    Assert.AreEqual(expected.Count, subexpressions.Count);
-        //    for (int i = 0; i < expected.Count; i++)
-        //    {
-        //        Assert.AreEqual(expected[i], subexpressions[i]);
-        //    }
-        //}
+            IRegularExpression expression = RegularExpression.Parse("a|b");
+            Assert.IsInstanceOfType(expression, typeof(AlternativesExpression));
+            var subexpressions = (expression as AlternativesExpression).Subexpressions;
+            Assert.AreEqual(expected.Count, subexpressions.Count);
+            for (int i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i], subexpressions[i]);
+            }
+        }
+
+        [TestMethod]
+        public void CharacterClassIsNotAnAlternativesExpression()
+        {
+            IRegularExpression expression = RegularExpression.Parse("[a|b]");
+            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.AreEqual(new CharacterClass("[a|b]"), (expression as SingleAtomExpression).Atom);
+        }
+
+        [TestMethod]
+        public void GroupIsNotAnAlternativesExpression()
+        {
+            IRegularExpression expression = RegularExpression.Parse("(a|b)");
+            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.AreEqual(new Group("(a|b)"), (expression as SingleAtomExpression).Atom);
+        }
     }
 }

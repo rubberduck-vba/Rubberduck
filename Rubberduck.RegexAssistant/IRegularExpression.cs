@@ -139,47 +139,67 @@ namespace Rubberduck.RegexAssistant
         /// <returns></returns>
         public static IRegularExpression Parse(string specifier)
         {
-            // KISS: Alternatives is when you have unescaped |s at the toplevel
-            List<int> pipeIndices = GrabPipeIndices(specifier); // grabs unescaped pipes
-            // and now weed out those inside character classes or groups
-            WeedPipeIndices(ref pipeIndices, specifier);
-            if (pipeIndices.Count == 0)
-            { // assume ConcatenatedExpression when trying to parse all as a single atom fails
-                IRegularExpression expression;
-                // ByRef requires us to hack around here, because TryParseAsAtom doesn't fail when it doesn't consume the specifier anymore
-                string specifierCopy = specifier;
-                if (TryParseAsAtom(ref specifierCopy, out expression) && specifierCopy.Length == 0)
+            IRegularExpression expression;
+            // ByRef requires us to hack around here, because TryParseAsAtom doesn't fail when it doesn't consume the specifier anymore
+            string specifierCopy = specifier;
+            if (TryParseAsAtom(ref specifierCopy, out expression) && specifierCopy.Length == 0)
+            {
+                return expression;
+            }
+            else
+            {
+                List<IRegularExpression> subexpressions = new List<IRegularExpression>();
+                while (specifier.Length != 0)
+                {
+                    expression = ParseIntoConcatenatedExpression(ref specifier);
+                    // ! actually an AlternativesExpression
+                    if (specifier.Length != 0 || subexpressions.Count != 0)
+                    {
+                        // flatten hierarchy
+                        var parsedSubexpressions = (expression as ConcatenatedExpression).Subexpressions;
+                        if (parsedSubexpressions.Count == 1)
+                        {
+                            expression = parsedSubexpressions[0];
+                        }
+                        subexpressions.Add(expression);
+                    }
+                }
+                if (subexpressions.Count == 0)
                 {
                     return expression;
                 }
                 else
                 {
-                    return ParseIntoConcatenatedExpression(specifier);
+                    return new AlternativesExpression(subexpressions);
                 }
             }
-            else
-            {
-                return ParseIntoAlternativesExpression(pipeIndices, specifier); 
-            }
+
         }
         /// <summary>
-        /// Successively parses the complete specifer into Atoms and returns a ConcatenatedExpression after the specifier has been exhausted.
+        /// Successively parses the complete specifer into Atoms and returns a ConcatenatedExpression after the specifier has been exhausted or a single '|' is encountered at the start of the remaining specifier.
         /// Note: may loop infinitely when the passed specifier is a malformed Regular Expression
         /// </summary>
         /// <param name="specifier">The specifier to Parse into a concatenated expression</param>
-        /// <returns>The ConcatenatedExpression resulting from parsing the given specifier</returns>
-        private static IRegularExpression ParseIntoConcatenatedExpression(string specifier)
+        /// <returns>The ConcatenatedExpression resulting from parsing the given specifier, either completely or up to the first encountered '|'</returns>
+        private static IRegularExpression ParseIntoConcatenatedExpression(ref string specifier)
         {
             List<IRegularExpression> subexpressions = new List<IRegularExpression>();
             string currentSpecifier = specifier;
             while (currentSpecifier.Length > 0)
             {
                 IRegularExpression expression;
+                // we actually have an AlternativesExpression, return the current status to Parse after updating the specifier
+                if (currentSpecifier[0].Equals('|'))
+                {
+                    specifier = currentSpecifier.Substring(1); // skip leading |
+                    return new ConcatenatedExpression(subexpressions);
+                }
                 if (TryParseAsAtom(ref currentSpecifier, out expression))
                 {
                     subexpressions.Add(expression);
                 }
             }
+            specifier = ""; // we've exhausted the specifier, tell Parse about it
             return new ConcatenatedExpression(subexpressions);
         }
 
@@ -276,7 +296,9 @@ namespace Rubberduck.RegexAssistant
                     break;
                 }
                 // ignore escaped literals
-                if (!specifier.Substring(currentIndex - 1, 2).Equals("\\|"))
+                // FIXME this is still a little too naive, since we could actually have something like "\\\|", which means that | is escaped again, but it should suffice for now
+                if (currentIndex == 0 || !specifier.Substring(currentIndex - 1, 2).Equals("\\|")
+                    || (currentIndex > 1 && specifier.Substring(currentIndex -2, 2).Equals("\\\\")))
                 {
                     result.Add(currentIndex);
                 }
