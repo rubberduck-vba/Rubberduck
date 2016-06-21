@@ -230,6 +230,7 @@ namespace Rubberduck
             _componentsEventsSinks.Remove(projectId);
             _referencesEventsSinks.Remove(projectId);
             _parser.State.RemoveProject(e.Item);
+            _parser.State.OnParseRequested(this);
 
             _logger.Debug("Project '{0}' was removed.", e.Item.Name);
             Tuple<IConnectionPoint, int> componentsTuple;
