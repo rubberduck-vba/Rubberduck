@@ -546,10 +546,9 @@ complexType :
 
 fieldLength : MULT whiteSpace? (numberLiteral | identifierValue);
 
-statementLabelDefinition : statementLabel whiteSpace? COLON;
-statementLabel : identifierStatementLabel | lineNumberLabel;
-identifierStatementLabel : unrestrictedIdentifier;
-lineNumberLabel : numberLiteral;
+statementLabelDefinition : identifierStatementLabel | lineNumberLabel;
+identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON;
+lineNumberLabel : numberLiteral whiteSpace? COLON?;
 
 numberLiteral : HEXLITERAL | OCTLITERAL | FLOATLITERAL | INTEGERLITERAL;
 

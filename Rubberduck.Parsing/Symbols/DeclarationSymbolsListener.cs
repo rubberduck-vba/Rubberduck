@@ -699,14 +699,22 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterStatementLabelDefinition(VBAParser.StatementLabelDefinitionContext context)
         {
+            var statementText = context.identifierStatementLabel() != null
+                ? context.identifierStatementLabel().unrestrictedIdentifier().GetText()
+                : context.lineNumberLabel().numberLiteral().GetText();
+
+            var statementSelection = context.identifierStatementLabel() != null
+                ? context.identifierStatementLabel().unrestrictedIdentifier().GetSelection()
+                : context.lineNumberLabel().numberLiteral().GetSelection();
+
             AddDeclaration(
                 CreateDeclaration(
-                    context.statementLabel().GetText(),
+                    statementText,
                     null,
                     Accessibility.Private,
                     DeclarationType.LineLabel,
                     context,
-                    context.statementLabel().GetSelection(),
+                    statementSelection,
                     true,
                     null,
                     null));

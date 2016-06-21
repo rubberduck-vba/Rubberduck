@@ -3141,19 +3141,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.statementLabel"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterStatementLabel([NotNull] VBAParser.StatementLabelContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.statementLabel"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitStatementLabel([NotNull] VBAParser.StatementLabelContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.addOp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
