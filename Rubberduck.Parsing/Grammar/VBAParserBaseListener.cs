@@ -2959,6 +2959,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitTabNumberClause([NotNull] VBAParser.TabNumberClauseContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.lineSpecialForm"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLineSpecialForm([NotNull] VBAParser.LineSpecialFormContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.lineSpecialForm"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLineSpecialForm([NotNull] VBAParser.LineSpecialFormContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.logicalImpOp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -3217,6 +3230,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitLenClause([NotNull] VBAParser.LenClauseContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.lineSpecialFormOption"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLineSpecialFormOption([NotNull] VBAParser.LineSpecialFormOptionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.lineSpecialFormOption"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLineSpecialFormOption([NotNull] VBAParser.LineSpecialFormOptionContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.moduleDeclarationsElement"/>.
