@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
-            return state.Status >= ParserState.ResolvedDeclarations;
+            return state.Status >= ParserState.ResolvedDeclarations && state.Status < ParserState.Error;
         }
     }
 }
