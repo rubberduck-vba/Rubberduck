@@ -94,6 +94,7 @@ keyword :
      | ARRAY
      | ATTRIBUTE
 	 | B_CHAR
+	 | BF
      | BEGIN
      | BOOLEAN
      | BYREF
@@ -138,6 +139,7 @@ keyword :
      | LENB
      | LIB
      | LIKE
+	 | LINE
      | LOAD
      | LONG
      | LONGLONG
