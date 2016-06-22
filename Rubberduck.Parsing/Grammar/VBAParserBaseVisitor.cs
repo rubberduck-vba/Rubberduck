@@ -1815,6 +1815,17 @@ public partial class VBAParserBaseVisitor<Result> : AbstractParseTreeVisitor<Res
 	public virtual Result VisitDefDirective([NotNull] VBAParser.DefDirectiveContext context) { return VisitChildren(context); }
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.nameStmt"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitNameStmt([NotNull] VBAParser.NameStmtContext context) { return VisitChildren(context); }
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.typeHint"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -2649,17 +2660,6 @@ public partial class VBAParserBaseVisitor<Result> : AbstractParseTreeVisitor<Res
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.statementLabel"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitStatementLabel([NotNull] VBAParser.StatementLabelContext context) { return VisitChildren(context); }
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.addOp"/>.

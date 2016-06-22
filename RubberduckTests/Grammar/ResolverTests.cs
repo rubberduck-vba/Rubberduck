@@ -245,7 +245,7 @@ End Sub
         }
 
         [TestMethod]
-        public void SingleLineIfStatementLabel_IsReferenceToLabel()
+        public void SingleLineIfStatementLabel_IsReferenceToLabel_NumberLabelHasColon()
         {
             // arrange
             var code = @"
@@ -260,6 +260,54 @@ End Sub
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
+
+            var reference = declaration.References.SingleOrDefault();
+            Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
+        [TestMethod]
+        public void SingleLineIfStatementLabel_IsReferenceToLabel_NumberLabelNoColon()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    Dim fizz As Integer
+    fizz = 5
+    If fizz = 5 Then Exit Sub
+
+    If True Then 5
+5
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
+
+            var reference = declaration.References.SingleOrDefault();
+            Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
+        [TestMethod]
+        public void SingleLineIfStatementLabel_IsReferenceToLabel_IdentifierLabel()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    If True Then GoTo foo
+foo:
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "foo");
 
             var reference = declaration.References.SingleOrDefault();
             Assert.IsNotNull(reference);

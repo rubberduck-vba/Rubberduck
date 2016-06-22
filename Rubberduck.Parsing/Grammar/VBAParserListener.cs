@@ -1870,6 +1870,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitDefDirective([NotNull] VBAParser.DefDirectiveContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.nameStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNameStmt([NotNull] VBAParser.NameStmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.nameStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNameStmt([NotNull] VBAParser.NameStmtContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.typeHint"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -2724,17 +2735,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.statementLabel"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterStatementLabel([NotNull] VBAParser.StatementLabelContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.statementLabel"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitStatementLabel([NotNull] VBAParser.StatementLabelContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>addOp</c>

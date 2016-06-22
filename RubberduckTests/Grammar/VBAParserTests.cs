@@ -776,9 +776,37 @@ End Sub";
 Sub Test()
     a:
     10:
+    15
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+        }
+
+        [TestMethod]
+        public void NameStatement()
+        {
+            string code = @"
+Sub Test()
+    Dim sOldPath, sOldName As String
+    Dim sNewPath, sNewName As String
+    Name sOldPath + sOldName As sNewPath + sNewName
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//nameStmt", matches => matches.Count == 1);
+        }
+
+        [TestMethod]
+        public void ProcedureNamedName()
+        {
+            string code = @"
+Sub Name()
+End Sub
+
+Sub Test()
+    Name
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifier", matches => matches.Count == 3);    // name, test, and name
         }
 
         [TestMethod]

@@ -1,4 +1,5 @@
-﻿using Infralution.Localization.Wpf;
+﻿using System.IO;
+using Infralution.Localization.Wpf;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
@@ -169,6 +170,21 @@ namespace Rubberduck
             }
         }
 
+        private void EnsureDirectoriesExist()
+        {
+            try
+            {
+                if (!Directory.Exists(ApplicationConstants.LOG_FOLDER_PATH))
+                {
+                    Directory.CreateDirectory(ApplicationConstants.LOG_FOLDER_PATH);
+                }
+            }
+            catch
+            {
+                //Does this need to display some sort of dialog?
+            }
+        }
+
         private void UpdateLoggingLevel()
         {
             LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
@@ -176,6 +192,7 @@ namespace Rubberduck
 
         public void Startup()
         {
+            EnsureDirectoriesExist();
             LoadConfig();
             _appMenus.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
@@ -213,6 +230,7 @@ namespace Rubberduck
             _componentsEventsSinks.Remove(projectId);
             _referencesEventsSinks.Remove(projectId);
             _parser.State.RemoveProject(e.Item);
+            _parser.State.OnParseRequested(this);
 
             _logger.Debug("Project '{0}' was removed.", e.Item.Name);
             Tuple<IConnectionPoint, int> componentsTuple;

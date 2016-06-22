@@ -4,7 +4,9 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
 using System;
+using System.Diagnostics;
 using System.Globalization;
+using Rubberduck.Parsing;
 
 namespace RubberduckTests.Preprocessing
 {
@@ -1271,6 +1273,8 @@ End Sub
             var tree = parser.compilationUnit();
             var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream);
             var expr = evaluator.Visit(tree);
+
+            Debug.Assert(parser.NumberOfSyntaxErrors == 0);
             return Tuple.Create(symbolTable, expr.Evaluate());
         }
     }

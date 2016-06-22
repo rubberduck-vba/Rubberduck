@@ -207,6 +207,7 @@ keyword :
      | SEEK
      | UNLOCK
      | WRITE
+	 | NAME
 ;
 
 markerKeyword : AS;

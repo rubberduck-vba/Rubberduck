@@ -29,8 +29,6 @@ namespace Rubberduck.Parsing.VBA
         private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
 
-        private readonly ReferencedDeclarationsCollector _comReflector;
-
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
@@ -52,8 +50,6 @@ namespace Rubberduck.Parsing.VBA
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
 
-            _comReflector = new ReferencedDeclarationsCollector(_state);
-
             state.ParseRequest += ReparseRequested;
         }
 
@@ -69,6 +65,14 @@ namespace Rubberduck.Parsing.VBA
                 Cancel(e.Component);
                 Task.Run(() =>
                 {
+                    SyncComReferences(_state.Projects);
+                    AddBuiltInDeclarations();
+
+                    if (_resolverTokenSource.IsCancellationRequested || _central.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
                     ParseAsync(e.Component, CancellationToken.None).Wait();
 
                     if (_resolverTokenSource.IsCancellationRequested || _central.IsCancellationRequested)
@@ -356,6 +360,8 @@ namespace Rubberduck.Parsing.VBA
 
         private void SyncComReferences(IReadOnlyList<VBProject> projects)
         {
+            var loadTasks = new List<Task>();
+
             foreach (var vbProject in projects)
             {
                 var projectId = QualifiedModuleName.GetProjectId(vbProject);
@@ -388,11 +394,18 @@ namespace Rubberduck.Parsing.VBA
                     if (!map.IsLoaded)
                     {
                         _state.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
-                        var items = _comReflector.GetDeclarationsForReference(reference);
-                        foreach (var declaration in items)
+
+                        loadTasks.Add(
+                        Task.Run(() =>
                         {
-                            _state.AddDeclaration(declaration);
-                        }
+                            var comReflector = new ReferencedDeclarationsCollector(_state);
+                            var items = comReflector.GetDeclarationsForReference(reference);
+
+                            foreach (var declaration in items)
+                            {
+                                _state.AddDeclaration(declaration);
+                            }
+                        }));
                         map.IsLoaded = true;
                     }
                 }
@@ -415,6 +428,8 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
             }
+
+            Task.WaitAll(loadTasks.ToArray());
 
             foreach (var reference in unmapped)
             {
@@ -556,7 +571,7 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
                 Logger.Debug("Creating declarations for module {0}.", qualifiedModuleName.Name);
-                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component), _state.GetModuleAttributes(component), _projectReferences, projectDeclaration);
+                var declarationsListener = new DeclarationSymbolsListener(_state, qualifiedModuleName, component.Type, _state.GetModuleAnnotations(component), _state.GetModuleAttributes(component), projectDeclaration);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
                 foreach (var createdDeclaration in declarationsListener.CreatedDeclarations)
                 {
@@ -598,35 +613,35 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {
-            var state = _state.GetModuleState(component);
-            if (state != ParserState.Resolving)
-            {
-                return;
-            }
+            Debug.Assert(State.Status == ParserState.ResolvedDeclarations);
+            
             var qualifiedName = new QualifiedModuleName(component);
             Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
+
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
             var listener = new IdentifierReferenceListener(resolver);
+
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
             {
                 var walker = new ParseTreeWalker();
                 try
                 {
-                    Stopwatch watch = Stopwatch.StartNew();
+                    var watch = Stopwatch.StartNew();
                     walker.Walk(listener, tree);
                     watch.Stop();
-                    Logger.Debug("Binding Resolution done for component '{0}' in {1}ms (thread {2})", component.Name, watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+                    Logger.Debug("Binding Resolution done for component '{0}' in {1}ms (thread {2})", component.Name,
+                        watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+
                     _state.RebuildSelectionCache();
-                    state = ParserState.Ready;
+                    _state.SetModuleState(component, ParserState.Ready);
                 }
                 catch (Exception exception)
                 {
                     Logger.Error(exception, "Exception thrown resolving '{0}' (thread {1}).", component.Name, Thread.CurrentThread.ManagedThreadId);
-                    state = ParserState.ResolverError;
+                    _state.SetModuleState(component, ParserState.ResolverError);
                 }
             }
-
-            _state.SetModuleState(component, state);
+            
             Logger.Debug("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
         }
 
