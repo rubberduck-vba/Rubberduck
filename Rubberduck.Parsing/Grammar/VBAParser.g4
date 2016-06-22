@@ -126,12 +126,12 @@ blockStmt :
     | variableStmt
     | whileWendStmt
     | withStmt
+    | lineSpecialForm
     | circleSpecialForm
     | scaleSpecialForm
     | callStmt
-	| nameStmt
+    | nameStmt
 ;
-
 
 // 5.4.5 File Statements
 fileStmt :
@@ -511,9 +511,11 @@ withStmt :
 ;
 
 // Special forms with special syntax, only available in a report.
+lineSpecialForm : (expression whiteSpace? DOT whiteSpace?)? LINE whiteSpace (STEP whiteSpace?)? tuple MINUS (STEP whiteSpace?)? tuple whiteSpace? (COMMA whiteSpace? expression)? whiteSpace? (COMMA whiteSpace? lineSpecialFormOption)?;
 circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? expression)+;
 scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
 tuple : LPAREN whiteSpace? expression whiteSpace? COMMA whiteSpace? expression whiteSpace? RPAREN;
+lineSpecialFormOption: (B_CHAR | BF);
 
 subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 
