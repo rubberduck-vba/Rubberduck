@@ -244,23 +244,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private Declaration FindNewProjectDeclaration(string id)
-        {
-            return _state.AllUserDeclarations.SingleOrDefault(item =>
-                        item.ProjectId == id &&
-                        item.DeclarationType == DeclarationType.Project);
-        }
-
-        private Declaration FindNewDeclaration(Declaration declaration)
-        {
-            return _state.AllUserDeclarations.SingleOrDefault(item =>
-                        item.ProjectId == declaration.ProjectId &&
-                        item.ComponentName == declaration.ComponentName &&
-                        item.ParentScope == declaration.ParentScope &&
-                        item.IdentifierName == declaration.IdentifierName &&
-                        item.DeclarationType == declaration.DeclarationType);
-        }
-
         private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
             if (Projects == null)
@@ -332,7 +315,10 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)
         {
-            if (e.State != ParserState.Error)
+            // if we are resolving references, we already have the declarations and don't need to display error
+            if (!(e.State == ParserState.Error ||
+                (e.State == ParserState.ResolverError &&
+                e.OldState == ParserState.ResolvingDeclarations)))
             {
                 return;
             }

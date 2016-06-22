@@ -2229,11 +2229,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resolving....
+        ///   Looks up a localized string similar to Resolving declarations....
         /// </summary>
-        public static string ParserState_Resolving {
+        public static string ParserState_ResolvingDeclarations {
             get {
-                return ResourceManager.GetString("ParserState_Resolving", resourceCulture);
+                return ResourceManager.GetString("ParserState_ResolvingDeclarations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resolving references....
+        /// </summary>
+        public static string ParserState_ResolvingReferences {
+            get {
+                return ResourceManager.GetString("ParserState_ResolvingReferences", resourceCulture);
             }
         }
         

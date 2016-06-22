@@ -86,7 +86,7 @@ namespace Rubberduck.Parsing.VBA
                     Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName,
                         _state.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
 
-                    _state.SetModuleState(e.Component, ParserState.Resolving);
+                    _state.SetModuleState(e.Component, ParserState.ResolvedDeclarations);
                     ResolveDeclarations(qualifiedName.Component,
                         _state.ParseTrees.Find(s => s.Key == qualifiedName).Value);
                     
@@ -165,7 +165,7 @@ namespace Rubberduck.Parsing.VBA
                     Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName,
                         _state.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
 
-                    _state.SetModuleState(components[index], ParserState.Resolving);
+                    _state.SetModuleState(components[index], ParserState.ResolvingDeclarations);
                     ResolveDeclarations(qualifiedName.Component,
                         _state.ParseTrees.Find(s => s.Key == qualifiedName).Value);
                 });
@@ -272,7 +272,7 @@ namespace Rubberduck.Parsing.VBA
                     Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName,
                         _state.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
 
-                    _state.SetModuleState(toParse[index], ParserState.Resolving);
+                    _state.SetModuleState(toParse[index], ParserState.ResolvingDeclarations);
                     ResolveDeclarations(qualifiedName.Component,
                         _state.ParseTrees.Find(s => s.Key == qualifiedName).Value);
                 });
@@ -311,7 +311,11 @@ namespace Rubberduck.Parsing.VBA
                     return new Task[0];
                 }
 
-                tasks[index] = Task.Run(() => ResolveReferences(finder, kvp.Key.Component, kvp.Value));
+                tasks[index] = Task.Run(() =>
+                {
+                    _state.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
+                    ResolveReferences(finder, kvp.Key.Component, kvp.Value);
+                });
             }
 
             return tasks;
@@ -613,7 +617,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {
-            Debug.Assert(State.Status == ParserState.ResolvedDeclarations);
+            Debug.Assert(State.Status == ParserState.ResolvingReferences);
             
             var qualifiedName = new QualifiedModuleName(component);
             Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
