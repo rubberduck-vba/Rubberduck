@@ -207,12 +207,12 @@ namespace Rubberduck.Parsing.VBA
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
-        private void OnModuleStateChanged(VBComponent component, ParserState state)
+        private void OnModuleStateChanged(VBComponent component, ParserState state, ParserState oldState)
         {
             var handler = ModuleStateChanged;
             if (handler != null)
             {
-                var args = new ParseProgressEventArgs(component, state);
+                var args = new ParseProgressEventArgs(component, state, oldState);
                 handler.Invoke(this, args);
             }
         }
@@ -242,10 +242,12 @@ namespace Rubberduck.Parsing.VBA
             }
             var key = new QualifiedModuleName(component);
 
+            var oldState = GetModuleState(component);
+
             _moduleStates.AddOrUpdate(key, new ModuleState(state), (c, e) => e.SetState(state));
             _moduleStates.AddOrUpdate(key, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
             Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
-            OnModuleStateChanged(component, state);
+            OnModuleStateChanged(component, state, oldState);
             Status = EvaluateParserState();
         }
 
@@ -323,9 +325,13 @@ namespace Rubberduck.Parsing.VBA
             {
                 result = ParserState.Parsing;
             }
-            if (stateCounts[(int)ParserState.Resolving] > 0)
+            if (stateCounts[(int)ParserState.ResolvingDeclarations] > 0)
             {
-                result = ParserState.Resolving;
+                result = ParserState.ResolvingDeclarations;
+            }
+            if (stateCounts[(int)ParserState.ResolvingReferences] > 0)
+            {
+                result = ParserState.ResolvingReferences;
             }
 
             if (result == ParserState.Ready)
