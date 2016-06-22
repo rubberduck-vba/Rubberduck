@@ -651,6 +651,7 @@ keyword :
      | ANY
      | ARRAY
      | ATTRIBUTE
+	 | B_CHAR
      | BEGIN
      | BOOLEAN
      | BYREF
