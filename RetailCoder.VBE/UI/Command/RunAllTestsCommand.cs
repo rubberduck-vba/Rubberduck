@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
@@ -11,15 +13,22 @@ namespace Rubberduck.UI.Command
     /// </summary>
     public class RunAllTestsCommand : CommandBase
     {
+        private readonly VBE _vbe;
         private readonly ITestEngine _engine;
         private readonly TestExplorerModel _model;
         private readonly RubberduckParserState _state;
         
-        public RunAllTestsCommand(RubberduckParserState state, ITestEngine engine, TestExplorerModel model)
+        public RunAllTestsCommand(VBE vbe, RubberduckParserState state, ITestEngine engine, TestExplorerModel model)
         {
+            _vbe = vbe;
             _engine = engine;
             _model = model;
             _state = state;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            return _vbe.VBProjects.Cast<VBProject>().All(project => project.Mode == vbext_VBAMode.vbext_vm_Design);
         }
 
         public override void Execute(object parameter)
