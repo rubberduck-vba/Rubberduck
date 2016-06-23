@@ -144,7 +144,7 @@ namespace Rubberduck.Parsing.Symbols
             _parentScope = parentScope ?? string.Empty;
             _identifierName = qualifiedName.MemberName;
             _asTypeName = asTypeName;
-            _isSelfAssigned = isSelfAssigned || (declarationType == DeclarationType.Variable && parentDeclaration != null && parentDeclaration.IdentifierName == ComponentName);
+            _isSelfAssigned = isSelfAssigned;
             _isWithEvents = isWithEvents;
             _accessibility = accessibility;
             _declarationType = declarationType;
@@ -464,7 +464,17 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public Declaration AsTypeDeclaration { get; internal set; }
+        private Declaration _asTypeDeclaration;
+        public Declaration AsTypeDeclaration
+        {
+            get { return _asTypeDeclaration; }
+            internal set
+            {
+                _asTypeDeclaration = value;
+                IsSelfAssigned = _isSelfAssigned || (DeclarationType == DeclarationType.Variable &&
+                                 AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType);
+            }
+        }
 
         private readonly IReadOnlyList<DeclarationType> _neverArray = new[]
         {
@@ -495,11 +505,19 @@ namespace Rubberduck.Parsing.Symbols
                    Selection.ContainsFirstCharacter(selection.Selection);
         }
 
-        private readonly bool _isSelfAssigned;
+        private bool _isSelfAssigned;
+
         /// <summary>
         /// Gets a value indicating whether the declaration is a joined assignment (e.g. "As New xxxxx")
         /// </summary>
-        public bool IsSelfAssigned { get { return _isSelfAssigned; } }
+        public bool IsSelfAssigned
+        {
+            get { return _isSelfAssigned; }
+            private set
+            {
+                _isSelfAssigned = value;
+            }
+        }
 
         private readonly Accessibility _accessibility;
         /// <summary>

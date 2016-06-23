@@ -408,11 +408,13 @@ namespace Rubberduck.Parsing.VBA
                     {
                         State.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
 
+                        var tightlyScopedCapture = reference;
+
                         loadTasks.Add(
                         Task.Run(() =>
                         {
                             var comReflector = new ReferencedDeclarationsCollector(State);
-                            var items = comReflector.GetDeclarationsForReference(reference);
+                            var items = comReflector.GetDeclarationsForReference(tightlyScopedCapture);
 
                             foreach (var declaration in items)
                             {
