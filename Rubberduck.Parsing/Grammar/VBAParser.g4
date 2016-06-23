@@ -126,11 +126,12 @@ blockStmt :
     | variableStmt
     | whileWendStmt
     | withStmt
+    | lineSpecialForm
     | circleSpecialForm
     | scaleSpecialForm
     | callStmt
+    | nameStmt
 ;
-
 
 // 5.4.5 File Statements
 fileStmt :
@@ -443,6 +444,8 @@ rsetStmt : RSET whiteSpace expression whiteSpace? EQ whiteSpace? expression;
 // 5.4.2.11 Stop Statement
 stopStmt : STOP;
 
+nameStmt : NAME whiteSpace expression whiteSpace AS whiteSpace expression;
+
 // 5.4.2.10 Select Case Statement
 selectCaseStmt :
     SELECT whiteSpace? CASE whiteSpace? selectExpression endOfStatement
@@ -508,9 +511,11 @@ withStmt :
 ;
 
 // Special forms with special syntax, only available in a report.
+lineSpecialForm : expression whiteSpace (STEP whiteSpace?)? tuple MINUS (STEP whiteSpace?)? tuple whiteSpace? (COMMA whiteSpace? expression)? whiteSpace? (COMMA whiteSpace? lineSpecialFormOption)?;
 circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? expression)+;
 scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
 tuple : LPAREN whiteSpace? expression whiteSpace? COMMA whiteSpace? expression whiteSpace? RPAREN;
+lineSpecialFormOption: (B_CHAR | BF);
 
 subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 
@@ -543,10 +548,9 @@ complexType :
 
 fieldLength : MULT whiteSpace? (numberLiteral | identifierValue);
 
-statementLabelDefinition : statementLabel whiteSpace? COLON;
-statementLabel : identifierStatementLabel | lineNumberLabel;
-identifierStatementLabel : unrestrictedIdentifier;
-lineNumberLabel : numberLiteral;
+statementLabelDefinition : identifierStatementLabel | lineNumberLabel;
+identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON;
+lineNumberLabel : numberLiteral whiteSpace? COLON?;
 
 numberLiteral : HEXLITERAL | OCTLITERAL | FLOATLITERAL | INTEGERLITERAL;
 
@@ -647,6 +651,7 @@ keyword :
      | ANY
      | ARRAY
      | ATTRIBUTE
+	 | B_CHAR
      | BEGIN
      | BOOLEAN
      | BYREF
@@ -756,6 +761,7 @@ keyword :
      | SEEK
      | UNLOCK
      | WRITE
+	 | NAME
 ;
 
 markerKeyword : AS;

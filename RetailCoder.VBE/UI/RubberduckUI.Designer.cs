@@ -2229,11 +2229,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resolving....
+        ///   Looks up a localized string similar to Resolving declarations....
         /// </summary>
-        public static string ParserState_Resolving {
+        public static string ParserState_ResolvingDeclarations {
             get {
-                return ResourceManager.GetString("ParserState_Resolving", resourceCulture);
+                return ResourceManager.GetString("ParserState_ResolvingDeclarations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resolving references....
+        /// </summary>
+        public static string ParserState_ResolvingReferences {
+            get {
+                return ResourceManager.GetString("ParserState_ResolvingReferences", resourceCulture);
             }
         }
         
@@ -3145,6 +3154,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By code order.
+        /// </summary>
+        public static string SortStyle_ByCodeOrder {
+            get {
+                return ResourceManager.GetString("SortStyle_ByCodeOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By name.
         /// </summary>
         public static string SortStyle_ByName {
@@ -3154,20 +3172,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By selection.
-        /// </summary>
-        public static string SortStyle_BySelection {
-            get {
-                return ResourceManager.GetString("SortStyle_BySelection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to By type.
         /// </summary>
         public static string SortStyle_ByType {
             get {
                 return ResourceManager.GetString("SortStyle_ByType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please open or activate a project and try again..
+        /// </summary>
+        public static string SourceControl_ActivateProject {
+            get {
+                return ResourceManager.GetString("SourceControl_ActivateProject", resourceCulture);
             }
         }
         
@@ -3681,6 +3699,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_NewBranch {
             get {
                 return ResourceManager.GetString("SourceControl_NewBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No active VBProject.
+        /// </summary>
+        public static string SourceControl_NoActiveProject {
+            get {
+                return ResourceManager.GetString("SourceControl_NoActiveProject", resourceCulture);
             }
         }
         

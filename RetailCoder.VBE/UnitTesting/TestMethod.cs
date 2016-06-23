@@ -21,7 +21,6 @@ namespace Rubberduck.UnitTesting
         public TestMethod(Declaration declaration, VBE vbe)
         {
             _declaration = declaration;
-            _qualifiedMemberName = declaration.QualifiedName;
             _hostApp = vbe.HostApplication();
         }
 
@@ -31,10 +30,8 @@ namespace Rubberduck.UnitTesting
         public void SetDeclaration(Declaration declaration)
         {
             _declaration = declaration;
+            OnPropertyChanged("Declaration");
         }
-
-        private readonly QualifiedMemberName _qualifiedMemberName;
-        public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
 
         public void Run()
         {
@@ -46,7 +43,7 @@ namespace Rubberduck.UnitTesting
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                _hostApp.Run(QualifiedMemberName);
+                _hostApp.Run(Declaration.QualifiedName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 
                 result = EvaluateResults();
@@ -93,13 +90,13 @@ namespace Rubberduck.UnitTesting
         {
             try
             {
-                var moduleName = QualifiedMemberName.QualifiedModuleName;
-                var methodName = QualifiedMemberName.MemberName;
+                var moduleName = Declaration.QualifiedName.QualifiedModuleName;
+                var methodName = Declaration.IdentifierName;
                 var module = moduleName.Component.CodeModule;
 
-                var startLine = module.get_ProcStartLine(methodName, vbext_ProcKind.vbext_pk_Proc);
-                var endLine = startLine + module.get_ProcCountLines(methodName, vbext_ProcKind.vbext_pk_Proc);
-                var endLineColumns = module.get_Lines(endLine, 1).Length;
+                var startLine = module.ProcStartLine[methodName, vbext_ProcKind.vbext_pk_Proc];
+                var endLine = startLine + module.ProcCountLines[methodName, vbext_ProcKind.vbext_pk_Proc];
+                var endLineColumns = module.Lines[endLine, 1].Length;
 
                 var selection = new Selection(startLine, 1, endLine, endLineColumns == 0 ? 1 : endLineColumns);
                 return new NavigateCodeEventArgs(new QualifiedSelection(moduleName, selection));
@@ -112,29 +109,29 @@ namespace Rubberduck.UnitTesting
 
         public object[] ToArray()
         {
-            return new object[] { QualifiedMemberName.QualifiedModuleName.ProjectTitle, QualifiedMemberName.QualifiedModuleName.ComponentTitle, QualifiedMemberName.MemberName, 
+            return new object[] { Declaration.QualifiedName.QualifiedModuleName.ProjectTitle, Declaration.QualifiedName.QualifiedModuleName.ComponentTitle, Declaration.IdentifierName, 
                 _result.Outcome.ToString(), _result.Output, _result.StartTime.ToString(CultureInfo.InvariantCulture), _result.EndTime.ToString(CultureInfo.InvariantCulture), _result.Duration };
         }
 
         public bool Equals(TestMethod other)
         {
-            return QualifiedMemberName.Equals(other.QualifiedMemberName);
+            return Declaration.QualifiedName.Equals(other.Declaration.QualifiedName);
         }
 
         public override bool Equals(object obj)
         {
             return obj is TestMethod
-                && ((TestMethod)obj).QualifiedMemberName.Equals(QualifiedMemberName);
+                && ((TestMethod)obj).Declaration.QualifiedName.Equals(Declaration.QualifiedName);
         }
 
         public override int GetHashCode()
         {
-            return QualifiedMemberName.GetHashCode();
+            return Declaration.QualifiedName.GetHashCode();
         }
 
         public override string ToString()
         {
-            return string.Format("{0}: {1} ({2}ms) {3}", QualifiedMemberName, Result.Outcome, Result.Duration, Result.Output);
+            return string.Format("{0}: {1} ({2}ms) {3}", Declaration.QualifiedName, Result.Outcome, Result.Duration, Result.Output);
         }
     }
 }

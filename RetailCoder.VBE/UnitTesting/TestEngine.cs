@@ -60,15 +60,15 @@ namespace Rubberduck.UnitTesting
                 return;
             }
 
-            var modules = testMethods.GroupBy(test => test.QualifiedMemberName.QualifiedModuleName);
+            var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName);
             foreach (var module in modules)
             {
                 var testInitialize = module.Key.FindTestInitializeMethods(_state).ToList();
                 var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
 
                 var moduleTestMethods = testMethods
-                    .Where(test => test.QualifiedMemberName.QualifiedModuleName.ProjectId == module.Key.ProjectId
-                                && test.QualifiedMemberName.QualifiedModuleName.ComponentName == module.Key.ComponentName);
+                    .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.ProjectId == module.Key.ProjectId
+                                && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName == module.Key.ComponentName);
 
                 Run(module.Key.FindModuleInitializeMethods(_state));
                 foreach (var test in moduleTestMethods)

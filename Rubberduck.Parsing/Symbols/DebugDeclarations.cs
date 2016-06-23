@@ -4,15 +4,47 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public static class CustomDeclarations
+    public class DebugDeclarations : ICustomDeclarationLoader
     {
-        public static Declaration DEBUG_PRINT;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        public static Declaration DebugPrint;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly DeclarationFinder _finder;
 
-        public static IReadOnlyList<Declaration> Load(Declaration parentProject, Declaration parentModule)
+        public DebugDeclarations(RubberduckParserState state)
+        {
+            _finder = new DeclarationFinder(state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
+        }
+
+        public IReadOnlyList<Declaration> Load()
+        {
+            foreach (var item in _finder.MatchName(Tokens.Err))
+            {
+                if (item.IsBuiltIn && item.DeclarationType == DeclarationType.Variable &&
+                    item.Accessibility == Accessibility.Global)
+                {
+                    return new List<Declaration>();
+                }
+            }
+
+            var vba = _finder.FindProject("VBA");
+            if (vba == null)
+            {
+                // if VBA project is null, we haven't loaded any COM references;
+                // we're in a unit test and mock project didn't setup any references.
+                return new List<Declaration>();
+            }
+
+            var informationModule = _finder.FindStdModule("Information", vba, true);
+            Debug.Assert(informationModule != null, "We expect the information module to exist in the VBA project.");
+
+            return Load(vba, informationModule);
+        }
+
+        private IReadOnlyList<Declaration> Load(Declaration parentProject, Declaration parentModule)
         {
             _logger.Debug("Loading custom declarations with {0} as parent project and {1} as parent module.", parentProject.IdentifierName, parentModule.IdentifierName);
             List<Declaration> declarations = new List<Declaration>();
@@ -28,16 +60,16 @@ namespace Rubberduck.Parsing.Symbols
             declarations.Add(debugObject);
             declarations.Add(debugAssert);
             declarations.Add(debugPrint);
-            declarations.AddRange(AddSpecialFormDeclarations(parentProject, parentModule));
+            declarations.AddRange(AddSpecialFormDeclarations(parentModule));
             // Debug.Print has the same special syntax as the print and write statement.
             // Because of that it is treated specially in the grammar and normally wouldn't be resolved.
             // Since we still want it to be resolved we make it easier for the resolver to access the debug print
             // declaration by exposing it in this way.
-            DEBUG_PRINT = debugPrint;
+            DebugPrint = debugPrint;
             return declarations;
         }
 
-        private static List<Declaration> AddSpecialFormDeclarations(Declaration parentProject, Declaration parentModule)
+        private List<Declaration> AddSpecialFormDeclarations(Declaration parentModule)
         {
             List<Declaration> declarations = new List<Declaration>();
             Debug.Assert(parentModule != null);

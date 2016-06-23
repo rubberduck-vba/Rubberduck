@@ -18,23 +18,6 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ParameterCanBeByValInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        // if we don't want to suggest passing non-primitive types ByRef (i.e. object types and Variant), then we need this:
-        private static readonly string[] PrimitiveTypes =
-        {
-            Tokens.Boolean,
-            Tokens.Byte,
-            Tokens.Date,
-            Tokens.Decimal,
-            Tokens.Double,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.LongPtr,
-            Tokens.Integer,
-            Tokens.Single,
-            Tokens.String,
-            Tokens.StrPtr
-        };
-
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
@@ -44,7 +27,7 @@ namespace Rubberduck.Inspections
                 .Concat(declarations.FindInterfaceImplementationMembers())
                 .ToList();
 
-            var formEventHandlerScopes = declarations.FindFormEventHandlers()
+            var formEventHandlerScopes = State.FindFormEventHandlers()
                 .Select(handler => handler.Scope);
 
             var eventScopes = declarations.Where(item =>

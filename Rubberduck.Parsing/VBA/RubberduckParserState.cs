@@ -67,6 +67,8 @@ namespace Rubberduck.Parsing.VBA
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
+
         static RubberduckParserState()
         {
             var values = Enum.GetValues(typeof(ParserState));
@@ -205,12 +207,12 @@ namespace Rubberduck.Parsing.VBA
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
-        private void OnModuleStateChanged(VBComponent component, ParserState state)
+        private void OnModuleStateChanged(VBComponent component, ParserState state, ParserState oldState)
         {
             var handler = ModuleStateChanged;
             if (handler != null)
             {
-                var args = new ParseProgressEventArgs(component, state);
+                var args = new ParseProgressEventArgs(component, state, oldState);
                 handler.Invoke(this, args);
             }
         }
@@ -240,10 +242,12 @@ namespace Rubberduck.Parsing.VBA
             }
             var key = new QualifiedModuleName(component);
 
+            var oldState = GetModuleState(component);
+
             _moduleStates.AddOrUpdate(key, new ModuleState(state), (c, e) => e.SetState(state));
             _moduleStates.AddOrUpdate(key, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
             Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
-            OnModuleStateChanged(component, state);
+            OnModuleStateChanged(component, state, oldState);
             Status = EvaluateParserState();
         }
 
@@ -321,9 +325,13 @@ namespace Rubberduck.Parsing.VBA
             {
                 result = ParserState.Parsing;
             }
-            if (stateCounts[(int)ParserState.Resolving] > 0)
+            if (stateCounts[(int)ParserState.ResolvingDeclarations] > 0)
             {
-                result = ParserState.Resolving;
+                result = ParserState.ResolvingDeclarations;
+            }
+            if (stateCounts[(int)ParserState.ResolvingReferences] > 0)
+            {
+                result = ParserState.ResolvingReferences;
             }
 
             if (result == ParserState.Ready)
@@ -652,26 +660,6 @@ namespace Rubberduck.Parsing.VBA
                         break;
                     }
                 }
-            }
-
-            if (sameProjectDeclarations.Count > 0 &&
-                projectCount == sameProjectDeclarations.Count)
-            {
-                // only the project declaration is left; remove it.
-                if (sameProjectDeclarations.Count != 1)
-                {
-                    throw new InvalidOperationException("Collection contains more than one item");
-                }
-
-                ModuleState moduleState;
-                _moduleStates.TryRemove(sameProjectDeclarations[0].Key, out moduleState);
-                if (moduleState != null)
-                {
-                    moduleState.Dispose();
-                }
-
-                _projects.Remove(projectId);
-                Logger.Debug("Removed Project declaration for project Id {0}", projectId);
             }
 
             if (notifyStateChanged)
@@ -1030,6 +1018,11 @@ namespace Rubberduck.Parsing.VBA
             foreach (var item in _moduleStates)
             {
                 item.Value.Dispose();
+            }
+
+            if (CoClasses != null)
+            {
+                CoClasses.Clear();
             }
 
             _moduleStates.Clear();

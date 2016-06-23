@@ -274,7 +274,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     grouping)).ToList();
 
             UpdateNodes(Projects, newProjects);
-
+            
             Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
         }
 
@@ -303,6 +303,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 if (oldItem != null)
                 {
                     item.IsExpanded = oldItem.IsExpanded;
+                    item.IsSelected = oldItem.IsSelected;
 
                     if (oldItem.Items.Any() && item.Items.Any())
                     {
@@ -314,7 +315,10 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)
         {
-            if (e.State != ParserState.Error)
+            // if we are resolving references, we already have the declarations and don't need to display error
+            if (!(e.State == ParserState.Error ||
+                (e.State == ParserState.ResolverError &&
+                e.OldState == ParserState.ResolvingDeclarations)))
             {
                 return;
             }

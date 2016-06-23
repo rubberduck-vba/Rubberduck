@@ -207,6 +207,11 @@ namespace Rubberduck.Parsing.Symbols
                     attributes.AddPredeclaredIdTypeAttribute();
                 }
 
+                if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FAPPOBJECT))
+                {
+                    attributes.AddGlobalClassAttribute();
+                }
+
                 Declaration moduleDeclaration;
                 switch (typeDeclarationType)
                 {
@@ -257,6 +262,7 @@ namespace Rubberduck.Parsing.Symbols
                             attributes);
                         break;
                 }
+
                 ComInformation comInfo;
                 if (_comInformation.TryGetValue(typeAttributes.guid, out comInfo))
                 {
@@ -278,6 +284,11 @@ namespace Rubberduck.Parsing.Symbols
 
             foreach (var member in _comInformation.Values)
             {
+                if (member.TypeAttributes.typekind == TYPEKIND.TKIND_COCLASS)
+                {
+                    GetCoClassInformation(member);
+                }
+
                 for (var memberIndex = 0; memberIndex < member.TypeAttributes.cFuncs; memberIndex++)
                 {
                     string[] memberNames;
@@ -293,6 +304,7 @@ namespace Rubberduck.Parsing.Symbols
                         member.TypeInfo.ReleaseFuncDesc(memberDescriptorPointer);
                         continue;
                     }
+
                     if (member.ModuleDeclaration.DeclarationType == DeclarationType.ClassModule &&
                         memberDeclaration is ICanBeDefaultMember &&
                         ((ICanBeDefaultMember)memberDeclaration).IsDefaultMember)
@@ -330,6 +342,53 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             return output;
+        }
+
+        private void GetCoClassInformation(ComInformation member)
+        {
+            var componentMemberNames = new List<string>();
+            for (var implIndex = 0; implIndex < member.TypeAttributes.cImplTypes; implIndex++)
+            {
+                int href;
+                member.TypeInfo.GetRefTypeOfImplType(0, out href);
+
+                ITypeInfo implTypeInfo;
+                member.TypeInfo.GetRefTypeInfo(href, out implTypeInfo);
+
+                IntPtr typeAttributesPointer;
+                implTypeInfo.GetTypeAttr(out typeAttributesPointer);
+
+                var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
+
+                for (var i = 0; i < typeAttributes.cFuncs; i++)
+                {
+                    var memberNames = new string[255];
+
+                    IntPtr memberDescriptorPointer;
+                    implTypeInfo.GetFuncDesc(i, out memberDescriptorPointer);
+                    var memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
+
+                    if (!(memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET) ||
+                        memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYPUT) ||
+                        memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYPUTREF)))
+                    {
+                        continue;
+                    }
+
+                    int namesArrayLength;
+                    implTypeInfo.GetNames(memberDescriptor.memid, memberNames, 255, out namesArrayLength);
+
+                    if (!IgnoredInterfaceMembers.Contains(memberNames[0]) &&
+                        !componentMemberNames.Contains(memberNames[0]))
+                    {
+                        componentMemberNames.Add(memberNames[0]);
+                    }
+                }
+
+                member.TypeInfo.ReleaseTypeAttr(typeAttributesPointer);
+            }
+
+            _state.CoClasses.TryAdd(componentMemberNames, member.ModuleDeclaration);
         }
 
         private Declaration CreateMemberDeclaration(FUNCDESC memberDescriptor, TYPEKIND typeKind, ITypeInfo info, IMPLTYPEFLAGS parentImplFlags,

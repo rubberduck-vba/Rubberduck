@@ -35,7 +35,9 @@ namespace Rubberduck.SmartIndenter
             get
             {
                 RebuildContinuedLine();
-                return _rebuilt.NextLineIndents;
+                return _rebuilt.Segments.Count() < 2
+                    ? _rebuilt.NextLineIndents
+                    : _rebuilt.Segments.Select(s => new AbsoluteCodeLine(s, _settings)).Select(a => a.NextLineIndents).Sum();
             }
         }
 
@@ -44,7 +46,12 @@ namespace Rubberduck.SmartIndenter
             get
             {
                 RebuildContinuedLine();
-                return _rebuilt.Outdents;
+                if (_rebuilt.Segments.Count() < 2)
+                {
+                    return _rebuilt.Outdents;
+                }
+                var baseSegment = new AbsoluteCodeLine(_rebuilt.Segments.First(), _settings);
+                return baseSegment.Outdents;
             }
         }
 
@@ -105,20 +112,24 @@ namespace Rubberduck.SmartIndenter
             var current = _lines.First().Indent(IndentationLevel, AtProcedureStart);
             var commentPos = string.IsNullOrEmpty(_lines.First().EndOfLineComment) ? 0 : current.Length - _lines.First().EndOfLineComment.Length;
             output.Add(current);
-            var alignment = FunctionAlign(current, true);
+            var alignment = FunctionAlign(current);
 
             foreach (var line in _lines.Skip(1))
             {
+                if (line.ContainsOnlyComment)
+                {
+                    commentPos = alignment;
+                }
                 if (commentPos > 0)
                 {
                     output.Add(line.Indent(commentPos, AtProcedureStart, true));
                     continue;
                 }
 
-                var operatorAdjust = _settings.IgnoreOperatorsInContinuations && OperatorIgnoreRegex.IsMatch(line.Original) ? 2 : 0;
+                var operatorAdjust = _settings.IgnoreOperatorsInContinuations && OperatorIgnoreRegex.IsMatch(line.Original) ? 2 : 0;              
                 current = line.Indent(Math.Max(alignment - operatorAdjust, 0), AtProcedureStart, true);
                 output.Add(current);
-                alignment = FunctionAlign(current, false);
+                alignment = FunctionAlign(current);
                 commentPos = string.IsNullOrEmpty(line.EndOfLineComment) ? 0 : current.Length - line.EndOfLineComment.Length;
             }
 
@@ -128,7 +139,7 @@ namespace Rubberduck.SmartIndenter
         private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)");
         private readonly Stack<AlignmentToken> _alignment = new Stack<AlignmentToken>();
 
-        private int FunctionAlign(string line, bool firstLine)
+        private int FunctionAlign(string line)
         {
             var stackPos = _alignment.Count;
 
@@ -239,7 +250,7 @@ namespace Rubberduck.SmartIndenter
 
             if (fallback == 0 || fallback >= line.Length - 1)
             {
-                fallback = !_alignment.Any() && firstLine ? (_settings.IndentSpaces * 2) : 0;
+                fallback = !_alignment.Any() ? (_settings.IndentSpaces * 2) : 0;
             }
             else
             {

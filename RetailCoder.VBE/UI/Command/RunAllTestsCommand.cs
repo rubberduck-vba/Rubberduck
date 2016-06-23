@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
@@ -11,27 +13,45 @@ namespace Rubberduck.UI.Command
     /// </summary>
     public class RunAllTestsCommand : CommandBase
     {
+        private readonly VBE _vbe;
         private readonly ITestEngine _engine;
         private readonly TestExplorerModel _model;
         private readonly RubberduckParserState _state;
         
-        public RunAllTestsCommand(RubberduckParserState state, ITestEngine engine, TestExplorerModel model)
+        public RunAllTestsCommand(VBE vbe, RubberduckParserState state, ITestEngine engine, TestExplorerModel model)
         {
+            _vbe = vbe;
             _engine = engine;
             _model = model;
             _state = state;
         }
 
-        public override void Execute(object parameter)
+        public override bool CanExecute(object parameter)
         {
-            _state.StateChanged += StateChanged;
-
-            _model.Refresh();
+            return _vbe.VBProjects.Cast<VBProject>().All(project => project.Mode == vbext_VBAMode.vbext_vm_Design);
         }
 
-        private void StateChanged(object sender, ParserStateEventArgs e)
+        public override void Execute(object parameter)
         {
-            if (e.State != ParserState.Ready) { return; }
+            if (!_state.IsDirty())
+            {
+                RunTests();
+            }
+            else
+            {
+                _model.TestsRefreshed += TestsRefreshed;
+                _model.Refresh();
+            }
+        }
+
+        private void TestsRefreshed(object sender, EventArgs e)
+        {
+            RunTests();
+        }
+
+        private void RunTests()
+        {
+            _model.TestsRefreshed -= TestsRefreshed;
 
             var stopwatch = new Stopwatch();
 
@@ -41,9 +61,8 @@ namespace Rubberduck.UI.Command
             stopwatch.Start();
             _engine.Run(_model.Tests);
             stopwatch.Stop();
-            
+
             _model.IsBusy = false;
-            _state.StateChanged -= StateChanged;
 
             OnRunCompleted(new TestRunEventArgs(stopwatch.ElapsedMilliseconds));
         }

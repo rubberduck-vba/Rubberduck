@@ -245,7 +245,7 @@ End Sub
         }
 
         [TestMethod]
-        public void SingleLineIfStatementLabel_IsReferenceToLabel()
+        public void SingleLineIfStatementLabel_IsReferenceToLabel_NumberLabelHasColon()
         {
             // arrange
             var code = @"
@@ -260,6 +260,54 @@ End Sub
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
+
+            var reference = declaration.References.SingleOrDefault();
+            Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
+        [TestMethod]
+        public void SingleLineIfStatementLabel_IsReferenceToLabel_NumberLabelNoColon()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    Dim fizz As Integer
+    fizz = 5
+    If fizz = 5 Then Exit Sub
+
+    If True Then 5
+5
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
+
+            var reference = declaration.References.SingleOrDefault();
+            Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
+        [TestMethod]
+        public void SingleLineIfStatementLabel_IsReferenceToLabel_IdentifierLabel()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    If True Then GoTo foo
+foo:
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "foo");
 
             var reference = declaration.References.SingleOrDefault();
             Assert.IsNotNull(reference);
@@ -1918,6 +1966,26 @@ End Sub
         }
 
         [TestMethod]
+        public void LineSpecialForm_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Me.Line (referenced, referenced)-(referenced, referenced)
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(4, declaration.References.Count());
+        }
+
+        [TestMethod]
         public void CircleSpecialForm_IsReferenceToLocalVariable()
         {
             // arrange
@@ -1955,6 +2023,26 @@ End Sub
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
             Assert.AreEqual(4, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void FieldLengthStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Const Len As Integer = 4
+    Dim a As String * Len
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Constant && item.IdentifierName == "Len");
+
+            Assert.AreEqual(1, declaration.References.Count());
         }
 
         // Ignored because handling forms/hierarchies is an open issue.

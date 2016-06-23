@@ -42,13 +42,15 @@ namespace Rubberduck.UI.Inspections
             _clipboard = clipboard;
             _configService = configService;
             _operatingSystem = operatingSystem;
-            _refreshCommand = new DelegateCommand(async param => await Task.Run(() => ExecuteRefreshCommandAsync(param)), CanExecuteRefreshCommand);
+            _refreshCommand = new DelegateCommand(async param => await Task.Run(() => ExecuteRefreshCommandAsync()), CanExecuteRefreshCommand);
             _disableInspectionCommand = new DelegateCommand(ExecuteDisableInspectionCommand);
             _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             _openSettingsCommand = new DelegateCommand(OpenSettings);
+
+            _configService.SettingsChanged += _configService_SettingsChanged;
 
             _setInspectionTypeGroupingCommand = new DelegateCommand(param =>
             {
@@ -63,6 +65,14 @@ namespace Rubberduck.UI.Inspections
             });
 
             _state.StateChanged += _state_StateChanged;
+        }
+
+        private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
+        {
+            if (e.InspectionSettingsChanged)
+            {
+                RefreshInspections();
+            }
         }
 
         private ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
@@ -219,7 +229,7 @@ namespace Rubberduck.UI.Inspections
         private bool _isBusy;
         public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); } }
 
-        private async void ExecuteRefreshCommandAsync(object parameter)
+        private async void ExecuteRefreshCommandAsync()
         {
             CanRefresh = _vbe.HostApplication() != null && _state.IsDirty();
             if (!CanRefresh)
@@ -239,7 +249,7 @@ namespace Rubberduck.UI.Inspections
             return !IsBusy && _state.IsDirty();
         }
 
-        private async void _state_StateChanged(object sender, EventArgs e)
+        private void _state_StateChanged(object sender, EventArgs e)
         {
             _logger.Debug("InspectionResultsViewModel handles StateChanged...");
             if (_state.Status != ParserState.Ready)
@@ -248,6 +258,11 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
+            RefreshInspections();
+        }
+
+        private async void RefreshInspections()
+        {
             _logger.Debug("Running code inspections...");
             IsBusy = true;
 
@@ -301,7 +316,7 @@ namespace Rubberduck.UI.Inspections
             // refresh if any quickfix has completed without cancelling:
             if (completed != 0 && cancelled < completed)
             {
-                Task.Run(() => ExecuteRefreshCommandAsync(null));
+                Task.Run(() => ExecuteRefreshCommandAsync());
             }
         }
 
@@ -370,7 +385,7 @@ namespace Rubberduck.UI.Inspections
             var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == _selectedInspection.Name);
             setting.Severity = CodeInspectionSeverity.DoNotShow;
 
-            Task.Run(() => _configService.SaveConfiguration(config)).ContinueWith(t => ExecuteRefreshCommandAsync(null));
+            Task.Run(() => _configService.SaveConfiguration(config)).ContinueWith(t => ExecuteRefreshCommandAsync());
         }
 
         private bool _canDisableInspection;
@@ -440,6 +455,11 @@ namespace Rubberduck.UI.Inspections
             if (_state != null)
             {
                 _state.StateChanged -= _state_StateChanged;
+            }
+
+            if (_configService != null)
+            {
+                _configService.SettingsChanged -= _configService_SettingsChanged;
             }
         }
     }

@@ -1194,6 +1194,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitDefDirective([NotNull] VBAParser.DefDirectiveContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.nameStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNameStmt([NotNull] VBAParser.NameStmtContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.typeHint"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1635,6 +1642,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTabNumberClause([NotNull] VBAParser.TabNumberClauseContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.lineSpecialForm"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLineSpecialForm([NotNull] VBAParser.LineSpecialFormContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by the <c>logicalImpOp</c>
 	/// labeled alternative in <see cref="VBAParser.expression"/>.
 	/// </summary>
@@ -1736,13 +1750,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.statementLabel"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitStatementLabel([NotNull] VBAParser.StatementLabelContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>addOp</c>
 	/// labeled alternative in <see cref="VBAParser.expression"/>.
 	/// </summary>
@@ -1784,6 +1791,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLenClause([NotNull] VBAParser.LenClauseContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.lineSpecialFormOption"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLineSpecialFormOption([NotNull] VBAParser.LineSpecialFormOptionContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.moduleDeclarationsElement"/>.

@@ -81,6 +81,104 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/1858
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void MultipleElseIfStatementWorks()
+        {
+            var code = new[]
+            {
+                "Public Sub Test()",
+                "If Foo And Bar Then",
+                "Call Foobar",
+                "ElseIf Not Foo Then",
+                "Call Baz",
+                "ElseIf Not Bar Then",
+                "Call NoBaz",
+                "Else",
+                "MsgBox \"No Foos or Bars\"",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub Test()",
+                "    If Foo And Bar Then",
+                "        Call Foobar",
+                "    ElseIf Not Foo Then",
+                "        Call Baz",
+                "    ElseIf Not Bar Then",
+                "        Call NoBaz",
+                "    Else",
+                "        MsgBox \"No Foos or Bars\"",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/1858
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void IfThenElseStatementWorks()
+        {
+            var code = new[]
+            {
+                "Public Sub Test()",
+                "If Foo And Bar Then Foobar Else",
+                "Baz",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub Test()",
+                "    If Foo And Bar Then Foobar Else",
+                "        Baz",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/1858
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void ElseIfThenElseStatementWorks()
+        {
+            var code = new[]
+            {
+                "Public Sub Test()",
+                "If Foo Then NotFoobar",
+                "ElseIf Foo And Bar Then Foobar Else",
+                "Baz",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub Test()",
+                "    If Foo Then NotFoobar",
+                "    ElseIf Foo And Bar Then Foobar Else",
+                "        Baz",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
         [TestMethod]
         [TestCategory("Indenter")]
         public void SingleLineElseIfStatementWorks()

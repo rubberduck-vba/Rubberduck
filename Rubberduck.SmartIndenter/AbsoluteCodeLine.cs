@@ -19,12 +19,13 @@ namespace Rubberduck.SmartIndenter
         private static readonly Regex ProcedureEndRegex = new Regex(@"^End\s(Sub|Function|Property)");
         private static readonly Regex TypeEnumStartRegex = new Regex(@"^(Public\s|Private\s)?(Enum\s|Type\s)");
         private static readonly Regex TypeEnumEndRegex = new Regex(@"^End\s(Enum|Type)");
-        private static readonly Regex InProcedureInRegex = new Regex(@"^(Else)?If\s.*\sThen|^Else$|^Case\s|^With|^For\s|^Do$|^Do\s|^While$|^While\s|^Select Case");
-        private static readonly Regex InProcedureOutRegex = new Regex(@"^If\s.*\sThen\s|^Else$|^ElseIf\s.*\sThen|^Case\s|^End With|^Next\s|^Next$|^Loop$|^Loop\s|^Wend$|^End If$|^End Select");
+        private static readonly Regex InProcedureInRegex = new Regex(@"^(Else)?If\s.*\sThen$|^(Else)?If\s.*\sThen\s.*\sElse$|^Else$|^Case\s|^With|^For\s|^Do$|^Do\s|^While$|^While\s|^Select Case");
+        private static readonly Regex InProcedureOutRegex = new Regex(@"^(Else)?If\s.*\sThen\s.*(?<!\sElse)$|^Else$|ElseIf\s.*\sThen$|^Case\s|^End With|^Next\s|^Next$|^Loop$|^Loop\s|^Wend$|^End If$|^End Select");
         private static readonly Regex DeclarationRegex = new Regex(@"^(Dim|Const|Static|Public|Private)\s.*\sAs\s");
         private static readonly Regex PrecompilerInRegex = new Regex(@"^#(Else)?If\s.+Then$|^#Else$");
         private static readonly Regex PrecompilerOutRegex = new Regex(@"^#ElseIf\s.+Then|^#Else$|#End\sIf$");
-        private static readonly Regex SingleLineIfRegex = new Regex(@"^If\s.*\sThen\s.*$");
+        private static readonly Regex SingleLineIfRegex = new Regex(@"^If\s.*\sThen\s.*(?<!\sElse)$");
+        private static readonly Regex SingleLineElseIfRegex = new Regex(@"^ElseIf\s.*\sThen\s.*(?<!\sElse)$");
 
         private readonly IIndenterSettings _settings;
         private uint _lineNumber;
@@ -86,7 +87,13 @@ namespace Rubberduck.SmartIndenter
         }
 
         public string Original { get; private set; }
+        
         public string EndOfLineComment { get; private set; }
+
+        public IEnumerable<string> Segments
+        {
+            get { return _segments; }
+        }
 
         public string ContinuationRebuildText
         {
@@ -155,7 +162,7 @@ namespace Rubberduck.SmartIndenter
                 var adjust = _settings.IndentCase && _segments.Any(s => s.TrimStart().StartsWith("Select Case")) ? 1 : 0;
                 var ins = _segments.Count(s => InProcedureInRegex.IsMatch(s.Trim())) + (IsProcedureStart && _settings.IndentEntireProcedureBody ? 1 : 0) + adjust;
 
-                ins -= _segments.Count(s => SingleLineIfRegex.IsMatch(s));
+                ins += _segments.Count(s => SingleLineElseIfRegex.IsMatch(s));
                 ins -= MultipleCaseAdjustment();
 
                 if (_settings.IndentCompilerDirectives && PrecompilerInRegex.IsMatch(_segments[0].Trim()))
@@ -192,7 +199,7 @@ namespace Rubberduck.SmartIndenter
 
         public string Indent(int indents, bool atProcStart, bool absolute = false)
         {
-            if (IsEmpty || (ContainsOnlyComment && !_settings.AlignCommentsWithCode))
+            if (IsEmpty || (ContainsOnlyComment && !_settings.AlignCommentsWithCode && !absolute))
             {
                 return Original;
             }
