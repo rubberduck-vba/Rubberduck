@@ -511,7 +511,7 @@ withStmt :
 ;
 
 // Special forms with special syntax, only available in a report.
-lineSpecialForm : (expression whiteSpace? DOT whiteSpace?)? LINE whiteSpace (STEP whiteSpace?)? tuple MINUS (STEP whiteSpace?)? tuple whiteSpace? (COMMA whiteSpace? expression)? whiteSpace? (COMMA whiteSpace? lineSpecialFormOption)?;
+lineSpecialForm : expression whiteSpace (STEP whiteSpace?)? tuple MINUS (STEP whiteSpace?)? tuple whiteSpace? (COMMA whiteSpace? expression)? whiteSpace? (COMMA whiteSpace? lineSpecialFormOption)?;
 circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? expression)+;
 scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
 tuple : LPAREN whiteSpace? expression whiteSpace? COMMA whiteSpace? expression whiteSpace? RPAREN;
