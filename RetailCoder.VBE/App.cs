@@ -19,6 +19,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.UI.SourceControl;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
 {
@@ -216,7 +217,7 @@ namespace Rubberduck
         #region sink handlers. todo: move to another class
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
@@ -256,7 +257,7 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             _logger.Debug("Project '{0}' was added.", e.Item.Name);
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
@@ -313,7 +314,7 @@ namespace Rubberduck
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -326,7 +327,7 @@ namespace Rubberduck
 
         async void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -342,7 +343,7 @@ namespace Rubberduck
 
         async void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -357,7 +358,7 @@ namespace Rubberduck
 
         async void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -370,7 +371,7 @@ namespace Rubberduck
 
         async void sink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -385,7 +386,7 @@ namespace Rubberduck
 
         async void sink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -398,7 +399,7 @@ namespace Rubberduck
 
         async void sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -415,7 +416,7 @@ namespace Rubberduck
 
         async void sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
