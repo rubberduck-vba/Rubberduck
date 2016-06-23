@@ -20,6 +20,8 @@ lexer grammar VBALexer;
 ABS : A B S;
 ANY : A N Y;
 ARRAY : A R R A Y;
+B_CHAR : B;        // When trying to define the token `B` for use in the parser, it was being picked up as an IDENTIFIER
+BF : B F;
 CBOOL : C B O O L;
 CBYTE : C B Y T E;
 CCUR : C C U R;
@@ -45,6 +47,7 @@ INT : I N T;
 LBOUND : L B O U N D;
 LEN : L E N;
 LENB : L E N B;
+LINE : L I N E;
 LONGLONG : L O N G L O N G;
 LONGPTR : L O N G P T R;
 MIDB : M I D B;

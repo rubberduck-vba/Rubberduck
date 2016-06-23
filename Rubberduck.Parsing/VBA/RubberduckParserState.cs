@@ -662,26 +662,6 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            if (sameProjectDeclarations.Count > 0 &&
-                projectCount == sameProjectDeclarations.Count)
-            {
-                // only the project declaration is left; remove it.
-                if (sameProjectDeclarations.Count != 1)
-                {
-                    throw new InvalidOperationException("Collection contains more than one item");
-                }
-
-                ModuleState moduleState;
-                _moduleStates.TryRemove(sameProjectDeclarations[0].Key, out moduleState);
-                if (moduleState != null)
-                {
-                    moduleState.Dispose();
-                }
-
-                _projects.Remove(projectId);
-                Logger.Debug("Removed Project declaration for project Id {0}", projectId);
-            }
-
             if (notifyStateChanged)
             {
                 OnStateChanged(ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates

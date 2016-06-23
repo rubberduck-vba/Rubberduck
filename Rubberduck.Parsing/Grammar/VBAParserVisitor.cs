@@ -1642,6 +1642,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTabNumberClause([NotNull] VBAParser.TabNumberClauseContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.lineSpecialForm"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLineSpecialForm([NotNull] VBAParser.LineSpecialFormContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by the <c>logicalImpOp</c>
 	/// labeled alternative in <see cref="VBAParser.expression"/>.
 	/// </summary>
@@ -1784,6 +1791,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLenClause([NotNull] VBAParser.LenClauseContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.lineSpecialFormOption"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLineSpecialFormOption([NotNull] VBAParser.LineSpecialFormOptionContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.moduleDeclarationsElement"/>.
