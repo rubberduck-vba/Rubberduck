@@ -110,7 +110,6 @@ keyword :
      | CLNG
      | CLNGLNG
      | CLNGPTR
-     | COLLECTION
      | CSNG
      | CSTR
      | CURRENCY
@@ -119,7 +118,6 @@ keyword :
      | DATABASE
      | DATE
      | DEBUG
-     | DELETESETTING
      | DOEVENTS
      | DOUBLE
      | END
@@ -160,9 +158,6 @@ keyword :
      | PSET
      | PTRSAFE
      | REM
-     | RMDIR
-     | SENDKEYS
-     | SETATTR
      | SGN
      | SINGLE
      | SPC
