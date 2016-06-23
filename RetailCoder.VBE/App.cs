@@ -336,8 +336,47 @@ namespace Rubberduck
             _sourceControlPanelVM.HandleRenamedComponent(e.Item, e.OldName);
 
             _logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
+            
+            var projectId = e.Item.Collection.Parent.HelpFile;
+            var componentDeclaration = _parser.State.AllDeclarations.FirstOrDefault(f =>
+                        f.ProjectId == projectId &&
+                        f.DeclarationType == DeclarationType.ClassModule &&
+                        f.IdentifierName == e.OldName);
 
-            _parser.State.RemoveRenamedComponent(e.Item, e.OldName);
+            if (e.Item.Type == vbext_ComponentType.vbext_ct_Document &&
+                componentDeclaration != null &&
+
+                // according to ThunderFrame, Excel is the only one we explicitly support
+                // with two Document-component types just skip the Worksheet component
+                ((ClassModuleDeclaration) componentDeclaration).Supertypes.All(a => a.IdentifierName != "Worksheet"))
+            {
+                _componentsEventsSinks.Remove(projectId);
+                _referencesEventsSinks.Remove(projectId);
+                _parser.State.RemoveProject(projectId);
+
+                _logger.Debug("Project '{0}' was removed.", e.Item.Name);
+                Tuple<IConnectionPoint, int> componentsTuple;
+                if (_componentsEventsConnectionPoints.TryGetValue(projectId, out componentsTuple))
+                {
+                    componentsTuple.Item1.Unadvise(componentsTuple.Item2);
+                    _componentsEventsConnectionPoints.Remove(projectId);
+                }
+
+                Tuple<IConnectionPoint, int> referencesTuple;
+                if (_referencesEventsConnectionPoints.TryGetValue(projectId, out referencesTuple))
+                {
+                    referencesTuple.Item1.Unadvise(referencesTuple.Item2);
+                    _referencesEventsConnectionPoints.Remove(projectId);
+                }
+
+                _parser.State.AddProject(e.Item.Collection.Parent);
+            }
+            else
+            {
+                _parser.State.RemoveRenamedComponent(e.Item, e.OldName);
+            }
+
+            _parser.State.OnParseRequested(this);
         }
 
         async void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
