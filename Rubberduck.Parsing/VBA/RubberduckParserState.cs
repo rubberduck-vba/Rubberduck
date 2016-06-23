@@ -158,7 +158,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void RemoveProject(VBProject project)
         {
-            RemoveProject(QualifiedModuleName.GetProjectId(project));
+            RemoveProject(project.HelpFile);
             ClearStateCache(project);
         }
 
@@ -584,6 +584,12 @@ namespace Rubberduck.Parsing.VBA
                         // until Hell freezes over?
                     }
                 }
+
+                ModuleState state;
+                if (_moduleStates.TryRemove(new QualifiedModuleName(project), out state))
+                {
+                    state.Dispose();
+                }
             }
             catch (COMException)
             {
@@ -690,6 +696,10 @@ namespace Rubberduck.Parsing.VBA
                 OnStateChanged(ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
                 OnStateChanged(ParserState.Ready);   // trigger find all references &c. updates
             }
+
+            _projects.Remove(match.ProjectId);
+            _projects.Add(match.ProjectId, component.Collection.Parent);
+
             return success;
         }
 

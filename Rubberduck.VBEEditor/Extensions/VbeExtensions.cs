@@ -78,7 +78,7 @@ namespace Rubberduck.VBEditor.Extensions
                             return new CorelDRAWApp();
                     }
                 }
-                return null;// new FallbackApp(vbe);
+                return null;
             }
 
             foreach (var reference in vbe.ActiveVBProject.References.Cast<Reference>()
@@ -109,7 +109,61 @@ namespace Rubberduck.VBEditor.Extensions
                 }
             }
 
-            return null; //new FallbackApp(vbe);
+            return null;
+        }
+
+        /// <summary> Returns whether the host supports unit tests.</summary>
+        public static bool HostSupportsUnitTests(this VBE vbe)
+        {
+            if (vbe.ActiveVBProject == null)
+            {
+                const int ctlViewHost = 106;
+
+                var hostAppControl = vbe.CommandBars.FindControl(MsoControlType.msoControlButton, ctlViewHost);
+
+                if (hostAppControl == null)
+                {
+                    return false;
+                }
+
+                switch (hostAppControl.Caption)
+                {
+                    case "Microsoft Excel":
+                    case "Microsoft Access":
+                    case "Microsoft Word":
+                    case "Microsoft PowerPoint":
+                    case "Microsoft Outlook":
+                    case "Microsoft Project":
+                    case "Microsoft Publisher":
+                    case "Microsoft Visio":
+                    case "AutoCAD":
+                    case "CorelDRAW":
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            foreach (var reference in vbe.ActiveVBProject.References.Cast<Reference>()
+                .Where(reference => (reference.BuiltIn && reference.Name != "VBA") || (reference.Name == "AutoCAD")))
+            {
+                switch (reference.Name)
+                {
+                    case "Excel":
+                    case "Access":
+                    case "Word":
+                    case "PowerPoint":
+                    case "Outlook":
+                    case "MSProject":
+                    case "Publisher":
+                    case "Visio":
+                    case "AutoCAD":
+                    case "CorelDRAW":
+                        return true;
+                }
+            }
+
+            return false;
         }
     }
 }
