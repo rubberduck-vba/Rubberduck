@@ -47,7 +47,6 @@ INT : I N T;
 LBOUND : L B O U N D;
 LEN : L E N;
 LENB : L E N B;
-LINE : L I N E;
 LONGLONG : L O N G L O N G;
 LONGPTR : L O N G P T R;
 MIDB : M I D B;
