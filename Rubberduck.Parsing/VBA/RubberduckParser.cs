@@ -124,7 +124,7 @@ namespace Rubberduck.Parsing.VBA
             // tests do not fire events when components are removed--clear components
             foreach (var tree in State.ParseTrees)
             {
-                State.ClearStateCache(tree.Key.Component);
+                State.ClearStateCache(tree.Key);    // handle potentially removed components without crashing
             }
 
             SyncComReferences(State.Projects);
@@ -205,6 +205,32 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
+            var componentsRemoved = false;
+            foreach (var declaration in State.AllUserDeclarations)
+            {
+                if (!declaration.DeclarationType.HasFlag(DeclarationType.Module))
+                {
+                    continue;
+                }
+
+                var componentExists = false;
+                foreach (var component in components)
+                {
+                    if (component.Name == declaration.ComponentName &&
+                        component.Collection.Parent.HelpFile == declaration.ProjectId)
+                    {
+                        componentExists = true;
+                        break;
+                    }
+                }
+
+                if (!componentExists)
+                {
+                    componentsRemoved = true;
+                    State.ClearStateCache(declaration.QualifiedName.QualifiedModuleName);
+                }
+            }
+
             var toParse = new List<VBComponent>();
             var unchanged = new List<VBComponent>();
 
@@ -225,6 +251,11 @@ namespace Rubberduck.Parsing.VBA
 
             if (toParse.Count == 0)
             {
+                if (componentsRemoved)  // trigger UI updates
+                {
+                    State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+                }
+
                 State.SetStatusAndFireStateChanged(State.Status);
                 return;
             }
