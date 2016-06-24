@@ -353,6 +353,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open project properties.
+        /// </summary>
+        public static string CodeExplorer_OpenProjectProperties {
+            get {
+                return ResourceManager.GetString("CodeExplorer_OpenProjectProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Print....
         /// </summary>
         public static string CodeExplorer_Print {
