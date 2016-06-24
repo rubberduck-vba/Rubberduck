@@ -677,6 +677,53 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
+        public bool ClearStateCache(QualifiedModuleName component, bool notifyStateChanged = false)
+        {
+            var keys = new List<QualifiedModuleName> { component };
+            foreach (var key in _moduleStates.Keys)
+            {
+                if (key.Equals(component) && !keys.Contains(key))
+                {
+                    keys.Add(key);
+                }
+            }
+
+            var success = RemoveKeysFromCollections(keys);
+
+            var projectId = component.ProjectId;
+            var sameProjectDeclarations = new List<KeyValuePair<QualifiedModuleName, ModuleState>>();
+            foreach (var item in _moduleStates)
+            {
+                if (item.Key.ProjectId == projectId)
+                {
+                    sameProjectDeclarations.Add(new KeyValuePair<QualifiedModuleName, ModuleState>(item.Key, item.Value));
+                }
+            }
+
+            var projectCount = 0;
+            foreach (var item in sameProjectDeclarations)
+            {
+                if (item.Value.Declarations == null) { continue; }
+
+                foreach (var declaration in item.Value.Declarations)
+                {
+                    if (declaration.Key.DeclarationType == DeclarationType.Project)
+                    {
+                        projectCount++;
+                        break;
+                    }
+                }
+            }
+
+            if (notifyStateChanged)
+            {
+                OnStateChanged(ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
+                OnStateChanged(ParserState.Ready);   // trigger find all references &c. updates
+            }
+
+            return success;
+        }
+
         public bool RemoveRenamedComponent(VBComponent component, string oldComponentName)
         {
             var match = new QualifiedModuleName(component, oldComponentName);

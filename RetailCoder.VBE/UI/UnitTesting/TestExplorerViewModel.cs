@@ -13,6 +13,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -85,26 +86,22 @@ namespace Rubberduck.UI.UnitTesting
 
         private bool CanExecuteRunPassedTestsCommand(object obj)
         {
-            return _vbe.VBProjects.Cast<VBProject>().All(project => project.Mode == vbext_VBAMode.vbext_vm_Design) &&
-                   _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Succeeded);
+            return _vbe.IsInDesignMode() && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Succeeded);
         }
 
         private bool CanExecuteRunFailedTestsCommand(object obj)
         {
-            return _vbe.VBProjects.Cast<VBProject>().All(project => project.Mode == vbext_VBAMode.vbext_vm_Design) &&
-                   _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Failed);
+            return _vbe.IsInDesignMode() && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Failed);
         }
 
         private bool CanExecuteRunNotExecutedTestsCommand(object obj)
         {
-            return _vbe.VBProjects.Cast<VBProject>().All(project => project.Mode == vbext_VBAMode.vbext_vm_Design) &&
-                   _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
+            return _vbe.IsInDesignMode() && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
         }
 
         private bool CanExecuteRepeatLastRunCommand(object obj)
         {
-            return _vbe.VBProjects.Cast<VBProject>().All(project => project.Mode == vbext_VBAMode.vbext_vm_Design) &&
-                   _model.LastRun.Any();
+            return _vbe.IsInDesignMode() && _model.LastRun.Any();
         }
 
         public event EventHandler<EventArgs> TestCompleted;

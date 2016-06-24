@@ -5,6 +5,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command
 {
@@ -28,7 +29,7 @@ namespace Rubberduck.UI.Command
 
         public override bool CanExecute(object parameter)
         {
-            return _vbe.VBProjects.Cast<VBProject>().All(project => project.Mode == vbext_VBAMode.vbext_vm_Design);
+            return _vbe.IsInDesignMode();
         }
 
         public override void Execute(object parameter)

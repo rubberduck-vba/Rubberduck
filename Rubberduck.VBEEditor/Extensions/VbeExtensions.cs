@@ -28,6 +28,11 @@ namespace Rubberduck.VBEditor.Extensions
             }
         }
 
+        public static bool IsInDesignMode(this VBE vbe)
+        {
+            return vbe.VBProjects.Cast<VBProject>().All(project => project.Mode == vbext_VBAMode.vbext_vm_Design);
+        }
+
         public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, Selection selection)
         {
             var module = qualifiedModuleName.Component.CodeModule;
