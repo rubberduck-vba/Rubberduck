@@ -19,8 +19,9 @@ namespace Rubberduck.SourceControl
         /// <summary>Clone a remote repository.</summary>
         /// <param name="remotePathOrUrl">Either a Url "https://github.com/retailcoder/Rubberduck.git" or a UNC path. "//server/share/path/to/repo.git"</param>
         /// <param name="workingDirectory">Directory the repository will be cloned to.</param>
+        /// <param name="credentials">Credentials required if repository is private.</param>
         /// <returns>Newly cloned repository.</returns>
-        IRepository Clone(string remotePathOrUrl, string workingDirectory);
+        IRepository Clone(string remotePathOrUrl, string workingDirectory, SecureCredentials credentials = null);
 
         /// <summary>
         /// Creates a new repository in/from the given directory.

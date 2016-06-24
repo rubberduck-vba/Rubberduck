@@ -33,7 +33,7 @@ namespace Rubberduck.SourceControl
         public abstract IList<ICommit> UnsyncedRemoteCommits { get; }
         public bool NotifyExternalFileChanges { get; protected set; }
         public bool HandleVbeSinkEvents { get; protected set; }
-        public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory);
+        public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory, SecureCredentials credentials = null);
         public abstract void Push();
         public abstract void Fetch(string remoteName);
         public abstract void AddFile(string filePath);

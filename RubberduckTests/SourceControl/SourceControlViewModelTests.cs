@@ -70,7 +70,7 @@ namespace RubberduckTests.SourceControl
             _provider.SetupGet(git => git.UnsyncedLocalCommits).Returns(new List<ICommit>());
             _provider.SetupGet(git => git.UnsyncedRemoteCommits).Returns(new List<ICommit>());
             _provider.Setup(git => git.InitVBAProject(It.IsAny<string>())).Returns(GetDummyRepo());
-            _provider.Setup(git => git.Clone(It.IsAny<string>(), It.IsAny<string>())).Returns(GetDummyRepo());
+            _provider.Setup(git => git.Clone(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<SecureCredentials>())).Returns(GetDummyRepo());
             _provider.Setup(git => git.CurrentRepository).Returns(GetDummyRepo());
 
             _providerFactory = new Mock<ISourceControlProviderFactory>();
@@ -647,7 +647,7 @@ namespace RubberduckTests.SourceControl
             _vm.CloneRepoOkButtonCommand.Execute(null);
 
             //Assert
-            _provider.Verify(git => git.Clone(remotePath, localDirectory));
+            _provider.Verify(git => git.Clone(remotePath, localDirectory, new SecureCredentials(string.Empty, new SecureString())));
         }
 
         [TestMethod]
@@ -741,7 +741,7 @@ namespace RubberduckTests.SourceControl
             SetupValidVbProject();
             SetupVM();
 
-            _provider.Setup(p => p.Clone(It.IsAny<string>(), It.IsAny<string>()))
+            _provider.Setup(p => p.Clone(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<SecureCredentials>()))
                 .Throws(
                     new SourceControlException("A source control exception was thrown.",
                         new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
