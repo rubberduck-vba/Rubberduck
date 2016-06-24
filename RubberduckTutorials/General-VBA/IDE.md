@@ -1,1 +1,0 @@
-All about IDE here
