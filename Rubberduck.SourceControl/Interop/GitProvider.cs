@@ -3,6 +3,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -66,6 +67,25 @@ namespace Rubberduck.SourceControl.Interop
 
             Stage(filePaths);
             base.Commit(message);
+        }
+        /// <summary>
+        /// For use by COM API only.
+        /// </summary>
+        /// <param name="remotePathOrUrl"></param>
+        /// <param name="workingDirectory"></param>
+        /// <param name="credentials"></param>
+        /// <returns></returns>
+        public IRepository Clone(string remotePathOrUrl, string workingDirectory, Credentials credentials)
+        {
+            var password = new SecureString();
+            foreach (var chr in credentials.Password)
+            {
+                password.AppendChar(chr);
+            }
+
+            credentials.Password = string.Empty;
+
+            return base.Clone(remotePathOrUrl, workingDirectory, new SecureCredentials(credentials.Username, password));
         }
     }
 }
