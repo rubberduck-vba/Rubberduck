@@ -19,11 +19,11 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
-            var pane = param.QualifiedName.Component.CodeModule.CodePane;
-            var selection = param.Selection;
-
             try
             {
+                var pane = param.QualifiedName.Component.CodeModule.CodePane;
+                var selection = param.Selection;
+
                 pane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
                 pane.ForceFocus();
             }

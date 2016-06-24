@@ -67,6 +67,8 @@ namespace Rubberduck.Parsing.VBA
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
+
         static RubberduckParserState()
         {
             var values = Enum.GetValues(typeof(ParserState));
@@ -156,7 +158,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void RemoveProject(VBProject project)
         {
-            RemoveProject(QualifiedModuleName.GetProjectId(project));
+            RemoveProject(project.HelpFile);
             ClearStateCache(project);
         }
 
@@ -205,12 +207,12 @@ namespace Rubberduck.Parsing.VBA
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
-        private void OnModuleStateChanged(VBComponent component, ParserState state)
+        private void OnModuleStateChanged(VBComponent component, ParserState state, ParserState oldState)
         {
             var handler = ModuleStateChanged;
             if (handler != null)
             {
-                var args = new ParseProgressEventArgs(component, state);
+                var args = new ParseProgressEventArgs(component, state, oldState);
                 handler.Invoke(this, args);
             }
         }
@@ -240,10 +242,12 @@ namespace Rubberduck.Parsing.VBA
             }
             var key = new QualifiedModuleName(component);
 
+            var oldState = GetModuleState(component);
+
             _moduleStates.AddOrUpdate(key, new ModuleState(state), (c, e) => e.SetState(state));
             _moduleStates.AddOrUpdate(key, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
             Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
-            OnModuleStateChanged(component, state);
+            OnModuleStateChanged(component, state, oldState);
             Status = EvaluateParserState();
         }
 
@@ -321,9 +325,13 @@ namespace Rubberduck.Parsing.VBA
             {
                 result = ParserState.Parsing;
             }
-            if (stateCounts[(int)ParserState.Resolving] > 0)
+            if (stateCounts[(int)ParserState.ResolvingDeclarations] > 0)
             {
-                result = ParserState.Resolving;
+                result = ParserState.ResolvingDeclarations;
+            }
+            if (stateCounts[(int)ParserState.ResolvingReferences] > 0)
+            {
+                result = ParserState.ResolvingReferences;
             }
 
             if (result == ParserState.Ready)
@@ -576,6 +584,12 @@ namespace Rubberduck.Parsing.VBA
                         // until Hell freezes over?
                     }
                 }
+
+                ModuleState state;
+                if (_moduleStates.TryRemove(new QualifiedModuleName(project), out state))
+                {
+                    state.Dispose();
+                }
             }
             catch (COMException)
             {
@@ -654,24 +668,51 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            if (sameProjectDeclarations.Count > 0 &&
-                projectCount == sameProjectDeclarations.Count)
+            if (notifyStateChanged)
             {
-                // only the project declaration is left; remove it.
-                if (sameProjectDeclarations.Count != 1)
-                {
-                    throw new InvalidOperationException("Collection contains more than one item");
-                }
+                OnStateChanged(ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
+                OnStateChanged(ParserState.Ready);   // trigger find all references &c. updates
+            }
 
-                ModuleState moduleState;
-                _moduleStates.TryRemove(sameProjectDeclarations[0].Key, out moduleState);
-                if (moduleState != null)
-                {
-                    moduleState.Dispose();
-                }
+            return success;
+        }
 
-                _projects.Remove(projectId);
-                Logger.Debug("Removed Project declaration for project Id {0}", projectId);
+        public bool ClearStateCache(QualifiedModuleName component, bool notifyStateChanged = false)
+        {
+            var keys = new List<QualifiedModuleName> { component };
+            foreach (var key in _moduleStates.Keys)
+            {
+                if (key.Equals(component) && !keys.Contains(key))
+                {
+                    keys.Add(key);
+                }
+            }
+
+            var success = RemoveKeysFromCollections(keys);
+
+            var projectId = component.ProjectId;
+            var sameProjectDeclarations = new List<KeyValuePair<QualifiedModuleName, ModuleState>>();
+            foreach (var item in _moduleStates)
+            {
+                if (item.Key.ProjectId == projectId)
+                {
+                    sameProjectDeclarations.Add(new KeyValuePair<QualifiedModuleName, ModuleState>(item.Key, item.Value));
+                }
+            }
+
+            var projectCount = 0;
+            foreach (var item in sameProjectDeclarations)
+            {
+                if (item.Value.Declarations == null) { continue; }
+
+                foreach (var declaration in item.Value.Declarations)
+                {
+                    if (declaration.Key.DeclarationType == DeclarationType.Project)
+                    {
+                        projectCount++;
+                        break;
+                    }
+                }
             }
 
             if (notifyStateChanged)
@@ -702,6 +743,10 @@ namespace Rubberduck.Parsing.VBA
                 OnStateChanged(ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
                 OnStateChanged(ParserState.Ready);   // trigger find all references &c. updates
             }
+
+            _projects.Remove(match.ProjectId);
+            _projects.Add(match.ProjectId, component.Collection.Parent);
+
             return success;
         }
 
@@ -1030,6 +1075,11 @@ namespace Rubberduck.Parsing.VBA
             foreach (var item in _moduleStates)
             {
                 item.Value.Dispose();
+            }
+
+            if (CoClasses != null)
+            {
+                CoClasses.Clear();
             }
 
             _moduleStates.Clear();

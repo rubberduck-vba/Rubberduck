@@ -776,9 +776,37 @@ End Sub";
 Sub Test()
     a:
     10:
+    15
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+        }
+
+        [TestMethod]
+        public void NameStatement()
+        {
+            string code = @"
+Sub Test()
+    Dim sOldPath, sOldName As String
+    Dim sNewPath, sNewName As String
+    Name sOldPath + sOldName As sNewPath + sNewName
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//nameStmt", matches => matches.Count == 1);
+        }
+
+        [TestMethod]
+        public void ProcedureNamedName()
+        {
+            string code = @"
+Sub Name()
+End Sub
+
+Sub Test()
+    Name
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifier", matches => matches.Count == 3);    // name, test, and name
         }
 
         [TestMethod]
@@ -1317,6 +1345,61 @@ Sub Test()
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
+        }
+
+        [TestMethod]
+        public void TestCircleSpecialForm_WithoutStep()
+        {
+            string code = @"
+Sub Test()
+    Me.Circle (1, 2), 3, 4, 5, 6, 7
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
+        }
+
+        [TestMethod]
+        public void TestCircleSpecialForm_WithoutOptionalArguments()
+        {
+            string code = @"
+Sub Test()
+    Me.Circle Step(1, 2), 3
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
+        }
+
+        [TestMethod]
+        public void TestLineAccessReport()
+        {
+            string code = @"
+Sub Test()
+    Me.Line Step(1, 1)-Step(2, 2), vbBlack, B
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lineSpecialForm");
+        }
+
+        [TestMethod]
+        public void TestLineAccessReport_WithoutOptionalArguments()
+        {
+            string code = @"
+Sub Test()
+    Me.Line (1, 1)-(2, 2)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lineSpecialForm");
+        }
+
+        [TestMethod]
+        public void TestLineAccessReport_WithoutStep()
+        {
+            string code = @"
+Sub Test()
+    Me.Line (1, 1)-(2, 2), vbBlack, BF
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lineSpecialForm");
         }
 
         [TestMethod]

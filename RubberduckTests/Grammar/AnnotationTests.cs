@@ -91,5 +91,12 @@ namespace RubberduckTests.Grammar
             var annotation = new NoIndentAnnotation(new QualifiedSelection(), null);
             Assert.AreEqual(AnnotationType.NoIndent, annotation.AnnotationType);
         }
+
+        [TestMethod]
+        public void InterfaceAnnotation_TypeIsInterface()
+        {
+            var annotation = new InterfaceAnnotation(new QualifiedSelection(), null);
+            Assert.AreEqual(AnnotationType.Interface, annotation.AnnotationType);
+        }
     }
 }

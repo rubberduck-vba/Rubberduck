@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(Context.Parent as VBAParser.ConstSubStmtContext, out originalInstruction);
+                fix = DeclareExplicitVariant(Context as VBAParser.ConstSubStmtContext, out originalInstruction);
             }
 
             if (string.IsNullOrEmpty(originalInstruction))

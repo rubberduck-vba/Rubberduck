@@ -93,6 +93,7 @@ keyword :
      | ANY
      | ARRAY
      | ATTRIBUTE
+	 | B_CHAR
      | BEGIN
      | BOOLEAN
      | BYREF
@@ -109,7 +110,6 @@ keyword :
      | CLNG
      | CLNGLNG
      | CLNGPTR
-     | COLLECTION
      | CSNG
      | CSTR
      | CURRENCY
@@ -118,7 +118,6 @@ keyword :
      | DATABASE
      | DATE
      | DEBUG
-     | DELETESETTING
      | DOEVENTS
      | DOUBLE
      | END
@@ -159,9 +158,6 @@ keyword :
      | PSET
      | PTRSAFE
      | REM
-     | RMDIR
-     | SENDKEYS
-     | SETATTR
      | SGN
      | SINGLE
      | SPC
@@ -207,6 +203,7 @@ keyword :
      | SEEK
      | UNLOCK
      | WRITE
+	 | NAME
 ;
 
 markerKeyword : AS;

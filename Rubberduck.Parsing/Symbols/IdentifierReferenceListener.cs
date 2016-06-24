@@ -304,6 +304,11 @@ namespace Rubberduck.Parsing.Symbols
             _resolver.Resolve(context);
         }
 
+        public override void EnterLineSpecialForm(VBAParser.LineSpecialFormContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
         public override void EnterCircleSpecialForm(VBAParser.CircleSpecialFormContext context)
         {
             _resolver.Resolve(context);

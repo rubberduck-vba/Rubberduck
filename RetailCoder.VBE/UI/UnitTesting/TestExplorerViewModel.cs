@@ -13,11 +13,13 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.UnitTesting
 {
     public class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
+        private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly ITestEngine _testEngine;
         private readonly TestExplorerModel _model;
@@ -35,6 +37,7 @@ namespace Rubberduck.UI.UnitTesting
              IGeneralConfigService configService,
              IOperatingSystem operatingSystem)
         {
+            _vbe = vbe;
             _state = state;
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
@@ -45,7 +48,7 @@ namespace Rubberduck.UI.UnitTesting
 
             _navigateCommand = new NavigateCommand();
 
-            _runAllTestsCommand = new RunAllTestsCommand(state, testEngine, model);
+            _runAllTestsCommand = new RunAllTestsCommand(vbe, state, testEngine, model);
             _runAllTestsCommand.RunCompleted += RunCompleted;
 
             _addTestModuleCommand = new AddTestModuleCommand(vbe, state, newTestModuleCommand);
@@ -83,22 +86,22 @@ namespace Rubberduck.UI.UnitTesting
 
         private bool CanExecuteRunPassedTestsCommand(object obj)
         {
-            return _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Succeeded);
+            return _vbe.IsInDesignMode() && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Succeeded);
         }
 
         private bool CanExecuteRunFailedTestsCommand(object obj)
         {
-            return _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Failed);
+            return _vbe.IsInDesignMode() && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Failed);
         }
 
         private bool CanExecuteRunNotExecutedTestsCommand(object obj)
         {
-            return _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
+            return _vbe.IsInDesignMode() && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
         }
 
         private bool CanExecuteRepeatLastRunCommand(object obj)
         {
-            return _model.LastRun.Any();
+            return _vbe.IsInDesignMode() && _model.LastRun.Any();
         }
 
         public event EventHandler<EventArgs> TestCompleted;

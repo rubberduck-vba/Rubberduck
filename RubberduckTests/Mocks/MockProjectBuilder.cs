@@ -162,6 +162,13 @@ namespace RubberduckTests.Mocks
             {
                 _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection()));
             });
+            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>())).Returns(() =>
+            {
+                var lastComponent = _componentsMock.LastOrDefault();
+                return lastComponent == null
+                    ? null
+                    : lastComponent.Object;
+            });
 
             result.Setup(m => m.Remove(It.IsAny<VBComponent>())).Callback((VBComponent c) =>
             {

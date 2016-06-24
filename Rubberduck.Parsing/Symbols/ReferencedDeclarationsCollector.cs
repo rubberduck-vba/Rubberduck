@@ -263,18 +263,29 @@ namespace Rubberduck.Parsing.Symbols
                         break;
                 }
 
-                ComInformation comInfo;
-                if (_comInformation.TryGetValue(typeAttributes.guid, out comInfo))
+                if (typeAttributes.guid == Guid.Empty)
                 {
-                    comInfo.TypeQualifiedModuleName = typeQualifiedModuleName;
-                    comInfo.ModuleDeclaration = moduleDeclaration;
-                    comInfo.TypeDeclarationType = typeDeclarationType;
+                    LoadDeclarationsInModule(output,
+                        new ComInformation(typeAttributes, 0, info, typeName, typeQualifiedModuleName,
+                            moduleDeclaration,
+                            typeDeclarationType));
                 }
                 else
                 {
-                    _comInformation.Add(typeAttributes.guid,
-                        new ComInformation(typeAttributes, 0, info, typeName, typeQualifiedModuleName, moduleDeclaration,
-                            typeDeclarationType));
+                    ComInformation comInfo;
+                    if (_comInformation.TryGetValue(typeAttributes.guid, out comInfo))
+                    {
+                        comInfo.TypeQualifiedModuleName = typeQualifiedModuleName;
+                        comInfo.ModuleDeclaration = moduleDeclaration;
+                        comInfo.TypeDeclarationType = typeDeclarationType;
+                    }
+                    else
+                    {
+                        _comInformation.Add(typeAttributes.guid,
+                            new ComInformation(typeAttributes, 0, info, typeName, typeQualifiedModuleName,
+                                moduleDeclaration,
+                                typeDeclarationType));
+                    }
                 }
 
                 info.ReleaseTypeAttr(typeAttributesPointer);
@@ -284,58 +295,116 @@ namespace Rubberduck.Parsing.Symbols
 
             foreach (var member in _comInformation.Values)
             {
-                for (var memberIndex = 0; memberIndex < member.TypeAttributes.cFuncs; memberIndex++)
-                {
-                    string[] memberNames;
-
-                    IntPtr memberDescriptorPointer;
-                    member.TypeInfo.GetFuncDesc(memberIndex, out memberDescriptorPointer);
-                    var memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
-
-                    var memberDeclaration = CreateMemberDeclaration(memberDescriptor, member.TypeAttributes.typekind, member.TypeInfo, member.ImplTypeFlags,
-                        member.TypeQualifiedModuleName, member.ModuleDeclaration, out memberNames);
-                    if (memberDeclaration == null)
-                    {
-                        member.TypeInfo.ReleaseFuncDesc(memberDescriptorPointer);
-                        continue;
-                    }
-                    if (member.ModuleDeclaration.DeclarationType == DeclarationType.ClassModule &&
-                        memberDeclaration is ICanBeDefaultMember &&
-                        ((ICanBeDefaultMember)memberDeclaration).IsDefaultMember)
-                    {
-                        ((ClassModuleDeclaration)member.ModuleDeclaration).DefaultMember = memberDeclaration;
-                    }
-                    output.Add(memberDeclaration);
-
-                    var parameterCount = memberDescriptor.cParams - (memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET) ? 0 : 1);
-                    var parameters = new List<ParameterDeclaration>();
-                    for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
-                    {
-                        var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor,
-                            member.TypeQualifiedModuleName, memberDeclaration, member.TypeInfo);
-                        var declaration = memberDeclaration as IDeclarationWithParameter;
-                        if (declaration != null)
-                        {
-                            parameters.Add(parameter);
-                            declaration.AddParameter(parameter);
-                        }
-                        output.Add(parameter);
-                    }
-                    member.TypeInfo.ReleaseFuncDesc(memberDescriptorPointer);
-                    if (parameters.Any() && memberDescriptor.cParamsOpt == -1)
-                    {
-                        parameters.Last().IsParamArray = true;
-                    }
-                }
-
-                for (var fieldIndex = 0; fieldIndex < member.TypeAttributes.cVars; fieldIndex++)
-                {
-                    output.Add(CreateFieldDeclaration(member.TypeInfo, fieldIndex, member.TypeDeclarationType, member.TypeQualifiedModuleName,
-                        member.ModuleDeclaration));
-                }
+                LoadDeclarationsInModule(output, member);
             }
 
             return output;
+        }
+
+        private void LoadDeclarationsInModule(List<Declaration> output, ComInformation member)
+        {
+            if (member.TypeAttributes.typekind == TYPEKIND.TKIND_COCLASS)
+            {
+                GetCoClassInformation(member);
+            }
+
+            for (var memberIndex = 0; memberIndex < member.TypeAttributes.cFuncs; memberIndex++)
+            {
+                string[] memberNames;
+
+                IntPtr memberDescriptorPointer;
+                member.TypeInfo.GetFuncDesc(memberIndex, out memberDescriptorPointer);
+                var memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
+
+                var memberDeclaration = CreateMemberDeclaration(memberDescriptor, member.TypeAttributes.typekind, member.TypeInfo, member.ImplTypeFlags,
+                    member.TypeQualifiedModuleName, member.ModuleDeclaration, out memberNames);
+                if (memberDeclaration == null)
+                {
+                    member.TypeInfo.ReleaseFuncDesc(memberDescriptorPointer);
+                    continue;
+                }
+
+                if (member.ModuleDeclaration.DeclarationType == DeclarationType.ClassModule &&
+                    memberDeclaration is ICanBeDefaultMember &&
+                    ((ICanBeDefaultMember)memberDeclaration).IsDefaultMember)
+                {
+                    ((ClassModuleDeclaration)member.ModuleDeclaration).DefaultMember = memberDeclaration;
+                }
+                output.Add(memberDeclaration);
+
+                var parameterCount = memberDescriptor.cParams - (memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET) ? 0 : 1);
+                var parameters = new List<ParameterDeclaration>();
+                for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
+                {
+                    var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor,
+                        member.TypeQualifiedModuleName, memberDeclaration, member.TypeInfo);
+                    var declaration = memberDeclaration as IDeclarationWithParameter;
+                    if (declaration != null)
+                    {
+                        parameters.Add(parameter);
+                        declaration.AddParameter(parameter);
+                    }
+                    output.Add(parameter);
+                }
+                member.TypeInfo.ReleaseFuncDesc(memberDescriptorPointer);
+                if (parameters.Any() && memberDescriptor.cParamsOpt == -1)
+                {
+                    parameters.Last().IsParamArray = true;
+                }
+            }
+
+            for (var fieldIndex = 0; fieldIndex < member.TypeAttributes.cVars; fieldIndex++)
+            {
+                output.Add(CreateFieldDeclaration(member.TypeInfo, fieldIndex, member.TypeDeclarationType, member.TypeQualifiedModuleName,
+                    member.ModuleDeclaration));
+            }
+        }
+
+        private void GetCoClassInformation(ComInformation member)
+        {
+            var componentMemberNames = new List<string>();
+            for (var implIndex = 0; implIndex < member.TypeAttributes.cImplTypes; implIndex++)
+            {
+                int href;
+                member.TypeInfo.GetRefTypeOfImplType(0, out href);
+
+                ITypeInfo implTypeInfo;
+                member.TypeInfo.GetRefTypeInfo(href, out implTypeInfo);
+
+                IntPtr typeAttributesPointer;
+                implTypeInfo.GetTypeAttr(out typeAttributesPointer);
+
+                var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
+
+                for (var i = 0; i < typeAttributes.cFuncs; i++)
+                {
+                    var memberNames = new string[255];
+
+                    IntPtr memberDescriptorPointer;
+                    implTypeInfo.GetFuncDesc(i, out memberDescriptorPointer);
+                    var memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
+
+                    if (!(memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET) ||
+                        memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYPUT) ||
+                        memberDescriptor.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYPUTREF)))
+                    {
+                        continue;
+                    }
+
+                    int namesArrayLength;
+                    implTypeInfo.GetNames(memberDescriptor.memid, memberNames, 255, out namesArrayLength);
+
+                    if (!IgnoredInterfaceMembers.Contains(memberNames[0]) &&
+                        !componentMemberNames.Contains(memberNames[0]))
+                    {
+                        componentMemberNames.Add(memberNames[0]);
+                    }
+                }
+
+                member.TypeInfo.ReleaseTypeAttr(typeAttributesPointer);
+            }
+
+            _state.CoClasses.TryAdd(componentMemberNames, member.ModuleDeclaration);
         }
 
         private Declaration CreateMemberDeclaration(FUNCDESC memberDescriptor, TYPEKIND typeKind, ITypeInfo info, IMPLTYPEFLAGS parentImplFlags,

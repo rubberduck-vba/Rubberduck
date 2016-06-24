@@ -18,7 +18,8 @@ namespace Rubberduck.Parsing.Symbols
                   string name,
                   bool isBuiltIn,
                   IEnumerable<IAnnotation> annotations,
-                  Attributes attributes, bool hasDefaultInstanceVariable = false)
+                  Attributes attributes,
+                  bool hasDefaultInstanceVariable = false)
             : base(
                   qualifiedName,
                   projectDeclaration,

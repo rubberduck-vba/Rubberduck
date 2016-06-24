@@ -199,6 +199,7 @@ namespace Rubberduck.Refactorings.Rename
             if (ModuleDeclarationTypes.Contains(_model.Target.DeclarationType))
             {
                 RenameModule();
+                return; // renaming a component automatically triggers a reparse
             }
             else if (_model.Target.DeclarationType == DeclarationType.Project)
             {

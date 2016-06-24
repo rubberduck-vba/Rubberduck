@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 
 namespace Rubberduck.Common
 {
@@ -6,6 +7,10 @@ namespace Rubberduck.Common
     {
         public void ShowFolder(string folderPath)
         {
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
             Process.Start(folderPath);
         }
     }

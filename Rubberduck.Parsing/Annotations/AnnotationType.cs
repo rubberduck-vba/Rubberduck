@@ -11,6 +11,7 @@
         IgnoreTest,
         Ignore,
         Folder,
-        NoIndent
+        NoIndent,
+        Interface
     }
 }

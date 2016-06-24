@@ -42,6 +42,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _addUserFormCommand = commands.OfType<CodeExplorer_AddUserFormCommand>().FirstOrDefault();
 
             _openDesignerCommand = commands.OfType<CodeExplorer_OpenDesignerCommand>().FirstOrDefault();
+            _openProjectPropertiesCommand = commands.OfType<CodeExplorer_OpenProjectPropertiesCommand>().FirstOrDefault();
             _renameCommand = commands.OfType<CodeExplorer_RenameCommand>().FirstOrDefault();
             _indenterCommand = commands.OfType<CodeExplorer_IndentCommand>().FirstOrDefault();
 
@@ -244,23 +245,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private Declaration FindNewProjectDeclaration(string id)
-        {
-            return _state.AllUserDeclarations.SingleOrDefault(item =>
-                        item.ProjectId == id &&
-                        item.DeclarationType == DeclarationType.Project);
-        }
-
-        private Declaration FindNewDeclaration(Declaration declaration)
-        {
-            return _state.AllUserDeclarations.SingleOrDefault(item =>
-                        item.ProjectId == declaration.ProjectId &&
-                        item.ComponentName == declaration.ComponentName &&
-                        item.ParentScope == declaration.ParentScope &&
-                        item.IdentifierName == declaration.IdentifierName &&
-                        item.DeclarationType == declaration.DeclarationType);
-        }
-
         private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
             if (Projects == null)
@@ -332,7 +316,10 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)
         {
-            if (e.State != ParserState.Error)
+            // if we are resolving references, we already have the declarations and don't need to display error
+            if (!(e.State == ParserState.Error ||
+                (e.State == ParserState.ResolverError &&
+                e.OldState == ParserState.ResolvingDeclarations)))
             {
                 return;
             }
@@ -455,6 +442,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly ICommand _openDesignerCommand;
         public ICommand OpenDesignerCommand { get { return _openDesignerCommand; } }
+
+        private readonly ICommand _openProjectPropertiesCommand;
+        public ICommand OpenProjectPropertiesCommand { get { return _openProjectPropertiesCommand; } }
 
         private readonly ICommand _renameCommand;
         public ICommand RenameCommand { get { return _renameCommand; } }

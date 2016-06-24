@@ -53,10 +53,6 @@ namespace Rubberduck.SourceControl
             _credentialsHandler = (url, user, cred) => _credentials;
         }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials<string> credentials, ICodePaneWrapperFactory wrapperFactory)
-            :this(project, repository, credentials.Username, credentials.Password, wrapperFactory)
-        { }
-
         public GitProvider(VBProject project, IRepository repository, ICredentials<SecureString> credentials, ICodePaneWrapperFactory wrapperFactory)
             : this(project, repository, wrapperFactory)
         {
@@ -104,12 +100,28 @@ namespace Rubberduck.SourceControl
             get { return _unsyncedRemoteCommits; }
         }
 
-        public override IRepository Clone(string remotePathOrUrl, string workingDirectory)
+        public override IRepository Clone(string remotePathOrUrl, string workingDirectory, SecureCredentials credentials = null)
         {
             try
             {
                 var name = GetProjectNameFromDirectory(remotePathOrUrl);
-                LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory);
+
+                if (credentials == null)
+                {
+                    LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory);
+                }
+                else
+                {
+                    var credentialsHandler = new CredentialsHandler((url, usernameFromUrl, types) => new SecureUsernamePasswordCredentials
+                    {
+                        Username = credentials.Username,
+                        Password = credentials.Password
+                    });
+
+                    var options = new CloneOptions {CredentialsProvider = credentialsHandler};
+                    LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory, options);
+                }
+
                 return new Repository(name, workingDirectory, remotePathOrUrl);
             }
             catch (LibGit2SharpException ex)

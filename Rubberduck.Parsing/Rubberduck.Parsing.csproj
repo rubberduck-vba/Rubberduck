@@ -71,6 +71,7 @@
     <Compile Include="Annotations\IAnnotation.cs" />
     <Compile Include="Annotations\IAnnotationFactory.cs" />
     <Compile Include="Annotations\IgnoreAnnotation.cs" />
+    <Compile Include="Annotations\InterfaceAnnotation.cs" />
     <Compile Include="Annotations\InvalidAnnotationArgumentException.cs" />
     <Compile Include="Annotations\ModuleCleanupAnnotation.cs" />
     <Compile Include="Annotations\ModuleInitializeAnnotation.cs" />

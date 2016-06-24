@@ -688,6 +688,16 @@ namespace Rubberduck.Parsing.Symbols
             ResolveLabel(context.expression(), context.expression().GetText());
         }
 
+        public void Resolve(VBAParser.LineSpecialFormContext context)
+        {
+            foreach (var expr in context.expression())
+            {
+                ResolveDefault(expr);
+            }
+            ResolveTuple(context.tuple(0));
+            ResolveTuple(context.tuple(1));
+        }
+
         public void Resolve(VBAParser.CircleSpecialFormContext context)
         {
             foreach (var expr in context.expression())
