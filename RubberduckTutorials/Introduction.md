@@ -16,5 +16,4 @@ The table or matrix below provides an overview of where the skills levels are ma
 | Programming VBA | Declarations / Data types | Sequence / Selection / Loops | Object Oriented Programming | Classes / Methods | Interfaces and SOLID Principles |
 | Rubberduck | Installation / Shortcut keys / Settings | Code Navigation / Code Inspections | Source Control / Unit Testing | Test Driven Approach / Test Explorer | Refactoring your code |
 | VBAGroceries |   [Learn Business Model](https://github.com/PeterMTaylor/Rubberduck/blob/next/RubberduckTutorials/VBAGroceries/AboutVBAGroceries.md) | Suppliers / Customers | Orders / Goods / Deliveries | Finance / Human Resource | Quality Assurance |
-| StackOverflow | Set up Profile / Learn Tags / Search VBA Posts | Create VBA Questions | Answer some Unanswered  VBA tag Posts | Upvote and particpate in VBA tag Posts | Moderate VBA tag Posts |
-| CodeReview | Set up Profile / Learn Tags / Search for VBA Posts | Create VBA code for Code Reviews | Answer some VBA tag Code Reviews | Upvote several VBA tag Code Reviews | Particpate in a Code Review |
+| StackOverflow / CodeReview | Set up Profile / Learn Tags / Search VBA Posts | Create VBA Questions for StackOverflow / CodeReview | Answer some Unanswered  VBA tag Posts | Upvote and particpate in VBA tag Posts | Moderate / Particpate VBA tag Posts |
