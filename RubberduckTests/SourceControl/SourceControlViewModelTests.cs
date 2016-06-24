@@ -647,7 +647,7 @@ namespace RubberduckTests.SourceControl
             _vm.CloneRepoOkButtonCommand.Execute(null);
 
             //Assert
-            _provider.Verify(git => git.Clone(remotePath, localDirectory, new SecureCredentials(string.Empty, new SecureString())));
+            _provider.Verify(git => git.Clone(remotePath, localDirectory, null));
         }
 
         [TestMethod]
