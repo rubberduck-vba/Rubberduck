@@ -10,7 +10,7 @@ The files and tutorial excerises given of our Rubberduck VBE are broken down int
 
 The table or matrix below provides an overview of where the skills levels are mapped against categories used in the tutorial.
 
-| Categories \ Skills | Basic | Advance | Competent | Proficient | Expert |
+| Categories \ Skills | Basic | Advanced | Competent | Proficient | Expert |
 |:-------------------:|:--------------------------------------------------:|:----------------------------------:|:-------------------------------------:|:--------------------------------------:|:---------------------------:|
 | General VBA | IDE / Project Explorer | Macros / Shortcut keys | Using Objects / Debugging | Modules / Functions | Create a working  VBA code |
 | Programming VBA | Declarations / Data types | Sequence / Selection / Loops | Object Oriented Programming | Classes / Methods | Interfaces and SOLID Principles |
