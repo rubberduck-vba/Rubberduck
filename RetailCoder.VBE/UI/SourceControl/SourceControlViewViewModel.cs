@@ -590,11 +590,20 @@ namespace Rubberduck.UI.SourceControl
                 }
 
                 Logger.Trace("Initializing repo");
-                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
-                var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
-                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
 
-                AddOrUpdateLocalPathConfig((Repository)repo);
+                try
+                {
+                    _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                    var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
+                    Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
+
+                    AddOrUpdateLocalPathConfig((Repository) repo);
+                }
+                catch (SourceControlException ex)
+                {
+                    ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                }
+
                 Status = RubberduckUI.Online;
             }
         }
@@ -703,7 +712,7 @@ namespace Rubberduck.UI.SourceControl
                     _isCloning = false;
                 }
 
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 return;
             }
 
