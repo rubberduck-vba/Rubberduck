@@ -7,12 +7,12 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant
 {
-    public interface IRegularExpression : IDescribable
+    internal interface IRegularExpression : IDescribable
     {
         Quantifier Quantifier { get; }
     }
 
-    public class ConcatenatedExpression : IRegularExpression
+    internal class ConcatenatedExpression : IRegularExpression
     {
         private readonly Quantifier _quantifier;
         internal readonly IList<IRegularExpression> Subexpressions;
@@ -40,7 +40,7 @@ namespace Rubberduck.RegexAssistant
         }
     }
 
-    public class AlternativesExpression : IRegularExpression
+    internal class AlternativesExpression : IRegularExpression
     {
         private readonly Quantifier _quantifier;
         internal readonly IList<IRegularExpression> Subexpressions;
@@ -68,7 +68,7 @@ namespace Rubberduck.RegexAssistant
         }
     }
 
-    public class SingleAtomExpression : IRegularExpression
+    internal class SingleAtomExpression : IRegularExpression
     {
         public readonly IAtom Atom;
         private readonly Quantifier _quantifier;
@@ -105,8 +105,8 @@ namespace Rubberduck.RegexAssistant
             return false;
         }
     }
-        
-    public static class RegularExpression
+
+    internal static class RegularExpression
     {
 
         /// <summary>

@@ -1,10 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant
 {
-    public class Quantifier
+    internal class Quantifier
     {
         public static readonly string Pattern = @"(?<quantifier>(?<!\\)[\?\*\+]|(?<!\\)\{(\d+)(,\d*)?(?<!\\)\})";
         private static readonly Regex Matcher = new Regex(@"^\{(?<min>\d+)(?<max>,\d*)?\}$");
@@ -104,7 +103,7 @@ namespace Rubberduck.RegexAssistant
         }
     }
 
-    public enum QuantifierKind
+    internal enum QuantifierKind
     {
         None, Expression, Wildcard
     }

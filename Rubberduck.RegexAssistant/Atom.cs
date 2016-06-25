@@ -5,12 +5,12 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant
 {
-    public interface IAtom : IDescribable
+    internal interface IAtom : IDescribable
     {
         string Specifier { get; }
     }
 
-    public class CharacterClass : IAtom
+    internal class CharacterClass : IAtom
     {
         public static readonly string Pattern = @"(?<!\\)\[(?<expression>.*?)(?<!\\)\]";
         private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
@@ -96,7 +96,7 @@ namespace Rubberduck.RegexAssistant
         }
     }
 
-    class Group : IAtom
+    internal class Group : IAtom
     {
         public static readonly string Pattern = @"(?<!\\)\((?<expression>.*)(?<!\\)\)";
         private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
@@ -140,7 +140,7 @@ namespace Rubberduck.RegexAssistant
         }
     }
 
-    class Literal : IAtom
+    internal class Literal : IAtom
     {
         public static readonly string Pattern = @"(?<expression>\\(u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3}|[bB\(\){}\\\[\]\.+*?1-9nftvrdDwWsS])|[^()\[\]{}\\*+?^$])";
         private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
