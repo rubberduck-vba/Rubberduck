@@ -56,7 +56,7 @@ namespace RegexAssistantTests
         public void EverythingElseBlowsUp()
         {
             char[] allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"§%&/=ß#'°".ToCharArray();
-            string[] allowedEscapes = { "(", ")", "{", "}", "[", "]", ".", "?", "+", "*", "uFFFF", "u0000", "xFF", "x00", "777", "000" };
+            string[] allowedEscapes = { "(", ")", "{", "}", "[", "]", ".", "?", "+", "*", "$", "^", "uFFFF", "u0000", "xFF", "x00", "777", "000" };
             foreach (string blowup in allowedEscapes.Select(e => "\\"+ e).Concat(allowed.Select(c => ""+c)))
             {
                 try
@@ -70,6 +70,26 @@ namespace RegexAssistantTests
                 }
                 Assert.Fail("Did not blow up when trying to parse {0} as literal", blowup);
             }
+        }
+
+        [TestMethod]
+        public void SingleEscapedCharsAreNotParsedAsLiteral()
+        {
+            string[] escapedChars = "(){}[]\\*?+$^".ToCharArray().Select(e => e.ToString()).ToArray();
+            foreach (var escape in escapedChars)
+            {
+                try
+                {
+                    Literal cut = new Literal(escape);
+                }
+                catch (ArgumentException ex)
+                {
+                    Assert.IsTrue(true); // Assert.Pass();
+                    continue;
+                }
+                Assert.Fail("Did not blow up when trying to parse {0} as literal", escape);
+            }
+
         }
     }
 }

@@ -142,7 +142,7 @@ namespace Rubberduck.RegexAssistant
 
     class Literal : IAtom
     {
-        public static readonly string Pattern = @"(?<expression>\\(u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3}|[bB\(\){}\\\[\]\.+*?1-9nftvrdDwWsS])|[^()\[\]{}\\*+?])";
+        public static readonly string Pattern = @"(?<expression>\\(u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3}|[bB\(\){}\\\[\]\.+*?1-9nftvrdDwWsS])|[^()\[\]{}\\*+?^$])";
         private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
         private static readonly ISet<char> EscapeLiterals = new HashSet<char>();
         private readonly string _specifier;
