@@ -277,6 +277,42 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to $ ensures all characters of the string are consumed.
+        /// </summary>
+        internal static string PatternDescription_AnchorEnd {
+            get {
+                return ResourceManager.GetString("PatternDescription_AnchorEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to $ ensures that the line ended or all characters of the input have been consumed.
+        /// </summary>
+        internal static string PatternDescription_AnchorEnd_GlobalEnabled {
+            get {
+                return ResourceManager.GetString("PatternDescription_AnchorEnd_GlobalEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ^ ensures we are at the beginning of the string that&apos;s to be matched.
+        /// </summary>
+        internal static string PatternDescription_AnchorStart {
+            get {
+                return ResourceManager.GetString("PatternDescription_AnchorStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ^ ensures that the matcher starts at the beginning of a line.
+        /// </summary>
+        internal static string PatternDescription_AnchorStart_GlobalEnabled {
+            get {
+                return ResourceManager.GetString("PatternDescription_AnchorStart_GlobalEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to at least once.
         /// </summary>
         internal static string Quantifer_Plus {

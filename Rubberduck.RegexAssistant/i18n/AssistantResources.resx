@@ -189,6 +189,18 @@
   <data name="ExpressionDescription_AlternativesExpression" xml:space="preserve">
     <value>Matches one of the following alternatives {0}.</value>
   </data>
+  <data name="PatternDescription_AnchorEnd" xml:space="preserve">
+    <value>$ ensures all characters of the string are consumed</value>
+  </data>
+  <data name="PatternDescription_AnchorEnd_GlobalEnabled" xml:space="preserve">
+    <value>$ ensures that the line ended or all characters of the input have been consumed</value>
+  </data>
+  <data name="PatternDescription_AnchorStart" xml:space="preserve">
+    <value>^ ensures we are at the beginning of the string that's to be matched</value>
+  </data>
+  <data name="PatternDescription_AnchorStart_GlobalEnabled" xml:space="preserve">
+    <value>^ ensures that the matcher starts at the beginning of a line</value>
+  </data>
   <data name="Quantifer_Plus" xml:space="preserve">
     <value>at least once</value>
   </data>
