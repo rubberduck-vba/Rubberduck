@@ -2431,6 +2431,51 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Regex Helper.
+        /// </summary>
+        public static string RegexAssistant_Caption {
+            get {
+                return ResourceManager.GetString("RegexAssistant_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What the RegExp does:.
+        /// </summary>
+        public static string RegexAssistant_DescriptionResultsLabel {
+            get {
+                return ResourceManager.GetString("RegexAssistant_DescriptionResultsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The flag &quot;Global&quot; is set.
+        /// </summary>
+        public static string RegexAssistant_GlobalFlag {
+            get {
+                return ResourceManager.GetString("RegexAssistant_GlobalFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The flag &quot;IgnoreCase&quot; is set.
+        /// </summary>
+        public static string RegexAssistant_IgnoreCaseFlag {
+            get {
+                return ResourceManager.GetString("RegexAssistant_IgnoreCaseFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The RegExp:.
+        /// </summary>
+        public static string RegexAssistant_RegexPatternLabel {
+            get {
+                return ResourceManager.GetString("RegexAssistant_RegexPatternLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Regex Search &amp; Replace.
         /// </summary>
         public static string RegexSearchReplace_Caption {

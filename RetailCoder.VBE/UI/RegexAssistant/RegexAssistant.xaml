@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="Rubberduck.UI.RegexAssistant.RegexAssistant"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:assistant="clr-namespace:Rubberduck.UI.RegexAssistant"
+             mc:Ignorable="d"
+             d:DesignHeight="300" Width="555"
+             d:DataContext="{d:DesignInstance {x:Type assistant:RegexAssistantViewModel}, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+    </UserControl.Resources>
+    <Grid>
+        <ScrollViewer>
+            <Grid>
+                <StackPanel Grid.Row="0" Margin="5,5,5,5">
+                    <Label DockPanel.Dock="Top" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_Caption}"
+                   Background="DarkGray"
+                   Foreground="White"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,3">
+                        <Label.Style>
+                            <Style>
+                                <Style.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="5"/>
+                                    </Style>
+                                </Style.Resources>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_RegexPatternLabel}"
+                   FontWeight="SemiBold" />
+                    <TextBox x:Name="RegexValue" HorizontalAlignment="Left" TextWrapping="Wrap" 
+                             VerticalAlignment="Top" MinWidth="250" MinHeight="23" MaxHeight="23"
+                             VerticalContentAlignment="Center" Margin="15,5,5,5" Text="{Binding Pattern}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="GlobalFlag" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_GlobalFlag}" 
+                                  HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" MinWidth="110"
+                                  Margin="15,5,5,5" IsChecked="{Binding GlobalFlag}"/>
+                        <CheckBox x:Name="IgnoreCaseFlag" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_IgnoreCaseFlag}"
+                                  HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" MinWidth="110"
+                                  Margin="15,5,5,5" IsChecked="{Binding IgnoreCaseFlag}"/>
+                    </StackPanel>
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_DescriptionResultsLabel}"
+                   FontWeight="SemiBold" />
+
+                    <!--<RichTextBox x:Name="Results" HorizontalAlignment="Left" 
+                                 MinHeight="165" VerticalAlignment="Top" MinWidth="250"
+                                 Margin="15,5,5,5">
+                    </RichTextBox>-->
+                    <TextBox x:Name="Results" 
+                                 MinHeight="165" VerticalAlignment="Top" MinWidth="250"
+                                 Margin="15,5,5,5" Text="{Binding DescriptionResults}"/>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

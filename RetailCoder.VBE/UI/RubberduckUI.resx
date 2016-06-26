@@ -1733,4 +1733,19 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="HotkeyDescription_SourceControl" xml:space="preserve">
     <value>Source Control</value>
   </data>
+  <data name="RegexAssistant_Caption" xml:space="preserve">
+    <value>Regex Helper</value>
+  </data>
+  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
+    <value>What the RegExp does:</value>
+  </data>
+  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
+    <value>The flag "Global" is set</value>
+  </data>
+  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
+    <value>The flag "IgnoreCase" is set</value>
+  </data>
+  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
+    <value>The RegExp:</value>
+  </data>
 </root>
