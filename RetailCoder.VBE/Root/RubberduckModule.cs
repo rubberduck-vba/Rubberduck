@@ -384,6 +384,7 @@ namespace Rubberduck.Root
                 Kernel.Get<SettingsCommandMenuItem>(),
                 Kernel.Get<InspectionResultsCommandMenuItem>(),
                 Kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
+                Kernel.Get<RegexAssistantCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
                 GetSmartIndenterParentMenu(),
                 GetRefactoringsParentMenu(),
