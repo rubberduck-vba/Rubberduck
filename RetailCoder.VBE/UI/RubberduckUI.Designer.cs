@@ -2918,6 +2918,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Regex &amp;Assistant.
+        /// </summary>
+        public static string RubberduckMenu_RegexAssistant {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_RegexAssistant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rege&amp;x Search/Replace.
         /// </summary>
         public static string RubberduckMenu_RegexSearchReplace {

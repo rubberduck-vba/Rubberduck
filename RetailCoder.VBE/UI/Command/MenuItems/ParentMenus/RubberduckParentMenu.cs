@@ -18,6 +18,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         CodeInspections,
         SourceControl,
         Settings,
-        About
+        About,
+        RegexAssistant
     }
 }
