@@ -27,7 +27,7 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return string.Join(", ", Subexpressions.Select(exp => exp.Description)) + " " + Quantifier.HumanReadable();
+                return string.Join(Environment.NewLine, Subexpressions.Select(exp => exp.Description));
             }
         }
 
@@ -55,7 +55,7 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return string.Format(AssistantResources.ExpressionDescription_AlternativesExpression, Quantifier.HumanReadable()) + string.Join(Environment.NewLine, Subexpressions);
+                return AssistantResources.ExpressionDescription_AlternativesExpression + Environment.NewLine + string.Join(Environment.NewLine, Subexpressions.Select(exp => exp.Description));
             }
         }
 

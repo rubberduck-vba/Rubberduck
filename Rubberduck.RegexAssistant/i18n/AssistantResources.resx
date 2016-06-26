@@ -187,7 +187,7 @@
     <value>Matches any "word character". Equivalent to "[a-zA-Z_0-9]"</value>
   </data>
   <data name="ExpressionDescription_AlternativesExpression" xml:space="preserve">
-    <value>Matches one of the following alternatives {0}.</value>
+    <value>Matches one of the following alternatives:</value>
   </data>
   <data name="PatternDescription_AnchorEnd" xml:space="preserve">
     <value>$ ensures all characters of the string are consumed</value>

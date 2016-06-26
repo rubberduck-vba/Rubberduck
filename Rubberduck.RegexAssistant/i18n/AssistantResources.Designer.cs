@@ -268,7 +268,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches one of the following alternatives {0}..
+        ///   Looks up a localized string similar to Matches one of the following alternatives:.
         /// </summary>
         internal static string ExpressionDescription_AlternativesExpression {
             get {
