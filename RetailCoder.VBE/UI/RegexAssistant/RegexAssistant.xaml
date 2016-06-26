@@ -30,14 +30,14 @@
                     </Label>
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_RegexPatternLabel}"
                    FontWeight="SemiBold" />
-                    <TextBox x:Name="RegexValue" HorizontalAlignment="Left" TextWrapping="Wrap" 
+                    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" 
                              VerticalAlignment="Top" MinWidth="250" MinHeight="23" MaxHeight="23"
                              VerticalContentAlignment="Center" Margin="15,5,5,5" Text="{Binding Pattern}"/>
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox x:Name="GlobalFlag" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_GlobalFlag}" 
+                        <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_GlobalFlag}" 
                                   HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" MinWidth="110"
                                   Margin="15,5,5,5" IsChecked="{Binding GlobalFlag}"/>
-                        <CheckBox x:Name="IgnoreCaseFlag" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_IgnoreCaseFlag}"
+                        <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_IgnoreCaseFlag}"
                                   HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" MinWidth="110"
                                   Margin="15,5,5,5" IsChecked="{Binding IgnoreCaseFlag}"/>
                     </StackPanel>
@@ -48,9 +48,8 @@
                                  MinHeight="165" VerticalAlignment="Top" MinWidth="250"
                                  Margin="15,5,5,5">
                     </RichTextBox>-->
-                    <TextBox x:Name="Results" 
-                                 MinHeight="165" VerticalAlignment="Top" MinWidth="250"
-                                 Margin="15,5,5,5" Text="{Binding DescriptionResults}"/>
+                    <TextBlock MinHeight="165" VerticalAlignment="Top" MinWidth="250" TextWrapping="WrapWithOverflow"
+                                 Margin="15,5,5,5" Text="{Binding DescriptionResults, Mode=OneWay}"/>
 
                 </StackPanel>
             </Grid>

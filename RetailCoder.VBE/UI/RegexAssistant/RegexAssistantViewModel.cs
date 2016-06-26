@@ -2,10 +2,11 @@
 
 namespace Rubberduck.UI.RegexAssistant
 {
-    class RegexAssistantViewModel : ViewModelBase
+    public class RegexAssistantViewModel : ViewModelBase
     {
         public RegexAssistantViewModel()
         {
+            _pattern = string.Empty;
             RecalculateDescription();
         }
 
@@ -58,6 +59,7 @@ namespace Rubberduck.UI.RegexAssistant
                 return;
             }
             _description = new Pattern(_pattern, _ignoreCaseFlag, _ignoreCaseFlag).Description;
+            base.OnPropertyChanged("DescriptionResults");
         }
 
         public string DescriptionResults
