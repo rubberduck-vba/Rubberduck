@@ -8,7 +8,6 @@ namespace Rubberduck.Parsing.Symbols
     public class FormEventDeclarations : ICustomDeclarationLoader
     {
         private readonly RubberduckParserState _state;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public FormEventDeclarations(RubberduckParserState state)
         {

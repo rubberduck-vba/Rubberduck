@@ -287,7 +287,6 @@ namespace Rubberduck.Parsing.VBA
             if (state != default(ParserState))
             {
                 // if all modules are in the same state, we have our result.
-                Logger.Debug("ParserState evaluates to '{0}' (thread {1})", state, Thread.CurrentThread.ManagedThreadId);
                 return state;
             }
 
@@ -300,14 +299,10 @@ namespace Rubberduck.Parsing.VBA
             // error state takes precedence over every other state
             if (stateCounts[(int)ParserState.Error] > 0)
             {
-                Logger.Debug("ParserState evaluates to '{0}' (thread {1})", ParserState.Error,
-                Thread.CurrentThread.ManagedThreadId);
                 return ParserState.Error;
             }
             if (stateCounts[(int)ParserState.ResolverError] > 0)
             {
-                Logger.Debug("ParserState evaluates to '{0}' (thread {1})", ParserState.ResolverError,
-                Thread.CurrentThread.ManagedThreadId);
                 return ParserState.ResolverError;
             }
 
@@ -367,8 +362,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 #endif
-
-            Logger.Debug("ParserState evaluates to '{0}' (thread {1})", result,
+            
             Thread.CurrentThread.ManagedThreadId);
             return result;
         }
@@ -406,7 +400,6 @@ namespace Rubberduck.Parsing.VBA
                 if (_status != value)
                 {
                     _status = value;
-                    Logger.Debug("ParserState changed to '{0}', raising OnStateChanged", value);
                     OnStateChanged(_status);
                 }
             }
@@ -564,12 +557,12 @@ namespace Rubberduck.Parsing.VBA
                 byte _;
                 while (!declarations.TryRemove(declaration, out _))
                 {
-                    Logger.Debug("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                    Logger.Warn("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
                 }
             }
             while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
             {
-                Logger.Debug("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                Logger.Warn("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
             }
         }
 
@@ -1038,11 +1031,6 @@ namespace Rubberduck.Parsing.VBA
                 {
                     Logger.Error(exception);
                 }
-            }
-
-            if (_selectedDeclaration != null)
-            {
-                Logger.Debug("Current selection ({0}) is '{1}' ({2})", selection, _selectedDeclaration.IdentifierName, _selectedDeclaration.DeclarationType);
             }
 
             return _selectedDeclaration;

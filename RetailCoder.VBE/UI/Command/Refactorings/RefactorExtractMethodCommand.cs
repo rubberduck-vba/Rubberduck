@@ -16,7 +16,6 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IIndenter indenter)
             : base (vbe)
@@ -52,8 +51,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 && selection.LineCount > 0
                 && !string.IsNullOrWhiteSpace(code);
             */
-
-            _logger.Debug("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            
             return canExecute;
         }
 

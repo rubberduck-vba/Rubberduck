@@ -83,8 +83,6 @@ namespace Rubberduck.Parsing.VBA
                     if (State.Status == ParserState.Error) { return; }
 
                     var qualifiedName = new QualifiedModuleName(e.Component);
-                    Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName,
-                        State.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
 
                     State.SetModuleState(e.Component, ParserState.ResolvingDeclarations);
                     ResolveDeclarations(qualifiedName.Component,
@@ -163,8 +161,6 @@ namespace Rubberduck.Parsing.VBA
                     if (State.Status == ParserState.Error) { return; }
 
                     var qualifiedName = new QualifiedModuleName(components[index]);
-                    Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName,
-                        State.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
 
                     State.SetModuleState(components[index], ParserState.ResolvingDeclarations);
                     ResolveDeclarations(qualifiedName.Component,
@@ -298,8 +294,6 @@ namespace Rubberduck.Parsing.VBA
                     if (State.Status == ParserState.Error) { return; }
 
                     var qualifiedName = new QualifiedModuleName(toParse[index]);
-                    Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName,
-                        State.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
 
                     State.SetModuleState(toParse[index], ParserState.ResolvingDeclarations);
 
@@ -658,8 +652,6 @@ namespace Rubberduck.Parsing.VBA
                     State.SetModuleState(component, ParserState.ResolverError);
                 }
             }
-            
-            Logger.Debug("'{0}' is {1} (thread {2})", component.Name, State.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
         }
 
         public void Dispose()

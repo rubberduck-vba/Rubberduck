@@ -29,7 +29,7 @@ namespace Rubberduck.Common
         private readonly IEnumerable<ICommand> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private readonly IDictionary<RubberduckHotkey, ICommand> _mappings;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<ICommand> commands)
         {
@@ -160,7 +160,7 @@ namespace Rubberduck.Common
             }
             catch (Win32Exception exception)
             {
-                _logger.Error(exception);
+                Logger.Error(exception);
             }
         }
 
@@ -181,7 +181,7 @@ namespace Rubberduck.Common
             }
             catch (Win32Exception exception)
             {
-                _logger.Error(exception);
+                Logger.Error(exception);
             }
             IsAttached = false;
         }
@@ -197,12 +197,10 @@ namespace Rubberduck.Common
             var hotkey = sender as IHotkey;
             if (hotkey != null)
             {
-                _logger.Debug("Hotkey message received");
                 hotkey.Command.Execute(null);
                 return;
             }
-
-            _logger.Debug("Unknown message received");
+            
             OnMessageReceived(sender, e);
         }
 
@@ -227,7 +225,7 @@ namespace Rubberduck.Common
             }
             catch (Exception exception)
             {
-                _logger.Error(exception);
+                Logger.Error(exception);
             }
 
             return IntPtr.Zero;
@@ -250,7 +248,7 @@ namespace Rubberduck.Common
             }
             catch (Exception exception)
             {
-                _logger.Error(exception);
+                Logger.Error(exception);
             }
             return processed;
         }

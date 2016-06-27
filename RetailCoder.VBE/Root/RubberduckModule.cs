@@ -49,8 +49,6 @@ namespace Rubberduck.Root
         private const int MsForms = 17;
         private const int MsFormsControl = 18;
 
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
         public RubberduckModule(VBE vbe, AddIn addin)
         {
             _vbe = vbe;
@@ -59,8 +57,6 @@ namespace Rubberduck.Root
 
         public override void Load()
         {
-            _logger.Debug("in RubberduckModule.Load()");
-
             // bind VBE and AddIn dependencies to host-provided instances.
             Bind<VBE>().ToConstant(_vbe);
             Bind<AddIn>().ToConstant(_addin);
@@ -149,7 +145,6 @@ namespace Rubberduck.Root
             ConfigureProjectExplorerContextMenu();
 
             BindWindowsHooks();
-            _logger.Debug("completed RubberduckModule.Load()");
         }
 
         private void BindWindowsHooks()

@@ -12,7 +12,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
         private readonly VBAExpressionParser _expressionParser;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public TypeHierarchyPass(DeclarationFinder declarationFinder, VBAExpressionParser expressionParser)
         {
@@ -30,13 +30,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Execute()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             foreach (var declaration in _declarationFinder.FindClasses())
             {
                 AddImplementedInterface(declaration);
             }
             stopwatch.Stop();
-            _logger.Debug("Type hierarchies built in {0}ms.", stopwatch.ElapsedMilliseconds);
         }
 
         private void AddImplementedInterface(Declaration potentialClassModule)
@@ -57,7 +56,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else
                 {
-                    _logger.Warn("Failed to resolve interface {0}.", implementedInterfaceName);
+                    Logger.Warn("Failed to resolve interface {0}.", implementedInterfaceName);
                 }
             }
         }
