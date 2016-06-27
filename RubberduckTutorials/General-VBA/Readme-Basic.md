@@ -1,9 +1,9 @@
-##### TO DO for this file.
-* Create an consistent layout for ALL five stages so each *.md file reamins the same so readers can find and follow without issues.
-* Document the style and place it in the Research Wiki for reference other users can apply this style should they want to.
-* Put in a diagram that shows the relationship of what VBA looks like within any given Host running it.
-* Place a table showing if any MS Office suite differ in their steps to run the VBA IDE.
-* Have fun and keep going...  
+`TO DO for this file`.
+- [ ] Create an consistent layout for ALL five stages so each *.md file reamins the same so readers can find and follow without issues.
+- [ ] Document the style and place it in the Research Wiki for reference other users can apply this style should they want to.
+- [ ] Put in a diagram that shows the relationship of what VBA looks like within any given Host running it.
+- [ ] Place a table showing if any MS Office suite differ in their steps to run the VBA IDE.
+- [ ] Have fun and keep going...  
 
 ### General-VBA -> _Basic_ 
 ### What is IDE?
