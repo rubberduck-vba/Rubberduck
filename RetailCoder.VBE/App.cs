@@ -225,6 +225,8 @@ namespace Rubberduck
                 return;
             }
 
+            _parser.Cancel();
+
             var projectId = e.Item.HelpFile;
             Debug.Assert(projectId != null);
 
@@ -334,6 +336,8 @@ namespace Rubberduck
                 return;
             }
 
+            _parser.Cancel();
+
             _sourceControlPanelVM.HandleRenamedComponent(e.Item, e.OldName);
 
             _logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
@@ -389,6 +393,8 @@ namespace Rubberduck
                 return;
             }
 
+            _parser.Cancel(e.Item);
+
             _sourceControlPanelVM.HandleRemovedComponent(e.Item);
 
             _logger.Debug("Component '{0}' was removed.", e.Item.Name);
@@ -403,6 +409,8 @@ namespace Rubberduck
             {
                 return;
             }
+
+            _parser.Cancel(e.Item);
 
             _logger.Debug("Component '{0}' was reloaded.", e.Item.Name);
             _parser.State.OnParseRequested(sender, e.Item);
@@ -444,6 +452,8 @@ namespace Rubberduck
             {
                 return;
             }
+
+            _parser.Cancel();
 
             _logger.Debug("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
 
