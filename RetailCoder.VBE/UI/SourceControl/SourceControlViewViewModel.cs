@@ -569,7 +569,15 @@ namespace Rubberduck.UI.SourceControl
 
         public void CreateProviderWithCredentials(SecureCredentials credentials)
         {
-            Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, Provider.CurrentRepository, credentials, _wrapperFactory);
+            if (!_isCloning)
+            {
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, Provider.CurrentRepository, credentials,
+                    _wrapperFactory);
+            }
+            else
+            {
+                CloneRepo(credentials);
+            }
         }
 
         private void InitRepo()
@@ -582,11 +590,20 @@ namespace Rubberduck.UI.SourceControl
                 }
 
                 Logger.Trace("Initializing repo");
-                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
-                var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
-                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
 
-                AddOrUpdateLocalPathConfig((Repository)repo);
+                try
+                {
+                    _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                    var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
+                    Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
+
+                    AddOrUpdateLocalPathConfig((Repository) repo);
+                }
+                catch (SourceControlException ex)
+                {
+                    ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                }
+
                 Status = RubberduckUI.Online;
             }
         }
@@ -667,15 +684,17 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void CloneRepo()
+        private bool _isCloning = false;
+        private void CloneRepo(SecureCredentials credentials = null)
         {
+            _isCloning = true;
             OnOpenRepoStarted();
 
             Logger.Trace("Cloning repo");
             try
             {
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
-                var repo = _provider.Clone(CloneRemotePath, LocalDirectory);
+                var repo = _provider.Clone(CloneRemotePath, LocalDirectory, credentials);
                 AddOrUpdateLocalPathConfig(new Repository
                 {
                     Id = _vbe.ActiveVBProject.HelpFile,
@@ -687,10 +706,17 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                const string unauthorizedMessage = "Request failed with status code: 401";
+                if (ex.InnerException.Message != unauthorizedMessage)
+                {
+                    _isCloning = false;
+                }
+
+                ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 return;
             }
 
+            _isCloning = false;
             OnOpenRepoCompleted();
             CloseCloneRepoGrid();
             

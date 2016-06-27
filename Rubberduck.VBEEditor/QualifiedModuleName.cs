@@ -108,9 +108,13 @@ namespace Rubberduck.VBEditor
             {
                 return string.Empty;
             }
-            return string.IsNullOrEmpty(project.HelpFile) 
-                ? project.GetHashCode().ToString() 
-                : project.HelpFile;
+
+            if (string.IsNullOrEmpty(project.HelpFile))
+            {
+                project.HelpFile = project.GetHashCode().ToString();
+            }
+
+            return project.HelpFile;
         }
 
         public static string GetProjectId(Reference reference)

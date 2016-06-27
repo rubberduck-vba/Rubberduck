@@ -17,7 +17,7 @@
         {
             Id = id;
             Author = author;
-            Message = message;
+            Message = message.Trim();
         }
 
         public Commit(LibGit2Sharp.Commit commit)
