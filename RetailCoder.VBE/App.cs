@@ -19,6 +19,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.UI.SourceControl;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
 {
@@ -216,7 +217,7 @@ namespace Rubberduck
         #region sink handlers. todo: move to another class
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
@@ -256,7 +257,7 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             _logger.Debug("Project '{0}' was added.", e.Item.Name);
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
@@ -313,7 +314,7 @@ namespace Rubberduck
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -326,7 +327,7 @@ namespace Rubberduck
 
         async void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -336,13 +337,52 @@ namespace Rubberduck
             _sourceControlPanelVM.HandleRenamedComponent(e.Item, e.OldName);
 
             _logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
+            
+            var projectId = e.Item.Collection.Parent.HelpFile;
+            var componentDeclaration = _parser.State.AllDeclarations.FirstOrDefault(f =>
+                        f.ProjectId == projectId &&
+                        f.DeclarationType == DeclarationType.ClassModule &&
+                        f.IdentifierName == e.OldName);
 
-            _parser.State.RemoveRenamedComponent(e.Item, e.OldName);
+            if (e.Item.Type == vbext_ComponentType.vbext_ct_Document &&
+                componentDeclaration != null &&
+
+                // according to ThunderFrame, Excel is the only one we explicitly support
+                // with two Document-component types just skip the Worksheet component
+                ((ClassModuleDeclaration) componentDeclaration).Supertypes.All(a => a.IdentifierName != "Worksheet"))
+            {
+                _componentsEventsSinks.Remove(projectId);
+                _referencesEventsSinks.Remove(projectId);
+                _parser.State.RemoveProject(projectId);
+
+                _logger.Debug("Project '{0}' was removed.", e.Item.Name);
+                Tuple<IConnectionPoint, int> componentsTuple;
+                if (_componentsEventsConnectionPoints.TryGetValue(projectId, out componentsTuple))
+                {
+                    componentsTuple.Item1.Unadvise(componentsTuple.Item2);
+                    _componentsEventsConnectionPoints.Remove(projectId);
+                }
+
+                Tuple<IConnectionPoint, int> referencesTuple;
+                if (_referencesEventsConnectionPoints.TryGetValue(projectId, out referencesTuple))
+                {
+                    referencesTuple.Item1.Unadvise(referencesTuple.Item2);
+                    _referencesEventsConnectionPoints.Remove(projectId);
+                }
+
+                _parser.State.AddProject(e.Item.Collection.Parent);
+            }
+            else
+            {
+                _parser.State.RemoveRenamedComponent(e.Item, e.OldName);
+            }
+
+            _parser.State.OnParseRequested(this);
         }
 
         async void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -357,7 +397,7 @@ namespace Rubberduck
 
         async void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -370,7 +410,7 @@ namespace Rubberduck
 
         async void sink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -385,7 +425,7 @@ namespace Rubberduck
 
         async void sink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -398,7 +438,7 @@ namespace Rubberduck
 
         async void sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -415,7 +455,7 @@ namespace Rubberduck
 
         async void sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
         {
-            if (!_handleSinkEvents) { return; }
+            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
             if (!_parser.State.AllDeclarations.Any())
             {

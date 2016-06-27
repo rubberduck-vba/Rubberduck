@@ -42,6 +42,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _addUserFormCommand = commands.OfType<CodeExplorer_AddUserFormCommand>().FirstOrDefault();
 
             _openDesignerCommand = commands.OfType<CodeExplorer_OpenDesignerCommand>().FirstOrDefault();
+            _openProjectPropertiesCommand = commands.OfType<CodeExplorer_OpenProjectPropertiesCommand>().FirstOrDefault();
             _renameCommand = commands.OfType<CodeExplorer_RenameCommand>().FirstOrDefault();
             _indenterCommand = commands.OfType<CodeExplorer_IndentCommand>().FirstOrDefault();
 
@@ -441,6 +442,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly ICommand _openDesignerCommand;
         public ICommand OpenDesignerCommand { get { return _openDesignerCommand; } }
+
+        private readonly ICommand _openProjectPropertiesCommand;
+        public ICommand OpenProjectPropertiesCommand { get { return _openProjectPropertiesCommand; } }
 
         private readonly ICommand _renameCommand;
         public ICommand RenameCommand { get { return _renameCommand; } }

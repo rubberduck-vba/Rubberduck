@@ -1656,4 +1656,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Resolving references...</value>
   </data>
+  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
+    <value>Open project properties</value>
+  </data>
 </root>
