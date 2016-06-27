@@ -245,8 +245,13 @@
     <Reference Include="Ninject.Extensions.Factory">
       <HintPath>..\packages\Ninject.Extensions.Factory.3.2.1.0\lib\net45-full\Ninject.Extensions.Factory.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.NamedScope">
-      <HintPath>..\packages\Ninject.Extensions.NamedScope.3.2.0.0\lib\net45-full\Ninject.Extensions.NamedScope.dll</HintPath>
+    <Reference Include="Ninject.Extensions.Interception, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Extensions.Interception.3.2.0.0\lib\net45-full\Ninject.Extensions.Interception.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Interception.DynamicProxy, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Extensions.Interception.DynamicProxy.3.2.0.0\lib\net45-full\Ninject.Extensions.Interception.DynamicProxy.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -386,6 +391,10 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
+    <Compile Include="Root\EnumerableCounterInterceptor.cs" />
+    <Compile Include="Root\InterceptedException.cs" />
+    <Compile Include="Root\InterceptorBase.cs" />
+    <Compile Include="Root\TimedCallLoggerInterceptor.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
     <Compile Include="Settings\GeneralConfigProvider.cs" />
     <Compile Include="Settings\HotkeySettings.cs" />

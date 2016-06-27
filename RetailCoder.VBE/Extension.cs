@@ -10,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Ninject.Extensions.Interception;
 
 namespace Rubberduck
 {
@@ -37,13 +38,13 @@ namespace Rubberduck
         // ReSharper disable InconsistentNaming
         public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
         {
-            _kernel = new StandardKernel(new FuncModule());
+            _kernel = new StandardKernel(new NinjectSettings{LoadExtensions = true}, new FuncModule(), new DynamicProxyModule());
 
             try
             {
                 var currentDomain = AppDomain.CurrentDomain;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
-                _kernel.Load(new RubberduckModule(_kernel, (VBE)Application, (AddIn)AddInInst));
+                _kernel.Load(new RubberduckModule((VBE)Application, (AddIn)AddInInst));
                 _app = _kernel.Get<App>();
                 _app.Startup();
             }
