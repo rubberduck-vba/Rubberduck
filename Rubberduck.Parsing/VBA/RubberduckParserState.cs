@@ -363,7 +363,6 @@ namespace Rubberduck.Parsing.VBA
             }
 #endif
             
-            Thread.CurrentThread.ManagedThreadId);
             return result;
         }
 
