@@ -109,9 +109,9 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 }
 
                 var commandItem = kvp.Key as ICommandMenuItem;
-                if (commandItem != null)
+                if (commandItem != null && kvp.Value != null)
                 {
-                    kvp.Value.Enabled = commandItem.EvaluateCanExecute(state);
+                     kvp.Value.Enabled = commandItem.EvaluateCanExecute(state);
                 }
             }
         }

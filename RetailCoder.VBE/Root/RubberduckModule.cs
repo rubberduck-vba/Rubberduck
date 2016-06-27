@@ -7,7 +7,6 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
-using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
@@ -34,13 +33,13 @@ using Rubberduck.VBEditor.VBEHost;
 using NLog;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
+using Ninject.Extensions.Interception.Infrastructure.Language;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Root
 {
     public class RubberduckModule : NinjectModule
     {
-        private readonly IKernel _kernel;
         private readonly VBE _vbe;
         private readonly AddIn _addin;
 
@@ -52,9 +51,8 @@ namespace Rubberduck.Root
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckModule(IKernel kernel, VBE vbe, AddIn addin)
+        public RubberduckModule(VBE vbe, AddIn addin)
         {
-            _kernel = kernel;
             _vbe = vbe;
             _addin = addin;
         }
@@ -64,16 +62,16 @@ namespace Rubberduck.Root
             _logger.Debug("in RubberduckModule.Load()");
 
             // bind VBE and AddIn dependencies to host-provided instances.
-            _kernel.Bind<VBE>().ToConstant(_vbe);
-            _kernel.Bind<AddIn>().ToConstant(_addin);
-            _kernel.Bind<App>().ToSelf().InSingletonScope();
-            _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
-            _kernel.Bind<GitProvider>().ToSelf().InSingletonScope();
-            _kernel.Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
-            _kernel.Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
-            _kernel.Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
-            _kernel.Bind<TestExplorerModel>().ToSelf().InSingletonScope();
-            _kernel.Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
+            Bind<VBE>().ToConstant(_vbe);
+            Bind<AddIn>().ToConstant(_addin);
+            Bind<App>().ToSelf().InSingletonScope();
+            Bind<RubberduckParserState>().ToSelf().InSingletonScope();
+            Bind<GitProvider>().ToSelf().InSingletonScope();
+            Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
+            Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
+            Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
+            Bind<TestExplorerModel>().ToSelf().InSingletonScope();
+            Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
 
             BindCodeInspectionTypes();
 
@@ -93,24 +91,24 @@ namespace Rubberduck.Root
             
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
-            Bind<Func<IIndenterSettings>>().ToMethod(t => () => _kernel.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
+            Bind<Func<IIndenterSettings>>().ToMethod(t => () => Kernel.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
 
             BindCustomDeclarationLoadersToParser();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
             Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)));
 
-            _kernel.Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();
-            _kernel.Bind<SearchResultPresenterInstanceManager>().ToSelf().InSingletonScope();
+            Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();
+            Bind<SearchResultPresenterInstanceManager>().ToSelf().InSingletonScope();
 
             Bind<IPresenter>().To<TestExplorerDockablePresenter>()
                 .WhenInjectedInto<TestExplorerCommand>()
                 .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = _kernel.Get<TestExplorerViewModel>() });
+                .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = Kernel.Get<TestExplorerViewModel>() });
 
             Bind<IPresenter>().To<CodeInspectionsDockablePresenter>()
                 .WhenInjectedInto<InspectionResultsCommand>()
                 .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
+                .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = Kernel.Get<InspectionResultsViewModel>() });
 
             Bind<IControlView>().To<ChangesView>().Named("changesView");
             Bind<IControlView>().To<BranchesView>().Named("branchesView");
@@ -131,18 +129,18 @@ namespace Rubberduck.Root
 
             Bind<SourceControlDockablePresenter>().ToSelf()
                 .InSingletonScope()
-                .WithConstructorArgument(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
+                .WithConstructorArgument(new SourceControlPanel { ViewModel = Kernel.Get<SourceControlViewViewModel>() });
             
             BindCommandsToCodeExplorer();
             Bind<IPresenter>().To<CodeExplorerDockablePresenter>()
                 .WhenInjectedInto<CodeExplorerCommand>()
                 .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new CodeExplorerWindow { ViewModel = _kernel.Get<CodeExplorerViewModel>() });
+                .WithConstructorArgument<IDockableUserControl>(new CodeExplorerWindow { ViewModel = Kernel.Get<CodeExplorerViewModel>() });
 
             Bind<IPresenter>().To<ToDoExplorerDockablePresenter>()
                 .WhenInjectedInto<ToDoExplorerCommand>()
                 .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
+                .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = Kernel.Get<ToDoExplorerViewModel>() });
 
             ConfigureRubberduckMenu();
             ConfigureCodePaneContextMenu();
@@ -156,58 +154,58 @@ namespace Rubberduck.Root
 
         private void BindWindowsHooks()
         {
-            _kernel.Rebind<IAttachable>().To<TimerHook>()
+            Rebind<IAttachable>().To<TimerHook>()
                 .InSingletonScope()
                 .WithConstructorArgument("mainWindowHandle", (IntPtr)_vbe.MainWindow.HWnd);
 
-            _kernel.Rebind<IRubberduckHooks>().To<RubberduckHooks>()
+            Rebind<IRubberduckHooks>().To<RubberduckHooks>()
                 .InSingletonScope()
                 .WithConstructorArgument("mainWindowHandle", (IntPtr)_vbe.MainWindow.HWnd);
         }
 
         private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)
         {
-            _kernel.Bind(t => t.From(assemblies)
+            Kernel.Bind(t => t.From(assemblies)
                 .SelectAllClasses()
                 // inspections & factories have their own binding rules
                 .Where(type => !type.Name.EndsWith("Factory") && !type.Name.EndsWith("ConfigProvider") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
-                .Configure(binding => binding.InCallScope())); // TransientScope wouldn't dispose disposables
+                .Configure(binding => binding.InThreadScope())); // TransientScope wouldn't dispose disposables
         }
 
         // note: settings namespace classes are injected in singleton scope
         private void ApplyConfigurationConvention(IEnumerable<Assembly> assemblies)
         {
-            _kernel.Bind(t => t.From(assemblies)
+            Kernel.Bind(t => t.From(assemblies)
                 .SelectAllClasses()
                 .InNamespaceOf<Configuration>()
                 .BindAllInterfaces()
                 .Configure(binding => binding.InSingletonScope()));
 
-            _kernel.Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InSingletonScope();
-            _kernel.Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InSingletonScope();
-            _kernel.Bind<IPersistanceService<HotkeySettings>>().To<XmlPersistanceService<HotkeySettings>>().InSingletonScope();
-            _kernel.Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InSingletonScope();
-            _kernel.Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InSingletonScope();
-            _kernel.Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InSingletonScope();
-            _kernel.Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InSingletonScope();
+            Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InSingletonScope();
+            Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InSingletonScope();
+            Bind<IPersistanceService<HotkeySettings>>().To<XmlPersistanceService<HotkeySettings>>().InSingletonScope();
+            Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InSingletonScope();
+            Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InSingletonScope();
+            Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InSingletonScope();
+            Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InSingletonScope();
 
-            _kernel.Bind<IIndenterConfigProvider>().To<IndenterConfigProvider>().InSingletonScope();
-            _kernel.Bind<ISourceControlConfigProvider>().To<SourceControlConfigProvider>().InSingletonScope();
+            Bind<IIndenterConfigProvider>().To<IndenterConfigProvider>().InSingletonScope();
+            Bind<ISourceControlConfigProvider>().To<SourceControlConfigProvider>().InSingletonScope();
 
-            _kernel.Bind<ICodeInspectionSettings>().To<CodeInspectionSettings>();
-            _kernel.Bind<IGeneralSettings>().To<GeneralSettings>();
-            _kernel.Bind<IHotkeySettings>().To<HotkeySettings>();
-            _kernel.Bind<IToDoListSettings>().To<ToDoListSettings>();
-            _kernel.Bind<IUnitTestSettings>().To<UnitTestSettings>();
-            _kernel.Bind<IIndenterSettings>().To<IndenterSettings>();
-            _kernel.Bind<ISourceControlSettings>().To<SourceControlSettings>();        
+            Bind<ICodeInspectionSettings>().To<CodeInspectionSettings>();
+            Bind<IGeneralSettings>().To<GeneralSettings>();
+            Bind<IHotkeySettings>().To<HotkeySettings>();
+            Bind<IToDoListSettings>().To<ToDoListSettings>();
+            Bind<IUnitTestSettings>().To<UnitTestSettings>();
+            Bind<IIndenterSettings>().To<IndenterSettings>();
+            Bind<ISourceControlSettings>().To<SourceControlSettings>();        
         }
 
         // note convention: abstract factory interface names end with "Factory".
         private void ApplyAbstractFactoryConvention(IEnumerable<Assembly> assemblies)
         {
-            _kernel.Bind(t => t.From(assemblies)
+            Kernel.Bind(t => t.From(assemblies)
                 .SelectAllInterfaces()
                 .Where(type => type.Name.EndsWith("Factory")) 
                 .BindToFactory()
@@ -224,14 +222,16 @@ namespace Rubberduck.Root
             // multibinding for IEnumerable<IInspection> dependency
             foreach (var inspection in inspections)
             {
-                _kernel.Bind<IInspection>().To(inspection).InSingletonScope();
+                var binding = Bind<IInspection>().To(inspection).InSingletonScope();
+                binding.Intercept().With<TimedCallLoggerInterceptor>();
+                binding.Intercept().With<EnumerableCounterInterceptor<InspectionResultBase>>();
             }
         }
 
         private void ConfigureRubberduckMenu()
         {
             const int windowMenuId = 30009;
-            var parent = _kernel.Get<VBE>().CommandBars[MenuBar].Controls;
+            var parent = Kernel.Get<VBE>().CommandBars[MenuBar].Controls;
             var beforeIndex = FindRubberduckMenuInsertionIndex(parent, windowMenuId);
 
             var items = GetRubberduckMenuItems();
@@ -241,7 +241,7 @@ namespace Rubberduck.Root
         private void ConfigureCodePaneContextMenu()
         {
             const int listMembersMenuId = 2529;
-            var parent = _kernel.Get<VBE>().CommandBars[CodeWindow].Controls;
+            var parent = Kernel.Get<VBE>().CommandBars[CodeWindow].Controls;
             var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == listMembersMenuId);
             var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
@@ -252,7 +252,7 @@ namespace Rubberduck.Root
         private void ConfigureFormDesignerContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            var parent = _kernel.Get<VBE>().CommandBars[MsForms].Controls;
+            var parent = Kernel.Get<VBE>().CommandBars[MsForms].Controls;
             var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == viewCodeMenuId);
             var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
@@ -263,7 +263,7 @@ namespace Rubberduck.Root
         private void ConfigureFormDesignerControlContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            var parent = _kernel.Get<VBE>().CommandBars[MsFormsControl].Controls;
+            var parent = Kernel.Get<VBE>().CommandBars[MsFormsControl].Controls;
             var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == viewCodeMenuId);
             var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
@@ -274,7 +274,7 @@ namespace Rubberduck.Root
         private void ConfigureProjectExplorerContextMenu()
         {
             const int projectPropertiesMenuId = 2578;
-            var parent = _kernel.Get<VBE>().CommandBars[ProjectWindow].Controls;
+            var parent = Kernel.Get<VBE>().CommandBars[ProjectWindow].Controls;
             var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == projectPropertiesMenuId);
             var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
@@ -284,9 +284,9 @@ namespace Rubberduck.Root
 
         private void BindParentMenuItem<TParentMenu>(CommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
         {
-            _kernel.Bind<IParentMenuItem>().To(typeof(TParentMenu))
+            Bind<IParentMenuItem>().To(typeof(TParentMenu))
                 .WhenInjectedInto<IAppMenu>()
-                .InCallScope()
+                .InThreadScope()
                 .WithConstructorArgument("items", items)
                 .WithConstructorArgument("beforeIndex", beforeIndex)
                 .WithPropertyValue("Parent", parent);
@@ -323,7 +323,7 @@ namespace Rubberduck.Root
                     var item = types.SingleOrDefault(type => type.Name == commandName + "CommandMenuItem");
                     if (item != null)
                     {
-                        var binding = _kernel.Bind<ICommand>().To(command);
+                        var binding = Bind<ICommand>().To(command);
                         var whenCommandMenuItemCondition =
                             binding.WhenInjectedInto(item).BindingConfiguration.Condition;
                         var whenHooksCondition =
@@ -332,8 +332,8 @@ namespace Rubberduck.Root
                         binding.When(request => whenCommandMenuItemCondition(request) || whenHooksCondition(request))
                                .InSingletonScope();
 
-                        //_kernel.Bind<ICommand>().To(command).WhenInjectedExactlyInto(item);
-                        //_kernel.Bind<ICommand>().To(command);
+                        //Bind<ICommand>().To(command).WhenInjectedExactlyInto(item);
+                        //Bind<ICommand>().To(command);
                     }
                 }
                 catch (InvalidOperationException)
@@ -353,7 +353,7 @@ namespace Rubberduck.Root
 
             foreach (var command in commands)
             {
-                _kernel.Bind<ICommand>().To(command).InSingletonScope();
+                Bind<ICommand>().To(command).InSingletonScope();
             }
         }
 
@@ -365,7 +365,7 @@ namespace Rubberduck.Root
 
             foreach (var loader in loaders)
             {
-                _kernel.Bind<ICustomDeclarationLoader>().To(loader).InSingletonScope();
+                Bind<ICustomDeclarationLoader>().To(loader).InSingletonScope();
             }
         }
 
@@ -373,10 +373,10 @@ namespace Rubberduck.Root
         {
             return new[]
             {
-                _kernel.Get<AboutCommandMenuItem>(),
-                _kernel.Get<SettingsCommandMenuItem>(),
-                _kernel.Get<InspectionResultsCommandMenuItem>(),
-                _kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
+                Kernel.Get<AboutCommandMenuItem>(),
+                Kernel.Get<SettingsCommandMenuItem>(),
+                Kernel.Get<InspectionResultsCommandMenuItem>(),
+                Kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
                 GetSmartIndenterParentMenu(),
                 GetRefactoringsParentMenu(),
@@ -388,11 +388,11 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                _kernel.Get<RunAllTestsCommandMenuItem>(),
-                _kernel.Get<TestExplorerCommandMenuItem>(),
-                _kernel.Get<AddTestModuleCommandMenuItem>(),
-                _kernel.Get<AddTestMethodCommandMenuItem>(),
-                _kernel.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
+                Kernel.Get<RunAllTestsCommandMenuItem>(),
+                Kernel.Get<TestExplorerCommandMenuItem>(),
+                Kernel.Get<AddTestModuleCommandMenuItem>(),
+                Kernel.Get<AddTestMethodCommandMenuItem>(),
+                Kernel.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
             };
             return new UnitTestingParentMenu(items);
         }
@@ -401,16 +401,16 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                _kernel.Get<CodePaneRefactorRenameCommandMenuItem>(),
-                _kernel.Get<RefactorExtractMethodCommandMenuItem>(),
-                _kernel.Get<RefactorReorderParametersCommandMenuItem>(),
-                _kernel.Get<RefactorRemoveParametersCommandMenuItem>(),
-                _kernel.Get<RefactorIntroduceParameterCommandMenuItem>(),
-                _kernel.Get<RefactorIntroduceFieldCommandMenuItem>(),
-                _kernel.Get<RefactorEncapsulateFieldCommandMenuItem>(),
-                _kernel.Get<RefactorMoveCloserToUsageCommandMenuItem>(),
-                _kernel.Get<RefactorExtractInterfaceCommandMenuItem>(),
-                _kernel.Get<RefactorImplementInterfaceCommandMenuItem>()
+                Kernel.Get<CodePaneRefactorRenameCommandMenuItem>(),
+                Kernel.Get<RefactorExtractMethodCommandMenuItem>(),
+                Kernel.Get<RefactorReorderParametersCommandMenuItem>(),
+                Kernel.Get<RefactorRemoveParametersCommandMenuItem>(),
+                Kernel.Get<RefactorIntroduceParameterCommandMenuItem>(),
+                Kernel.Get<RefactorIntroduceFieldCommandMenuItem>(),
+                Kernel.Get<RefactorEncapsulateFieldCommandMenuItem>(),
+                Kernel.Get<RefactorMoveCloserToUsageCommandMenuItem>(),
+                Kernel.Get<RefactorExtractInterfaceCommandMenuItem>(),
+                Kernel.Get<RefactorImplementInterfaceCommandMenuItem>()
             };
             return new RefactoringsParentMenu(items);
         }
@@ -419,12 +419,12 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                _kernel.Get<CodeExplorerCommandMenuItem>(),
-                _kernel.Get<ToDoExplorerCommandMenuItem>(),
-                //_kernel.Get<RegexSearchReplaceCommandMenuItem>(),
-                _kernel.Get<FindSymbolCommandMenuItem>(),
-                _kernel.Get<FindAllReferencesCommandMenuItem>(),
-                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
+                Kernel.Get<CodeExplorerCommandMenuItem>(),
+                Kernel.Get<ToDoExplorerCommandMenuItem>(),
+                //Kernel.Get<RegexSearchReplaceCommandMenuItem>(),
+                Kernel.Get<FindSymbolCommandMenuItem>(),
+                Kernel.Get<FindAllReferencesCommandMenuItem>(),
+                Kernel.Get<FindAllImplementationsCommandMenuItem>(),
             };
             return new NavigateParentMenu(items);
         }
@@ -433,9 +433,9 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                _kernel.Get<IndentCurrentProcedureCommandMenuItem>(),
-                _kernel.Get<IndentCurrentModuleCommandMenuItem>(),
-                _kernel.Get<NoIndentAnnotationCommandMenuItem>()
+                Kernel.Get<IndentCurrentProcedureCommandMenuItem>(),
+                Kernel.Get<IndentCurrentModuleCommandMenuItem>(),
+                Kernel.Get<NoIndentAnnotationCommandMenuItem>()
             };
 
             return new SmartIndenterParentMenu(items);
@@ -447,10 +447,10 @@ namespace Rubberduck.Root
             {
                 GetRefactoringsParentMenu(),
                 GetSmartIndenterParentMenu(),
-                //_kernel.Get<RegexSearchReplaceCommandMenuItem>(),
-                _kernel.Get<FindSymbolCommandMenuItem>(),
-                _kernel.Get<FindAllReferencesCommandMenuItem>(),
-                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
+                //Kernel.Get<RegexSearchReplaceCommandMenuItem>(),
+                Kernel.Get<FindSymbolCommandMenuItem>(),
+                Kernel.Get<FindAllReferencesCommandMenuItem>(),
+                Kernel.Get<FindAllImplementationsCommandMenuItem>(),
             };
         }
 
@@ -458,7 +458,7 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                _kernel.Get<FormDesignerRefactorRenameCommandMenuItem>(),
+                Kernel.Get<FormDesignerRefactorRenameCommandMenuItem>(),
             };
         }
 
@@ -466,10 +466,10 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                _kernel.Get<ProjectExplorerRefactorRenameCommandMenuItem>(),
-                _kernel.Get<FindSymbolCommandMenuItem>(),
-                _kernel.Get<FindAllReferencesCommandMenuItem>(),
-                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
+                Kernel.Get<ProjectExplorerRefactorRenameCommandMenuItem>(),
+                Kernel.Get<FindSymbolCommandMenuItem>(),
+                Kernel.Get<FindAllReferencesCommandMenuItem>(),
+                Kernel.Get<FindAllImplementationsCommandMenuItem>(),
             };
         }
     }
