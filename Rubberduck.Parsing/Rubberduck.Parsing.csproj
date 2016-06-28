@@ -134,6 +134,7 @@
     <Compile Include="Symbols\CommentNode.cs" />
     <Compile Include="Symbols\ComParameter.cs" />
     <Compile Include="Symbols\DebugDeclarations.cs" />
+    <Compile Include="Symbols\AliasDeclarations.cs" />
     <Compile Include="Symbols\FormEventDeclarations.cs" />
     <Compile Include="Symbols\ICustomDelarationLoader.cs" />
     <Compile Include="Symbols\Identifier.cs" />
