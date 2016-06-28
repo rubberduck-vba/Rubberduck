@@ -13,11 +13,11 @@
          d:DataContext="{d:DesignInstance {x:Type sourceControl:ChangesViewViewModel}, IsDesignTimeCreatable=False}">
     <TabItem.Resources>
         <BitmapImage x:Key="CheckImage" UriSource="../../Resources/tick.png" />
-        <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
         <BitmapImage x:Key="UndoImage" UriSource="../../Resources/arrow-circle-left.png" />
         
         <converters:CommitActionsToTextConverter x:Key="CommitActionToText" />
         <converters:CommitActionTextToEnum x:Key="CommitActionValueToEnum" />
+        <converters:ChangeTypesToTextConverter x:Key="ChangeTypesToText" />
         <converters1:SelectedItemToBooleanConverter x:Key="HasSelectedItems" />
         
         <ObjectDataProvider x:Key="CommitActions"
@@ -156,7 +156,7 @@
                             </DataGrid.CellStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding="{Binding FilePath}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FilePath}" Width="*" />
-                                <DataGridTextColumn Binding="{Binding FileStatus}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding FileStatus, Converter={StaticResource ChangeTypesToText}}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </DockPanel>
@@ -201,7 +201,7 @@
                             </DataGrid.CellStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding="{Binding FilePath}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FilePath}" Width="*" />
-                                <DataGridTextColumn Binding="{Binding FileStatus}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding FileStatus, Converter={StaticResource ChangeTypesToText}}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </DockPanel>
@@ -234,7 +234,7 @@
                             </DataGrid.CellStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding="{Binding FilePath}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FilePath}" Width="*" />
-                                <DataGridTextColumn Binding="{Binding FileStatus}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding FileStatus, Converter={StaticResource ChangeTypesToText}}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </DockPanel>
