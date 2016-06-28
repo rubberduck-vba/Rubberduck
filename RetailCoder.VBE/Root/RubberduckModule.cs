@@ -49,7 +49,7 @@ namespace Rubberduck.Root
         private const int MsForms = 17;
         private const int MsFormsControl = 18;
 
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckModule(VBE vbe, AddIn addin)
         {
@@ -59,7 +59,7 @@ namespace Rubberduck.Root
 
         public override void Load()
         {
-            _logger.Debug("in RubberduckModule.Load()");
+            Logger.Debug("in RubberduckModule.Load()");
 
             // bind VBE and AddIn dependencies to host-provided instances.
             Bind<VBE>().ToConstant(_vbe);
@@ -149,7 +149,7 @@ namespace Rubberduck.Root
             ConfigureProjectExplorerContextMenu();
 
             BindWindowsHooks();
-            _logger.Debug("completed RubberduckModule.Load()");
+            Logger.Debug("completed RubberduckModule.Load()");
         }
 
         private void BindWindowsHooks()
@@ -170,7 +170,7 @@ namespace Rubberduck.Root
                 // inspections & factories have their own binding rules
                 .Where(type => !type.Name.EndsWith("Factory") && !type.Name.EndsWith("ConfigProvider") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
-                .Configure(binding => binding.InThreadScope().Intercept().With<FatalExceptionInterceptor>())); // TransientScope wouldn't dispose disposables
+                .Configure(binding => binding.InThreadScope())); // TransientScope wouldn't dispose disposables
         }
 
         // note: settings namespace classes are injected in singleton scope
@@ -308,7 +308,7 @@ namespace Rubberduck.Root
         private void BindCommandsToMenuItems()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? String.Empty))
+                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
                 .ToList();
 
             // note: ICommand naming convention: [Foo]Command
@@ -330,10 +330,8 @@ namespace Rubberduck.Root
                             binding.WhenInjectedInto<RubberduckHooks>().BindingConfiguration.Condition;
 
                         binding.When(request => whenCommandMenuItemCondition(request) || whenHooksCondition(request))
-                               .InSingletonScope();
-
-                        //Bind<ICommand>().To(command).WhenInjectedExactlyInto(item);
-                        //Bind<ICommand>().To(command);
+                               .InSingletonScope()
+                               .Intercept().With<FatalExceptionInterceptor>();
                     }
                 }
                 catch (InvalidOperationException)
