@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -15,6 +16,8 @@ namespace Rubberduck.UI.Command
         public abstract void Execute(object parameter);
 
         public virtual string ShortcutText { get; set; }
+        
+        public virtual RubberduckHotkey Hotkey { get { return RubberduckHotkey.None; } }
 
         public event EventHandler CanExecuteChanged
         {

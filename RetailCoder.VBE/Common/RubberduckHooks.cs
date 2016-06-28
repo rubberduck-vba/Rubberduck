@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -28,7 +29,6 @@ namespace Rubberduck.Common
         private readonly IGeneralConfigService _config;
         private readonly IEnumerable<CommandBase> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
-        private readonly IDictionary<RubberduckHotkey, CommandBase> _mappings;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<CommandBase> commands)
@@ -42,29 +42,11 @@ namespace Rubberduck.Common
 
             _commands = commands;
             _config = config;
-            _mappings = GetCommandMappings();
         }
 
-        private CommandBase Command<TCommand>() where TCommand : CommandBase
+        private CommandBase Command(RubberduckHotkey hotkey)
         {
-            return _commands.OfType<TCommand>().SingleOrDefault();
-        }
-
-        private IDictionary<RubberduckHotkey, CommandBase> GetCommandMappings()
-        {
-            return new Dictionary<RubberduckHotkey, CommandBase>
-            {
-                { RubberduckHotkey.ParseAll, Command<ReparseCommand>() },
-                { RubberduckHotkey.CodeExplorer, Command<CodeExplorerCommand>() },
-                { RubberduckHotkey.IndentModule, Command<IndentCurrentModuleCommand>() },
-                { RubberduckHotkey.IndentProcedure, Command<IndentCurrentProcedureCommand>() },
-                { RubberduckHotkey.FindSymbol, Command<FindSymbolCommand>() },
-                { RubberduckHotkey.RefactorMoveCloserToUsage, Command<RefactorMoveCloserToUsageCommand>() },
-                { RubberduckHotkey.InspectionResults, Command<InspectionResultsCommand>() },
-                { RubberduckHotkey.RefactorExtractMethod, Command<RefactorExtractMethodCommand>() },
-                { RubberduckHotkey.RefactorRename, Command<CodePaneRefactorRenameCommand>() },
-                { RubberduckHotkey.TestExplorer, Command<TestExplorerCommand>() }
-            };
+            return _commands.SingleOrDefault(s => s.Hotkey == hotkey);
         }
 
         public void HookHotkeys()
@@ -92,7 +74,10 @@ namespace Rubberduck.Common
                 RubberduckHotkey assigned;
                 if (Enum.TryParse(hotkey.Name, out assigned))
                 {
-                    AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), _mappings[assigned]));
+                    var command = Command(assigned);
+                    Debug.Assert(command != null);
+
+                    AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), command));
                 }
             }
             Attach();
