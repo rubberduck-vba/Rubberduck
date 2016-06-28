@@ -110,13 +110,13 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State != ParserState.Ready) { return; }
+            if (e.State != ParserState.ResolvedDeclarations) { return; }
 
             var newTarget = _state.AllUserDeclarations.FirstOrDefault(
                     item => item.ComponentName == _target.ComponentName &&
                                  item.IdentifierName == _target.IdentifierName &&
                                  item.ParentScope == _target.ParentScope &&
-                                 item.Project == _target.Project &&
+                                 item.ProjectId == _target.ProjectId &&
                                  Equals(item.Selection, _target.Selection));
 
             if (newTarget != null)
