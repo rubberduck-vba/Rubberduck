@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using NLog;
-using Rubberduck.Parsing.Date;
 using Rubberduck.Parsing.Symbols;
 using System;
 
