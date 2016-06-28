@@ -155,52 +155,52 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        private readonly ICommand _setOutcomeGroupingCommand;
-        public ICommand SetOutcomeGroupingCommand { get { return _setOutcomeGroupingCommand; } }
+        private readonly CommandBase _setOutcomeGroupingCommand;
+        public CommandBase SetOutcomeGroupingCommand { get { return _setOutcomeGroupingCommand; } }
 
-        private readonly ICommand _setLocationGroupingCommand;
-        public ICommand SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
+        private readonly CommandBase _setLocationGroupingCommand;
+        public CommandBase SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
 
         public long TotalDuration { get; private set; }
 
         private readonly RunAllTestsCommand _runAllTestsCommand;
         public RunAllTestsCommand RunAllTestsCommand { get { return _runAllTestsCommand; } }
 
-        private readonly ICommand _addTestModuleCommand;
-        public ICommand AddTestModuleCommand { get { return _addTestModuleCommand; } }
+        private readonly CommandBase _addTestModuleCommand;
+        public CommandBase AddTestModuleCommand { get { return _addTestModuleCommand; } }
 
-        private readonly ICommand _addTestMethodCommand;
-        public ICommand AddTestMethodCommand { get { return _addTestMethodCommand; } }
+        private readonly CommandBase _addTestMethodCommand;
+        public CommandBase AddTestMethodCommand { get { return _addTestMethodCommand; } }
 
-        private readonly ICommand _addErrorTestMethodCommand;
-        public ICommand AddErrorTestMethodCommand { get { return _addErrorTestMethodCommand; } }
+        private readonly CommandBase _addErrorTestMethodCommand;
+        public CommandBase AddErrorTestMethodCommand { get { return _addErrorTestMethodCommand; } }
 
-        private readonly ICommand _refreshCommand;
-        public ICommand RefreshCommand { get { return _refreshCommand; } }
+        private readonly CommandBase _refreshCommand;
+        public CommandBase RefreshCommand { get { return _refreshCommand; } }
 
-        private readonly ICommand _repeatLastRunCommand;
-        public ICommand RepeatLastRunCommand { get { return _repeatLastRunCommand; } }
+        private readonly CommandBase _repeatLastRunCommand;
+        public CommandBase RepeatLastRunCommand { get { return _repeatLastRunCommand; } }
 
-        private readonly ICommand _runNotExecutedTestsCommand;
-        public ICommand RunNotExecutedTestsCommand { get { return _runNotExecutedTestsCommand; } }
+        private readonly CommandBase _runNotExecutedTestsCommand;
+        public CommandBase RunNotExecutedTestsCommand { get { return _runNotExecutedTestsCommand; } }
 
-        private readonly ICommand _runFailedTestsCommand;
-        public ICommand RunFailedTestsCommand { get { return _runFailedTestsCommand; } }
+        private readonly CommandBase _runFailedTestsCommand;
+        public CommandBase RunFailedTestsCommand { get { return _runFailedTestsCommand; } }
 
-        private readonly ICommand _runPassedTestsCommand;
-        public ICommand RunPassedTestsCommand { get { return _runPassedTestsCommand; } }
+        private readonly CommandBase _runPassedTestsCommand;
+        public CommandBase RunPassedTestsCommand { get { return _runPassedTestsCommand; } }
 
-        private readonly ICommand _copyResultsCommand;
-        public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
+        private readonly CommandBase _copyResultsCommand;
+        public CommandBase CopyResultsCommand { get { return _copyResultsCommand; } }
 
         private readonly NavigateCommand _navigateCommand;
         public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
 
-        private readonly ICommand _runSelectedTestCommand;
-        public ICommand RunSelectedTestCommand { get { return _runSelectedTestCommand; } }
+        private readonly CommandBase _runSelectedTestCommand;
+        public CommandBase RunSelectedTestCommand { get { return _runSelectedTestCommand; } }
 
-        private readonly ICommand _openTestSettingsCommand;
-        public ICommand OpenTestSettingsCommand { get { return _openTestSettingsCommand; } }
+        private readonly CommandBase _openTestSettingsCommand;
+        public CommandBase OpenTestSettingsCommand { get { return _openTestSettingsCommand; } }
 
         private void OpenSettings(object param)
         {

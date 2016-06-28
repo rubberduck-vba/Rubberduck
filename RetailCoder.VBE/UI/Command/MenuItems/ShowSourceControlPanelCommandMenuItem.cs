@@ -5,7 +5,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class ShowSourceControlPanelCommandMenuItem : CommandMenuItemBase
     {
-        public ShowSourceControlPanelCommandMenuItem(ICommand command) 
+        public ShowSourceControlPanelCommandMenuItem(CommandBase command) 
             : base(command)
         {
         }

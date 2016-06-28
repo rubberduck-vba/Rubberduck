@@ -82,14 +82,14 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private readonly ICommand _setMarkerGroupingCommand;
-        public ICommand SetMarkerGroupingCommand { get { return _setMarkerGroupingCommand; } }
+        private readonly CommandBase _setMarkerGroupingCommand;
+        public CommandBase SetMarkerGroupingCommand { get { return _setMarkerGroupingCommand; } }
 
-        private readonly ICommand _setLocationGroupingCommand;
-        public ICommand SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
+        private readonly CommandBase _setLocationGroupingCommand;
+        public CommandBase SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
 
-        private ICommand _refreshCommand;
-        public ICommand RefreshCommand
+        private CommandBase _refreshCommand;
+        public CommandBase RefreshCommand
         {
             get
             {
@@ -126,8 +126,8 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private ICommand _removeCommand;
-        public ICommand RemoveCommand
+        private CommandBase _removeCommand;
+        public CommandBase RemoveCommand
         {
             get
             {
@@ -153,8 +153,8 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private ICommand _openTodoSettings;
-        public ICommand OpenTodoSettings
+        private CommandBase _openTodoSettings;
+        public CommandBase OpenTodoSettings
         {
             get
             {

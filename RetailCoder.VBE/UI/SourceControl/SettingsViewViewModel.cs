@@ -182,8 +182,8 @@ namespace Rubberduck.UI.SourceControl
             Process.Start(filePath);
         }
 
-        private readonly ICommand _showDefaultRepoFolderPickerCommand;
-        public ICommand ShowDefaultRepoFolderPickerCommand
+        private readonly CommandBase _showDefaultRepoFolderPickerCommand;
+        public CommandBase ShowDefaultRepoFolderPickerCommand
         {
             get
             {
@@ -191,8 +191,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _showCommandPromptExePickerCommand;
-        public ICommand ShowCommandPromptExePickerCommand
+        private readonly CommandBase _showCommandPromptExePickerCommand;
+        public CommandBase ShowCommandPromptExePickerCommand
         {
             get
             {
@@ -200,8 +200,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _cancelSettingsChangesCommand;
-        public ICommand CancelSettingsChangesCommand
+        private readonly CommandBase _cancelSettingsChangesCommand;
+        public CommandBase CancelSettingsChangesCommand
         {
             get
             {
@@ -209,8 +209,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _updateSettingsCommand;
-        public ICommand UpdateSettingsCommand
+        private readonly CommandBase _updateSettingsCommand;
+        public CommandBase UpdateSettingsCommand
         {
             get
             {
@@ -218,8 +218,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _showGitIgnoreCommand;
-        public ICommand ShowGitIgnoreCommand
+        private readonly CommandBase _showGitIgnoreCommand;
+        public CommandBase ShowGitIgnoreCommand
         {
             get
             {
@@ -227,8 +227,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _showGitAttributesCommand;
-        public ICommand ShowGitAttributesCommand
+        private readonly CommandBase _showGitAttributesCommand;
+        public CommandBase ShowGitAttributesCommand
         {
             get
             {

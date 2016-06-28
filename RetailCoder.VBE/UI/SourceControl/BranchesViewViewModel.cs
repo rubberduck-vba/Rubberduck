@@ -124,6 +124,12 @@ namespace Rubberduck.UI.SourceControl
                     {
                         RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
                     }
+                    catch
+                    {
+                        RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                            RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                        throw;
+                    }
                     OnLoadingComponentsCompleted();
                 }
             }
@@ -301,6 +307,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
+            catch
+            {
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                throw;
+            }
 
             DisplayCreateBranchGrid = false;
             NewBranchName = string.Empty;
@@ -330,6 +342,12 @@ namespace Rubberduck.UI.SourceControl
                 OnLoadingComponentsCompleted();
                 return;
             }
+            catch
+            {
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                throw;
+            }
 
             DisplayMergeBranchesGrid = false;
             RaiseErrorEvent(RubberduckUI.SourceControl_MergeStatus, string.Format(RubberduckUI.SourceControl_SuccessfulMerge, SourceBranch, DestinationBranch), NotificationType.Info);
@@ -352,6 +370,12 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
+            }
+            catch
+            {
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                throw;
             }
 
             RefreshView();
@@ -376,6 +400,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
+            catch
+            {
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                throw;
+            }
 
             RefreshView();
         }
@@ -391,12 +421,18 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
+            catch
+            {
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                throw;
+            }
 
             RefreshView();
         }
 
-        private readonly ICommand _newBranchCommand;
-        public ICommand NewBranchCommand
+        private readonly CommandBase _newBranchCommand;
+        public CommandBase NewBranchCommand
         {
             get
             {
@@ -404,8 +440,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _mergeBranchCommand;
-        public ICommand MergeBranchCommand
+        private readonly CommandBase _mergeBranchCommand;
+        public CommandBase MergeBranchCommand
         {
             get
             {
@@ -413,8 +449,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _createBranchOkButtonCommand;
-        public ICommand CreateBranchOkButtonCommand
+        private readonly CommandBase _createBranchOkButtonCommand;
+        public CommandBase CreateBranchOkButtonCommand
         {
             get
             {
@@ -422,8 +458,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _createBranchCancelButtonCommand;
-        public ICommand CreateBranchCancelButtonCommand
+        private readonly CommandBase _createBranchCancelButtonCommand;
+        public CommandBase CreateBranchCancelButtonCommand
         {
             get
             {
@@ -431,8 +467,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _mergeBranchesOkButtonCommand;
-        public ICommand MergeBranchesOkButtonCommand
+        private readonly CommandBase _mergeBranchesOkButtonCommand;
+        public CommandBase MergeBranchesOkButtonCommand
         {
             get
             {
@@ -440,8 +476,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _mergeBranchesCancelButtonCommand;
-        public ICommand MergeBranchesCancelButtonCommand
+        private readonly CommandBase _mergeBranchesCancelButtonCommand;
+        public CommandBase MergeBranchesCancelButtonCommand
         {
             get
             {
@@ -449,8 +485,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _deleteBranchToolbarButtonCommand;
-        public ICommand DeleteBranchToolbarButtonCommand
+        private readonly CommandBase _deleteBranchToolbarButtonCommand;
+        public CommandBase DeleteBranchToolbarButtonCommand
         {
             get
             {
@@ -458,14 +494,14 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _publishBranchToolbarButtonCommand;
-        public ICommand PublishBranchToolbarButtonCommand
+        private readonly CommandBase _publishBranchToolbarButtonCommand;
+        public CommandBase PublishBranchToolbarButtonCommand
         {
             get { return _publishBranchToolbarButtonCommand; }
         }
 
-        private readonly ICommand _unpublishBranchToolbarButtonCommand;
-        public ICommand UnpublishBranchToolbarButtonCommand
+        private readonly CommandBase _unpublishBranchToolbarButtonCommand;
+        public CommandBase UnpublishBranchToolbarButtonCommand
         {
             get { return _unpublishBranchToolbarButtonCommand; }
         }

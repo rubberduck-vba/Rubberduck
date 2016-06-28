@@ -17,6 +17,11 @@ namespace Rubberduck.UI.Command
             _indenter = indenter;
         }
 
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.IndentModule; }
+        }
+
         public override bool CanExecute(object parameter)
         {
             return _vbe.ActiveCodePane != null;
@@ -26,7 +31,5 @@ namespace Rubberduck.UI.Command
         {
             _indenter.IndentCurrentModule();
         }
-
-        public RubberduckHotkey Hotkey { get { return RubberduckHotkey.IndentModule; } }
     }
 }

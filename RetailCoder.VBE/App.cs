@@ -488,6 +488,8 @@ namespace Rubberduck
         {
             _config = _configService.LoadConfiguration();
 
+            _autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
+
             var currentCulture = RubberduckUI.Culture;
             try
             {

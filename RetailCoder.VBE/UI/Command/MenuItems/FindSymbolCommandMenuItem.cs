@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class FindSymbolCommandMenuItem : CommandMenuItemBase
     {
-        public FindSymbolCommandMenuItem(ICommand command) 
+        public FindSymbolCommandMenuItem(CommandBase command) 
             : base(command)
         {
         }

@@ -242,9 +242,6 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            SyncComReferences(State.Projects);
-            AddBuiltInDeclarations();
-
             if (toParse.Count == 0)
             {
                 if (componentsRemoved)  // trigger UI updates
@@ -260,11 +257,9 @@ namespace Rubberduck.Parsing.VBA
             {
                 State.SetModuleState(component, ParserState.Pending);
             }
-            foreach (var component in unchanged)
-            {
-                // note: seting to 'Parsed' would include them in the resolver walk. 'Ready' excludes them.
-                State.SetModuleState(component, ParserState.Ready);
-            }
+
+            SyncComReferences(State.Projects);
+            AddBuiltInDeclarations();
 
             // invalidation cleanup should go into ParseAsync?
             foreach (var key in _componentAttributes.Keys)

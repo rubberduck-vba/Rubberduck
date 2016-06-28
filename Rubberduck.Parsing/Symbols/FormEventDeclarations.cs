@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -102,7 +101,7 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 string.Empty,
                 false,
-                false);
+                true);
 
             var userFormQueryCloseEventCloseModeParameter = new ParameterDeclaration(
                 new QualifiedMemberName(
@@ -114,7 +113,7 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 string.Empty,
                 false,
-                false);
+                true);
 
             var userFormResizeEvent = new Declaration(
                 new QualifiedMemberName(
