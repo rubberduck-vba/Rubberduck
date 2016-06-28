@@ -216,9 +216,21 @@ namespace Rubberduck.Common
             try
             {
                 var suppress = false;
-                if (hWnd == _mainWindowHandle && (WM)uMsg == WM.HOTKEY)
+                switch ((WM) uMsg)
                 {
-                    suppress = HandleHotkeyMessage(wParam);
+                    case WM.HOTKEY:
+                        suppress = hWnd == _mainWindowHandle && HandleHotkeyMessage(wParam);
+                        break;
+                    case WM.SETFOCUS:
+                        Attach();
+                        break;
+                    case WM.NCACTIVATE:
+                    case WM.CLOSE:
+                        if (wParam == IntPtr.Zero)
+                        {
+                            Detach();
+                        }
+                        break;
                 }
 
                 return suppress 
