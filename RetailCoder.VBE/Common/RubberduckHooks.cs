@@ -224,12 +224,14 @@ namespace Rubberduck.Common
                     case WM.SETFOCUS:
                         Attach();
                         break;
-                    case WM.NCACTIVATE:
-                    case WM.CLOSE:
+                    case WM.NCACTIVATE:                   
                         if (wParam == IntPtr.Zero)
                         {
                             Detach();
                         }
+                        break;
+                    case WM.CLOSE:
+                        Detach();
                         break;
                 }
 
