@@ -3,6 +3,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
+using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -18,6 +19,11 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
+        }
+
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.RefactorMoveCloserToUsage; }
         }
 
         public override bool CanExecute(object parameter)

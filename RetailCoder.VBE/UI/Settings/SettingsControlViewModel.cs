@@ -105,8 +105,8 @@ namespace Rubberduck.UI.Settings
 
         public event EventHandler OnWindowClosed;
 
-        private readonly ICommand _okButtonCommand;
-        public ICommand OKButtonCommand
+        private readonly CommandBase _okButtonCommand;
+        public CommandBase OKButtonCommand
         {
             get
             {
@@ -114,14 +114,14 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private readonly ICommand _cancelButtonCommand;
-        public ICommand CancelButtonCommand
+        private readonly CommandBase _cancelButtonCommand;
+        public CommandBase CancelButtonCommand
         {
             get { return _cancelButtonCommand; }
         }
 
-        private readonly ICommand _resetButtonCommand;
-        public ICommand ResetButtonCommand
+        private readonly CommandBase _resetButtonCommand;
+        public CommandBase ResetButtonCommand
         {
             get { return _resetButtonCommand; }
         }

@@ -5,7 +5,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class NoIndentAnnotationCommandMenuItem : CommandMenuItemBase
     {
-        public NoIndentAnnotationCommandMenuItem(ICommand command)
+        public NoIndentAnnotationCommandMenuItem(CommandBase command)
             : base(command)
         {
         }

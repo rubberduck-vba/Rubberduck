@@ -49,8 +49,8 @@ namespace Rubberduck.UI.Controls
 
         public string Header { get { return _header; } }
 
-        private readonly ICommand _closeCommand;
-        public ICommand CloseCommand { get { return _closeCommand; } }
+        private readonly CommandBase _closeCommand;
+        public CommandBase CloseCommand { get { return _closeCommand; } }
 
         public Declaration Target { get; set; }
 

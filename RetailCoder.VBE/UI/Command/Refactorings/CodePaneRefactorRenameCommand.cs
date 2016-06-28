@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -19,6 +20,11 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
+        }
+
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.RefactorRename; }
         }
 
         public override bool CanExecute(object parameter)

@@ -2,6 +2,7 @@ namespace Rubberduck.Settings
 {
     public enum RubberduckHotkey
     {
+        None,
         ParseAll,
         IndentProcedure,
         IndentModule,

@@ -50,7 +50,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 var command = kvp.Key as CommandMenuItemBase;
                 if (command != null)
                 {
-                    ((CommandBarButton)kvp.Value).ShortcutText = ((CommandBase)command.Command).ShortcutText;
+                    ((CommandBarButton)kvp.Value).ShortcutText = command.Command.ShortcutText;
                 }
 
                 var childMenu = kvp.Key as ParentMenuItemBase;
@@ -141,7 +141,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             child.BeginGroup = item.BeginGroup;
             child.Tag = item.GetType().FullName;
             child.Caption = item.Caption.Invoke();
-            var command = item.Command as CommandBase; // todo: add 'ShortcutText' to a new 'interface ICommand : System.Windows.Input.ICommand'
+            var command = item.Command as CommandBase; // todo: add 'ShortcutText' to a new 'interface CommandBase : System.Windows.Input.CommandBase'
             child.ShortcutText = command != null
                 ? command.ShortcutText
                 : string.Empty; 

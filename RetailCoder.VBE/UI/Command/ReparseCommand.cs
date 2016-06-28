@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.UI.Command.MenuItems;
 
 namespace Rubberduck.UI.Command
@@ -8,7 +9,7 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class ReparseCommandMenuItem : CommandMenuItemBase
     {
-        public ReparseCommandMenuItem(ICommand command) : base(command)
+        public ReparseCommandMenuItem(CommandBase command) : base(command)
         {
         }
 
@@ -26,6 +27,11 @@ namespace Rubberduck.UI.Command
         public ReparseCommand(RubberduckParserState state)
         {
             _state = state;
+        }
+
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.ParseAll; }
         }
 
         public override bool CanExecute(object parameter)

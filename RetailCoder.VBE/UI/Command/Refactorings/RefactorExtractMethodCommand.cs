@@ -8,6 +8,7 @@ using System;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using NLog;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -23,6 +24,11 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             _state = state;
             _indenter = indenter;
+        }
+
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.RefactorExtractMethod; }
         }
 
         public override bool CanExecute(object parameter)

@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.UI.FindSymbol;
 
 namespace Rubberduck.UI.Command
@@ -23,6 +24,11 @@ namespace Rubberduck.UI.Command
             _vbe = vbe;
             _state = state;
             _iconCache = iconCache;
+        }
+
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.FindSymbol; }
         }
 
         public override void Execute(object parameter)

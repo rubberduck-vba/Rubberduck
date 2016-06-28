@@ -7,7 +7,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class AddTestMethodExpectedErrorCommandMenuItem : CommandMenuItemBase
     {
-        public AddTestMethodExpectedErrorCommandMenuItem(ICommand command)
+        public AddTestMethodExpectedErrorCommandMenuItem(CommandBase command)
             : base(command)
         {
         }

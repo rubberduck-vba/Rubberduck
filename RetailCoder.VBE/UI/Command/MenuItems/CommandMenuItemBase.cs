@@ -8,13 +8,13 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public abstract class CommandMenuItemBase : ICommandMenuItem
     {
-        protected CommandMenuItemBase(ICommand command)
+        protected CommandMenuItemBase(CommandBase command)
         {
             _command = command;
         }
 
-        private readonly ICommand _command;
-        public ICommand Command { get { return _command; } }
+        private readonly CommandBase _command;
+        public CommandBase Command { get { return _command; } }
 
         public abstract string Key { get; }
 

@@ -174,35 +174,35 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        private readonly ICommand _setInspectionTypeGroupingCommand;
-        public ICommand SetInspectionTypeGroupingCommand { get { return _setInspectionTypeGroupingCommand; } }
+        private readonly CommandBase _setInspectionTypeGroupingCommand;
+        public CommandBase SetInspectionTypeGroupingCommand { get { return _setInspectionTypeGroupingCommand; } }
 
-        private readonly ICommand _setLocationGroupingCommand;
-        public ICommand SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
+        private readonly CommandBase _setLocationGroupingCommand;
+        public CommandBase SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
 
         private readonly INavigateCommand _navigateCommand;
         public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
 
-        private readonly ICommand _refreshCommand;
-        public ICommand RefreshCommand { get { return _refreshCommand; } }
+        private readonly CommandBase _refreshCommand;
+        public CommandBase RefreshCommand { get { return _refreshCommand; } }
 
-        private readonly ICommand _quickFixCommand;
-        public ICommand QuickFixCommand { get { return _quickFixCommand; } }
+        private readonly CommandBase _quickFixCommand;
+        public CommandBase QuickFixCommand { get { return _quickFixCommand; } }
 
-        private readonly ICommand _quickFixInModuleCommand;
-        public ICommand QuickFixInModuleCommand { get { return _quickFixInModuleCommand; } }
+        private readonly CommandBase _quickFixInModuleCommand;
+        public CommandBase QuickFixInModuleCommand { get { return _quickFixInModuleCommand; } }
 
-        private readonly ICommand _quickFixInProjectCommand;
-        public ICommand QuickFixInProjectCommand { get { return _quickFixInProjectCommand; } }
+        private readonly CommandBase _quickFixInProjectCommand;
+        public CommandBase QuickFixInProjectCommand { get { return _quickFixInProjectCommand; } }
 
-        private readonly ICommand _disableInspectionCommand;
-        public ICommand DisableInspectionCommand { get { return _disableInspectionCommand; } }
+        private readonly CommandBase _disableInspectionCommand;
+        public CommandBase DisableInspectionCommand { get { return _disableInspectionCommand; } }
 
-        private readonly ICommand _copyResultsCommand;
-        public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
+        private readonly CommandBase _copyResultsCommand;
+        public CommandBase CopyResultsCommand { get { return _copyResultsCommand; } }
 
-        private readonly ICommand _openSettingsCommand;
-        public ICommand OpenTodoSettings { get { return _openSettingsCommand; } }
+        private readonly CommandBase _openSettingsCommand;
+        public CommandBase OpenTodoSettings { get { return _openSettingsCommand; } }
 
         private void OpenSettings(object param)
         {
