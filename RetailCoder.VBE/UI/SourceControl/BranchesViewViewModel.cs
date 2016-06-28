@@ -124,6 +124,12 @@ namespace Rubberduck.UI.SourceControl
                     {
                         RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
                     }
+                    catch (Exception e)
+                    {
+                        Logger.Fatal(e);
+                        RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                            RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                    }
                     OnLoadingComponentsCompleted();
                 }
             }
@@ -301,6 +307,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+            }
 
             DisplayCreateBranchGrid = false;
             NewBranchName = string.Empty;
@@ -330,6 +342,12 @@ namespace Rubberduck.UI.SourceControl
                 OnLoadingComponentsCompleted();
                 return;
             }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+            }
 
             DisplayMergeBranchesGrid = false;
             RaiseErrorEvent(RubberduckUI.SourceControl_MergeStatus, string.Format(RubberduckUI.SourceControl_SuccessfulMerge, SourceBranch, DestinationBranch), NotificationType.Info);
@@ -352,6 +370,12 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
             }
 
             RefreshView();
@@ -376,6 +400,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+            }
 
             RefreshView();
         }
@@ -390,6 +420,12 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
             }
 
             RefreshView();

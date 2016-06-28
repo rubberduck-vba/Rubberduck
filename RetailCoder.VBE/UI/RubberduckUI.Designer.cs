@@ -3955,6 +3955,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please set your log level to Fatal or lower and create an issue on our GitHub page with the contents of your log file in C:\Users\{username}\AppData\Roaming\Rubberduck\Logs..
+        /// </summary>
+        public static string SourceControl_UnknownErrorMessage {
+            get {
+                return ResourceManager.GetString("SourceControl_UnknownErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unknown error occurred..
+        /// </summary>
+        public static string SourceControl_UnknownErrorTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_UnknownErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unpublish.
         /// </summary>
         public static string SourceControl_UnpublishBranchButton {

@@ -601,7 +601,15 @@ namespace Rubberduck.UI.SourceControl
                 }
                 catch (SourceControlException ex)
                 {
-                    ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                    ViewModel_ErrorThrown(this,
+                        new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                }
+                catch (Exception e)
+                {
+                    Logger.Fatal(e);
+                    ViewModel_ErrorThrown(this,
+                        new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                            RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
                 }
 
                 Status = RubberduckUI.Online;
@@ -676,6 +684,14 @@ namespace Rubberduck.UI.SourceControl
                     ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                     return;
                 }
+                catch (Exception e)
+                {
+                    Logger.Fatal(e);
+                    ViewModel_ErrorThrown(this,
+                        new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                            RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
+                }
+
                 OnOpenRepoCompleted();
 
                 AddOrUpdateLocalPathConfig(repo);
@@ -715,6 +731,13 @@ namespace Rubberduck.UI.SourceControl
                 ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 return;
             }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+                ViewModel_ErrorThrown(this,
+                    new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                        RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
+            }
 
             _isCloning = false;
             OnOpenRepoCompleted();
@@ -742,6 +765,13 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+                ViewModel_ErrorThrown(this,
+                    new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                        RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
             }
 
             OnPropertyChanged("RepoDoesNotHaveRemoteLocation");
@@ -809,6 +839,13 @@ namespace Rubberduck.UI.SourceControl
 
                 _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
                 _configService.Save(_config);
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+                ViewModel_ErrorThrown(this,
+                    new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                        RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
             }
 
             OnOpenRepoCompleted();

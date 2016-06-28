@@ -148,6 +148,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+            }
         }
 
         private void Commit()
@@ -196,6 +202,12 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
             }
 
             CommitMessage = string.Empty;
