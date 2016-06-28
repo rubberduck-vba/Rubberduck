@@ -1,9 +1,9 @@
-![Rubberduck](http://i.stack.imgur.com/vmqXM.png)
+<img src="http://i.stack.imgur.com/vmqXM.png" width="320" />
 
-| Branch     | Build Status |
-|------------|--------------|
-| **master** | ![master branch build status][masterBuildStatus] |
-| **next**   | ![next branch build status][nextBuildStatus] |
+Branch     | Description | Build Status |
+|------------|---|--------------|
+| **master** | The last released build | ![master branch build status][masterBuildStatus] |
+| **next**   | The current build (dev)  | ![next branch build status][nextBuildStatus] |
 
 [nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
 [masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
