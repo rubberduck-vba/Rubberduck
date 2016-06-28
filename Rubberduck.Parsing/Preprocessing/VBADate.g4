@@ -2,7 +2,7 @@ grammar VBADate;
 
 compilationUnit : dateLiteral EOF;
 
-dateLiteral : HASH dateOrTime HASH;
+dateLiteral : HASH ((WS | LINE_CONTINUATION)+)? dateOrTime HASH;
 dateOrTime :
     dateValue
     | timeValue
@@ -19,6 +19,8 @@ timeValue : (timeValuePart WS* AMPM) | (timeValuePart timeSeparator timeValuePar
 timeValuePart : DIGIT+;
 timeSeparator : WS* (COLON | DOT) WS*;
 AMPM : AM | PM | A | P;
+
+LINE_CONTINUATION : [ \t]* '_' [ \t]* '\r'? '\n';
 
 JANUARY : J A N U A R Y;
 FEBRUARY : F E B R U A R Y;
