@@ -494,6 +494,8 @@ namespace Rubberduck
             _logger.Debug("Loading configuration");
             _config = _configService.LoadConfiguration();
 
+            _autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
+
             var currentCulture = RubberduckUI.Culture;
             try
             {

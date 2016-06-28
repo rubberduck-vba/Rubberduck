@@ -11,11 +11,11 @@ namespace Rubberduck.Common.Hotkeys
     public class Hotkey : IHotkey
     {
         private readonly string _key;
-        private readonly ICommand _command;
+        private readonly CommandBase _command;
         private readonly IntPtr _hWndVbe;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public Hotkey(IntPtr hWndVbe, string key, ICommand command, Keys secondKey = Keys.None)
+        public Hotkey(IntPtr hWndVbe, string key, CommandBase command, Keys secondKey = Keys.None)
         {
             _hWndVbe = hWndVbe;
 
@@ -26,7 +26,7 @@ namespace Rubberduck.Common.Hotkeys
             SecondKey = secondKey;
         }
 
-        public ICommand Command { get { return _command; } }
+        public CommandBase Command { get { return _command; } }
         public string Key { get { return _key; } }
         public HotkeyInfo HotkeyInfo { get; private set; }
         public Keys Combo { get; private set; }

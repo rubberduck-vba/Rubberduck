@@ -49,7 +49,7 @@ namespace Rubberduck.Root
         private const int MsForms = 17;
         private const int MsFormsControl = 18;
 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckModule(VBE vbe, AddIn addin)
         {
@@ -59,7 +59,7 @@ namespace Rubberduck.Root
 
         public override void Load()
         {
-            Logger.Debug("in RubberduckModule.Load()");
+            _logger.Debug("in RubberduckModule.Load()");
 
             // bind VBE and AddIn dependencies to host-provided instances.
             Bind<VBE>().ToConstant(_vbe);
@@ -149,7 +149,7 @@ namespace Rubberduck.Root
             ConfigureProjectExplorerContextMenu();
 
             BindWindowsHooks();
-            Logger.Debug("completed RubberduckModule.Load()");
+            _logger.Debug("completed RubberduckModule.Load()");
         }
 
         private void BindWindowsHooks()
@@ -308,10 +308,10 @@ namespace Rubberduck.Root
         private void BindCommandsToMenuItems()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
+                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? String.Empty))
                 .ToList();
 
-            // note: ICommand naming convention: [Foo]Command
+            // note: CommandBase naming convention: [Foo]Command
             var baseCommandTypes = new[] { typeof(CommandBase), typeof(RefactorCommandBase) };
             var commands = types.Where(type => type.IsClass && baseCommandTypes.Contains(type.BaseType) && type.Name.EndsWith("Command"));
             foreach (var command in commands)
@@ -323,15 +323,16 @@ namespace Rubberduck.Root
                     var item = types.SingleOrDefault(type => type.Name == commandName + "CommandMenuItem");
                     if (item != null)
                     {
-                        var binding = Bind<ICommand>().To(command);
+                        var binding = Bind<CommandBase>().To(command);
                         var whenCommandMenuItemCondition =
                             binding.WhenInjectedInto(item).BindingConfiguration.Condition;
                         var whenHooksCondition =
                             binding.WhenInjectedInto<RubberduckHooks>().BindingConfiguration.Condition;
 
                         binding.When(request => whenCommandMenuItemCondition(request) || whenHooksCondition(request))
-                               .InSingletonScope()
-                               .Intercept().With<FatalExceptionInterceptor>();
+                            .InSingletonScope();
+
+                        binding.Intercept().With<FatalExceptionInterceptor>();
                     }
                 }
                 catch (InvalidOperationException)
@@ -351,7 +352,7 @@ namespace Rubberduck.Root
 
             foreach (var command in commands)
             {
-                Bind<ICommand>().To(command).InSingletonScope();
+                Bind<CommandBase>().To(command).InSingletonScope();
             }
         }
 

@@ -237,26 +237,26 @@ namespace Rubberduck.UI.SourceControl
             RefreshView();
         }
         
-        private readonly ICommand _commitCommand;
-        public ICommand CommitCommand
+        private readonly CommandBase _commitCommand;
+        public CommandBase CommitCommand
         {
             get { return _commitCommand; }
         }
 
-        private readonly ICommand _undoChangesToolbarButtonCommand;
-        public ICommand UndoChangesToolbarButtonCommand
+        private readonly CommandBase _undoChangesToolbarButtonCommand;
+        public CommandBase UndoChangesToolbarButtonCommand
         {
             get { return _undoChangesToolbarButtonCommand; }
         }
 
-        private readonly ICommand _excludeChangesToolbarButtonCommand;
-        public ICommand ExcludeChangesToolbarButtonCommand
+        private readonly CommandBase _excludeChangesToolbarButtonCommand;
+        public CommandBase ExcludeChangesToolbarButtonCommand
         {
             get { return _excludeChangesToolbarButtonCommand; }
         }
 
-        private readonly ICommand _includeChangesToolbarButtonCommand;
-        public ICommand IncludeChangesToolbarButtonCommand
+        private readonly CommandBase _includeChangesToolbarButtonCommand;
+        public CommandBase IncludeChangesToolbarButtonCommand
         {
             get { return _includeChangesToolbarButtonCommand; }
         }

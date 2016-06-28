@@ -26,12 +26,12 @@ namespace Rubberduck.Common
         private IRawDevice _kb;
         private IRawDevice _mouse;
         private readonly IGeneralConfigService _config;
-        private readonly IEnumerable<ICommand> _commands;
+        private readonly IEnumerable<CommandBase> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
-        private readonly IDictionary<RubberduckHotkey, ICommand> _mappings;
+        private readonly IDictionary<RubberduckHotkey, CommandBase> _mappings;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<ICommand> commands)
+        public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<CommandBase> commands)
         {
             _vbe = vbe;
             _mainWindowHandle = (IntPtr)vbe.MainWindow.HWnd;
@@ -45,14 +45,14 @@ namespace Rubberduck.Common
             _mappings = GetCommandMappings();
         }
 
-        private ICommand Command<TCommand>() where TCommand : ICommand
+        private CommandBase Command<TCommand>() where TCommand : CommandBase
         {
             return _commands.OfType<TCommand>().SingleOrDefault();
         }
 
-        private IDictionary<RubberduckHotkey, ICommand> GetCommandMappings()
+        private IDictionary<RubberduckHotkey, CommandBase> GetCommandMappings()
         {
-            return new Dictionary<RubberduckHotkey, ICommand>
+            return new Dictionary<RubberduckHotkey, CommandBase>
             {
                 { RubberduckHotkey.ParseAll, Command<ReparseCommand>() },
                 { RubberduckHotkey.CodeExplorer, Command<CodeExplorerCommand>() },

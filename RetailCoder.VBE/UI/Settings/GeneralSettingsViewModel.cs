@@ -128,8 +128,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private readonly ICommand _showLogFolderCommand;
-        public ICommand ShowLogFolderCommand
+        private readonly CommandBase _showLogFolderCommand;
+        public CommandBase ShowLogFolderCommand
         {
             get { return _showLogFolderCommand; }
         }

@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class ReparseCommandMenuItem : CommandMenuItemBase
     {
-        public ReparseCommandMenuItem(ICommand command) : base(command)
+        public ReparseCommandMenuItem(CommandBase command) : base(command)
         {
         }
 

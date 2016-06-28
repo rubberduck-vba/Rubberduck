@@ -5,7 +5,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class RegexSearchReplaceCommandMenuItem : CommandMenuItemBase
     {
-        public RegexSearchReplaceCommandMenuItem(ICommand command)
+        public RegexSearchReplaceCommandMenuItem(CommandBase command)
             : base(command)
         {
         }

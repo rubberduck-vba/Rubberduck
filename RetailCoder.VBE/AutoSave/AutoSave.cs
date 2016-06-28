@@ -22,11 +22,10 @@ namespace Rubberduck.AutoSave
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
             _timer.Elapsed += _timer_Elapsed;
-
-            ConfigServiceSettingsChanged(null, EventArgs.Empty);
+            _timer.Enabled = false;
         }
 
-        private void ConfigServiceSettingsChanged(object sender, EventArgs e)
+        public void ConfigServiceSettingsChanged(object sender, EventArgs e)
         {
             var config = _configService.LoadConfiguration();
 
