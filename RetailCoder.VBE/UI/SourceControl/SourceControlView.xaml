@@ -460,7 +460,7 @@
                     </Button>
                     <Separator />
                     <Menu Style="{DynamicResource MenuStyle1}">
-                        <MenuItem Header="Manage">
+                        <MenuItem Header="{Resx Key=SourceControl_ManageRepositories, ResxName=Rubberduck.UI.RubberduckUI}">
                             <MenuItem Command="{Binding OpenRepoCommand, Mode=OneWay}">
                                 <MenuItem.Header>
                                     <Grid>
@@ -474,10 +474,10 @@
                                                VerticalAlignment="Top" />
                                         <StackPanel Grid.Column="1">
                                             <TextBlock FontWeight="Bold"
-                                                   Text="Open Existing Repository" />
-                                            <TextBlock Text="Open repository from disk. Requires an empty project to be open in the VBE."
-                                                   TextWrapping="WrapWithOverflow"
-                                                   Width="200" />
+                                                       Text="{Resx Key=SourceControl_OpenRepositoryTitle, ResxName=Rubberduck.UI.RubberduckUI}" />
+                                            <TextBlock Text="{Resx Key=SourceControl_OpenRepositoryDescription, ResxName=Rubberduck.UI.RubberduckUI}"
+                                                       TextWrapping="WrapWithOverflow"
+                                                       Width="200" />
                                         </StackPanel>
                                     </Grid>
                                 </MenuItem.Header>
@@ -495,10 +495,10 @@
                                                VerticalAlignment="Top" />
                                         <StackPanel Grid.Column="1">
                                             <TextBlock FontWeight="Bold"
-                                                   Text="Initialize New Repository" />
-                                            <TextBlock Text="Creates a new repository from the open project."
-                                                   TextWrapping="WrapWithOverflow"
-                                                   Width="200" />
+                                                       Text="{Resx Key=SourceControl_InitializeRepositoryTitle, ResxName=Rubberduck.UI.RubberduckUI}" />
+                                            <TextBlock Text="{Resx Key=SourceControl_InitializeRepositoryDescription, ResxName=Rubberduck.UI.RubberduckUI}"
+                                                       TextWrapping="WrapWithOverflow"
+                                                       Width="200" />
                                         </StackPanel>
                                     </Grid>
                                 </MenuItem.Header>
@@ -516,8 +516,8 @@
                                                VerticalAlignment="Top" />
                                         <StackPanel Grid.Column="1">
                                             <TextBlock FontWeight="Bold"
-                                                       Text="Clone Remote Repository" />
-                                            <TextBlock Text="Clones remote repository from provided URI. Requires an empty project to be open in the VBE."
+                                                       Text="{Resx Key=SourceControl_CloneRepositoryTitle, ResxName=Rubberduck.UI.RubberduckUI}" />
+                                            <TextBlock Text="{Resx Key=SourceControl_CloneRepositoryDescription, ResxName=Rubberduck.UI.RubberduckUI}"
                                                        TextWrapping="WrapWithOverflow"
                                                        Width="200" />
                                         </StackPanel>
@@ -537,10 +537,10 @@
                                                VerticalAlignment="Top" />
                                         <StackPanel Grid.Column="1">
                                             <TextBlock FontWeight="Bold"
-                                                   Text="Publish Existing Repository" />
-                                            <TextBlock Text="Publishes an existing repository to a remote location. Requires the open project to be connected to a repository."
-                                                   TextWrapping="WrapWithOverflow"
-                                                   Width="200" />
+                                                       Text="{Resx Key=SourceControl_PublishRepositoryTitle, ResxName=Rubberduck.UI.RubberduckUI}" />
+                                            <TextBlock Text="{Resx Key=SourceControl_PublishRepositoryDescription, ResxName=Rubberduck.UI.RubberduckUI}"
+                                                       TextWrapping="WrapWithOverflow"
+                                                       Width="200" />
                                         </StackPanel>
                                     </Grid>
                                 </MenuItem.Header>

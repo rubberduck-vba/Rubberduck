@@ -3253,11 +3253,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clone Repository.
+        ///   Looks up a localized string similar to Clones remote repository from provided URI. Requires an empty project to be open in the VBE..
         /// </summary>
-        public static string SourceControl_CloneRepoButtonToolTip {
+        public static string SourceControl_CloneRepositoryDescription {
             get {
-                return ResourceManager.GetString("SourceControl_CloneRepoButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("SourceControl_CloneRepositoryDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clone Remote Repository.
+        /// </summary>
+        public static string SourceControl_CloneRepositoryTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_CloneRepositoryTitle", resourceCulture);
             }
         }
         
@@ -3739,11 +3748,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Init New Repo from this Project.
+        ///   Looks up a localized string similar to Creates a new repository from the open project..
         /// </summary>
-        public static string SourceControl_InitRepoButtonToolTip {
+        public static string SourceControl_InitializeRepositoryDescription {
             get {
-                return ResourceManager.GetString("SourceControl_InitRepoButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("SourceControl_InitializeRepositoryDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initialize New Repository.
+        /// </summary>
+        public static string SourceControl_InitializeRepositoryTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_InitializeRepositoryTitle", resourceCulture);
             }
         }
         
@@ -3762,6 +3780,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_LoginInstructions {
             get {
                 return ResourceManager.GetString("SourceControl_LoginInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage.
+        /// </summary>
+        public static string SourceControl_ManageRepositories {
+            get {
+                return ResourceManager.GetString("SourceControl_ManageRepositories", resourceCulture);
             }
         }
         
@@ -3892,6 +3919,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open repository from disk. Requires an empty project to be open in the VBE..
+        /// </summary>
+        public static string SourceControl_OpenRepositoryDescription {
+            get {
+                return ResourceManager.GetString("SourceControl_OpenRepositoryDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Existing Repository.
+        /// </summary>
+        public static string SourceControl_OpenRepositoryTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_OpenRepositoryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Working Directory.
         /// </summary>
         public static string SourceControl_OpenWorkingDirectory {
@@ -3955,11 +4000,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish repository to GitHub.
+        ///   Looks up a localized string similar to Publishes an existing repository to a remote location. Requires the open project to be connected to a repository..
         /// </summary>
-        public static string SourceControl_PublishRepoButtonToolTip {
+        public static string SourceControl_PublishRepositoryDescription {
             get {
-                return ResourceManager.GetString("SourceControl_PublishRepoButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("SourceControl_PublishRepositoryDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish Existing Repository.
+        /// </summary>
+        public static string SourceControl_PublishRepositoryTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishRepositoryTitle", resourceCulture);
             }
         }
         
