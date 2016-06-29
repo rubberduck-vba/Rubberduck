@@ -67,7 +67,7 @@ namespace Rubberduck.Inspections
         {
             var line = module.Lines[selection.StartLine, 1];
 
-            var asTypeClause = ' ' + Tokens.As + ' ' + Declaration.TYPEHINT_TO_TYPENAME[hint];
+            var asTypeClause = ' ' + Tokens.As + ' ' + Declaration.TypeHintToTypeName[hint];
 
             string fix;
 
