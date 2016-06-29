@@ -18,7 +18,6 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor.Extensions;
-using NLog;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -30,7 +29,6 @@ namespace Rubberduck.UI.Inspections
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
         private readonly IOperatingSystem _operatingSystem;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
                                           IGeneralConfigService configService, IOperatingSystem operatingSystem)
@@ -174,35 +172,35 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        private readonly ICommand _setInspectionTypeGroupingCommand;
-        public ICommand SetInspectionTypeGroupingCommand { get { return _setInspectionTypeGroupingCommand; } }
+        private readonly CommandBase _setInspectionTypeGroupingCommand;
+        public CommandBase SetInspectionTypeGroupingCommand { get { return _setInspectionTypeGroupingCommand; } }
 
-        private readonly ICommand _setLocationGroupingCommand;
-        public ICommand SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
+        private readonly CommandBase _setLocationGroupingCommand;
+        public CommandBase SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
 
         private readonly INavigateCommand _navigateCommand;
         public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
 
-        private readonly ICommand _refreshCommand;
-        public ICommand RefreshCommand { get { return _refreshCommand; } }
+        private readonly CommandBase _refreshCommand;
+        public CommandBase RefreshCommand { get { return _refreshCommand; } }
 
-        private readonly ICommand _quickFixCommand;
-        public ICommand QuickFixCommand { get { return _quickFixCommand; } }
+        private readonly CommandBase _quickFixCommand;
+        public CommandBase QuickFixCommand { get { return _quickFixCommand; } }
 
-        private readonly ICommand _quickFixInModuleCommand;
-        public ICommand QuickFixInModuleCommand { get { return _quickFixInModuleCommand; } }
+        private readonly CommandBase _quickFixInModuleCommand;
+        public CommandBase QuickFixInModuleCommand { get { return _quickFixInModuleCommand; } }
 
-        private readonly ICommand _quickFixInProjectCommand;
-        public ICommand QuickFixInProjectCommand { get { return _quickFixInProjectCommand; } }
+        private readonly CommandBase _quickFixInProjectCommand;
+        public CommandBase QuickFixInProjectCommand { get { return _quickFixInProjectCommand; } }
 
-        private readonly ICommand _disableInspectionCommand;
-        public ICommand DisableInspectionCommand { get { return _disableInspectionCommand; } }
+        private readonly CommandBase _disableInspectionCommand;
+        public CommandBase DisableInspectionCommand { get { return _disableInspectionCommand; } }
 
-        private readonly ICommand _copyResultsCommand;
-        public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
+        private readonly CommandBase _copyResultsCommand;
+        public CommandBase CopyResultsCommand { get { return _copyResultsCommand; } }
 
-        private readonly ICommand _openSettingsCommand;
-        public ICommand OpenTodoSettings { get { return _openSettingsCommand; } }
+        private readonly CommandBase _openSettingsCommand;
+        public CommandBase OpenTodoSettings { get { return _openSettingsCommand; } }
 
         private void OpenSettings(object param)
         {
@@ -239,8 +237,7 @@ namespace Rubberduck.UI.Inspections
             await Task.Yield();
 
             IsBusy = true;
-
-            _logger.Debug("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
+            
             _state.OnParseRequested(this);
         }
 
@@ -251,7 +248,6 @@ namespace Rubberduck.UI.Inspections
 
         private void _state_StateChanged(object sender, EventArgs e)
         {
-            _logger.Debug("InspectionResultsViewModel handles StateChanged...");
             if (_state.Status != ParserState.Ready)
             {
                 IsBusy = false;
@@ -263,7 +259,6 @@ namespace Rubberduck.UI.Inspections
 
         private async void RefreshInspections()
         {
-            _logger.Debug("Running code inspections...");
             IsBusy = true;
 
             var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();

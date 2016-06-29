@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Rubberduck.Common.WinAPI;
 using NLog;
+using Rubberduck.UI;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.Common.Hotkeys
@@ -11,11 +12,11 @@ namespace Rubberduck.Common.Hotkeys
     public class Hotkey : IHotkey
     {
         private readonly string _key;
-        private readonly ICommand _command;
+        private readonly CommandBase _command;
         private readonly IntPtr _hWndVbe;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public Hotkey(IntPtr hWndVbe, string key, ICommand command, Keys secondKey = Keys.None)
+        public Hotkey(IntPtr hWndVbe, string key, CommandBase command, Keys secondKey = Keys.None)
         {
             _hWndVbe = hWndVbe;
 
@@ -26,7 +27,7 @@ namespace Rubberduck.Common.Hotkeys
             SecondKey = secondKey;
         }
 
-        public ICommand Command { get { return _command; } }
+        public CommandBase Command { get { return _command; } }
         public string Key { get { return _key; } }
         public HotkeyInfo HotkeyInfo { get; private set; }
         public Keys Combo { get; private set; }
@@ -86,14 +87,11 @@ namespace Rubberduck.Common.Hotkeys
             var success = User32.RegisterHotKey(_hWndVbe, hookId, shift, (uint)key);
             if (!success)
             {
-                _logger.Debug(Rubberduck.UI.RubberduckUI.CommonHotkey_KeyNotRegistered, key);
-                //throw new Win32Exception(Rubberduck.UI.RubberduckUI.CommonHotkey_KeyNotRegistered, key);
+                Logger.Debug(RubberduckUI.CommonHotkey_KeyNotRegistered, key);
             }
 
             HotkeyInfo = new HotkeyInfo(hookId, Combo);
             IsAttached = true;
-
-            _logger.Debug("Hotkey '{0}' hooked successfully to command '{1}'", Key, Command.GetType());  //no translation needed for Debug.Writeline
         }
 
         private void SetCommandShortcutText()

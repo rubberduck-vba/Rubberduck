@@ -6,7 +6,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class CodePaneRefactorRenameCommandMenuItem : CommandMenuItemBase
     {
-        public CodePaneRefactorRenameCommandMenuItem(ICommand command)
+        public CodePaneRefactorRenameCommandMenuItem(CommandBase command)
             : base(command)
         {
         }

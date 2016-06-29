@@ -23,7 +23,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
 
-        public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<ICommand> commands)
+        public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<CommandBase> commands)
         {
             _folderHelper = folderHelper;
             _state = state;
@@ -143,14 +143,14 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private readonly ICommand _copyResultsCommand;
-        public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
+        private readonly CommandBase _copyResultsCommand;
+        public CommandBase CopyResultsCommand { get { return _copyResultsCommand; } }
 
-        private readonly ICommand _setNameSortCommand;
-        public ICommand SetNameSortCommand { get { return _setNameSortCommand; } }
+        private readonly CommandBase _setNameSortCommand;
+        public CommandBase SetNameSortCommand { get { return _setNameSortCommand; } }
 
-        private readonly ICommand _setSelectionSortCommand;
-        public ICommand SetSelectionSortCommand { get { return _setSelectionSortCommand; } }
+        private readonly CommandBase _setSelectionSortCommand;
+        public CommandBase SetSelectionSortCommand { get { return _setSelectionSortCommand; } }
 
         private bool _sortByType = true;
         public bool SortByType
@@ -419,64 +419,64 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private readonly ICommand _refreshCommand;
-        public ICommand RefreshCommand { get { return _refreshCommand; } }
+        private readonly CommandBase _refreshCommand;
+        public CommandBase RefreshCommand { get { return _refreshCommand; } }
 
-        private readonly ICommand _refreshComponentCommand;
-        public ICommand RefreshComponentCommand { get { return _refreshComponentCommand; } }
+        private readonly CommandBase _refreshComponentCommand;
+        public CommandBase RefreshComponentCommand { get { return _refreshComponentCommand; } }
 
-        private readonly ICommand _navigateCommand;
-        public ICommand NavigateCommand { get { return _navigateCommand; } }
+        private readonly CommandBase _navigateCommand;
+        public CommandBase NavigateCommand { get { return _navigateCommand; } }
 
-        private readonly ICommand _addTestModuleCommand;
-        public ICommand AddTestModuleCommand { get { return _addTestModuleCommand; } }
+        private readonly CommandBase _addTestModuleCommand;
+        public CommandBase AddTestModuleCommand { get { return _addTestModuleCommand; } }
 
-        private readonly ICommand _addStdModuleCommand;
-        public ICommand AddStdModuleCommand { get { return _addStdModuleCommand; } }
+        private readonly CommandBase _addStdModuleCommand;
+        public CommandBase AddStdModuleCommand { get { return _addStdModuleCommand; } }
 
-        private readonly ICommand _addClassModuleCommand;
-        public ICommand AddClassModuleCommand { get { return _addClassModuleCommand; } }
+        private readonly CommandBase _addClassModuleCommand;
+        public CommandBase AddClassModuleCommand { get { return _addClassModuleCommand; } }
 
-        private readonly ICommand _addUserFormCommand;
-        public ICommand AddUserFormCommand { get { return _addUserFormCommand; } }
+        private readonly CommandBase _addUserFormCommand;
+        public CommandBase AddUserFormCommand { get { return _addUserFormCommand; } }
 
-        private readonly ICommand _openDesignerCommand;
-        public ICommand OpenDesignerCommand { get { return _openDesignerCommand; } }
+        private readonly CommandBase _openDesignerCommand;
+        public CommandBase OpenDesignerCommand { get { return _openDesignerCommand; } }
 
-        private readonly ICommand _openProjectPropertiesCommand;
-        public ICommand OpenProjectPropertiesCommand { get { return _openProjectPropertiesCommand; } }
+        private readonly CommandBase _openProjectPropertiesCommand;
+        public CommandBase OpenProjectPropertiesCommand { get { return _openProjectPropertiesCommand; } }
 
-        private readonly ICommand _renameCommand;
-        public ICommand RenameCommand { get { return _renameCommand; } }
+        private readonly CommandBase _renameCommand;
+        public CommandBase RenameCommand { get { return _renameCommand; } }
 
-        private readonly ICommand _indenterCommand;
-        public ICommand IndenterCommand { get { return _indenterCommand; } }
+        private readonly CommandBase _indenterCommand;
+        public CommandBase IndenterCommand { get { return _indenterCommand; } }
 
-        private readonly ICommand _findAllReferencesCommand;
-        public ICommand FindAllReferencesCommand { get { return _findAllReferencesCommand; } }
+        private readonly CommandBase _findAllReferencesCommand;
+        public CommandBase FindAllReferencesCommand { get { return _findAllReferencesCommand; } }
 
-        private readonly ICommand _findAllImplementationsCommand;
-        public ICommand FindAllImplementationsCommand { get { return _findAllImplementationsCommand; } }
+        private readonly CommandBase _findAllImplementationsCommand;
+        public CommandBase FindAllImplementationsCommand { get { return _findAllImplementationsCommand; } }
 
-        private readonly ICommand _importCommand;
-        public ICommand ImportCommand { get { return _importCommand; } }
+        private readonly CommandBase _importCommand;
+        public CommandBase ImportCommand { get { return _importCommand; } }
 
-        private readonly ICommand _exportCommand;
-        public ICommand ExportCommand { get { return _exportCommand; } }
+        private readonly CommandBase _exportCommand;
+        public CommandBase ExportCommand { get { return _exportCommand; } }
 
-        private readonly ICommand _removeCommand;
-        public ICommand RemoveCommand { get { return _removeCommand; } }
+        private readonly CommandBase _removeCommand;
+        public CommandBase RemoveCommand { get { return _removeCommand; } }
 
-        private readonly ICommand _printCommand;
-        public ICommand PrintCommand { get { return _printCommand; } }
+        private readonly CommandBase _printCommand;
+        public CommandBase PrintCommand { get { return _printCommand; } }
 
-        private readonly ICommand _commitCommand;
-        public ICommand CommitCommand { get { return _commitCommand; } }
+        private readonly CommandBase _commitCommand;
+        public CommandBase CommitCommand { get { return _commitCommand; } }
 
-        private readonly ICommand _undoCommand;
-        public ICommand UndoCommand { get { return _undoCommand; } }
+        private readonly CommandBase _undoCommand;
+        public CommandBase UndoCommand { get { return _undoCommand; } }
 
-        private readonly ICommand _externalRemoveCommand;
+        private readonly CommandBase _externalRemoveCommand;
 
         // this is a special case--we have to reset SelectedItem to prevent a crash
         private void ExecuteRemoveComand(object param)

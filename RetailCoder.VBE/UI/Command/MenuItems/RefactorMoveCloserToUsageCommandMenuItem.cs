@@ -6,7 +6,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class RefactorMoveCloserToUsageCommandMenuItem : CommandMenuItemBase
     {
-        public RefactorMoveCloserToUsageCommandMenuItem(ICommand command)
+        public RefactorMoveCloserToUsageCommandMenuItem(CommandBase command)
             : base(command)
         {
         }

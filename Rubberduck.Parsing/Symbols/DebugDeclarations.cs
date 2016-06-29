@@ -11,7 +11,6 @@ namespace Rubberduck.Parsing.Symbols
     public class DebugDeclarations : ICustomDeclarationLoader
     {
         public static Declaration DebugPrint;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly DeclarationFinder _finder;
 
         public DebugDeclarations(RubberduckParserState state)
@@ -46,7 +45,6 @@ namespace Rubberduck.Parsing.Symbols
 
         private IReadOnlyList<Declaration> Load(Declaration parentProject, Declaration parentModule)
         {
-            _logger.Debug("Loading custom declarations with {0} as parent project and {1} as parent module.", parentProject.IdentifierName, parentModule.IdentifierName);
             List<Declaration> declarations = new List<Declaration>();
             var debugModuleName = new QualifiedModuleName(parentProject.QualifiedName.QualifiedModuleName.ProjectName, parentProject.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
             var debugModule = new ProceduralModuleDeclaration(new QualifiedMemberName(debugModuleName, "DebugModule"), parentProject, "DebugModule", true, new List<IAnnotation>(), new Attributes());

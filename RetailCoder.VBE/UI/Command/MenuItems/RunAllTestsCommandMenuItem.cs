@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class RunAllTestsCommandMenuItem : CommandMenuItemBase
     {
-        public RunAllTestsCommandMenuItem(ICommand command)
+        public RunAllTestsCommandMenuItem(CommandBase command)
             : base(command)
         {
         }

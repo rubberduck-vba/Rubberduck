@@ -5,7 +5,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class TestExplorerCommandMenuItem : CommandMenuItemBase
     {
-        public TestExplorerCommandMenuItem(ICommand command)
+        public TestExplorerCommandMenuItem(CommandBase command)
             : base(command)
         {
         }

@@ -601,7 +601,15 @@ namespace Rubberduck.UI.SourceControl
                 }
                 catch (SourceControlException ex)
                 {
-                    ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                    ViewModel_ErrorThrown(this,
+                        new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                }
+                catch
+                {
+                    ViewModel_ErrorThrown(this,
+                        new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                            RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
+                    throw;
                 }
 
                 Status = RubberduckUI.Online;
@@ -676,6 +684,14 @@ namespace Rubberduck.UI.SourceControl
                     ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                     return;
                 }
+                catch
+                {
+                    ViewModel_ErrorThrown(this,
+                        new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                            RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
+                    throw;
+                }
+
                 OnOpenRepoCompleted();
 
                 AddOrUpdateLocalPathConfig(repo);
@@ -715,6 +731,13 @@ namespace Rubberduck.UI.SourceControl
                 ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 return;
             }
+            catch
+            {
+                ViewModel_ErrorThrown(this,
+                    new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                        RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
+                throw;
+            }
 
             _isCloning = false;
             OnOpenRepoCompleted();
@@ -742,6 +765,13 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+            }
+            catch
+            {
+                ViewModel_ErrorThrown(this,
+                    new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                        RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
+                throw;
             }
 
             OnPropertyChanged("RepoDoesNotHaveRemoteLocation");
@@ -779,11 +809,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 Process.Start(_config.CommandPromptLocation);
             }
-            catch (Exception e)
+            catch
             {
                 ViewModel_ErrorThrown(this,
-                    new ErrorEventArgs(RubberduckUI.SourceControl_OpenCommandPromptFailureTitle, e.Message,
-                        NotificationType.Error));
+                    new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                        RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
+                throw;
             }
         }
 
@@ -809,6 +840,13 @@ namespace Rubberduck.UI.SourceControl
 
                 _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
                 _configService.Save(_config);
+            }
+            catch
+            {
+                ViewModel_ErrorThrown(this,
+                    new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
+                        RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
+                throw;
             }
 
             OnOpenRepoCompleted();
@@ -874,32 +912,32 @@ namespace Rubberduck.UI.SourceControl
             DisplayLoginGrid = false;
         }
 
-        private readonly ICommand _refreshCommand;
-        public ICommand RefreshCommand
+        private readonly CommandBase _refreshCommand;
+        public CommandBase RefreshCommand
         {
             get { return _refreshCommand; }
         }
 
-        private readonly ICommand _initRepoCommand;
-        public ICommand InitRepoCommand
+        private readonly CommandBase _initRepoCommand;
+        public CommandBase InitRepoCommand
         {
             get { return _initRepoCommand; }
         }
 
-        private readonly ICommand _openRepoCommand;
-        public ICommand OpenRepoCommand
+        private readonly CommandBase _openRepoCommand;
+        public CommandBase OpenRepoCommand
         {
             get { return _openRepoCommand; }
         }
 
-        private readonly ICommand _cloneRepoCommand;
-        public ICommand CloneRepoCommand
+        private readonly CommandBase _cloneRepoCommand;
+        public CommandBase CloneRepoCommand
         {
             get { return _cloneRepoCommand; }
         }
 
-        private readonly ICommand _showFilePickerCommand;
-        public ICommand ShowFilePickerCommand
+        private readonly CommandBase _showFilePickerCommand;
+        public CommandBase ShowFilePickerCommand
         {
             get
             {
@@ -907,8 +945,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _cloneRepoOkButtonCommand;
-        public ICommand CloneRepoOkButtonCommand
+        private readonly CommandBase _cloneRepoOkButtonCommand;
+        public CommandBase CloneRepoOkButtonCommand
         {
             get
             {
@@ -916,8 +954,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _cloneRepoCancelButtonCommand;
-        public ICommand CloneRepoCancelButtonCommand
+        private readonly CommandBase _cloneRepoCancelButtonCommand;
+        public CommandBase CloneRepoCancelButtonCommand
         {
             get
             {
@@ -925,14 +963,14 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _publishRepoCommand;
-        public ICommand PublishRepoCommand
+        private readonly CommandBase _publishRepoCommand;
+        public CommandBase PublishRepoCommand
         {
             get { return _publishRepoCommand; }
         }
 
-        private readonly ICommand _publishRepoOkButtonCommand;
-        public ICommand PublishRepoOkButtonCommand
+        private readonly CommandBase _publishRepoOkButtonCommand;
+        public CommandBase PublishRepoOkButtonCommand
         {
             get
             {
@@ -940,8 +978,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _publishRepoCancelButtonCommand;
-        public ICommand PublishRepoCancelButtonCommand
+        private readonly CommandBase _publishRepoCancelButtonCommand;
+        public CommandBase PublishRepoCancelButtonCommand
         {
             get
             {
@@ -949,8 +987,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _openCommandPromptCommand;
-        public ICommand OpenCommandPromptCommand
+        private readonly CommandBase _openCommandPromptCommand;
+        public CommandBase OpenCommandPromptCommand
         {
             get
             {
@@ -958,8 +996,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _dismissErrorMessageCommand;
-        public ICommand DismissErrorMessageCommand
+        private readonly CommandBase _dismissErrorMessageCommand;
+        public CommandBase DismissErrorMessageCommand
         {
             get
             {
@@ -967,8 +1005,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _loginGridOkCommand;
-        public ICommand LoginGridOkCommand
+        private readonly CommandBase _loginGridOkCommand;
+        public CommandBase LoginGridOkCommand
         {
             get
             {
@@ -976,8 +1014,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _loginGridCancelCommand;
-        public ICommand LoginGridCancelCommand
+        private readonly CommandBase _loginGridCancelCommand;
+        public CommandBase LoginGridCancelCommand
         {
             get
             {

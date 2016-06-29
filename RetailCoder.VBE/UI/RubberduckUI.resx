@@ -1659,4 +1659,52 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
     <value>Open project properties</value>
   </data>
+  <data name="SourceControl_UnknownErrorMessage" xml:space="preserve">
+    <value>Please set your log level to Fatal or lower and create an issue on our GitHub page with the contents of your log file in C:\Users\{username}\AppData\Roaming\Rubberduck\Logs.</value>
+  </data>
+  <data name="SourceControl_UnknownErrorTitle" xml:space="preserve">
+    <value>An unknown error occurred.</value>
+  </data>
+  <data name="SourceControl_FileStatus_Added" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="SourceControl_FileStatus_Ignored" xml:space="preserve">
+    <value>Ignored</value>
+  </data>
+  <data name="SourceControl_FileStatus_Missing" xml:space="preserve">
+    <value>Missing</value>
+  </data>
+  <data name="SourceControl_FileStatus_Modified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="SourceControl_FileStatus_Nonexistent" xml:space="preserve">
+    <value>Nonexistent</value>
+  </data>
+  <data name="SourceControl_FileStatus_Removed" xml:space="preserve">
+    <value>Removed</value>
+  </data>
+  <data name="SourceControl_FileStatus_RenamedInIndex" xml:space="preserve">
+    <value>Renamed in index</value>
+  </data>
+  <data name="SourceControl_FileStatus_RenamedInWorkDir" xml:space="preserve">
+    <value>Renamed in working directory</value>
+  </data>
+  <data name="SourceControl_FileStatus_Staged" xml:space="preserve">
+    <value>Staged</value>
+  </data>
+  <data name="SourceControl_FileStatus_StagedTypeChange" xml:space="preserve">
+    <value>Staged type change</value>
+  </data>
+  <data name="SourceControl_FileStatus_TypeChanged" xml:space="preserve">
+    <value>Type changed</value>
+  </data>
+  <data name="SourceControl_FileStatus_Unaltered" xml:space="preserve">
+    <value>Unaltered</value>
+  </data>
+  <data name="SourceControl_FileStatus_Unreadable" xml:space="preserve">
+    <value>Unreadable</value>
+  </data>
+  <data name="SourceControl_FileStatus_Untracked" xml:space="preserve">
+    <value>Untracked</value>
+  </data>
 </root>

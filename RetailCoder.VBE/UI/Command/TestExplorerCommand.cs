@@ -13,11 +13,14 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.TestExplorer; }
+        }
+
         public override void Execute(object parameter)
         {
             _presenter.Show();
         }
-
-        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.TestExplorer; } }
     }
 }

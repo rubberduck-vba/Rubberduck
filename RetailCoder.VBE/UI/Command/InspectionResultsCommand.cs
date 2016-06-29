@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -13,6 +14,11 @@ namespace Rubberduck.UI.Command
         public InspectionResultsCommand(IPresenter presenter)
         {
             _presenter = presenter;
+        }
+
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.InspectionResults; }
         }
 
         /// <summary>

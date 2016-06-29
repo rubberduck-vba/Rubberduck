@@ -17,8 +17,8 @@ namespace Rubberduck.UI.About
             }
         }
 
-        private ICommand _uriCommand;
-        public ICommand UriCommand
+        private CommandBase _uriCommand;
+        public CommandBase UriCommand
         {
             get
             {

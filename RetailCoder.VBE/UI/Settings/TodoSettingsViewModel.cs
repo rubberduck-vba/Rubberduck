@@ -29,8 +29,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private ICommand _addTodoCommand;
-        public ICommand AddTodoCommand
+        private CommandBase _addTodoCommand;
+        public CommandBase AddTodoCommand
         {
             get
             {
@@ -48,8 +48,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private ICommand _deleteTodoCommand;
-        public ICommand DeleteTodoCommand
+        private CommandBase _deleteTodoCommand;
+        public CommandBase DeleteTodoCommand
         {
             get
             {

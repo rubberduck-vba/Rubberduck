@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.Symbols
     [Serializable]
     public class SyntaxErrorException : Exception
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public SyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position)
             : base(message, innerException)
@@ -19,8 +19,8 @@ namespace Rubberduck.Parsing.Symbols
             _token = offendingSymbol;
             _line = line;
             _position = position;
-            _logger.Debug(innerException == null ? "" : innerException.ToString());
-            _logger.Debug("Token: {0} (L{1}C{2})", offendingSymbol.Text, line, position);
+            Logger.Debug(innerException == null ? "" : innerException.ToString());
+            Logger.Debug("Token: {0} (L{1}C{2})", offendingSymbol.Text, line, position);
         }
 
         private readonly IToken _token;

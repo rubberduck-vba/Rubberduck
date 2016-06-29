@@ -3559,6 +3559,132 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Added.
+        /// </summary>
+        public static string SourceControl_FileStatus_Added {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignored.
+        /// </summary>
+        public static string SourceControl_FileStatus_Ignored {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Ignored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing.
+        /// </summary>
+        public static string SourceControl_FileStatus_Missing {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modified.
+        /// </summary>
+        public static string SourceControl_FileStatus_Modified {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Modified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nonexistent.
+        /// </summary>
+        public static string SourceControl_FileStatus_Nonexistent {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Nonexistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removed.
+        /// </summary>
+        public static string SourceControl_FileStatus_Removed {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Removed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renamed in index.
+        /// </summary>
+        public static string SourceControl_FileStatus_RenamedInIndex {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_RenamedInIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renamed in working directory.
+        /// </summary>
+        public static string SourceControl_FileStatus_RenamedInWorkDir {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_RenamedInWorkDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Staged.
+        /// </summary>
+        public static string SourceControl_FileStatus_Staged {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Staged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Staged type change.
+        /// </summary>
+        public static string SourceControl_FileStatus_StagedTypeChange {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_StagedTypeChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type changed.
+        /// </summary>
+        public static string SourceControl_FileStatus_TypeChanged {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_TypeChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unaltered.
+        /// </summary>
+        public static string SourceControl_FileStatus_Unaltered {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Unaltered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unreadable.
+        /// </summary>
+        public static string SourceControl_FileStatus_Unreadable {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Unreadable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Untracked.
+        /// </summary>
+        public static string SourceControl_FileStatus_Untracked {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Untracked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Global Settings.
         /// </summary>
         public static string SourceControl_GlobalSettings {
@@ -3951,6 +4077,24 @@ namespace Rubberduck.UI {
         public static string SourceControl_UndoTitle {
             get {
                 return ResourceManager.GetString("SourceControl_UndoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please set your log level to Fatal or lower and create an issue on our GitHub page with the contents of your log file in C:\Users\{username}\AppData\Roaming\Rubberduck\Logs..
+        /// </summary>
+        public static string SourceControl_UnknownErrorMessage {
+            get {
+                return ResourceManager.GetString("SourceControl_UnknownErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unknown error occurred..
+        /// </summary>
+        public static string SourceControl_UnknownErrorTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_UnknownErrorTitle", resourceCulture);
             }
         }
         

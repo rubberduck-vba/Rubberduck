@@ -49,8 +49,6 @@ namespace Rubberduck.Root
         private const int MsForms = 17;
         private const int MsFormsControl = 18;
 
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
         public RubberduckModule(VBE vbe, AddIn addin)
         {
             _vbe = vbe;
@@ -59,8 +57,6 @@ namespace Rubberduck.Root
 
         public override void Load()
         {
-            _logger.Debug("in RubberduckModule.Load()");
-
             // bind VBE and AddIn dependencies to host-provided instances.
             Bind<VBE>().ToConstant(_vbe);
             Bind<AddIn>().ToConstant(_addin);
@@ -149,7 +145,6 @@ namespace Rubberduck.Root
             ConfigureProjectExplorerContextMenu();
 
             BindWindowsHooks();
-            _logger.Debug("completed RubberduckModule.Load()");
         }
 
         private void BindWindowsHooks()
@@ -311,7 +306,7 @@ namespace Rubberduck.Root
                 .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? String.Empty))
                 .ToList();
 
-            // note: ICommand naming convention: [Foo]Command
+            // note: CommandBase naming convention: [Foo]Command
             var baseCommandTypes = new[] { typeof(CommandBase), typeof(RefactorCommandBase) };
             var commands = types.Where(type => type.IsClass && baseCommandTypes.Contains(type.BaseType) && type.Name.EndsWith("Command"));
             foreach (var command in commands)
@@ -323,17 +318,16 @@ namespace Rubberduck.Root
                     var item = types.SingleOrDefault(type => type.Name == commandName + "CommandMenuItem");
                     if (item != null)
                     {
-                        var binding = Bind<ICommand>().To(command);
+                        var binding = Bind<CommandBase>().To(command);
                         var whenCommandMenuItemCondition =
                             binding.WhenInjectedInto(item).BindingConfiguration.Condition;
                         var whenHooksCondition =
                             binding.WhenInjectedInto<RubberduckHooks>().BindingConfiguration.Condition;
 
                         binding.When(request => whenCommandMenuItemCondition(request) || whenHooksCondition(request))
-                               .InSingletonScope();
+                            .InSingletonScope();
 
-                        //Bind<ICommand>().To(command).WhenInjectedExactlyInto(item);
-                        //Bind<ICommand>().To(command);
+                        binding.Intercept().With<FatalExceptionInterceptor>();
                     }
                 }
                 catch (InvalidOperationException)
@@ -353,7 +347,7 @@ namespace Rubberduck.Root
 
             foreach (var command in commands)
             {
-                Bind<ICommand>().To(command).InSingletonScope();
+                Bind<CommandBase>().To(command).InSingletonScope();
             }
         }
 

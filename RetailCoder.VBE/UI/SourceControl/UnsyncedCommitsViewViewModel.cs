@@ -106,6 +106,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
+            catch
+            {
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                throw;
+            }
         }
 
         private void PullCommits()
@@ -121,6 +127,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
+            catch
+            {
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                throw;
+            }
         }
 
         private void PushCommits()
@@ -135,6 +147,12 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
+            }
+            catch
+            {
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                throw;
             }
         }
 
@@ -152,10 +170,16 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
+            catch
+            {
+                RaiseErrorEvent(RubberduckUI.SourceControl_UnknownErrorTitle,
+                    RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error);
+                throw;
+            }
         }
 
-        private readonly ICommand _fetchCommitsCommand;
-        public ICommand FetchCommitsCommand
+        private readonly CommandBase _fetchCommitsCommand;
+        public CommandBase FetchCommitsCommand
         {
             get
             {
@@ -163,8 +187,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _pullCommitsCommand;
-        public ICommand PullCommitsCommand
+        private readonly CommandBase _pullCommitsCommand;
+        public CommandBase PullCommitsCommand
         {
             get
             {
@@ -172,8 +196,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _pushCommitsCommand;
-        public ICommand PushCommitsCommand
+        private readonly CommandBase _pushCommitsCommand;
+        public CommandBase PushCommitsCommand
         {
             get
             {
@@ -181,8 +205,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _syncCommitsCommand;
-        public ICommand SyncCommitsCommand
+        private readonly CommandBase _syncCommitsCommand;
+        public CommandBase SyncCommitsCommand
         {
             get
             {
