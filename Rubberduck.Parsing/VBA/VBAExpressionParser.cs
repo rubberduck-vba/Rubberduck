@@ -9,7 +9,7 @@ namespace Rubberduck.Parsing.VBA
 {
     public sealed class VBAExpressionParser
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Parses the given VBA expression.
@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (Exception ex)
             {
-                _logger.Warn(ex, "SLL mode failed for {0}. Retrying using LL.", expression);
+                Logger.Warn(ex, "SLL mode failed for {0}. Retrying using LL.", expression);
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;

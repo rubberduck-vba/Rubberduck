@@ -7,7 +7,7 @@ namespace Rubberduck.Parsing.Symbols
     public sealed class ProjectReferencePass : ICompilationPass
     {
         private readonly DeclarationFinder _declarationFinder;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ProjectReferencePass(DeclarationFinder declarationFinder)
         {
@@ -16,7 +16,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Execute()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             var projects = _declarationFinder.FindProjects();
             var allReferences = projects.Where(p => !p.IsBuiltIn).SelectMany(p => ((ProjectDeclaration)p).ProjectReferences).ToList();
             var builtInProjects = projects.Where(p => p.IsBuiltIn).ToList();
@@ -29,7 +29,6 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
             stopwatch.Stop();
-            _logger.Trace("Built-in project references linked up in {0}ms.", stopwatch.ElapsedMilliseconds);
         }
     }
 }

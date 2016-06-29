@@ -15,7 +15,7 @@ namespace Rubberduck.UI
     public abstract class DockableToolwindowPresenter : IPresenter, IDisposable
     {
         private readonly AddIn _addin;
-        private readonly Logger _logger;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Window _window;
         protected readonly UserControl UserControl;
 
@@ -23,8 +23,7 @@ namespace Rubberduck.UI
         {
             _vbe = vbe;
             _addin = addin;
-            _logger = LogManager.GetCurrentClassLogger();
-            _logger.Trace(string.Format("Initializing Dockable Panel ({0})", GetType().Name));
+            Logger.Trace(string.Format("Initializing Dockable Panel ({0})", GetType().Name));
             UserControl = view as UserControl;
             _window = CreateToolWindow(view);
         }
@@ -38,22 +37,21 @@ namespace Rubberduck.UI
             Window toolWindow;
             try
             {
-                _logger.Trace("Loading \"{0}\" ClassId {1}", control.Caption, control.ClassId);
                 toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId,
                     control.Caption, control.ClassId, ref userControlObject);
             }
             catch (COMException exception)
             {
-                var logEvent = new LogEventInfo(LogLevel.Error, _logger.Name, "Error Creating Control");
+                var logEvent = new LogEventInfo(LogLevel.Error, Logger.Name, "Error Creating Control");
                 logEvent.Exception = exception;
                 logEvent.Properties.Add("EventID", 1);
 
-                _logger.Error(logEvent);
+                Logger.Error(logEvent);
                 return null; //throw;
             }
             catch (NullReferenceException exception)
             {
-                _logger.Error(exception);
+                Logger.Error(exception);
                 return null; //throw;
             }
 

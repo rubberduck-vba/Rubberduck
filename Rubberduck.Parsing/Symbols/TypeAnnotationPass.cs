@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
         private readonly VBAExpressionParser _expressionParser;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public TypeAnnotationPass(DeclarationFinder declarationFinder, VBAExpressionParser expressionParser)
         {
@@ -31,13 +31,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Execute()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             foreach (var declaration in _declarationFinder.FindDeclarationsWithNonBaseAsType())
             {
                 AnnotateType(declaration);
             }
             stopwatch.Stop();
-            _logger.Trace("Type annotations completed in {0}ms.", stopwatch.ElapsedMilliseconds);
         }
 
         private void AnnotateType(Declaration declaration)
@@ -53,7 +52,7 @@ namespace Rubberduck.Parsing.Symbols
                 var typeContext = declaration.AsTypeContext;
                 typeExpression = typeContext.type().complexType().GetText();
             }
-            else if (!string.IsNullOrWhiteSpace(declaration.AsTypeNameWithoutArrayDesignator) && !Declaration.BASE_TYPES.Contains(declaration.AsTypeNameWithoutArrayDesignator.ToUpperInvariant()))
+            else if (!string.IsNullOrWhiteSpace(declaration.AsTypeNameWithoutArrayDesignator) && !Declaration.BaseTypes.Contains(declaration.AsTypeNameWithoutArrayDesignator.ToUpperInvariant()))
             {
                 typeExpression = declaration.AsTypeNameWithoutArrayDesignator;
             }
@@ -64,7 +63,7 @@ namespace Rubberduck.Parsing.Symbols
             var module = Declaration.GetModuleParent(declaration);
             if (module == null)
             {
-                _logger.Warn("Type annotation failed for {0} because module parent is missing.", typeExpression);
+                Logger.Warn("Type annotation failed for {0} because module parent is missing.", typeExpression);
                 return;
             }
             var expressionContext = _expressionParser.Parse(typeExpression.Trim());
@@ -78,7 +77,7 @@ namespace Rubberduck.Parsing.Symbols
                 const string IGNORE_THIS = "DISPATCH";
                 if (typeExpression != IGNORE_THIS)
                 {
-                    _logger.Warn("Failed to resolve type {0}", typeExpression);
+                    Logger.Warn("Failed to resolve type {0}", typeExpression);
                 }
             }
         }

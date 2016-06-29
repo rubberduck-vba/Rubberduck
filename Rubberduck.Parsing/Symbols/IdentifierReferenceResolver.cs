@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
         private readonly AnnotationService _annotationService;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
         {
@@ -53,7 +53,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void SetCurrentScope(string memberName, DeclarationType type)
         {
-            _logger.Trace("Setting current scope: {0} ({1}) in thread {2}", memberName, type,
+            Logger.Trace("Setting current scope: {0} ({1}) in thread {2}", memberName, type,
                 Thread.CurrentThread.ManagedThreadId);
 
             _currentParent = _declarationFinder.MatchName(memberName).SingleOrDefault(item =>
@@ -63,7 +63,7 @@ namespace Rubberduck.Parsing.Symbols
                 item.QualifiedName.QualifiedModuleName == _qualifiedModuleName && item.DeclarationType == type) ??
                             _moduleDeclaration;
 
-            _logger.Trace("Current scope is now {0} in thread {1}",
+            Logger.Trace("Current scope is now {0} in thread {1}",
                 _currentScope == null ? "null" : _currentScope.IdentifierName, Thread.CurrentThread.ManagedThreadId);
         }
 
@@ -158,7 +158,7 @@ namespace Rubberduck.Parsing.Symbols
                 statementContext);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                _logger.Warn(
+                Logger.Warn(
                    string.Format(
                        "Default Context: Failed to resolve {0}. Binding as much as we can.",
                        expression.GetText()));
@@ -171,7 +171,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                _logger.Warn(
+                Logger.Warn(
                    string.Format(
                        "Type Context: Failed to resolve {0}. Binding as much as we can.",
                        expression.GetText()));
@@ -747,7 +747,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             if (DebugDeclarations.DebugPrint == null)
             {
-                _logger.Warn("Debug.Print (custom declaration) has not been loaded, skipping resolving Debug.Print call.");
+                Logger.Warn("Debug.Print (custom declaration) has not been loaded, skipping resolving Debug.Print call.");
                 return;
             }
             // Because Debug.Print has a special argument (an output list) instead

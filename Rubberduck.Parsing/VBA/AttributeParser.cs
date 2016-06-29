@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
-using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
@@ -16,7 +15,6 @@ namespace Rubberduck.Parsing.VBA
     {
         private readonly IModuleExporter _exporter;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public AttributeParser(IModuleExporter exporter, Func<IVBAPreprocessor> preprocessorFactory)
         {
