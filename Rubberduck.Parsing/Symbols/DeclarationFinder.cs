@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly IReadOnlyList<Declaration> _declarations;
         private readonly IDictionary<string, Declaration[]> _declarationsByName;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public DeclarationFinder(
             IReadOnlyList<Declaration> declarations,
@@ -31,15 +31,6 @@ namespace Rubberduck.Parsing.Symbols
             })
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
         }
-
-        private readonly HashSet<Accessibility> _projectScopePublicModifiers =
-            new HashSet<Accessibility>(new[]
-            {
-                Accessibility.Public,
-                Accessibility.Global,
-                Accessibility.Friend,
-                Accessibility.Implicit,
-            });
 
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
         {
@@ -64,7 +55,7 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration FindParameter(Declaration procedure, string parameterName)
         {
             var matches = MatchName(parameterName);
-            return matches.Where(m => procedure.Equals(m.ParentDeclaration) && m.DeclarationType == DeclarationType.Parameter).FirstOrDefault();
+            return matches.FirstOrDefault(m => procedure.Equals(m.ParentDeclaration) && m.DeclarationType == DeclarationType.Parameter);
         }
 
         public IEnumerable<IAnnotation> FindAnnotations(QualifiedModuleName module)
@@ -85,13 +76,13 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration FindEvent(Declaration module, string eventName)
         {
             var matches = MatchName(eventName);
-            return matches.Where(m => module.Equals(Declaration.GetModuleParent(m)) && m.DeclarationType == DeclarationType.Event).FirstOrDefault();
+            return matches.FirstOrDefault(m => module.Equals(Declaration.GetModuleParent(m)) && m.DeclarationType == DeclarationType.Event);
         }
 
         public Declaration FindLabel(Declaration procedure, string label)
         {
             var matches = MatchName(label);
-            return matches.Where(m => procedure.Equals(m.ParentDeclaration) && m.DeclarationType == DeclarationType.LineLabel).FirstOrDefault();
+            return matches.FirstOrDefault(m => procedure.Equals(m.ParentDeclaration) && m.DeclarationType == DeclarationType.LineLabel);
         }
 
         public IEnumerable<Declaration> MatchName(string name)
@@ -115,7 +106,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             catch (InvalidOperationException exception)
             {
-                _logger.Error(exception, "Multiple matches found for project '{0}'.", name);
+                Logger.Error(exception, "Multiple matches found for project '{0}'.", name);
             }
 
             return result;
@@ -133,7 +124,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             catch (InvalidOperationException exception)
             {
-                _logger.Error(exception, "Multiple matches found for std.module '{0}'.", name);
+                Logger.Error(exception, "Multiple matches found for std.module '{0}'.", name);
             }
 
             return result;
@@ -390,7 +381,6 @@ namespace Rubberduck.Parsing.Symbols
                     yield return match;
                 }
             }
-            yield break;
         }
     }
 }

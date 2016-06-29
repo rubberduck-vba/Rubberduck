@@ -9,7 +9,7 @@ namespace Rubberduck.Parsing.VBA
 {
     public sealed class VBALikePatternParser
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Parses the given like pattern.
@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (Exception ex)
             {
-                _logger.Warn(ex, "SLL mode failed for {0}. Retrying using LL.", likePattern);
+                Logger.Warn(ex, "SLL mode failed for {0}. Retrying using LL.", likePattern);
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
