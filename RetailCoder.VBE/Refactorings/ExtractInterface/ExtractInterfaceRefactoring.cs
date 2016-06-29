@@ -19,7 +19,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory<ExtractInterfacePresenter> _factory;
         private ExtractInterfaceModel _model;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ExtractInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<ExtractInterfacePresenter> factory)
         {
@@ -81,13 +81,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private int _insertionLine;
         private void _state_StateChanged(object sender, EventArgs e)
         {
-            _logger.Debug("ExtractInterfaceRefactoring handles StateChanged...");
             if (_state.Status != ParserState.Ready)
             {
                 return;
             }
-
-            _logger.Debug("Implementing extracted interface...");
+            
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
             _vbe.ActiveCodePane.CodeModule.SetSelection(qualifiedSelection);
 

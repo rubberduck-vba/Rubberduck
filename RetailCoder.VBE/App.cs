@@ -38,7 +38,7 @@ namespace Rubberduck
         private readonly BranchesViewViewModel _branchesVM;
         private readonly SourceControlViewViewModel _sourceControlPanelVM;
 
-        private readonly Logger _logger;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private VBProjectsEventsSink _sink;
         private Configuration _config;
@@ -67,7 +67,6 @@ namespace Rubberduck
             _appMenus = appMenus;
             _stateBar = stateBar;
             _hooks = hooks;
-            _logger = LogManager.GetCurrentClassLogger();
 
             var sourceControlPanel = (SourceControlPanel) sourceControlPresenter.Window();
             _sourceControlPanelVM = (SourceControlViewViewModel) sourceControlPanel.ViewModel;
@@ -221,7 +220,7 @@ namespace Rubberduck
 
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                _logger.Debug("Locked project '{0}' was removed.", e.Item.Name);
+                Logger.Debug("Locked project '{0}' was removed.", e.Item.Name);
                 return;
             }
 
@@ -235,7 +234,7 @@ namespace Rubberduck
             _parser.State.RemoveProject(e.Item);
             _parser.State.OnParseRequested(this);
 
-            _logger.Debug("Project '{0}' was removed.", e.Item.Name);
+            Logger.Debug("Project '{0}' was removed.", e.Item.Name);
             Tuple<IConnectionPoint, int> componentsTuple;
             if (_componentsEventsConnectionPoints.TryGetValue(projectId, out componentsTuple))
             {
@@ -261,10 +260,10 @@ namespace Rubberduck
         {
             if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
 
-            _logger.Debug("Project '{0}' was added.", e.Item.Name);
+            Logger.Debug("Project '{0}' was added.", e.Item.Name);
             if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                _logger.Debug("Project is protected and will not be added to parser state.");
+                Logger.Debug("Project is protected and will not be added to parser state.");
                 return;
             }
 
@@ -288,7 +287,7 @@ namespace Rubberduck
             if (_componentsEventsSinks.ContainsKey(projectId))
             {
                 // already registered - this is caused by the initial load+rename of a project in the VBE
-                _logger.Debug("Components sink already registered.");
+                Logger.Debug("Components sink already registered.");
                 return;
             }
 
@@ -311,7 +310,7 @@ namespace Rubberduck
             connectionPoint.Advise(componentsSink, out cookie);
 
             _componentsEventsConnectionPoints.Add(projectId, Tuple.Create(connectionPoint, cookie));
-            _logger.Debug("Components sink registered and advising.");
+            Logger.Debug("Components sink registered and advising.");
         }
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
@@ -322,9 +321,8 @@ namespace Rubberduck
             {
                 return;
             }
-
-            _logger.Debug("Component '{0}' was selected.", e.Item.Name);
-            // do something?
+            
+            // todo: keep Code Explorer in sync with Project Explorer
         }
 
         async void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
@@ -340,7 +338,7 @@ namespace Rubberduck
 
             _sourceControlPanelVM.HandleRenamedComponent(e.Item, e.OldName);
 
-            _logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
+            Logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
             
             var projectId = e.Item.Collection.Parent.HelpFile;
             var componentDeclaration = _parser.State.AllDeclarations.FirstOrDefault(f =>
@@ -359,7 +357,7 @@ namespace Rubberduck
                 _referencesEventsSinks.Remove(projectId);
                 _parser.State.RemoveProject(projectId);
 
-                _logger.Debug("Project '{0}' was removed.", e.Item.Name);
+                Logger.Debug("Project '{0}' was removed.", e.Item.Name);
                 Tuple<IConnectionPoint, int> componentsTuple;
                 if (_componentsEventsConnectionPoints.TryGetValue(projectId, out componentsTuple))
                 {
@@ -397,7 +395,7 @@ namespace Rubberduck
 
             _sourceControlPanelVM.HandleRemovedComponent(e.Item);
 
-            _logger.Debug("Component '{0}' was removed.", e.Item.Name);
+            Logger.Debug("Component '{0}' was removed.", e.Item.Name);
             _parser.State.ClearStateCache(e.Item, true);
         }
 
@@ -411,8 +409,7 @@ namespace Rubberduck
             }
 
             _parser.Cancel(e.Item);
-
-            _logger.Debug("Component '{0}' was reloaded.", e.Item.Name);
+            
             _parser.State.OnParseRequested(sender, e.Item);
         }
 
@@ -427,7 +424,7 @@ namespace Rubberduck
 
             _sourceControlPanelVM.HandleAddedComponent(e.Item);
 
-            _logger.Debug("Component '{0}' was added.", e.Item.Name);
+            Logger.Debug("Component '{0}' was added.", e.Item.Name);
             _parser.State.OnParseRequested(sender, e.Item);
         }
 
@@ -439,8 +436,7 @@ namespace Rubberduck
             {
                 return;
             }
-
-            _logger.Debug("Component '{0}' was activated.", e.Item.Name);
+            
             // do something?
         }
 
@@ -455,7 +451,7 @@ namespace Rubberduck
 
             _parser.Cancel();
 
-            _logger.Debug("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
+            Logger.Debug("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
 
             _parser.State.RemoveProject(e.Item.HelpFile);
             _parser.State.AddProject(e.Item);
@@ -471,9 +467,8 @@ namespace Rubberduck
             {
                 return;
             }
-
-            _logger.Debug("Project '{0}' was activated.", e.Item.Name);
-            // do something?
+            
+            // todo: keep Code Explorer in sync with Project Explorer
         }
         #endregion
 
@@ -485,13 +480,12 @@ namespace Rubberduck
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
-            _logger.Debug("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
+            Logger.Debug("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
         }
 
         private void LoadConfig()
         {
-            _logger.Debug("Loading configuration");
             _config = _configService.LoadConfiguration();
 
             _autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
@@ -504,7 +498,7 @@ namespace Rubberduck
             }
             catch (CultureNotFoundException exception)
             {
-                _logger.Error(exception, "Error Setting Culture for Rubberduck");
+                Logger.Error(exception, "Error Setting Culture for Rubberduck");
                 _messageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);

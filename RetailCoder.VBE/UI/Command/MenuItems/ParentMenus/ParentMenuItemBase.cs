@@ -17,7 +17,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         private readonly string _key;
         private readonly int? _beforeIndex;
         private readonly IDictionary<IMenuItem, CommandBarControl> _items;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         protected ParentMenuItemBase(string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
         {
@@ -78,8 +78,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 _items[item] = InitializeChildControl(item as ICommandMenuItem)
                             ?? InitializeChildControl(item as IParentMenuItem);
             }
-
-            _logger.Debug("'{0}' ({1}) parent menu initialized, hash code {2}.", _key, GetHashCode(), Item.GetHashCode());
         }
 
         public void RemoveChildren()
@@ -144,9 +142,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             var command = item.Command as CommandBase; // todo: add 'ShortcutText' to a new 'interface CommandBase : System.Windows.Input.CommandBase'
             child.ShortcutText = command != null
                 ? command.ShortcutText
-                : string.Empty; 
-
-            _logger.Debug("Menu item '{0}' created; hash code: {1} (command hash code {2})", child.Caption, child.GetHashCode(), item.Command.GetHashCode());
+                : string.Empty;
 
             child.Click += child_Click;
             return child;
@@ -167,7 +163,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             // hash code is different on every frakkin' click. go figure. I've had it, this is the fix.
             _lastHashCode = Ctrl.GetHashCode();
 
-            _logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), Ctrl.Caption, Ctrl.GetHashCode());
+            Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), Ctrl.Caption, Ctrl.GetHashCode());
             item.Command.Execute(null);
         }
 
@@ -189,7 +185,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             }
             catch (COMException exception)
             {
-                _logger.Debug("Button image could not be set for button [" + button.Caption + "]\n" + exception);
+                Logger.Debug("Button image could not be set for button [" + button.Caption + "]\n" + exception);
             }
         }
 
