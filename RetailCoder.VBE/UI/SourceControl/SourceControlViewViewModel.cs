@@ -7,7 +7,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Ninject;
@@ -68,10 +67,10 @@ namespace Rubberduck.UI.SourceControl
             _wrapperFactory = wrapperFactory;
             _messageBox = messageBox;
 
-            _initRepoCommand = new DelegateCommand(_ => InitRepo());
-            _openRepoCommand = new DelegateCommand(_ => OpenRepo());
-            _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid());
-            _publishRepoCommand = new DelegateCommand(_ => ShowPublishRepoGrid());
+            _initRepoCommand = new DelegateCommand(_ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
+            _openRepoCommand = new DelegateCommand(_ => OpenRepo(), _ => _vbe.VBProjects.Count != 0);
+            _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid(), _ => _vbe.VBProjects.Count != 0);
+            _publishRepoCommand = new DelegateCommand(_ => ShowPublishRepoGrid(), _ => _vbe.VBProjects.Count != 0 && Provider != null);
             _refreshCommand = new DelegateCommand(_ => Refresh());
             _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
             _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
