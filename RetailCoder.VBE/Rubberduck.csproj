@@ -392,7 +392,6 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
-    <Compile Include="Root\FatalExceptionInterceptor.cs" />
     <Compile Include="Root\EnumerableCounterInterceptor.cs" />
     <Compile Include="Root\InterceptedException.cs" />
     <Compile Include="Root\InterceptorBase.cs" />

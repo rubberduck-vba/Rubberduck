@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Windows.Input;
+using NLog;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.About
@@ -26,7 +26,7 @@ namespace Rubberduck.UI.About
                 {
                     return _uriCommand;
                 }
-                return _uriCommand = new DelegateCommand(uri =>
+                return _uriCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), uri =>
                 {
                     Process.Start(new ProcessStartInfo(((Uri)uri).AbsoluteUri));
                 });

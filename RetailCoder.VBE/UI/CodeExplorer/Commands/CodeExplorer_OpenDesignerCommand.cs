@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
@@ -7,7 +8,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class CodeExplorer_OpenDesignerCommand : CommandBase
     {
-        public override bool CanExecute(object parameter)
+        public CodeExplorer_OpenDesignerCommand() : base(LogManager.GetCurrentClassLogger()) { }
+
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (parameter == null)
             {
@@ -26,7 +29,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             ((ICodeExplorerDeclarationViewModel) parameter).Declaration
                 .QualifiedName.QualifiedModuleName.Component.DesignerWindow()

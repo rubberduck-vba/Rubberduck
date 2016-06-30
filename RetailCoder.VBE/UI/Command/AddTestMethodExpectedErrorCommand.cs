@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -18,14 +19,14 @@ namespace Rubberduck.UI.Command
         private readonly NewTestMethodCommand _command;
         private readonly RubberduckParserState _state;
 
-        public AddTestMethodExpectedErrorCommand(VBE vbe, RubberduckParserState state, NewTestMethodCommand command)
+        public AddTestMethodExpectedErrorCommand(VBE vbe, RubberduckParserState state, NewTestMethodCommand command) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _command = command;
             _state = state;
         }
 
-        public override bool CanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (_state.Status != ParserState.Ready) { return false; }
 
@@ -36,7 +37,7 @@ namespace Rubberduck.UI.Command
             return testModules.Any(a => a.QualifiedName.QualifiedModuleName.Component == _vbe.SelectedVBComponent);
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _command.NewExpectedErrorTestMethod();
         }
