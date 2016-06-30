@@ -7,7 +7,7 @@
         {
             get
             {
-                return RubberduckUI.ResourceManager.GetString("SettingsInstructions_" + View);
+                return RubberduckUI.ResourceManager.GetString("SettingsInstructions_" + View, UI.Settings.Settings.Culture);
             }
         }
         public ISettingsView Control { get; set; }

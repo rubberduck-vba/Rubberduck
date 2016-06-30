@@ -53,7 +53,7 @@ namespace Rubberduck.Settings
         {
             get
             {
-                return InspectionsUI.ResourceManager.GetString(Name + "Name");
+                return InspectionsUI.ResourceManager.GetString(Name + "Name", UI.Settings.Settings.Culture);
             }
         } // not serialized because culture-dependent
 
@@ -71,25 +71,25 @@ namespace Rubberduck.Settings
         {
             get
             {
-                return InspectionsUI.ResourceManager.GetString(Name + "Meta");
+                return InspectionsUI.ResourceManager.GetString(Name + "Meta", UI.Settings.Settings.Culture);
             }
         }
 
         [XmlIgnore]
         public string TypeLabel
         {
-            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType); }
+            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, UI.Settings.Settings.Culture); }
         }
 
         [XmlIgnore]
         public string SeverityLabel
         {
-            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, RubberduckUI.Culture); }
+            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, UI.Settings.Settings.Culture); }
             set
             {
                 foreach (var severity in Enum.GetValues(typeof (CodeInspectionSeverity)))
                 {
-                    if (value == RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, RubberduckUI.Culture))
+                    if (value == RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, UI.Settings.Settings.Culture))
                     {
                         Severity = (CodeInspectionSeverity)severity;
                         return;

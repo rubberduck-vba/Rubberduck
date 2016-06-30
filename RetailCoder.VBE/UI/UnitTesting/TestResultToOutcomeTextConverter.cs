@@ -12,7 +12,7 @@ namespace Rubberduck.UI.UnitTesting
             var result = value as TestResult;
             if (result != null)
             {
-                return RubberduckUI.ResourceManager.GetString("TestOutcome_" + result.Outcome);
+                return RubberduckUI.ResourceManager.GetString("TestOutcome_" + result.Outcome, UI.Settings.Settings.Culture);
             }
 
             throw new ArgumentException("value is not a TestResult object.", "value");

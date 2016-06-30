@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Settings.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var enumValue = (EndOfLineCommentStyle)value;
-            return RubberduckUI.ResourceManager.GetString("EndOfLineCommentStyle_" + enumValue);
+            return RubberduckUI.ResourceManager.GetString("EndOfLineCommentStyle_" + enumValue, UI.Settings.Settings.Culture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Settings.Converters
                 .OfType<EndOfLineCommentStyle>();
 
             foreach (var v in values.Where(v =>
-                RubberduckUI.ResourceManager.GetString("EndOfLineCommentStyle_" + v) == selectedString))
+                RubberduckUI.ResourceManager.GetString("EndOfLineCommentStyle_" + v, UI.Settings.Settings.Culture) == selectedString))
             {
                 return v;
             }

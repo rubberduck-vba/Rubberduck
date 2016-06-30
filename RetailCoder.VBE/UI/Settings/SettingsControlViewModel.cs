@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 
@@ -19,7 +18,7 @@ namespace Rubberduck.UI.Settings
             SettingsView inspectionSettings,
             SettingsView unitTestSettings,
             SettingsView indenterSettings,
-            SettingsViews activeView = Settings.SettingsViews.GeneralSettings)
+            SettingsViews activeView = UI.Settings.SettingsViews.GeneralSettings)
         {
             _configService = configService;
             _config = config;

@@ -29,7 +29,7 @@ namespace Rubberduck.UI.Settings
             var selectedSeverityName = ((ComboBox) e.EditingElement).SelectedItem.ToString();
 
             var severities = Enum.GetValues(typeof(CodeInspectionSeverity)).Cast<CodeInspectionSeverity>();
-            var selectedSeverity = severities.Single(s => RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + s) == selectedSeverityName);
+            var selectedSeverity = severities.Single(s => RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, UI.Settings.Settings.Culture) == selectedSeverityName);
 
             ((InspectionSettingsViewModel) ViewModel).UpdateCollection(selectedSeverity);
         }

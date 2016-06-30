@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections
         private readonly RubberduckParserState _state;
 
         public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state)
-            : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, RubberduckUI.Culture)))
+            : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, UI.Settings.Settings.Culture)))
         {
             _target = target;
             _state = state;

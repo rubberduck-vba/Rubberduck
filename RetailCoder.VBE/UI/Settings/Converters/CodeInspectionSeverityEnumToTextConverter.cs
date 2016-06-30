@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Settings.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var severities = (IEnumerable<CodeInspectionSeverity>)value;
-            return severities.Select(s => RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + s)).ToArray();
+            return severities.Select(s => RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, UI.Settings.Settings.Culture)).ToArray();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

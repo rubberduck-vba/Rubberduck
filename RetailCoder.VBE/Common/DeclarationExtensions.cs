@@ -22,7 +22,7 @@ namespace Rubberduck.Common
 
         public static string ToLocalizedString(this DeclarationType type)
         {
-            return RubberduckUI.ResourceManager.GetString("DeclarationType_" + type);
+            return RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, UI.Settings.Settings.Culture);
         }
 
         public static BitmapImage BitmapImage(this Declaration declaration)

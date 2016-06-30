@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Inspections
                 return null;
             }
 
-            return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + inspection.InspectionType);
+            return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + inspection.InspectionType, UI.Settings.Settings.Culture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Inspections
                 return null;
             }
 
-            return InspectionsUI.ResourceManager.GetString(inspection.Name + "Name");
+            return InspectionsUI.ResourceManager.GetString(inspection.Name + "Name", UI.Settings.Settings.Culture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

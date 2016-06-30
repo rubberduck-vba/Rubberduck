@@ -730,6 +730,7 @@
     <Compile Include="UI\Settings\InspectionSettingsViewModel.cs" />
     <Compile Include="UI\Settings\ISettingsView.cs" />
     <Compile Include="UI\Settings\ISettingsViewModel.cs" />
+    <Compile Include="UI\Settings\Settings.cs" />
     <Compile Include="UI\Settings\SettingsControl.xaml.cs">
       <DependentUpon>SettingsControl.xaml</DependentUpon>
     </Compile>

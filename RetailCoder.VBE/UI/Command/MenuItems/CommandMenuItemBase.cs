@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Command.MenuItems
             {
                 return () => Key.IsNullOrEmpty() 
                     ? string.Empty 
-                    : RubberduckUI.ResourceManager.GetString(Key, RubberduckUI.Culture);
+                    : RubberduckUI.ResourceManager.GetString(Key, UI.Settings.Settings.Culture);
             }
         }
 
