@@ -83,7 +83,8 @@ namespace Rubberduck.Root
             ApplyAbstractFactoryConvention(assemblies);
 
             BindCommandsToMenuItems();
-            
+
+            Rebind<Rubberduck.Parsing.ISinks>().To<Sinks>().InSingletonScope();
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => Kernel.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);

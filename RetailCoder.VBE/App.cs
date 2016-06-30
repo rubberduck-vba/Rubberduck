@@ -58,22 +58,6 @@ namespace Rubberduck
             UiDispatcher.Initialize();
         }
 
-        /*private void EnableSinkEventHandlersAndUpdateCache(object sender, EventArgs e)
-        {
-            _handleSinkEvents = true;
-
-            // update cache
-            _parser.State.RemoveProject(_vbe.ActiveVBProject.HelpFile);
-            _parser.State.AddProject(_vbe.ActiveVBProject);
-
-            _parser.State.OnParseRequested(this);
-        }
-
-        private void DisableSinkEventHandlers(object sender, EventArgs e)
-        {
-            _handleSinkEvents = false;
-        }*/
-
         private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
         {
             var message = e.Message;
@@ -189,25 +173,8 @@ namespace Rubberduck
             var projectId = e.Item.HelpFile;
             Debug.Assert(projectId != null);
 
-            _componentsEventsSinks.Remove(projectId);
-            _referencesEventsSinks.Remove(projectId);
             _parser.State.RemoveProject(e.Item);
             _parser.State.OnParseRequested(this);
-
-            Logger.Debug("Project '{0}' was removed.", e.Item.Name);
-            Tuple<IConnectionPoint, int> componentsTuple;
-            if (_componentsEventsConnectionPoints.TryGetValue(projectId, out componentsTuple))
-            {
-                componentsTuple.Item1.Unadvise(componentsTuple.Item2);
-                _componentsEventsConnectionPoints.Remove(projectId);
-            }
-
-            Tuple<IConnectionPoint, int> referencesTuple;
-            if (_referencesEventsConnectionPoints.TryGetValue(projectId, out referencesTuple))
-            {
-                referencesTuple.Item1.Unadvise(referencesTuple.Item2);
-                _referencesEventsConnectionPoints.Remove(projectId);
-            }
         }
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
@@ -274,24 +241,7 @@ namespace Rubberduck
                 // with two Document-component types just skip the Worksheet component
                 ((ClassModuleDeclaration) componentDeclaration).Supertypes.All(a => a.IdentifierName != "Worksheet"))
             {
-                _componentsEventsSinks.Remove(projectId);
-                _referencesEventsSinks.Remove(projectId);
                 _parser.State.RemoveProject(projectId);
-
-                Logger.Debug("Project '{0}' was removed.", e.Item.Name);
-                Tuple<IConnectionPoint, int> componentsTuple;
-                if (_componentsEventsConnectionPoints.TryGetValue(projectId, out componentsTuple))
-                {
-                    componentsTuple.Item1.Unadvise(componentsTuple.Item2);
-                    _componentsEventsConnectionPoints.Remove(projectId);
-                }
-
-                Tuple<IConnectionPoint, int> referencesTuple;
-                if (_referencesEventsConnectionPoints.TryGetValue(projectId, out referencesTuple))
-                {
-                    referencesTuple.Item1.Unadvise(referencesTuple.Item2);
-                    _referencesEventsConnectionPoints.Remove(projectId);
-                }
 
                 _parser.State.AddProject(e.Item.Collection.Parent);
             }
@@ -349,18 +299,6 @@ namespace Rubberduck
             _parser.State.OnParseRequested(sender, e.Item);
         }
 
-        async void sink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
-        {
-            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
-
-            if (!_parser.State.AllDeclarations.Any())
-            {
-                return;
-            }
-            
-            // do something?
-        }
-
         async void sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
         {
             if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
@@ -378,18 +316,6 @@ namespace Rubberduck
             _parser.State.AddProject(e.Item);
 
             _parser.State.OnParseRequested(sender);
-        }
-
-        async void sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
-        {
-            if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
-
-            if (!_parser.State.AllDeclarations.Any())
-            {
-                return;
-            }
-            
-            // todo: keep Code Explorer in sync with Project Explorer
         }
         #endregion*/
 

@@ -11,6 +11,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
+using Rubberduck.VBEditor.Extensions;
+
 // ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
@@ -54,6 +56,7 @@ namespace Rubberduck.Parsing.VBA
 
     public sealed class RubberduckParserState : IDisposable
     {
+        private readonly VBE _vbe;
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
         private readonly IDictionary<string, VBProject> _projects = new Dictionary<string, VBProject>();
 
@@ -69,13 +72,111 @@ namespace Rubberduck.Parsing.VBA
 
         public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
-        static RubberduckParserState()
+        public RubberduckParserState(VBE vbe, ISinks sinks)
         {
+            _vbe = vbe;
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
             {
                 States.Add((ParserState)value);
             }
+            
+            sinks.ProjectAdded += Sinks_ProjectAdded;
+            sinks.ProjectRemoved += Sinks_ProjectRemoved;
+            sinks.ProjectRenamed += Sinks_ProjectRenamed;
+            
+            sinks.ComponentAdded += Sinks_ComponentAdded;
+            sinks.ComponentRemoved += Sinks_ComponentRemoved;
+            sinks.ComponentRenamed += Sinks_ComponentRenamed;
+        }
+
+        private void Sinks_ProjectAdded(object sender, IDispatcherEventArgs<VBProject> e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            Logger.Debug("Project '{0}' was added.", e.Item.Name);
+            if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
+            {
+                Logger.Debug("Project is protected and will not be added to parser state.");
+                return;
+            }
+
+            AddProject(e.Item); // note side-effect: assigns ProjectId/HelpFile
+            OnParseRequested(sender);
+        }
+
+        private void Sinks_ProjectRemoved(object sender, IDispatcherEventArgs<VBProject> e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
+            {
+                return;
+            }
+            
+            var projectId = e.Item.HelpFile;
+            Debug.Assert(projectId != null);
+
+            RemoveProject(e.Item);
+            OnParseRequested(sender);
+        }
+
+        private void Sinks_ProjectRenamed(object sender, IDispatcherRenamedEventArgs<VBProject> e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            if (AllDeclarations.Count == 0)
+            {
+                return;
+            }
+
+            Logger.Debug("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
+
+            RemoveProject(e.Item.HelpFile);
+            AddProject(e.Item);
+
+            OnParseRequested(sender);
+        }
+
+        private void Sinks_ComponentAdded(object sender, IDispatcherEventArgs<VBComponent> e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            if (AllDeclarations.Count == 0)
+            {
+                return;
+            }
+
+            Logger.Debug("Component '{0}' was added.", e.Item.Name);
+            OnParseRequested(sender, e.Item);
+        }
+
+        private void Sinks_ComponentRemoved(object sender, IDispatcherEventArgs<VBComponent> e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            if (AllDeclarations.Count == 0)
+            {
+                return;
+            }
+
+            Logger.Debug("Component '{0}' was removed.", e.Item.Name);
+            ClearStateCache(e.Item, true);
+        }
+
+        private void Sinks_ComponentRenamed(object sender, IDispatcherRenamedEventArgs<VBComponent> e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            if (AllDeclarations.Count == 0)
+            {
+                return;
+            }
+
+            Logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
+            
+            RemoveRenamedComponent(e.Item, e.OldName);
+            OnParseRequested(sender);
         }
 
         public void OnStatusMessageUpdate(string message)

@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using NLog;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -31,6 +32,7 @@ namespace Rubberduck.UI.SourceControl
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly ISinks _sinks;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly ISourceControlConfigProvider _configService;
@@ -45,6 +47,7 @@ namespace Rubberduck.UI.SourceControl
         public SourceControlViewViewModel(
             VBE vbe,
             RubberduckParserState state,
+            ISinks sinks,
             ISourceControlProviderFactory providerFactory,
             IFolderBrowserFactory folderBrowserFactory,
             ISourceControlConfigProvider configService,
@@ -57,6 +60,7 @@ namespace Rubberduck.UI.SourceControl
         {
             _vbe = vbe;
             _state = state;
+            _sinks = sinks;
             _providerFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
 
@@ -85,6 +89,10 @@ namespace Rubberduck.UI.SourceControl
 
             _openCommandPromptCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenCommandPrompt());
 
+            _sinks.ComponentAdded += ComponentAdded;
+            _sinks.ComponentRemoved += ComponentRemoved;
+            _sinks.ComponentRenamed += ComponentRenamed;
+
             TabItems = new ObservableCollection<IControlView>
             {
                 changesView,
@@ -107,51 +115,51 @@ namespace Rubberduck.UI.SourceControl
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
-        public void HandleAddedComponent(VBComponent component)
+        private void ComponentAdded(object sender, IDispatcherEventArgs<VBComponent> e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
-            if (component.Collection.Parent.HelpFile != Provider.CurrentRepository.Id)
+            if (e.Item.Collection.Parent.HelpFile != Provider.CurrentRepository.Id)
             {
                 return;
             }
 
-            Logger.Trace("Component {0} added", component.Name);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
+            Logger.Trace("Component {0} added", e.Item.Name);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Item.Name);
             if (fileStatus != null)
             {
                 Provider.AddFile(fileStatus.FilePath);
             }
         }
 
-        public void HandleRemovedComponent(VBComponent component)
+        private void ComponentRemoved(object sender, IDispatcherEventArgs<VBComponent> e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
-            if (component.Collection.Parent.HelpFile != Provider.CurrentRepository.Id)
+            if (e.Item.Collection.Parent.HelpFile != Provider.CurrentRepository.Id)
             {
                 return;
             }
 
-            Logger.Trace("Component {0] removed", component.Name);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == component.Name);
+            Logger.Trace("Component {0] removed", e.Item.Name);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Item.Name);
             if (fileStatus != null)
             {
                 Provider.RemoveFile(fileStatus.FilePath, true);
             }
         }
 
-        public void HandleRenamedComponent(VBComponent component, string oldName)
+        private void ComponentRenamed(object sender, IDispatcherRenamedEventArgs<VBComponent> e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
-            if (component.Collection.Parent.HelpFile != Provider.CurrentRepository.Id)
+            if (e.Item.Collection.Parent.HelpFile != Provider.CurrentRepository.Id)
             {
                 return;
             }
 
-            Logger.Trace("Component {0} renamed to {1}", oldName, component.Name);
-            var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == oldName);
+            Logger.Trace("Component {0} renamed to {1}", e.OldName, e.Item.Name);
+            var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.OldName);
             if (fileStatus != null)
             {
                 var directory = Provider.CurrentRepository.LocalLocation;
@@ -160,11 +168,11 @@ namespace Rubberduck.UI.SourceControl
                 var fileExt = "." + fileStatus.FilePath.Split('.').Last();
 
                 _fileSystemWatcher.EnableRaisingEvents = false;
-                File.Move(directory + fileStatus.FilePath, directory + component.Name + fileExt);
+                File.Move(directory + fileStatus.FilePath, directory + e.Item.Name + fileExt);
                 _fileSystemWatcher.EnableRaisingEvents = true;
 
-                Provider.RemoveFile(oldName + fileExt, false);
-                Provider.AddFile(component.Name + fileExt);
+                Provider.RemoveFile(e.OldName + fileExt, false);
+                Provider.AddFile(e.Item.Name + fileExt);
             }
         }
 
@@ -672,14 +680,14 @@ namespace Rubberduck.UI.SourceControl
                 var project = _vbe.ActiveVBProject;
                 var repo = new Repository(project.HelpFile, folderPicker.SelectedPath, string.Empty);
 
-                OnOpenRepoStarted();
+                _sinks.IsEnabled = false;
                 try
                 {
                     Provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
                 }
                 catch (SourceControlException ex)
                 {
-                    OnOpenRepoCompleted();
+                    _sinks.IsEnabled = true;
                     ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                     return;
                 }
@@ -691,7 +699,7 @@ namespace Rubberduck.UI.SourceControl
                     throw;
                 }
 
-                OnOpenRepoCompleted();
+                _sinks.IsEnabled = true;
 
                 AddOrUpdateLocalPathConfig(repo);
 
@@ -703,7 +711,7 @@ namespace Rubberduck.UI.SourceControl
         private void CloneRepo(SecureCredentials credentials = null)
         {
             _isCloning = true;
-            OnOpenRepoStarted();
+            _sinks.IsEnabled = false;
 
             Logger.Trace("Cloning repo");
             try
@@ -739,7 +747,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             _isCloning = false;
-            OnOpenRepoCompleted();
+            _sinks.IsEnabled = true;
             CloseCloneRepoGrid();
             
             Status = RubberduckUI.Online;
@@ -827,7 +835,7 @@ namespace Rubberduck.UI.SourceControl
             Logger.Trace("Opening repo assigned to project");
             try
             {
-                OnOpenRepoStarted();
+                _sinks.IsEnabled = false;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
                     _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile), _wrapperFactory);
                 Status = RubberduckUI.Online;
@@ -848,7 +856,7 @@ namespace Rubberduck.UI.SourceControl
                 throw;
             }
 
-            OnOpenRepoCompleted();
+            _sinks.IsEnabled = true;
         }
 
         private void Refresh()
@@ -1022,26 +1030,6 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        public event EventHandler<EventArgs> OpenRepoStarted;
-        private void OnOpenRepoStarted()
-        {
-            var handler = OpenRepoStarted;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
-
-        public event EventHandler<EventArgs> OpenRepoCompleted;
-        private void OnOpenRepoCompleted()
-        {
-            var handler = OpenRepoCompleted;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
-
         public void Dispose()
         {
             if (_state != null)
@@ -1056,6 +1044,13 @@ namespace Rubberduck.UI.SourceControl
                 _fileSystemWatcher.Renamed -= _fileSystemWatcher_Renamed;
                 _fileSystemWatcher.Changed -= _fileSystemWatcher_Changed;
                 _fileSystemWatcher.Dispose();
+            }
+
+            if (_sinks != null)
+            {
+                _sinks.ComponentAdded -= ComponentAdded;
+                _sinks.ComponentRemoved -= ComponentRemoved;
+                _sinks.ComponentRenamed -= ComponentRenamed;
             }
         }
     }

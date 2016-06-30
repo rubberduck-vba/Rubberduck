@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Vbe.Interop;
-using NLog;
 using Rubberduck.Common.Dispatch;
+using Rubberduck.Parsing;
 
 namespace Rubberduck
 {
-    public class Sinks : IDisposable
+    public class Sinks : ISinks, IDisposable
     {
         private VBProjectsEventsSink _sink;
         private readonly IConnectionPoint _projectsEventsConnectionPoint;
@@ -23,10 +23,12 @@ namespace Rubberduck
         private readonly IDictionary<string, Tuple<IConnectionPoint, int>> _referencesEventsConnectionPoints =
             new Dictionary<string, Tuple<IConnectionPoint, int>>();
 
-        public bool IsEnabled { get; private set; }
+        public bool IsEnabled { get; set; }
 
         public Sinks(VBE vbe)
         {
+            IsEnabled = true;
+
             _sink = new VBProjectsEventsSink();
             var connectionPointContainer = (IConnectionPointContainer)vbe.VBProjects;
             var interfaceId = typeof(_dispVBProjectsEvents).GUID;
@@ -41,10 +43,10 @@ namespace Rubberduck
 
         #region ProjectEvents
 
-        public event EventHandler<DispatcherEventArgs<VBProject>> ProjectActivated;
-        public event EventHandler<DispatcherEventArgs<VBProject>> ProjectAdded;
-        public event EventHandler<DispatcherEventArgs<VBProject>> ProjectRemoved;
-        public event EventHandler<DispatcherRenamedEventArgs<VBProject>> ProjectRenamed;
+        public event EventHandler<IDispatcherEventArgs<VBProject>> ProjectActivated;
+        public event EventHandler<IDispatcherEventArgs<VBProject>> ProjectAdded;
+        public event EventHandler<IDispatcherEventArgs<VBProject>> ProjectRemoved;
+        public event EventHandler<IDispatcherRenamedEventArgs<VBProject>> ProjectRenamed;
 
         private void _sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
         {
@@ -68,7 +70,7 @@ namespace Rubberduck
             }
 
             RegisterComponentsEventSink(e.Item.VBComponents, e.Item.HelpFile);
-            RegisterReferencesEventSink(e.Item.References, e.Item.HelpFile);
+            //RegisterReferencesEventSink(e.Item.References, e.Item.HelpFile);
         }
 
         private void _sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
@@ -82,7 +84,7 @@ namespace Rubberduck
             }
 
             UnregisterComponentsEventSink(e.Item.HelpFile);
-            UnregisterReferencesEventSink(e.Item.HelpFile);
+            //UnregisterReferencesEventSink(e.Item.HelpFile);
         }
 
         private void _sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
@@ -146,12 +148,12 @@ namespace Rubberduck
             _componentsEventsConnectionPoints.Remove(projectId);
         }
 
-        public event EventHandler<DispatcherEventArgs<VBComponent>> ComponentActivated;
-        public event EventHandler<DispatcherEventArgs<VBComponent>> ComponentAdded;
-        public event EventHandler<DispatcherEventArgs<VBComponent>> ComponentReloaded;
-        public event EventHandler<DispatcherEventArgs<VBComponent>> ComponentRemoved;
-        public event EventHandler<DispatcherRenamedEventArgs<VBComponent>> ComponentRenamed;
-        public event EventHandler<DispatcherEventArgs<VBComponent>> ComponentSelected;
+        public event EventHandler<IDispatcherEventArgs<VBComponent>> ComponentActivated;
+        public event EventHandler<IDispatcherEventArgs<VBComponent>> ComponentAdded;
+        public event EventHandler<IDispatcherEventArgs<VBComponent>> ComponentReloaded;
+        public event EventHandler<IDispatcherEventArgs<VBComponent>> ComponentRemoved;
+        public event EventHandler<IDispatcherRenamedEventArgs<VBComponent>> ComponentRenamed;
+        public event EventHandler<IDispatcherEventArgs<VBComponent>> ComponentSelected;
 
         private void ComponentsSink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
         {
@@ -220,71 +222,72 @@ namespace Rubberduck
         }
         #endregion
 
-        #region ReferenceEvents
-        private void RegisterReferencesEventSink(References references, string projectId)
-        {
-            if (_referencesEventsSinks.ContainsKey(projectId))
-            {
-                // already registered - this is caused by the initial load+rename of a project in the VBE
-                return;
-            }
+        // todo figure out why that cast fails
+        //#region ReferenceEvents
+        //private void RegisterReferencesEventSink(References references, string projectId)
+        //{
+        //    if (_referencesEventsSinks.ContainsKey(projectId))
+        //    {
+        //        // already registered - this is caused by the initial load+rename of a project in the VBE
+        //        return;
+        //    }
 
-            var connectionPointContainer = (IConnectionPointContainer)references;
-            var interfaceId = typeof(_dispReferencesEvents).GUID;
+        //    var connectionPointContainer = (IConnectionPointContainer)references;
+        //    var interfaceId = typeof(_dispReferencesEvents).GUID;
 
-            IConnectionPoint connectionPoint;
-            connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
+        //    IConnectionPoint connectionPoint;
+        //    connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
 
-            var referencesSink = new ReferencesEventsSink();
-            referencesSink.ReferenceAdded += ReferencesSink_ReferenceAdded;
-            referencesSink.ReferenceRemoved += ReferencesSink_ReferenceRemoved;
-            _referencesEventsSinks.Add(projectId, referencesSink);
+        //    var referencesSink = new ReferencesEventsSink();
+        //    referencesSink.ReferenceAdded += ReferencesSink_ReferenceAdded;
+        //    referencesSink.ReferenceRemoved += ReferencesSink_ReferenceRemoved;
+        //    _referencesEventsSinks.Add(projectId, referencesSink);
 
-            int cookie;
-            connectionPoint.Advise(referencesSink, out cookie);
+        //    int cookie;
+        //    connectionPoint.Advise(referencesSink, out cookie);
 
-            _referencesEventsConnectionPoints.Add(projectId, Tuple.Create(connectionPoint, cookie));
-        }
+        //    _referencesEventsConnectionPoints.Add(projectId, Tuple.Create(connectionPoint, cookie));
+        //}
 
-        private void UnregisterReferencesEventSink(string projectId)
-        {
-            var referencesEventSink = _referencesEventsSinks[projectId];
+        //private void UnregisterReferencesEventSink(string projectId)
+        //{
+        //    var referencesEventSink = _referencesEventsSinks[projectId];
 
-            referencesEventSink.ReferenceAdded -= ReferencesSink_ReferenceAdded;
-            referencesEventSink.ReferenceRemoved -= ReferencesSink_ReferenceRemoved;
-            _referencesEventsSinks.Remove(projectId);
+        //    referencesEventSink.ReferenceAdded -= ReferencesSink_ReferenceAdded;
+        //    referencesEventSink.ReferenceRemoved -= ReferencesSink_ReferenceRemoved;
+        //    _referencesEventsSinks.Remove(projectId);
 
-            var referenceConnectionPoint = _referencesEventsConnectionPoints[projectId];
-            referenceConnectionPoint.Item1.Unadvise(referenceConnectionPoint.Item2);
+        //    var referenceConnectionPoint = _referencesEventsConnectionPoints[projectId];
+        //    referenceConnectionPoint.Item1.Unadvise(referenceConnectionPoint.Item2);
 
-            _referencesEventsConnectionPoints.Remove(projectId);
-        }
+        //    _referencesEventsConnectionPoints.Remove(projectId);
+        //}
 
-        public event EventHandler<DispatcherEventArgs<Reference>> ReferenceAdded;
-        public event EventHandler<DispatcherEventArgs<Reference>> ReferenceRemoved;
+        //public event EventHandler<IDispatcherEventArgs<Reference>> ReferenceAdded;
+        //public event EventHandler<IDispatcherEventArgs<Reference>> ReferenceRemoved;
 
-        private void ReferencesSink_ReferenceAdded(object sender, DispatcherEventArgs<Reference> e)
-        {
-            if (!IsEnabled) { return; }
+        //private void ReferencesSink_ReferenceAdded(object sender, DispatcherEventArgs<Reference> e)
+        //{
+        //    if (!IsEnabled) { return; }
 
-            var handler = ReferenceAdded;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
-        }
+        //    var handler = ReferenceAdded;
+        //    if (handler != null)
+        //    {
+        //        handler(sender, e);
+        //    }
+        //}
 
-        private void ReferencesSink_ReferenceRemoved(object sender, DispatcherEventArgs<Reference> e)
-        {
-            if (!IsEnabled) { return; }
+        //private void ReferencesSink_ReferenceRemoved(object sender, DispatcherEventArgs<Reference> e)
+        //{
+        //    if (!IsEnabled) { return; }
 
-            var handler = ReferenceRemoved;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
-        }
-        #endregion
+        //    var handler = ReferenceRemoved;
+        //    if (handler != null)
+        //    {
+        //        handler(sender, e);
+        //    }
+        //}
+        //#endregion
 
         public void Dispose()
         {
@@ -312,11 +315,11 @@ namespace Rubberduck
                 item.Value.ComponentSelected -= ComponentsSink_ComponentSelected;
             }
 
-            foreach (var item in _referencesEventsSinks)
+            /*foreach (var item in _referencesEventsSinks)
             {
                 item.Value.ReferenceAdded -= ReferencesSink_ReferenceAdded;
                 item.Value.ReferenceRemoved -= ReferencesSink_ReferenceRemoved;
-            }
+            }*/
 
             foreach (var item in _componentsEventsConnectionPoints)
             {

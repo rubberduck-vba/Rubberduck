@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -17,7 +19,7 @@ namespace RubberduckTests.Grammar
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleModule(code, moduleType, out component, new Rubberduck.VBEditor.Selection());
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
             parser.Parse();
             if (parser.State.Status == ParserState.ResolverError)
@@ -45,7 +47,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
             parser.Parse();
             if (parser.State.Status == ParserState.ResolverError)
@@ -73,7 +75,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
             parser.Parse();
             if (parser.State.Status == ParserState.ResolverError)
@@ -2062,7 +2064,7 @@ End Sub
             builder.AddProject(project.Build());
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
             parser.Parse();
             if (parser.State.Status == ParserState.ResolverError)
