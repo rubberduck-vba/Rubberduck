@@ -12,7 +12,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    class RefactorReorderParametersCommand : RefactorCommandBase
+    public class RefactorReorderParametersCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Command.Refactorings
             DeclarationType.PropertySet
         };
 
-        public override bool CanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
@@ -56,7 +56,7 @@ namespace Rubberduck.UI.Command.Refactorings
             return canExecute;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null)
             {

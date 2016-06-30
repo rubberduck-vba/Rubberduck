@@ -1,4 +1,5 @@
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -7,12 +8,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly VBE _vbe;
 
-        public CodeExplorer_OpenProjectPropertiesCommand(VBE vbe)
+        public CodeExplorer_OpenProjectPropertiesCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             const int openProjectPropertiesId = 2578;
 

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
@@ -30,7 +31,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
-            _refreshCommand = new DelegateCommand(param => _state.OnParseRequested(this),
+            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => _state.OnParseRequested(this),
                 param => !IsBusy && _state.IsDirty());
 
             _refreshComponentCommand = commands.OfType<CodeExplorer_RefreshComponentCommand>().FirstOrDefault();
@@ -54,7 +55,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _externalRemoveCommand = commands.OfType<CodeExplorer_RemoveCommand>().FirstOrDefault();
             if (_externalRemoveCommand != null)
             {
-                _removeCommand = new DelegateCommand(ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
+                _removeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
             }
 
             _printCommand = commands.OfType<CodeExplorer_PrintCommand>().FirstOrDefault();
@@ -64,13 +65,13 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _copyResultsCommand = commands.OfType<CodeExplorer_CopyResultsCommand>().FirstOrDefault();
 
-            _setNameSortCommand = new DelegateCommand(param =>
+            _setNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 SortByName = (bool)param;
                 SortBySelection = !(bool)param;
             });
 
-            _setSelectionSortCommand = new DelegateCommand(param =>
+            _setSelectionSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 SortBySelection = (bool)param;
                 SortByName = !(bool)param;

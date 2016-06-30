@@ -36,12 +36,12 @@ namespace Rubberduck.UI.SourceControl
             DefaultRepositoryLocation = _config.DefaultRepositoryLocation;
             CommandPromptLocation = _config.CommandPromptLocation;
 
-            _showDefaultRepoFolderPickerCommand = new DelegateCommand(_ => ShowDefaultRepoFolderPicker());
-            _showCommandPromptExePickerCommand = new DelegateCommand(_ => ShowCommandPromptExePicker());
-            _cancelSettingsChangesCommand = new DelegateCommand(_ => CancelSettingsChanges());
-            _updateSettingsCommand = new DelegateCommand(_ => UpdateSettings());
-            _showGitIgnoreCommand = new DelegateCommand(_ => ShowGitIgnore(), _ => Provider != null);
-            _showGitAttributesCommand = new DelegateCommand(_ => ShowGitAttributes(), _ => Provider != null);
+            _showDefaultRepoFolderPickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowDefaultRepoFolderPicker());
+            _showCommandPromptExePickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCommandPromptExePicker());
+            _cancelSettingsChangesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CancelSettingsChanges());
+            _updateSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UpdateSettings());
+            _showGitIgnoreCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowGitIgnore(), _ => Provider != null);
+            _showGitAttributesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowGitAttributes(), _ => Provider != null);
         }
 
         public ISourceControlProvider Provider { get; set; }
