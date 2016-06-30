@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Settings.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var modes = (IEnumerable<DelimiterOptions>)value;
-            return modes.Select(s => RubberduckUI.ResourceManager.GetString("GeneralSettings_" + s + "Delimiter")).ToArray();
+            return modes.Select(s => RubberduckUI.ResourceManager.GetString("GeneralSettings_" + s + "Delimiter", UI.Settings.Settings.Culture)).ToArray();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

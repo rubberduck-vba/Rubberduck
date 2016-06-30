@@ -37,6 +37,7 @@ namespace Rubberduck
         private bool _handleSinkEvents = true;
         private readonly BranchesViewViewModel _branchesVM;
         private readonly SourceControlViewViewModel _sourceControlPanelVM;
+        private readonly UI.Settings.Settings _settings;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -52,6 +53,7 @@ namespace Rubberduck
             new Dictionary<string, Tuple<IConnectionPoint, int>>();
 
         public App(VBE vbe, IMessageBox messageBox,
+            UI.Settings.Settings settings,
             IRubberduckParser parser,
             IGeneralConfigService configService,
             IAppMenu appMenus,
@@ -61,6 +63,7 @@ namespace Rubberduck
         {
             _vbe = vbe;
             _messageBox = messageBox;
+            _settings = settings;
             _parser = parser;
             _configService = configService;
             _autoSave = new AutoSave.AutoSave(_vbe, _configService);
@@ -541,6 +544,11 @@ namespace Rubberduck
                 _hooks.MessageReceived -= _hooks_MessageReceived;
                 _hooks.Dispose();
                 _hooks = null;
+            }
+
+            if (_settings != null)
+            {
+                _settings.Dispose();
             }
 
             if (_configService != null)

@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Settings
             SettingsView inspectionSettings,
             SettingsView unitTestSettings,
             SettingsView indenterSettings,
-            SettingsViews activeView = Settings.SettingsViews.GeneralSettings)
+            SettingsViews activeView = UI.Settings.SettingsViews.GeneralSettings)
         {
             _configService = configService;
             _config = config;

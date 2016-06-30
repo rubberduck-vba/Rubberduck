@@ -53,7 +53,7 @@ namespace Rubberduck.UI.Refactorings
 
                 NewName = _target.IdentifierName;
                 var declarationType =
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + _target.DeclarationType, RubberduckUI.Culture);
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + _target.DeclarationType, UI.Settings.Settings.Culture);
                 InstructionsLabel.Text = string.Format(RubberduckUI.RenameDialog_InstructionsLabelText, declarationType,
                     _target.IdentifierName);
             }

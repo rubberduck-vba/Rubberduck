@@ -81,7 +81,7 @@ namespace Rubberduck.Inspections
                         })).ToList();
 
                 await Task.WhenAll(inspections);
-                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status)); // should be "Ready"
+                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
                 return allIssues;
             }
 

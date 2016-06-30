@@ -6,7 +6,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
-using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -30,7 +29,7 @@ namespace Rubberduck.UI.Command.MenuItems
             Initialize();
         }
 
-        private void _statusButton_Click(CommandBarButton ctrl, ref bool cancelDefault)
+        private void _statusButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             if (_state.Status == ParserState.Error)
             {
@@ -40,7 +39,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public void SetStatusText(string value = null)
         {
-            var text = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status);
+            var text = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status, UI.Settings.Settings.Culture);
             UiDispatcher.Invoke(() => _statusButton.Caption = text);
         }
 
@@ -52,21 +51,31 @@ namespace Rubberduck.UI.Command.MenuItems
                 if (selection.HasValue) { SetSelectionText(selection.Value); }
                 _selectionButton.TooltipText = _selectionButton.Caption;
             }
-            else if (declaration != null)
+            else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
             {
-                var typeName = declaration.HasTypeHint
-                    ? Declaration.TypeHintToTypeName[declaration.TypeHint]
-                    : declaration.AsTypeName;
-
                 _selectionButton.Caption = string.Format("{0}|{1}: {2} ({3}{4})",
                     declaration.QualifiedSelection.Selection,
                     declaration.QualifiedName.QualifiedModuleName,
                     declaration.IdentifierName,
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
-                    string.IsNullOrEmpty(declaration.AsTypeName)
-                        ? string.Empty
-                        : ": " + typeName);
-
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
+                    string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + declaration.AsTypeName);
+                _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
+                    ? _selectionButton.Caption
+                    : declaration.DescriptionString;
+            }
+            else if (declaration != null)
+            {
+                // todo: confirm this is what we want, and then refator
+                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+                if (selection.HasValue)
+                {
+                    _selectionButton.Caption = string.Format("{0}|{1}: {2} ({3}{4})",
+                        selection.Value.Selection,
+                        declaration.QualifiedName.QualifiedModuleName,
+                        declaration.IdentifierName,
+                        RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
+                    string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + declaration.AsTypeName);
+                }
                 _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
                     ? _selectionButton.Caption
                     : declaration.DescriptionString;
@@ -82,7 +91,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             if (_state.Status != ParserState.ResolvedDeclarations)
             {
-                SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status));
+                SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status, UI.Settings.Settings.Culture));
             }
         }
 
@@ -97,7 +106,7 @@ namespace Rubberduck.UI.Command.MenuItems
             }
         }
 
-        private void Initialize()
+        public void Initialize()
         {
             _commandbar = _vbe.CommandBars.Add("Rubberduck", MsoBarPosition.msoBarTop, false, true);
 
@@ -121,7 +130,7 @@ namespace Rubberduck.UI.Command.MenuItems
             _commandbar.Visible = true;
         }
 
-        private void refreshButton_Click(CommandBarButton ctrl, ref bool cancelDefault)
+        private void refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             OnRefresh();
         }
