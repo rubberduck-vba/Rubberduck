@@ -7,7 +7,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Ninject;
@@ -68,10 +67,10 @@ namespace Rubberduck.UI.SourceControl
             _wrapperFactory = wrapperFactory;
             _messageBox = messageBox;
 
-            _initRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo());
-            _openRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo());
-            _cloneRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCloneRepoGrid());
-            _publishRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowPublishRepoGrid());
+            _initRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
+            _openRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo(), _ => _vbe.VBProjects.Count != 0);
+            _cloneRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCloneRepoGrid(), _ => _vbe.VBProjects.Count != 0);
+            _publishRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowPublishRepoGrid(), _ => _vbe.VBProjects.Count != 0 && Provider != null);
             _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => Refresh());
             _dismissErrorMessageCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DismissErrorMessage());
             _showFilePickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowFilePicker());
