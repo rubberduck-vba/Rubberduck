@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -29,6 +30,7 @@ namespace Rubberduck.UI.Command
         public FindAllImplementationsCommand(INavigateCommand navigateCommand, IMessageBox messageBox,
             RubberduckParserState state, VBE vbe, ISearchResultsWindowViewModel viewModel,
             SearchResultPresenterInstanceManager presenterService)
+             : base(LogManager.GetCurrentClassLogger())
         {
             _navigateCommand = navigateCommand;
             _messageBox = messageBox;
@@ -86,7 +88,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        public override bool CanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (_vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
@@ -99,7 +101,7 @@ namespace Rubberduck.UI.Command
             return canExecute;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (_state.Status != ParserState.Ready)
             {

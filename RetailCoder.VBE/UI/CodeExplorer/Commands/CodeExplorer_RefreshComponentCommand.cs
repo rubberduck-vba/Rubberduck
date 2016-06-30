@@ -1,4 +1,5 @@
-﻿using Rubberduck.Navigation.CodeExplorer;
+﻿using NLog;
+using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command;
 
@@ -8,12 +9,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly RubberduckParserState _state;
 
-        public CodeExplorer_RefreshComponentCommand(RubberduckParserState state)
+        public CodeExplorer_RefreshComponentCommand(RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
         }
 
-        public override bool CanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             var node = parameter as CodeExplorerComponentViewModel;
 
@@ -21,7 +22,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                    _state.GetOrCreateModuleState(node.QualifiedSelection.Value.QualifiedName.Component) == ParserState.Pending;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             var node = (CodeExplorerComponentViewModel) parameter;
 

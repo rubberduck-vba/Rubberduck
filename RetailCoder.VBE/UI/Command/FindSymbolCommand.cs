@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -19,7 +20,7 @@ namespace Rubberduck.UI.Command
         private readonly DeclarationIconCache _iconCache;
         private readonly NavigateCommand _navigateCommand = new NavigateCommand();
 
-        public FindSymbolCommand(VBE vbe, RubberduckParserState state, DeclarationIconCache iconCache)
+        public FindSymbolCommand(VBE vbe, RubberduckParserState state, DeclarationIconCache iconCache) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
@@ -31,7 +32,7 @@ namespace Rubberduck.UI.Command
             get { return RubberduckHotkey.FindSymbol; }
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             var viewModel = new FindSymbolViewModel(_state.AllDeclarations.Where(item => !item.IsBuiltIn), _iconCache);
             using (var view = new FindSymbolDialog(viewModel))

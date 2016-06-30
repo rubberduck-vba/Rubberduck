@@ -326,8 +326,6 @@ namespace Rubberduck.Root
 
                         binding.When(request => whenCommandMenuItemCondition(request) || whenHooksCondition(request))
                             .InSingletonScope();
-
-                        binding.Intercept().With<FatalExceptionInterceptor>();
                     }
                 }
                 catch (InvalidOperationException)

@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command;
@@ -13,13 +14,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly RubberduckParserState _state;
         private readonly IClipboardWriter _clipboard;
 
-        public CodeExplorer_CopyResultsCommand(RubberduckParserState state)
+        public CodeExplorer_CopyResultsCommand(RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _clipboard = new ClipboardWriter();
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
                 const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
 

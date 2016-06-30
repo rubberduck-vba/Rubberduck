@@ -67,23 +67,23 @@ namespace Rubberduck.UI.SourceControl
             _wrapperFactory = wrapperFactory;
             _messageBox = messageBox;
 
-            _initRepoCommand = new DelegateCommand(_ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
-            _openRepoCommand = new DelegateCommand(_ => OpenRepo(), _ => _vbe.VBProjects.Count != 0);
-            _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid(), _ => _vbe.VBProjects.Count != 0);
-            _publishRepoCommand = new DelegateCommand(_ => ShowPublishRepoGrid(), _ => _vbe.VBProjects.Count != 0 && Provider != null);
-            _refreshCommand = new DelegateCommand(_ => Refresh());
-            _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
-            _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
-            _loginGridOkCommand = new DelegateCommand(_ => CloseLoginGrid(), text => !string.IsNullOrEmpty((string)text));
-            _loginGridCancelCommand = new DelegateCommand(_ => CloseLoginGrid());
+            _initRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
+            _openRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo(), _ => _vbe.VBProjects.Count != 0);
+            _cloneRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCloneRepoGrid(), _ => _vbe.VBProjects.Count != 0);
+            _publishRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowPublishRepoGrid(), _ => _vbe.VBProjects.Count != 0 && Provider != null);
+            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => Refresh());
+            _dismissErrorMessageCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DismissErrorMessage());
+            _showFilePickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowFilePicker());
+            _loginGridOkCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseLoginGrid(), text => !string.IsNullOrEmpty((string)text));
+            _loginGridCancelCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseLoginGrid());
 
-            _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidCloneRemotePath);
-            _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
+            _cloneRepoOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloneRepo(), _ => !IsNotValidCloneRemotePath);
+            _cloneRepoCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseCloneRepoGrid());
 
-            _publishRepoOkButtonCommand = new DelegateCommand(_ => PublishRepo(), _ => !IsNotValidPublishRemotePath);
-            _publishRepoCancelButtonCommand = new DelegateCommand(_ => ClosePublishRepoGrid());
+            _publishRepoOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PublishRepo(), _ => !IsNotValidPublishRemotePath);
+            _publishRepoCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ClosePublishRepoGrid());
 
-            _openCommandPromptCommand = new DelegateCommand(_ => OpenCommandPrompt());
+            _openCommandPromptCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenCommandPrompt());
 
             TabItems = new ObservableCollection<IControlView>
             {

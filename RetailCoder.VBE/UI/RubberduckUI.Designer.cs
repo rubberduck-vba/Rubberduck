@@ -2812,6 +2812,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file to our GitHub page..
+        /// </summary>
+        public static string RubberduckFatalError {
+            get {
+                return ResourceManager.GetString("RubberduckFatalError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck Add-In could not be loaded.
         /// </summary>
         public static string RubberduckLoadFailure {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
+using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
@@ -27,13 +27,13 @@ namespace Rubberduck.UI.ToDoItems
             _operatingSystem = operatingSystem;
             _state.StateChanged += _state_StateChanged;
 
-            _setMarkerGroupingCommand = new DelegateCommand(param =>
+            _setMarkerGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 GroupByMarker = (bool)param;
                 GroupByLocation = !(bool)param;
             });
 
-            _setLocationGroupingCommand = new DelegateCommand(param =>
+            _setLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 GroupByLocation = (bool)param;
                 GroupByMarker = !(bool)param;
@@ -97,7 +97,7 @@ namespace Rubberduck.UI.ToDoItems
                 {
                     return _refreshCommand;
                 }
-                return _refreshCommand = new DelegateCommand(_ =>
+                return _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
                 {
                     _state.OnParseRequested(this);
                 },
@@ -135,7 +135,7 @@ namespace Rubberduck.UI.ToDoItems
                 {
                     return _removeCommand;
                 }
-                return _removeCommand = new DelegateCommand(_ =>
+                return _removeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
                 {
                     if (_selectedItem == null)
                     {
@@ -162,7 +162,7 @@ namespace Rubberduck.UI.ToDoItems
                 {
                     return _openTodoSettings;
                 }
-                return _openTodoSettings = new DelegateCommand(_ =>
+                return _openTodoSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
                 {
                     using (var window = new SettingsForm(_configService, _operatingSystem, SettingsViews.TodoSettings))
                     {
