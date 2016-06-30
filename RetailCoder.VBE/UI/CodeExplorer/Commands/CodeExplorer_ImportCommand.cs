@@ -24,7 +24,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _openFileDialog.CheckFileExists = true;
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             VBProject project;
 

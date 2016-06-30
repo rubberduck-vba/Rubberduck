@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class NavigateCommand : CommandBase, INavigateCommand
     {
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             var param = parameter as NavigateCodeEventArgs;
             if (param == null || param.QualifiedName.Component == null)

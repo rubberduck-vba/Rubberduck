@@ -25,7 +25,7 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             if (_state.Status != ParserState.Ready) { return false; }
 
@@ -36,7 +36,7 @@ namespace Rubberduck.UI.Command
             return testModules.Any(a => a.QualifiedName.QualifiedModuleName.Component == _vbe.SelectedVBComponent);
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             _command.NewExpectedErrorTestMethod();
         }

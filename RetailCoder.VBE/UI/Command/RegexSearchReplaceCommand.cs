@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             _presenter.Show();
         }

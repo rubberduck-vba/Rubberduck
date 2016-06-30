@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             var target = FindTarget(parameter);
 
@@ -27,7 +27,7 @@ namespace Rubberduck.UI.Command
                    target.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             _vbe.ActiveCodePane.CodeModule.InsertLines(1, "'@NoIndent");
         }

@@ -25,7 +25,7 @@ namespace Rubberduck.UI.Command
         /// Runs code inspections 
         /// </summary>
         /// <param name="parameter"></param>
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             _presenter.Show();
         }

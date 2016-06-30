@@ -22,12 +22,12 @@ namespace Rubberduck.UI.Command
             get { return RubberduckHotkey.IndentProcedure; }
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             return _vbe.ActiveCodePane != null;
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             _indenter.IndentCurrentProcedure();
         }

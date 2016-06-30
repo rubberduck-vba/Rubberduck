@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AboutCommand : CommandBase
     {
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             using (var window = new AboutDialog())
             {

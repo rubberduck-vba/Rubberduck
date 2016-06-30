@@ -12,12 +12,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _navigateCommand = navigateCommand;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             return parameter != null && ((CodeExplorerItemViewModel)parameter).QualifiedSelection.HasValue;
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             // ReSharper disable once PossibleInvalidOperationException
             _navigateCommand.Execute(((CodeExplorerItemViewModel)parameter).QualifiedSelection.Value.GetNavitationArgs());

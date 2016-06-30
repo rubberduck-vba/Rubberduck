@@ -7,7 +7,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class CodeExplorer_OpenDesignerCommand : CommandBase
     {
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             if (parameter == null)
             {
@@ -26,7 +26,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             ((ICodeExplorerDeclarationViewModel) parameter).Declaration
                 .QualifiedName.QualifiedModuleName.Component.DesignerWindow()

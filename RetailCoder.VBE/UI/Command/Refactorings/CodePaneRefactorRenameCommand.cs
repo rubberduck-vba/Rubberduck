@@ -27,7 +27,7 @@ namespace Rubberduck.UI.Command.Refactorings
             get { return RubberduckHotkey.RefactorRename; }
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null)
             {
@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Command.Refactorings
             return _state.Status == ParserState.Ready && target != null && !target.IsBuiltIn;
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null) { return; }
 

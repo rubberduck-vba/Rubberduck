@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Command
             get { return RubberduckHotkey.CodeExplorer; }
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             _presenter.Show();
         }

@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Command
             get { return RubberduckHotkey.FindSymbol; }
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             var viewModel = new FindSymbolViewModel(_state.AllDeclarations.Where(item => !item.IsBuiltIn), _iconCache);
             using (var view = new FindSymbolDialog(viewModel))

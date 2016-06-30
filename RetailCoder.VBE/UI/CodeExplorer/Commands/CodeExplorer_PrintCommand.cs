@@ -11,7 +11,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class CodeExplorer_PrintCommand : CommandBase
     {
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             var node = parameter as CodeExplorerComponentViewModel;
             if (node == null)
@@ -22,7 +22,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return node.Declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.CountOfLines != 0;
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             var node = (CodeExplorerComponentViewModel)parameter;
             var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;

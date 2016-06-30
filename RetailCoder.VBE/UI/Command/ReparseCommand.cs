@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Command
             get { return RubberduckHotkey.ParseAll; }
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             return _state.Status == ParserState.Pending
                    || _state.Status == ParserState.Ready
@@ -42,7 +42,7 @@ namespace Rubberduck.UI.Command
                    || _state.Status == ParserState.ResolverError;
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             _state.OnParseRequested(this);
         }

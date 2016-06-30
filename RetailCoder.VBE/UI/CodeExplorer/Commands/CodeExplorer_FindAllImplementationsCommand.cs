@@ -15,14 +15,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _findAllImplementations = findAllImplementations;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             return _state.Status == ParserState.Ready &&
                    (parameter is CodeExplorerComponentViewModel ||
                     parameter is CodeExplorerMemberViewModel);
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             _findAllImplementations.Execute(((CodeExplorerItemViewModel) parameter).GetSelectedDeclaration());
         }

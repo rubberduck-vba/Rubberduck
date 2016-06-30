@@ -27,12 +27,12 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             return _vbe.IsInDesignMode();
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             if (!_state.IsDirty())
             {

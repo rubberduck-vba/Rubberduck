@@ -19,7 +19,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _messageBox = messageBox;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             var node = parameter as CodeExplorerComponentViewModel;
             if (node == null)
@@ -46,7 +46,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                    changesVM.IncludedChanges.Select(s => s.FilePath).Contains(GetFileName(node));
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             var panel = _presenter.Window() as SourceControlPanel;
             if (panel == null)

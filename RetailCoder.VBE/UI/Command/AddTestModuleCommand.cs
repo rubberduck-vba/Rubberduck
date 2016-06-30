@@ -23,12 +23,12 @@ namespace Rubberduck.UI.Command
             _command = command;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             return _vbe.HostSupportsUnitTests();
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             _command.NewUnitTestModule(_vbe.ActiveVBProject);
         }

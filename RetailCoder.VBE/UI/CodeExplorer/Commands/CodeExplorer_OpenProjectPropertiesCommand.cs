@@ -12,7 +12,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _vbe = vbe;
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             const int openProjectPropertiesId = 2578;
 

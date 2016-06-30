@@ -25,7 +25,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _saveFileDialog.OverwritePrompt = true;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             if (!(parameter is CodeExplorerComponentViewModel))
             {
@@ -37,7 +37,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             var node = (CodeExplorerComponentViewModel)parameter;
             var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;

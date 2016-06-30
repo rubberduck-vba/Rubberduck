@@ -13,7 +13,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _state = state;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             var node = parameter as CodeExplorerComponentViewModel;
 
@@ -21,7 +21,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                    _state.GetOrCreateModuleState(node.QualifiedSelection.Value.QualifiedName.Component) == ParserState.Pending;
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             var node = (CodeExplorerComponentViewModel) parameter;
 

@@ -17,12 +17,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecuteImpl(object parameter)
         {
             return GetDeclaration(parameter) != null || _vbe.VBProjects.Count == 1;
         }
 
-        public override void Execute(object parameter)
+        public override void ExecuteImpl(object parameter)
         {
             if (parameter != null)
             {
