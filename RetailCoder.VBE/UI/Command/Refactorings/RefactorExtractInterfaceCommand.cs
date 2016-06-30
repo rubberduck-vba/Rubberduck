@@ -28,7 +28,7 @@ namespace Rubberduck.UI.Command.Refactorings
             vbext_ComponentType.vbext_ct_MSForm, 
         };
 
-        public override bool CanExecuteImpl(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             var activePane = Vbe.ActiveCodePane;
             if (activePane == null)
@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Command.Refactorings
             return canExecute;
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null)
             {

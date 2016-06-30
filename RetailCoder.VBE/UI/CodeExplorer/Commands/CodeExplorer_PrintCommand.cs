@@ -4,6 +4,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 
@@ -11,7 +12,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class CodeExplorer_PrintCommand : CommandBase
     {
-        public override bool CanExecuteImpl(object parameter)
+        public CodeExplorer_PrintCommand() : base(LogManager.GetCurrentClassLogger()) { }
+
+        protected override bool CanExecuteImpl(object parameter)
         {
             var node = parameter as CodeExplorerComponentViewModel;
             if (node == null)
@@ -22,7 +25,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return node.Declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.CountOfLines != 0;
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             var node = (CodeExplorerComponentViewModel)parameter;
             var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;

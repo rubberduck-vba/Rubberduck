@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.UI.Command
@@ -11,12 +12,12 @@ namespace Rubberduck.UI.Command
     {
         public readonly IPresenter _presenter;
 
-        public ShowSourceControlPanelCommand(SourceControlDockablePresenter presenter)
+        public ShowSourceControlPanelCommand(SourceControlDockablePresenter presenter) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _presenter.Show();
         }

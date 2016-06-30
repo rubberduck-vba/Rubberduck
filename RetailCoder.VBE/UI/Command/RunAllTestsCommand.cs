@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
-using System.Linq;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Command
         private readonly TestExplorerModel _model;
         private readonly RubberduckParserState _state;
         
-        public RunAllTestsCommand(VBE vbe, RubberduckParserState state, ITestEngine engine, TestExplorerModel model)
+        public RunAllTestsCommand(VBE vbe, RubberduckParserState state, ITestEngine engine, TestExplorerModel model) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _engine = engine;
@@ -27,12 +27,12 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
-        public override bool CanExecuteImpl(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return _vbe.IsInDesignMode();
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (!_state.IsDirty())
             {

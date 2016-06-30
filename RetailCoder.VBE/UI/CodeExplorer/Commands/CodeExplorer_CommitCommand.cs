@@ -1,3 +1,4 @@
+using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.SourceControl;
@@ -8,17 +9,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly SourceControlDockablePresenter _presenter;
 
-        public CodeExplorer_CommitCommand(SourceControlDockablePresenter presenter)
+        public CodeExplorer_CommitCommand(SourceControlDockablePresenter presenter) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }
 
-        public override bool CanExecuteImpl(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return parameter is CodeExplorerComponentViewModel;
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _presenter.Show();
 

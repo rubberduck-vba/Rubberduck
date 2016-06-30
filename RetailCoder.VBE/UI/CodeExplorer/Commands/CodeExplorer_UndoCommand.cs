@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -13,13 +14,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly SourceControlDockablePresenter _presenter;
         private readonly IMessageBox _messageBox;
 
-        public CodeExplorer_UndoCommand(SourceControlDockablePresenter presenter, IMessageBox messageBox)
+        public CodeExplorer_UndoCommand(SourceControlDockablePresenter presenter, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
             _messageBox = messageBox;
         }
 
-        public override bool CanExecuteImpl(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             var node = parameter as CodeExplorerComponentViewModel;
             if (node == null)
@@ -46,7 +47,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                    changesVM.IncludedChanges.Select(s => s.FilePath).Contains(GetFileName(node));
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             var panel = _presenter.Window() as SourceControlPanel;
             if (panel == null)

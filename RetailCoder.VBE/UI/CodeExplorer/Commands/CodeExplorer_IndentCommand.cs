@@ -3,6 +3,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using System.Linq;
+using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 
@@ -14,14 +15,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IIndenter _indenter;
         private readonly INavigateCommand _navigateCommand;
 
-        public CodeExplorer_IndentCommand(RubberduckParserState state, IIndenter indenter, INavigateCommand navigateCommand)
+        public CodeExplorer_IndentCommand(RubberduckParserState state, IIndenter indenter, INavigateCommand navigateCommand) : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _indenter = indenter;
             _navigateCommand = navigateCommand;
         }
 
-        public override bool CanExecuteImpl(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (parameter == null)
             {
@@ -69,7 +70,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 && !(parameter is CodeExplorerCustomFolderViewModel);
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (parameter == null)
             {

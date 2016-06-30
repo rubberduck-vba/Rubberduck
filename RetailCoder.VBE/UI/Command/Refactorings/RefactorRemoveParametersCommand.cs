@@ -29,8 +29,8 @@ namespace Rubberduck.UI.Command.Refactorings
             DeclarationType.PropertyLet,
             DeclarationType.PropertySet
         };
-        
-        public override bool CanExecuteImpl(object parameter)
+
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
@@ -52,7 +52,7 @@ namespace Rubberduck.UI.Command.Refactorings
             return canExecute;
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null)
             {

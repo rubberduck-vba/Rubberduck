@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 
@@ -21,7 +22,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             { vbext_ComponentType.vbext_ct_MSForm, ".frm" }
         };
 
-        public CodeExplorer_RemoveCommand(ISaveFileDialog saveFileDialog, IMessageBox messageBox)
+        public CodeExplorer_RemoveCommand(ISaveFileDialog saveFileDialog, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _saveFileDialog = saveFileDialog;
             _saveFileDialog.OverwritePrompt = true;
@@ -29,7 +30,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _messageBox = messageBox;
         }
 
-        public override bool CanExecuteImpl(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (!(parameter is CodeExplorerComponentViewModel))
             {
@@ -41,7 +42,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             var message = string.Format("Do you want to export '{0}' before removing?", ((CodeExplorerComponentViewModel)parameter).Name);
             var result = _messageBox.Show(message, "Rubberduck Export Prompt", MessageBoxButtons.YesNoCancel,

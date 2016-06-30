@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.Navigation.RegexSearchReplace;
 
 namespace Rubberduck.UI.Command
@@ -8,12 +9,12 @@ namespace Rubberduck.UI.Command
     {
         private readonly RegexSearchReplacePresenter _presenter;
 
-        public RegexSearchReplaceCommand(RegexSearchReplacePresenter presenter)
+        public RegexSearchReplaceCommand(RegexSearchReplacePresenter presenter) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _presenter.Show();
         }

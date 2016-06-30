@@ -10,14 +10,20 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public abstract class CommandBase : ICommand
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        protected CommandBase(ILogger logger)
+        {
+            _logger = logger;
+        }
 
-        public virtual bool CanExecuteImpl(object parameter)
+        private readonly ILogger _logger;
+        protected virtual ILogger Logger { get { return _logger; } }
+
+        protected virtual bool CanExecuteImpl(object parameter)
         {
             return true;
         }
 
-        public abstract void ExecuteImpl(object parameter);
+        protected abstract void ExecuteImpl(object parameter);
 
         public bool CanExecute(object parameter)
         {
@@ -25,11 +31,12 @@ namespace Rubberduck.UI.Command
             {
                 return CanExecuteImpl(parameter);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Logger.Fatal(e);
+                _logger.Fatal(exception);
 
-                System.Windows.Forms.MessageBox.Show(
+                var messageBox = new MessageBox();
+                messageBox.Show(
                     RubberduckUI.RubberduckFatalError, RubberduckUI.Rubberduck,
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -43,11 +50,12 @@ namespace Rubberduck.UI.Command
             {
                 ExecuteImpl(parameter);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Logger.Fatal(e);
+                _logger.Fatal(exception);
 
-                System.Windows.Forms.MessageBox.Show(
+                var messageBox = new MessageBox();
+                messageBox.Show(
                     RubberduckUI.RubberduckFatalError, RubberduckUI.Rubberduck,
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

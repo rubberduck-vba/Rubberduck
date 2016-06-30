@@ -1,3 +1,4 @@
+using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command;
@@ -9,20 +10,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly RubberduckParserState _state;
         private readonly FindAllReferencesCommand _findAllReferences;
 
-        public CodeExplorer_FindAllReferencesCommand(RubberduckParserState state, FindAllReferencesCommand findAllReferences)
+        public CodeExplorer_FindAllReferencesCommand(RubberduckParserState state, FindAllReferencesCommand findAllReferences) : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _findAllReferences = findAllReferences;
         }
 
-        public override bool CanExecuteImpl(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return _state.Status == ParserState.Ready &&
                 parameter != null &&
                 !(parameter is CodeExplorerCustomFolderViewModel);
         }
 
-        public override void ExecuteImpl(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _findAllReferences.Execute(((CodeExplorerItemViewModel) parameter).GetSelectedDeclaration());
         }

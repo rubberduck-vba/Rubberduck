@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
+using NLog;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 
@@ -31,9 +31,9 @@ namespace Rubberduck.UI.Settings
 
             SelectedSettingsView = SettingsViews.First(v => v.View == activeView);
 
-            _okButtonCommand = new DelegateCommand(_ => SaveAndCloseWindow());
-            _cancelButtonCommand = new DelegateCommand(_ => CloseWindow());
-            _resetButtonCommand = new DelegateCommand(_ => ResetSettings());
+            _okButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => SaveAndCloseWindow());
+            _cancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseWindow());
+            _resetButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ResetSettings());
         }
 
         private ObservableCollection<SettingsView> _settingsViews;
