@@ -3,7 +3,6 @@ using Infralution.Localization.Wpf;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
-using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -11,46 +10,27 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Rubberduck.UI.SourceControl;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
 {
     public sealed class App : IDisposable
     {
-        private const string FILE_TARGET_NAME = "file";
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
-        private IRubberduckParser _parser;
+        private readonly IRubberduckParser _parser;
         private AutoSave.AutoSave _autoSave;
         private IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
         private RubberduckCommandBar _stateBar;
         private IRubberduckHooks _hooks;
-        private bool _handleSinkEvents = true;
-        private readonly BranchesViewViewModel _branchesVM;
-        private readonly SourceControlViewViewModel _sourceControlPanelVM;
         private readonly UI.Settings.Settings _settings;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        private VBProjectsEventsSink _sink;
+        
         private Configuration _config;
-
-        private readonly IConnectionPoint _projectsEventsConnectionPoint;
-        private readonly int _projectsEventsCookie;
-
-        private readonly IDictionary<string, Tuple<IConnectionPoint, int>> _componentsEventsConnectionPoints =
-            new Dictionary<string, Tuple<IConnectionPoint, int>>();
-        private readonly IDictionary<string, Tuple<IConnectionPoint, int>> _referencesEventsConnectionPoints =
-            new Dictionary<string, Tuple<IConnectionPoint, int>>();
 
         public App(VBE vbe, IMessageBox messageBox,
             UI.Settings.Settings settings,
@@ -58,8 +38,7 @@ namespace Rubberduck
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
-            IRubberduckHooks hooks,
-            SourceControlDockablePresenter sourceControlPresenter)
+            IRubberduckHooks hooks)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -71,37 +50,15 @@ namespace Rubberduck
             _stateBar = stateBar;
             _hooks = hooks;
 
-            var sourceControlPanel = (SourceControlPanel) sourceControlPresenter.Window();
-            _sourceControlPanelVM = (SourceControlViewViewModel) sourceControlPanel.ViewModel;
-            _branchesVM = (BranchesViewViewModel) _sourceControlPanelVM.TabItems.Single(t => t.ViewModel.Tab == SourceControlTab.Branches).ViewModel;
-
-            _sourceControlPanelVM.OpenRepoStarted += DisableSinkEventHandlers;
-            _sourceControlPanelVM.OpenRepoCompleted += EnableSinkEventHandlersAndUpdateCache;
-
-            _branchesVM.LoadingComponentsStarted += DisableSinkEventHandlers;
-            _branchesVM.LoadingComponentsCompleted += EnableSinkEventHandlersAndUpdateCache;
-
             _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
             _stateBar.Refresh += _stateBar_Refresh;
-
-            _sink = new VBProjectsEventsSink();
-            var connectionPointContainer = (IConnectionPointContainer)_vbe.VBProjects;
-            var interfaceId = typeof(_dispVBProjectsEvents).GUID;
-            connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
-
-            _sink.ProjectAdded += sink_ProjectAdded;
-            _sink.ProjectRemoved += sink_ProjectRemoved;
-            _sink.ProjectActivated += sink_ProjectActivated;
-            _sink.ProjectRenamed += sink_ProjectRenamed;
-
-            _projectsEventsConnectionPoint.Advise(_sink, out _projectsEventsCookie);
             UiDispatcher.Initialize();
         }
 
-        private void EnableSinkEventHandlersAndUpdateCache(object sender, EventArgs e)
+        /*private void EnableSinkEventHandlersAndUpdateCache(object sender, EventArgs e)
         {
             _handleSinkEvents = true;
 
@@ -115,7 +72,7 @@ namespace Rubberduck
         private void DisableSinkEventHandlers(object sender, EventArgs e)
         {
             _handleSinkEvents = false;
-        }
+        }*/
 
         private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
         {
@@ -216,7 +173,7 @@ namespace Rubberduck
             }
         }
 
-        #region sink handlers. todo: move to another class
+        /*#region sink handlers.
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
             if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
@@ -253,12 +210,6 @@ namespace Rubberduck
             }
         }
 
-        private readonly IDictionary<string, VBComponentsEventsSink> _componentsEventsSinks =
-            new Dictionary<string, VBComponentsEventsSink>();
-
-        private readonly IDictionary<string, ReferencesEventsSink> _referencesEventsSinks =
-            new Dictionary<string, ReferencesEventsSink>();
-
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
             if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
@@ -285,37 +236,6 @@ namespace Rubberduck
             _parser.State.OnParseRequested(sender);
         }
 
-        private void RegisterComponentsEventSink(VBComponents components, string projectId)
-        {
-            if (_componentsEventsSinks.ContainsKey(projectId))
-            {
-                // already registered - this is caused by the initial load+rename of a project in the VBE
-                Logger.Debug("Components sink already registered.");
-                return;
-            }
-
-            var connectionPointContainer = (IConnectionPointContainer)components;
-            var interfaceId = typeof(_dispVBComponentsEvents).GUID;
-
-            IConnectionPoint connectionPoint;
-            connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
-
-            var componentsSink = new VBComponentsEventsSink();
-            componentsSink.ComponentActivated += sink_ComponentActivated;
-            componentsSink.ComponentAdded += sink_ComponentAdded;
-            componentsSink.ComponentReloaded += sink_ComponentReloaded;
-            componentsSink.ComponentRemoved += sink_ComponentRemoved;
-            componentsSink.ComponentRenamed += sink_ComponentRenamed;
-            componentsSink.ComponentSelected += sink_ComponentSelected;
-            _componentsEventsSinks.Add(projectId, componentsSink);
-
-            int cookie;
-            connectionPoint.Advise(componentsSink, out cookie);
-
-            _componentsEventsConnectionPoints.Add(projectId, Tuple.Create(connectionPoint, cookie));
-            Logger.Debug("Components sink registered and advising.");
-        }
-
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
         {
             if (!_handleSinkEvents || !_vbe.IsInDesignMode()) { return; }
@@ -324,8 +244,6 @@ namespace Rubberduck
             {
                 return;
             }
-            
-            // todo: keep Code Explorer in sync with Project Explorer
         }
 
         async void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
@@ -473,7 +391,7 @@ namespace Rubberduck
             
             // todo: keep Code Explorer in sync with Project Explorer
         }
-        #endregion
+        #endregion*/
 
         private void _stateBar_Refresh(object sender, EventArgs e)
         {
@@ -509,27 +427,12 @@ namespace Rubberduck
         }
 
         private bool _disposed;
-
         public void Dispose()
         {
             if (_disposed)
             {
                 return;
             }
-
-            if (_sourceControlPanelVM != null)
-            {
-                _sourceControlPanelVM.OpenRepoStarted -= DisableSinkEventHandlers;
-                _sourceControlPanelVM.OpenRepoCompleted -= EnableSinkEventHandlersAndUpdateCache;
-            }
-
-            if (_branchesVM != null)
-            {
-                _branchesVM.LoadingComponentsStarted -= DisableSinkEventHandlers;
-                _branchesVM.LoadingComponentsCompleted -= EnableSinkEventHandlersAndUpdateCache;
-            }
-
-            _handleSinkEvents = false;
 
             if (_parser != null && _parser.State != null)
             {
@@ -564,39 +467,10 @@ namespace Rubberduck
                 _stateBar = null;
             }
 
-            if (_sink != null)
-            {
-                _sink.ProjectAdded -= sink_ProjectAdded;
-                _sink.ProjectRemoved -= sink_ProjectRemoved;
-                _sink.ProjectActivated -= sink_ProjectActivated;
-                _sink.ProjectRenamed -= sink_ProjectRenamed;
-                _sink = null;
-            }
-
-            foreach (var item in _componentsEventsSinks)
-            {
-                item.Value.ComponentActivated -= sink_ComponentActivated;
-                item.Value.ComponentAdded -= sink_ComponentAdded;
-                item.Value.ComponentReloaded -= sink_ComponentReloaded;
-                item.Value.ComponentRemoved -= sink_ComponentRemoved;
-                item.Value.ComponentRenamed -= sink_ComponentRenamed;
-                item.Value.ComponentSelected -= sink_ComponentSelected;
-            }
-
             if (_autoSave != null)
             {
                 _autoSave.Dispose();
                 _autoSave = null;
-            }
-
-            _projectsEventsConnectionPoint.Unadvise(_projectsEventsCookie);
-            foreach (var item in _componentsEventsConnectionPoints)
-            {
-                item.Value.Item1.Unadvise(item.Value.Item2);
-            }
-            foreach (var item in _referencesEventsConnectionPoints)
-            {
-                item.Value.Item1.Unadvise(item.Value.Item2);
             }
 
             UiDispatcher.Shutdown();

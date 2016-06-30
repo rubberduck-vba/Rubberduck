@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Input;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
@@ -30,7 +29,6 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
-using NLog;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using Ninject.Extensions.Interception.Infrastructure.Language;
@@ -60,6 +58,7 @@ namespace Rubberduck.Root
             // bind VBE and AddIn dependencies to host-provided instances.
             Bind<VBE>().ToConstant(_vbe);
             Bind<AddIn>().ToConstant(_addin);
+            Bind<Sinks>().ToSelf().InSingletonScope();
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             Bind<GitProvider>().ToSelf().InSingletonScope();
