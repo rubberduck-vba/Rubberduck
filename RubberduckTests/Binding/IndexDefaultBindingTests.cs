@@ -4,6 +4,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using System.Linq;
+using Moq;
+using Rubberduck.Parsing;
 
 namespace RubberduckTests.Binding
 {
@@ -83,7 +85,7 @@ End Property
 
         private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
         {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
             parser.Parse();
             if (parser.State.Status != ParserState.Ready)
             {

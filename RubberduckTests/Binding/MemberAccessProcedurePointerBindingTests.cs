@@ -5,6 +5,8 @@ using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using System;
 using System.Linq;
+using Moq;
+using Rubberduck.Parsing;
 
 namespace RubberduckTests.Binding
 {
@@ -37,7 +39,7 @@ namespace RubberduckTests.Binding
 
             private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
             {
-                var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+                var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
                 parser.Parse();
                 if (parser.State.Status != ParserState.Ready)
                 {

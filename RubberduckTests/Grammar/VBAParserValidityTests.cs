@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Rubberduck.Parsing;
 
 namespace RubberduckTests.Grammar
 {
@@ -45,7 +46,7 @@ namespace RubberduckTests.Grammar
             var vbe = builder.BuildFromSingleStandardModule(code, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var state = new RubberduckParserState();
+            var state = new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object);
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error: " + filename); }

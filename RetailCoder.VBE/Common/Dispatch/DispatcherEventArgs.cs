@@ -1,8 +1,9 @@
 using System;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Common.Dispatch
 {
-    public class DispatcherEventArgs<T> : EventArgs 
+    public class DispatcherEventArgs<T> : EventArgs, IDispatcherEventArgs<T>
         where T : class
     {
         private readonly T _item;
