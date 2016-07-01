@@ -7,6 +7,38 @@ namespace Rubberduck.VBEditor.Extensions
 {
     public static class ProjectExtensions
     {
+        public static string AssignProjectId(this VBProject project)
+        {
+            //assign a hashcode if no helpfile is present
+            if (string.IsNullOrEmpty(project.HelpFile))
+            {
+                project.HelpFile = project.GetHashCode().ToString();
+            }
+
+            //loop until the helpfile is unique for this host session
+            while (!IsProjectIdUnique(project.HelpFile, project.VBE))
+            {
+                project.HelpFile = (project.GetHashCode() ^ project.HelpFile.GetHashCode()).ToString();
+            }
+
+            return project.HelpFile;
+        }
+
+        private static bool IsProjectIdUnique(string id, VBE vbe)
+        {
+            var projectsWithId = 0;
+
+            foreach (VBProject project in vbe.VBProjects)
+            {
+                if (project.HelpFile == id)
+                {
+                    projectsWithId++;
+                }
+            }
+
+            return projectsWithId == 1;
+        }
+
         public static IEnumerable<VBProject> UnprotectedProjects(this VBProjects projects)
         {
             return projects.Cast<VBProject>().Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);

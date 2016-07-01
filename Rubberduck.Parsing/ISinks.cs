@@ -3,14 +3,24 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Parsing
 {
-    public interface IDispatcherEventArgs<T>
-        where T : class
+    public interface IProjectEventArgs
     {
-        T Item { get; }
+        string ProjectId { get; }
     }
 
-    public interface IDispatcherRenamedEventArgs<T> : IDispatcherEventArgs<T>
-        where T : class
+    public interface IProjectRenamedEventArgs : IProjectEventArgs
+    {
+        string OldName { get; }
+    }
+
+    public interface IComponentEventArgs
+    {
+        string ProjectId { get; }
+        string ComponentName { get; }
+        vbext_ComponentType Type { get; }
+    }
+
+    public interface IComponentRenamedEventArgs : IComponentEventArgs
     {
         string OldName { get; }
     }
@@ -19,17 +29,17 @@ namespace Rubberduck.Parsing
     {
         bool IsEnabled { get; set; }
 
-        event EventHandler<IDispatcherEventArgs<VBProject>> ProjectActivated;
-        event EventHandler<IDispatcherEventArgs<VBProject>> ProjectAdded;
-        event EventHandler<IDispatcherEventArgs<VBProject>> ProjectRemoved;
-        event EventHandler<IDispatcherRenamedEventArgs<VBProject>> ProjectRenamed;
+        event EventHandler<IProjectEventArgs> ProjectActivated;
+        event EventHandler<IProjectEventArgs> ProjectAdded;
+        event EventHandler<IProjectEventArgs> ProjectRemoved;
+        event EventHandler<IProjectRenamedEventArgs> ProjectRenamed;
 
-        event EventHandler<IDispatcherEventArgs<VBComponent>> ComponentActivated;
-        event EventHandler<IDispatcherEventArgs<VBComponent>> ComponentAdded;
-        event EventHandler<IDispatcherEventArgs<VBComponent>> ComponentReloaded;
-        event EventHandler<IDispatcherEventArgs<VBComponent>> ComponentRemoved;
-        event EventHandler<IDispatcherRenamedEventArgs<VBComponent>> ComponentRenamed;
-        event EventHandler<IDispatcherEventArgs<VBComponent>> ComponentSelected;
+        event EventHandler<IComponentEventArgs> ComponentActivated;
+        event EventHandler<IComponentEventArgs> ComponentAdded;
+        event EventHandler<IComponentEventArgs> ComponentReloaded;
+        event EventHandler<IComponentEventArgs> ComponentRemoved;
+        event EventHandler<IComponentRenamedEventArgs> ComponentRenamed;
+        event EventHandler<IComponentEventArgs> ComponentSelected;
 
         //event EventHandler<IDispatcherEventArgs<Reference>> ReferenceAdded;
         //event EventHandler<IDispatcherEventArgs<Reference>> ReferenceRemoved;

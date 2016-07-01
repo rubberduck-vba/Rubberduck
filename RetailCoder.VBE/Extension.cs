@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Ninject.Extensions.Interception;
+using NLog;
 
 namespace Rubberduck
 {
@@ -26,6 +27,7 @@ namespace Rubberduck
 
         private IKernel _kernel;
         private App _app;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public void OnAddInsUpdate(ref Array custom)
         {
@@ -50,6 +52,7 @@ namespace Rubberduck
             }
             catch (Exception exception)
             {
+                _logger.Fatal(exception);
                 System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
