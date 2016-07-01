@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Rubberduck;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
@@ -108,7 +110,7 @@ namespace RubberduckTests.SourceControl
 
         private void SetupVM()
         {
-            _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(), _providerFactory.Object, _folderBrowserFactory.Object,
+            _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(_vbe.Object, new Mock<ISinks>().Object), new Mock<ISinks>().Object, _providerFactory.Object, _folderBrowserFactory.Object,
                 _configService.Object, new ChangesView(_changesVM), new BranchesView(_branchesVM),
                 new UnsyncedCommitsView(_unsyncedVM), new SettingsView(_settingsVM), new CodePaneWrapperFactory(), new Mock<IMessageBox>().Object);
         }

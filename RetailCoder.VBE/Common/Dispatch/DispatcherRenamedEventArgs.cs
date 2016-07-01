@@ -1,6 +1,8 @@
-﻿namespace Rubberduck.Common.Dispatch
+﻿using Rubberduck.Parsing;
+
+namespace Rubberduck.Common.Dispatch
 {
-    public class DispatcherRenamedEventArgs<T> : DispatcherEventArgs<T>
+    public class DispatcherRenamedEventArgs<T> : DispatcherEventArgs<T>, IDispatcherRenamedEventArgs<T>
         where T : class
     {
         private readonly string _oldName;

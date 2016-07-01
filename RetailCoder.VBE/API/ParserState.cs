@@ -47,16 +47,13 @@ namespace Rubberduck.API
         private const string ClassId = "28754D11-10CC-45FD-9F6A-525A65412B7A";
         private const string ProgId = "Rubberduck.ParserState";
 
-        private readonly RubberduckParserState _state;
+        private RubberduckParserState _state;
         private AttributeParser _attributeParser;
         private RubberduckParser _parser;
 
         public ParserState()
         {
             UiDispatcher.Initialize();
-            _state = new RubberduckParserState();
-            
-            _state.StateChanged += _state_StateChanged;
         }
 
         public void Initialize(VBE vbe)
@@ -65,6 +62,10 @@ namespace Rubberduck.API
             {
                 throw new InvalidOperationException("ParserState is already initialized.");
             }
+
+            _state = new RubberduckParserState(vbe, new Sinks(vbe));
+            _state.StateChanged += _state_StateChanged;
+
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
             _parser = new RubberduckParser(vbe, _state, _attributeParser, preprocessorFactory,

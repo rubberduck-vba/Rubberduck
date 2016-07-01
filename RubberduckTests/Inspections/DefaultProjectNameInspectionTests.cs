@@ -3,6 +3,7 @@ using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
@@ -27,7 +28,7 @@ namespace RubberduckTests.Inspections
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
             parser.Parse();
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -53,7 +54,7 @@ namespace RubberduckTests.Inspections
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
             parser.Parse();
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
