@@ -211,36 +211,47 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddProject(string projectId)
         {
-            VBProject project = null;
+            var projects = new List<VBProject>();
             foreach (VBProject p in _vbe.VBProjects)
             {
-                if (p.HelpFile == projectId)
+                if (p.HelpFile != null && _projects.Keys.Contains(p.HelpFile))
                 {
-                    project = p;
+                    continue;
                 }
+
+                projects.Add(p);
             }
 
-            if (project == null)
+            if (projects.Count == 0)
             {
                 Logger.Debug("Project was not found and will not be added to parser state.");
                 return;
             }
 
-            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+            foreach (var project in projects)
             {
-                // adding protected project to parser state is asking for COMExceptions..
-                Logger.Debug("Project is protected and will not be added to parser state.");
-                return;
-            }
-            
-            if (!_projects.ContainsKey(projectId))
-            {
-                _projects.Add(projectId, project);
-            }
+                if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+                {
+                    // adding protected project to parser state is asking for COMExceptions..
+                    Logger.Debug("Project is protected and will not be added to parser state.");
+                    return;
+                }
 
-            foreach (VBComponent component in project.VBComponents)
-            {
-                _moduleStates.TryAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending));
+                if (string.IsNullOrEmpty(project.HelpFile))
+                {
+                    // assigns the help file and returns the value to reduce COM calls
+                    projectId = project.AssignProjectId();
+                }
+
+                if (!_projects.ContainsKey(projectId))
+                {
+                    _projects.Add(projectId, project);
+                }
+
+                foreach (VBComponent component in project.VBComponents)
+                {
+                    _moduleStates.TryAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending));
+                }
             }
         }
 
@@ -670,7 +681,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void ClearStateCache(VBProject project, bool notifyStateChanged = false)
+        private void ClearStateCache(VBProject project, bool notifyStateChanged = false)
         {
             try
             {
