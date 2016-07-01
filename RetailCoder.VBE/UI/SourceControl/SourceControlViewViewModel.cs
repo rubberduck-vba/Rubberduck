@@ -115,50 +115,50 @@ namespace Rubberduck.UI.SourceControl
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
-        private void ComponentAdded(object sender, IDispatcherEventArgs<VBComponent> e)
+        private void ComponentAdded(object sender, IComponentEventArgs e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
-            if (e.Item.Collection.Parent.HelpFile != Provider.CurrentRepository.Id)
+            if (e.ProjectId != Provider.CurrentRepository.Id)
             {
                 return;
             }
 
-            Logger.Trace("Component {0} added", e.Item.Name);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Item.Name);
+            Logger.Trace("Component {0} added", e.ComponentName);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.ComponentName);
             if (fileStatus != null)
             {
                 Provider.AddFile(fileStatus.FilePath);
             }
         }
 
-        private void ComponentRemoved(object sender, IDispatcherEventArgs<VBComponent> e)
+        private void ComponentRemoved(object sender, IComponentEventArgs e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
-            if (e.Item.Collection.Parent.HelpFile != Provider.CurrentRepository.Id)
+            if (e.ProjectId != Provider.CurrentRepository.Id)
             {
                 return;
             }
 
-            Logger.Trace("Component {0] removed", e.Item.Name);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Item.Name);
+            Logger.Trace("Component {0] removed", e.ComponentName);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.ComponentName);
             if (fileStatus != null)
             {
                 Provider.RemoveFile(fileStatus.FilePath, true);
             }
         }
 
-        private void ComponentRenamed(object sender, IDispatcherRenamedEventArgs<VBComponent> e)
+        private void ComponentRenamed(object sender, IComponentRenamedEventArgs e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
-            if (e.Item.Collection.Parent.HelpFile != Provider.CurrentRepository.Id)
+            if (e.ProjectId != Provider.CurrentRepository.Id)
             {
                 return;
             }
 
-            Logger.Trace("Component {0} renamed to {1}", e.OldName, e.Item.Name);
+            Logger.Trace("Component {0} renamed to {1}", e.OldName, e.ComponentName);
             var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.OldName);
             if (fileStatus != null)
             {
@@ -168,11 +168,11 @@ namespace Rubberduck.UI.SourceControl
                 var fileExt = "." + fileStatus.FilePath.Split('.').Last();
 
                 _fileSystemWatcher.EnableRaisingEvents = false;
-                File.Move(directory + fileStatus.FilePath, directory + e.Item.Name + fileExt);
+                File.Move(directory + fileStatus.FilePath, directory + e.ComponentName + fileExt);
                 _fileSystemWatcher.EnableRaisingEvents = true;
 
                 Provider.RemoveFile(e.OldName + fileExt, false);
-                Provider.AddFile(e.Item.Name + fileExt);
+                Provider.AddFile(e.ComponentName + fileExt);
             }
         }
 

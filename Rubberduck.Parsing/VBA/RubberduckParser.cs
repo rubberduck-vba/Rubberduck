@@ -106,7 +106,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var project in _vbe.VBProjects.UnprotectedProjects())
                 {
-                    State.AddProject(project);
+                    State.AddProject(project.HelpFile);
                 }
             }
 
@@ -188,7 +188,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var project in _vbe.VBProjects.UnprotectedProjects())
                 {
-                    State.AddProject(project);
+                    State.AddProject(project.HelpFile);
                 }
             }
 
