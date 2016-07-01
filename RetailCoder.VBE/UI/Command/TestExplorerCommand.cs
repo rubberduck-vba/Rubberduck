@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
@@ -8,16 +9,19 @@ namespace Rubberduck.UI.Command
     {
         private readonly IPresenter _presenter;
 
-        public TestExplorerCommand(IPresenter presenter)
+        public TestExplorerCommand(IPresenter presenter) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }
 
-        public override void Execute(object parameter)
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.TestExplorer; }
+        }
+
+        protected override void ExecuteImpl(object parameter)
         {
             _presenter.Show();
         }
-
-        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.TestExplorer; } }
     }
 }

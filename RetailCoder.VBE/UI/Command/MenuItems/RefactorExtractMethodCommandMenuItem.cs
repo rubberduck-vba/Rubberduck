@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class RefactorExtractMethodCommandMenuItem : CommandMenuItemBase
     {
-        public RefactorExtractMethodCommandMenuItem(ICommand command) 
+        public RefactorExtractMethodCommandMenuItem(CommandBase command) 
             : base(command)
         {
         }

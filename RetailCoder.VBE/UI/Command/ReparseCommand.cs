@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
-using System.Windows.Input;
+using NLog;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.UI.Command.MenuItems;
 
 namespace Rubberduck.UI.Command
@@ -8,7 +9,7 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class ReparseCommandMenuItem : CommandMenuItemBase
     {
-        public ReparseCommandMenuItem(ICommand command) : base(command)
+        public ReparseCommandMenuItem(CommandBase command) : base(command)
         {
         }
 
@@ -23,12 +24,17 @@ namespace Rubberduck.UI.Command
     {
         private readonly RubberduckParserState _state;
 
-        public ReparseCommand(RubberduckParserState state)
+        public ReparseCommand(RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
         }
 
-        public override bool CanExecute(object parameter)
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.ParseAll; }
+        }
+
+        protected override bool CanExecuteImpl(object parameter)
         {
             return _state.Status == ParserState.Pending
                    || _state.Status == ParserState.Ready
@@ -36,7 +42,7 @@ namespace Rubberduck.UI.Command
                    || _state.Status == ParserState.ResolverError;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _state.OnParseRequested(this);
         }

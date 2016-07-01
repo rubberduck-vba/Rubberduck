@@ -6,7 +6,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class RefactorEncapsulateFieldCommandMenuItem : CommandMenuItemBase
     {
-        public RefactorEncapsulateFieldCommandMenuItem(ICommand command) 
+        public RefactorEncapsulateFieldCommandMenuItem(CommandBase command) 
             : base(command)
         {
         }

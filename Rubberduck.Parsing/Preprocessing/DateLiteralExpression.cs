@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Date;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
 using System;
 using System.Globalization;
 

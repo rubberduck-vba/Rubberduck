@@ -83,8 +83,6 @@ namespace Rubberduck.Parsing.VBA
                     if (State.Status == ParserState.Error) { return; }
 
                     var qualifiedName = new QualifiedModuleName(e.Component);
-                    Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName,
-                        State.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
 
                     State.SetModuleState(e.Component, ParserState.ResolvingDeclarations);
                     ResolveDeclarations(qualifiedName.Component,
@@ -108,7 +106,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var project in _vbe.VBProjects.UnprotectedProjects())
                 {
-                    State.AddProject(project);
+                    State.AddProject(project.HelpFile);
                 }
             }
 
@@ -163,8 +161,6 @@ namespace Rubberduck.Parsing.VBA
                     if (State.Status == ParserState.Error) { return; }
 
                     var qualifiedName = new QualifiedModuleName(components[index]);
-                    Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName,
-                        State.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
 
                     State.SetModuleState(components[index], ParserState.ResolvingDeclarations);
                     ResolveDeclarations(qualifiedName.Component,
@@ -192,7 +188,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var project in _vbe.VBProjects.UnprotectedProjects())
                 {
-                    State.AddProject(project);
+                    State.AddProject(project.HelpFile);
                 }
             }
 
@@ -246,9 +242,6 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            SyncComReferences(State.Projects);
-            AddBuiltInDeclarations();
-
             if (toParse.Count == 0)
             {
                 if (componentsRemoved)  // trigger UI updates
@@ -260,18 +253,13 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
             
-            lock (State)  // note, method is invoked from UI thread... really need the lock here?
+            foreach (var component in toParse)
             {
-                foreach (var component in toParse)
-                {
-                    State.SetModuleState(component, ParserState.Pending);
-                }
-                foreach (var component in unchanged)
-                {
-                    // note: seting to 'Parsed' would include them in the resolver walk. 'Ready' excludes them.
-                    State.SetModuleState(component, ParserState.Ready);
-                }
+                State.SetModuleState(component, ParserState.Pending);
             }
+
+            SyncComReferences(State.Projects);
+            AddBuiltInDeclarations();
 
             // invalidation cleanup should go into ParseAsync?
             foreach (var key in _componentAttributes.Keys)
@@ -301,13 +289,8 @@ namespace Rubberduck.Parsing.VBA
                     if (State.Status == ParserState.Error) { return; }
 
                     var qualifiedName = new QualifiedModuleName(toParse[index]);
-                    Logger.Debug("Module '{0}' {1}", qualifiedName.ComponentName,
-                        State.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
 
-                    lock (State)
-                    {
-                        State.SetModuleState(toParse[index], ParserState.ResolvingDeclarations);
-                    }
+                    State.SetModuleState(toParse[index], ParserState.ResolvingDeclarations);
 
                     ResolveDeclarations(qualifiedName.Component,
                         State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
@@ -349,10 +332,7 @@ namespace Rubberduck.Parsing.VBA
 
                 tasks[index] = Task.Run(() =>
                 {
-                    lock (State)
-                    {
-                        State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
-                    }
+                    State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
 
                     ResolveReferences(finder, kvp.Key.Component, kvp.Value);
                 });
@@ -363,14 +343,11 @@ namespace Rubberduck.Parsing.VBA
 
         private void AddBuiltInDeclarations()
         {
-            lock (State)
+            foreach (var customDeclarationLoader in _customDeclarationLoaders)
             {
-                foreach (var customDeclarationLoader in _customDeclarationLoaders)
+                foreach (var declaration in customDeclarationLoader.Load())
                 {
-                    foreach (var declaration in customDeclarationLoader.Load())
-                    {
-                        State.AddDeclaration(declaration);
-                    }
+                    State.AddDeclaration(declaration);
                 }
             }
         }
@@ -512,12 +489,8 @@ namespace Rubberduck.Parsing.VBA
 
         private Task ParseAsync(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
-            lock (State)
-                lock (component)
-                {
-                    State.ClearStateCache(component);
-                    State.SetModuleState(component, ParserState.Pending); // also clears module-exceptions
-                }
+            State.ClearStateCache(component);
+            State.SetModuleState(component, ParserState.Pending); // also clears module-exceptions
 
             var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token, token);
 
@@ -566,11 +539,7 @@ namespace Rubberduck.Parsing.VBA
             var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
             parser.ParseFailure += (sender, e) =>
             {
-                lock (State)
-                    lock (component)
-                    {
-                        State.SetModuleState(component, ParserState.Error, e.Cause as SyntaxErrorException);
-                    }
+                State.SetModuleState(component, ParserState.Error, e.Cause as SyntaxErrorException);
             };
             parser.ParseCompleted += (sender, e) =>
             {
@@ -587,11 +556,8 @@ namespace Rubberduck.Parsing.VBA
                         State.SetModuleState(component, ParserState.Parsed);
                     }
             };
-            lock (State)
-                lock (component)
-                {
-                    State.SetModuleState(component, ParserState.Parsing);
-                }
+            State.SetModuleState(component, ParserState.Parsing);
+                
             parser.Start(token);
         }
 
@@ -611,10 +577,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     projectDeclaration = CreateProjectDeclaration(projectQualifiedName, project);
                     _projectDeclarations.AddOrUpdate(projectQualifiedName.ProjectId, projectDeclaration, (s, c) => projectDeclaration);
-                    lock (State)
-                    {
-                        State.AddDeclaration(projectDeclaration);
-                    }
+                    State.AddDeclaration(projectDeclaration);
                 }
                 Logger.Debug("Creating declarations for module {0}.", qualifiedModuleName.Name);
                 var declarationsListener = new DeclarationSymbolsListener(State, qualifiedModuleName, component.Type, State.GetModuleAnnotations(component), State.GetModuleAttributes(component), projectDeclaration);
@@ -627,10 +590,7 @@ namespace Rubberduck.Parsing.VBA
             catch (Exception exception)
             {
                 Logger.Error(exception, "Exception thrown acquiring declarations for '{0}' (thread {1}).", component.Name, Thread.CurrentThread.ManagedThreadId);
-                lock (State)
-                {
-                    State.SetModuleState(component, ParserState.ResolverError);
-                }
+                State.SetModuleState(component, ParserState.ResolverError);
             }
         }
 
@@ -687,8 +647,6 @@ namespace Rubberduck.Parsing.VBA
                     State.SetModuleState(component, ParserState.ResolverError);
                 }
             }
-            
-            Logger.Debug("'{0}' is {1} (thread {2})", component.Name, State.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
         }
 
         public void Dispose()

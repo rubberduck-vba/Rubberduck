@@ -3,6 +3,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
+using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -20,7 +21,12 @@ namespace Rubberduck.UI.Command.Refactorings
             _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
-        public override bool CanExecute(object parameter)
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.RefactorMoveCloserToUsage; }
+        }
+
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
@@ -35,7 +41,7 @@ namespace Rubberduck.UI.Command.Refactorings
             return canExecute;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null)
             {

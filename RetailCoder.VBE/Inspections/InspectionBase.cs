@@ -54,13 +54,13 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Meta-information about why an inspection exists.
         /// </summary>
-        public virtual string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
+        public virtual string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta", UI.Settings.Settings.Culture); } }
         
         /// <summary>
         /// Gets a localized string representing the type of inspection.
         /// <see cref="InspectionType"/>
         /// </summary>
-        public virtual string InspectionTypeName { get { return InspectionsUI.ResourceManager.GetString(InspectionType.ToString()); } }
+        public virtual string InspectionTypeName { get { return InspectionsUI.ResourceManager.GetString(InspectionType.ToString(), UI.Settings.Settings.Culture); } }
 
         /// <summary>
         /// Gets a string representing the text that must be present in an 

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
+using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
 
@@ -27,7 +28,7 @@ namespace Rubberduck.UI.Controls
 
             SearchResults = new ObservableCollection<SearchResultItem>(searchResults);
 
-            _closeCommand = new DelegateCommand(ExecuteCloseCommand);
+            _closeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCloseCommand);
         }
 
         private ObservableCollection<SearchResultItem> _searchResults;
@@ -49,8 +50,8 @@ namespace Rubberduck.UI.Controls
 
         public string Header { get { return _header; } }
 
-        private readonly ICommand _closeCommand;
-        public ICommand CloseCommand { get { return _closeCommand; } }
+        private readonly CommandBase _closeCommand;
+        public CommandBase CloseCommand { get { return _closeCommand; } }
 
         public Declaration Target { get; set; }
 

@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -21,7 +22,12 @@ namespace Rubberduck.UI.Command.Refactorings
             _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
-        public override bool CanExecute(object parameter)
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.RefactorRename; }
+        }
+
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null)
             {
@@ -32,7 +38,7 @@ namespace Rubberduck.UI.Command.Refactorings
             return _state.Status == ParserState.Ready && target != null && !target.IsBuiltIn;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null) { return; }
 

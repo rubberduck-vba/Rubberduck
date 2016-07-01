@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.UseMeaningfulNameInspectionResultFormat, RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType), Target.IdentifierName); }
+            get { return string.Format(InspectionsUI.UseMeaningfulNameInspectionResultFormat, RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, UI.Settings.Settings.Culture), Target.IdentifierName); }
         }
 
         public override NavigateCodeEventArgs GetNavigationArgs()
@@ -47,7 +47,7 @@ namespace Rubberduck.Inspections
         private readonly IMessageBox _messageBox;
 
         public RenameDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
-            : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, RubberduckUI.Culture)))
+            : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, UI.Settings.Settings.Culture)))
         {
             _target = target;
             _state = state;

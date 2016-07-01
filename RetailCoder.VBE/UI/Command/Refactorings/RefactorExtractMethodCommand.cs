@@ -8,6 +8,7 @@ using System;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using NLog;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -16,7 +17,6 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IIndenter indenter)
             : base (vbe)
@@ -25,7 +25,12 @@ namespace Rubberduck.UI.Command.Refactorings
             _indenter = indenter;
         }
 
-        public override bool CanExecute(object parameter)
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.RefactorExtractMethod; }
+        }
+
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
@@ -52,12 +57,11 @@ namespace Rubberduck.UI.Command.Refactorings
                 && selection.LineCount > 0
                 && !string.IsNullOrWhiteSpace(code);
             */
-
-            _logger.Debug("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            
             return canExecute;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             var declarations = _state.AllDeclarations;
             var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();

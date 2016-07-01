@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Input;
+using NLog;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 
@@ -29,8 +29,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private ICommand _addTodoCommand;
-        public ICommand AddTodoCommand
+        private CommandBase _addTodoCommand;
+        public CommandBase AddTodoCommand
         {
             get
             {
@@ -38,18 +38,18 @@ namespace Rubberduck.UI.Settings
                 {
                     return _addTodoCommand;
                 }
-                return _addTodoCommand = new DelegateCommand(_ =>
+                return _addTodoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
                 {
                     var placeholder = TodoSettings.Count(m => m.Text.StartsWith("PLACEHOLDER")) + 1;
                     TodoSettings.Add(
                         new ToDoMarker(string.Format("PLACEHOLDER{0} ",
-                                                     placeholder == 1 ? string.Empty : placeholder.ToString(CultureInfo.InvariantCulture))));
+                            placeholder == 1 ? string.Empty : placeholder.ToString(CultureInfo.InvariantCulture))));
                 });
             }
         }
 
-        private ICommand _deleteTodoCommand;
-        public ICommand DeleteTodoCommand
+        private CommandBase _deleteTodoCommand;
+        public CommandBase DeleteTodoCommand
         {
             get
             {
@@ -57,7 +57,7 @@ namespace Rubberduck.UI.Settings
                 {
                     return _deleteTodoCommand;
                 }
-                return _deleteTodoCommand = new DelegateCommand(value =>
+                return _deleteTodoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), value =>
                 {
                     TodoSettings.Remove(value as ToDoMarker);
                 });

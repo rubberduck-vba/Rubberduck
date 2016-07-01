@@ -67,7 +67,8 @@ namespace Rubberduck.Inspections
             var module = Selection.QualifiedName.Component.CodeModule;
             var lines = module.Lines[selection.StartLine, selection.LineCount];
 
-            var result = lines.Replace(originalInstruction, newInstruction);
+            var result = lines.Remove(Context.Start.Column, originalInstruction.Length)
+                .Insert(Context.Start.Column, newInstruction);
             module.ReplaceLine(selection.StartLine, result);
         }
 

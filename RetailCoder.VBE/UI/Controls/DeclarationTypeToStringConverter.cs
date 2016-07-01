@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Controls
             if (value is DeclarationType)
             {
                 var type = (DeclarationType)value;
-                var text = RubberduckUI.ResourceManager.GetString("DeclarationType_" + type) ?? string.Empty;
+                var text = RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, UI.Settings.Settings.Culture) ?? string.Empty;
                 return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(text);
             }
 

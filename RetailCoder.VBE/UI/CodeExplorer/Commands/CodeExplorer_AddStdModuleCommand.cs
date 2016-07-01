@@ -1,4 +1,5 @@
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
@@ -9,17 +10,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly VBE _vbe;
 
-        public CodeExplorer_AddStdModuleCommand(VBE vbe)
+        public CodeExplorer_AddStdModuleCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }
 
-        public override bool CanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return GetDeclaration(parameter) != null || _vbe.VBProjects.Count == 1;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (parameter != null)
             {

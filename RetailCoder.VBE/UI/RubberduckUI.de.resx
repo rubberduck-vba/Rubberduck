@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -705,9 +705,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
     <value>'.gitignore' Datei</value>
   </data>
-  <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
-    <value>Neues Repo auf Basis dieses Projektes erstellen</value>
-  </data>
   <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
     <value>Ausstehende Änderungen aktualisieren</value>
   </data>
@@ -1099,7 +1096,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Spätes Binden</value>
   </data>
   <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
-    <value>Tolereante Forderung</value>
+    <value>Tolerante Forderung</value>
   </data>
   <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
     <value>Strikte Forderung</value>
@@ -1276,9 +1273,6 @@ Fugue Icons von Yusuke Kamiyamane</value>
 Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
 … und jedem der dies leist.</value>
   </data>
-  <data name="SourceControl_CloneRepoButtonToolTip" xml:space="preserve">
-    <value>Repository löschen</value>
-  </data>
   <data name="SourceControl_BranchName" xml:space="preserve">
     <value>Zweigname:</value>
   </data>
@@ -1353,9 +1347,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="ParserState_ResolverError" xml:space="preserve">
     <value>Fehler beim Auflösen</value>
-  </data>
-  <data name="ParserState_Resolving" xml:space="preserve">
-    <value>Löse auf ...</value>
   </data>
   <data name="AboutWindow_BlogsHeader" xml:space="preserve">
     <value>Blogs:</value>
@@ -1499,7 +1490,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Ordner-Trennzeichen:</value>
   </data>
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
-    <value>Slash (/)</value>
+    <value>Schrägstrich (/)</value>
   </data>
   <data name="SourceControl_MissingCredentials" xml:space="preserve">
     <value>Fehlende Zugangsdaten</value>
@@ -1515,9 +1506,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="SourceControl_CommitStatus" xml:space="preserve">
     <value>Commit Status.</value>
-  </data>
-  <data name="SortStyle_BySelection" xml:space="preserve">
-    <value>Nach Auswahl</value>
   </data>
   <data name="SortStyle_ByType" xml:space="preserve">
     <value>Nach Typ</value>
@@ -1556,10 +1544,10 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Parserfehler</value>
   </data>
   <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimum Log Level</value>
+    <value>Minimale Logging-Empfindlichkeit</value>
   </data>
   <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
-    <value>Debug</value>
+    <value>Debugging</value>
   </data>
   <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
     <value>Fehler</value>
@@ -1568,13 +1556,13 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Fatal</value>
   </data>
   <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
-    <value>Info</value>
+    <value>Informationen</value>
   </data>
   <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
     <value>Kein Logging</value>
   </data>
   <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
-    <value>Trace</value>
+    <value>Spuren</value>
   </data>
   <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
     <value>Warnung</value>
@@ -1583,24 +1571,132 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Logging-Ordner anzeigen</value>
   </data>
   <data name="information" xml:space="preserve">
-    <value />
+    <value>..\Resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
     <value>In Zwischenablage kopieren</value>
   </data>
   <data name="cross_circle" xml:space="preserve">
-    <value />
+    <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SourceControl_PublishRepo_FailureTitle" xml:space="preserve">
     <value>Veröffentliche Repository</value>
-  </data>
-  <data name="SourceControl_PublishRepoButtonToolTip" xml:space="preserve">
-    <value>Veröffentliche Repository auf Github</value>
   </data>
   <data name="SourceControl_PublishRepo_NoOpenRepo" xml:space="preserve">
     <value>Kein geöffnetes Repository verfügbar, um es auf den Remote-Pfad zu veröffentlichen</value>
   </data>
   <data name="SourceControl_ExternalModifications" xml:space="preserve">
     <value>Eine Quelldatei wurde außerhalb des VBA-Editors geändert. Soll Rubberduck diese nachladen?</value>
+  </data>
+  <data name="SourceControl_InitializeRepositoryTitle">
+    <value>Neues Repository initialisieren</value>
+  </data>
+  <data name="SourceControl_OpenCommandPromptFailureTitle">
+    <value>Fehler beim öffnen der Eingabeaufforderung</value>
+  </data>
+  <data name="SourceControl_FileStatus_Unaltered">
+    <value>Unverändert</value>
+  </data>
+  <data name="SourceControl_FileStatus_Missing">
+    <value>Fehlt</value>
+  </data>
+  <data name="SourceControl_FileStatus_RenamedInWorkDir">
+    <value>Im Arbeitsverzeichnis umbenannt</value>
+  </data>
+  <data name="SourceControl_PublishRepositoryDescription">
+    <value>Veröffentlicht ein existierendes Repository zu einem entfernten Repository. Das offene Projekt muss dazu mit einem Repository verbunden sein.</value>
+  </data>
+  <data name="SourceControl_FilePickerDefaultRepoHeader">
+    <value>Standard Repository-Pfad</value>
+  </data>
+  <data name="SourceControl_UnknownErrorMessage">
+    <value>Bitte setzen Sie die Logging-Empfindlichkeit auf Fatal oder niedriger und erstellen Sie ein Ticket auf unserer GitHub-Seite mit dem Inhalt Ihrer Logdatei in C:\Users\{username}\AppData\Roaming\Rubberduck\Logs.</value>
+  </data>
+  <data name="SourceControl_FileStatus_Unreadable">
+    <value>Unlesbar</value>
+  </data>
+  <data name="SourceControl_FileStatus_RenamedInIndex">
+    <value>Im Index umbenannt</value>
+  </data>
+  <data name="SourceControl_InitializeRepositoryDescription">
+    <value>Neues Repository mit dem geöffneten Projekt erstellen.</value>
+  </data>
+  <data name="SourceControl_FileStatus_Staged">
+    <value>Vorgemerkt</value>
+  </data>
+  <data name="SourceControl_FileStatus_Untracked">
+    <value>Nicht verfolgt</value>
+  </data>
+  <data name="SourceControl_CommandPromptExeLabel">
+    <value>Speicherort der Eingabeaufforderung (cmd.exe / powershell.exe)</value>
+  </data>
+  <data name="SourceControl_CloneRepositoryDescription">
+    <value>Klont das entfernte Repository von der angegebenen URL. Dazu muss ein leeres Projekt in der VBE geöffnet sein.</value>
+  </data>
+  <data name="SourceControl_CloneRepositoryTitle">
+    <value>Klone entferntes Repository</value>
+  </data>
+  <data name="CodeExplorer_OpenProjectProperties">
+    <value>Projekteigenschaften öffnen</value>
+  </data>
+  <data name="SourceControl_NoActiveProject">
+    <value>Kein aktives VBProject</value>
+  </data>
+  <data name="SourceControl_ActivateProject">
+    <value>Bitte öffnen oder aktivieren Sie ein Projekt und versuchen Sie es erneut.</value>
+  </data>
+  <data name="SourceControl_OpenRepositoryTitle">
+    <value>Existierendes Repository öffnen.</value>
+  </data>
+  <data name="SourceControl_PublishRepositoryTitle">
+    <value>Existierendes Repository Veröffentlichen</value>
+  </data>
+  <data name="SourceControl_FileStatus_Ignored">
+    <value>Ignoriert</value>
+  </data>
+  <data name="SourceControl_UnknownErrorTitle">
+    <value>Ein unbekannter Fehler ist aufgetreten.</value>
+  </data>
+  <data name="SourceControl_OpenCommandPromptButtonToolTip">
+    <value>Eingabeaufforderung öffnen</value>
+  </data>
+  <data name="SortStyle_ByCodeOrder">
+    <value>Nach Deklarationsreihenfolge</value>
+  </data>
+  <data name="SourceControl_FileStatus_Removed">
+    <value>Gelöscht</value>
+  </data>
+  <data name="ParserState_ResolvingReferences">
+    <value>Löse Referenzen auf...</value>
+  </data>
+  <data name="SourceControl_FileStatus_TypeChanged">
+    <value>Typ geändert</value>
+  </data>
+  <data name="SourceControl_FilePickerCommandPromptHeader">
+    <value>Eingabeaufforderung</value>
+  </data>
+  <data name="SourceControl_OpenRepositoryDescription">
+    <value>Repository von der Festplatte öffnen. Dazu muss ein leeres Projekt in der VBE geöffnet sein.</value>
+  </data>
+  <data name="SourceControl_FileStatus_Nonexistent">
+    <value>Nicht Vorhanden</value>
+  </data>
+  <data name="SourceControl_FileStatus_Modified">
+    <value>Geändert</value>
+  </data>
+  <data name="SourceControl_ManageRepositories">
+    <value>Verwalten</value>
+  </data>
+  <data name="SourceControl_FileStatus_StagedTypeChange">
+    <value>Änderung der Vormerkung</value>
+  </data>
+  <data name="ParserState_ResolvingDeclarations">
+    <value>Löse Deklarationen auf...</value>
+  </data>
+  <data name="SourceControl_FileStatus_Added">
+    <value>Hinzugefügt</value>
+  </data>
+  <data name="RubberduckFatalError">
+    <value>In Rubberduck ist ein Fehler aufgetreten. Bitte speichern Sie Ihre Arbeit und starten Sie das Hostprogramm neu. Laden Sie dann Ihre Logdatei zu unserer GitHub-Seite hoch.</value>
   </data>
 </root>

@@ -9,7 +9,7 @@ namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class VBAPrecompilationParser
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public VBAConditionalCompilationParser.CompilationUnitContext Parse(string moduleName, string unprocessedCode)
         {
@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing.Preprocessing
             }
             catch (Exception ex)
             {
-                _logger.Warn(ex, "SLL mode failed in module {0}. Retrying using LL.", moduleName);
+                Logger.Warn(ex, "SLL mode failed in module {0}. Retrying using LL.", moduleName);
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;

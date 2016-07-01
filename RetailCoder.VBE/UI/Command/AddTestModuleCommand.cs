@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
@@ -13,22 +14,20 @@ namespace Rubberduck.UI.Command
     public class AddTestModuleCommand : CommandBase
     {
         private readonly VBE _vbe;
-        private readonly RubberduckParserState _state;
         private readonly NewUnitTestModuleCommand _command;
 
-        public AddTestModuleCommand(VBE vbe, RubberduckParserState state, NewUnitTestModuleCommand command)
+        public AddTestModuleCommand(VBE vbe, RubberduckParserState state, NewUnitTestModuleCommand command) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
-            _state = state;
             _command = command;
         }
 
-        public override bool CanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return _vbe.HostSupportsUnitTests();
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _command.NewUnitTestModule(_vbe.ActiveVBProject);
         }

@@ -56,6 +56,12 @@ namespace Rubberduck.SourceControl
 
         public virtual IRepository InitVBAProject(string directory)
         {
+            if (Project == null)
+            {
+                throw new SourceControlException(SourceControlText.GitNotInit,
+                    new Exception(SourceControlText.NoProjectOpen));
+            }
+
             var projectName = GetProjectNameFromDirectory(directory);
             if (projectName != string.Empty && projectName != Project.Name)
             {

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.UI.About;
 
 namespace Rubberduck.UI.Command
@@ -9,7 +10,9 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AboutCommand : CommandBase
     {
-        public override void Execute(object parameter)
+        public AboutCommand() : base(LogManager.GetCurrentClassLogger()) { }
+
+        protected override void ExecuteImpl(object parameter)
         {
             using (var window = new AboutDialog())
             {

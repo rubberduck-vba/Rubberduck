@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 
@@ -11,22 +12,25 @@ namespace Rubberduck.UI.Command
         private readonly VBE _vbe;
         private readonly IIndenter _indenter;
 
-        public IndentCurrentProcedureCommand(VBE vbe, IIndenter indenter)
+        public IndentCurrentProcedureCommand(VBE vbe, IIndenter indenter) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _indenter = indenter;
         }
 
-        public override bool CanExecute(object parameter)
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.IndentProcedure; }
+        }
+
+        protected override bool CanExecuteImpl(object parameter)
         {
             return _vbe.ActiveCodePane != null;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _indenter.IndentCurrentProcedure();
         }
-
-        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.IndentProcedure; } }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.Root;
 
 namespace Rubberduck.Inspections
 {
@@ -9,9 +10,11 @@ namespace Rubberduck.Inspections
     public interface IInspection : IInspectionModel, IComparable<IInspection>, IComparable
     {
         /// <summary>
-        /// Runs code inspection on specified parse trees.
+        /// Runs code inspection and returns inspection results.
         /// </summary>
         /// <returns>Returns inspection results, if any.</returns>
+        [TimedCallIntercept]
+        [EnumerableCounterIntercept]
         IEnumerable<InspectionResultBase> GetInspectionResults();
 
         /// <summary>

@@ -11,6 +11,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
+using Rubberduck.VBEditor.Extensions;
+
 // ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
@@ -54,6 +56,7 @@ namespace Rubberduck.Parsing.VBA
 
     public sealed class RubberduckParserState : IDisposable
     {
+        private readonly VBE _vbe;
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
         private readonly IDictionary<string, VBProject> _projects = new Dictionary<string, VBProject>();
 
@@ -69,13 +72,131 @@ namespace Rubberduck.Parsing.VBA
 
         public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
-        static RubberduckParserState()
+        public RubberduckParserState(VBE vbe, ISinks sinks)
         {
+            _vbe = vbe;
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
             {
                 States.Add((ParserState)value);
             }
+            
+            sinks.ProjectAdded += Sinks_ProjectAdded;
+            sinks.ProjectRemoved += Sinks_ProjectRemoved;
+            sinks.ProjectRenamed += Sinks_ProjectRenamed;
+            
+            sinks.ComponentAdded += Sinks_ComponentAdded;
+            sinks.ComponentRemoved += Sinks_ComponentRemoved;
+            sinks.ComponentRenamed += Sinks_ComponentRenamed;
+        }
+
+        private void Sinks_ProjectAdded(object sender, IProjectEventArgs e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            Logger.Debug("Project '{0}' was added.", e.ProjectId);
+
+            AddProject(e.ProjectId); // note side-effect: assigns ProjectId/HelpFile
+            OnParseRequested(sender);
+        }
+
+        private void Sinks_ProjectRemoved(object sender, IProjectEventArgs e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+            
+            Debug.Assert(e.ProjectId != null);
+
+            RemoveProject(e.ProjectId);
+            OnParseRequested(sender);
+        }
+
+        private void Sinks_ProjectRenamed(object sender, IProjectRenamedEventArgs e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            if (AllDeclarations.Count == 0)
+            {
+                return;
+            }
+
+            Logger.Debug("Project {1} renamed.", e.ProjectId);
+
+            RemoveProject(e.ProjectId);
+            AddProject(e.ProjectId);
+
+            OnParseRequested(sender);
+        }
+
+        private void Sinks_ComponentAdded(object sender, IComponentEventArgs e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            if (AllDeclarations.Count == 0)
+            {
+                return;
+            }
+
+            Logger.Debug("Component '{0}' was added.", e.ComponentName);
+            OnParseRequested(sender);
+        }
+
+        private void Sinks_ComponentRemoved(object sender, IComponentEventArgs e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            if (AllDeclarations.Count == 0)
+            {
+                return;
+            }
+
+            Logger.Debug("Component '{0}' was removed.", e.ComponentName);
+            OnParseRequested(sender);
+        }
+
+        private void Sinks_ComponentRenamed(object sender, IComponentRenamedEventArgs e)
+        {
+            if (!_vbe.IsInDesignMode()) { return; }
+
+            if (AllDeclarations.Count == 0)
+            {
+                return;
+            }
+
+            Logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.ComponentName);
+
+            var componentIsWorksheet = false;
+            foreach (var declaration in AllUserDeclarations)
+            {
+                if (declaration.ProjectId == e.ProjectId &&
+                    declaration.DeclarationType == DeclarationType.ClassModule &&
+                    declaration.IdentifierName == e.OldName)
+                {
+                    foreach (var superType in ((ClassModuleDeclaration) declaration).Supertypes)
+                    {
+                        if (superType.IdentifierName == "Worksheet")
+                        {
+                            componentIsWorksheet = true;
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+            if (componentIsWorksheet)
+            {
+                RemoveProject(e.ProjectId);
+                Logger.Debug("Project '{0}' was removed.", e.ComponentName);
+
+                AddProject(e.ProjectId);
+            }
+            else
+            {
+                RemoveRenamedComponent(e.ProjectId, e.OldName);
+            }
+
+            OnParseRequested(sender);
         }
 
         public void OnStatusMessageUpdate(string message)
@@ -88,52 +209,53 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void AddProject(VBProject project)
+        public void AddProject(string projectId)
         {
-            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+            var projects = new List<VBProject>();
+            foreach (VBProject p in _vbe.VBProjects)
             {
-                // adding protected project to parser state is asking for COMExceptions..
+                if (p.HelpFile != null && _projects.Keys.Contains(p.HelpFile))
+                {
+                    continue;
+                }
+
+                projects.Add(p);
+            }
+
+            if (projects.Count == 0)
+            {
+                Logger.Debug("Project was not found and will not be added to parser state.");
                 return;
             }
 
-            //assign a hashcode if no helpfile is present
-            if (string.IsNullOrEmpty(project.HelpFile))
+            foreach (var project in projects)
             {
-                project.HelpFile = project.GetHashCode().ToString();
-            }
-
-            //loop until the helpfile is unique for this host session
-            while (!IsProjectIdUnique(project.HelpFile))
-            {
-                project.HelpFile = (project.GetHashCode() ^ project.HelpFile.GetHashCode()).ToString();
-            }
-
-            var projectId = project.HelpFile;
-            if (!_projects.ContainsKey(projectId))
-            {
-                _projects.Add(projectId, project);
-            }
-
-            foreach (VBComponent component in project.VBComponents)
-            {
-                _moduleStates.TryAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending));
-            }
-        }
-
-        private bool IsProjectIdUnique(string id)
-        {
-            foreach (var project in _projects)
-            {
-                if (project.Key == id)
+                if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
                 {
-                    return false;
+                    // adding protected project to parser state is asking for COMExceptions..
+                    Logger.Debug("Project is protected and will not be added to parser state.");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(project.HelpFile))
+                {
+                    // assigns the help file and returns the value to reduce COM calls
+                    projectId = project.AssignProjectId();
+                }
+
+                if (!_projects.ContainsKey(projectId))
+                {
+                    _projects.Add(projectId, project);
+                }
+
+                foreach (VBComponent component in project.VBComponents)
+                {
+                    _moduleStates.TryAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending));
                 }
             }
-
-            return true;
         }
 
-        public void RemoveProject(string projectId)
+        private void RemoveProject(string projectId)
         {
             VBProject project = null;
             foreach (var p in Projects)
@@ -154,12 +276,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 ClearStateCache(project);
             }
-        }
-
-        public void RemoveProject(VBProject project)
-        {
-            RemoveProject(project.HelpFile);
-            ClearStateCache(project);
         }
 
         public List<VBProject> Projects
@@ -287,7 +403,6 @@ namespace Rubberduck.Parsing.VBA
             if (state != default(ParserState))
             {
                 // if all modules are in the same state, we have our result.
-                Logger.Debug("ParserState evaluates to '{0}' (thread {1})", state, Thread.CurrentThread.ManagedThreadId);
                 return state;
             }
 
@@ -300,14 +415,10 @@ namespace Rubberduck.Parsing.VBA
             // error state takes precedence over every other state
             if (stateCounts[(int)ParserState.Error] > 0)
             {
-                Logger.Debug("ParserState evaluates to '{0}' (thread {1})", ParserState.Error,
-                Thread.CurrentThread.ManagedThreadId);
                 return ParserState.Error;
             }
             if (stateCounts[(int)ParserState.ResolverError] > 0)
             {
-                Logger.Debug("ParserState evaluates to '{0}' (thread {1})", ParserState.ResolverError,
-                Thread.CurrentThread.ManagedThreadId);
                 return ParserState.ResolverError;
             }
 
@@ -367,9 +478,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 #endif
-
-            Logger.Debug("ParserState evaluates to '{0}' (thread {1})", result,
-            Thread.CurrentThread.ManagedThreadId);
+            
             return result;
         }
 
@@ -406,7 +515,6 @@ namespace Rubberduck.Parsing.VBA
                 if (_status != value)
                 {
                     _status = value;
-                    Logger.Debug("ParserState changed to '{0}', raising OnStateChanged", value);
                     OnStateChanged(_status);
                 }
             }
@@ -564,16 +672,16 @@ namespace Rubberduck.Parsing.VBA
                 byte _;
                 while (!declarations.TryRemove(declaration, out _))
                 {
-                    Logger.Debug("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                    Logger.Warn("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
                 }
             }
             while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
             {
-                Logger.Debug("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                Logger.Warn("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
             }
         }
 
-        public void ClearStateCache(VBProject project, bool notifyStateChanged = false)
+        private void ClearStateCache(VBProject project, bool notifyStateChanged = false)
         {
             try
             {
@@ -724,13 +832,12 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
-        public bool RemoveRenamedComponent(VBComponent component, string oldComponentName)
+        private bool RemoveRenamedComponent(string projectId, string oldComponentName)
         {
-            var match = new QualifiedModuleName(component, oldComponentName);
             var keys = new List<QualifiedModuleName>();
             foreach (var key in _moduleStates.Keys)
             {
-                if (key.ComponentName == oldComponentName && key.ProjectId == match.ProjectId)
+                if (key.ComponentName == oldComponentName && key.ProjectId == projectId)
                 {
                     keys.Add(key);
                 }
@@ -743,9 +850,6 @@ namespace Rubberduck.Parsing.VBA
                 OnStateChanged(ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
                 OnStateChanged(ParserState.Ready);   // trigger find all references &c. updates
             }
-
-            _projects.Remove(match.ProjectId);
-            _projects.Add(match.ProjectId, component.Collection.Parent);
 
             return success;
         }
@@ -1038,11 +1142,6 @@ namespace Rubberduck.Parsing.VBA
                 {
                     Logger.Error(exception);
                 }
-            }
-
-            if (_selectedDeclaration != null)
-            {
-                Logger.Debug("Current selection ({0}) is '{1}' ({2})", selection, _selectedDeclaration.IdentifierName, _selectedDeclaration.DeclarationType);
             }
 
             return _selectedDeclaration;

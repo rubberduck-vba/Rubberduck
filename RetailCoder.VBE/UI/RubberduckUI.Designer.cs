@@ -2812,6 +2812,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file to our GitHub page..
+        /// </summary>
+        public static string RubberduckFatalError {
+            get {
+                return ResourceManager.GetString("RubberduckFatalError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck Add-In could not be loaded.
         /// </summary>
         public static string RubberduckLoadFailure {
@@ -3253,11 +3262,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clone Repository.
+        ///   Looks up a localized string similar to Clones remote repository from provided URI. Requires an empty project to be open in the VBE..
         /// </summary>
-        public static string SourceControl_CloneRepoButtonToolTip {
+        public static string SourceControl_CloneRepositoryDescription {
             get {
-                return ResourceManager.GetString("SourceControl_CloneRepoButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("SourceControl_CloneRepositoryDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clone Remote Repository.
+        /// </summary>
+        public static string SourceControl_CloneRepositoryTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_CloneRepositoryTitle", resourceCulture);
             }
         }
         
@@ -3559,6 +3577,132 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Added.
+        /// </summary>
+        public static string SourceControl_FileStatus_Added {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignored.
+        /// </summary>
+        public static string SourceControl_FileStatus_Ignored {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Ignored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing.
+        /// </summary>
+        public static string SourceControl_FileStatus_Missing {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modified.
+        /// </summary>
+        public static string SourceControl_FileStatus_Modified {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Modified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nonexistent.
+        /// </summary>
+        public static string SourceControl_FileStatus_Nonexistent {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Nonexistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removed.
+        /// </summary>
+        public static string SourceControl_FileStatus_Removed {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Removed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renamed in index.
+        /// </summary>
+        public static string SourceControl_FileStatus_RenamedInIndex {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_RenamedInIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renamed in working directory.
+        /// </summary>
+        public static string SourceControl_FileStatus_RenamedInWorkDir {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_RenamedInWorkDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Staged.
+        /// </summary>
+        public static string SourceControl_FileStatus_Staged {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Staged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Staged type change.
+        /// </summary>
+        public static string SourceControl_FileStatus_StagedTypeChange {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_StagedTypeChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type changed.
+        /// </summary>
+        public static string SourceControl_FileStatus_TypeChanged {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_TypeChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unaltered.
+        /// </summary>
+        public static string SourceControl_FileStatus_Unaltered {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Unaltered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unreadable.
+        /// </summary>
+        public static string SourceControl_FileStatus_Unreadable {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Unreadable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Untracked.
+        /// </summary>
+        public static string SourceControl_FileStatus_Untracked {
+            get {
+                return ResourceManager.GetString("SourceControl_FileStatus_Untracked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Global Settings.
         /// </summary>
         public static string SourceControl_GlobalSettings {
@@ -3613,11 +3757,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Init New Repo from this Project.
+        ///   Looks up a localized string similar to Creates a new repository from the open project..
         /// </summary>
-        public static string SourceControl_InitRepoButtonToolTip {
+        public static string SourceControl_InitializeRepositoryDescription {
             get {
-                return ResourceManager.GetString("SourceControl_InitRepoButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("SourceControl_InitializeRepositoryDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initialize New Repository.
+        /// </summary>
+        public static string SourceControl_InitializeRepositoryTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_InitializeRepositoryTitle", resourceCulture);
             }
         }
         
@@ -3636,6 +3789,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_LoginInstructions {
             get {
                 return ResourceManager.GetString("SourceControl_LoginInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage.
+        /// </summary>
+        public static string SourceControl_ManageRepositories {
+            get {
+                return ResourceManager.GetString("SourceControl_ManageRepositories", resourceCulture);
             }
         }
         
@@ -3766,6 +3928,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open repository from disk. Requires an empty project to be open in the VBE..
+        /// </summary>
+        public static string SourceControl_OpenRepositoryDescription {
+            get {
+                return ResourceManager.GetString("SourceControl_OpenRepositoryDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Existing Repository.
+        /// </summary>
+        public static string SourceControl_OpenRepositoryTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_OpenRepositoryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Working Directory.
         /// </summary>
         public static string SourceControl_OpenWorkingDirectory {
@@ -3829,11 +4009,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish repository to GitHub.
+        ///   Looks up a localized string similar to Publishes an existing repository to a remote location. Requires the open project to be connected to a repository..
         /// </summary>
-        public static string SourceControl_PublishRepoButtonToolTip {
+        public static string SourceControl_PublishRepositoryDescription {
             get {
-                return ResourceManager.GetString("SourceControl_PublishRepoButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("SourceControl_PublishRepositoryDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish Existing Repository.
+        /// </summary>
+        public static string SourceControl_PublishRepositoryTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishRepositoryTitle", resourceCulture);
             }
         }
         
@@ -3951,6 +4140,24 @@ namespace Rubberduck.UI {
         public static string SourceControl_UndoTitle {
             get {
                 return ResourceManager.GetString("SourceControl_UndoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please set your log level to Fatal or lower and create an issue on our GitHub page with the contents of your log file in C:\Users\{username}\AppData\Roaming\Rubberduck\Logs..
+        /// </summary>
+        public static string SourceControl_UnknownErrorMessage {
+            get {
+                return ResourceManager.GetString("SourceControl_UnknownErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unknown error occurred..
+        /// </summary>
+        public static string SourceControl_UnknownErrorTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_UnknownErrorTitle", resourceCulture);
             }
         }
         
