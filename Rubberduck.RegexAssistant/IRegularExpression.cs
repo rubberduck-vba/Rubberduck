@@ -7,19 +7,20 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant
 {
-    internal interface IRegularExpression : IDescribable
+    public interface IRegularExpression : IDescribable
     {
         Quantifier Quantifier { get; }
+        IList<IRegularExpression> Subexpressions { get; }
     }
 
     internal class ConcatenatedExpression : IRegularExpression
     {
         private readonly Quantifier _quantifier;
-        internal readonly IList<IRegularExpression> Subexpressions;
+        private readonly IList<IRegularExpression> _subexpressions;
 
         public ConcatenatedExpression(IList<IRegularExpression> subexpressions)
         {
-            Subexpressions = subexpressions;
+            _subexpressions = subexpressions;
             _quantifier = new Quantifier(string.Empty); // these are always exactly once. Quantifying happens through groups
         }
 
@@ -27,7 +28,7 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return string.Join(Environment.NewLine, Subexpressions.Select(exp => exp.Description));
+                return string.Join(Environment.NewLine, _subexpressions.Select(exp => exp.Description));
             }
         }
 
@@ -36,6 +37,14 @@ namespace Rubberduck.RegexAssistant
             get
             {
                 return _quantifier;
+            }
+        }
+
+        public IList<IRegularExpression> Subexpressions
+        {
+            get
+            {
+                return _subexpressions;
             }
         }
     }
@@ -43,11 +52,11 @@ namespace Rubberduck.RegexAssistant
     internal class AlternativesExpression : IRegularExpression
     {
         private readonly Quantifier _quantifier;
-        internal readonly IList<IRegularExpression> Subexpressions;
+        private readonly IList<IRegularExpression> _subexpressions;
 
         public AlternativesExpression(IList<IRegularExpression> subexpressions)
         {
-            Subexpressions = subexpressions;
+            _subexpressions = subexpressions;
             _quantifier = new Quantifier(string.Empty); // these are always exactly once. Quantifying happens through groups
         }
 
@@ -55,7 +64,7 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return AssistantResources.ExpressionDescription_AlternativesExpression + Environment.NewLine + string.Join(Environment.NewLine, Subexpressions.Select(exp => exp.Description));
+                return AssistantResources.ExpressionDescription_AlternativesExpression + Environment.NewLine + string.Join(Environment.NewLine, _subexpressions.Select(exp => exp.Description));
             }
         }
 
@@ -64,6 +73,14 @@ namespace Rubberduck.RegexAssistant
             get
             {
                 return _quantifier;
+            }
+        }
+
+        public IList<IRegularExpression> Subexpressions
+        {
+            get
+            {
+                return _subexpressions;
             }
         }
     }
@@ -95,6 +112,14 @@ namespace Rubberduck.RegexAssistant
             }
         }
 
+        public IList<IRegularExpression> Subexpressions
+        {
+            get
+            {
+                return new List<IRegularExpression>(Enumerable.Empty<IRegularExpression>());
+            }
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is SingleAtomExpression)
@@ -104,6 +129,12 @@ namespace Rubberduck.RegexAssistant
             }
             return false;
         }
+
+        public override int GetHashCode()
+        {
+            return Atom.GetHashCode() ^ Quantifier.GetHashCode();
+        }
+
     }
 
     internal static class RegularExpression

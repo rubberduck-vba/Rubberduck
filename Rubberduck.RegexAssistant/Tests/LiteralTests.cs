@@ -63,7 +63,9 @@ namespace RegexAssistantTests
                 {
                     Literal cut = new Literal("a"+blowup);
                 }
+#pragma warning disable CS0168 // Variable is declared but never used
                 catch (ArgumentException ex)
+#pragma warning restore CS0168 // Variable is declared but never used
                 {
                     Assert.IsTrue(true); // Assert.Pass();
                     continue;
@@ -82,7 +84,9 @@ namespace RegexAssistantTests
                 {
                     Literal cut = new Literal(escape);
                 }
+#pragma warning disable CS0168 // Variable is declared but never used
                 catch (ArgumentException ex)
+#pragma warning restore CS0168 // Variable is declared but never used
                 {
                     Assert.IsTrue(true); // Assert.Pass();
                     continue;

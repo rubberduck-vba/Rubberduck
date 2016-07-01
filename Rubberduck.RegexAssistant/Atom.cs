@@ -94,6 +94,11 @@ namespace Rubberduck.RegexAssistant
             }
             return false;
         }
+
+        public override int GetHashCode()
+        {
+            return _specifier.GetHashCode();
+        }
     }
 
     internal class Group : IAtom
@@ -137,6 +142,11 @@ namespace Rubberduck.RegexAssistant
                 return (obj as Group)._specifier.Equals(_specifier);
             }
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return _specifier.GetHashCode();
         }
     }
 
@@ -244,6 +254,11 @@ namespace Rubberduck.RegexAssistant
                 return (obj as Literal)._specifier.Equals(_specifier);
             }
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return _specifier.GetHashCode();
         }
     }
 }

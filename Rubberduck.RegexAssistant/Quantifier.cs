@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant
 {
-    internal class Quantifier
+    public class Quantifier
     {
         public static readonly string Pattern = @"(?<quantifier>(?<!\\)[\?\*\+]|(?<!\\)\{(\d+)(,\d*)?(?<!\\)\})";
         private static readonly Regex Matcher = new Regex(@"^\{(?<min>\d+)(?<max>,\d*)?\}$");
@@ -103,7 +103,7 @@ namespace Rubberduck.RegexAssistant
         }
     }
 
-    internal enum QuantifierKind
+    public enum QuantifierKind
     {
         None, Expression, Wildcard
     }
