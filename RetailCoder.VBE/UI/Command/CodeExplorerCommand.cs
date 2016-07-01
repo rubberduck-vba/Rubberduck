@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
@@ -11,7 +12,7 @@ namespace Rubberduck.UI.Command
     {
         private readonly IPresenter _presenter;
 
-        public CodeExplorerCommand(IPresenter presenter)
+        public CodeExplorerCommand(IPresenter presenter) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }
@@ -21,7 +22,7 @@ namespace Rubberduck.UI.Command
             get { return RubberduckHotkey.CodeExplorer; }
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _presenter.Show();
         }

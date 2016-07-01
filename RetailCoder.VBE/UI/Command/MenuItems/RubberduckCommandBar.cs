@@ -6,7 +6,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
-using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -30,7 +29,7 @@ namespace Rubberduck.UI.Command.MenuItems
             Initialize();
         }
 
-        private void _statusButton_Click(CommandBarButton ctrl, ref bool cancelDefault)
+        private void _statusButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             if (_state.Status == ParserState.Error)
             {
@@ -40,7 +39,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public void SetStatusText(string value = null)
         {
-            var text = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status);
+            var text = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status, UI.Settings.Settings.Culture);
             UiDispatcher.Invoke(() => _statusButton.Caption = text);
         }
 
@@ -62,11 +61,8 @@ namespace Rubberduck.UI.Command.MenuItems
                     declaration.QualifiedSelection.Selection,
                     declaration.QualifiedName.QualifiedModuleName,
                     declaration.IdentifierName,
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
-                    string.IsNullOrEmpty(declaration.AsTypeName)
-                        ? string.Empty
-                        : ": " + typeName);
-
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
+                    string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + typeName);
                 _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
                     ? _selectionButton.Caption
                     : declaration.DescriptionString;
@@ -82,7 +78,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             if (_state.Status != ParserState.ResolvedDeclarations)
             {
-                SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status));
+                SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status, UI.Settings.Settings.Culture));
             }
         }
 
@@ -97,7 +93,7 @@ namespace Rubberduck.UI.Command.MenuItems
             }
         }
 
-        private void Initialize()
+        public void Initialize()
         {
             _commandbar = _vbe.CommandBars.Add("Rubberduck", MsoBarPosition.msoBarTop, false, true);
 
@@ -121,7 +117,7 @@ namespace Rubberduck.UI.Command.MenuItems
             _commandbar.Visible = true;
         }
 
-        private void refreshButton_Click(CommandBarButton ctrl, ref bool cancelDefault)
+        private void refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             OnRefresh();
         }

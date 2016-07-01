@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
@@ -22,7 +23,11 @@ namespace Rubberduck.UI.Command
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
 
-        public ShowParserErrorsCommand(INavigateCommand navigateCommand, RubberduckParserState state, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
+        public ShowParserErrorsCommand(INavigateCommand navigateCommand,
+            RubberduckParserState state,
+            ISearchResultsWindowViewModel viewModel,
+            SearchResultPresenterInstanceManager presenterService)
+            : base(LogManager.GetCurrentClassLogger())
         {
             _navigateCommand = navigateCommand;
             _state = state;
@@ -69,7 +74,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (_viewModel == null)
             {

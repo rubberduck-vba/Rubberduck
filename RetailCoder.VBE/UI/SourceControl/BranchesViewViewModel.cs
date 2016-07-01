@@ -15,21 +15,21 @@ namespace Rubberduck.UI.SourceControl
 
         public BranchesViewViewModel()
         {
-            _newBranchCommand = new DelegateCommand(_ => CreateBranch(), _ => Provider != null);
-            _mergeBranchCommand = new DelegateCommand(_ => MergeBranch(), _ => Provider != null);
+            _newBranchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CreateBranch(), _ => Provider != null);
+            _mergeBranchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => MergeBranch(), _ => Provider != null);
 
-            _createBranchOkButtonCommand = new DelegateCommand(_ => CreateBranchOk(), _ => !IsNotValidBranchName);
-            _createBranchCancelButtonCommand = new DelegateCommand(_ => CreateBranchCancel());
+            _createBranchOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CreateBranchOk(), _ => !IsNotValidBranchName);
+            _createBranchCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CreateBranchCancel());
 
-            _mergeBranchesOkButtonCommand = new DelegateCommand(_ => MergeBranchOk(), _ => SourceBranch != DestinationBranch);
-            _mergeBranchesCancelButtonCommand = new DelegateCommand(_ => MergeBranchCancel());
+            _mergeBranchesOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => MergeBranchOk(), _ => SourceBranch != DestinationBranch);
+            _mergeBranchesCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => MergeBranchCancel());
 
             _deleteBranchToolbarButtonCommand =
-                new DelegateCommand(isBranchPublished => DeleteBranch(bool.Parse((string) isBranchPublished)),
+                new DelegateCommand(LogManager.GetCurrentClassLogger(), isBranchPublished => DeleteBranch(bool.Parse((string) isBranchPublished)),
                     isBranchPublished => CanDeleteBranch(bool.Parse((string)isBranchPublished)));
 
-            _publishBranchToolbarButtonCommand = new DelegateCommand(_ => PublishBranch(), _ => !string.IsNullOrEmpty(CurrentUnpublishedBranch));
-            _unpublishBranchToolbarButtonCommand = new DelegateCommand(_ => UnpublishBranch(), _ => !string.IsNullOrEmpty(CurrentPublishedBranch));
+            _publishBranchToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PublishBranch(), _ => !string.IsNullOrEmpty(CurrentUnpublishedBranch));
+            _unpublishBranchToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UnpublishBranch(), _ => !string.IsNullOrEmpty(CurrentPublishedBranch));
         }
 
         private ISourceControlProvider _provider;

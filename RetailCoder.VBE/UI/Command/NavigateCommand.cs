@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Input;
+using NLog;
 
 namespace Rubberduck.UI.Command
 {
@@ -11,7 +12,9 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class NavigateCommand : CommandBase, INavigateCommand
     {
-        public override void Execute(object parameter)
+        public NavigateCommand() : base(LogManager.GetCurrentClassLogger()) { }
+
+        protected override void ExecuteImpl(object parameter)
         {
             var param = parameter as NavigateCodeEventArgs;
             if (param == null || param.QualifiedName.Component == null)

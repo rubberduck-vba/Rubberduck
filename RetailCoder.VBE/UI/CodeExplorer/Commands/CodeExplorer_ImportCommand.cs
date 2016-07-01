@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 
@@ -11,7 +12,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly IOpenFileDialog _openFileDialog;
 
-        public CodeExplorer_ImportCommand(IOpenFileDialog openFileDialog)
+        public CodeExplorer_ImportCommand(IOpenFileDialog openFileDialog) : base(LogManager.GetCurrentClassLogger())
         {
             _openFileDialog = openFileDialog;
 
@@ -24,7 +25,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _openFileDialog.CheckFileExists = true;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             VBProject project;
 

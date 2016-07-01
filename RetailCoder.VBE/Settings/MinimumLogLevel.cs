@@ -10,7 +10,7 @@ namespace Rubberduck.Settings
         public MinimumLogLevel(int ordinal, string logLevelName)
         {
             _ordinal = ordinal;
-            _name = RubberduckUI.ResourceManager.GetString("GeneralSettings_" + logLevelName + "LogLevel");
+            _name = RubberduckUI.ResourceManager.GetString("GeneralSettings_" + logLevelName + "LogLevel", UI.Settings.Settings.Culture);
         }
 
         public int Ordinal

@@ -21,12 +21,12 @@ namespace Rubberduck.UI.Command.Refactorings
             _state = state;
         }
 
-        public override bool CanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return _state.Status == ParserState.Ready;
         }
 
-        public override void Execute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             using (var view = new RenameDialog())
             {

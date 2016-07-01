@@ -23,7 +23,7 @@ namespace Rubberduck.Settings
         [XmlIgnore]
         public string Prompt
         {
-            get { return RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name); } 
+            get { return RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name, UI.Settings.Settings.Culture); } 
         }
 
         public string ToMenuHotkeyString()

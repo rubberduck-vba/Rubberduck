@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Settings.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var styles = (IEnumerable<EndOfLineCommentStyle>)value;
-            return styles.Select(s => RubberduckUI.ResourceManager.GetString("EndOfLineCommentStyle_" + s)).ToArray();
+            return styles.Select(s => RubberduckUI.ResourceManager.GetString("EndOfLineCommentStyle_" + s, UI.Settings.Settings.Culture)).ToArray();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

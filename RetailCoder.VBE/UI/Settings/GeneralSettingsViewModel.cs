@@ -2,7 +2,7 @@
 using System.Linq;
 using Rubberduck.Settings;
 using Rubberduck.Common;
-using System.Windows.Input;
+using NLog;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Settings
             LogLevels = new ObservableCollection<MinimumLogLevel>(LogLevelHelper.LogLevels.Select(l => new MinimumLogLevel(l.Ordinal, l.Name)));
             SelectedLogLevel = LogLevels.First(l => l.Ordinal == config.UserSettings.GeneralSettings.MinimumLogLevel);
 
-            _showLogFolderCommand = new DelegateCommand(_ => ShowLogFolder());
+            _showLogFolderCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowLogFolder());
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 

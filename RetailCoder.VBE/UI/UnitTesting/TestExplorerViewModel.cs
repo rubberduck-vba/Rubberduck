@@ -4,8 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -55,24 +55,24 @@ namespace Rubberduck.UI.UnitTesting
             _addTestMethodCommand = new AddTestMethodCommand(vbe, state, newTestMethodCommand);
             _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, state, newTestMethodCommand);
 
-            _refreshCommand = new DelegateCommand(ExecuteRefreshCommand, CanExecuteRefreshCommand);
-            _repeatLastRunCommand = new DelegateCommand(ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
-            _runNotExecutedTestsCommand = new DelegateCommand(ExecuteRunNotExecutedTestsCommand, CanExecuteRunNotExecutedTestsCommand);
-            _runFailedTestsCommand = new DelegateCommand(ExecuteRunFailedTestsCommand, CanExecuteRunFailedTestsCommand);
-            _runPassedTestsCommand = new DelegateCommand(ExecuteRunPassedTestsCommand, CanExecuteRunPassedTestsCommand);
-            _runSelectedTestCommand = new DelegateCommand(ExecuteSelectedTestCommand, CanExecuteSelectedTestCommand);
+            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRefreshCommand, CanExecuteRefreshCommand);
+            _repeatLastRunCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
+            _runNotExecutedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunNotExecutedTestsCommand, CanExecuteRunNotExecutedTestsCommand);
+            _runFailedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunFailedTestsCommand, CanExecuteRunFailedTestsCommand);
+            _runPassedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunPassedTestsCommand, CanExecuteRunPassedTestsCommand);
+            _runSelectedTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestCommand, CanExecuteSelectedTestCommand);
 
-            _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
+            _copyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand);
 
-            _openTestSettingsCommand = new DelegateCommand(OpenSettings);
+            _openTestSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
-            _setOutcomeGroupingCommand = new DelegateCommand(param =>
+            _setOutcomeGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 GroupByOutcome = (bool)param;
                 GroupByLocation = !(bool)param;
             });
 
-            _setLocationGroupingCommand = new DelegateCommand(param =>
+            _setLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 GroupByLocation = (bool)param;
                 GroupByOutcome = !(bool)param;

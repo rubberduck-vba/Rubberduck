@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
@@ -40,23 +41,23 @@ namespace Rubberduck.UI.Inspections
             _clipboard = clipboard;
             _configService = configService;
             _operatingSystem = operatingSystem;
-            _refreshCommand = new DelegateCommand(async param => await Task.Run(() => ExecuteRefreshCommandAsync()), CanExecuteRefreshCommand);
-            _disableInspectionCommand = new DelegateCommand(ExecuteDisableInspectionCommand);
-            _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
-            _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
-            _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
-            _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
-            _openSettingsCommand = new DelegateCommand(OpenSettings);
+            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), async param => await Task.Run(() => ExecuteRefreshCommandAsync()), CanExecuteRefreshCommand);
+            _disableInspectionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteDisableInspectionCommand);
+            _quickFixCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
+            _quickFixInModuleCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInModuleCommand);
+            _quickFixInProjectCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProjectCommand);
+            _copyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
+            _openSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
             _configService.SettingsChanged += _configService_SettingsChanged;
 
-            _setInspectionTypeGroupingCommand = new DelegateCommand(param =>
+            _setInspectionTypeGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 GroupByInspectionType = (bool)param;
                 GroupByLocation = !(bool)param;
             });
 
-            _setLocationGroupingCommand = new DelegateCommand(param =>
+            _setLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 GroupByLocation = (bool)param;
                 GroupByInspectionType = !(bool)param;
