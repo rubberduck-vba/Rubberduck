@@ -181,16 +181,6 @@ namespace Rubberduck.VBEditor
             _projectId = GetProjectId(_project);
 
             _contentHashCode = 0;
-            if (component == null)
-            {
-                return;
-            }
-
-            var module = component.CodeModule;
-            _contentHashCode = module.CountOfLines > 0
-                // ReSharper disable once UseIndexedProperty
-                ? module.get_Lines(1, module.CountOfLines).GetHashCode()
-                : 0;
         }
 
         /// <summary>
