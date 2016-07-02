@@ -459,7 +459,7 @@
                         <Image Source="{StaticResource RefreshImage}" />
                     </Button>
                     <Separator />
-                    <Menu Style="{DynamicResource MenuStyle1}">
+                    <Menu Style="{DynamicResource PrettyMenuStyle}">
                         <MenuItem Header="{Resx Key=SourceControl_ManageRepositories, ResxName=Rubberduck.UI.RubberduckUI}">
                             <MenuItem Command="{Binding OpenRepoCommand, Mode=OneWay}">
                                 <MenuItem.Header>
