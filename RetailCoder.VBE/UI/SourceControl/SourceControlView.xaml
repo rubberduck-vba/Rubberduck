@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<UserControl x:Class="Rubberduck.UI.SourceControl.SourceControlView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,6 @@
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="Rubberduck.UI.SourceControl.SourceControlView"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type sourceControl:SourceControlViewViewModel}, IsDesignTimeCreatable=False}">
@@ -289,7 +288,7 @@
                                             <DockPanel x:Name="Header">
                                                 <ContentPresenter ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                                                 <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" HorizontalOffset="-1" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Bottom">
-                                                    <Themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
+                                                    <themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
                                                         <Border x:Name="SubMenuBorder" BorderBrush="{StaticResource ToolBarMenuBorder}" BorderThickness="1" Background="{StaticResource ToolBarSubMenuBackground}">
                                                             <Grid>
                                                                 <Rectangle Fill="{StaticResource ToolBarSubMenuBackground}" HorizontalAlignment="Left" Height="1" Margin="0,-1,0,0" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=Header}"/>
@@ -307,7 +306,7 @@
                                                                 </ScrollViewer>
                                                             </Grid>
                                                         </Border>
-                                                    </Themes:SystemDropShadowChrome>
+                                                    </themes:SystemDropShadowChrome>
                                                 </Popup>
                                             </DockPanel>
                                         </Border>
@@ -380,7 +379,7 @@
                                             <ContentPresenter Grid.Column="0" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                                             <Path Grid.Column="1" DockPanel.Dock="Right" Data="{StaticResource RightArrow}" Fill="{TemplateBinding Foreground}" Margin="4,0,6,0" VerticalAlignment="Center"/>
                                             <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Right">
-                                                <Themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
+                                                <themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
                                                     <Border x:Name="SubMenuBorder" BorderBrush="{StaticResource ToolBarMenuBorder}" BorderThickness="1" Background="{StaticResource ToolBarSubMenuBackground}" Grid.IsSharedSizeScope="true">
                                                         <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                                             <Grid RenderOptions.ClearTypeHint="Enabled">
@@ -395,7 +394,7 @@
                                                             </Grid>
                                                         </ScrollViewer>
                                                     </Border>
-                                                </Themes:SystemDropShadowChrome>
+                                                </themes:SystemDropShadowChrome>
                                             </Popup>
                                         </Grid>
                                         <ControlTemplate.Triggers>
