@@ -21,8 +21,8 @@ namespace Rubberduck.UI.Command.MenuItems
             get { return true; }
         }
 
-        public override Image Image { get { return Resources.ExtractMethod_6786_32; } }
-        public override Image Mask { get { return Resources.ExtractMethod_6786_32_Mask; } }
+        public override Image Image { get { return Resources.ExtractMethod; } }
+        public override Image Mask { get { return Resources.ExtractMethodMask; } }
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
