@@ -1267,6 +1267,8 @@
     <Resource Include="Resources\Custom\PNG\Task.png" />
     <Resource Include="Resources\Custom\PNG\TestManager.png" />
     <Resource Include="Resources\Custom\PNG\TestMethod.png" />
+    <Content Include="Resources\Custom\attribution.txt" />
+    <Content Include="Resources\Custom\cc_license.txt" />
     <Content Include="Resources\Custom\Mask\AddPropertyMask.bmp" />
     <Content Include="Resources\Custom\Mask\AddVariableMask.bmp" />
     <Content Include="Resources\Custom\Mask\AllLoadedTestsMask.bmp" />
@@ -1284,6 +1286,7 @@
     <Resource Include="Resources\Custom\PNG\CollapseDown.png" />
     <Resource Include="Resources\Custom\PNG\CollapseUp.png" />
     <Resource Include="Resources\Custom\PNG\ObjectLibrary.png" />
+    <Content Include="Resources\Custom\mit_license.txt" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
