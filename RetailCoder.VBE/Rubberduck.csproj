@@ -235,6 +235,10 @@
     <Reference Include="Infralution.Localization.Wpf">
       <HintPath>..\libs\Infralution.Localization.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Kavod.ComReflection, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kavod.ComReflection.0.0.1-alpha\lib\net45\Kavod.ComReflection.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\LibGit2Sharp.0.22.0-pre20150516171636\lib\net40\LibGit2Sharp.dll</HintPath>
@@ -432,6 +436,8 @@
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddTestModuleCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\ReferenceBrowserCommandMenuItem.cs" />
+    <Compile Include="UI\Command\ReferenceBrowserCommand.cs" />
     <Compile Include="UI\Controls\LinkButton.xaml.cs">
       <DependentUpon>LinkButton.xaml</DependentUpon>
     </Compile>
@@ -689,6 +695,24 @@
     <Compile Include="UI\Refactorings\ExtractInterfaceDialog.Designer.cs">
       <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\ReferenceBrowser\ReferenceBrowserWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ReferenceBrowser\ReferenceBrowserWindow.Designer.cs">
+      <DependentUpon>ReferenceBrowserWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ReferenceBrowser\ReferenceListControl.xaml.cs">
+      <DependentUpon>ReferenceListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ReferenceBrowser\RegisteredLibraryViewModel.cs" />
+    <Compile Include="UI\ReferenceBrowser\ReferenceBrowser.xaml.cs">
+      <DependentUpon>ReferenceBrowser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ReferenceBrowser\ReferenceBrowserViewModel.cs" />
+    <Compile Include="UI\ReferenceBrowser\RegisteredLibraryModel.cs" />
+    <Compile Include="UI\ReferenceBrowser\RegisteredLibraryModelService.cs" />
+    <Compile Include="UI\ReferenceBrowser\VbaProjectReferenceModel.cs" />
+    <Compile Include="UI\ReferenceBrowser\VbaReferenceModel.cs" />
     <Compile Include="UI\RubberduckUI.de.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1027,6 +1051,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractInterfaceDialog.resx">
       <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ReferenceBrowser\ReferenceBrowserWindow.resx">
+      <DependentUpon>ReferenceBrowserWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -1400,6 +1427,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ReferenceBrowser\ReferenceBrowser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ReferenceBrowser\ReferenceListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

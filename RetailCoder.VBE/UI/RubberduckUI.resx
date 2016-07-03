@@ -1733,4 +1733,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Indent</value>
   </data>
+  <data name="ReferenceBrowser_Menu" xml:space="preserve">
+    <value>Reference Browser</value>
+  </data>
 </root>

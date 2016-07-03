@@ -2422,6 +2422,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reference Browser.
+        /// </summary>
+        public static string ReferenceBrowser_Menu {
+            get {
+                return ResourceManager.GetString("ReferenceBrowser_Menu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh.
         /// </summary>
         public static string Refresh {
