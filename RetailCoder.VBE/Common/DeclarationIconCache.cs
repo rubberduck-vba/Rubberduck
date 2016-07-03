@@ -56,41 +56,41 @@ namespace Rubberduck.Common
 
         private static Uri GetIconUri(DeclarationType declarationType, Accessibility accessibility)
         {
-            const string baseUri = @"../../Resources/Microsoft/PNG/";
+            const string baseUri = @"../../Resources/Custom/PNG/";
 
             string path;
             switch (declarationType)
             {
                 case DeclarationType.ProceduralModule:
-                    path = "VSObject_Module.png";
+                    path = "ObjectModule.png";
                     break;
 
                 case DeclarationType.Document | DeclarationType.ClassModule: 
-                    path = "document.png";
+                    path = "Document.png";
                     break;
                 
                 case DeclarationType.UserForm | DeclarationType.ClassModule | DeclarationType.Control:
-                    path = "VSProject_Form.png";
+                    path = "ProjectForm.png";
                     break;
 
                 case DeclarationType.ClassModule | DeclarationType.ProceduralModule:
-                    path = "VSProject_Class.png";
+                    path = "ObjectClass.png";
                     break;
 
                 case DeclarationType.Procedure | DeclarationType.Member:
                 case DeclarationType.Function | DeclarationType.Member:
                     if (accessibility == Accessibility.Private)
                     {
-                        path = "VSObject_Method_Private.png";
+                        path = "ObjectMethodPrivate.png";
                         break;
                     }
                     if (accessibility == Accessibility.Friend)
                     {
-                        path = "VSObject_Method_Friend.png";
+                        path = "ObjectMethodFriend.png";
                         break;
                     }
 
-                    path = "VSObject_Method.png";
+                    path = "ObjectMethod.png";
                     break;
 
                 case DeclarationType.PropertyGet | DeclarationType.Property | DeclarationType.Function:
@@ -98,120 +98,120 @@ namespace Rubberduck.Common
                 case DeclarationType.PropertySet | DeclarationType.Property | DeclarationType.Procedure:
                     if (accessibility == Accessibility.Private)
                     {
-                        path = "VSObject_Properties_Private.png";
+                        path = "ObjectPropertiesPrivate.png";
                         break;
                     }
                     if (accessibility == Accessibility.Friend)
                     {
-                        path = "VSObject_Properties_Friend.png";
+                        path = "ObjectPropertiesFriend.png";
                         break;
                     }
 
-                    path = "VSObject_Properties.png";
+                    path = "ObjectProperties.png";
                     break;
 
                 case DeclarationType.Parameter:
-                    path = "VSObject_Field_Shortcut.png";
+                    path = "ObjectFieldShortcut.png";
                     break;
 
                 case DeclarationType.Variable:
                     if (accessibility == Accessibility.Private)
                     {
-                        path = "VSObject_Field_Private.png";
+                        path = "ObjectFieldPrivate.png";
                         break;
                     }
                     if (accessibility == Accessibility.Friend)
                     {
-                        path = "VSObject_Field_Friend.png";
+                        path = "ObjectFieldFriend.png";
                         break;
                     }
 
-                    path = "VSObject_Field.png";
+                    path = "ObjectField.png";
                     break;
 
                 case DeclarationType.Constant:
                     if (accessibility == Accessibility.Private)
                     {
-                        path = "VSObject_Constant_Private.png";
+                        path = "ObjectConstantPrivate.png";
                         break;
                     }
                     if (accessibility == Accessibility.Friend)
                     {
-                        path = "VSObject_Constant_Friend.png";
+                        path = "ObjectConstantFriend.png";
                         break;
                     }
 
-                    path = "VSObject_Constant.png";
+                    path = "ObjectConstant.png";
                     break;
 
                 case DeclarationType.Enumeration:
                     if (accessibility == Accessibility.Private)
                     {
-                        path = "VSObject_Enum_Private.png";
+                        path = "ObjectEnumPrivate.png";
                         break;
                     }
                     if (accessibility == Accessibility.Friend)
                     {
-                        path = "VSObject_Enum_Friend.png";
+                        path = "ObjectEnumFriend.png";
                         break;
                     }
 
-                    path = "VSObject_Enum.png";
+                    path = "ObjectEnum.png";
                     break;
 
                 case DeclarationType.EnumerationMember:
-                    path = "VSObject_EnumItem.png";
+                    path = "ObjectEnumItem.png";
                     break;
 
                 case DeclarationType.Event:
                     if (accessibility == Accessibility.Private)
                     {
-                        path = "VSObject_Event_Private.png";
+                        path = "ObjectEventPrivate.png";
                         break;
                     }
                     if (accessibility == Accessibility.Friend)
                     {
-                        path = "VSObject_Event_Friend.png";
+                        path = "ObjectEventFriend.png";
                         break;
                     }
 
-                    path = "VSObject_Event.png";
+                    path = "ObjectEvent.png";
                     break;
 
                 case DeclarationType.UserDefinedType:
                     if (accessibility == Accessibility.Private)
                     {
-                        path = "VSObject_ValueTypePrivate.png";
+                        path = "ObjectValueTypePrivate.png";
                         break;
                     }
                     if (accessibility == Accessibility.Friend)
                     {
-                        path = "VSObject_ValueType_Friend.png";
+                        path = "ObjectValueTypeFriend.png";
                         break;
                     }
 
-                    path = "VSObject_ValueType.png";
+                    path = "ObjectValueType.png";
                     break;
 
                 case DeclarationType.UserDefinedTypeMember:
-                    path = "VSObject_Field.png";
+                    path = "ObjectField.png";
                     break;
 
                 case DeclarationType.LibraryProcedure | DeclarationType.Procedure:
                 case DeclarationType.LibraryFunction | DeclarationType.Function:
-                    path = "VSObject_Method_Shortcut.png";
+                    path = "ObjectMethodShortcut.png";
                     break;
 
                 case DeclarationType.LineLabel:
-                    path = "VSObject_Constant_Shortcut.png";
+                    path = "ObjectConstantShortcut.png";
                     break;
 
                 case DeclarationType.Project:
-                    path = "VSObject_Library.png";
+                    path = "ObjectLibrary.png";
                     break;
 
                 default:
-                    path = "VSObject_Structure.png";
+                    path = "ObjectStructure.png";
                     break;
             }
 

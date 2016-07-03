@@ -17,8 +17,8 @@ namespace Rubberduck.UI.Command.MenuItems
         public override int DisplayOrder { get { return (int)CodePaneContextMenuItemDisplayOrder.FindSymbol; } }
         public override bool BeginGroup { get { return true; } }
 
-        public override Image Image { get { return Resources.FindSymbol_6263_32; } }
-        public override Image Mask { get { return Resources.FindSymbol_6263_32_Mask; } }
+        public override Image Image { get { return Resources.FindSymbol; } }
+        public override Image Mask { get { return Resources.FindSymbolMask; } }
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
