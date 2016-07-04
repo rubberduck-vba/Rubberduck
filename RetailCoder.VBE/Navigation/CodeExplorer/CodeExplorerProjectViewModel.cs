@@ -38,7 +38,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
                     ? GetImageSource(resx.lock__exclamation)
-                    : GetImageSource(resx.VSObject_Library);
+                    : GetImageSource(resx.ObjectLibrary);
             }
             catch (NullReferenceException e)
             {

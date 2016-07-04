@@ -17,8 +17,8 @@ namespace Rubberduck.UI.Command.MenuItems
         public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.IntroduceParameter; } }
         public override bool BeginGroup { get { return true; } }
 
-        public override Image Image { get { return Resources.PromoteLocal_6784_32; } }
-        public override Image Mask { get { return Resources.PromoteLocal_6784_32_Mask; } }
+        public override Image Image { get { return Resources.PromoteLocal; } }
+        public override Image Mask { get { return Resources.PromoteLocalMask; } }
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
