@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Rubberduck.UI.ReferenceBrowser"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance Type=local:ReferenceBrowserViewModel}">
+             d:DataContext="{d:DesignInstance Type=local:LibrariesViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

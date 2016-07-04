@@ -695,6 +695,7 @@
     <Compile Include="UI\Refactorings\ExtractInterfaceDialog.Designer.cs">
       <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\ReferenceBrowser\LibrariesViewModel.cs" />
     <Compile Include="UI\ReferenceBrowser\ReferenceBrowserWindow.cs">
       <SubType>Form</SubType>
     </Compile>

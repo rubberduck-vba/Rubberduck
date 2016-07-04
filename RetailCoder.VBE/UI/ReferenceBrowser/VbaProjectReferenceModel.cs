@@ -5,21 +5,21 @@ namespace Rubberduck.UI.ReferenceBrowser
 {
     public class VbaProjectReferenceModel : VbaReferenceModel
     {
-        private readonly VBProject _project;
+        private readonly Reference _reference;
 
-        internal VbaProjectReferenceModel(VBProject project)
+        public VbaProjectReferenceModel(Reference reference)
         {
-            _project = project;
+            _reference = reference;
         }
 
-        public override string FilePath { get { return _project.FileName; } }
+        public override string FilePath { get { return _reference.FullPath; } }
 
-        public override string Name { get { return _project.Name; } }
+        public override string Name { get { return _reference.Name; } }
 
-        public override short MajorVersion { get { return 1; } }
+        public override short MajorVersion { get { return (short) _reference.Major; } }
 
-        public override short MinorVersion { get { return 0; } }
+        public override short MinorVersion { get { return (short) _reference.Minor; } }
 
-        public override Guid Guid { get { return Guid.Empty; } }
+        public override Guid Guid { get { return Guid.Parse(_reference.Guid); } }
     }
 }

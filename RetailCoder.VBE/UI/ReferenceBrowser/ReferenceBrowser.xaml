@@ -44,14 +44,16 @@
                     Padding="5">
             
             <TabItem Header="All">
-                <local:ReferenceListControl DataContext="{Binding}"/>
+                <local:ReferenceListControl DataContext="{Binding ComReferences}"/>
+            </TabItem>
+
+            <TabItem Header="VBA" >
+                <local:ReferenceListControl DataContext="{Binding VbaProjectReferences}"/>
             </TabItem>
             
             <TabItem Header="ActiveX">
                 <local:ReferenceListControl />
             </TabItem>
-
-            <TabItem Header="VBA" />
 
             <TabItem Header="Recent" />
         </TabControl>

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
@@ -9,50 +8,56 @@ namespace Rubberduck.UI.ReferenceBrowser
     public class ReferenceBrowserViewModel : ViewModelBase
     {
         private readonly VBE _vbe;
-        private readonly ObservableCollection<RegisteredLibraryViewModel> _libraryViewModels;
-        private readonly ReadOnlyObservableCollection<RegisteredLibraryViewModel> _libraryViewModelsReadOnly;
-        private RegisteredLibraryViewModel _selectedLibrary;
 
         public ReferenceBrowserViewModel(VBE vbe, RegisteredLibraryModelService service)
         {
             _vbe = vbe;
-
-            _libraryViewModels = 
-                new ObservableCollection<RegisteredLibraryViewModel>();
-            _libraryViewModelsReadOnly = 
-                new ReadOnlyObservableCollection<RegisteredLibraryViewModel>(_libraryViewModels);
-
-            var allLibraries = service.GetAllRegisteredLibraries();
-            BuildViewModels(allLibraries);
+            
+            ComReferences = new RegisteredComLibrariesViewModel(service, vbe);
+            VbaProjectReferences = new VbaProjectLibrariesViewModel(vbe);
         }
 
-        public ReadOnlyObservableCollection<RegisteredLibraryViewModel> RegisteredLibraries
-        {
-            get { return _libraryViewModelsReadOnly; }
-        }
+        public LibrariesViewModel ComReferences { get; }
 
-        public RegisteredLibraryViewModel SelectedLibrary
+        public LibrariesViewModel VbaProjectReferences { get; }
+
+        private class RegisteredComLibrariesViewModel : LibrariesViewModel
         {
-            get { return _selectedLibrary; }
-            set
+            public RegisteredComLibrariesViewModel(RegisteredLibraryModelService service, VBE vbe)
             {
-                _selectedLibrary = value;
-                OnPropertyChanged();
+                Build(service, vbe);
+            }
+
+            private async void Build(RegisteredLibraryModelService service, VBE vbe)
+            {
+                var models = service.GetAllRegisteredLibraries();
+
+                var list = models
+                    .Select(l => new RegisteredLibraryViewModel(l, vbe.ActiveVBProject))
+                    .ToList();
+
+                await Task.Run(() => list.Sort());
+
+                foreach (var vm in list)
+                {
+                    _registeredLibraries.Add(vm);
+                }
             }
         }
 
-        private async void BuildViewModels(IEnumerable<RegisteredLibraryModel> libraries)
+        private class VbaProjectLibrariesViewModel : LibrariesViewModel
         {
-            var list = libraries
-                .Select(l => new RegisteredLibraryViewModel(l, _vbe.ActiveVBProject))
-                .ToList();
-
-            // Sometimes the sort can take a while.  Lets do it async.
-            await Task.Run(() => list.Sort());
-
-            foreach (var vm in list)
+            public VbaProjectLibrariesViewModel(VBE vbe)
             {
-                _libraryViewModels.Add(vm);
+                foreach (var reference in vbe.ActiveVBProject.References.OfType<Reference>())
+                {
+                    if (reference.Type == vbext_RefKind.vbext_rk_Project)
+                    {
+                        var model = new VbaProjectReferenceModel(reference);
+                        var vm = new RegisteredLibraryViewModel(model, vbe.ActiveVBProject);
+                        _registeredLibraries.Add(vm);
+                    }
+                }
             }
         }
     }
