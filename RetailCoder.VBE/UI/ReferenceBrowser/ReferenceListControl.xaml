@@ -18,10 +18,11 @@
                   SelectedItem="{Binding SelectedLibrary}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Width="25">
+                    <GridViewColumn Width="30">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="local:RegisteredLibraryViewModel">
-                                <CheckBox IsChecked="{Binding IsActiveProjectReference}" />
+                                <CheckBox IsChecked="{Binding IsActiveProjectReference}" 
+                                          IsEnabled="{Binding CanRemoveReference}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

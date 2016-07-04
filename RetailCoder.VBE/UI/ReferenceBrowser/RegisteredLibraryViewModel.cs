@@ -9,6 +9,7 @@ namespace Rubberduck.UI.ReferenceBrowser
     {
         private readonly VBProject _activeProject;
         private bool _isActiveReference;
+        private bool _referenceIsRemovable = true;
 
         public RegisteredLibraryViewModel(VbaReferenceModel model, VBProject activeProject)
         {
@@ -16,6 +17,11 @@ namespace Rubberduck.UI.ReferenceBrowser
             Model = model;
 
             _isActiveReference = GetIsActiveProjectReference();
+            if (IsActiveProjectReference)
+            {
+                var reference = GetActiveProjectReferenceByFilePath(FilePath);
+                CanRemoveReference = !reference.BuiltIn;
+            }
         }
 
         public VbaReferenceModel Model { get; }
@@ -56,6 +62,20 @@ namespace Rubberduck.UI.ReferenceBrowser
                         // TODO warn the user that they cannot remove this reference.
                     }
                 }
+                OnPropertyChanged();
+            }
+        }
+
+        public bool CanRemoveReference
+        {
+            get { return _referenceIsRemovable; }
+            set
+            {
+                if (value == _referenceIsRemovable)
+                {
+                    return;
+                }
+                _referenceIsRemovable = value;
                 OnPropertyChanged();
             }
         }
