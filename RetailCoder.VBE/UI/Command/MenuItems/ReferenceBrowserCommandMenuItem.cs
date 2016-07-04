@@ -1,11 +1,10 @@
-﻿using System.Windows.Input;
-using Rubberduck.UI.Command.MenuItems.ParentMenus;
+﻿using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
     public class ReferenceBrowserCommandMenuItem : CommandMenuItemBase
     {
-        public ReferenceBrowserCommandMenuItem(ICommand command) 
+        public ReferenceBrowserCommandMenuItem(CommandBase command) 
             : base(command)
         { }
 
