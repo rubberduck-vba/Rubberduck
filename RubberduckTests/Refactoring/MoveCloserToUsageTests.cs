@@ -47,7 +47,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -92,7 +92,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -142,7 +142,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -189,7 +189,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -236,7 +236,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -284,7 +284,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -331,7 +331,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -378,7 +378,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -425,7 +425,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -474,7 +474,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -523,7 +523,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -572,7 +572,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -605,7 +605,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -649,7 +649,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -697,7 +697,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -742,7 +742,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -791,7 +791,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -834,7 +834,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -867,7 +867,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var messageBox = new Mock<IMessageBox>();
@@ -916,7 +916,7 @@
 //            mockHost.SetupAllProperties();
 //            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-//            parser.Parse();
+//            parser.Parse(new CancellationTokenSource());
 //            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
 //            var messageBox = new Mock<IMessageBox>();

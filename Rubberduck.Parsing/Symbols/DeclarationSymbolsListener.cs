@@ -7,9 +7,11 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Antlr4.Runtime.Misc;
+using NLog;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -38,6 +40,9 @@ namespace Rubberduck.Parsing.Symbols
             IDictionary<Tuple<string, DeclarationType>, Attributes> attributes,
             Declaration projectDeclaration)
         {
+            var log = LogManager.GetCurrentClassLogger();
+            var stop = Stopwatch.StartNew();
+
             _state = state;
             _qualifiedName = qualifiedName;
             _annotations = annotations;
@@ -68,6 +73,10 @@ namespace Rubberduck.Parsing.Symbols
             {
                 bool hasDefaultInstanceVariable = type != vbext_ComponentType.vbext_ct_ClassModule && type != vbext_ComponentType.vbext_ct_StdModule;
 
+                var stop1 = Stopwatch.StartNew();
+                var stop2 = new Stopwatch();
+                var stop3 = new Stopwatch();
+
                 Declaration superType = null;
                 if (type == vbext_ComponentType.vbext_ct_Document)
                 {
@@ -83,7 +92,15 @@ namespace Rubberduck.Parsing.Symbols
                             var allNamesMatch = true;
                             for (var i = 0; i < coclass.Key.Count; i++)
                             {
-                                if (coclass.Key[i] != _qualifiedName.Component.Properties.Item(i + 1).Name)
+                                stop2.Start();
+                                var propName = _qualifiedName.Component.Properties.Item(i + 1).Name;
+                                stop2.Stop();
+
+                                stop3.Start();
+                                var namesMatch = coclass.Key[i] != propName;
+                                stop3.Stop();
+
+                                if (namesMatch)
                                 {
                                     allNamesMatch = false;
                                     break;
@@ -101,6 +118,10 @@ namespace Rubberduck.Parsing.Symbols
                         }
                     }
                 }
+                stop1.Stop();
+                log.Debug("{0}ms getting property name", stop2.ElapsedMilliseconds);
+                log.Debug("{0}ms comparing property name", stop3.ElapsedMilliseconds);
+                log.Debug("{0}ms resolving coclass", stop1.ElapsedMilliseconds);
 
                 _moduleDeclaration = new ClassModuleDeclaration(
                     _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
@@ -123,6 +144,9 @@ namespace Rubberduck.Parsing.Symbols
             {
                 DeclareControlsAsMembers(component);
             }
+
+            stop.Stop();
+            log.Debug("{0}ms in declaration listener ctor", stop.ElapsedMilliseconds);
         }
 
         private IEnumerable<IAnnotation> FindAnnotations()
@@ -801,8 +825,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             _parentDeclaration = _moduleDeclaration;
         }
-        
-        public void AddUdtDeclaration(VBAParser.UdtDeclarationContext udtDeclaration, Accessibility accessibility, ParserRuleContext context)
+
+        private void AddUdtDeclaration(VBAParser.UdtDeclarationContext udtDeclaration, Accessibility accessibility, ParserRuleContext context)
         {
             var identifier = Identifier.GetName(udtDeclaration.untypedIdentifier());
             var identifierSelection = Identifier.GetNameSelection(udtDeclaration.untypedIdentifier());

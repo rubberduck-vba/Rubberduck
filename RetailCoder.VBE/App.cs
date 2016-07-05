@@ -11,7 +11,6 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Rubberduck
@@ -141,7 +140,6 @@ namespace Rubberduck
             _appMenus.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
-            Task.Delay(1000).ContinueWith(t => UiDispatcher.Invoke(() => _parser.State.OnParseRequested(this)));
             UpdateLoggingLevel();
         }
 

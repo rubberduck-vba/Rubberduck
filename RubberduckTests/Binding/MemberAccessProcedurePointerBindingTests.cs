@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using Moq;
 using Rubberduck.Parsing;
+using System.Threading;
 
 namespace RubberduckTests.Binding
 {
@@ -40,7 +41,7 @@ namespace RubberduckTests.Binding
             private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
             {
                 var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
-                parser.Parse();
+                parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status != ParserState.Ready)
                 {
                     Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
