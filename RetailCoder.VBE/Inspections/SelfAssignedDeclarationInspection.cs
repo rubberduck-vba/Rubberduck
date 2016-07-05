@@ -39,6 +39,7 @@ namespace Rubberduck.Inspections
                     && declaration.IsTypeSpecified
                     && !ValueTypes.Contains(declaration.AsTypeName)
                     && declaration.DeclarationType == DeclarationType.Variable
+                    && declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType
                     && declaration.ParentScopeDeclaration != null
                     && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
                 .Select(issue => new SelfAssignedDeclarationInspectionResult(this, issue));
