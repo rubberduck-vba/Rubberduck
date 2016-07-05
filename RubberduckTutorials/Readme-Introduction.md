@@ -3,7 +3,7 @@
 ## Introduction
 
 ### What the tutorial all about?
-... Needs a positive to the point summary of what we are doing here.
+Our community at RubberduckVBA is growing; We provide wiki documentation, website discussion and blogs, twitter announcements when features are ready. This tutorial's focus is how to connect many and more of these individual features together (within Github) to provide our developer a better user experience of using Rubberduck in a fictional development environment.
 
 ### Structure of the tutorial
 The files and tutorial excerises given of our Rubberduck VBE are broken down into five skill levels as suggested however modified from [Dreyfus model of skill acquisition](https://en.m.wikipedia.org/wiki/Dreyfus_model_of_skill_acquisition) to help VBA users asses their own learning styles and progress at their own pace.
