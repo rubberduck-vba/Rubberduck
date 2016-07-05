@@ -982,19 +982,19 @@ Are you sure you want to proceed with this rename?</value>
     <value>Find symbol</value>
   </data>
   <data name="IndentCurrentModule" xml:space="preserve">
-    <value>Current module</value>
+    <value>Current &amp;Module</value>
   </data>
   <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value>Current procedure</value>
+    <value>Current &amp;Procedure</value>
   </data>
   <data name="IndentCurrentProject" xml:space="preserve">
     <value>Entire project</value>
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
-    <value>Indent</value>
+    <value>In&amp;dent</value>
   </data>
   <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
-    <value>&amp;Introduce Parameter</value>
+    <value>Introduce &amp;Parameter</value>
   </data>
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
     <value>Introduce &amp;Field</value>
@@ -1058,7 +1058,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>E&amp;xtract Interface</value>
   </data>
   <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
-    <value>Implement Interface</value>
+    <value>&amp;Implement Interface</value>
   </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Implement Interface</value>
@@ -1551,7 +1551,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Source Control - Undo</value>
   </data>
   <data name="NoIndentAnnotation" xml:space="preserve">
-    <value>Add '@NoIndent</value>
+    <value>&amp;Add '@NoIndent</value>
   </data>
   <data name="CodeExplorer_Sort" xml:space="preserve">
     <value>Sort</value>
@@ -1720,5 +1720,14 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file to our GitHub page.</value>
+  </data>
+  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Test Method (&amp;Expected Error)</value>
+  </data>
+  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
+    <value>Test &amp;Method</value>
+  </data>
+  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
+    <value>Test M&amp;odule</value>
   </data>
 </root>

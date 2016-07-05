@@ -1633,7 +1633,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current module.
+        ///   Looks up a localized string similar to Current &amp;Module.
         /// </summary>
         public static string IndentCurrentModule {
             get {
@@ -1642,7 +1642,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current procedure.
+        ///   Looks up a localized string similar to Current &amp;Procedure.
         /// </summary>
         public static string IndentCurrentProcedure {
             get {
@@ -2056,7 +2056,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add &apos;@NoIndent.
+        ///   Looks up a localized string similar to &amp;Add &apos;@NoIndent.
         /// </summary>
         public static string NoIndentAnnotation {
             get {
@@ -2350,7 +2350,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implement Interface.
+        ///   Looks up a localized string similar to &amp;Implement Interface.
         /// </summary>
         public static string RefactorMenu_ImplementInterface {
             get {
@@ -2368,7 +2368,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Introduce Parameter.
+        ///   Looks up a localized string similar to Introduce &amp;Parameter.
         /// </summary>
         public static string RefactorMenu_IntroduceParameter {
             get {
@@ -3143,7 +3143,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Indent.
+        ///   Looks up a localized string similar to In&amp;dent.
         /// </summary>
         public static string SmartIndenterMenu {
             get {
@@ -4399,6 +4399,33 @@ namespace Rubberduck.UI {
         public static string TestExplorerDockablePresenter_MultipleTestsSameNameError {
             get {
                 return ResourceManager.GetString("TestExplorerDockablePresenter_MultipleTestsSameNameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test Method (&amp;Expected Error).
+        /// </summary>
+        public static string TestExplorerMenu_AddExpectedErrorTestMethod {
+            get {
+                return ResourceManager.GetString("TestExplorerMenu_AddExpectedErrorTestMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test &amp;Method.
+        /// </summary>
+        public static string TestExplorerMenu_AddTestMethod {
+            get {
+                return ResourceManager.GetString("TestExplorerMenu_AddTestMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test M&amp;odule.
+        /// </summary>
+        public static string TestExplorerMenu_AddTestModule {
+            get {
+                return ResourceManager.GetString("TestExplorerMenu_AddTestModule", resourceCulture);
             }
         }
         

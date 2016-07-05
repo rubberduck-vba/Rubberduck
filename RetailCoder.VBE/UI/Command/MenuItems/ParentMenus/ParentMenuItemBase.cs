@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
         public string Key { get { return Item == null ? null : Item.Tag; } }
 
-        public Func<string> Caption { get { return () => Key == null ? null : RubberduckUI.ResourceManager.GetString(Key, UI.Settings.Settings.Culture); } }
+        public Func<string> Caption { get { return () => Key == null ? null : RubberduckUI.ResourceManager.GetString(Key, Settings.Settings.Culture); } }
 
         public virtual bool BeginGroup { get { return false; } }
         public virtual int DisplayOrder { get { return default(int); } }
