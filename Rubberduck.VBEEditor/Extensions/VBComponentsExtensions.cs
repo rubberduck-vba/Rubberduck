@@ -54,17 +54,12 @@ namespace Rubberduck.VBEditor.Extensions
                     component.CodeModule.AddFromString(codeString);
                 }
             }
-            else if(ext != VBComponentExtensions.FormBinaryExtension)
-            {
-                components.Import(filePath);
-            }
-
-            if (ext == VBComponentExtensions.FormExtension)
+            else if (ext == VBComponentExtensions.FormExtension)
             {
                 var component = components.Item(name);
                 // note: vbeCode contains an extraneous line here:
                 //var vbeCode = component.CodeModule.Lines().Split(new []{Environment.NewLine}, StringSplitOptions.None);
-                
+
                 var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
                 var attributeLines = codeLines.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
                 var declarationsStartLine = nonAttributeLines + attributeLines + 1;
@@ -72,6 +67,10 @@ namespace Rubberduck.VBEditor.Extensions
 
                 component.CodeModule.Clear();
                 component.CodeModule.AddFromString(correctCodeString);
+            }
+            else if(ext != VBComponentExtensions.FormBinaryExtension)
+            {
+                components.Import(filePath);
             }
         }
     }
