@@ -56,9 +56,17 @@ namespace Rubberduck.VBEditor.Extensions
             }
             else if (ext == VBComponentExtensions.FormExtension)
             {
-                var component = components.Item(name);
-                // note: vbeCode contains an extraneous line here:
-                //var vbeCode = component.CodeModule.Lines().Split(new []{Environment.NewLine}, StringSplitOptions.None);
+                VBComponent component;
+                try
+                {
+                    component = components.Item(name);
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    component = components.Add(vbext_ComponentType.vbext_ct_MSForm);
+                    component.Properties.Item("Caption").Value = name;
+                    component.Name = name;
+                }
 
                 var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
                 var attributeLines = codeLines.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
