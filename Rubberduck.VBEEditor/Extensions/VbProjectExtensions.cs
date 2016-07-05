@@ -1,4 +1,5 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System;
+using Microsoft.Vbe.Interop;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -100,6 +101,59 @@ namespace Rubberduck.VBEditor.Extensions
             foreach (var file in files)
             {
                 project.VBComponents.ImportSourceFile(file.FullName);
+            }
+        }
+        
+        public static void LoadAllComponents(this VBProject project, string filePath)
+        {
+            var dirInfo = new DirectoryInfo(filePath);
+
+            var files = dirInfo.EnumerateFiles()
+                                .Where(f => f.Extension == VBComponentExtensions.StandardExtension ||
+                                            f.Extension == VBComponentExtensions.ClassExtension ||
+                                            f.Extension == VBComponentExtensions.DocClassExtension ||
+                                            f.Extension == VBComponentExtensions.FormExtension
+                                            );
+
+            var exceptions = new List<Exception>();
+
+            foreach (VBComponent component in project.VBComponents)
+            {
+                try
+                {
+                    var name = component.Name;
+                    project.VBComponents.RemoveSafely(component);
+
+                    var file = files.SingleOrDefault(f => f.Name == name + f.Extension);
+                    if (file != null)
+                    {
+                        project.VBComponents.ImportSourceFile(file.FullName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    if (project.VBComponents.OfType<VBComponent>().All(v => v.Name + file.Extension != file.Name))
+                    {
+                        project.VBComponents.ImportSourceFile(file.FullName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
+
+            if (exceptions.Count != 0)
+            {
+                throw new AggregateException(string.Empty, exceptions);
             }
         }
     }
