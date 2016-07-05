@@ -212,15 +212,29 @@ namespace Rubberduck.SourceControl
                     name = selection.QualifiedName.Component.Name;
                 }
 
-                Project.RemoveAllComponents();
-                Project.ImportSourceFiles(CurrentRepository.LocalLocation);
+                try
+                {
+                    Project.LoadAllComponents(CurrentRepository.LocalLocation);
+                }
+                catch (AggregateException ex)
+                {
+                    HandleVbeSinkEvents = true;
+                    throw new SourceControlException("Unknown exception.", ex);
+                }
 
                 Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name, _wrapperFactory);
             }
             else
             {
-                Project.RemoveAllComponents();
-                Project.ImportSourceFiles(CurrentRepository.LocalLocation);
+                try
+                {
+                    Project.LoadAllComponents(CurrentRepository.LocalLocation);
+                }
+                catch (AggregateException ex)
+                {
+                    HandleVbeSinkEvents = true;
+                    throw new SourceControlException("Unknown exception.", ex);
+                }
             }
 
             HandleVbeSinkEvents = true;
