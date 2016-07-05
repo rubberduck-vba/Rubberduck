@@ -12,7 +12,7 @@ The table or matrix below provides an overview of where the skills levels are ma
 
 | Categories \ Skills | Basic | Advanced | Competent | Proficient | Expert |
 |:-------------------:|:--------------------------------------------------:|:----------------------------------:|:-------------------------------------:|:--------------------------------------:|:---------------------------:|
-| General VBA | IDE / Project Explorer | Macros / Shortcut keys | Using Objects / Debugging | Modules / Functions | Create a working  VBA code |
+| General VBA | VBA / IDE / Project Explorer | Macros / Shortcut keys | Using Objects / Debugging | Modules / Functions | Create a working  VBA code |
 | Programming VBA | Declarations / Data types | Sequence / Selection / Loops | Object Oriented Programming | Classes / Methods | Interfaces and SOLID Principles |
 | Rubberduck | Installation / Shortcut keys / Settings | Code Navigation / Code Inspections | Source Control / Unit Testing | Test Driven Approach / Test Explorer | Refactoring your code |
 | VBAGroceries |   [Learn Business Model](https://github.com/PeterMTaylor/Rubberduck/blob/next/RubberduckTutorials/VBAGroceries/AboutVBAGroceries.md) | Suppliers / Customers | Orders / Goods / Deliveries | Finance / Human Resource | Quality Assurance |
