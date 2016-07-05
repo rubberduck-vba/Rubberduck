@@ -696,7 +696,7 @@
                                   IsCheckable="True" />
                     </MenuItem>
                 </Menu>
-                <ToggleButton Name="DisplaySignatures" IsEnabled="{Binding CanRefresh}" ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
+                <ToggleButton Name="DisplaySignatures" ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
                     <Image Height="16" Source="../../Resources/Custom/PNG/DisplayFullSignature.png" />
                 </ToggleButton>
 

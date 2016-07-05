@@ -724,11 +724,6 @@
                            Margin="0,-57,-7.8,0"
                            Width="16"
                            Visibility="{Binding IsNotValidPublishRemotePath, Converter={StaticResource BoolToVisibility}}" />
-                    <Image Source="{StaticResource ErrorImage}"
-                               HorizontalAlignment="Right"
-                               Margin="0,-57,-7.8,0"
-                               Width="16"
-                               Visibility="{Binding IsNotValidBranchName, Converter={StaticResource BoolToVisibility}}" />
                     <Grid Grid.IsSharedSizeScope="True"
                           HorizontalAlignment="Right">
                         <Grid.ColumnDefinitions>
