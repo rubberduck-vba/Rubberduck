@@ -850,6 +850,11 @@
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\SettingsViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\SourceControl.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SourceControl.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1065,6 +1070,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\SourceControl.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SourceControl.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>

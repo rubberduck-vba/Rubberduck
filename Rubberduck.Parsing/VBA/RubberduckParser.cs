@@ -65,6 +65,8 @@ namespace Rubberduck.Parsing.VBA
                 Cancel(e.Component);
                 Task.Run(() =>
                 {
+                    State.SetModuleState(e.Component, ParserState.Pending);
+
                     SyncComReferences(State.Projects);
                     AddBuiltInDeclarations();
 
@@ -490,7 +492,6 @@ namespace Rubberduck.Parsing.VBA
         private Task ParseAsync(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
             State.ClearStateCache(component);
-            State.SetModuleState(component, ParserState.Pending); // also clears module-exceptions
 
             var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token, token);
 
