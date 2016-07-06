@@ -9,6 +9,7 @@ using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
+using System.Threading;
 using Rubberduck.Parsing;
 
 namespace RubberduckTests
@@ -25,7 +26,7 @@ namespace RubberduckTests
             qualifiedModuleName = new QualifiedModuleName(component);
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
             state = parser.State;
 

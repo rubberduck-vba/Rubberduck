@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Antlr4.Runtime.Misc;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -801,8 +800,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             _parentDeclaration = _moduleDeclaration;
         }
-        
-        public void AddUdtDeclaration(VBAParser.UdtDeclarationContext udtDeclaration, Accessibility accessibility, ParserRuleContext context)
+
+        private void AddUdtDeclaration(VBAParser.UdtDeclarationContext udtDeclaration, Accessibility accessibility, ParserRuleContext context)
         {
             var identifier = Identifier.GetName(udtDeclaration.untypedIdentifier());
             var identifierSelection = Identifier.GetNameSelection(udtDeclaration.untypedIdentifier());

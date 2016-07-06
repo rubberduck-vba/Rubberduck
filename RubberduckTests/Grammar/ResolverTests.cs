@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -21,7 +22,7 @@ namespace RubberduckTests.Grammar
             var vbe = builder.BuildFromSingleModule(code, moduleType, out component, new Rubberduck.VBEditor.Selection());
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
             {
                 Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
@@ -49,7 +50,7 @@ namespace RubberduckTests.Grammar
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
             {
                 Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
@@ -77,7 +78,7 @@ namespace RubberduckTests.Grammar
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
             {
                 Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
@@ -2066,7 +2067,7 @@ End Sub
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
             {
                 Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);

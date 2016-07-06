@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -62,7 +63,7 @@ End Sub
             parser.State.AddDeclaration(listColumnDeclaration);
             parser.State.AddDeclaration(rangeDeclaration);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
