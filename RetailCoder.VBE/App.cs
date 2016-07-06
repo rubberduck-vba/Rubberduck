@@ -135,6 +135,11 @@ namespace Rubberduck
 
         public void Startup()
         {
+            if (_vbe.VBProjects.Count != 0)
+            {
+                _parser.State.OnParseRequested(this);
+            }
+
             EnsureDirectoriesExist();
             LoadConfig();
             _appMenus.Initialize();
