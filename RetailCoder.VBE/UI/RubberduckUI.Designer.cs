@@ -326,6 +326,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Indent.
+        /// </summary>
+        public static string CodeExplorer_Indent {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Indent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Na&amp;vigate.
         /// </summary>
         public static string CodeExplorer_Navigate {

@@ -399,7 +399,7 @@
                                   Command="{Binding FindAllImplementationsCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
                         </MenuItem>
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}"
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Indent}"
                                   Command="{Binding IndenterCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
                         <Separator />
@@ -764,7 +764,7 @@
                                 Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
                                 Command="{Binding IndenterCommand}"
                                 CommandParameter="{Binding SelectedItem}"
-                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}" />
+                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Indent}" />
                         <controls:LinkButton Margin="4"
                                 Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
                                 Command="{Binding RenameCommand}"

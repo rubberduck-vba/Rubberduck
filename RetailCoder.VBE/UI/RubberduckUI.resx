@@ -1730,4 +1730,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
     <value>Test M&amp;odule</value>
   </data>
+  <data name="CodeExplorer_Indent" xml:space="preserve">
+    <value>Indent</value>
+  </data>
 </root>

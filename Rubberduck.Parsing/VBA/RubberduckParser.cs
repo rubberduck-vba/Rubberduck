@@ -12,6 +12,7 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using Rubberduck.VBEditor.Extensions;
 using System.IO;
+using System.Linq;
 using NLog;
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -660,10 +661,20 @@ namespace Rubberduck.Parsing.VBA
         {
             State.ParseRequest -= ReparseRequested;
 
-            if (_cancellationTokens[0] != null)
+            if (_cancellationTokens.Any(cts => cts != null))
             {
-                _cancellationTokens[0].Cancel();
-                _cancellationTokens[0].Dispose();
+                foreach (var cts in _cancellationTokens.ToList())
+                {
+                    try
+                    {
+                        cts.Cancel();
+                        cts.Dispose();
+                    }
+                    finally
+                    {
+                        _cancellationTokens.Remove(cts);
+                    }
+                }
             }
         }
     }
