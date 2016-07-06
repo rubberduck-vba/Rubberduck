@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "TestExplorer_AddTestMethod"; } }
+        public override string Key { get { return "TestExplorerMenu_AddTestMethod"; } }
         public override int DisplayOrder { get { return (int)UnitTestingMenuItemDisplayOrder.AddTestMethod; } }
 
         public override Image Image { get { return Resources.flask; } }

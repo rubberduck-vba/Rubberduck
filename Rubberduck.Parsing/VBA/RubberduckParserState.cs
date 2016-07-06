@@ -922,36 +922,6 @@ namespace Rubberduck.Parsing.VBA
             return false;
         }
 
-        public bool HasAllParseTrees(IReadOnlyList<VBComponent> expected)
-        {
-            var expectedModules = new List<QualifiedModuleName>();
-            foreach (var component in expected)
-            {
-                expectedModules.Add(new QualifiedModuleName(component));
-            }
-
-            foreach (var key in _moduleStates.Keys)
-            {
-                if (key.Component == null || expectedModules.Contains(key))
-                {
-                    continue;
-                }
-
-                ClearStateCache(key.Component);
-            }
-
-            var parseTreeCount = 0;
-            foreach (var state in _moduleStates)
-            {
-                if (state.Value.ParseTree != null)
-                {
-                    parseTreeCount++;
-                }
-            }
-
-            return parseTreeCount == expected.Count;
-        }
-
         public TokenStreamRewriter GetRewriter(VBComponent component)
         {
             return new TokenStreamRewriter(_moduleStates[new QualifiedModuleName(component)].TokenStream);

@@ -78,7 +78,7 @@ namespace Rubberduck.API
         public void Parse()
         {
             // blocking call
-            _parser.Parse();
+            _parser.Parse(new System.Threading.CancellationTokenSource());
         }
 
         /// <summary>
