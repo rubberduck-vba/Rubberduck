@@ -319,6 +319,11 @@ namespace Rubberduck.Parsing.VBA
 
         private Task[] ResolveReferencesAsync(CancellationToken token)
         {
+            foreach (var kvp in State.ParseTrees)
+            {
+                State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
+            }
+
             var finder = new DeclarationFinder(State.AllDeclarations, State.AllComments, State.AllAnnotations);
             var passes = new List<ICompilationPass>
                 {
