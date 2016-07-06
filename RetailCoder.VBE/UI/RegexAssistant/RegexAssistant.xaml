@@ -8,6 +8,9 @@
              d:DesignHeight="300" Width="555"
              d:DataContext="{d:DesignInstance {x:Type assistant:RegexAssistantViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
+        <HierarchicalDataTemplate
+            x:Key="RecursiveData" DataType="TreeViewItem" ItemsSource="{Binding Items}">
+        </HierarchicalDataTemplate>
     </UserControl.Resources>
     <Grid>
         <ScrollViewer>
@@ -42,15 +45,11 @@
                                   Margin="15,5,5,5" IsChecked="{Binding IgnoreCaseFlag}"/>
                     </StackPanel>
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_DescriptionResultsLabel}"
-                   FontWeight="SemiBold" />
-
-                    <!--<RichTextBox x:Name="Results" HorizontalAlignment="Left" 
-                                 MinHeight="165" VerticalAlignment="Top" MinWidth="250"
-                                 Margin="15,5,5,5">
-                    </RichTextBox>-->
-                    <TextBlock MinHeight="165" VerticalAlignment="Top" MinWidth="250" TextWrapping="WrapWithOverflow"
-                                 Margin="15,5,5,5" Text="{Binding DescriptionResults, Mode=OneWay}"/>
-
+                        FontWeight="SemiBold" />
+                    
+                    <TreeView x:Name="treeView" ItemTemplate="{StaticResource RecursiveData}" 
+                              Height="145" VerticalAlignment="Stretch" Margin="15,10,10,10" HorizontalContentAlignment="Stretch"
+                              ItemsSource="{Binding ResultItems}"  />
                 </StackPanel>
             </Grid>
         </ScrollViewer>

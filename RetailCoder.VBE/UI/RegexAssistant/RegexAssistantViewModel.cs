@@ -1,4 +1,8 @@
 ﻿using Rubberduck.RegexAssistant;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Rubberduck.UI.RegexAssistant
 {
@@ -51,15 +55,38 @@ namespace Rubberduck.UI.RegexAssistant
         private bool _ignoreCaseFlag;
         private string _pattern;
 
+        private List<TreeViewItem> _resultItems;
+        public List<TreeViewItem> ResultItems
+        {
+            get
+            {
+                return _resultItems;
+            }
+            set
+            {
+                _resultItems = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void RecalculateDescription()
         {
             if (_pattern.Equals(string.Empty))
             {
                 _description = "No Pattern given";
+                var results = new List<TreeViewItem>();
+                var rootTreeItem = new TreeViewItem();
+                rootTreeItem.Header = _description;
+                results.Add(rootTreeItem);
+                ResultItems = results;
                 return;
             }
-            _description = new Pattern(_pattern, _ignoreCaseFlag, _ignoreCaseFlag).Description;
-            base.OnPropertyChanged("DescriptionResults");
+            var pattern = new Pattern(_pattern, _ignoreCaseFlag, _ignoreCaseFlag);
+            //_description = pattern.Description;
+            var resultItems = new List<TreeViewItem>();
+            resultItems.Add(AsTreeViewItem((dynamic)pattern.RootExpression));
+            ResultItems = resultItems;
+            //base.OnPropertyChanged("DescriptionResults");
         }
 
         public string DescriptionResults
@@ -68,6 +95,54 @@ namespace Rubberduck.UI.RegexAssistant
             {
                 return _description;
             }
+        }
+
+        private static TreeViewItem AsTreeViewItem(IRegularExpression expression)
+        {
+            var t = expression.GetType();
+
+            var result = new TreeViewItem();
+            result.Header = "Some unknown IRegularExpression subtype was in the view";
+            foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp)))
+            {
+                result.Items.Add(subtree);
+            }
+            return result;
+        }
+
+        private static TreeViewItem AsTreeViewItem(ConcatenatedExpression expression)
+        {
+            var result = new TreeViewItem();
+            result.Header = expression.Description;
+            foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp)))
+            {
+                result.Items.Add(subtree);
+            }
+            return result;
+        }
+
+        private static TreeViewItem AsTreeViewItem(AlternativesExpression expression)
+        {
+            var result = new TreeViewItem();
+            result.Header = expression.Description;
+            foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp)))
+            {
+                result.Items.Add(subtree);
+            }
+            return result;
+        }
+
+        private static TreeViewItem AsTreeViewItem(SingleAtomExpression expression)
+        {
+            var result = new TreeViewItem();
+            result.Header = expression.Description;
+            // no other Atom has Subexpressions we care about
+            if (expression.Atom.GetType() == typeof(Group))
+            {
+                result.Items.Add(AsTreeViewItem((dynamic)((expression.Atom) as Group).Subexpression));
+            }
+            
+            return result;
         }
     }
 }
