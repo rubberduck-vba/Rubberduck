@@ -456,9 +456,9 @@ namespace Rubberduck.Common
             var members = FindInterfaceMembers(declarations);
             var matches = members.Where(m => !m.IsBuiltIn && implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
 
-            return matches.Count > 1 
-                ? matches.SingleOrDefault(m => m.ProjectId == implementation.ProjectId) 
-                : matches.First();
+            return matches.Count > 1
+                ? matches.SingleOrDefault(m => m.ProjectId == implementation.ProjectId)
+                : matches.FirstOrDefault();
         }
 
         public static Declaration FindTarget(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
