@@ -277,6 +277,15 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Matches the exact sequence given as follows:.
+        /// </summary>
+        internal static string ExpressionDescription_ConcatenatedExpression {
+            get {
+                return ResourceManager.GetString("ExpressionDescription_ConcatenatedExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to $ ensures all characters of the string are consumed.
         /// </summary>
         internal static string PatternDescription_AnchorEnd {

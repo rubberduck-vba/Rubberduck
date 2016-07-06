@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant
 {
-    internal interface IAtom : IDescribable
+    public interface IAtom : IDescribable
     {
         string Specifier { get; }
     }
@@ -101,9 +101,9 @@ namespace Rubberduck.RegexAssistant
         }
     }
 
-    internal class Group : IAtom
+    public class Group : IAtom
     {
-        public static readonly string Pattern = @"(?<!\\)\((?<expression>.*)(?<!\\)\)";
+        public static readonly string Pattern = @"(?<!\\)\((?<expression>.*(?<!\\))\)";
         private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
 
         private readonly IRegularExpression _subexpression;
@@ -118,6 +118,8 @@ namespace Rubberduck.RegexAssistant
             _subexpression = RegularExpression.Parse(m.Groups["expression"].Value);
             _specifier = specifier;
         }
+
+        public IRegularExpression Subexpression { get { return _subexpression; } }
 
         public string Specifier
         {

@@ -13,7 +13,7 @@ namespace Rubberduck.RegexAssistant
         IList<IRegularExpression> Subexpressions { get; }
     }
 
-    internal class ConcatenatedExpression : IRegularExpression
+    public class ConcatenatedExpression : IRegularExpression
     {
         private readonly Quantifier _quantifier;
         private readonly IList<IRegularExpression> _subexpressions;
@@ -28,7 +28,8 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return string.Join(Environment.NewLine, _subexpressions.Select(exp => exp.Description));
+                return AssistantResources.ExpressionDescription_ConcatenatedExpression;
+                //return string.Join(Environment.NewLine, _subexpressions.Select(exp => exp.Description));
             }
         }
 
@@ -49,7 +50,7 @@ namespace Rubberduck.RegexAssistant
         }
     }
 
-    internal class AlternativesExpression : IRegularExpression
+    public class AlternativesExpression : IRegularExpression
     {
         private readonly Quantifier _quantifier;
         private readonly IList<IRegularExpression> _subexpressions;
@@ -64,7 +65,8 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return AssistantResources.ExpressionDescription_AlternativesExpression + Environment.NewLine + string.Join(Environment.NewLine, _subexpressions.Select(exp => exp.Description));
+                return AssistantResources.ExpressionDescription_AlternativesExpression;
+                // + Environment.NewLine + string.Join(Environment.NewLine, _subexpressions.Select(exp => exp.Description))
             }
         }
 
@@ -85,7 +87,7 @@ namespace Rubberduck.RegexAssistant
         }
     }
 
-    internal class SingleAtomExpression : IRegularExpression
+    public class SingleAtomExpression : IRegularExpression
     {
         public readonly IAtom Atom;
         private readonly Quantifier _quantifier;
@@ -190,8 +192,11 @@ namespace Rubberduck.RegexAssistant
         {
             List<IRegularExpression> subexpressions = new List<IRegularExpression>();
             string currentSpecifier = specifier;
-            while (currentSpecifier.Length > 0)
+            int oldSpecifierLength = currentSpecifier.Length + 1;
+            while (currentSpecifier.Length > 0 && currentSpecifier.Length < oldSpecifierLength)
             {
+                // Fugly hack for an error-return
+                oldSpecifierLength = currentSpecifier.Length;
                 IRegularExpression expression;
                 // we actually have an AlternativesExpression, return the current status to Parse after updating the specifier
                 if (currentSpecifier[0].Equals('|'))

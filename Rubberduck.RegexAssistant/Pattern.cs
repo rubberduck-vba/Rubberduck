@@ -5,7 +5,7 @@ namespace Rubberduck.RegexAssistant
 {
     public class Pattern : IDescribable
     {
-        IRegularExpression RootExpression;
+        public IRegularExpression RootExpression;
         MatcherFlags Flags;
 
         private readonly bool _hasStartAnchor;
@@ -29,7 +29,7 @@ namespace Rubberduck.RegexAssistant
             _hasStartAnchor = expression[0].Equals('^');
 
             int start = _hasStartAnchor ? 1 : 0;
-            int end = (_hasEndAnchor ? 1 : 0) + start + 1;
+            int end = (_hasEndAnchor ? 1 : 0) + start;
             RootExpression = RegularExpression.Parse(expression.Substring(start, expression.Length - end));
             _description = AssembleDescription();
         }
