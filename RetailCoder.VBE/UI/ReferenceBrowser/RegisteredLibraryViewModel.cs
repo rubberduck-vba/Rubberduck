@@ -146,6 +146,14 @@ namespace Rubberduck.UI.ReferenceBrowser
 
         public int CompareTo(RegisteredLibraryViewModel other)
         {
+            if (CanRemoveReference && !other.CanRemoveReference)
+            {
+                return 1;
+            }
+            if (!CanRemoveReference && other.CanRemoveReference)
+            {
+                return -1;
+            }
             if (IsActiveProjectReference && !other.IsActiveProjectReference)
             {
                 return -1;

@@ -15,7 +15,8 @@
 
         <ListView x:Name="TypeLibs"
                   ItemsSource="{Binding RegisteredLibraries}"
-                  SelectedItem="{Binding SelectedLibrary}">
+                  SelectedItem="{Binding SelectedLibrary}" 
+                  IsSynchronizedWithCurrentItem="True">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="30">
@@ -42,7 +43,7 @@
 
         <StackPanel Grid.Row="1"
                     DataContext="{Binding SelectedLibrary}">
-            <TextBlock>
+            <TextBlock Margin="0,5,0,0">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="Name: {0}">
                         <Binding Path="Name" />
@@ -50,7 +51,7 @@
                 </TextBlock.Text>
             </TextBlock>
 
-            <TextBlock>
+            <TextBlock Margin="0,5,0,0">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="Path: {0}">
                         <Binding Path="FilePath" />
@@ -58,7 +59,7 @@
                 </TextBlock.Text>
             </TextBlock>
 
-            <TextBlock>
+            <TextBlock Margin="0,5,0,5">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="Guid: {0}">
                         <Binding Path="Guid" />
