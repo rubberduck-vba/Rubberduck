@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Rubberduck.UI.ReferenceBrowser"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance Type=local:LibrariesViewModel}">
+             d:DataContext="{d:DesignInstance Type=local:RegisteredLibraryViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -14,8 +14,7 @@
         </Grid.RowDefinitions>
 
         <ListView x:Name="TypeLibs"
-                  ItemsSource="{Binding RegisteredLibraries}"
-                  SelectedItem="{Binding SelectedLibrary}" 
+                  ItemsSource="{Binding}"
                   IsSynchronizedWithCurrentItem="True">
             <ListView.View>
                 <GridView>
@@ -42,7 +41,9 @@
         </ListView>
 
         <StackPanel Grid.Row="1"
-                    DataContext="{Binding SelectedLibrary}">
+                    DataContext="{Binding SelectedItem, ElementName=TypeLibs}"
+                    d:DataContext="{d:DesignInstance local:RegisteredLibraryViewModel}">
+            
             <TextBlock Margin="0,5,0,0">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="Name: {0}">
