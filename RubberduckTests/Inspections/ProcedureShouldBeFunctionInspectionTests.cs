@@ -44,7 +44,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
 
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -79,7 +79,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
@@ -111,7 +111,7 @@ End Function";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -142,7 +142,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -173,7 +173,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -204,7 +204,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -245,7 +245,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -285,7 +285,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -323,7 +323,7 @@ End Function";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -373,7 +373,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -420,7 +420,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -467,7 +467,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -517,7 +517,7 @@ End Function";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -567,7 +567,7 @@ End Sub";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
 
             inspectionResults.First().QuickFixes.First().Fix();
 

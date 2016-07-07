@@ -432,6 +432,10 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
+            if (stateCounts[(int)ParserState.Pending] > 0)
+            {
+                result = ParserState.Pending;
+            }
             if (stateCounts[(int)ParserState.Parsing] > 0)
             {
                 result = ParserState.Parsing;

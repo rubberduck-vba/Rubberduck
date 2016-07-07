@@ -141,6 +141,11 @@ namespace Rubberduck
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
             UpdateLoggingLevel();
+
+            if (_vbe.VBProjects.Count != 0)
+            {
+                _parser.State.OnParseRequested(this);
+            }
         }
 
         public void Shutdown()
