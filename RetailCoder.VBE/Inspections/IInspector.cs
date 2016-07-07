@@ -8,7 +8,7 @@ namespace Rubberduck.Inspections
 {
     public interface IInspector
     {
-        Task<IEnumerable<ICodeInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token);
+        List<ICodeInspectionResult> FindIssuesAsync(RubberduckParserState state, CancellationToken token);
     }
 
     public class InspectorIssuesFoundEventArg : EventArgs
