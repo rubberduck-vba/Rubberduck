@@ -25,11 +25,13 @@
                            Padding="5">
                     Filter:
                 </TextBlock>
-                <TextBox HorizontalAlignment="Stretch"
+                <TextBox Text="{Binding ComReferencesFilter, UpdateSourceTrigger=PropertyChanged}" 
+                         HorizontalAlignment="Stretch"
                          Margin="5"
                          Padding="5"
                          Grid.Column="1"
                          Grid.Row="0"/>
+                
                 <local:ReferenceListControl DataContext="{Binding ComReferences}"
                                             Margin="5"
                                             Grid.Column="0"
