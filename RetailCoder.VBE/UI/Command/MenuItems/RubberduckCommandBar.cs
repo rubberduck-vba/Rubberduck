@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Command.MenuItems
                 if (selection.HasValue) { SetSelectionText(selection.Value); }
                 _selectionButton.TooltipText = _selectionButton.Caption;
             }
-            else if (declaration != null)
+            else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
             {
                 var typeName = declaration.HasTypeHint
                     ? Declaration.TypeHintToTypeName[declaration.TypeHint]
@@ -63,6 +63,28 @@ namespace Rubberduck.UI.Command.MenuItems
                     declaration.IdentifierName,
                     RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
                     string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + typeName);
+
+                _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
+                    ? _selectionButton.Caption
+                    : declaration.DescriptionString;
+            }
+            else if (declaration != null)
+            {
+                // todo: confirm this is what we want, and then refator
+                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+                if (selection.HasValue)
+                {
+                    var typeName = declaration.HasTypeHint
+                        ? Declaration.TypeHintToTypeName[declaration.TypeHint]
+                        : declaration.AsTypeName;
+
+                    _selectionButton.Caption = string.Format("{0}|{1}: {2} ({3}{4})",
+                        selection.Value.Selection,
+                        declaration.QualifiedName.QualifiedModuleName,
+                        declaration.IdentifierName,
+                        RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
+                        string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + typeName);
+                }
                 _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
                     ? _selectionButton.Caption
                     : declaration.DescriptionString;
