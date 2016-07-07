@@ -13,17 +13,19 @@ namespace Rubberduck.UI.Command
     {
         private readonly VBE _vbe;
         private readonly RegisteredLibraryModelService _service;
+        private readonly IOpenFileDialog _filePicker;
 
-        public ReferenceBrowserCommand(VBE vbe, RegisteredLibraryModelService service) 
+        public ReferenceBrowserCommand(VBE vbe, RegisteredLibraryModelService service, IOpenFileDialog filePicker) 
             : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _service = service;
+            _filePicker = filePicker;
         }
 
         protected override void ExecuteImpl(object parameter)
         {
-            var vm = new ReferenceBrowserViewModel(_vbe, _service);
+            using (var vm = new ReferenceBrowserViewModel(_vbe, _service, _filePicker))
             using (var dialog = new ReferenceBrowserWindow(vm))
             {
                 dialog.ShowDialog();

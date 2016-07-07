@@ -54,7 +54,8 @@
                 <TextBox HorizontalAlignment="Stretch"
                          Margin="5"/>
 
-                <Button Grid.Column="1"
+                <Button Command="{Binding AddVbaProjectReferenceCommand}" 
+                        Grid.Column="1"
                         Grid.Row="0"
                         Margin="5"
                         Padding="5">

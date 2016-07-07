@@ -1,12 +1,17 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Forms;
+using System.Windows.Input;
 using Microsoft.Vbe.Interop;
+using NLog;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.ReferenceBrowser
 {
-    public class ReferenceBrowserViewModel : ViewModelBase
+    public class ReferenceBrowserViewModel : ViewModelBase, IDisposable
     {
         private readonly VBE _vbe;
         private readonly RegisteredLibraryModelService _service;
@@ -14,11 +19,11 @@ namespace Rubberduck.UI.ReferenceBrowser
         private readonly ObservableCollection<RegisteredLibraryViewModel> _registeredComReferences;
         private string _filter;
 
-        public ReferenceBrowserViewModel(VBE vbe, RegisteredLibraryModelService service)
+        public ReferenceBrowserViewModel(VBE vbe, RegisteredLibraryModelService service, IOpenFileDialog filePicker)
         {
             _vbe = vbe;
             _service = service;
-            
+
             _registeredComReferences = new ObservableCollection<RegisteredLibraryViewModel>();
             ComReferences = new CollectionViewSource {Source = _registeredComReferences}.View;
             //ComReferences.DeferRefresh();
@@ -38,6 +43,8 @@ namespace Rubberduck.UI.ReferenceBrowser
 
             BuildTypeLibraryReferenceViewModels();
             BuildVbaProjectReferenceViewModels();
+
+            AddVbaProjectReferenceCommand = new AddReferenceCommand(filePicker, AddVbaReference);
         }
 
         public ICollectionView ComReferences { get; }
@@ -57,6 +64,15 @@ namespace Rubberduck.UI.ReferenceBrowser
                 FilterComReferences();
                 OnPropertyChanged();
             }
+        }
+
+        public ICommand AddVbaProjectReferenceCommand { get; private set; }
+
+        private void AddVbaReference(string filePath)
+        {
+            // TODO this may throw exceptions.  Gotta to catch 'em all!
+            var reference = _vbe.ActiveVBProject.References.AddFromFile(filePath);
+            CreateViewModelForVbaProjectReference(reference);
         }
 
         private void FilterComReferences()
@@ -84,7 +100,7 @@ namespace Rubberduck.UI.ReferenceBrowser
             }
         }
 
-        public void BuildVbaProjectReferenceViewModels()
+        private void BuildVbaProjectReferenceViewModels()
         {
             var vbaReferences = _vbe.ActiveVBProject.References
                 .OfType<Reference>()
@@ -92,9 +108,58 @@ namespace Rubberduck.UI.ReferenceBrowser
 
             foreach (var reference in vbaReferences)
             {
-                var model = new VbaProjectReferenceModel(reference);
-                var vm = new RegisteredLibraryViewModel(model, _vbe.ActiveVBProject);
-                _vbaProjectReferences.Add(vm);
+                CreateViewModelForVbaProjectReference(reference);
+            }
+        }
+
+        private void CreateViewModelForVbaProjectReference(Reference reference)
+        {
+            var model = new VbaProjectReferenceModel(reference);
+            var vm = new RegisteredLibraryViewModel(model, _vbe.ActiveVBProject);
+            _vbaProjectReferences.Add(vm);
+        }
+
+        public void Dispose()
+        {
+            (AddVbaProjectReferenceCommand as IDisposable)?.Dispose();
+            AddVbaProjectReferenceCommand = null;
+        }
+
+        private class AddReferenceCommand : CommandBase, IDisposable
+        {
+            private readonly IOpenFileDialog _filePicker;
+            private Action<string> _addReferenceCallback;
+
+            internal AddReferenceCommand(IOpenFileDialog filePicker, Action<string> addReferenceCallback) 
+                : base(LogManager.GetCurrentClassLogger())
+            {
+                if (addReferenceCallback == null)
+                {
+                    throw new ArgumentNullException(nameof(addReferenceCallback));
+                }
+                _addReferenceCallback = addReferenceCallback;
+                _filePicker = filePicker;
+                _filePicker.AddExtension = true;
+                _filePicker.AutoUpgradeEnabled = true;
+                _filePicker.CheckFileExists = true;
+                _filePicker.Multiselect = false;
+                _filePicker.ShowHelp = false;
+                _filePicker.Filter = @"Excel Files|*.xls;*.xlsx;*.xlsm";
+                _filePicker.CheckFileExists = true;
+            }
+
+            protected override void ExecuteImpl(object parameter)
+            {
+                if (_filePicker.ShowDialog() == DialogResult.OK)
+                {
+                    _addReferenceCallback(_filePicker.FileNames[0]);
+                }
+            }
+
+            public void Dispose()
+            {
+                _filePicker?.Dispose();
+                _addReferenceCallback = null;
             }
         }
     }
