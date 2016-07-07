@@ -21,7 +21,8 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var interfaceMembers = UserDeclarations.FindInterfaceImplementationMembers();
+            var interfaceMembersScope = UserDeclarations.FindInterfaceImplementationMembers().Select(m => m.Scope);
+            var builtinEventHandlers = State.AllDeclarations.FindBuiltInEventHandlers();
 
             var issues = (from item in UserDeclarations
                 where
@@ -29,8 +30,8 @@ namespace Rubberduck.Inspections
                     && item.DeclarationType == DeclarationType.Parameter
                     // ParamArray parameters do not allow an explicit "ByRef" parameter mechanism.               
                     && !((ParameterDeclaration)item).IsParamArray
-                    && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
-                    && !State.AllDeclarations.FindBuiltInEventHandlers().Contains(item.ParentDeclaration)
+                    && !interfaceMembersScope.Contains(item.ParentScope)
+                    && !builtinEventHandlers.Contains(item.ParentDeclaration)
                 let arg = item.Context as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null
                 select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))

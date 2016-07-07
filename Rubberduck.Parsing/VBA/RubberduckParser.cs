@@ -319,6 +319,11 @@ namespace Rubberduck.Parsing.VBA
 
         private Task[] ResolveReferencesAsync(CancellationToken token)
         {
+            foreach (var kvp in State.ParseTrees)
+            {
+                State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
+            }
+
             var finder = new DeclarationFinder(State.AllDeclarations, State.AllComments, State.AllAnnotations);
             var passes = new List<ICompilationPass>
                 {
@@ -662,8 +667,12 @@ namespace Rubberduck.Parsing.VBA
 
             if (_cancellationTokens[0] != null)
             {
-                _cancellationTokens[0].Cancel();
-                _cancellationTokens[0].Dispose();
+                try
+                {
+                    _cancellationTokens[0].Cancel();
+                    _cancellationTokens[0].Dispose();
+                }
+                catch (ObjectDisposedException) { /* todo: avoid this being thrown in the first place */ }
             }
         }
     }

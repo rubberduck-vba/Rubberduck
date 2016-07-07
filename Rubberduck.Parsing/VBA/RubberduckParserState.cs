@@ -119,7 +119,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            Logger.Debug("Project {1} renamed.", e.ProjectId);
+            Logger.Debug("Project {0} was renamed.", e.ProjectId);
 
             RemoveProject(e.ProjectId);
             AddProject(e.ProjectId);
@@ -432,6 +432,10 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
+            if (stateCounts[(int)ParserState.Pending] > 0)
+            {
+                result = ParserState.Pending;
+            }
             if (stateCounts[(int)ParserState.Parsing] > 0)
             {
                 result = ParserState.Parsing;

@@ -34,7 +34,8 @@ namespace Rubberduck.UI.Command
                         d.DeclarationType == DeclarationType.ProceduralModule &&
                         d.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
 
-            return testModules.Any(a => a.QualifiedName.QualifiedModuleName.Component == _vbe.SelectedVBComponent);
+            // the code modules consistently match correctly, but the components don't
+            return testModules.Any(a => a.QualifiedName.QualifiedModuleName.Component.CodeModule == _vbe.SelectedVBComponent.CodeModule);
         }
 
         protected override void ExecuteImpl(object parameter)

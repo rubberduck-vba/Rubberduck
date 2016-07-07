@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Vbe.Interop;
-using System.IO;
 using System.Linq;
 
 namespace Rubberduck.VBEditor
@@ -12,94 +11,18 @@ namespace Rubberduck.VBEditor
     {
         private static string GetDisplayName(VBProject project)
         {
-
-            if (project.Protection == vbext_ProjectProtection.vbext_pp_none)
-            {
-                //Try reading the top-most document-type component's Properties("Name") value
-                //Eg. A Workbook's parent is the application, so read the workbook's name
-                try
-                {
-                    var component = project.VBComponents.Cast<VBComponent>()
-                        .FirstOrDefault(comp => comp.Type == vbext_ComponentType.vbext_ct_Document
-                                                && comp.Properties.Item("Name").Value != null
-                                                && comp.Properties.Item("Parent")
-                                                    .Object.Equals(comp.Properties.Item("Application").Object));
-
-                    if (component == null) { return null; }
-
-                    var nameProperty = component.Properties.Cast<Property>().FirstOrDefault(property => property.Name == "Name");
-                    return nameProperty == null
-                        ? null
-                        : nameProperty.Value.ToString();
-                }
-                catch 
-                {
-                  //The Properties collection either wasn't available, or didn't have the expected properties
-                }
-
-                //Try reading the top-most document-type component's parent's Properties("Name") value
-                // Eg. A PowerPoint Slide is top level, but it's parent is a Presentation (that is NOT a vbComponent)
-                try
-                {
-                    var firstOrDefault = project.VBComponents.Cast<VBComponent>()
-                        .FirstOrDefault(comp => comp.Type == vbext_ComponentType.vbext_ct_Document
-                                                && comp.Properties.Item("Parent").Value != null);
-                    if (firstOrDefault != null)
-                    {
-                        var parentProp = firstOrDefault
-                            .Properties.Cast<Property>().FirstOrDefault(property => property.Name == "Parent");
-
-                        Property nameProperty = null;
-                        if (parentProp != null && parentProp.Value is Properties)
-                        {
-                            var props = (Properties)parentProp.Value;
-                            nameProperty = props.Cast<Property>().FirstOrDefault(property => property.Name == "Name");
-                        }
-
-                        return nameProperty == null
-                            ? null
-                            : nameProperty.Value.ToString();
-                    }
-                }
-                catch
-                {
-                    //The Properties collection either wasn't available, or didn't have the expected properties
-                }
-            }
-
-            //Try reading the filename
             try
             {
-                if (!string.IsNullOrEmpty(Path.GetDirectoryName(project.BuildFileName)))
+                if (project.HelpFile != project.VBE.ActiveVBProject.HelpFile)
                 {
-                    return Path.GetFileName(project.FileName);
+                    project.VBE.ActiveVBProject = project;
                 }
+                return project.VBE.MainWindow.Caption.Split(' ').Last();
             }
             catch
-            {  //The GetFileName getter probably threw
-            }
-
-            return null;
-        }
-
-        private static string GetDisplayName(VBComponent component)
-        {
-            if (component.Type == vbext_ComponentType.vbext_ct_Document)
             {
-                //Check for a valid properties collection (some hosts don't validate the Properties method unless the component's designer is open in the host
-                try
-                {
-                    var nameProperty = component.Properties.Item("Name");
-                    return nameProperty == null
-                        ? null
-                        : nameProperty.Value.ToString();
-                }
-                catch 
-                { 
-                    //The component isn't open in the host, the Properties Collection is probably inaccessible
-                }
+                return string.Empty;
             }
-            return null;    
         }
 
         public static string GetProjectId(VBProject project)
@@ -128,7 +51,6 @@ namespace Rubberduck.VBEditor
         {
             _component = null;
             _componentName = null;
-            _componentDisplayName = null;
             _project = project;
             _projectName = project.Name;
             _projectPath = string.Empty;
@@ -143,7 +65,6 @@ namespace Rubberduck.VBEditor
 
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
-            _componentDisplayName = GetDisplayName(component);
             _project = component == null ? null : component.Collection.Parent;
             _projectName = _project == null ? string.Empty : _project.Name;
             _projectDisplayName = GetDisplayName(_project);
@@ -164,26 +85,6 @@ namespace Rubberduck.VBEditor
         }
 
         /// <summary>
-        /// Creates a QualifiedModuleName for removing renamed declarations.
-        /// Do not use this overload.
-        /// </summary>
-        public QualifiedModuleName(VBComponent component, string oldComponentName)
-        {
-            _project = null; // field is only assigned when the instance refers to a VBProject.
-
-            _component = component;
-            _componentName = oldComponentName;
-            _componentDisplayName = GetDisplayName(component);
-            _project = component == null ? null : component.Collection.Parent;
-            _projectName = _project == null ? string.Empty : _project.Name;
-            _projectDisplayName = GetDisplayName(_project);
-            _projectPath = string.Empty;
-            _projectId = GetProjectId(_project);
-
-            _contentHashCode = 0;
-        }
-
-        /// <summary>
         /// Creates a QualifiedModuleName for a built-in declaration.
         /// Do not use this overload for user declarations.
         /// </summary>
@@ -196,7 +97,6 @@ namespace Rubberduck.VBEditor
             _projectId = (_projectName + ";" + _projectPath).GetHashCode().ToString();
             _componentName = componentName;
             _component = null;
-            _componentDisplayName = null;
             _contentHashCode = 0;
         }
 
@@ -222,39 +122,9 @@ namespace Rubberduck.VBEditor
 
         public string Name { get { return ToString(); } }
 
-        private readonly string _componentDisplayName;
-        public string ComponentDisplayName { get {return _componentDisplayName; } }
-
         private readonly string _projectDisplayName;
         public string ProjectDisplayName { get { return _projectDisplayName; } }
-
-
-        /// <summary>
-        /// returns: "ComponentName (DisplayName)" as typically displayed in VBE Project Explorer
-        /// </summary>
-        public string ComponentTitle {
-            get {
-                if (_project != null && _component == null)
-                {
-                    //handle display of Project component
-                    return _projectName + (_projectDisplayName != null ? " (" + _projectDisplayName + ")" : string.Empty);
-                }
-                else
-                {
-                    if (_componentDisplayName == _projectDisplayName) 
-                    {
-                        //handle display of main documents, like ThisWorkbook and ThisDocument
-                        return _componentName;
-                    }
-                    else
-                    {
-                        //handle display of all other components
-                        return _componentName + (_componentDisplayName != null ? " (" +  _componentDisplayName  + ")" : string.Empty);
-                    }
-                }
-            } 
-        }
-
+        
         /// <summary>
         /// returns: "ProjectName (DisplayName)" as typically displayed in VBE Project Explorer
         /// </summary>
