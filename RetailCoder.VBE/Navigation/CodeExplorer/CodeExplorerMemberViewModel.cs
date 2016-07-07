@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -80,6 +81,25 @@ namespace Rubberduck.Navigation.CodeExplorer
             _icon = Mappings[key];
         }
 
+        private string RemoveExtraWhiteSpace(string value)
+        {
+            var newStr = new StringBuilder();
+            var trimmedJoinedString = value.Replace(" _\r\n", " ").Trim();
+
+            for (var i = 0; i < trimmedJoinedString.Length; i++)
+            {
+                // this will not throw because `Trim` ensures the first character is not whitespace
+                if (char.IsWhiteSpace(trimmedJoinedString[i]) && char.IsWhiteSpace(trimmedJoinedString[i - 1]))
+                {
+                    continue;
+                }
+
+                newStr.Append(trimmedJoinedString[i]);
+            }
+
+            return newStr.ToString();
+        }
+
         private readonly string _name;
         public override string Name { get { return _name; } }
 
@@ -108,11 +128,11 @@ namespace Rubberduck.Navigation.CodeExplorer
                       || _declaration.DeclarationType == DeclarationType.PropertySet)
                 {
                     // 6 being the three-letter "get/let/set" + parens + space
-                    _signature = Name.Insert(Name.Length - 6, context.GetText()); 
+                    _signature = Name.Insert(Name.Length - 6, RemoveExtraWhiteSpace(context.GetText())); 
                 }
                 else
                 {
-                    _signature = Name + context.GetText();
+                    _signature = Name + RemoveExtraWhiteSpace(context.GetText());
                 }
                 return _signature;
             }
