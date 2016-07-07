@@ -10,7 +10,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
-using Rubberduck.VBEditor.Extensions;
 using System.IO;
 using NLog;
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -26,8 +25,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
-
-        private readonly VBE _vbe;
+        
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
@@ -35,13 +33,11 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckParser(
-            VBE vbe,
             RubberduckParserState state,
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
             IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders)
         {
-            _vbe = vbe;
             _state = state;
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
@@ -106,13 +102,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void Parse(CancellationTokenSource token)
         {
-            if (State.Projects.Count == 0)
-            {
-                foreach (var project in _vbe.VBProjects.UnprotectedProjects())
-                {
-                    State.AddProject(project.HelpFile);
-                }
-            }
+            State.RefreshProjects();
 
             var components = new List<VBComponent>();
             foreach (var project in State.Projects)
@@ -188,13 +178,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private void ParseAll(CancellationTokenSource token)
         {
-            if (State.Projects.Count == 0)
-            {
-                foreach (var project in _vbe.VBProjects.UnprotectedProjects())
-                {
-                    State.AddProject(project.HelpFile);
-                }
-            }
+            State.RefreshProjects();
 
             var components = new List<VBComponent>();
             foreach (var project in State.Projects)
@@ -232,7 +216,6 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var toParse = new List<VBComponent>();
-
             foreach (var component in components)
             {
                 if (State.IsNewOrModified(component))
@@ -309,6 +292,13 @@ namespace Rubberduck.Parsing.VBA
             }
 
             Task.WaitAll(parseTasks);
+
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+            
+            Debug.Assert(State.ParseTrees.Count == components.Count);
 
             if (State.Status < ParserState.Error)
             {
