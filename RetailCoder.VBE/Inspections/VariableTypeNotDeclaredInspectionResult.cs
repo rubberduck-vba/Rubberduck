@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -90,7 +91,25 @@ namespace Rubberduck.Inspections
             }
 
             instruction = context.GetText();
-            return instruction + ' ' + Tokens.As + ' ' + Tokens.Variant;
+            if (!context.children.Select(s => s.GetType()).Contains(typeof(VBAParser.ArgDefaultValueContext)))
+            {
+                return instruction + ' ' + Tokens.As + ' ' + Tokens.Variant;
+            }
+
+            var fix = string.Empty;
+            var hasArgDefaultValue = false;
+            foreach (var child in context.children)
+            {
+                if (child.GetType() == typeof(VBAParser.ArgDefaultValueContext))
+                {
+                    fix += Tokens.As + ' ' + Tokens.Variant + ' ';
+                    hasArgDefaultValue = true;
+                }
+
+                fix += child.GetText();
+            }
+
+            return hasArgDefaultValue ? fix : fix + ' ' + Tokens.As + ' ' + Tokens.Variant;
         }
 
         private string DeclareExplicitVariant(VBAParser.ConstSubStmtContext context, out string instruction)
