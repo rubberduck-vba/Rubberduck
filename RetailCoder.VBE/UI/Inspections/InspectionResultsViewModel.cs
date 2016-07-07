@@ -259,12 +259,12 @@ namespace Rubberduck.UI.Inspections
             RefreshInspections();
         }
 
-        private async void RefreshInspections()
+        private void RefreshInspections()
         {
             var stopwatch = Stopwatch.StartNew();
             IsBusy = true;
 
-            var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();
+            var results = _inspector.FindIssuesAsync(_state, CancellationToken.None);
             if (GroupByInspectionType)
             {
                 results = results.OrderBy(o => o.Inspection.InspectionType)
