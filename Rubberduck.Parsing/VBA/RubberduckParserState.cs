@@ -119,7 +119,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            Logger.Debug("Project {1} renamed.", e.ProjectId);
+            Logger.Debug("Project {0} was renamed.", e.ProjectId);
 
             RemoveProject(e.ProjectId);
             AddProject(e.ProjectId);

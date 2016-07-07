@@ -667,8 +667,12 @@ namespace Rubberduck.Parsing.VBA
 
             if (_cancellationTokens[0] != null)
             {
-                _cancellationTokens[0].Cancel();
-                _cancellationTokens[0].Dispose();
+                try
+                {
+                    _cancellationTokens[0].Cancel();
+                    _cancellationTokens[0].Dispose();
+                }
+                catch (ObjectDisposedException) { /* todo: avoid this being thrown in the first place */ }
             }
         }
     }
