@@ -47,9 +47,9 @@ End Sub";
             var inspection = new EmptyStringLiteralInspection(null);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count);
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -79,9 +79,9 @@ End Sub";
             var inspection = new EmptyStringLiteralInspection(null);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count);
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -111,9 +111,9 @@ End Sub";
             var inspection = new EmptyStringLiteralInspection(null);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count);
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -150,7 +150,7 @@ End Sub";
             var inspection = new EmptyStringLiteralInspection(null);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.First().Fix();
 

@@ -47,7 +47,7 @@ End Sub";
             var inspection = new ObsoleteLetStatementInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -83,7 +83,7 @@ End Sub";
             var inspection = new ObsoleteLetStatementInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
@@ -118,7 +118,7 @@ End Sub";
             var inspection = new ObsoleteLetStatementInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -154,7 +154,7 @@ End Sub";
             var inspection = new ObsoleteLetStatementInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -199,7 +199,7 @@ End Sub";
             var inspection = new ObsoleteLetStatementInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None);
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.First().Fix();
 
