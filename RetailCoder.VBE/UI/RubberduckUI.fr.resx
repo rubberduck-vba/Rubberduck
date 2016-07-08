@@ -905,7 +905,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Portée:</value>
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
-    <value>Indenter</value>
+    <value>In&amp;denter</value>
   </data>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value>Sélection</value>
@@ -989,7 +989,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>La sélection courante n'est pas valide pour cette opération.</value>
   </data>
   <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value>Procédure courante</value>
+    <value>&amp;Procédure courante</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>La sélection n'est pas une variable.</value>
@@ -1010,7 +1010,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Veuillez spécifier le nom, l'accessibilité des paramètres, et le type de mutateur pour la nouvelle propriété.</value>
   </data>
   <data name="IndentCurrentModule" xml:space="preserve">
-    <value>Module courant</value>
+    <value>&amp;Module courant</value>
   </data>
   <data name="CodeExplorer_NewToolTip" xml:space="preserve">
     <value>Ajouter un module au projet actif</value>
@@ -1530,7 +1530,7 @@ Tous ceux qui nous ont donné une étoile ou un "like"
     <value>Error</value>
   </data>
   <data name="NoIndentAnnotation" xml:space="preserve">
-    <value>Annoter avec '@NoIndent</value>
+    <value>Annoter avec '@&amp;NoIndent</value>
   </data>
   <data name="SourceControl_UndoPrompt" xml:space="preserve">
     <value>Souhaitez-vous annuler les modifications effectuées à {0}?</value>
