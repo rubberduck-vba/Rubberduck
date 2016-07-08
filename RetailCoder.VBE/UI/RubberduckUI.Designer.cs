@@ -1228,6 +1228,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string Filter {
+            get {
+                return ResourceManager.GetString("Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find.
         /// </summary>
         public static string Find {
@@ -1521,6 +1530,15 @@ namespace Rubberduck.UI {
         public static string GroupingStyle_ByOutcome {
             get {
                 return ResourceManager.GetString("GroupingStyle_ByOutcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GUID.
+        /// </summary>
+        public static string Guid {
+            get {
+                return ResourceManager.GetString("Guid", resourceCulture);
             }
         }
         
@@ -2272,6 +2290,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Path.
+        /// </summary>
+        public static string Path {
+            get {
+                return ResourceManager.GetString("Path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Previous.
         /// </summary>
         public static string Previous {
@@ -2422,11 +2449,47 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse....
+        /// </summary>
+        public static string ReferenceBrowser_Browse {
+            get {
+                return ResourceManager.GetString("ReferenceBrowser_Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM.
+        /// </summary>
+        public static string ReferenceBrowser_COM {
+            get {
+                return ResourceManager.GetString("ReferenceBrowser_COM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter:.
+        /// </summary>
+        public static string ReferenceBrowser_Filter {
+            get {
+                return ResourceManager.GetString("ReferenceBrowser_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reference Browser.
         /// </summary>
         public static string ReferenceBrowser_Menu {
             get {
                 return ResourceManager.GetString("ReferenceBrowser_Menu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VBA.
+        /// </summary>
+        public static string ReferenceBrowser_VBA {
+            get {
+                return ResourceManager.GetString("ReferenceBrowser_VBA", resourceCulture);
             }
         }
         

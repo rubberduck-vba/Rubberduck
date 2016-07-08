@@ -24,7 +24,7 @@ namespace Rubberduck.UI.ReferenceBrowser
             }
         }
 
-        public VbaReferenceModel Model { get; }
+        public VbaReferenceModel Model { get; private set; }
 
         public string FilePath
         {
@@ -42,7 +42,9 @@ namespace Rubberduck.UI.ReferenceBrowser
             set
             {
                 if (value == _isActiveReference)
+                {
                     return;
+                }
 
                 if (value)
                 {
@@ -60,6 +62,7 @@ namespace Rubberduck.UI.ReferenceBrowser
                     else
                     {
                         // TODO warn the user that they cannot remove this reference.
+                        // The user shouldn't be able to remove a builtin reference anyway.
                     }
                 }
                 OnPropertyChanged();
@@ -97,7 +100,6 @@ namespace Rubberduck.UI.ReferenceBrowser
 
         private void AddReferenceToActiveProject()
         {
-            //_activeProject.References.AddFromGuid(Guid.ToString("B"), MajorVersion, MinorVersion);
             _activeProject.References.AddFromFile(FilePath);
         }
 
@@ -124,15 +126,7 @@ namespace Rubberduck.UI.ReferenceBrowser
 
         private bool GetIsActiveProjectReference()
         {
-            //return GetActiveProjectReferenceByGuid(Guid) != null;
             return GetActiveProjectReferenceByFilePath(FilePath) != null;
-        }
-
-        private Reference GetActiveProjectReferenceByGuid(Guid guid)
-        {
-            return _activeProject.References
-                .OfType<Reference>()
-                .SingleOrDefault(r => Guid.Parse(r.Guid) == guid);
         }
 
         private Reference GetActiveProjectReferenceByFilePath(string filePath)

@@ -68,7 +68,7 @@ namespace Rubberduck.Root
             Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
-			Bind<RegisteredLibraryModelService>().To<RegisteredLibraryModelService>().InSingletonScope();
+            Bind<RegisteredLibraryModelService>().To<RegisteredLibraryModelService>().InSingletonScope();
 
             BindCodeInspectionTypes();
 
@@ -371,7 +371,7 @@ namespace Rubberduck.Root
                 Kernel.Get<SettingsCommandMenuItem>(),
                 Kernel.Get<InspectionResultsCommandMenuItem>(),
                 Kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
-				Kernel.Get<ReferenceBrowserCommandMenuItem>(),
+                Kernel.Get<ReferenceBrowserCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
                 GetSmartIndenterParentMenu(),
                 GetRefactoringsParentMenu(),

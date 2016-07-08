@@ -10,7 +10,7 @@
 
     <TabControl Padding="5">
 
-        <TabItem Header="COM">
+        <TabItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_COM}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -21,10 +21,9 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Margin="5"
-                           Padding="5">
-                    Filter:
-                </TextBlock>
+                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_Filter}"
+                           Margin="5"
+                           Padding="5" />
                 <TextBox Text="{Binding ComReferencesFilter, UpdateSourceTrigger=PropertyChanged}" 
                          HorizontalAlignment="Stretch"
                          Margin="5"
@@ -40,7 +39,7 @@
             </Grid>
         </TabItem>
 
-        <TabItem Header="VBA" >
+        <TabItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_VBA}" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -59,7 +58,7 @@
                         Grid.Row="0"
                         Margin="5"
                         Padding="5">
-                    Browse...
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_Browse}" />
                 </Button>
 
                 <local:ReferenceListControl DataContext="{Binding VbaProjectReferences}"

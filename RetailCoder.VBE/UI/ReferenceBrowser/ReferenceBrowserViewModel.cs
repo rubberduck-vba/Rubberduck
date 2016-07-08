@@ -26,16 +26,10 @@ namespace Rubberduck.UI.ReferenceBrowser
 
             _registeredComReferences = new ObservableCollection<RegisteredLibraryViewModel>();
             ComReferences = new CollectionViewSource {Source = _registeredComReferences}.View;
-            //ComReferences.DeferRefresh();
-            ComReferences.SortDescriptions.Add(
-                new SortDescription(nameof(RegisteredLibraryViewModel.CanRemoveReference),
-                ListSortDirection.Ascending));
-            ComReferences.SortDescriptions.Add(
-                new SortDescription(nameof(RegisteredLibraryViewModel.IsActiveProjectReference),
-                ListSortDirection.Descending));
-            ComReferences.SortDescriptions.Add(
-                new SortDescription(nameof(RegisteredLibraryViewModel.Name), 
-                ListSortDirection.Ascending));
+            //ComReferences.DeferRefresh();  would prefer to use this for performance but gives an error.
+            ComReferences.SortDescriptions.Add(new SortDescription("CanRemoveReference", ListSortDirection.Ascending));
+            ComReferences.SortDescriptions.Add(new SortDescription("IsActiveProjectReference", ListSortDirection.Descending));
+            ComReferences.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
             //ComReferences.Refresh();
 
             _vbaProjectReferences = new ObservableCollection<RegisteredLibraryViewModel>();
@@ -47,9 +41,9 @@ namespace Rubberduck.UI.ReferenceBrowser
             AddVbaProjectReferenceCommand = new AddReferenceCommand(filePicker, AddVbaReference);
         }
 
-        public ICollectionView ComReferences { get; }
+        public ICollectionView ComReferences { get; private set; }
 
-        public ICollectionView VbaProjectReferences { get; }
+        public ICollectionView VbaProjectReferences { get; private set; }
 
         public string ComReferencesFilter
         {
@@ -121,7 +115,12 @@ namespace Rubberduck.UI.ReferenceBrowser
 
         public void Dispose()
         {
-            (AddVbaProjectReferenceCommand as IDisposable)?.Dispose();
+
+            var command = AddVbaProjectReferenceCommand as IDisposable;
+            if (command != null)
+            {
+                command.Dispose();
+            }
             AddVbaProjectReferenceCommand = null;
         }
 
@@ -135,7 +134,7 @@ namespace Rubberduck.UI.ReferenceBrowser
             {
                 if (addReferenceCallback == null)
                 {
-                    throw new ArgumentNullException(nameof(addReferenceCallback));
+                    throw new ArgumentNullException("addReferenceCallback");
                 }
                 _addReferenceCallback = addReferenceCallback;
                 _filePicker = filePicker;
@@ -158,7 +157,10 @@ namespace Rubberduck.UI.ReferenceBrowser
 
             public void Dispose()
             {
-                _filePicker?.Dispose();
+                if (_filePicker != null)
+                {
+                    _filePicker.Dispose();
+                }
                 _addReferenceCallback = null;
             }
         }

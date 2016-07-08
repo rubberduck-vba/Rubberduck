@@ -27,7 +27,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Name"
+                    <GridViewColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Name}"
                                     Width="400">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="local:RegisteredLibraryViewModel">
@@ -46,7 +46,8 @@
             
             <TextBlock Margin="0,5,0,0">
                 <TextBlock.Text>
-                    <MultiBinding StringFormat="Name: {0}">
+                    <MultiBinding StringFormat="\{0\}: \{1\}">
+                        <Binding Path="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Name}" />
                         <Binding Path="Name" />
                     </MultiBinding>
                 </TextBlock.Text>
@@ -54,7 +55,8 @@
 
             <TextBlock Margin="0,5,0,0">
                 <TextBlock.Text>
-                    <MultiBinding StringFormat="Path: {0}">
+                    <MultiBinding StringFormat="\{0\}: \{1\}">
+                        <Binding Path="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Path}" />
                         <Binding Path="FilePath" />
                     </MultiBinding>
                 </TextBlock.Text>
@@ -62,7 +64,8 @@
 
             <TextBlock Margin="0,5,0,5">
                 <TextBlock.Text>
-                    <MultiBinding StringFormat="Guid: {0}">
+                    <MultiBinding StringFormat="\{0\}: \{1\}">
+                        <Binding Path="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Guid}" />
                         <Binding Path="Guid" />
                     </MultiBinding>
                 </TextBlock.Text>
