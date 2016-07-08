@@ -374,7 +374,8 @@
                                   CommandParameter="{Binding SelectedItem}" />
                         <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_OpenProjectProperties}"
-                                  Command="{Binding OpenProjectPropertiesCommand}" />
+                                  Command="{Binding OpenProjectPropertiesCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
                         <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"

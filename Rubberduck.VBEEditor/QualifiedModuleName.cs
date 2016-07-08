@@ -9,22 +9,6 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
-        private static string GetDisplayName(VBProject project)
-        {
-            try
-            {
-                if (project.HelpFile != project.VBE.ActiveVBProject.HelpFile)
-                {
-                    project.VBE.ActiveVBProject = project;
-                }
-                return project.VBE.MainWindow.Caption.Split(' ').Last();
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
         public static string GetProjectId(VBProject project)
         {
             if (project == null)
@@ -55,7 +39,7 @@ namespace Rubberduck.VBEditor
             _projectName = project.Name;
             _projectPath = string.Empty;
             _projectId = GetProjectId(project);
-            _projectDisplayName = GetDisplayName(project);
+            _projectDisplayName = string.Empty;
             _contentHashCode = 0;
         }
 
@@ -67,9 +51,9 @@ namespace Rubberduck.VBEditor
             _componentName = component == null ? string.Empty : component.Name;
             _project = component == null ? null : component.Collection.Parent;
             _projectName = _project == null ? string.Empty : _project.Name;
-            _projectDisplayName = GetDisplayName(_project);
             _projectPath = string.Empty;
             _projectId = GetProjectId(_project);
+            _projectDisplayName = string.Empty;
 
             _contentHashCode = 0;
             if (component == null)
@@ -121,37 +105,40 @@ namespace Rubberduck.VBEditor
         public string ComponentName { get { return _componentName ?? string.Empty; } }
 
         public string Name { get { return ToString(); } }
-
-        private readonly string _projectDisplayName;
-        public string ProjectDisplayName { get { return _projectDisplayName; } }
         
-        /// <summary>
-        /// returns: "ProjectName (DisplayName)" as typically displayed in VBE Project Explorer
-        /// </summary>
-        public string ProjectTitle
-        {
-            get
-            {
-                return _projectName + (_projectDisplayName != null ? " (" + _projectDisplayName + ")" : string.Empty);
-            }
-        }
-
         private readonly string _projectName;
+        public string ProjectName { get { return _projectName; } }
 
-        public string ProjectName
-        {
-            get
-            {
-                return _projectName;
-            }
-        }
         private readonly string _projectPath;
+        public string ProjectPath { get { return _projectPath; } }
 
-        public string ProjectPath
+        // because this causes a flicker in the VBE, we only want to do it once.
+        // we also want to defer it as long as possible because it is only
+        // needed in a couple places, and QualifiedModuleName is used in many places.
+        private string _projectDisplayName;
+        public string ProjectDisplayName
         {
             get
             {
-                return _projectPath;
+                if (_projectDisplayName != string.Empty)
+                {
+                    return _projectDisplayName;
+                }
+
+                try
+                {
+                    if (_project.HelpFile != _project.VBE.ActiveVBProject.HelpFile)
+                    {
+                        _project.VBE.ActiveVBProject = _project;
+                    }
+
+                    _projectDisplayName = _project.VBE.MainWindow.Caption.Split(' ').Last();
+                    return _projectDisplayName;
+                }
+                catch
+                {
+                    return string.Empty;
+                }
             }
         }
 
