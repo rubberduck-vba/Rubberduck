@@ -77,5 +77,12 @@ namespace Rubberduck.UnitTesting
                         item.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule &&
                         item.ParentDeclaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
         }
+
+        public static IEnumerable<Declaration> GetTestModules(this RubberduckParserState state)
+        {
+            return state.AllUserDeclarations.Where(item =>
+                        item.DeclarationType == DeclarationType.ProceduralModule &&
+                        item.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
+        }
     }
 }

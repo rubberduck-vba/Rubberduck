@@ -29,19 +29,6 @@ namespace Rubberduck.Parsing.VBA
         public ParserState State { get { return _state; } }
     }
 
-    public class ParseRequestEventArgs : EventArgs
-    {
-        private readonly VBComponent _component;
-
-        public ParseRequestEventArgs(VBComponent component)
-        {
-            _component = component;
-        }
-
-        public VBComponent Component { get { return _component; } }
-        public bool IsFullReparseRequest { get { return _component == null; } }
-    }
-
     public class RubberduckStatusMessageEventArgs : EventArgs
     {
         private readonly string _message;
@@ -63,7 +50,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates =
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
 
-        public event EventHandler<ParseRequestEventArgs> ParseRequest;
+        public event EventHandler<EventArgs> ParseRequest;
         public event EventHandler<RubberduckStatusMessageEventArgs> StatusMessageUpdate;
 
         private static readonly List<ParserState> States = new List<ParserState>();
@@ -217,15 +204,18 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void RefreshProjects()
         {
-            _projects.Clear();
-            foreach (VBProject project in _vbe.VBProjects)
+            lock (_projects)
             {
-                if (string.IsNullOrEmpty(project.HelpFile) || _projects.Keys.Contains(project.HelpFile))
+                _projects.Clear();
+                foreach (VBProject project in _vbe.VBProjects)
                 {
-                    project.AssignProjectId();
-                }
+                    if (string.IsNullOrEmpty(project.HelpFile) || _projects.Keys.Contains(project.HelpFile))
+                    {
+                        project.AssignProjectId();
+                    }
 
-                _projects.Add(project.HelpFile, project);
+                    _projects.Add(project.HelpFile, project);
+                }
             }
         }
 
@@ -861,7 +851,7 @@ namespace Rubberduck.Parsing.VBA
             var handler = ParseRequest;
             if (handler != null)
             {
-                var args = new ParseRequestEventArgs(component);
+                var args = EventArgs.Empty;
                 handler.Invoke(requestor, args);
             }
         }

@@ -1,8 +1,6 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
@@ -68,12 +66,10 @@ namespace Rubberduck.UnitTesting
 
             try
             {
-                var declaration = _state.AllUserDeclarations.FirstOrDefault(f =>
+                var declaration = _state.GetTestModules().FirstOrDefault(f =>
                             f.QualifiedName.QualifiedModuleName.Component.CodeModule == _vbe.ActiveCodePane.CodeModule);
 
-                if (declaration != null &&
-                    declaration.DeclarationType == DeclarationType.ProceduralModule &&
-                    declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule))
+                if (declaration != null)
                 {
                     var module = _vbe.ActiveCodePane.CodeModule;
                     var name = GetNextTestMethodName(module.Parent);
@@ -97,12 +93,10 @@ namespace Rubberduck.UnitTesting
 
             try
             {
-                var declaration = _state.AllUserDeclarations.FirstOrDefault(f =>
+                var declaration = _state.GetTestModules().FirstOrDefault(f =>
                             f.QualifiedName.QualifiedModuleName.Component.CodeModule == _vbe.ActiveCodePane.CodeModule);
 
-                if (declaration != null &&
-                    declaration.DeclarationType == DeclarationType.ProceduralModule &&
-                    declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule))
+                if (declaration != null)
                 {
                     var module = _vbe.ActiveCodePane.CodeModule;
                     var name = GetNextTestMethodName(module.Parent);
