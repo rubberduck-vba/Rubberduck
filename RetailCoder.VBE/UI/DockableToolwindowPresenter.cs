@@ -62,7 +62,7 @@ namespace Rubberduck.UI
 
             toolWindow.Visible = false; //hide it again
 
-            userControlHost.AddUserControl(control as UserControl);
+            userControlHost.AddUserControl(control as UserControl, new IntPtr(_vbe.MainWindow.HWnd));
             return toolWindow;
         }
 
