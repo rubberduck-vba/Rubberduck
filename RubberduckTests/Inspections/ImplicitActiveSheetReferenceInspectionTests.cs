@@ -42,6 +42,19 @@ End Sub
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
+            GetExcelRangeDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        private List<Declaration> GetExcelRangeDeclarations()
+        {
             var excelDeclaration = new ProjectDeclaration(new QualifiedMemberName(new QualifiedModuleName("Excel",
                     "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "Excel"), "Excel"), "Excel", true);
 
@@ -87,21 +100,16 @@ End Sub
             rangeDeclaration.AddParameter(firstParamDeclaration);
             rangeDeclaration.AddParameter(secondParamDeclaration);
 
-            parser.State.AddDeclaration(excelDeclaration);
-            parser.State.AddDeclaration(globalDeclaration);
-            parser.State.AddDeclaration(globalCoClassDeclaration);
-            parser.State.AddDeclaration(rangeClassModuleDeclaration);
-            parser.State.AddDeclaration(rangeDeclaration);
-            parser.State.AddDeclaration(firstParamDeclaration);
-            parser.State.AddDeclaration(secondParamDeclaration);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+            return new List<Declaration>
+            {
+                excelDeclaration,
+                globalDeclaration,
+                globalCoClassDeclaration,
+                rangeClassModuleDeclaration,
+                rangeDeclaration,
+                firstParamDeclaration,
+                secondParamDeclaration,
+            };
         }
     }
 }
