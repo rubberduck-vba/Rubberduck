@@ -48,11 +48,11 @@ namespace Rubberduck.Inspections
                 }
             }
 
-            public List<ICodeInspectionResult> FindIssuesAsync(RubberduckParserState state, CancellationToken token)
+            public async Task<IEnumerable<ICodeInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token)
             {
                 if (state == null || !state.AllUserDeclarations.Any())
                 {
-                    return new List<ICodeInspectionResult>();
+                    return new ICodeInspectionResult[] { };
                 }
 
                 state.OnStatusMessageUpdate(RubberduckUI.CodeInspections_Inspecting);
@@ -78,11 +78,11 @@ namespace Rubberduck.Inspections
                             {
                                 allIssues.Add(inspectionResult);
                             }
-                        }, token)).ToArray();
+                        })).ToList();
 
-                Task.WaitAll(inspections);
+                await Task.WhenAll(inspections);
                 state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
-                return allIssues.ToList();
+                return allIssues;
             }
 
             private ParseTreeResults GetParseTreeResults(RubberduckParserState state)

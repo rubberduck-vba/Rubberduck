@@ -374,7 +374,8 @@
                                   CommandParameter="{Binding SelectedItem}" />
                         <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_OpenProjectProperties}"
-                                  Command="{Binding OpenProjectPropertiesCommand}" />
+                                  Command="{Binding OpenProjectPropertiesCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
                         <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"
@@ -740,8 +741,8 @@
 
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
 
-            <ScrollViewer Background="WhiteSmoke" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <StackPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
+            <ScrollViewer Background="WhiteSmoke" VerticalScrollBarVisibility="Auto">
+                <WrapPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
 
                     <Grid Margin="4" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
@@ -776,7 +777,7 @@
                                 CommandParameter="{Binding SelectedItem}"
                                 Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}" />
                     </WrapPanel>
-                </StackPanel>
+                </WrapPanel>
             </ScrollViewer>
         </Border>
     </Grid>

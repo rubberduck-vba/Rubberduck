@@ -923,6 +923,11 @@ namespace Rubberduck.Common.WinAPI
         SYSTIMER = 0x118,
 
         /// <summary>
+        /// Private message to signal focus set/lost for a DockableWindowHost. Set wParam to the DockableWindowHost hWnd, lParam to zero for lost focus, non-zero for gained focus.
+        /// </summary>
+        RUBBERDUCK_CHILD_FOCUS = USER + 0x0F00,
+
+        /// <summary>
         /// The accessibility state has changed.
         /// </summary>
         HSHELL_ACCESSIBILITYSTATE = 11,
