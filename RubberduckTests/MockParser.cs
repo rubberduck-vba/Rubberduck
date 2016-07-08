@@ -41,7 +41,7 @@ namespace RubberduckTests
 
         public static RubberduckParser Create(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
-            return new RubberduckParser(vbe, state, attributeParser,
+            return new RubberduckParser(state, attributeParser,
                 () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
                 new List<ICustomDeclarationLoader> {new DebugDeclarations(state), new FormEventDeclarations(state)});
         }

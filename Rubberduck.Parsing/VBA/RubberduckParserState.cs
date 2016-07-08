@@ -29,19 +29,6 @@ namespace Rubberduck.Parsing.VBA
         public ParserState State { get { return _state; } }
     }
 
-    public class ParseRequestEventArgs : EventArgs
-    {
-        private readonly VBComponent _component;
-
-        public ParseRequestEventArgs(VBComponent component)
-        {
-            _component = component;
-        }
-
-        public VBComponent Component { get { return _component; } }
-        public bool IsFullReparseRequest { get { return _component == null; } }
-    }
-
     public class RubberduckStatusMessageEventArgs : EventArgs
     {
         private readonly string _message;
@@ -63,7 +50,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates =
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
 
-        public event EventHandler<ParseRequestEventArgs> ParseRequest;
+        public event EventHandler<EventArgs> ParseRequest;
         public event EventHandler<RubberduckStatusMessageEventArgs> StatusMessageUpdate;
 
         private static readonly List<ParserState> States = new List<ParserState>();
@@ -96,7 +83,7 @@ namespace Rubberduck.Parsing.VBA
 
             Logger.Debug("Project '{0}' was added.", e.ProjectId);
 
-            AddProject(e.ProjectId); // note side-effect: assigns ProjectId/HelpFile
+            RefreshProjects(); // note side-effect: assigns ProjectId/HelpFile
             OnParseRequested(sender);
         }
 
@@ -122,7 +109,7 @@ namespace Rubberduck.Parsing.VBA
             Logger.Debug("Project {0} was renamed.", e.ProjectId);
 
             RemoveProject(e.ProjectId);
-            AddProject(e.ProjectId);
+            RefreshProjects();
 
             OnParseRequested(sender);
         }
@@ -189,7 +176,7 @@ namespace Rubberduck.Parsing.VBA
                 RemoveProject(e.ProjectId);
                 Logger.Debug("Project '{0}' was removed.", e.ComponentName);
 
-                AddProject(e.ProjectId);
+                RefreshProjects();
             }
             else
             {
@@ -209,48 +196,30 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void AddProject(string projectId)
+        /// <summary>
+        /// Refreshes our list of cached projects.
+        /// Be sure to reparse after calling this in case there
+        /// were projects with duplicate ID's to clear the old
+        /// declarations referencing the project by the old ID.
+        /// </summary>
+        public void RefreshProjects()
         {
-            var projects = new List<VBProject>();
-            foreach (VBProject p in _vbe.VBProjects)
+            lock (_projects)
             {
-                if (p.HelpFile != null && _projects.Keys.Contains(p.HelpFile))
+                _projects.Clear();
+                foreach (VBProject project in _vbe.VBProjects)
                 {
-                    continue;
-                }
+                    if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+                    {
+                        continue;
+                    }
 
-                projects.Add(p);
-            }
+                    if (string.IsNullOrEmpty(project.HelpFile) || _projects.Keys.Contains(project.HelpFile))
+                    {
+                        project.AssignProjectId();
+                    }
 
-            if (projects.Count == 0)
-            {
-                Logger.Debug("Project was not found and will not be added to parser state.");
-                return;
-            }
-
-            foreach (var project in projects)
-            {
-                if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
-                {
-                    // adding protected project to parser state is asking for COMExceptions..
-                    Logger.Debug("Project is protected and will not be added to parser state.");
-                    return;
-                }
-
-                if (string.IsNullOrEmpty(project.HelpFile))
-                {
-                    // assigns the help file and returns the value to reduce COM calls
-                    projectId = project.AssignProjectId();
-                }
-
-                if (!_projects.ContainsKey(projectId))
-                {
-                    _projects.Add(projectId, project);
-                }
-
-                foreach (VBComponent component in project.VBComponents)
-                {
-                    _moduleStates.TryAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending));
+                    _projects.Add(project.HelpFile, project);
                 }
             }
         }
@@ -723,70 +692,18 @@ namespace Rubberduck.Parsing.VBA
                 {
                     continue;
                 }
-
-                var hasReference = false;
+                
                 foreach (var reference in declaration.References)
                 {
-                    hasReference = true;
-                    break;
-                }
-
-                if (hasReference)
-                {
                     declaration.ClearReferences();
+                    break;
                 }
             }
         }
 
         public bool ClearStateCache(VBComponent component, bool notifyStateChanged = false)
         {
-            if (component == null) { return false; }
-
-            var match = new QualifiedModuleName(component);
-
-            var keys = new List<QualifiedModuleName> { match };
-            foreach (var key in _moduleStates.Keys)
-            {
-                if (key.Equals(match) && !keys.Contains(key))
-                {
-                    keys.Add(key);
-                }
-            }
-
-            var success = RemoveKeysFromCollections(keys);
-
-            var projectId = component.Collection.Parent.HelpFile;
-            var sameProjectDeclarations = new List<KeyValuePair<QualifiedModuleName, ModuleState>>();
-            foreach (var item in _moduleStates)
-            {
-                if (item.Key.ProjectId == projectId)
-                {
-                    sameProjectDeclarations.Add(new KeyValuePair<QualifiedModuleName, ModuleState>(item.Key, item.Value));
-                }
-            }
-
-            var projectCount = 0;
-            foreach (var item in sameProjectDeclarations)
-            {
-                if (item.Value.Declarations == null) { continue; }
-
-                foreach (var declaration in item.Value.Declarations)
-                {
-                    if (declaration.Key.DeclarationType == DeclarationType.Project)
-                    {
-                        projectCount++;
-                        break;
-                    }
-                }
-            }
-
-            if (notifyStateChanged)
-            {
-                OnStateChanged(ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
-                OnStateChanged(ParserState.Ready);   // trigger find all references &c. updates
-            }
-
-            return success;
+            return component != null && ClearStateCache(new QualifiedModuleName(component), notifyStateChanged);
         }
 
         public bool ClearStateCache(QualifiedModuleName component, bool notifyStateChanged = false)
@@ -801,31 +718,6 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var success = RemoveKeysFromCollections(keys);
-
-            var projectId = component.ProjectId;
-            var sameProjectDeclarations = new List<KeyValuePair<QualifiedModuleName, ModuleState>>();
-            foreach (var item in _moduleStates)
-            {
-                if (item.Key.ProjectId == projectId)
-                {
-                    sameProjectDeclarations.Add(new KeyValuePair<QualifiedModuleName, ModuleState>(item.Key, item.Value));
-                }
-            }
-
-            var projectCount = 0;
-            foreach (var item in sameProjectDeclarations)
-            {
-                if (item.Value.Declarations == null) { continue; }
-
-                foreach (var declaration in item.Value.Declarations)
-                {
-                    if (declaration.Key.DeclarationType == DeclarationType.Project)
-                    {
-                        projectCount++;
-                        break;
-                    }
-                }
-            }
 
             if (notifyStateChanged)
             {
@@ -914,12 +806,18 @@ namespace Rubberduck.Parsing.VBA
         {
             foreach (var project in Projects)
             {
-                foreach (VBComponent component in project.VBComponents)
+                try
                 {
-                    if (IsNewOrModified(component))
+                    foreach (VBComponent component in project.VBComponents)
                     {
-                        return true;
+                        if (IsNewOrModified(component))
+                        {
+                            return true;
+                        }
                     }
+                }
+                catch (COMException)
+                {
                 }
             }
 
@@ -958,7 +856,7 @@ namespace Rubberduck.Parsing.VBA
             var handler = ParseRequest;
             if (handler != null)
             {
-                var args = new ParseRequestEventArgs(component);
+                var args = EventArgs.Empty;
                 handler.Invoke(requestor, args);
             }
         }

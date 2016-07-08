@@ -10,7 +10,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
-using Rubberduck.VBEditor.Extensions;
 using System.IO;
 using NLog;
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -26,8 +25,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
-
-        private readonly VBE _vbe;
+        
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
@@ -35,13 +33,11 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public RubberduckParser(
-            VBE vbe,
             RubberduckParserState state,
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
             IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders)
         {
-            _vbe = vbe;
             _state = state;
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
@@ -55,50 +51,10 @@ namespace Rubberduck.Parsing.VBA
         // but the cancelees need to use their own token.
         private readonly List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource> {new CancellationTokenSource()};
 
-        private void ReparseRequested(object sender, ParseRequestEventArgs e)
+        private void ReparseRequested(object sender, EventArgs e)
         {
-            if (e.IsFullReparseRequest)
-            {
-                Cancel();
-                Task.Run(() => ParseAll(_cancellationTokens[0]));
-            }
-            else
-            {
-                Cancel(e.Component);
-                Task.Run(() =>
-                {
-                    State.SetModuleState(e.Component, ParserState.Pending);
-
-                    SyncComReferences(State.Projects);
-                    AddBuiltInDeclarations();
-
-                    if (_cancellationTokens[0].IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    ParseAsync(e.Component, _cancellationTokens[0]).Wait();
-
-                    if (_cancellationTokens[0].IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    if (State.Status == ParserState.Error) { return; }
-
-                    var qualifiedName = new QualifiedModuleName(e.Component);
-
-                    State.SetModuleState(e.Component, ParserState.ResolvingDeclarations);
-                    ResolveDeclarations(qualifiedName.Component,
-                        State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
-                    
-                    if (State.Status < ParserState.Error)
-                    {
-                        State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
-                        ResolveReferencesAsync(_cancellationTokens[0].Token);
-                    }
-                });
-            }
+            Cancel();
+            Task.Run(() => ParseAll(_cancellationTokens[0]));
         }
 
         /// <summary>
@@ -106,13 +62,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void Parse(CancellationTokenSource token)
         {
-            if (State.Projects.Count == 0)
-            {
-                foreach (var project in _vbe.VBProjects.UnprotectedProjects())
-                {
-                    State.AddProject(project.HelpFile);
-                }
-            }
+            State.RefreshProjects();
 
             var components = new List<VBComponent>();
             foreach (var project in State.Projects)
@@ -188,13 +138,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private void ParseAll(CancellationTokenSource token)
         {
-            if (State.Projects.Count == 0)
-            {
-                foreach (var project in _vbe.VBProjects.UnprotectedProjects())
-                {
-                    State.AddProject(project.HelpFile);
-                }
-            }
+            State.RefreshProjects();
 
             var components = new List<VBComponent>();
             foreach (var project in State.Projects)
@@ -232,7 +176,6 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var toParse = new List<VBComponent>();
-
             foreach (var component in components)
             {
                 if (State.IsNewOrModified(component))
@@ -309,6 +252,13 @@ namespace Rubberduck.Parsing.VBA
             }
 
             Task.WaitAll(parseTasks);
+
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+            
+            Debug.Assert(State.ParseTrees.Count == components.Count);
 
             if (State.Status < ParserState.Error)
             {
@@ -515,29 +465,15 @@ namespace Rubberduck.Parsing.VBA
             return task;
         }
 
-        public void Cancel(VBComponent component = null)
+        private void Cancel()
         {
             lock (_cancellationTokens[0])
             {
-                if (component == null)
-                {
-                    _cancellationTokens[0].Cancel();
+                _cancellationTokens[0].Cancel();
 
-                    _cancellationTokens[0].Dispose();
-                    _cancellationTokens.Add(new CancellationTokenSource());
-                    _cancellationTokens.RemoveAt(0);
-                }
-                else
-                {
-                    _cancellationTokens[0].Cancel();
-                    
-                    Tuple<Task, CancellationTokenSource> result;
-                    if (_currentTasks.TryGetValue(component, out result))
-                    {
-                        result.Item2.Cancel();
-                        result.Item2.Dispose();
-                    }
-                }
+                _cancellationTokens[0].Dispose();
+                _cancellationTokens.Add(new CancellationTokenSource());
+                _cancellationTokens.RemoveAt(0);
             }
         }
 

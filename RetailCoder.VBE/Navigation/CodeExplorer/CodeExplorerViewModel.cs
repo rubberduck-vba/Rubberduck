@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.Folders;
@@ -33,8 +32,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => _state.OnParseRequested(this),
                 param => !IsBusy && _state.IsDirty());
-
-            _refreshComponentCommand = commands.OfType<CodeExplorer_RefreshComponentCommand>().FirstOrDefault();
+            
             _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().FirstOrDefault();
 
             _addTestModuleCommand = commands.OfType<CodeExplorer_AddTestModuleCommand>().FirstOrDefault();
@@ -86,17 +84,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _selectedItem = value;
                 OnPropertyChanged();
-
-                if (_selectedItem is CodeExplorerProjectViewModel)
-                {
-                    var vbe = _selectedItem.GetSelectedDeclaration().Project.VBE;
-                    var project = vbe.VBProjects.Cast<VBProject>().FirstOrDefault(f => f.HelpFile == _selectedItem.GetSelectedDeclaration().Project.HelpFile);
-
-                    if (project != null)
-                    {
-                        vbe.ActiveVBProject = project;
-                    }
-                }
 
                 // ReSharper disable ExplicitCallerInfoArgument
                 OnPropertyChanged("CanExecuteIndenterCommand");
@@ -189,25 +176,27 @@ namespace Rubberduck.Navigation.CodeExplorer
                     return string.Empty;
                 }
 
-                if (SelectedItem is CodeExplorerProjectViewModel)
+                if (!(SelectedItem is ICodeExplorerDeclarationViewModel))
                 {
-                    var node = (CodeExplorerProjectViewModel)SelectedItem;
-                    return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
+                    return SelectedItem.Name;
                 }
 
-                if (SelectedItem is CodeExplorerComponentViewModel)
+                var declaration = SelectedItem.GetSelectedDeclaration();
+                
+                var nameWithDeclarationType  = declaration.IdentifierName +
+                           string.Format(" - ({0})", RubberduckUI.ResourceManager.GetString(
+                               "DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture));
+
+                if (string.IsNullOrEmpty(declaration.AsTypeName))
                 {
-                    var node = (CodeExplorerComponentViewModel)SelectedItem;
-                    return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
+                    return nameWithDeclarationType;
                 }
 
-                if (SelectedItem is CodeExplorerMemberViewModel)
-                {
-                    var node = (CodeExplorerMemberViewModel)SelectedItem;
-                    return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
-                }
+                var typeName = declaration.HasTypeHint
+                    ? Declaration.TypeHintToTypeName[declaration.TypeHint]
+                    : declaration.AsTypeName;
 
-                return SelectedItem.Name;
+                return nameWithDeclarationType + ": " + typeName;
             }
         }
 
@@ -422,9 +411,6 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly CommandBase _refreshCommand;
         public CommandBase RefreshCommand { get { return _refreshCommand; } }
-
-        private readonly CommandBase _refreshComponentCommand;
-        public CommandBase RefreshComponentCommand { get { return _refreshComponentCommand; } }
 
         private readonly CommandBase _navigateCommand;
         public CommandBase NavigateCommand { get { return _navigateCommand; } }
