@@ -109,7 +109,7 @@ namespace Rubberduck.UnitTesting
 
         public object[] ToArray()
         {
-            return new object[] { Declaration.QualifiedName.QualifiedModuleName.ProjectTitle, Declaration.QualifiedName.QualifiedModuleName.ComponentName, Declaration.IdentifierName, 
+            return new object[] { Declaration.QualifiedName.QualifiedModuleName.ProjectName, Declaration.QualifiedName.QualifiedModuleName.ComponentName, Declaration.IdentifierName, 
                 _result.Outcome.ToString(), _result.Output, _result.StartTime.ToString(CultureInfo.InvariantCulture), _result.EndTime.ToString(CultureInfo.InvariantCulture), _result.Duration };
         }
 
