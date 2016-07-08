@@ -34,7 +34,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            Assert.AreEqual(1, UnitTestHelpers.GetAllTests(vbe.Object, parser.State).Count());
+            Assert.AreEqual(1, UnitTestUtils.GetAllTests(vbe.Object, parser.State).Count());
         }
 
         [TestMethod]
@@ -55,7 +55,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            Assert.IsFalse(UnitTestHelpers.GetAllTests(vbe.Object, parser.State).Any());
+            Assert.IsFalse(UnitTestUtils.GetAllTests(vbe.Object, parser.State).Any());
         }
 
         [TestMethod]
@@ -77,7 +77,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            Assert.IsFalse(UnitTestHelpers.GetAllTests(vbe.Object, parser.State).Any());
+            Assert.IsFalse(UnitTestUtils.GetAllTests(vbe.Object, parser.State).Any());
         }
 
         [TestMethod]

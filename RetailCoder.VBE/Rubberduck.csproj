@@ -418,7 +418,6 @@
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_CopyResultsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_OpenProjectPropertiesCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RefreshComponentCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RenameCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_FindAllReferencesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_FindAllImplementationsCommand.cs" />
@@ -952,7 +951,7 @@
     <Compile Include="UnitTesting\AssertClass.cs" />
     <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
     <Compile Include="UnitTesting\AssertHandler.cs" />
-    <Compile Include="UnitTesting\UnitTestHelpers.cs" />
+    <Compile Include="UnitTesting\UnitTestUtils.cs" />
     <Compile Include="UnitTesting\IAssert.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\ITestRunner.cs" />

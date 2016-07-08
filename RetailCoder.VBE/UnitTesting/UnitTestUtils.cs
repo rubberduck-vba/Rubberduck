@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.UnitTesting
 {
-    public static class UnitTestHelpers
+    public static class UnitTestUtils
     {
         public static IEnumerable<TestMethod> GetAllTests(VBE vbe, RubberduckParserState state)
         {
@@ -76,6 +76,13 @@ namespace Rubberduck.UnitTesting
             return procedures.Where(item =>
                         item.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule &&
                         item.ParentDeclaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
+        }
+
+        public static IEnumerable<Declaration> GetTestModules(this RubberduckParserState state)
+        {
+            return state.AllUserDeclarations.Where(item =>
+                        item.DeclarationType == DeclarationType.ProceduralModule &&
+                        item.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
         }
     }
 }
