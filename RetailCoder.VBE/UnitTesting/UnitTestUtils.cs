@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.UnitTesting
 {
-    public static class UnitTestHelpers
+    public static class UnitTestUtils
     {
         public static IEnumerable<TestMethod> GetAllTests(VBE vbe, RubberduckParserState state)
         {

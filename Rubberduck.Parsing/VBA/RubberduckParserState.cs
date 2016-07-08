@@ -209,6 +209,11 @@ namespace Rubberduck.Parsing.VBA
                 _projects.Clear();
                 foreach (VBProject project in _vbe.VBProjects)
                 {
+                    if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+                    {
+                        continue;
+                    }
+
                     if (string.IsNullOrEmpty(project.HelpFile) || _projects.Keys.Contains(project.HelpFile))
                     {
                         project.AssignProjectId();

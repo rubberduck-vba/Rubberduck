@@ -357,6 +357,12 @@
             <Setter Property="ContextMenu">
                 <Setter.Value>
                     <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"
+                                  Command="{Binding RefreshCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="{StaticResource RefreshImage}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
                                   FontWeight="Bold"
                                   Command="{Binding NavigateCommand}"

@@ -951,7 +951,7 @@
     <Compile Include="UnitTesting\AssertClass.cs" />
     <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
     <Compile Include="UnitTesting\AssertHandler.cs" />
-    <Compile Include="UnitTesting\UnitTestHelpers.cs" />
+    <Compile Include="UnitTesting\UnitTestUtils.cs" />
     <Compile Include="UnitTesting\IAssert.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\ITestRunner.cs" />
