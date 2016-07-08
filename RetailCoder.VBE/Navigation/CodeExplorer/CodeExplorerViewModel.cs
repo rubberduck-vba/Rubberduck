@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.Folders;
@@ -86,17 +85,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _selectedItem = value;
                 OnPropertyChanged();
-
-                if (_selectedItem is CodeExplorerProjectViewModel)
-                {
-                    var vbe = _selectedItem.GetSelectedDeclaration().Project.VBE;
-                    var project = vbe.VBProjects.Cast<VBProject>().FirstOrDefault(f => f.HelpFile == _selectedItem.GetSelectedDeclaration().Project.HelpFile);
-
-                    if (project != null)
-                    {
-                        vbe.ActiveVBProject = project;
-                    }
-                }
 
                 // ReSharper disable ExplicitCallerInfoArgument
                 OnPropertyChanged("CanExecuteIndenterCommand");
