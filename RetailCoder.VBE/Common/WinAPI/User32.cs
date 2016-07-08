@@ -180,6 +180,9 @@ namespace Rubberduck.Common.WinAPI
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool UnregisterDeviceNotification(IntPtr handle);
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        internal static extern IntPtr SendMessage(IntPtr hWnd, WM msg, IntPtr wParam, IntPtr lParam);
+
         /// <summary>
         /// A helper function that returns <c>true</c> when the specified handle is that of the foreground window.
         /// </summary>
