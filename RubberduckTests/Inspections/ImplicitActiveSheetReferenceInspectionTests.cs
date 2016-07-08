@@ -53,6 +53,38 @@ End Sub
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionType()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, string.Empty)
+                .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, null);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionName()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, string.Empty)
+                .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            const string inspectionName = "ImplicitActiveSheetReferenceInspection";
+            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
         private List<Declaration> GetExcelRangeDeclarations()
         {
             var excelDeclaration = new ProjectDeclaration(new QualifiedMemberName(new QualifiedModuleName("Excel",
