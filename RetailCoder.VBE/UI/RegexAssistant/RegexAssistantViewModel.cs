@@ -80,12 +80,29 @@ namespace Rubberduck.UI.RegexAssistant
                 ResultItems = results;
                 return;
             }
-            var pattern = new Pattern(_pattern, _ignoreCaseFlag, _ignoreCaseFlag);
-            //_description = pattern.Description;
+            ResultItems = ToTreeViewItems(new Pattern(_pattern, _ignoreCaseFlag, _globalFlag));
+        }
+
+        private List<TreeViewItem> ToTreeViewItems(Pattern pattern)
+        {
             var resultItems = new List<TreeViewItem>();
+            if (pattern.AnchoredAtStart)
+            {
+                resultItems.Add(TreeViewItemFromHeader(pattern.StartAnchorDescription));
+            }
             resultItems.Add(AsTreeViewItem((dynamic)pattern.RootExpression));
-            ResultItems = resultItems;
-            //base.OnPropertyChanged("DescriptionResults");
+            if (pattern.AnchoredAtEnd)
+            {
+                resultItems.Add(TreeViewItemFromHeader(pattern.EndAnchorDescription));
+            }
+            return resultItems;
+        }
+
+        private TreeViewItem TreeViewItemFromHeader(string header)
+        {
+            var result = new TreeViewItem();
+            result.Header = header;
+            return result;
         }
 
         public string DescriptionResults

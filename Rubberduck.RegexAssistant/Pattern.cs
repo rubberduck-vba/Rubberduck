@@ -37,17 +37,44 @@ namespace Rubberduck.RegexAssistant
         private string AssembleDescription()
         {
             string result = string.Empty;
-            if (_hasStartAnchor)
-            {
-                result += Flags.HasFlag(MatcherFlags.Global) ? AssistantResources.PatternDescription_AnchorStart_GlobalEnabled : AssistantResources.PatternDescription_AnchorStart;
-            }
+            result += StartAnchorDescription;
             result += RootExpression.Description;
-            if (_hasEndAnchor)
-            {
-                result += Flags.HasFlag(MatcherFlags.Global) ? AssistantResources.PatternDescription_AnchorEnd_GlobalEnabled : AssistantResources.PatternDescription_AnchorEnd;
-            }
+            result += EndAnchorDescription;
             return result;
         }
+
+        public string StartAnchorDescription
+        {
+            get
+            {
+                if (AnchoredAtStart)
+                {
+                    return Flags.HasFlag(MatcherFlags.Global) 
+                        ? AssistantResources.PatternDescription_AnchorStart_GlobalEnabled 
+                        : AssistantResources.PatternDescription_AnchorStart;
+                }
+                return string.Empty;
+            }
+        }
+
+        public string EndAnchorDescription
+        {
+            get
+            {
+                if (AnchoredAtEnd)
+                {
+                    return Flags.HasFlag(MatcherFlags.Global) 
+                        ? AssistantResources.PatternDescription_AnchorEnd_GlobalEnabled 
+                        : AssistantResources.PatternDescription_AnchorEnd;
+                }
+                return string.Empty;
+            }
+        }
+
+        public bool IgnoreCase { get { return Flags.HasFlag(MatcherFlags.IgnoreCase); } }
+        public bool Global { get { return Flags.HasFlag(MatcherFlags.Global); } }
+        public bool AnchoredAtStart { get { return _hasStartAnchor; } }
+        public bool AnchoredAtEnd { get { return _hasEndAnchor; } }
     }
 
     [Flags]
