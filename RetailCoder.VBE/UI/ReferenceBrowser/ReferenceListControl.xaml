@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="Rubberduck.UI.ReferenceBrowser.ReferenceListControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rubberduck.UI.ReferenceBrowser"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance Type=local:RegisteredLibraryViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ListView x:Name="TypeLibs"
+                  ItemsSource="{Binding}"
+                  IsSynchronizedWithCurrentItem="True">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="30">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="local:RegisteredLibraryViewModel">
+                                <CheckBox IsChecked="{Binding IsActiveProjectReference}" 
+                                          IsEnabled="{Binding CanRemoveReference}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Name}"
+                                    Width="400">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="local:RegisteredLibraryViewModel">
+                                <TextBlock Text="{Binding Name}"
+                                           ToolTip="{Binding FilePath}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <StackPanel Grid.Row="1"
+                    DataContext="{Binding SelectedItem, ElementName=TypeLibs}"
+                    d:DataContext="{d:DesignInstance local:RegisteredLibraryViewModel}">
+            
+            <TextBlock Margin="0,5,0,0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="\{0\}: \{1\}">
+                        <Binding Path="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Name}" />
+                        <Binding Path="Name" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            <TextBlock Margin="0,5,0,0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="\{0\}: \{1\}">
+                        <Binding Path="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Path}" />
+                        <Binding Path="FilePath" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            <TextBlock Margin="0,5,0,5">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="\{0\}: \{1\}">
+                        <Binding Path="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Guid}" />
+                        <Binding Path="Guid" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

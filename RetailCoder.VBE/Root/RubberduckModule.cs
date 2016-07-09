@@ -33,6 +33,7 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI.ReferenceBrowser;
 
 namespace Rubberduck.Root
 {
@@ -67,6 +68,7 @@ namespace Rubberduck.Root
             Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
+            Bind<RegisteredLibraryModelService>().To<RegisteredLibraryModelService>().InSingletonScope();
 
             BindCodeInspectionTypes();
 
@@ -369,6 +371,7 @@ namespace Rubberduck.Root
                 Kernel.Get<SettingsCommandMenuItem>(),
                 Kernel.Get<InspectionResultsCommandMenuItem>(),
                 Kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
+                Kernel.Get<ReferenceBrowserCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
                 GetSmartIndenterParentMenu(),
                 GetRefactoringsParentMenu(),
