@@ -26,6 +26,7 @@ namespace Rubberduck.RegexAssistant
             Match m = Matcher.Match(specifier);
             if (!m.Success)
             {
+                // TODO: i18n
                 throw new ArgumentException("The given specifier does not denote a character class");
             }
             this._specifier = specifier;
@@ -54,14 +55,12 @@ namespace Rubberduck.RegexAssistant
                 {
                     if (specifier.Value.EndsWith("-\\"))
                     {
-                        // BOOM!
+                        // TODO: i18n
                         throw new ArgumentException("Character Ranges that have incorrectly escaped characters as target are not allowed");
                     }
                     else if (specifier.Value.Length == 1)
                     {
-                        // fun... we somehow got to grab a single backslash. Pattern is probably broken
-                        // alas for simplicity we just skip the incorrect backslash
-                        // TODO: make a warning from this.. how?? no idea
+                        // Something's bork with the Pattern. For now we skip this it shouldn't affect anyone
                         continue;
                     }
                 }
@@ -113,6 +112,7 @@ namespace Rubberduck.RegexAssistant
             Match m = Matcher.Match(specifier);
             if (!m.Success)
             {
+                // TODO i18n
                 throw new ArgumentException("The given specifier does not denote a Group");
             }
             _subexpression = RegularExpression.Parse(m.Groups["expression"].Value);
@@ -134,7 +134,6 @@ namespace Rubberduck.RegexAssistant
             get
             {
                 return string.Format(AssistantResources.AtomDescription_Group, _specifier);
-                //+"\r\n" + _subexpression.Description
             }
         }
 
@@ -185,6 +184,7 @@ namespace Rubberduck.RegexAssistant
             Match m = Matcher.Match(specifier);
             if (!m.Success)
             {
+                // TODO: i18n
                 throw new ArgumentException("The given specifier does not denote a Literal");
             }
             _specifier = specifier;

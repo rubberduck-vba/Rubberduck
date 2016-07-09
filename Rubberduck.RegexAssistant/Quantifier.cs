@@ -12,6 +12,7 @@ namespace Rubberduck.RegexAssistant
         public readonly int MinimumMatches;
         public readonly int MaximumMatches;
 
+        // FIXME i18n ? Shouldn't ever show up actually...
         public Quantifier(string expression)
         {
             if (expression.Length == 0)
@@ -26,7 +27,7 @@ namespace Rubberduck.RegexAssistant
                 Match m = Matcher.Match(expression);
                 if (!m.Success)
                 {
-                    throw new ArgumentException(String.Format("Cannot extract a Quantifier from the expression {1}", expression));
+                    throw new ArgumentException(string.Format("Cannot extract a Quantifier from the expression {1}", expression));
                 }
                 int minimum;
                 // shouldn't ever happen
@@ -93,8 +94,7 @@ namespace Rubberduck.RegexAssistant
 
         public override int GetHashCode()
         {
-            // FIXME get a proper has function
-            return base.GetHashCode();
+            return MinimumMatches ^ MaximumMatches ^ Kind.GetHashCode();
         }
 
         public override string ToString()

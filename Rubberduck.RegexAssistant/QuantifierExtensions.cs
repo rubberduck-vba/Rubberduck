@@ -30,7 +30,6 @@ namespace Rubberduck.RegexAssistant.Extensions
                         return string.Format(AssistantResources.Quantifier_OpenRange, quant.MinimumMatches);
                     }
                     return string.Format(AssistantResources.Quantifier_ClosedRange, quant.MinimumMatches, quant.MaximumMatches);
-                    
             }
             return "";
         }

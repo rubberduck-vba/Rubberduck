@@ -1,6 +1,5 @@
 ﻿using Rubberduck.RegexAssistant.Extensions;
 using Rubberduck.RegexAssistant.i18n;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -29,7 +28,6 @@ namespace Rubberduck.RegexAssistant
             get
             {
                 return AssistantResources.ExpressionDescription_ConcatenatedExpression;
-                //return string.Join(Environment.NewLine, _subexpressions.Select(exp => exp.Description));
             }
         }
 
@@ -66,7 +64,6 @@ namespace Rubberduck.RegexAssistant
             get
             {
                 return AssistantResources.ExpressionDescription_AlternativesExpression;
-                // + Environment.NewLine + string.Join(Environment.NewLine, _subexpressions.Select(exp => exp.Description))
             }
         }
 
@@ -229,7 +226,6 @@ namespace Rubberduck.RegexAssistant
             int oldSpecifierLength = currentSpecifier.Length + 1;
             while (currentSpecifier.Length > 0 && currentSpecifier.Length < oldSpecifierLength)
             {
-                // Fugly hack for an error-return
                 oldSpecifierLength = currentSpecifier.Length;
                 IRegularExpression expression;
                 // we actually have an AlternativesExpression, return the current status to Parse after updating the specifier
@@ -299,78 +295,6 @@ namespace Rubberduck.RegexAssistant
             }
             expression = null;
             return false;
-        }
-
-        /// <summary>
-        /// Makes the given specifier with the given pipeIndices into an AlternativesExpression 
-        /// </summary>
-        /// <param name="pipeIndices">The indices of Alternative-indicating pipes on the current expression level</param>
-        /// <param name="specifier">The specifier to split into subexpressions</param>
-        /// <returns>An AlternativesExpression consisting of the split alternatives in the specifier, in order of encounter</returns>
-        private static IRegularExpression ParseIntoAlternativesExpression(List<int> pipeIndices, string specifier)
-        {
-            List<IRegularExpression> expressions = new List<IRegularExpression>();
-            string currentRemainder = specifier;
-            for (int i = pipeIndices.Count - 1; i > 0; i--)
-            {
-                expressions.Add(Parse(currentRemainder.Substring(pipeIndices[i] + 1)));
-                currentRemainder = currentRemainder.Substring(0, pipeIndices[i] - 1);
-            }
-            expressions.Reverse(); // because we built them from the back
-            return new AlternativesExpression(expressions);
-        }
-
-
-        /// <summary>
-        /// Finds all Pipes in the given specifier that are not escaped
-        /// </summary>
-        /// <param name="specifier">the regex specifier to search for unescaped pipes</param>
-        /// <returns>A list populated with the indices of all pipes</returns>
-        private static List<int> GrabPipeIndices(string specifier)
-        {
-            // FIXME: Check assumptions: 
-            // - | is never encountered at index 0
-            // - | is never preceded by \\
-
-            if (!specifier.Contains("|")) {
-                return new List<int>();
-            }
-            int currentIndex = 0;
-            List<int> result = new List<int>();
-            while (true)
-            {
-                currentIndex = specifier.IndexOf("|", currentIndex);
-                if(currentIndex == -1)
-                {
-                    break;
-                }
-                // ignore escaped literals
-                // FIXME this is still a little too naive, since we could actually have something like "\\\|", which means that | is escaped again, but it should suffice for now
-                if (currentIndex == 0 || !specifier.Substring(currentIndex - 1, 2).Equals("\\|")
-                    || (currentIndex > 1 && specifier.Substring(currentIndex -2, 2).Equals("\\\\")))
-                {
-                    result.Add(currentIndex);
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Weeds out pipe indices that do not signify alternatives at the current "top level" from the given String.
-        /// </summary>
-        /// <param name="pipeIndices">indices of unescaped pipes in the given specifier</param>
-        /// <param name="specifier">the regex specifier under scrutiny</param>
-        internal static void WeedPipeIndices(ref List<int> pipeIndices, string specifier)
-        {
-            if (pipeIndices.Count == 0)
-            {
-                return;
-            }
-            foreach (int pipeIndex in pipeIndices)
-            {
-                // must not be between () or [] braces, else we just weed it out
-                
-            }
         }
     }
 }
