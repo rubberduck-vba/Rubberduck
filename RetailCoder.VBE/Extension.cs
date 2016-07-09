@@ -6,12 +6,16 @@ using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Ninject.Extensions.Interception;
 using NLog;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 
 namespace Rubberduck
 {
@@ -46,6 +50,24 @@ namespace Rubberduck
             {
                 var currentDomain = AppDomain.CurrentDomain;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
+
+                var config = new XmlPersistanceService<GeneralSettings>
+                {
+                    FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck",
+                            "rubberduck.config")
+                };
+
+                var settings = config.Load(null);
+                if (settings != null)
+                {
+                    try
+                    {
+                        var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
+                        Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
+                    }
+                    catch (CultureNotFoundException) { }
+                }
+
                 _kernel.Load(new RubberduckModule((VBE)Application, (AddIn)AddInInst));
                 _app = _kernel.Get<App>();
                 _app.Startup();

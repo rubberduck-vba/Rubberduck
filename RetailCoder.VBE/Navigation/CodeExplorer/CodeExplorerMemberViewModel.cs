@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -23,39 +24,39 @@ namespace Rubberduck.Navigation.CodeExplorer
         private static readonly IDictionary<Tuple<DeclarationType,Accessibility>,BitmapImage> Mappings =
             new Dictionary<Tuple<DeclarationType, Accessibility>, BitmapImage>
             {
-                { Tuple.Create(DeclarationType.Constant, Accessibility.Private), GetImageSource(resx.VSObject_Constant_Private)},
-                { Tuple.Create(DeclarationType.Constant, Accessibility.Public), GetImageSource(resx.VSObject_Constant)},
-                { Tuple.Create(DeclarationType.Enumeration, Accessibility.Public), GetImageSource(resx.VSObject_Enum)},
-                { Tuple.Create(DeclarationType.Enumeration, Accessibility.Private ), GetImageSource(resx.VSObject_EnumPrivate)},
-                { Tuple.Create(DeclarationType.EnumerationMember, Accessibility.Public), GetImageSource(resx.VSObject_EnumItem)},
-                { Tuple.Create(DeclarationType.Event, Accessibility.Public), GetImageSource(resx.VSObject_Event)},
-                { Tuple.Create(DeclarationType.Event, Accessibility.Private ), GetImageSource(resx.VSObject_Event_Private)},
-                { Tuple.Create(DeclarationType.Function, Accessibility.Public), GetImageSource(resx.VSObject_Method)},
-                { Tuple.Create(DeclarationType.Function, Accessibility.Friend ), GetImageSource(resx.VSObject_Method_Friend)},
-                { Tuple.Create(DeclarationType.Function, Accessibility.Private ), GetImageSource(resx.VSObject_Method_Private)},
-                { Tuple.Create(DeclarationType.LibraryFunction, Accessibility.Public), GetImageSource(resx.VSObject_Method_Shortcut)},
-                { Tuple.Create(DeclarationType.LibraryProcedure, Accessibility.Public), GetImageSource(resx.VSObject_Method_Shortcut)},
-                { Tuple.Create(DeclarationType.LibraryFunction, Accessibility.Private), GetImageSource(resx.VSObject_Method_Shortcut)},
-                { Tuple.Create(DeclarationType.LibraryProcedure, Accessibility.Private), GetImageSource(resx.VSObject_Method_Shortcut)},
-                { Tuple.Create(DeclarationType.LibraryFunction, Accessibility.Friend), GetImageSource(resx.VSObject_Method_Shortcut)},
-                { Tuple.Create(DeclarationType.LibraryProcedure, Accessibility.Friend), GetImageSource(resx.VSObject_Method_Shortcut)},
-                { Tuple.Create(DeclarationType.Procedure, Accessibility.Public), GetImageSource(resx.VSObject_Method)},
-                { Tuple.Create(DeclarationType.Procedure, Accessibility.Friend ), GetImageSource(resx.VSObject_Method_Friend)},
-                { Tuple.Create(DeclarationType.Procedure, Accessibility.Private ), GetImageSource(resx.VSObject_Method_Private)},
-                { Tuple.Create(DeclarationType.PropertyGet, Accessibility.Public), GetImageSource(resx.VSObject_Properties)},
-                { Tuple.Create(DeclarationType.PropertyGet, Accessibility.Friend ), GetImageSource(resx.VSObject_Properties_Friend)},
-                { Tuple.Create(DeclarationType.PropertyGet, Accessibility.Private ), GetImageSource(resx.VSObject_Properties_Private)},
-                { Tuple.Create(DeclarationType.PropertyLet, Accessibility.Public), GetImageSource(resx.VSObject_Properties)},
-                { Tuple.Create(DeclarationType.PropertyLet, Accessibility.Friend ), GetImageSource(resx.VSObject_Properties_Friend)},
-                { Tuple.Create(DeclarationType.PropertyLet, Accessibility.Private ), GetImageSource(resx.VSObject_Properties_Private)},
-                { Tuple.Create(DeclarationType.PropertySet, Accessibility.Public), GetImageSource(resx.VSObject_Properties)},
-                { Tuple.Create(DeclarationType.PropertySet, Accessibility.Friend ), GetImageSource(resx.VSObject_Properties_Friend)},
-                { Tuple.Create(DeclarationType.PropertySet, Accessibility.Private ), GetImageSource(resx.VSObject_Properties_Private)},
-                { Tuple.Create(DeclarationType.UserDefinedType, Accessibility.Public), GetImageSource(resx.VSObject_ValueType)},
-                { Tuple.Create(DeclarationType.UserDefinedType, Accessibility.Private ), GetImageSource(resx.VSObject_ValueTypePrivate)},
-                { Tuple.Create(DeclarationType.UserDefinedTypeMember, Accessibility.Public), GetImageSource(resx.VSObject_Field)},
-                { Tuple.Create(DeclarationType.Variable, Accessibility.Private), GetImageSource(resx.VSObject_Field_Private)},
-                { Tuple.Create(DeclarationType.Variable, Accessibility.Public ), GetImageSource(resx.VSObject_Field)},
+                { Tuple.Create(DeclarationType.Constant, Accessibility.Private), GetImageSource(resx.ObjectConstantPrivate)},
+                { Tuple.Create(DeclarationType.Constant, Accessibility.Public), GetImageSource(resx.ObjectConstant)},
+                { Tuple.Create(DeclarationType.Enumeration, Accessibility.Public), GetImageSource(resx.ObjectEnum)},
+                { Tuple.Create(DeclarationType.Enumeration, Accessibility.Private ), GetImageSource(resx.ObjectEnumPrivate)},
+                { Tuple.Create(DeclarationType.EnumerationMember, Accessibility.Public), GetImageSource(resx.ObjectEnumItem)},
+                { Tuple.Create(DeclarationType.Event, Accessibility.Public), GetImageSource(resx.ObjectEvent)},
+                { Tuple.Create(DeclarationType.Event, Accessibility.Private ), GetImageSource(resx.ObjectEventPrivate)},
+                { Tuple.Create(DeclarationType.Function, Accessibility.Public), GetImageSource(resx.ObjectMethod)},
+                { Tuple.Create(DeclarationType.Function, Accessibility.Friend ), GetImageSource(resx.ObjectMethodFriend)},
+                { Tuple.Create(DeclarationType.Function, Accessibility.Private ), GetImageSource(resx.ObjectMethodPrivate)},
+                { Tuple.Create(DeclarationType.LibraryFunction, Accessibility.Public), GetImageSource(resx.ObjectMethodShortcut)},
+                { Tuple.Create(DeclarationType.LibraryProcedure, Accessibility.Public), GetImageSource(resx.ObjectMethodShortcut)},
+                { Tuple.Create(DeclarationType.LibraryFunction, Accessibility.Private), GetImageSource(resx.ObjectMethodShortcut)},
+                { Tuple.Create(DeclarationType.LibraryProcedure, Accessibility.Private), GetImageSource(resx.ObjectMethodShortcut)},
+                { Tuple.Create(DeclarationType.LibraryFunction, Accessibility.Friend), GetImageSource(resx.ObjectMethodShortcut)},
+                { Tuple.Create(DeclarationType.LibraryProcedure, Accessibility.Friend), GetImageSource(resx.ObjectMethodShortcut)},
+                { Tuple.Create(DeclarationType.Procedure, Accessibility.Public), GetImageSource(resx.ObjectMethod)},
+                { Tuple.Create(DeclarationType.Procedure, Accessibility.Friend ), GetImageSource(resx.ObjectMethodFriend)},
+                { Tuple.Create(DeclarationType.Procedure, Accessibility.Private ), GetImageSource(resx.ObjectMethodPrivate)},
+                { Tuple.Create(DeclarationType.PropertyGet, Accessibility.Public), GetImageSource(resx.ObjectProperties)},
+                { Tuple.Create(DeclarationType.PropertyGet, Accessibility.Friend ), GetImageSource(resx.ObjectPropertiesFriend)},
+                { Tuple.Create(DeclarationType.PropertyGet, Accessibility.Private ), GetImageSource(resx.ObjectPropertiesPrivate)},
+                { Tuple.Create(DeclarationType.PropertyLet, Accessibility.Public), GetImageSource(resx.ObjectProperties)},
+                { Tuple.Create(DeclarationType.PropertyLet, Accessibility.Friend ), GetImageSource(resx.ObjectPropertiesFriend)},
+                { Tuple.Create(DeclarationType.PropertyLet, Accessibility.Private ), GetImageSource(resx.ObjectPropertiesPrivate)},
+                { Tuple.Create(DeclarationType.PropertySet, Accessibility.Public), GetImageSource(resx.ObjectProperties)},
+                { Tuple.Create(DeclarationType.PropertySet, Accessibility.Friend ), GetImageSource(resx.ObjectPropertiesFriend)},
+                { Tuple.Create(DeclarationType.PropertySet, Accessibility.Private ), GetImageSource(resx.ObjectPropertiesPrivate)},
+                { Tuple.Create(DeclarationType.UserDefinedType, Accessibility.Public), GetImageSource(resx.ObjectValueType)},
+                { Tuple.Create(DeclarationType.UserDefinedType, Accessibility.Private ), GetImageSource(resx.ObjectValueTypePrivate)},
+                { Tuple.Create(DeclarationType.UserDefinedTypeMember, Accessibility.Public), GetImageSource(resx.ObjectField)},
+                { Tuple.Create(DeclarationType.Variable, Accessibility.Private), GetImageSource(resx.ObjectFieldPrivate)},
+                { Tuple.Create(DeclarationType.Variable, Accessibility.Public ), GetImageSource(resx.ObjectField)},
             };
 
         public CodeExplorerMemberViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations)
@@ -78,6 +79,25 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _name = DetermineMemberName(declaration);
             _icon = Mappings[key];
+        }
+
+        private string RemoveExtraWhiteSpace(string value)
+        {
+            var newStr = new StringBuilder();
+            var trimmedJoinedString = value.Replace(" _\r\n", " ").Trim();
+
+            for (var i = 0; i < trimmedJoinedString.Length; i++)
+            {
+                // this will not throw because `Trim` ensures the first character is not whitespace
+                if (char.IsWhiteSpace(trimmedJoinedString[i]) && char.IsWhiteSpace(trimmedJoinedString[i - 1]))
+                {
+                    continue;
+                }
+
+                newStr.Append(trimmedJoinedString[i]);
+            }
+
+            return newStr.ToString();
         }
 
         private readonly string _name;
@@ -108,11 +128,11 @@ namespace Rubberduck.Navigation.CodeExplorer
                       || _declaration.DeclarationType == DeclarationType.PropertySet)
                 {
                     // 6 being the three-letter "get/let/set" + parens + space
-                    _signature = Name.Insert(Name.Length - 6, context.GetText()); 
+                    _signature = Name.Insert(Name.Length - 6, RemoveExtraWhiteSpace(context.GetText())); 
                 }
                 else
                 {
-                    _signature = Name + context.GetText();
+                    _signature = Name + RemoveExtraWhiteSpace(context.GetText());
                 }
                 return _signature;
             }

@@ -182,7 +182,7 @@ namespace Rubberduck.UI.Command
             if (target.DeclarationType != DeclarationType.ClassModule)
             {
                 name = string.Empty;
-                return null;
+                return Enumerable.Empty<Declaration>();
             }
 
             var identifiers = declarations as IList<Declaration> ?? declarations.ToList();
@@ -201,7 +201,7 @@ namespace Rubberduck.UI.Command
             if (!target.DeclarationType.HasFlag(DeclarationType.Member))
             {
                 name = string.Empty;
-                return null;
+                return Enumerable.Empty<Declaration>();
             }
 
             var items = declarations as IList<Declaration> ?? declarations.ToList();
@@ -218,6 +218,11 @@ namespace Rubberduck.UI.Command
             }
 
             var member = items.FindInterfaceMember(target);
+            if (member == null)
+            {
+                name = string.Empty;
+                return Enumerable.Empty<Declaration>();
+            }
             name = member.ComponentName + "." + member.IdentifierName;
             return items.FindInterfaceImplementationMembers(member.IdentifierName)
                    .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);

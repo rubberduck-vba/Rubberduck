@@ -17,6 +17,7 @@ using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using resx = Rubberduck.UI.SourceControl.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -179,8 +180,8 @@ namespace Rubberduck.UI.SourceControl
         private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
             new Dictionary<NotificationType, BitmapImage>
             {
-                { NotificationType.Info, GetImageSource((Bitmap) RubberduckUI.ResourceManager.GetObject("information", CultureInfo.InvariantCulture))},
-                { NotificationType.Error, GetImageSource((Bitmap) RubberduckUI.ResourceManager.GetObject("cross_circle", CultureInfo.InvariantCulture))}
+                { NotificationType.Info, GetImageSource((Bitmap) resx.ResourceManager.GetObject("information", CultureInfo.InvariantCulture))},
+                { NotificationType.Error, GetImageSource((Bitmap) resx.ResourceManager.GetObject("cross_circle", CultureInfo.InvariantCulture))}
             };
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)

@@ -68,8 +68,8 @@ namespace Rubberduck.API
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
-            _parser = new RubberduckParser(vbe, _state, _attributeParser, preprocessorFactory,
-                new List<ICustomDeclarationLoader> { new DebugDeclarations(_state), new FormEventDeclarations(_state) });
+            _parser = new RubberduckParser(_state, _attributeParser, preprocessorFactory,
+                new List<ICustomDeclarationLoader> { new DebugDeclarations(_state), new FormEventDeclarations(_state), new AliasDeclarations(_state) });
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Rubberduck.API
         public void Parse()
         {
             // blocking call
-            _parser.Parse();
+            _parser.Parse(new System.Threading.CancellationTokenSource());
         }
 
         /// <summary>

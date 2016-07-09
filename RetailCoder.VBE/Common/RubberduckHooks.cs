@@ -173,12 +173,6 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
-            var active = User32.GetForegroundWindow();
-            if (active != _mainWindowHandle)
-            {
-                return;
-            }
-
             var hotkey = sender as IHotkey;
             if (hotkey != null)
             {
@@ -207,6 +201,16 @@ namespace Rubberduck.Common
                     case WM.SETFOCUS:
                         Attach();
                         break;
+                    case WM.RUBBERDUCK_CHILD_FOCUS:
+                        if (lParam == IntPtr.Zero)
+                        {
+                            Detach();
+                        }
+                        else
+                        {
+                            Attach();
+                        }
+                        return IntPtr.Zero;
                     case WM.NCACTIVATE:                   
                         if (wParam == IntPtr.Zero)
                         {
@@ -235,14 +239,11 @@ namespace Rubberduck.Common
             var processed = false;
             try
             {
-                if (User32.IsVbeWindowActive(_mainWindowHandle))
+                var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == wParam);
+                if (hook != null)
                 {
-                    var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == wParam);
-                    if (hook != null)
-                    {
-                        hook.OnMessageReceived();
-                        processed = true;
-                    }
+                    hook.OnMessageReceived();
+                    processed = true;
                 }
             }
             catch (Exception exception)

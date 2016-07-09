@@ -31,7 +31,7 @@ namespace Rubberduck.UI.UnitTesting
 
             _dispatcher.Invoke(() =>
             {
-                var tests = UnitTestHelpers.GetAllTests(_vbe, _state).ToList();
+                var tests = UnitTestUtils.GetAllTests(_vbe, _state).ToList();
 
                 var removedTests = Tests.Where(test =>
                              !tests.Any(t =>

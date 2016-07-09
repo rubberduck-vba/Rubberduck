@@ -161,9 +161,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private static readonly IDictionary<DeclarationType,BitmapImage> Icons = new Dictionary<DeclarationType, BitmapImage>
         {
-            { DeclarationType.ClassModule, GetImageSource(resx.VSObject_Class) },
-            { DeclarationType.ProceduralModule, GetImageSource(resx.VSObject_Module) },
-            { DeclarationType.UserForm, GetImageSource(resx.VSProject_form) },
+            { DeclarationType.ClassModule, GetImageSource(resx.ObjectClass) },
+            { DeclarationType.ProceduralModule, GetImageSource(resx.ObjectModule) },
+            { DeclarationType.UserForm, GetImageSource(resx.ProjectForm) },
             { DeclarationType.Document, GetImageSource(resx.document_office) }
         };
 

@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "TestExplorer_AddTestModule"; } }
+        public override string Key { get { return "TestExplorerMenu_AddTestModule"; } }
         public override int DisplayOrder { get { return (int)UnitTestingMenuItemDisplayOrder.AddTestModule; } }
         public override bool BeginGroup { get { return true; } }
     }

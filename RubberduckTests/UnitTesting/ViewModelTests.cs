@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using System.Windows.Media;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,7 +34,7 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
             
             Assert.AreEqual(1, model.Tests.Count);
@@ -58,14 +59,14 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
             
             Assert.AreEqual(2, model.Tests.Count);
 
             project.RemoveComponent(project.MockComponents[1]);
             
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
             
             Assert.AreEqual(1, model.Tests.Count);
@@ -89,7 +90,7 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             model.Tests.First().Result = new TestResult(TestOutcome.Succeeded);
@@ -116,7 +117,7 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             model.Tests.First().Result = new TestResult(TestOutcome.Failed);
@@ -143,7 +144,7 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             model.Tests.First().Result = new TestResult(TestOutcome.Inconclusive);
@@ -182,7 +183,7 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
@@ -224,7 +225,7 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
@@ -260,7 +261,7 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
@@ -290,7 +291,7 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             Assert.AreEqual(0, model.ExecutedCount);
@@ -319,7 +320,7 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             Assert.AreEqual(0, model.LastRun.Count);
@@ -348,7 +349,7 @@ End Sub";
 
             var model = new TestExplorerModel(vbe.Object, parser.State);
 
-            parser.Parse();
+            parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);

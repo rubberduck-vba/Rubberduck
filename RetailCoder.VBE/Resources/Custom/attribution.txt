@@ -1,0 +1,7 @@
+The icons in this folder are derived from elements of two icon sets:
+
+1 - The Fugue icon set authored by Yusuke Kamiyamane licensed under the Creative Commons Attribution 3.0 License.
+    Original source material can be found at https://github.com/yusukekamiyamane/fugue-icons
+
+2 - Icons from SharpDevelop licensed under the MIT license .  
+    Original source material can be found at https://github.com/icsharpcode/SharpDevelop.git
