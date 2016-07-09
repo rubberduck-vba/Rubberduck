@@ -139,6 +139,40 @@ namespace Rubberduck.RegexAssistant
 
     }
 
+    public class ErrorExpression : IRegularExpression
+    {
+        private readonly string _errorToken;
+
+        public ErrorExpression(string errorToken)
+        {
+            _errorToken = errorToken;
+        }
+
+        public string Description
+        {
+            get
+            {
+                return string.Format(AssistantResources.ExpressionDescription_ErrorExpression, _errorToken);
+            }
+        }
+
+        public Quantifier Quantifier
+        {
+            get
+            {
+                return new Quantifier(string.Empty);
+            }
+        }
+
+        public IList<IRegularExpression> Subexpressions
+        {
+            get
+            {
+                return new List<IRegularExpression>();
+            }
+        }
+    }
+
     internal static class RegularExpression
     {
 
@@ -207,6 +241,11 @@ namespace Rubberduck.RegexAssistant
                 if (TryParseAsAtom(ref currentSpecifier, out expression))
                 {
                     subexpressions.Add(expression);
+                }
+                else if (currentSpecifier.Length == oldSpecifierLength)
+                {
+                    subexpressions.Add(new ErrorExpression(currentSpecifier.Substring(0, 1)));
+                    currentSpecifier = currentSpecifier.Substring(1);
                 }
             }
             specifier = ""; // we've exhausted the specifier, tell Parse about it to prevent infinite looping

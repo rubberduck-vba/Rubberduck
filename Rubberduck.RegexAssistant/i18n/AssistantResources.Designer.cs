@@ -286,6 +286,15 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not parse {0} as literal. Check your input, please.
+        /// </summary>
+        internal static string ExpressionDescription_ErrorExpression {
+            get {
+                return ResourceManager.GetString("ExpressionDescription_ErrorExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to $ ensures all characters of the string are consumed.
         /// </summary>
         internal static string PatternDescription_AnchorEnd {

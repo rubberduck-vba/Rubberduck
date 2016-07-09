@@ -1,7 +1,6 @@
 ﻿using Rubberduck.RegexAssistant;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Rubberduck.UI.RegexAssistant
@@ -99,14 +98,19 @@ namespace Rubberduck.UI.RegexAssistant
 
         private static TreeViewItem AsTreeViewItem(IRegularExpression expression)
         {
-            var t = expression.GetType();
-
             var result = new TreeViewItem();
             result.Header = "Some unknown IRegularExpression subtype was in the view";
             foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp)))
             {
                 result.Items.Add(subtree);
             }
+            return result;
+        }
+
+        private static TreeViewItem AsTreeViewItem(ErrorExpression expression)
+        {
+            var result = new TreeViewItem();
+            result.Header = expression.Description;
             return result;
         }
 

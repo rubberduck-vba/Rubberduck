@@ -133,7 +133,8 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return string.Format(AssistantResources.AtomDescription_Group, _specifier) + "\r\n" + _subexpression.Description;
+                return string.Format(AssistantResources.AtomDescription_Group, _specifier);
+                //+"\r\n" + _subexpression.Description
             }
         }
 

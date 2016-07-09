@@ -192,6 +192,9 @@
   <data name="ExpressionDescription_ConcatenatedExpression" xml:space="preserve">
     <value>Matches the exact sequence given as follows:</value>
   </data>
+  <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
+    <value>Could not parse {0} as literal. Check your input, please</value>
+  </data>
   <data name="PatternDescription_AnchorEnd" xml:space="preserve">
     <value>$ ensures all characters of the string are consumed</value>
   </data>
