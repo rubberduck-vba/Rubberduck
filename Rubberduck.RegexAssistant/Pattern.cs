@@ -37,6 +37,7 @@ namespace Rubberduck.RegexAssistant
         private string AssembleDescription()
         {
             string result = string.Empty;
+            result += CasingDescription;
             result += StartAnchorDescription;
             result += RootExpression.Description;
             result += EndAnchorDescription;
@@ -75,6 +76,12 @@ namespace Rubberduck.RegexAssistant
         public bool Global { get { return Flags.HasFlag(MatcherFlags.Global); } }
         public bool AnchoredAtStart { get { return _hasStartAnchor; } }
         public bool AnchoredAtEnd { get { return _hasEndAnchor; } }
+
+        public string CasingDescription { get
+            {
+                return IgnoreCase ? AssistantResources.PatternDescription_IgnoreCase : string.Empty;
+            }
+        }
     }
 
     [Flags]

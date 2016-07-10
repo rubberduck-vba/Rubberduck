@@ -86,6 +86,10 @@ namespace Rubberduck.UI.RegexAssistant
         private List<TreeViewItem> ToTreeViewItems(Pattern pattern)
         {
             var resultItems = new List<TreeViewItem>();
+            if (pattern.IgnoreCase)
+            {
+                resultItems.Add(TreeViewItemFromHeader(pattern.CasingDescription));
+            }
             if (pattern.AnchoredAtStart)
             {
                 resultItems.Add(TreeViewItemFromHeader(pattern.StartAnchorDescription));

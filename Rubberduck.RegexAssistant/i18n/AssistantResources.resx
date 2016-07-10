@@ -207,6 +207,9 @@
   <data name="PatternDescription_AnchorStart_GlobalEnabled" xml:space="preserve">
     <value>^ ensures that the matcher starts at the beginning of a line</value>
   </data>
+  <data name="PatternDescription_IgnoreCase" xml:space="preserve">
+    <value>All matches ignore the case (upper or lower) of literals</value>
+  </data>
   <data name="Quantifer_Plus" xml:space="preserve">
     <value>at least once</value>
   </data>

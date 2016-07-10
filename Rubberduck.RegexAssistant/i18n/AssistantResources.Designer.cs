@@ -331,6 +331,15 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All matches ignore the case (upper or lower) of literals.
+        /// </summary>
+        internal static string PatternDescription_IgnoreCase {
+            get {
+                return ResourceManager.GetString("PatternDescription_IgnoreCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to at least once.
         /// </summary>
         internal static string Quantifer_Plus {
