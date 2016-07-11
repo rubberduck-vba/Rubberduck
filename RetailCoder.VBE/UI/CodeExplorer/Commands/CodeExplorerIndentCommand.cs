@@ -9,13 +9,13 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_IndentCommand : CommandBase
+    public class CodeExplorerIndentCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
         private readonly INavigateCommand _navigateCommand;
 
-        public CodeExplorer_IndentCommand(RubberduckParserState state, IIndenter indenter, INavigateCommand navigateCommand) : base(LogManager.GetCurrentClassLogger())
+        public CodeExplorerIndentCommand(RubberduckParserState state, IIndenter indenter, INavigateCommand navigateCommand) : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _indenter = indenter;
@@ -66,8 +66,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                         .Any(d => d.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
             }
 
-            return _state.Status == ParserState.Ready 
-                && !(parameter is CodeExplorerCustomFolderViewModel);
+            return _state.Status == ParserState.Ready;
         }
 
         protected override void ExecuteImpl(object parameter)

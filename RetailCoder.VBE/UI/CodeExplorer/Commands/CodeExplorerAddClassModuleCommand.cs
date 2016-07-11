@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
@@ -6,29 +8,36 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_AddUserFormCommand : CommandBase
+    public class CodeExplorerAddClassModuleCommand : CommandBase
     {
         private readonly VBE _vbe;
 
-        public CodeExplorer_AddUserFormCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public CodeExplorerAddClassModuleCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            return GetDeclaration(parameter) != null || _vbe.VBProjects.Count == 1;
+            try
+            {
+                return GetDeclaration(parameter) != null || _vbe.VBProjects.Count == 1;
+            }
+            catch (COMException)
+            {
+                return false;
+            }
         }
 
         protected override void ExecuteImpl(object parameter)
         {
             if (parameter != null)
             {
-                GetDeclaration(parameter).Project.VBComponents.Add(vbext_ComponentType.vbext_ct_MSForm);
+                GetDeclaration(parameter).Project.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
             }
             else
             {
-                _vbe.VBProjects.Item(1).VBComponents.Add(vbext_ComponentType.vbext_ct_MSForm);
+                _vbe.VBProjects.Item(1).VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
             }
         }
 

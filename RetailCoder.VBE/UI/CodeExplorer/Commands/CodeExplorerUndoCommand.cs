@@ -9,12 +9,12 @@ using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_UndoCommand : CommandBase
+    public class CodeExplorerUndoCommand : CommandBase
     {
         private readonly SourceControlDockablePresenter _presenter;
         private readonly IMessageBox _messageBox;
 
-        public CodeExplorer_UndoCommand(SourceControlDockablePresenter presenter, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
+        public CodeExplorerUndoCommand(SourceControlDockablePresenter presenter, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
             _messageBox = messageBox;
@@ -34,17 +34,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            var panelVM = panel.ViewModel as SourceControlViewViewModel;
-            if (panelVM == null)
+            var panelViewModel = panel.ViewModel as SourceControlViewViewModel;
+            if (panelViewModel == null)
             {
                 return false;
             }
 
-            panelVM.SetTab(SourceControlTab.Changes);
-            var changesVM = panelVM.SelectedItem.ViewModel as ChangesViewViewModel;
+            panelViewModel.SetTab(SourceControlTab.Changes);
+            var viewModel = panelViewModel.SelectedItem.ViewModel as ChangesViewViewModel;
 
-            return changesVM != null && changesVM.IncludedChanges != null &&
-                   changesVM.IncludedChanges.Select(s => s.FilePath).Contains(GetFileName(node));
+            return viewModel != null && viewModel.IncludedChanges != null &&
+                   viewModel.IncludedChanges.Select(s => s.FilePath).Contains(GetFileName(node));
         }
 
         protected override void ExecuteImpl(object parameter)
@@ -55,15 +55,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            var panelVM = panel.ViewModel as SourceControlViewViewModel;
-            if (panelVM == null)
+            var panelViewModel = panel.ViewModel as SourceControlViewViewModel;
+            if (panelViewModel == null)
             {
                 return;
             }
 
-            panelVM.SetTab(SourceControlTab.Changes);
-            var changesVM = panelVM.SelectedItem.ViewModel as ChangesViewViewModel;
-            if (changesVM == null)
+            panelViewModel.SetTab(SourceControlTab.Changes);
+            var viewModel = panelViewModel.SelectedItem.ViewModel as ChangesViewViewModel;
+            if (viewModel == null)
             {
                 return;
             }
@@ -78,7 +78,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            changesVM.UndoChangesToolbarButtonCommand.Execute(new FileStatusEntry(fileName, FileStatus.Modified));
+            viewModel.UndoChangesToolbarButtonCommand.Execute(new FileStatusEntry(fileName, FileStatus.Modified));
             _presenter.Show();
         }
 
