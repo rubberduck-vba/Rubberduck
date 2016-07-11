@@ -8,12 +8,19 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance Type=local:RegisteredLibraryViewModel}">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <ListView x:Name="TypeLibs"
+                  Grid.ColumnSpan="2"
                   ItemsSource="{Binding}"
                   IsSynchronizedWithCurrentItem="True">
             <ListView.View>
@@ -31,8 +38,8 @@
                                     Width="400">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="local:RegisteredLibraryViewModel">
-                                <TextBlock Text="{Binding Name}"
-                                           ToolTip="{Binding FilePath}" />
+                                <TextBlock Text="{Binding Model.Name}"
+                                           ToolTip="{Binding Model.FilePath}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -40,36 +47,38 @@
             </ListView.View>
         </ListView>
 
-        <StackPanel Grid.Row="1"
-                    DataContext="{Binding SelectedItem, ElementName=TypeLibs}"
-                    d:DataContext="{d:DesignInstance local:RegisteredLibraryViewModel}">
-            
-            <TextBlock Margin="0,5,0,0">
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="\{0\}: \{1\}">
-                        <Binding Path="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Name}" />
-                        <Binding Path="Name" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
+        <TextBlock Margin="0,5,5,0"
+                   Grid.Row="1" 
+                   Grid.Column="0"
+                   Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Name}" />
+        <TextBlock Margin="0,5,5,0"
+                   Grid.Row="2" 
+                   Grid.Column="0"
+                   Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Path}" />
+        <TextBlock Margin="0,5,5,0"
+                   Grid.Row="3" 
+                   Grid.Column="0" 
+                   Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Guid}" />
+        
+        <TextBlock Margin="0,5,0,0"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   DataContext="{Binding SelectedItem, ElementName=TypeLibs}"
+                   d:DataContext="{d:DesignInstance local:RegisteredLibraryViewModel}"
+                   Text="{Binding Model.Name}" />
 
-            <TextBlock Margin="0,5,0,0">
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="\{0\}: \{1\}">
-                        <Binding Path="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Path}" />
-                        <Binding Path="FilePath" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
+        <TextBlock Margin="0,5,0,0"
+                   Grid.Row="2"
+                   Grid.Column="1"
+                   DataContext="{Binding SelectedItem, ElementName=TypeLibs}"
+                   d:DataContext="{d:DesignInstance local:RegisteredLibraryViewModel}"
+                   Text="{Binding Model.FilePath}" />
 
-            <TextBlock Margin="0,5,0,5">
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="\{0\}: \{1\}">
-                        <Binding Path="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Guid}" />
-                        <Binding Path="Guid" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-        </StackPanel>
+        <TextBlock Margin="0,5,0,0"
+                   Grid.Row="3"
+                   Grid.Column="1"
+                   DataContext="{Binding SelectedItem, ElementName=TypeLibs}"
+                   d:DataContext="{d:DesignInstance local:RegisteredLibraryViewModel}"
+                   Text="{Binding Model.Guid}" />
     </Grid>
 </UserControl>

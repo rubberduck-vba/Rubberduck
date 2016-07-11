@@ -7,69 +7,104 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="400"
              d:DataContext="{d:DesignInstance Type=local:ReferenceBrowserViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl Padding="5">
 
-    <TabControl Padding="5">
+            <TabItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_COM}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
 
-        <TabItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_COM}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_Filter}"
+                               Margin="5"
+                               Padding="5" />
+                    <TextBox Text="{Binding ComReferencesFilter, UpdateSourceTrigger=PropertyChanged}" 
+                             HorizontalAlignment="Stretch"
+                             Margin="5"
+                             Padding="5"
+                             Grid.Column="1"
+                             Grid.Row="0"/>
 
-                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_Filter}"
-                           Margin="5"
-                           Padding="5" />
-                <TextBox Text="{Binding ComReferencesFilter, UpdateSourceTrigger=PropertyChanged}" 
-                         HorizontalAlignment="Stretch"
-                         Margin="5"
-                         Padding="5"
-                         Grid.Column="1"
-                         Grid.Row="0"/>
-                
-                <local:ReferenceListControl DataContext="{Binding ComReferences}"
-                                            Margin="5"
-                                            Grid.Column="0"
-                                            Grid.Row="1"
-                                            Grid.ColumnSpan="2"/>
-            </Grid>
-        </TabItem>
+                    <local:ReferenceListControl DataContext="{Binding ComReferences}"
+                                                Margin="5"
+                                                Grid.Column="0"
+                                                Grid.Row="1"
+                                                Grid.ColumnSpan="2"/>
+                </Grid>
+            </TabItem>
 
-        <TabItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_VBA}" >
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+            <TabItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_VBA}" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <TextBox HorizontalAlignment="Stretch"
+                    <TextBox HorizontalAlignment="Stretch"
                          Margin="5"/>
 
-                <Button Command="{Binding AddVbaProjectReferenceCommand}" 
-                        Grid.Column="1"
-                        Grid.Row="0"
-                        Margin="5"
-                        Padding="5">
-                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_Browse}" />
-                </Button>
+                    <Button Command="{Binding AddVbaProjectReferenceCommand}"
+                            Grid.Column="1"
+                            Grid.Row="0"
+                            Margin="5"
+                            Padding="5">
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_Browse}" />
+                    </Button>
 
-                <local:ReferenceListControl DataContext="{Binding VbaProjectReferences}"
-                                            Margin="5"
-                                            Grid.Column="0"
-                                            Grid.Row="1"
-                                            Grid.ColumnSpan="2"/>
-            </Grid>
-        </TabItem>
+                    <local:ReferenceListControl DataContext="{Binding VbaProjectReferences}"
+                                                Grid.Column="0"
+                                                Grid.Row="1"
+                                                Grid.ColumnSpan="2"/>
+                </Grid>
+            </TabItem>
 
-        <TabItem Header="Recent"
-                 IsEnabled="False"/>
-    </TabControl>
+            <TabItem Header="Recent"
+                     IsEnabled="False"/>
+        </TabControl>
+
+        <Border Grid.Row="1"
+                Height="40"
+                VerticalAlignment="Bottom"
+                BorderBrush="Black"
+                BorderThickness="0, 1, 0, 0">
+            <DockPanel VerticalAlignment="Center"
+                       Height="40"
+                       Background="{x:Static SystemColors.ControlDarkBrush}"
+                       Grid.IsSharedSizeScope="True">
+                <Grid HorizontalAlignment="Right"
+                      Margin="5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                        <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                            Grid.Column="0"
+                            Height="20"
+                            Margin="5,0"
+                            Padding="10,0"
+                            Command="{Binding CancelButtonCommand}" />
+                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                            Grid.Column="1"
+                            Height="20"
+                            Margin="5,0"
+                            Padding="10,0"
+                            Command="{Binding OkButtonCommand}" />
+                </Grid>
+            </DockPanel>
+        </Border>
+    </Grid>
 </UserControl>

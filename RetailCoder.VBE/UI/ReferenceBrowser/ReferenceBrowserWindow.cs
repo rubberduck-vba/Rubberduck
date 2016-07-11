@@ -9,6 +9,12 @@ namespace Rubberduck.UI.ReferenceBrowser
             InitializeComponent();
 
             referenceBrowser.DataContext = viewModel;
+            viewModel.CloseWindow += ViewModel_CloseWindow;
+        }
+
+        private void ViewModel_CloseWindow(object sender, System.EventArgs e)
+        {
+            Close();
         }
     }
 }

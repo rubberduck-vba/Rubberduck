@@ -15,8 +15,7 @@ namespace Rubberduck.UI.ReferenceBrowser
     {
         private readonly VBE _vbe;
         private readonly RegisteredLibraryModelService _service;
-        private readonly ObservableCollection<RegisteredLibraryViewModel> _vbaProjectReferences;
-        private readonly ObservableCollection<RegisteredLibraryViewModel> _registeredComReferences;
+        private readonly ObservableCollection<RegisteredLibraryViewModel> _projectReferences;
         private string _filter;
 
         public ReferenceBrowserViewModel(VBE vbe, RegisteredLibraryModelService service, IOpenFileDialog filePicker)
@@ -24,21 +23,18 @@ namespace Rubberduck.UI.ReferenceBrowser
             _vbe = vbe;
             _service = service;
 
-            _registeredComReferences = new ObservableCollection<RegisteredLibraryViewModel>();
-            ComReferences = new CollectionViewSource {Source = _registeredComReferences}.View;
-            //ComReferences.DeferRefresh();  would prefer to use this for performance but gives an error.
-            ComReferences.SortDescriptions.Add(new SortDescription("CanRemoveReference", ListSortDirection.Ascending));
-            ComReferences.SortDescriptions.Add(new SortDescription("IsActiveProjectReference", ListSortDirection.Descending));
-            ComReferences.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
-            //ComReferences.Refresh();
+            _projectReferences = new ObservableCollection<RegisteredLibraryViewModel>();
+            ComReferences = new CollectionViewSource {Source = _projectReferences }.View;
+            FilterComReferences();
 
-            _vbaProjectReferences = new ObservableCollection<RegisteredLibraryViewModel>();
-            VbaProjectReferences = new CollectionViewSource {Source = _vbaProjectReferences }.View;
+            VbaProjectReferences = new CollectionViewSource {Source = _projectReferences }.View;
+            VbaProjectReferences.Filter = o => ((RegisteredLibraryViewModel) o).Model is VbaProjectReferenceModel;
 
-            BuildTypeLibraryReferenceViewModels();
-            BuildVbaProjectReferenceViewModels();
+            BuildViewModels();
 
-            AddVbaProjectReferenceCommand = new AddReferenceCommand(filePicker, AddVbaReference);
+            AddVbaProjectReferenceCommand = null;// new AddReferenceCommand(filePicker, AddVbaReference);
+            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OnCloseWindow(new EventArgs()));
+            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UpdateReferencesAndClose());
         }
 
         public ICollectionView ComReferences { get; private set; }
@@ -62,60 +58,122 @@ namespace Rubberduck.UI.ReferenceBrowser
 
         public ICommand AddVbaProjectReferenceCommand { get; private set; }
 
-        private void AddVbaReference(string filePath)
+        public ICommand CancelButtonCommand { get; private set; }
+
+        public ICommand OkButtonCommand { get; private set; }
+
+        private void BuildViewModels()
         {
-            // TODO this may throw exceptions.  Gotta to catch 'em all!
-            var reference = _vbe.ActiveVBProject.References.AddFromFile(filePath);
-            CreateViewModelForVbaProjectReference(reference);
+            var libraries = _service.GetAllRegisteredLibraries();
+            var currentReferences = _vbe.ActiveVBProject.References.OfType<Reference>().ToList();
+
+            // first add the existing references to the list.  That way we have the correct ordering.
+            foreach (var r in currentReferences)
+            {
+                // create a view model for the given reference.
+                if (r.Type == vbext_RefKind.vbext_rk_Project)
+                {
+                    var model = new VbaProjectReferenceModel(r);
+                    var vm = new RegisteredLibraryViewModel(model, true, !r.BuiltIn);
+                    _projectReferences.Add(vm);
+                }
+                else
+                {
+                    var model = libraries.FirstOrDefault(l => string.Equals(l.FilePath, r.FullPath, StringComparison.CurrentCultureIgnoreCase));
+                    libraries.Remove(model);  // remove here so we can sort and add later.
+                    var vm = new RegisteredLibraryViewModel(model, true, !r.BuiltIn);
+                    _projectReferences.Add(vm);
+                }
+            }
+
+            // add the remaining registered libraries to the collection in sorted order.
+            libraries.Sort((f, s) => string.Compare(f.Name, s.Name, StringComparison.CurrentCultureIgnoreCase));
+            foreach (var l in libraries)
+            {
+                var vm = new RegisteredLibraryViewModel(l, false, true);
+                _projectReferences.Add(vm);
+            }
+        }
+
+        private void UpdateReferencesAndClose()
+        {
+            UpdateReferences();
+            OnCloseWindow(new EventArgs());
+        }
+
+        private void UpdateReferences()
+        {
+            var references = _vbe.ActiveVBProject.References;
+            var activeModels = _projectReferences
+                .Where(r => r.IsActiveProjectReference)
+                .Select(r => r.Model)
+                .ToList();
+
+            // remove any references which aren't in the active models list.
+            foreach (var r in references.OfType<Reference>().ToList())
+            {
+                if (!activeModels.Any(m => string.Equals(m.FilePath, r.FullPath, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    references.Remove(r);
+                }
+            }
+
+            var referenceIndex = 1;
+            var modelIndex = 0;
+            while (referenceIndex <= references.Count)
+            {
+                var currentModel = activeModels[modelIndex];
+                var currentReference = references.Item(referenceIndex);
+
+                if (string.Equals(currentModel.FilePath, currentReference.FullPath, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    modelIndex++;
+                    referenceIndex++;
+                }
+                else
+                {
+                    references.Remove(currentReference);
+                }
+            }
+            // add the remaining models to the references.
+            while (modelIndex < activeModels.Count)
+            {
+                var currentModel = activeModels[modelIndex];
+                references.AddFromFile(currentModel.FilePath);
+                modelIndex++;
+            }
         }
 
         private void FilterComReferences()
         {
             if (string.IsNullOrWhiteSpace(_filter))
             {
-                ComReferences.Filter = null;
+                ComReferences.Filter = o => ((RegisteredLibraryViewModel) o).Model is RegisteredLibraryModel;
             }
             else
             {
-                ComReferences.Filter = o => 
-                    ((RegisteredLibraryViewModel) o).Name.ToLower()
-                    .Contains(_filter.ToLower());
+                ComReferences.Filter = o =>
+                {
+                    var model = ((RegisteredLibraryViewModel)o).Model;
+                    return model.Name.ToLower().Contains(_filter.ToLower())
+                        && model is RegisteredLibraryModel;
+                };
             }
         }
 
-        private void BuildTypeLibraryReferenceViewModels()
-        {
-            var list = _service.GetAllRegisteredLibraries()
-                .Select(l => new RegisteredLibraryViewModel(l, _vbe.ActiveVBProject));
+        public event EventHandler<EventArgs> CloseWindow; 
 
-            foreach (var vm in list)
+        private void OnCloseWindow(EventArgs args)
+        {
+            var handler = CloseWindow;
+            if (handler != null)
             {
-                _registeredComReferences.Add(vm);
+                handler.Invoke(this, args);
             }
-        }
-
-        private void BuildVbaProjectReferenceViewModels()
-        {
-            var vbaReferences = _vbe.ActiveVBProject.References
-                .OfType<Reference>()
-                .Where(r => r.Type == vbext_RefKind.vbext_rk_Project);
-
-            foreach (var reference in vbaReferences)
-            {
-                CreateViewModelForVbaProjectReference(reference);
-            }
-        }
-
-        private void CreateViewModelForVbaProjectReference(Reference reference)
-        {
-            var model = new VbaProjectReferenceModel(reference);
-            var vm = new RegisteredLibraryViewModel(model, _vbe.ActiveVBProject);
-            _vbaProjectReferences.Add(vm);
         }
 
         public void Dispose()
         {
-
             var command = AddVbaProjectReferenceCommand as IDisposable;
             if (command != null)
             {

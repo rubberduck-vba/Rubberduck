@@ -6,7 +6,7 @@ namespace Rubberduck.UI.ReferenceBrowser
 {
     public class RegisteredLibraryModelService
     {
-        public IList<RegisteredLibraryModel> GetAllRegisteredLibraries()
+        public List<RegisteredLibraryModel> GetAllRegisteredLibraries()
         {
             return (from r in LibraryRegistration.GetRegisteredTypeLibraryEntries()
                     select new RegisteredLibraryModel(r)
