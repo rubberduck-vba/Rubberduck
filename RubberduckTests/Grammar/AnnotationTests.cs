@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor;
 
@@ -55,20 +54,6 @@ namespace RubberduckTests.Grammar
         {
             var annotation = new IgnoreTestAnnotation(new QualifiedSelection(), null);
             Assert.AreEqual(AnnotationType.IgnoreTest, annotation.AnnotationType);
-        }
-
-        [TestMethod, ExpectedException(typeof(InvalidAnnotationArgumentException))]
-        public void IgnoreAnnotation_TypeIsIgnore_NoParam()
-        {
-            var annotation = new IgnoreAnnotation(new QualifiedSelection(), new List<string>());
-            Assert.AreEqual(AnnotationType.Ignore, annotation.AnnotationType);
-        }
-
-        [TestMethod, ExpectedException(typeof(InvalidAnnotationArgumentException))]
-        public void FolderAnnotation_TypeIsFolder_NoParam()
-        {
-            var annotation = new FolderAnnotation(new QualifiedSelection(), new List<string>());
-            Assert.AreEqual(AnnotationType.Folder, annotation.AnnotationType);
         }
 
         [TestMethod]
