@@ -376,6 +376,7 @@
     </Compile>
     <Compile Include="Inspections\IParseTreeInspection.cs" />
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
+    <Compile Include="Inspections\MalformedAnnotationInspection.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />

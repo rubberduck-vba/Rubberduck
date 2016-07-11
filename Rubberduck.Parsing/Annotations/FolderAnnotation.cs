@@ -13,11 +13,7 @@ namespace Rubberduck.Parsing.Annotations
             IEnumerable<string> parameters)
             : base(AnnotationType.Folder, qualifiedSelection)
         {
-            if (parameters.Count() != 1)
-            {
-                throw new InvalidAnnotationArgumentException(string.Format("{0} expects exactly one argument, the folder, but none or more than one were passed.", this.GetType().Name));
-            }
-            _folderName = parameters.First();
+            _folderName = parameters.FirstOrDefault() ?? string.Empty;
         }
 
         public string FolderName
