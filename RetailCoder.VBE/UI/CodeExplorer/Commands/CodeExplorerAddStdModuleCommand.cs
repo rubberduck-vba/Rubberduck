@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
@@ -6,29 +8,37 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_AddClassModuleCommand : CommandBase
+    public class CodeExplorerAddStdModuleCommand : CommandBase
     {
         private readonly VBE _vbe;
 
-        public CodeExplorer_AddClassModuleCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public CodeExplorerAddStdModuleCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            return GetDeclaration(parameter) != null || _vbe.VBProjects.Count == 1;
+            try
+            {
+                return GetDeclaration(parameter) != null || _vbe.VBProjects.Count == 1;
+            }
+            catch (COMException)
+            {
+                // could be that _vbe.VBProjects reference is stale?
+                return false;
+            }
         }
 
         protected override void ExecuteImpl(object parameter)
         {
             if (parameter != null)
             {
-                GetDeclaration(parameter).Project.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
+                GetDeclaration(parameter).Project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
             }
             else
             {
-                _vbe.VBProjects.Item(1).VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
+                _vbe.VBProjects.Item(1).VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
             }
         }
 

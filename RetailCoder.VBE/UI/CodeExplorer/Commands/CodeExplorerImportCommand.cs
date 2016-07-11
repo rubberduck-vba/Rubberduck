@@ -8,11 +8,11 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_ImportCommand : CommandBase, IDisposable
+    public class CodeExplorerImportCommand : CommandBase, IDisposable
     {
         private readonly IOpenFileDialog _openFileDialog;
 
-        public CodeExplorer_ImportCommand(IOpenFileDialog openFileDialog) : base(LogManager.GetCurrentClassLogger())
+        public CodeExplorerImportCommand(IOpenFileDialog openFileDialog) : base(LogManager.GetCurrentClassLogger())
         {
             _openFileDialog = openFileDialog;
 
