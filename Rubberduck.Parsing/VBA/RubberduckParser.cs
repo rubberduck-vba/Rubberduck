@@ -51,50 +51,10 @@ namespace Rubberduck.Parsing.VBA
         // but the cancelees need to use their own token.
         private readonly List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource> {new CancellationTokenSource()};
 
-        private void ReparseRequested(object sender, ParseRequestEventArgs e)
+        private void ReparseRequested(object sender, EventArgs e)
         {
-            if (e.IsFullReparseRequest)
-            {
-                Cancel();
-                Task.Run(() => ParseAll(_cancellationTokens[0]));
-            }
-            else
-            {
-                Cancel(e.Component);
-                Task.Run(() =>
-                {
-                    State.SetModuleState(e.Component, ParserState.Pending);
-
-                    SyncComReferences(State.Projects);
-                    AddBuiltInDeclarations();
-
-                    if (_cancellationTokens[0].IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    ParseAsync(e.Component, _cancellationTokens[0]).Wait();
-
-                    if (_cancellationTokens[0].IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    if (State.Status == ParserState.Error) { return; }
-
-                    var qualifiedName = new QualifiedModuleName(e.Component);
-
-                    State.SetModuleState(e.Component, ParserState.ResolvingDeclarations);
-                    ResolveDeclarations(qualifiedName.Component,
-                        State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
-                    
-                    if (State.Status < ParserState.Error)
-                    {
-                        State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
-                        ResolveReferencesAsync(_cancellationTokens[0].Token);
-                    }
-                });
-            }
+            Cancel();
+            Task.Run(() => ParseAll(_cancellationTokens[0]));
         }
 
         /// <summary>
@@ -505,29 +465,15 @@ namespace Rubberduck.Parsing.VBA
             return task;
         }
 
-        public void Cancel(VBComponent component = null)
+        private void Cancel()
         {
             lock (_cancellationTokens[0])
             {
-                if (component == null)
-                {
-                    _cancellationTokens[0].Cancel();
+                _cancellationTokens[0].Cancel();
 
-                    _cancellationTokens[0].Dispose();
-                    _cancellationTokens.Add(new CancellationTokenSource());
-                    _cancellationTokens.RemoveAt(0);
-                }
-                else
-                {
-                    _cancellationTokens[0].Cancel();
-                    
-                    Tuple<Task, CancellationTokenSource> result;
-                    if (_currentTasks.TryGetValue(component, out result))
-                    {
-                        result.Item2.Cancel();
-                        result.Item2.Dispose();
-                    }
-                }
+                _cancellationTokens[0].Dispose();
+                _cancellationTokens.Add(new CancellationTokenSource());
+                _cancellationTokens.RemoveAt(0);
             }
         }
 

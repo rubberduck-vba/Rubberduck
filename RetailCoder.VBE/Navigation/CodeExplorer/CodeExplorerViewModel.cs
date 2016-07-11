@@ -32,8 +32,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => _state.OnParseRequested(this),
                 param => !IsBusy && _state.IsDirty());
-
-            _refreshComponentCommand = commands.OfType<CodeExplorer_RefreshComponentCommand>().FirstOrDefault();
+            
             _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().FirstOrDefault();
 
             _addTestModuleCommand = commands.OfType<CodeExplorer_AddTestModuleCommand>().FirstOrDefault();
@@ -412,9 +411,6 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly CommandBase _refreshCommand;
         public CommandBase RefreshCommand { get { return _refreshCommand; } }
-
-        private readonly CommandBase _refreshComponentCommand;
-        public CommandBase RefreshComponentCommand { get { return _refreshComponentCommand; } }
 
         private readonly CommandBase _navigateCommand;
         public CommandBase NavigateCommand { get { return _navigateCommand; } }

@@ -1565,9 +1565,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SortStyle_ByCodeOrder" xml:space="preserve">
     <value>By code order</value>
   </data>
-  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
-    <value>Refresh component</value>
-  </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignored</value>
   </data>
