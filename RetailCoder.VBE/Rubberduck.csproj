@@ -414,6 +414,7 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\HotkeyDisplayConverter.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_CopyResultsCommand.cs" />
@@ -703,6 +704,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\Converters\HotkeyDisplayConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\DelimiterToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToTextConverter.cs" />
