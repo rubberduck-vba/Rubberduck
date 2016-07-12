@@ -11,9 +11,10 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerPrintCommand : CommandBase
+    [CodeExplorerCommand]
+    public class PrintCommand : CommandBase
     {
-        public CodeExplorerPrintCommand() : base(LogManager.GetCurrentClassLogger()) { }
+        public PrintCommand() : base(LogManager.GetCurrentClassLogger()) { }
 
         protected override bool CanExecuteImpl(object parameter)
         {

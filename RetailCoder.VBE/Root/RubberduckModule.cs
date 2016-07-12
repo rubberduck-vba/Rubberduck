@@ -33,6 +33,7 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI.CodeExplorer.Commands;
 
 namespace Rubberduck.Root
 {
@@ -339,9 +340,7 @@ namespace Rubberduck.Root
         {
             var commands = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(type => type.IsClass && type.Namespace != null &&
-                               type.Namespace == "Rubberduck.UI.CodeExplorer.Commands" &&
-                               type.Name.StartsWith("CodeExplorer_") && 
-                               type.Name.EndsWith("Command"));
+                               type.CustomAttributes.Any(a => a.AttributeType == typeof(CodeExplorerCommandAttribute)));
 
             foreach (var command in commands)
             {

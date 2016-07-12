@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using NLog;
@@ -8,11 +7,12 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerAddUserFormCommand : CommandBase
+    [CodeExplorerCommand]
+    public class AddUserFormCommand : CommandBase
     {
         private readonly VBE _vbe;
 
-        public CodeExplorerAddUserFormCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public AddUserFormCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }
