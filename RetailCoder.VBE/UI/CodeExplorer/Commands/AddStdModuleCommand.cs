@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using NLog;
@@ -8,11 +7,12 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerAddStdModuleCommand : CommandBase
+    [CodeExplorerCommand]
+    public class AddStdModuleCommand : CommandBase
     {
         private readonly VBE _vbe;
 
-        public CodeExplorerAddStdModuleCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public AddStdModuleCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }
