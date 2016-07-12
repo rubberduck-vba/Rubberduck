@@ -120,6 +120,8 @@ namespace Rubberduck
             e.Item.AssignProjectId();
             var projectId = e.Item.HelpFile;
 
+            RegisterComponentsEventSink(e.Item.VBComponents, projectId);
+
             Task.Run(() =>
             {
                 var handler = ProjectAdded;
@@ -127,13 +129,12 @@ namespace Rubberduck
                 {
                     handler(sender, new ProjectEventArgs(projectId));
                 }
-
-                RegisterComponentsEventSink(e.Item.VBComponents, e.Item.HelpFile);
             });
         }
 
         private void _sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
+            UnregisterComponentsEventSink(e.Item.HelpFile);
             if (!IsEnabled) { return; }
 
             var projectId = e.Item.HelpFile;
@@ -145,8 +146,6 @@ namespace Rubberduck
                 {
                     handler(sender, new ProjectEventArgs(projectId));
                 }
-
-                UnregisterComponentsEventSink(e.Item.HelpFile);
             });
         }
 
