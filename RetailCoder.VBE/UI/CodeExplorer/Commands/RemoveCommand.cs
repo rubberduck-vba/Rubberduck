@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using NLog;
@@ -10,9 +9,12 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerExportCommand : CommandBase, IDisposable
+    [CodeExplorerCommand]
+    public class RemoveCommand : CommandBase, IDisposable
     {
         private readonly ISaveFileDialog _saveFileDialog;
+        private readonly IMessageBox _messageBox;
+
         private readonly Dictionary<vbext_ComponentType, string> _exportableFileExtensions = new Dictionary<vbext_ComponentType, string>
         {
             { vbext_ComponentType.vbext_ct_StdModule, ".bas" },
@@ -21,10 +23,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             { vbext_ComponentType.vbext_ct_MSForm, ".frm" }
         };
 
-        public CodeExplorerExportCommand(ISaveFileDialog saveFileDialog) : base(LogManager.GetCurrentClassLogger())
+        public RemoveCommand(ISaveFileDialog saveFileDialog, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _saveFileDialog = saveFileDialog;
             _saveFileDialog.OverwritePrompt = true;
+
+            _messageBox = messageBox;
         }
 
         protected override bool CanExecuteImpl(object parameter)
@@ -34,22 +38,38 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            try
-            {
-                var node = (CodeExplorerComponentViewModel)parameter;
-                var componentType = node.Declaration.QualifiedName.QualifiedModuleName.Component.Type;
-                return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
-            }
-            catch (COMException)
-            {
-                // thrown when the component reference is stale
-                return false;
-            }
+            var node = (CodeExplorerComponentViewModel)parameter;
+            var componentType = node.Declaration.QualifiedName.QualifiedModuleName.Component.Type;
+            return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
         }
 
         protected override void ExecuteImpl(object parameter)
         {
-            var node = (CodeExplorerComponentViewModel)parameter;
+            var message = string.Format("Do you want to export '{0}' before removing?", ((CodeExplorerComponentViewModel)parameter).Name);
+            var result = _messageBox.Show(message, "Rubberduck Export Prompt", MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+
+            if (result == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            if (result == DialogResult.Yes && !ExportFile((CodeExplorerComponentViewModel)parameter))
+            {
+                return;
+            }
+
+            // No file export or file successfully exported--now remove it
+
+            // I know this will never be null because of the CanExecute
+            var declaration = ((CodeExplorerComponentViewModel)parameter).Declaration;
+
+            var project = declaration.QualifiedName.QualifiedModuleName.Project;
+            project.VBComponents.Remove(declaration.QualifiedName.QualifiedModuleName.Component);
+        }
+
+        private bool ExportFile(CodeExplorerComponentViewModel node)
+        {
             var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
 
             string ext;
@@ -62,6 +82,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 component.Export(_saveFileDialog.FileName);
             }
+
+            return result == DialogResult.OK;
         }
 
         public void Dispose()

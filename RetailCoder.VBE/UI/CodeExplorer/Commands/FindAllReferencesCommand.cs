@@ -5,12 +5,13 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerFindAllReferencesCommand : CommandBase
+    [CodeExplorerCommand]
+    public class FindAllReferencesCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly FindAllReferencesCommand _findAllReferences;
+        private readonly Command.FindAllReferencesCommand _findAllReferences;
 
-        public CodeExplorerFindAllReferencesCommand(RubberduckParserState state, FindAllReferencesCommand findAllReferences) : base(LogManager.GetCurrentClassLogger())
+        public FindAllReferencesCommand(RubberduckParserState state, Command.FindAllReferencesCommand findAllReferences) : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _findAllReferences = findAllReferences;

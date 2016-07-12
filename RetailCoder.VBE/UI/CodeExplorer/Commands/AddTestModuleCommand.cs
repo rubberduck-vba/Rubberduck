@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using NLog;
@@ -9,12 +8,13 @@ using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerAddTestModuleCommand : CommandBase
+    [CodeExplorerCommand]
+    public class AddTestModuleCommand : CommandBase
     {
         private readonly VBE _vbe;
         private readonly NewUnitTestModuleCommand _newUnitTestModuleCommand;
 
-        public CodeExplorerAddTestModuleCommand(VBE vbe, NewUnitTestModuleCommand newUnitTestModuleCommand) : base(LogManager.GetCurrentClassLogger())
+        public AddTestModuleCommand(VBE vbe, NewUnitTestModuleCommand newUnitTestModuleCommand) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _newUnitTestModuleCommand = newUnitTestModuleCommand;

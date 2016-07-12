@@ -4,11 +4,12 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerNavigateCommand : CommandBase
+    [CodeExplorerCommand]
+    public class NavigateCommand : CommandBase
     {
         private readonly INavigateCommand _navigateCommand;
 
-        public CodeExplorerNavigateCommand(INavigateCommand navigateCommand) : base(LogManager.GetCurrentClassLogger())
+        public NavigateCommand(INavigateCommand navigateCommand) : base(LogManager.GetCurrentClassLogger())
         {
             _navigateCommand = navigateCommand;
         }

@@ -9,12 +9,13 @@ using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerUndoCommand : CommandBase
+    [CodeExplorerCommand]
+    public class UndoCommand : CommandBase
     {
         private readonly SourceControlDockablePresenter _presenter;
         private readonly IMessageBox _messageBox;
 
-        public CodeExplorerUndoCommand(SourceControlDockablePresenter presenter, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
+        public UndoCommand(SourceControlDockablePresenter presenter, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
             _messageBox = messageBox;
