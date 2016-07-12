@@ -1606,6 +1606,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Source Control.
+        /// </summary>
+        public static string HotkeyDescription_SourceControl {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_SourceControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Test Explorer.
         /// </summary>
         public static string HotkeyDescription_TestExplorer {

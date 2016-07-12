@@ -1730,4 +1730,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Indent</value>
   </data>
+  <data name="HotkeyDescription_SourceControl" xml:space="preserve">
+    <value>Source Control</value>
+  </data>
 </root>

@@ -13,5 +13,6 @@ namespace Rubberduck.Settings
         RefactorMoveCloserToUsage,
         RefactorRename,
         RefactorExtractMethod,
+        SourceControl
     }
 }
