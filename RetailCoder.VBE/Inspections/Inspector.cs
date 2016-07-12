@@ -9,6 +9,7 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {
@@ -78,7 +79,7 @@ namespace Rubberduck.Inspections
                             {
                                 allIssues.Add(inspectionResult);
                             }
-                        })).ToList();
+                        }, token)).ToList();
 
                 await Task.WhenAll(inspections);
                 state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
@@ -99,12 +100,14 @@ namespace Rubberduck.Inspections
                     var obsoleteLetStatementListener = new ObsoleteLetStatementInspection.ObsoleteLetStatementListener();
                     var emptyStringLiteralListener = new EmptyStringLiteralInspection.EmptyStringLiteralListener();
                     var argListWithOneByRefParamListener = new ProcedureCanBeWrittenAsFunctionInspection.ArgListWithOneByRefParamListener();
+                    var malformedAnnotationListenter = new MalformedAnnotationInspection.MalformedAnnotationStatementListener();
 
                     var combinedListener = new CombinedParseTreeListener(new IParseTreeListener[]{
                         obsoleteCallStatementListener,
                         obsoleteLetStatementListener,
                         emptyStringLiteralListener,
                         argListWithOneByRefParamListener,
+                        malformedAnnotationListenter
                     });
 
                     ParseTreeWalker.Default.Walk(combinedListener, componentTreePair.Value);
@@ -113,6 +116,7 @@ namespace Rubberduck.Inspections
                     result.EmptyStringLiterals = result.EmptyStringLiterals.Concat(emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(componentTreePair.Key, context)));
                     result.ObsoleteLetContexts = result.ObsoleteLetContexts.Concat(obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(componentTreePair.Key, context)));
                     result.ObsoleteCallContexts = result.ObsoleteCallContexts.Concat(obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(componentTreePair.Key, context)));
+                    result.MalformedAnnotations = result.MalformedAnnotations.Concat(malformedAnnotationListenter.Contexts.Select(context => new QualifiedContext<VBAParser.AnnotationContext>(componentTreePair.Key, context)));
                 }
                 return result;
             }

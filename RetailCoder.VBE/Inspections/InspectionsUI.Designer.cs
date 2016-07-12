@@ -511,6 +511,33 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An annotation comment is malformed..
+        /// </summary>
+        public static string MalformedAnnotationInspectionMeta {
+            get {
+                return ResourceManager.GetString("MalformedAnnotationInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Malformed annotation..
+        /// </summary>
+        public static string MalformedAnnotationInspectionName {
+            get {
+                return ResourceManager.GetString("MalformedAnnotationInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The annotation &apos;{0}&apos; is malformed.
+        /// </summary>
+        public static string MalformedAnnotationInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("MalformedAnnotationInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A module-level variable used only in one procedure should be declared in that procedure..
         /// </summary>
         public static string MoveFieldCloserToUsageInspectionMeta {

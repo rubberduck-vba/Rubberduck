@@ -26,15 +26,6 @@ namespace Rubberduck.Settings
             get { return RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name, UI.Settings.Settings.Culture); } 
         }
 
-        public string ToMenuHotkeyString()
-        {
-            return string.Format("{0}{1}{2}+{3}",
-                HasCtrlModifier ? RubberduckUI.GeneralSettings_HotkeyCtrl : string.Empty,
-                HasShiftModifier ? (HasCtrlModifier ? "+" : string.Empty) + RubberduckUI.GeneralSettings_HotkeyShift : string.Empty,
-                HasAltModifier ? (HasCtrlModifier | HasShiftModifier ? "+" : string.Empty) + RubberduckUI.GeneralSettings_HotkeyAlt : string.Empty,
-                Key1);
-        }
-
         public override string ToString()
         {
             return string.Format("{0}{1}{2}{3}",
