@@ -376,6 +376,7 @@
     </Compile>
     <Compile Include="Inspections\IParseTreeInspection.cs" />
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
+    <Compile Include="Inspections\MalformedAnnotationInspection.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
@@ -579,6 +580,7 @@
     <Compile Include="Navigation\CodeExplorer\CodeExplorerMemberViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerProjectViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerViewModel.cs" />
+    <Compile Include="UI\HotkeyDisplayConverter.cs" />
     <Compile Include="UI\Inspections\InspectionDescriptionConverter.cs" />
     <Compile Include="UI\Inspections\InspectionImageSourceConverter.cs" />
     <Compile Include="UI\Inspections\InspectionResultsControl.xaml.cs">
@@ -703,6 +705,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\Converters\HotkeyDisplayConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\DelimiterToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToTextConverter.cs" />

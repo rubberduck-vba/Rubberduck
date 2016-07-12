@@ -98,6 +98,7 @@
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MultipleFolderAnnotationsInspectionTests.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInpsectionTests.cs" />
+    <Compile Include="Inspections\MalformedAnnotationInspectionTests.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionTests.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspectionTests.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspectionTests.cs" />

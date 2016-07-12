@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Windows.Forms;
+using Rubberduck.UI;
 
 namespace Rubberduck.Common.Hotkeys
 {
@@ -25,20 +26,21 @@ namespace Rubberduck.Common.Hotkeys
             var builder = new StringBuilder();
             if (_keys.HasFlag(Keys.Alt))
             {
-                builder.Append(Rubberduck.UI.RubberduckUI.GeneralSettings_HotkeyAlt);
+                builder.Append(RubberduckUI.GeneralSettings_HotkeyAlt);
                 builder.Append('+');
             }
             if (_keys.HasFlag(Keys.Control))
             {
-                builder.Append(Rubberduck.UI.RubberduckUI.GeneralSettings_HotkeyCtrl);
+                builder.Append(RubberduckUI.GeneralSettings_HotkeyCtrl);
                 builder.Append('+');
             }
             if (_keys.HasFlag(Keys.Shift))
             {
-                builder.Append(Rubberduck.UI.RubberduckUI.GeneralSettings_HotkeyShift);
+                builder.Append(RubberduckUI.GeneralSettings_HotkeyShift);
                 builder.Append('+');
             }
-            builder.Append(_keys & ~Modifiers);
+            
+            builder.Append(HotkeyDisplayConverter.Convert(_keys & ~Modifiers));
             return builder.ToString();
         }
     }

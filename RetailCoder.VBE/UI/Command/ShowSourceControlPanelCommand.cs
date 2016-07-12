@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using NLog;
+using Rubberduck.Settings;
 using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.UI.Command
@@ -10,7 +11,7 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class ShowSourceControlPanelCommand : CommandBase
     {
-        public readonly IPresenter _presenter;
+        private readonly IPresenter _presenter;
 
         public ShowSourceControlPanelCommand(SourceControlDockablePresenter presenter) : base(LogManager.GetCurrentClassLogger())
         {
@@ -20,6 +21,11 @@ namespace Rubberduck.UI.Command
         protected override void ExecuteImpl(object parameter)
         {
             _presenter.Show();
+        }
+
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.SourceControl; }
         }
     }
 }
