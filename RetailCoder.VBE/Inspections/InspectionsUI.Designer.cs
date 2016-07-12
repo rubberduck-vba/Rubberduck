@@ -520,7 +520,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Malformed annotation..
+        ///   Looks up a localized string similar to Malformed annotation.
         /// </summary>
         public static string MalformedAnnotationInspectionName {
             get {
@@ -529,7 +529,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The annotation &apos;{0}&apos; is malformed.
+        ///   Looks up a localized string similar to Malformed &apos;{0}&apos; annotation..
         /// </summary>
         public static string MalformedAnnotationInspectionResultFormat {
             get {
