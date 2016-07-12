@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
@@ -10,9 +11,9 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_PrintCommand : CommandBase
+    public class CodeExplorerPrintCommand : CommandBase
     {
-        public CodeExplorer_PrintCommand() : base(LogManager.GetCurrentClassLogger()) { }
+        public CodeExplorerPrintCommand() : base(LogManager.GetCurrentClassLogger()) { }
 
         protected override bool CanExecuteImpl(object parameter)
         {
@@ -22,7 +23,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            return node.Declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.CountOfLines != 0;
+            try
+            {
+                return node.Declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.CountOfLines != 0;
+            }
+            catch (COMException)
+            {
+                // thrown when the component reference is stale
+                return false;
+            }
         }
 
         protected override void ExecuteImpl(object parameter)

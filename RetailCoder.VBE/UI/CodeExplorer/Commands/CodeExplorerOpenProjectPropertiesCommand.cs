@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using NLog;
@@ -6,18 +7,25 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_OpenProjectPropertiesCommand : CommandBase
+    public class CodeExplorerOpenProjectPropertiesCommand : CommandBase
     {
         private readonly VBE _vbe;
 
-        public CodeExplorer_OpenProjectPropertiesCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public CodeExplorerOpenProjectPropertiesCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            return parameter != null || _vbe.VBProjects.Count == 1;
+            try
+            {
+                return parameter != null || _vbe.VBProjects.Count == 1;
+            }
+            catch (COMException)
+            {
+                return false;
+            }
         }
 
         protected override void ExecuteImpl(object parameter)

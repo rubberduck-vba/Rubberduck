@@ -6,9 +6,9 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_OpenDesignerCommand : CommandBase
+    public class CodeExplorerOpenDesignerCommand : CommandBase
     {
-        public CodeExplorer_OpenDesignerCommand() : base(LogManager.GetCurrentClassLogger()) { }
+        public CodeExplorerOpenDesignerCommand() : base(LogManager.GetCurrentClassLogger()) { }
 
         protected override bool CanExecuteImpl(object parameter)
         {
@@ -25,7 +25,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
             catch (COMException)
             {
-                return false;   // component was probably removed
+                // thrown when the component reference is stale
+                return false;
             }
         }
 
