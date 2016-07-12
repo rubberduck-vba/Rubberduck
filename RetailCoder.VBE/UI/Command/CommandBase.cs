@@ -37,7 +37,7 @@ namespace Rubberduck.UI.Command
             }
             catch (Exception exception)
             {
-                Logger.Fatal(exception);
+                Logger.Error(exception);
 
                 if (!ExceptionTargetSites.Contains(exception.TargetSite))
                 {
@@ -61,7 +61,7 @@ namespace Rubberduck.UI.Command
             }
             catch (Exception exception)
             {
-                Logger.Fatal(exception);
+                Logger.Error(exception);
 
                 if (!ExceptionTargetSites.Contains(exception.TargetSite))
                 {
