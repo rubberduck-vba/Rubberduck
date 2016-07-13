@@ -11,10 +11,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     [CodeExplorerCommand]
     public class ImportCommand : CommandBase, IDisposable
     {
+        private readonly VBE _vbe;
         private readonly IOpenFileDialog _openFileDialog;
 
-        public ImportCommand(IOpenFileDialog openFileDialog) : base(LogManager.GetCurrentClassLogger())
+        public ImportCommand(VBE vbe, IOpenFileDialog openFileDialog) : base(LogManager.GetCurrentClassLogger())
         {
+            _vbe = vbe;
             _openFileDialog = openFileDialog;
 
             _openFileDialog.AddExtension = true;
@@ -26,23 +28,24 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _openFileDialog.CheckFileExists = true;
         }
 
+        protected override bool CanExecuteImpl(object parameter)
+        {
+            return parameter != null || _vbe.VBProjects.Count == 1 || _vbe.ActiveVBProject != null;
+        }
+
         protected override void ExecuteImpl(object parameter)
         {
-            VBProject project;
-
-            if (parameter is ICodeExplorerDeclarationViewModel)
+            var project = GetNodeProject((CodeExplorerItemViewModel)parameter);
+            if (project == null)
             {
-                project = ((ICodeExplorerDeclarationViewModel) parameter).Declaration.QualifiedName.QualifiedModuleName.Project;
-            }
-            else
-            {
-                var node = ((CodeExplorerItemViewModel) parameter).Parent;
-                while (!(node is ICodeExplorerDeclarationViewModel))
+                if (_vbe.VBProjects.Count == 1)
                 {
-                    node = node.Parent;
+                    project = _vbe.VBProjects.Item(1);
                 }
-
-                project = ((ICodeExplorerDeclarationViewModel) node).Declaration.QualifiedName.QualifiedModuleName.Project;
+                else if (_vbe.ActiveVBProject != null)
+                {
+                    project = _vbe.ActiveVBProject;
+                }
             }
 
             if (_openFileDialog.ShowDialog() == DialogResult.OK)
@@ -58,6 +61,22 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     project.VBComponents.Import(filename);
                 }
             }
+        }
+
+        private VBProject GetNodeProject(CodeExplorerItemViewModel parameter)
+        {
+            if (parameter is ICodeExplorerDeclarationViewModel)
+            {
+                return parameter.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Project;
+            }
+
+            var node = parameter.Parent;
+            while (!(node is ICodeExplorerDeclarationViewModel))
+            {
+                node = node.Parent;
+            }
+
+            return ((ICodeExplorerDeclarationViewModel)node).Declaration.QualifiedName.QualifiedModuleName.Project;
         }
 
         public void Dispose()
