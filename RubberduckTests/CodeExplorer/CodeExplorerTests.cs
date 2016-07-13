@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -171,7 +170,7 @@ namespace RubberduckTests.CodeExplorer
             var state = new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new ImportCommand(openFileDialog.Object)
+                new ImportCommand(vbe.Object, openFileDialog.Object)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -213,7 +212,7 @@ namespace RubberduckTests.CodeExplorer
             var state = new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new ImportCommand(openFileDialog.Object)
+                new ImportCommand(vbe.Object, openFileDialog.Object)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -256,7 +255,7 @@ namespace RubberduckTests.CodeExplorer
             var state = new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new ImportCommand(openFileDialog.Object)
+                new ImportCommand(vbe.Object, openFileDialog.Object)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
