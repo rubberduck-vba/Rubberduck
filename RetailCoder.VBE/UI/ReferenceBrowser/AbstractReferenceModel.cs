@@ -2,7 +2,7 @@ using System;
 
 namespace Rubberduck.UI.ReferenceBrowser
 {
-    public abstract class VbaReferenceModel
+    public abstract class AbstractReferenceModel
     {
         public abstract string FilePath { get; }
 

@@ -3,7 +3,7 @@ using Kavod.ComReflection;
 
 namespace Rubberduck.UI.ReferenceBrowser
 {
-    public class RegisteredLibraryModel : VbaReferenceModel
+    public class RegisteredLibraryModel : AbstractReferenceModel
     {
         private readonly LibraryRegistration _registration;
 

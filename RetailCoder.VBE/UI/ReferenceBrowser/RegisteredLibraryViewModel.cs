@@ -5,14 +5,14 @@
         private bool _isActiveReference;
         private bool _referenceIsRemovable = true;
 
-        public RegisteredLibraryViewModel(VbaReferenceModel model, bool isActiveReference, bool canRemoveReference)
+        public RegisteredLibraryViewModel(AbstractReferenceModel model, bool isActiveReference, bool canRemoveReference)
         {
             Model = model;
             IsActiveProjectReference = isActiveReference;
             CanRemoveReference = canRemoveReference;
         }
 
-        public VbaReferenceModel Model { get; private set; }
+        public AbstractReferenceModel Model { get; private set; }
 
         public bool IsActiveProjectReference
         {

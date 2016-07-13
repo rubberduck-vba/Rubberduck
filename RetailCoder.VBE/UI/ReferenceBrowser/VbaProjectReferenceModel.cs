@@ -3,7 +3,7 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI.ReferenceBrowser
 {
-    public class VbaProjectReferenceModel : VbaReferenceModel
+    public class VbaProjectReferenceModel : AbstractReferenceModel
     {
         private readonly Reference _reference;
 
