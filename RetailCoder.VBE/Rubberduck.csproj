@@ -433,9 +433,9 @@
     <Compile Include="UI\CodeExplorer\Commands\AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
-    <Compile Include="UI\Command\MenuItems\ParentMenus\ToolsParentMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\RegexAssistantCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommandMenuItem.cs" />
-    <Compile Include="UI\Command\RegexAssistantCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\ToolsParentMenu.cs" />
     <Compile Include="UI\Controls\LinkButton.xaml.cs">
       <DependentUpon>LinkButton.xaml</DependentUpon>
     </Compile>
@@ -708,6 +708,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.de.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\RubberduckUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\RubberduckUI.ja.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -831,11 +836,6 @@
       <DependentUpon>RubberduckUI.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="UI\RubberduckUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\BranchesView.xaml.cs">
       <DependentUpon>BranchesView.xaml</DependentUpon>
