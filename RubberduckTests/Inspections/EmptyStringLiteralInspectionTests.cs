@@ -44,7 +44,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new EmptyStringLiteralInspection(null);
+            var inspection = new EmptyStringLiteralInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
@@ -76,7 +76,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new EmptyStringLiteralInspection(null);
+            var inspection = new EmptyStringLiteralInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
@@ -108,7 +108,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new EmptyStringLiteralInspection(null);
+            var inspection = new EmptyStringLiteralInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
@@ -147,7 +147,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new EmptyStringLiteralInspection(null);
+            var inspection = new EmptyStringLiteralInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
