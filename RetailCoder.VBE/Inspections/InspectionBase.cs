@@ -75,7 +75,15 @@ namespace Rubberduck.Inspections
         /// </summary>
         protected virtual IEnumerable<Declaration> Declarations
         {
-            get { return State.AllDeclarations.Where(declaration => !declaration.IsInspectionDisabled(AnnotationName)); }
+            get { return State.AllDeclarations.Where(declaration => !IsInspectionDisabled(declaration, AnnotationName)); }
+        }
+
+        /// <summary>
+        /// Gets all user declarations in the parser state without an @Ignore annotation for this inspection.
+        /// </summary>
+        protected virtual IEnumerable<Declaration> UserDeclarations
+        {
+            get { return State.AllUserDeclarations.Where(declaration => !IsInspectionDisabled(declaration, AnnotationName)); }
         }
 
         protected virtual IEnumerable<Declaration> BuiltInDeclarations
@@ -83,7 +91,7 @@ namespace Rubberduck.Inspections
             get { return State.AllDeclarations.Where(declaration => declaration.IsBuiltIn); }
         }
 
-        protected bool HasIgnoreAnnotation(VBComponent component, int line)
+        protected bool IsInspectionDisabled(VBComponent component, int line)
         {
             var annotations = State.GetModuleAnnotations(component).ToList();
 
@@ -105,12 +113,18 @@ namespace Rubberduck.Inspections
             return false;
         }
 
-        /// <summary>
-        /// Gets all user declarations in the parser state without an @Ignore annotation for this inspection.
-        /// </summary>
-        protected virtual IEnumerable<Declaration> UserDeclarations
+        protected bool IsInspectionDisabled(Declaration declaration, string inspectionName)
         {
-            get { return State.AllUserDeclarations.Where(declaration => !declaration.IsInspectionDisabled(AnnotationName)); }
+            if (declaration.DeclarationType == DeclarationType.Parameter)
+            {
+                return declaration.ParentDeclaration.Annotations.Any(annotation =>
+                    annotation.AnnotationType == AnnotationType.Ignore
+                    && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
+            }
+
+            return declaration.Annotations.Any(annotation =>
+                annotation.AnnotationType == AnnotationType.Ignore
+                && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
         public int CompareTo(IInspection other)

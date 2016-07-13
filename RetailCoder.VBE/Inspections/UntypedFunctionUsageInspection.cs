@@ -49,7 +49,7 @@ namespace Rubberduck.Inspections
 
             return declarations.SelectMany(declaration => declaration.References
                 .Where(item => _tokens.Contains(item.IdentifierName) &&
-                               !HasIgnoreAnnotation(item.QualifiedModuleName.Component, item.Selection.StartLine))
+                               !IsInspectionDisabled(item.QualifiedModuleName.Component, item.Selection.StartLine))
                 .Select(item => new UntypedFunctionUsageInspectionResult(this, item)));
         }
     }

@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
-                         where !item.IsInspectionDisabled(AnnotationName) 
+                         where !IsInspectionDisabled(item, AnnotationName) 
                                && ProcedureTypes.Contains(item.DeclarationType)
                                && item.Accessibility == Accessibility.Implicit
                          let context = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)

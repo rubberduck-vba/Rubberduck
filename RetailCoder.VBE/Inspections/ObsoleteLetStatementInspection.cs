@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections
                 return new InspectionResultBase[] { };
             }
             return ParseTreeResults.ObsoleteLetContexts
-                .Where(o => !HasIgnoreAnnotation(o.ModuleName.Component, o.Context.Start.Line))
+                .Where(o => !IsInspectionDisabled(o.ModuleName.Component, o.Context.Start.Line))
                 .Select(context => new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
 

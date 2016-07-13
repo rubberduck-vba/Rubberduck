@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections
                 return new InspectionResultBase[] { };
             }
             return ParseTreeResults.EmptyStringLiterals
-                .Where(s => !HasIgnoreAnnotation(s.ModuleName.Component, s.Context.Start.Line))
+                .Where(s => !IsInspectionDisabled(s.ModuleName.Component, s.Context.Start.Line))
                 .Select(context => new EmptyStringLiteralInspectionResult(this,
                             new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
