@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
 
@@ -26,9 +28,32 @@ namespace Rubberduck.Inspections
             {
                 return new InspectionResultBase[] { };
             }
-            return ParseTreeResults.EmptyStringLiterals.Select(
-                    context => new EmptyStringLiteralInspectionResult(this,
+            return ParseTreeResults.EmptyStringLiterals
+                .Where(s => !HasIgnoreEmptyStringLiteralAnnotations(s.ModuleName.Component, s.Context.Start.Line))
+                .Select(context => new EmptyStringLiteralInspectionResult(this,
                             new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
+        }
+
+        private bool HasIgnoreEmptyStringLiteralAnnotations(VBComponent component, int line)
+        {
+            var annotations = State.GetModuleAnnotations(component).ToList();
+
+            if (State.GetModuleAnnotations(component) == null)
+            {
+                return false;
+            }
+            
+            // VBE 1-based indexing
+            for (var i = line - 1; i >= 1; i--)
+            {
+                var annotation = annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i) as IgnoreAnnotation;
+                if (annotation != null && annotation.InspectionNames.Contains(AnnotationName))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public class EmptyStringLiteralListener : VBAParserBaseListener
