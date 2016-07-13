@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -79,6 +81,28 @@ namespace Rubberduck.Inspections
         protected virtual IEnumerable<Declaration> BuiltInDeclarations
         {
             get { return State.AllDeclarations.Where(declaration => declaration.IsBuiltIn); }
+        }
+
+        protected bool HasIgnoreAnnotation(VBComponent component, int line)
+        {
+            var annotations = State.GetModuleAnnotations(component).ToList();
+
+            if (State.GetModuleAnnotations(component) == null)
+            {
+                return false;
+            }
+
+            // VBE 1-based indexing
+            for (var i = line - 1; i >= 1; i--)
+            {
+                var annotation = annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i) as IgnoreAnnotation;
+                if (annotation != null && annotation.InspectionNames.Contains(AnnotationName))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

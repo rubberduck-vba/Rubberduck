@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new MakeSingleLineParameterQuickFix(Context, QualifiedSelection),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName) 
+                new IgnoreOnceQuickFix(Target.ParentDeclaration.Context, Target.ParentDeclaration.QualifiedSelection, Inspection.AnnotationName) 
             };
         }
 

@@ -13,11 +13,11 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class VariableNeverUsedInspectionTests
+    public class VariableNotUsedInspectionTests
     {
         [TestMethod]
         [TestCategory("Inspections")]
-        public void VariableNotAssigned_ReturnsResult()
+        public void VariableNotUsed_ReturnsResult()
         {
             const string inputCode =
 @"Sub Foo()
@@ -43,7 +43,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnassignedVariable_ReturnsResult_MultipleVariables()
+        public void VariableNotUsed_ReturnsResult_MultipleVariables()
         {
             const string inputCode =
 @"Sub Foo()
@@ -70,7 +70,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnassignedVariable_DoesNotReturnResult()
+        public void VariableUsed_DoesNotReturnResult()
         {
             const string inputCode =
 @"Function Foo() As Boolean
@@ -102,7 +102,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnassignedVariable_ReturnsResult_MultipleVariables_SomeAssigned()
+        public void VariableNotUsed_ReturnsResult_MultipleVariables_SomeAssigned()
         {
             const string inputCode =
 @"Sub Foo()
@@ -136,7 +136,34 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnassignedVariable_ReturnsResult_QuickFixWorks()
+        public void VariableNotUsed_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Sub Foo()
+    '@Ignore VariableNotUsed
+    Dim var1 As String
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new VariableNotUsedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnassignedVariable_QuickFixWorks()
         {
             const string inputCode =
 @"Sub Foo()
@@ -162,6 +189,40 @@ End Sub";
 
             var inspection = new VariableNotUsedInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnassignedVariable_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 As String
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+'@Ignore VariableNotUsed
+    Dim var1 As String
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new VariableNotUsedInspection(parser.State);
+            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }

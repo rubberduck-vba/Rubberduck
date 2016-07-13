@@ -251,6 +251,39 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ObsoleteCallStatement_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Sub Foo()
+    '@Ignore ObsoleteCallStatement
+    Call Foo
+End Sub";
+
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ObsoleteCallStatementInspection(parser.State);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCallStatement_QuickFixWorks_RemoveCallStatement()
         {
             const string inputCode =
@@ -296,6 +329,61 @@ End Sub";
             foreach (var inspectionResult in inspectionResults)
             {
                 inspectionResult.QuickFixes.First().Fix();
+            }
+
+            var actual = module.Lines();
+            Assert.AreEqual(expectedCode, actual);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObsoleteCallStatement_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Call Goo(1, ""test"")
+End Sub
+
+Sub Goo(arg1 As Integer, arg1 As String)
+    Call Foo
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+'@Ignore ObsoleteCallStatement
+    Call Goo(1, ""test"")
+End Sub
+
+Sub Goo(arg1 As Integer, arg1 As String)
+'@Ignore ObsoleteCallStatement
+    Call Foo
+End Sub";
+
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ObsoleteCallStatementInspection(parser.State);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+
+            foreach (var inspectionResult in inspectionResults)
+            {
+                inspectionResult.QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
             }
 
             var actual = module.Lines();

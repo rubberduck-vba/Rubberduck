@@ -127,8 +127,8 @@
     <Compile Include="Inspections\ParameterCanBeByValInspectionTests.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\ProcedureNotUsedInspectionTests.cs" />
-    <Compile Include="Inspections\VariableIsNeverAssignedInspectionTests.cs" />
-    <Compile Include="Inspections\VariableNeverUsedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableNotAssignedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionTests.cs" />
     <Compile Include="Mocks\MockFactory.cs" />
     <Compile Include="Mocks\MockProjectBuilder.cs" />
