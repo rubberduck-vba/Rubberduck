@@ -1754,4 +1754,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="ToolsMenu" xml:space="preserve">
     <value>T&amp;ools</value>
   </data>
+  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
+    <value>No Pattern given</value>
+  </data>
 </root>

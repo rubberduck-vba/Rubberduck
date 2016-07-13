@@ -2467,6 +2467,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Pattern given.
+        /// </summary>
+        public static string RegexAssistant_NoPatternError {
+            get {
+                return ResourceManager.GetString("RegexAssistant_NoPatternError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The RegExp:.
         /// </summary>
         public static string RegexAssistant_RegexPatternLabel {

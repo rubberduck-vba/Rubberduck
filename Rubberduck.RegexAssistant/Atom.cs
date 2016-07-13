@@ -26,7 +26,6 @@ namespace Rubberduck.RegexAssistant
             Match m = Matcher.Match(specifier);
             if (!m.Success)
             {
-                // TODO: i18n
                 throw new ArgumentException("The given specifier does not denote a character class");
             }
             this._specifier = specifier;
@@ -55,7 +54,6 @@ namespace Rubberduck.RegexAssistant
                 {
                     if (specifier.Value.EndsWith("-\\"))
                     {
-                        // TODO: i18n
                         throw new ArgumentException("Character Ranges that have incorrectly escaped characters as target are not allowed");
                     }
                     else if (specifier.Value.Length == 1)
@@ -112,7 +110,6 @@ namespace Rubberduck.RegexAssistant
             Match m = Matcher.Match(specifier);
             if (!m.Success)
             {
-                // TODO i18n
                 throw new ArgumentException("The given specifier does not denote a Group");
             }
             _subexpression = RegularExpression.Parse(m.Groups["expression"].Value);
@@ -184,7 +181,6 @@ namespace Rubberduck.RegexAssistant
             Match m = Matcher.Match(specifier);
             if (!m.Success)
             {
-                // TODO: i18n
                 throw new ArgumentException("The given specifier does not denote a Literal");
             }
             _specifier = specifier;

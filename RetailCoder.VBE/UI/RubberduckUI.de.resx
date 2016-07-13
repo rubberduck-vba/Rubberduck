@@ -453,7 +453,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Test Explorer</value>
   </data>
   <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>Todo Explorer</value>
+    <value>ToDo Liste</value>
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Warnung</value>

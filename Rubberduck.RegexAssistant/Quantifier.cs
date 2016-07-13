@@ -12,7 +12,6 @@ namespace Rubberduck.RegexAssistant
         public readonly int MinimumMatches;
         public readonly int MaximumMatches;
 
-        // FIXME i18n ? Shouldn't ever show up actually...
         public Quantifier(string expression)
         {
             if (expression.Length == 0)

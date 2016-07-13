@@ -1,4 +1,5 @@
 ﻿using Rubberduck.RegexAssistant;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
@@ -72,7 +73,7 @@ namespace Rubberduck.UI.RegexAssistant
         {
             if (_pattern.Equals(string.Empty))
             {
-                _description = "No Pattern given";
+                _description = RubberduckUI.RegexAssistant_NoPatternError;
                 var results = new List<TreeViewItem>();
                 var rootTreeItem = new TreeViewItem();
                 rootTreeItem.Header = _description;
@@ -119,13 +120,7 @@ namespace Rubberduck.UI.RegexAssistant
 
         private static TreeViewItem AsTreeViewItem(IRegularExpression expression)
         {
-            var result = new TreeViewItem();
-            result.Header = "Some unknown IRegularExpression subtype was in the view";
-            foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp)))
-            {
-                result.Items.Add(subtree);
-            }
-            return result;
+            throw new InvalidOperationException("Some unknown IRegularExpression subtype was in RegexAssistantViewModel");
         }
 
         private static TreeViewItem AsTreeViewItem(ErrorExpression expression)
