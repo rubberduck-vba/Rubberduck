@@ -338,10 +338,10 @@
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Refactor</value>
   </data>
-  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
+  <data name="ToolsMenu_SourceControl" xml:space="preserve">
     <value>&amp;Source Control</value>
   </data>
-  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
+  <data name="ToolsMenu_TodoItems" xml:space="preserve">
     <value>To&amp;Do Items</value>
   </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
@@ -1748,7 +1748,10 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
     <value>The RegExp:</value>
   </data>
-  <data name="RubberduckMenu_RegexAssistant" xml:space="preserve">
+  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
     <value>Regex &amp;Assistant</value>
+  </data>
+  <data name="ToolsMenu" xml:space="preserve">
+    <value>T&amp;ools</value>
   </data>
 </root>

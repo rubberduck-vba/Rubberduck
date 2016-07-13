@@ -144,6 +144,7 @@ namespace Rubberduck.Root
             ConfigureFormDesignerContextMenu();
             ConfigureFormDesignerControlContextMenu();
             ConfigureProjectExplorerContextMenu();
+            
 
             BindWindowsHooks();
         }
@@ -383,10 +384,9 @@ namespace Rubberduck.Root
                 Kernel.Get<AboutCommandMenuItem>(),
                 Kernel.Get<SettingsCommandMenuItem>(),
                 Kernel.Get<InspectionResultsCommandMenuItem>(),
-                Kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
-                Kernel.Get<RegexAssistantCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
                 GetSmartIndenterParentMenu(),
+                GetToolsParentMenu(),
                 GetRefactoringsParentMenu(),
                 GetNavigateParentMenu(),
             };
@@ -428,7 +428,6 @@ namespace Rubberduck.Root
             var items = new IMenuItem[]
             {
                 Kernel.Get<CodeExplorerCommandMenuItem>(),
-                Kernel.Get<ToDoExplorerCommandMenuItem>(),
                 //Kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 Kernel.Get<FindSymbolCommandMenuItem>(),
                 Kernel.Get<FindAllReferencesCommandMenuItem>(),
@@ -455,11 +454,22 @@ namespace Rubberduck.Root
             {
                 GetRefactoringsParentMenu(),
                 GetSmartIndenterParentMenu(),
-                //Kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 Kernel.Get<FindSymbolCommandMenuItem>(),
                 Kernel.Get<FindAllReferencesCommandMenuItem>(),
                 Kernel.Get<FindAllImplementationsCommandMenuItem>(),
             };
+        }
+
+        private IMenuItem GetToolsParentMenu()
+        {
+            var items = new IMenuItem[]
+            {
+                Kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
+                Kernel.Get<RegexAssistantCommandMenuItem>(),
+                Kernel.Get<ToDoExplorerCommandMenuItem>(),
+            };
+
+            return new ToolsParentMenu(items);
         }
 
         private IEnumerable<IMenuItem> GetFormDesignerContextMenuItems()

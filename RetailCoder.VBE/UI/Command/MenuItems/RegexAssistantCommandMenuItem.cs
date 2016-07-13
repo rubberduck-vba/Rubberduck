@@ -9,8 +9,8 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RubberduckMenu_RegexAssistant"; } }
+        public override string Key { get { return "ToolsMenu_RegexAssistant"; } }
 
-        public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.RegexAssistant; } }
+        public override int DisplayOrder { get { return (int)ToolsMenuItemDisplayOrder.RegexAssistant; } }
     }
 }

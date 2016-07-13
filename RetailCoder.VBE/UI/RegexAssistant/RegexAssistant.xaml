@@ -8,6 +8,7 @@
              d:DesignHeight="300" Width="555"
              d:DataContext="{d:DesignInstance {x:Type assistant:RegexAssistantViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
+        <!-- Style adapted from http://stackoverflow.com/a/16640367/1803692 -->
         <Style TargetType="{x:Type TreeViewItem}" x:Key="ShinyRegexTreeViewItem">
             <Setter Property="Template">
                 <Setter.Value>

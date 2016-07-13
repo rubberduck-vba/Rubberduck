@@ -2918,15 +2918,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Regex &amp;Assistant.
-        /// </summary>
-        public static string RubberduckMenu_RegexAssistant {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_RegexAssistant", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rege&amp;x Search/Replace.
         /// </summary>
         public static string RubberduckMenu_RegexSearchReplace {
@@ -2941,24 +2932,6 @@ namespace Rubberduck.UI {
         public static string RubberduckMenu_Settings {
             get {
                 return ResourceManager.GetString("RubberduckMenu_Settings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Source Control.
-        /// </summary>
-        public static string RubberduckMenu_SourceControl {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_SourceControl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To&amp;Do Items.
-        /// </summary>
-        public static string RubberduckMenu_TodoItems {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_TodoItems", resourceCulture);
             }
         }
         
@@ -4660,6 +4633,42 @@ namespace Rubberduck.UI {
         public static string TodoSettings_TokenListLabel {
             get {
                 return ResourceManager.GetString("TodoSettings_TokenListLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to T&amp;ools.
+        /// </summary>
+        public static string ToolsMenu {
+            get {
+                return ResourceManager.GetString("ToolsMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regex &amp;Assistant.
+        /// </summary>
+        public static string ToolsMenu_RegexAssistant {
+            get {
+                return ResourceManager.GetString("ToolsMenu_RegexAssistant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Source Control.
+        /// </summary>
+        public static string ToolsMenu_SourceControl {
+            get {
+                return ResourceManager.GetString("ToolsMenu_SourceControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To&amp;Do Items.
+        /// </summary>
+        public static string ToolsMenu_TodoItems {
+            get {
+                return ResourceManager.GetString("ToolsMenu_TodoItems", resourceCulture);
             }
         }
         

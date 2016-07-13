@@ -433,6 +433,7 @@
     <Compile Include="UI\CodeExplorer\Commands\AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\ToolsParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommandMenuItem.cs" />
     <Compile Include="UI\Command\RegexAssistantCommand.cs" />
     <Compile Include="UI\Controls\LinkButton.xaml.cs">
@@ -620,7 +621,6 @@
     <Compile Include="UI\Command\FindSymbolCommand.cs" />
     <Compile Include="UI\Command\FindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigateParentMenu.cs" />
-    <Compile Include="UI\Command\MenuItems\ParentMenus\NavigationMenuItemDisplayOrder.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\SmartIndenterParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RubberduckCommandBar.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorEncapsulateFieldCommandMenuItem.cs" />
