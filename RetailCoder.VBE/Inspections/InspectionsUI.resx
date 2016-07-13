@@ -559,9 +559,9 @@
     <value>An annotation comment is malformed.</value>
   </data>
   <data name="MalformedAnnotationInspectionName" xml:space="preserve">
-    <value>Malformed annotation.</value>
+    <value>Malformed annotation</value>
   </data>
   <data name="MalformedAnnotationInspectionResultFormat" xml:space="preserve">
-    <value>The annotation '{0}' is malformed</value>
+    <value>Malformed '{0}' annotation.</value>
   </data>
 </root>

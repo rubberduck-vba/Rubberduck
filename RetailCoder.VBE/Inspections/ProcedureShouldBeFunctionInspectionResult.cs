@@ -77,8 +77,12 @@ namespace Rubberduck.Inspections
 
             var newArgText = argText.Contains("ByRef ") ? argText.Replace("ByRef ", "ByVal ") : "ByVal " + argText;
 
+            var asTypeClause = _argQualifiedContext.Context.asTypeClause() != null
+                ? _argQualifiedContext.Context.asTypeClause().GetText()
+                : "As Variant";
+
             var newFunctionWithoutReturn = subStmtText.Insert(subStmtText.IndexOf(argListText, StringComparison.Ordinal) + argListText.Length,
-                                                              " " + _argQualifiedContext.Context.asTypeClause().GetText())
+                                                              " " + asTypeClause)
                                                       .Replace("Sub", "Function")
                                                       .Replace(argText, newArgText);
 

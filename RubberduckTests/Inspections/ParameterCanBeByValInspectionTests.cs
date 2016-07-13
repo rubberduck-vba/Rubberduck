@@ -194,6 +194,63 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void GivenArrayParameter_ReturnsNoResult()
+        {
+            const string inputCode =
+@"Sub Foo(ByRef arg1() As Variant)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+
+            var results = inspection.GetInspectionResults().ToList();
+
+            Assert.AreEqual(0, results.Count);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_SubNameStartsWithParamName()
+        {
+            const string inputCode =
+@"Sub foo(f)
+End Sub";
+
+            const string expectedCode =
+@"Sub foo(ByVal f)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByUnspecified()
         {
             const string inputCode =
@@ -256,16 +313,24 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void GivenArrayParameter_ReturnsNoResult()
+        public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByUnspecified_MultilineParameter()
         {
             const string inputCode =
-@"Sub Foo(ByRef arg1() As Variant)
+@"Sub Foo( _
+arg1 As String)
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo( _
+ByVal arg1 As String)
 End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
@@ -274,10 +339,42 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            
-            var results = inspection.GetInspectionResults().ToList();
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(0, results.Count);
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByRef_MultilineParameter()
+        {
+            const string inputCode =
+@"Sub Foo(ByRef _
+arg1 As String)
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo(ByVal _
+arg1 As String)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
