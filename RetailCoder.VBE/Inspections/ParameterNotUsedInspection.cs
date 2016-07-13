@@ -46,7 +46,8 @@ namespace Rubberduck.Inspections
 
             var issues = from issue in unused.Where(parameter =>
                 !IsInterfaceMemberParameter(parameter, interfaceMemberScopes)
-                && !builtInHandlers.Contains(parameter.ParentDeclaration))
+                && !builtInHandlers.Contains(parameter.ParentDeclaration)
+                && !parameter.ParentDeclaration.IsInspectionDisabled(AnnotationName))
                 let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
                 select new ParameterNotUsedInspectionResult(this, issue,
                         ((dynamic) issue.Context).unrestrictedIdentifier(), issue.QualifiedName,

@@ -23,7 +23,9 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations
-                            .Where(declaration => declaration.DeclarationType != DeclarationType.ModuleOption && 
+                            .Where(declaration => declaration.DeclarationType != DeclarationType.ModuleOption &&
+                                                  (declaration.DeclarationType != DeclarationType.Parameter ||
+                                                  (declaration.DeclarationType == DeclarationType.Parameter && !declaration.ParentDeclaration.IsInspectionDisabled(AnnotationName))) &&
                                                   (declaration.IdentifierName.Length < 3 ||
                                                   char.IsDigit(declaration.IdentifierName.Last()) ||
                                                   !declaration.IdentifierName.Any(c => 
