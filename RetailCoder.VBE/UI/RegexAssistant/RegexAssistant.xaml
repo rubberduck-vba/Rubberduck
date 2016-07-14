@@ -52,47 +52,46 @@
         
     </UserControl.Resources>
     
-    <Grid>
-        <ScrollViewer VerticalContentAlignment="Stretch">
-            <StackPanel Margin="5">
+    <Grid Margin="5">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="180"/>
+        </Grid.RowDefinitions>
 
-                <GroupBox>
-                    <GroupBox.Header>
-                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_RegexPatternLabel}" 
-                               FontWeight="SemiBold" />
-                    </GroupBox.Header>
+        <GroupBox Grid.Row="0">
+            <GroupBox.Header>
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_RegexPatternLabel}" FontWeight="SemiBold" />
+            </GroupBox.Header>
 
-                    <StackPanel>
-                        <TextBox HorizontalAlignment="Stretch"
-                                 VerticalAlignment="Top" Height="23"
-                                 VerticalContentAlignment="Center" Margin="5" 
-                                 Text="{Binding Pattern}"/>
+            <StackPanel>
+                <TextBox HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top" Height="23"
+                            VerticalContentAlignment="Center" Margin="5" 
+                            Text="{Binding Pattern}"/>
 
-                        <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
-                            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_GlobalFlag}" 
-                                      IsChecked="{Binding GlobalFlag}"
-                                      Margin="0,0,5,0"/>
-                            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_IgnoreCaseFlag}"
-                                      IsChecked="{Binding IgnoreCaseFlag}"
-                                      Margin="0,0,5,0"/>
-                        </StackPanel>
-                    </StackPanel>
-
-                </GroupBox>
-
-                <GroupBox Margin="5" MinHeight="200">
-                    <GroupBox.Header>
-                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_DescriptionResultsLabel}" FontWeight="SemiBold" />
-                    </GroupBox.Header>
-
-                    <TreeView ItemTemplate="{StaticResource RecursiveData}" 
-                              ItemContainerStyle="{StaticResource ShinyTreeView}"
-                              Margin="5"
-                              VerticalAlignment="Stretch" 
-                              HorizontalContentAlignment="Stretch"
-                              ItemsSource="{Binding ResultItems}" />
-                </GroupBox>
+                <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+                    <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_GlobalFlag}" 
+                                IsChecked="{Binding GlobalFlag}"
+                                Margin="0,0,5,0"/>
+                    <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_IgnoreCaseFlag}"
+                                IsChecked="{Binding IgnoreCaseFlag}"
+                                Margin="0,0,5,0"/>
+                </StackPanel>
             </StackPanel>
-        </ScrollViewer>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Margin="5">
+            <GroupBox.Header>
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_DescriptionResultsLabel}" FontWeight="SemiBold" />
+            </GroupBox.Header>
+
+            <TreeView Margin="5" 
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ItemTemplate="{StaticResource RecursiveData}" 
+                      ItemContainerStyle="{StaticResource ShinyTreeView}"
+                      ItemsSource="{Binding ResultItems}"/>
+        </GroupBox>
     </Grid>
 </UserControl>
