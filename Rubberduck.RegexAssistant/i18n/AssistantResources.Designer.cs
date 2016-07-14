@@ -70,7 +70,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches any of the following characters {0}.
+        ///   Looks up a localized string similar to Matches any of the following characters: {0}.
         /// </summary>
         internal static string AtomDescription_CharacterClass {
             get {
@@ -79,7 +79,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches any character that is not one of {0}.
+        ///   Looks up a localized string similar to Matches any character that is not one of: {0}.
         /// </summary>
         internal static string AtomDescription_CharacterClass_Inverted {
             get {
@@ -97,7 +97,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches anything.
+        ///   Looks up a localized string similar to Matches any character.
         /// </summary>
         internal static string AtomDescription_Dot {
             get {
@@ -115,7 +115,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the group {0} as follows.
+        ///   Looks up a localized string similar to Matches a capture group &apos;{0}&apos;.
         /// </summary>
         internal static string AtomDescription_Group {
             get {
@@ -133,7 +133,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Literally matches {0}.
+        ///   Looks up a localized string similar to Matches literal &apos;{0}&apos;.
         /// </summary>
         internal static string AtomDescription_Literal_ActualLiteral {
             get {
@@ -241,7 +241,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches any whitespace character. Equivalent to &quot;[ \t\r\n\v\f]&quot;..
+        ///   Looks up a localized string similar to Matches any whitespace character. Equivalent to &quot;[ \t\r\n\v\f]&quot;.
         /// </summary>
         internal static string AtomDescription_Whitespace {
             get {
@@ -268,7 +268,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches one of the following alternatives:.
+        ///   Looks up a localized string similar to Matches one of {0} alternatives.
         /// </summary>
         internal static string ExpressionDescription_AlternativesExpression {
             get {
@@ -277,7 +277,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the exact sequence given as follows:.
+        ///   Looks up a localized string similar to Matches literal sequence.
         /// </summary>
         internal static string ExpressionDescription_ConcatenatedExpression {
             get {
@@ -286,7 +286,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not parse {0} as literal. Check your input, please.
+        ///   Looks up a localized string similar to Could not parse &apos;{0}&apos; as literal. Check your input, please.
         /// </summary>
         internal static string ExpressionDescription_ErrorExpression {
             get {
@@ -349,7 +349,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to any number of times, including never.
+        ///   Looks up a localized string similar to any number of times.
         /// </summary>
         internal static string Quantifier_Asterisk {
             get {
@@ -394,7 +394,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to either once or never.
+        ///   Looks up a localized string similar to at most once.
         /// </summary>
         internal static string Quantifier_Optional {
             get {

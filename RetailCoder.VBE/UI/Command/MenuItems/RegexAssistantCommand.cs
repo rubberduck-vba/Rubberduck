@@ -1,8 +1,8 @@
-﻿using NLog;
+﻿using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.UI.RegexAssistant;
-using System.Runtime.InteropServices;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.MenuItems
 {
     /// <summary>
     /// A command that displays the RegexAssistantDialog

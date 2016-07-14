@@ -27,5 +27,10 @@ namespace Rubberduck.UI.RegexAssistant
                 RegexAssistant.DataContext = _viewModel;
             }
         }
+
+        private void CloseButton_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 }

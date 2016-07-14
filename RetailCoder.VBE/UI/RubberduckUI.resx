@@ -1734,19 +1734,19 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Source Control</value>
   </data>
   <data name="RegexAssistant_Caption" xml:space="preserve">
-    <value>Regex Helper</value>
+    <value>Rubberduck - Regex Analyzer</value>
   </data>
   <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
-    <value>What the RegExp does:</value>
+    <value>Description</value>
   </data>
   <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
-    <value>The flag "Global" is set</value>
+    <value>Global</value>
   </data>
   <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
-    <value>The flag "IgnoreCase" is set</value>
+    <value>Ignore case</value>
   </data>
   <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
-    <value>The RegExp:</value>
+    <value>Pattern</value>
   </data>
   <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
     <value>Regex &amp;Assistant</value>
@@ -1755,6 +1755,12 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>T&amp;ools</value>
   </data>
   <data name="RegexAssistant_NoPatternError" xml:space="preserve">
-    <value>No Pattern given</value>
+    <value>(no pattern)</value>
+  </data>
+  <data name="RegexAssistant_Instructions" xml:space="preserve">
+    <value>Enter a regular expression to analyze in the box below.</value>
+  </data>
+  <data name="RegexAssistant_Title" xml:space="preserve">
+    <value>Regular Expression Analyzer</value>
   </data>
 </root>

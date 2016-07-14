@@ -1,12 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck", "RetailCoder.VBE\Rubberduck.csproj", "{20589DE8-432E-4359-9232-69EB070B7185}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0040E129-1AA2-459F-A59A-129FA4035E01} = {0040E129-1AA2-459F-A59A-129FA4035E01}
 		{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0} = {8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}
+		{40CC03E3-756C-4674-AF07-384115DEAEE2} = {40CC03E3-756C-4674-AF07-384115DEAEE2}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Parsing", "Rubberduck.Parsing\Rubberduck.Parsing.csproj", "{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}"
