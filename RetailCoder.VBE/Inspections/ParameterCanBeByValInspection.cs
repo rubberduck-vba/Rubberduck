@@ -24,28 +24,30 @@ namespace Rubberduck.Inspections
             var issues = new List<ParameterCanBeByValInspectionResult>();
 
             var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToList();
-            var allInterfaceMembers = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers);
+            var interfaceScopes = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope);
+
             issues.AddRange(GetInterfaceResults(declarations, interfaceDeclarationMembers));
 
-            var formEventHandlerScopes = State.FindFormEventHandlers()
-                .Select(handler => handler.Scope);
+            var eventMembers = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event).ToList();
+            var formEventHandlerScopes = State.FindFormEventHandlers().Select(handler => handler.Scope);
+            var eventHandlerScopes = State.AllDeclarations.FindBuiltInEventHandlers().Concat(declarations.FindUserEventHandlers()).Select(e => e.Scope);
+            var eventScopes = eventMembers.Select(s => s.Scope)
+                .Concat(formEventHandlerScopes)
+                .Concat(eventHandlerScopes);
 
-            var eventScopes = declarations.Where(item =>
-                !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event)
-                .Select(e => e.Scope).Concat(State.AllDeclarations.FindBuiltInEventHandlers().Select(e => e.Scope));
+            issues.AddRange(GetEventResults(declarations, eventMembers));
 
             var declareScopes = declarations.Where(item =>
                     item.DeclarationType == DeclarationType.LibraryFunction
                     || item.DeclarationType == DeclarationType.LibraryProcedure)
                 .Select(e => e.Scope);
-
-            var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
-
+            
             issues.AddRange(declarations.Where(declaration =>
                 !declaration.IsArray
-                && !ignoredScopes.Contains(declaration.ParentScope)
+                && !declareScopes.Contains(declaration.ParentScope)
+                && !eventScopes.Contains(declaration.ParentScope)
+                && !interfaceScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
-                && !allInterfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
                 && ((VBAParser.ArgContext)declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
@@ -96,6 +98,48 @@ namespace Rubberduck.Inspections
             }
         }
 
+        private IEnumerable<ParameterCanBeByValInspectionResult> GetEventResults(List<Declaration> declarations, List<Declaration> eventDeclarationMembers)
+        {
+            foreach (var member in eventDeclarationMembers)
+            {
+                var declarationParameters =
+                    declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
+                                                      declaration.ParentDeclaration == member)
+                                .OrderBy(o => o.Selection.StartLine)
+                                .ThenBy(t => t.Selection.StartColumn)
+                                .ToList();
+
+                var parametersAreByRef = declarationParameters.Select(s => true).ToList();
+
+                var handlers = declarations.FindHandlersForEvent(member).Select(s => s.Item2).ToList();
+                foreach (var handler in handlers)
+                {
+                    var parameters =
+                        declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
+                                                          declaration.ParentDeclaration == handler)
+                                    .OrderBy(o => o.Selection.StartLine)
+                                    .ThenBy(t => t.Selection.StartColumn)
+                                    .ToList();
+
+                    for (var i = 0; i < parameters.Count; i++)
+                    {
+                        parametersAreByRef[i] = parametersAreByRef[i] && !IsUsedAsByRefParam(declarations, parameters[i]) &&
+                            ((VBAParser.ArgContext)parameters[i].Context).BYVAL() == null &&
+                            !parameters[i].References.Any(reference => reference.IsAssignment);
+                    }
+                }
+
+                for (var i = 0; i < declarationParameters.Count; i++)
+                {
+                    if (parametersAreByRef[i])
+                    {
+                        yield return new ParameterCanBeByValInspectionResult(this, State, declarationParameters[i],
+                            declarationParameters[i].Context, declarationParameters[i].QualifiedName);
+                    }
+                }
+            }
+        }
+
         private static bool IsUsedAsByRefParam(IEnumerable<Declaration> declarations, Declaration parameter)
         {
             // find the procedure calls in the procedure of the parameter.
@@ -123,9 +167,9 @@ namespace Rubberduck.Inspections
                         continue;
                     }
 
-                    foreach (var reference in declaration.References)
+                    if (declaration.References.Any(reference => reference.IsAssignment))
                     {
-                        if (reference.IsAssignment) { return true; }
+                        return true;
                     }
                 }
             }

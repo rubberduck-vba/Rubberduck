@@ -334,6 +334,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_SingleParam()
         {
             //Input
@@ -369,6 +370,43 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_InterfaceMember_SingleByValParam()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByVal a As Integer)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRef()
         {
             //Input
@@ -405,6 +443,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal()
         {
             //Input
@@ -446,16 +485,52 @@ End Sub";
         }
 
         [TestMethod]
-        public void ParameterCanBeByVal_Event()
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_EventMember_SingleParam()
         {
             //Input
             const string inputCode1 =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)";
+@"Public Event Foo(ByRef arg1 As Integer)";
 
             const string inputCode2 =
 @"Private WithEvents abc As Class1
 
-Private Sub abc_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+Private Sub abc_Foo(ByRef arg1 As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_EventMember_SingleByValParam()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Event Foo(ByVal arg1 As Integer)";
+
+            const string inputCode2 =
+@"Private WithEvents abc As Class1
+
+Private Sub abc_Foo(ByVal arg1 As Integer)
 End Sub";
 
             //Arrange
@@ -477,6 +552,78 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_EventMember_SingleParamUsedByRef()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Event Foo(ByRef arg1 As Integer)";
+
+            const string inputCode2 =
+@"Private WithEvents abc As Class1
+
+Private Sub abc_Foo(ByRef arg1 As Integer)
+    arg1 = 42
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_EventMember_MultipleParams_OneCanBeByVal()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Event Foo(ByRef arg1 As Integer, ByRef arg2 As Integer)";
+
+            const string inputCode2 =
+@"Private WithEvents abc As Class1
+
+Private Sub abc_Foo(ByRef arg1 As Integer, ByRef arg2 As Integer)
+    arg1 = 42
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual("arg2", inspectionResults.Single().Target.IdentifierName);
         }
 
         [TestMethod]
@@ -639,6 +786,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal_QuickFixWorks()
         {
             //Input

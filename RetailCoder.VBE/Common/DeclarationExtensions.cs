@@ -262,6 +262,22 @@ namespace Rubberduck.Common
                 && declaration.IdentifierName.StartsWith(control.IdentifierName + "_"));
         }
 
+        public static IEnumerable<Declaration> FindUserEventHandlers(this IEnumerable<Declaration> declarations)
+        {
+            var declarationList = declarations.ToList();
+
+            var userEvents =
+                declarationList.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event).ToList();
+
+            var handlers = new List<Declaration>();
+            foreach (var @event in userEvents)
+            {
+                handlers.AddRange(declarations.FindHandlersForEvent(@event).Select(s => s.Item2));
+            }
+            
+            return handlers;
+        }
+
         public static IEnumerable<Declaration> FindBuiltInEventHandlers(this IEnumerable<Declaration> declarations)
         {
             var declarationList = declarations.ToList();
