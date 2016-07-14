@@ -45,7 +45,11 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            if (_state.AllUserDeclarations.FindInterfaceMembers().Contains(_target.ParentDeclaration))
+            if (_target.ParentDeclaration.DeclarationType == DeclarationType.Event)
+            {
+                FixEventMethods();
+            }
+            else if (_state.AllUserDeclarations.FindInterfaceMembers().Contains(_target.ParentDeclaration))
             {
                 FixInterfaceMethods();
             }
@@ -65,7 +69,6 @@ namespace Rubberduck.Inspections
                                 .ToList();
 
             var parameterIndex = declarationParameters.IndexOf(_target);
-
             if (parameterIndex == -1)
             {
                 return; // should only happen if the parse results are stale; prevents a crash in that case
@@ -77,6 +80,39 @@ namespace Rubberduck.Inspections
                 var parameters =
                     _state.AllUserDeclarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
                                                       declaration.ParentDeclaration == member)
+                                .OrderBy(o => o.Selection.StartLine)
+                                .ThenBy(t => t.Selection.StartColumn)
+                                .ToList();
+
+                FixMethod((VBAParser.ArgContext)parameters[parameterIndex].Context,
+                    parameters[parameterIndex].QualifiedSelection);
+            }
+
+            FixMethod((VBAParser.ArgContext)declarationParameters[parameterIndex].Context,
+                declarationParameters[parameterIndex].QualifiedSelection);
+        }
+
+        private void FixEventMethods()
+        {
+            var declarationParameters =
+                    _state.AllUserDeclarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
+                                                      declaration.ParentDeclaration == _target.ParentDeclaration)
+                                .OrderBy(o => o.Selection.StartLine)
+                                .ThenBy(t => t.Selection.StartColumn)
+                                .ToList();
+
+            var parameterIndex = declarationParameters.IndexOf(_target);
+            if (parameterIndex == -1)
+            {
+                return; // should only happen if the parse results are stale; prevents a crash in that case
+            }
+
+            var handlers = _state.AllUserDeclarations.FindHandlersForEvent(_target.ParentDeclaration).Select(s => s.Item2).ToList();
+            foreach (var handler in handlers)
+            {
+                var parameters =
+                    _state.AllUserDeclarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
+                                                      declaration.ParentDeclaration == handler)
                                 .OrderBy(o => o.Selection.StartLine)
                                 .ThenBy(t => t.Selection.StartColumn)
                                 .ToList();
