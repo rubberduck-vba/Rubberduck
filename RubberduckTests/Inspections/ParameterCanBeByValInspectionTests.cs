@@ -334,7 +334,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ParameterCanBeByVal_InterfaceMember()
+        public void ParameterCanBeByVal_InterfaceMember_SingleParam()
         {
             //Input
             const string inputCode1 =
@@ -351,6 +351,43 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
                 .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRef()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByRef a As Integer)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer)
+    a = 42
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -366,7 +403,48 @@ End Sub";
 
             Assert.IsFalse(inspectionResults.Any());
         }
-        
+
+        [TestMethod]
+        public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByRef a As Integer, ByRef b As Integer)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer, ByRef b As Integer)
+    b = 42
+End Sub";
+            const string inputCode3 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer, ByRef b As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode3)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+            
+            Assert.AreEqual("a", inspectionResults.Single().Target.IdentifierName);
+        }
+
         [TestMethod]
         public void ParameterCanBeByVal_Event()
         {

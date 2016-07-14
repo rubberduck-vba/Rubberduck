@@ -21,11 +21,50 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
+            var issues = new List<ParameterCanBeByValInspectionResult>();
 
-            IEnumerable<Declaration> interfaceMembers = null;
-            interfaceMembers = declarations.FindInterfaceMembers()
-                .Concat(declarations.FindInterfaceImplementationMembers())
-                .ToList();
+            var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToList();
+            var interfaceImplementationMembers = declarations.FindInterfaceImplementationMembers().ToList();
+            var allInterfaceMembers = interfaceImplementationMembers.Concat(interfaceDeclarationMembers);
+
+            foreach (var member in interfaceDeclarationMembers)
+            {
+                var declarationParameters =
+                    declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
+                                                      declaration.ParentDeclaration == member)
+                                .OrderBy(o => o.Selection.StartLine)
+                                .ThenBy(t => t.Selection.StartColumn)
+                                .ToList();
+
+                var parametersAreByRef = declarationParameters.Select(s => true).ToList();
+
+                var implementations = declarations.FindInterfaceImplementationMembers(member).ToList();
+                foreach (var implementation in implementations)
+                {
+                    var parameters =
+                        declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
+                                                          declaration.ParentDeclaration == implementation)
+                                    .OrderBy(o => o.Selection.StartLine)
+                                    .ThenBy(t => t.Selection.StartColumn)
+                                    .ToList();
+
+                    for (var i = 0; i < parameters.Count; i++)
+                    {
+                        parametersAreByRef[i] = parametersAreByRef[i] && !IsUsedAsByRefParam(declarations, parameters[i]) &&
+                            ((VBAParser.ArgContext)parameters[i].Context).BYVAL() == null &&
+                            !parameters[i].References.Any(reference => reference.IsAssignment);
+                    }
+                }
+
+                for (var i = 0; i < declarationParameters.Count; i++)
+                {
+                    if (parametersAreByRef[i])
+                    {
+                        issues.Add(new ParameterCanBeByValInspectionResult(this, declarationParameters[i],
+                            declarationParameters[i].Context, declarationParameters[i].QualifiedName));
+                    }
+                }
+            }
 
             var formEventHandlerScopes = State.FindFormEventHandlers()
                 .Select(handler => handler.Scope);
@@ -41,15 +80,15 @@ namespace Rubberduck.Inspections
 
             var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
 
-            var issues = declarations.Where(declaration =>
+            issues.AddRange(declarations.Where(declaration =>
                 !declaration.IsArray
                 && !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
-                && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
+                && !allInterfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
                 && ((VBAParser.ArgContext)declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, issue.Context, issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, issue.Context, issue.QualifiedName)));
 
             return issues;
         }

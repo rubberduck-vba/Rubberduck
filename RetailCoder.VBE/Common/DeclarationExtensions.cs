@@ -451,6 +451,12 @@ namespace Rubberduck.Common
                 .Where(m => m.IdentifierName.EndsWith(interfaceMember));
         }
 
+        public static IEnumerable<Declaration> FindInterfaceImplementationMembers(this IEnumerable<Declaration> declarations, Declaration interfaceDeclaration)
+        {
+            return FindInterfaceImplementationMembers(declarations)
+                .Where(m => m.IdentifierName == interfaceDeclaration.ComponentName + "_" + interfaceDeclaration.IdentifierName);
+        }
+
         public static Declaration FindInterfaceMember(this IEnumerable<Declaration> declarations, Declaration implementation)
         {
             var members = FindInterfaceMembers(declarations);
