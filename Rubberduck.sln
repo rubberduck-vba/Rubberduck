@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck", "RetailCoder.VBE\Rubberduck.csproj", "{20589DE8-432E-4359-9232-69EB070B7185}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -38,8 +38,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SmartIndenter", "Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj", "{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubberduckTests", "RubberduckTests\RubberduckTests.csproj", "{ADADE971-75E3-40C4-8C19-AB7409372F2E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{40CC03E3-756C-4674-AF07-384115DEAEE2} = {40CC03E3-756C-4674-AF07-384115DEAEE2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SettingsProvider", "Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj", "{E85E1253-86D6-45EE-968B-F37348D44132}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.RegexAssistant", "Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj", "{40CC03E3-756C-4674-AF07-384115DEAEE2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E85E1253-86D6-45EE-968B-F37348D44132} = {E85E1253-86D6-45EE-968B-F37348D44132}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -209,6 +217,36 @@ Global
 		{E85E1253-86D6-45EE-968B-F37348D44132}.Release64|Any CPU.Build.0 = Release|Any CPU
 		{E85E1253-86D6-45EE-968B-F37348D44132}.Release64|x64.ActiveCfg = Release|Any CPU
 		{E85E1253-86D6-45EE-968B-F37348D44132}.Release64|x86.ActiveCfg = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug|x64.Build.0 = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug|x86.Build.0 = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug64|Any CPU.ActiveCfg = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug64|Any CPU.Build.0 = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug64|x64.ActiveCfg = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug64|x64.Build.0 = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug64|x86.ActiveCfg = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Debug64|x86.Build.0 = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.DebugAccess|Any CPU.ActiveCfg = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.DebugAccess|Any CPU.Build.0 = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.DebugAccess|x64.ActiveCfg = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.DebugAccess|x64.Build.0 = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.DebugAccess|x86.ActiveCfg = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.DebugAccess|x86.Build.0 = Debug|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release|x64.ActiveCfg = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release|x64.Build.0 = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release|x86.ActiveCfg = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release|x86.Build.0 = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release64|Any CPU.ActiveCfg = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release64|Any CPU.Build.0 = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release64|x64.ActiveCfg = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release64|x64.Build.0 = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release64|x86.ActiveCfg = Release|Any CPU
+		{40CC03E3-756C-4674-AF07-384115DEAEE2}.Release64|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

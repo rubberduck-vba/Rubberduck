@@ -433,6 +433,9 @@
     <Compile Include="UI\CodeExplorer\Commands\AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\RegexAssistantCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\RegexAssistantCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ToolsParentMenu.cs" />
     <Compile Include="UI\Controls\LinkButton.xaml.cs">
       <DependentUpon>LinkButton.xaml</DependentUpon>
     </Compile>
@@ -618,7 +621,6 @@
     <Compile Include="UI\Command\FindSymbolCommand.cs" />
     <Compile Include="UI\Command\FindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigateParentMenu.cs" />
-    <Compile Include="UI\Command\MenuItems\ParentMenus\NavigationMenuItemDisplayOrder.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\SmartIndenterParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RubberduckCommandBar.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorEncapsulateFieldCommandMenuItem.cs" />
@@ -691,10 +693,25 @@
     <Compile Include="UI\Refactorings\ExtractInterfaceDialog.Designer.cs">
       <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\RegexAssistant\RegexAssistant.xaml.cs">
+      <DependentUpon>RegexAssistant.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RegexAssistant\RegexAssistantDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RegexAssistant\RegexAssistantDialog.Designer.cs">
+      <DependentUpon>RegexAssistantDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RegexAssistant\RegexAssistantViewModel.cs" />
     <Compile Include="UI\RubberduckUI.de.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.de.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RubberduckUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\RubberduckUI.ja.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -819,11 +836,6 @@
       <DependentUpon>RubberduckUI.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="UI\RubberduckUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\BranchesView.xaml.cs">
       <DependentUpon>BranchesView.xaml</DependentUpon>
@@ -1030,6 +1042,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractInterfaceDialog.resx">
       <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RegexAssistant\RegexAssistantDialog.resx">
+      <DependentUpon>RegexAssistantDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -1352,6 +1367,10 @@
       <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
       <Name>Rubberduck.Parsing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj">
+      <Project>{40cc03e3-756c-4674-af07-384115deaee2}</Project>
+      <Name>Rubberduck.RegexAssistant</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
@@ -1405,6 +1424,10 @@
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\RegexAssistant\RegexAssistant.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Settings\GeneralSettings.xaml">
       <SubType>Designer</SubType>
