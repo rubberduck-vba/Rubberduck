@@ -25,6 +25,7 @@
         <Style x:Key="ShinyTreeView" TargetType="{x:Type TreeViewItem}">
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="2" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
@@ -45,7 +46,8 @@
         </Style>
 
         <HierarchicalDataTemplate
-            x:Key="RecursiveData" DataType="TreeViewItem" 
+            x:Key="RecursiveData" 
+            DataType="TreeViewItem"
             ItemContainerStyle="{StaticResource ShinyTreeView}"
             ItemsSource="{Binding Items}">
         </HierarchicalDataTemplate>
