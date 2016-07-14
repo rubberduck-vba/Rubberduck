@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections
             var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToList();
             var interfaceScopes = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope);
 
-            issues.AddRange(GetInterfaceResults(declarations, interfaceDeclarationMembers));
+            issues.AddRange(GetResults(declarations, interfaceDeclarationMembers));
 
             var eventMembers = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event).ToList();
             var formEventHandlerScopes = State.FindFormEventHandlers().Select(handler => handler.Scope);
@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections
                 .Concat(formEventHandlerScopes)
                 .Concat(eventHandlerScopes);
 
-            issues.AddRange(GetEventResults(declarations, eventMembers));
+            issues.AddRange(GetResults(declarations, eventMembers));
 
             var declareScopes = declarations.Where(item =>
                     item.DeclarationType == DeclarationType.LibraryFunction
@@ -56,67 +56,28 @@ namespace Rubberduck.Inspections
             return issues;
         }
 
-        private IEnumerable<ParameterCanBeByValInspectionResult> GetInterfaceResults(List<Declaration> declarations, List<Declaration> interfaceDeclarationMembers)
+        private IEnumerable<ParameterCanBeByValInspectionResult> GetResults(List<Declaration> declarations, List<Declaration> declarationMembers)
         {
-            foreach (var member in interfaceDeclarationMembers)
+            foreach (var declaration in declarationMembers)
             {
                 var declarationParameters =
-                    declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
-                                                      declaration.ParentDeclaration == member)
+                    declarations.Where(d => d.DeclarationType == DeclarationType.Parameter &&
+                                                      d.ParentDeclaration == declaration)
                                 .OrderBy(o => o.Selection.StartLine)
                                 .ThenBy(t => t.Selection.StartColumn)
                                 .ToList();
 
                 var parametersAreByRef = declarationParameters.Select(s => true).ToList();
 
-                var implementations = declarations.FindInterfaceImplementationMembers(member).ToList();
-                foreach (var implementation in implementations)
+                var members = declarationMembers.Any(a => a.DeclarationType == DeclarationType.Event)
+                    ? declarations.FindHandlersForEvent(declaration).Select(s => s.Item2).ToList()
+                    : declarations.FindInterfaceImplementationMembers(declaration).ToList();
+
+                foreach (var member in members)
                 {
                     var parameters =
-                        declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
-                                                          declaration.ParentDeclaration == implementation)
-                                    .OrderBy(o => o.Selection.StartLine)
-                                    .ThenBy(t => t.Selection.StartColumn)
-                                    .ToList();
-
-                    for (var i = 0; i < parameters.Count; i++)
-                    {
-                        parametersAreByRef[i] = parametersAreByRef[i] && !IsUsedAsByRefParam(declarations, parameters[i]) &&
-                            ((VBAParser.ArgContext)parameters[i].Context).BYVAL() == null &&
-                            !parameters[i].References.Any(reference => reference.IsAssignment);
-                    }
-                }
-
-                for (var i = 0; i < declarationParameters.Count; i++)
-                {
-                    if (parametersAreByRef[i])
-                    {
-                        yield return new ParameterCanBeByValInspectionResult(this, State, declarationParameters[i],
-                            declarationParameters[i].Context, declarationParameters[i].QualifiedName);
-                    }
-                }
-            }
-        }
-
-        private IEnumerable<ParameterCanBeByValInspectionResult> GetEventResults(List<Declaration> declarations, List<Declaration> eventDeclarationMembers)
-        {
-            foreach (var member in eventDeclarationMembers)
-            {
-                var declarationParameters =
-                    declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
-                                                      declaration.ParentDeclaration == member)
-                                .OrderBy(o => o.Selection.StartLine)
-                                .ThenBy(t => t.Selection.StartColumn)
-                                .ToList();
-
-                var parametersAreByRef = declarationParameters.Select(s => true).ToList();
-
-                var handlers = declarations.FindHandlersForEvent(member).Select(s => s.Item2).ToList();
-                foreach (var handler in handlers)
-                {
-                    var parameters =
-                        declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
-                                                          declaration.ParentDeclaration == handler)
+                        declarations.Where(d => d.DeclarationType == DeclarationType.Parameter &&
+                                                          d.ParentDeclaration == member)
                                     .OrderBy(o => o.Selection.StartLine)
                                     .ThenBy(t => t.Selection.StartColumn)
                                     .ToList();
