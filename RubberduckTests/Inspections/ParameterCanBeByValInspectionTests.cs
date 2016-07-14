@@ -639,6 +639,71 @@ End Sub";
         }
 
         [TestMethod]
+        public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal_QuickFixWorks()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByRef a As Integer, ByRef b As Integer)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer, ByRef b As Integer)
+    b = 42
+End Sub";
+            const string inputCode3 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer, ByRef b As Integer)
+End Sub";
+
+            //Expected
+            const string expectedCode1 =
+@"Public Sub DoSomething(ByVal a As Integer, ByRef b As Integer)
+End Sub";
+            const string expectedCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer, ByRef b As Integer)
+    b = 42
+End Sub";
+            const string expectedCode3 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer, ByRef b As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode3)
+                .Build();
+
+            var module1 = project.Object.VBComponents.Item("IClass1").CodeModule;
+            var module2 = project.Object.VBComponents.Item("Class1").CodeModule;
+            var module3 = project.Object.VBComponents.Item("Class2").CodeModule;
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.Single().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+            Assert.AreEqual(expectedCode3, module3.Lines());
+        }
+
+        [TestMethod]
         [TestCategory("Inspections")]
         public void ParameterCanBeByVal_IgnoreQuickFixWorks()
         {

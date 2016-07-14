@@ -60,7 +60,7 @@ namespace Rubberduck.Inspections
                 {
                     if (parametersAreByRef[i])
                     {
-                        issues.Add(new ParameterCanBeByValInspectionResult(this, declarationParameters[i],
+                        issues.Add(new ParameterCanBeByValInspectionResult(this, State, declarationParameters[i],
                             declarationParameters[i].Context, declarationParameters[i].QualifiedName));
                     }
                 }
@@ -88,7 +88,7 @@ namespace Rubberduck.Inspections
                 && ((VBAParser.ArgContext)declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, issue.Context, issue.QualifiedName)));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, State, issue, issue.Context, issue.QualifiedName)));
 
             return issues;
         }
