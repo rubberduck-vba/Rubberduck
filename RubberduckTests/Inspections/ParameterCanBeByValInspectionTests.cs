@@ -220,6 +220,95 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_ReturnsResult_PassedToByRefProc_NoAssignment()
+        {
+            const string inputCode =
+@"Sub DoSomething(foo As Integer)
+    DoSomethingElse foo
+End Sub
+
+Sub DoSomethingElse(ByVal bar As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_DoesNotReturnResult_PassedToByRefProc_WithAssignment()
+        {
+            const string inputCode =
+@"Sub DoSomething(foo As Integer)
+    DoSomethingElse foo
+End Sub
+
+Sub DoSomethingElse(ByRef bar As Integer)
+    bar = 42
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_ReturnsResult_PassedToByValProc_WithAssignment()
+        {
+            const string inputCode =
+@"Sub DoSomething(foo As Integer)
+    DoSomethingElse foo
+End Sub
+
+Sub DoSomethingElse(ByVal bar As Integer)
+    bar = 42
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanBeByVal_Ignored_DoesNotReturnResult()
         {
             const string inputCode =

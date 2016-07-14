@@ -74,28 +74,16 @@ namespace Rubberduck.Inspections
                     .ThenBy(arg => arg.Selection.StartColumn)
                     .ToArray();
 
-                for (var i = 0; i < calledProcedureArgs.Count(); i++)
+                foreach (var declaration in calledProcedureArgs)
                 {
-                    if (((VBAParser.ArgContext)calledProcedureArgs[i].Context).BYVAL() != null)
+                    if (((VBAParser.ArgContext)declaration.Context).BYVAL() != null)
                     {
                         continue;
                     }
 
-                    foreach (var reference in item)
+                    foreach (var reference in declaration.References)
                     {
-                        if (!(reference.Context is VBAParser.ArgContext))
-                        {
-                            continue;
-                        }
-                        var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgContext;
-                        if (context == null)
-                        {
-                            continue;
-                        }
-                        if (parameter.IdentifierName == context.GetText())
-                        {
-                            return true;
-                        }
+                        if (reference.IsAssignment) { return true; }
                     }
                 }
             }
