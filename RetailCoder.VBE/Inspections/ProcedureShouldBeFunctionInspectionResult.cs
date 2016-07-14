@@ -22,9 +22,10 @@ namespace Rubberduck.Inspections
                declaration.DeclarationType == DeclarationType.Procedure
                && declaration.Context == subStmtQualifiedContext.Context);
 
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                new ChangeProcedureToFunction(state, argListQualifiedContext, subStmtQualifiedContext, QualifiedSelection), 
+                new ChangeProcedureToFunction(state, argListQualifiedContext, subStmtQualifiedContext, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, inspection.AnnotationName)
             };
         }
 

@@ -46,7 +46,7 @@ namespace Rubberduck.Inspections
 
             var items = declarations
                 .Where(item => !IsIgnoredDeclaration(declarations, item, handlers, classes, modules)
-                            && !item.IsInspectionDisabled(AnnotationName)).ToList();
+                            && !IsInspectionDisabled(item, AnnotationName)).ToList();
             var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
             issues = DocumentNames.DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));

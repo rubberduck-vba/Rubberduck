@@ -63,7 +63,7 @@ namespace Rubberduck.RegexAssistant
         {
             get
             {
-                return AssistantResources.ExpressionDescription_AlternativesExpression;
+                return string.Format(AssistantResources.ExpressionDescription_AlternativesExpression, _subexpressions.Count);
             }
         }
 

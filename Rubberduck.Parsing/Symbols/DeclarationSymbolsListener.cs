@@ -14,10 +14,8 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class DeclarationSymbolsListener : VBAParserBaseListener
     {
-        private readonly RubberduckParserState _state;
         private readonly QualifiedModuleName _qualifiedName;
         private readonly Declaration _moduleDeclaration;
-        private readonly Declaration _projectDeclaration;
 
         private string _currentScope;
         private Declaration _currentScopeDeclaration;
@@ -37,7 +35,6 @@ namespace Rubberduck.Parsing.Symbols
             IDictionary<Tuple<string, DeclarationType>, Attributes> attributes,
             Declaration projectDeclaration)
         {
-            _state = state;
             _qualifiedName = qualifiedName;
             _annotations = annotations;
             _attributes = attributes;
@@ -45,8 +42,6 @@ namespace Rubberduck.Parsing.Symbols
             var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
-
-            _projectDeclaration = projectDeclaration;
 
             var key = Tuple.Create(_qualifiedName.ComponentName, declarationType);
             var moduleAttributes = attributes.ContainsKey(key)
@@ -57,7 +52,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 _moduleDeclaration = new ProceduralModuleDeclaration(
                     _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
-                    _projectDeclaration,
+                    projectDeclaration,
                     _qualifiedName.Component.Name,
                     false,
                     FindAnnotations(),
@@ -70,7 +65,7 @@ namespace Rubberduck.Parsing.Symbols
                 Declaration superType = null;
                 if (type == vbext_ComponentType.vbext_ct_Document)
                 {
-                    foreach (var coclass in _state.CoClasses)
+                    foreach (var coclass in state.CoClasses)
                     {
                         try
                         {
@@ -103,7 +98,7 @@ namespace Rubberduck.Parsing.Symbols
 
                 _moduleDeclaration = new ClassModuleDeclaration(
                     _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
-                    _projectDeclaration,
+                    projectDeclaration,
                     _qualifiedName.Component.Name,
                     false,
                     FindAnnotations(),
@@ -765,6 +760,8 @@ namespace Rubberduck.Parsing.Symbols
             var typeHint = Identifier.GetTypeHintValue(identifier);
             var name = Identifier.GetName(identifier);
             var value = context.expression().GetText();
+            var constStmt = (VBAParser.ConstStmtContext) context.Parent;
+
             var declaration = new ConstantDeclaration(
                 new QualifiedMemberName(_qualifiedName, name),
                 _parentDeclaration,
@@ -772,6 +769,7 @@ namespace Rubberduck.Parsing.Symbols
                 asTypeName,
                 asTypeClause,
                 typeHint,
+                FindAnnotations(constStmt.Start.Line),
                 accessibility,
                 DeclarationType.Constant,
                 value,

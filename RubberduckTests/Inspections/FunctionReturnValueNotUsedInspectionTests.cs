@@ -122,6 +122,33 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
+        [TestMethod]
+        public void FunctionReturnValueNotUsed_Ignored_DoesNotReturnResult_AddressOf()
+        {
+            const string inputCode =
+@"'@Ignore FunctionReturnValueNotUsed
+Public Function Foo(ByVal bar As String) As Integer
+    Foo = 42
+End Function
+Public Sub Bar()
+    Bar AddressOf Foo
+End Sub";
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
 
         [TestMethod]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_MultipleConsecutiveCalls()
@@ -482,7 +509,6 @@ End Sub";
             Assert.AreEqual(expectedCode, actual);
         }
 
-
         [TestMethod]
         public void FunctionReturnValueNotUsed_QuickFixWorks_Interface()
         {
@@ -538,6 +564,47 @@ End Function";
             var interfaceModule = project.VBComponents.Item(0).CodeModule;
             string actualInterface = interfaceModule.Lines();
             Assert.AreEqual(expectedInterfaceCode, actualInterface, "Interface");
+        }
+
+        [TestMethod]
+        public void FunctionReturnValueNotUsed_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Function Foo(ByVal bar As String) As Boolean
+End Function
+
+Public Sub Goo()
+    Foo ""test""
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore FunctionReturnValueNotUsed
+Public Function Foo(ByVal bar As String) As Boolean
+End Function
+
+Public Sub Goo()
+    Foo ""test""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]

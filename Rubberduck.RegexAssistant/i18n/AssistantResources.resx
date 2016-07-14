@@ -121,28 +121,28 @@
     <value>Matches the ASCII character CR</value>
   </data>
   <data name="AtomDescription_CharacterClass" xml:space="preserve">
-    <value>Matches any of the following characters {0}</value>
+    <value>Matches any of the following characters: {0}</value>
   </data>
   <data name="AtomDescription_CharacterClass_Inverted" xml:space="preserve">
-    <value>Matches any character that is not one of {0}</value>
+    <value>Matches any character that is not one of: {0}</value>
   </data>
   <data name="AtomDescription_Digit" xml:space="preserve">
     <value>Matches any digit. Equivalent to "[0-9]"</value>
   </data>
   <data name="AtomDescription_Dot" xml:space="preserve">
-    <value>Matches anything</value>
+    <value>Matches any character</value>
   </data>
   <data name="AtomDescription_FormFeed" xml:space="preserve">
     <value>Matches the "Form-Feed"-character</value>
   </data>
   <data name="AtomDescription_Group" xml:space="preserve">
-    <value>Matches the group {0} as follows</value>
+    <value>Matches a capture group '{0}'</value>
   </data>
   <data name="AtomDescription_HTab" xml:space="preserve">
     <value>Matches the horizontal "Tab"-character</value>
   </data>
   <data name="AtomDescription_Literal_ActualLiteral" xml:space="preserve">
-    <value>Literally matches {0}</value>
+    <value>Matches literal '{0}'</value>
   </data>
   <data name="AtomDescription_Literal_Backreference" xml:space="preserve">
     <value>Exactly matches what the capture group at position {0} matched again</value>
@@ -178,7 +178,7 @@
     <value>Matches the vertical "Tab"-character</value>
   </data>
   <data name="AtomDescription_Whitespace" xml:space="preserve">
-    <value>Matches any whitespace character. Equivalent to "[ \t\r\n\v\f]".</value>
+    <value>Matches any whitespace character. Equivalent to "[ \t\r\n\v\f]"</value>
   </data>
   <data name="AtomDescription_WordBoundary" xml:space="preserve">
     <value>Ensures that the current position is at a "word boundary"</value>
@@ -187,13 +187,13 @@
     <value>Matches any "word character". Equivalent to "[a-zA-Z_0-9]"</value>
   </data>
   <data name="ExpressionDescription_AlternativesExpression" xml:space="preserve">
-    <value>Matches one of the following alternatives:</value>
+    <value>Matches one of {0} alternatives</value>
   </data>
   <data name="ExpressionDescription_ConcatenatedExpression" xml:space="preserve">
-    <value>Matches the exact sequence given as follows:</value>
+    <value>Matches literal sequence</value>
   </data>
   <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
-    <value>Could not parse {0} as literal. Check your input, please</value>
+    <value>Could not parse '{0}' as literal. Check your input, please</value>
   </data>
   <data name="PatternDescription_AnchorEnd" xml:space="preserve">
     <value>$ ensures all characters of the string are consumed</value>
@@ -214,7 +214,7 @@
     <value>at least once</value>
   </data>
   <data name="Quantifier_Asterisk" xml:space="preserve">
-    <value>any number of times, including never</value>
+    <value>any number of times</value>
   </data>
   <data name="Quantifier_ClosedRange" xml:space="preserve">
     <value>between {0} and {1} times</value>
@@ -229,6 +229,6 @@
     <value>at least {0} times</value>
   </data>
   <data name="Quantifier_Optional" xml:space="preserve">
-    <value>either once or never</value>
+    <value>at most once</value>
   </data>
 </root>

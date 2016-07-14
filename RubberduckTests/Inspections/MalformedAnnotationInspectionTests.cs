@@ -169,6 +169,40 @@ namespace RubberduckTests.Inspections
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void MalformedAnnotation_NoIgnoreQuickFix()
+        {
+            const string inputCode =
+@"'@Folder
+'@Ignore";
+
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MalformedAnnotationInspection(parser.State);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+
+            Assert.IsFalse(inspectionResults.ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new MalformedAnnotationInspection(null);

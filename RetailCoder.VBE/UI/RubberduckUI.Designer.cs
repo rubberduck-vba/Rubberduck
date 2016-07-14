@@ -2431,7 +2431,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Regex Helper.
+        ///   Looks up a localized string similar to Rubberduck - Regex Analyzer.
         /// </summary>
         public static string RegexAssistant_Caption {
             get {
@@ -2440,7 +2440,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What the RegExp does:.
+        ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string RegexAssistant_DescriptionResultsLabel {
             get {
@@ -2449,7 +2449,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The flag &quot;Global&quot; is set.
+        ///   Looks up a localized string similar to Global.
         /// </summary>
         public static string RegexAssistant_GlobalFlag {
             get {
@@ -2458,7 +2458,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The flag &quot;IgnoreCase&quot; is set.
+        ///   Looks up a localized string similar to Ignore case.
         /// </summary>
         public static string RegexAssistant_IgnoreCaseFlag {
             get {
@@ -2467,7 +2467,16 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Pattern given.
+        ///   Looks up a localized string similar to Enter a regular expression to analyze in the box below..
+        /// </summary>
+        public static string RegexAssistant_Instructions {
+            get {
+                return ResourceManager.GetString("RegexAssistant_Instructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (no pattern).
         /// </summary>
         public static string RegexAssistant_NoPatternError {
             get {
@@ -2476,11 +2485,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The RegExp:.
+        ///   Looks up a localized string similar to Pattern.
         /// </summary>
         public static string RegexAssistant_RegexPatternLabel {
             get {
                 return ResourceManager.GetString("RegexAssistant_RegexPatternLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regular Expression Analyzer.
+        /// </summary>
+        public static string RegexAssistant_Title {
+            get {
+                return ResourceManager.GetString("RegexAssistant_Title", resourceCulture);
             }
         }
         

@@ -4,116 +4,96 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:assistant="clr-namespace:Rubberduck.UI.RegexAssistant"
-             mc:Ignorable="d"
-             d:DesignHeight="300" Width="555"
-             d:DataContext="{d:DesignInstance {x:Type assistant:RegexAssistantViewModel}, IsDesignTimeCreatable=False}">
-    <UserControl.Resources>
-        <!-- Style adapted from http://stackoverflow.com/a/16640367/1803692 -->
-        <Style TargetType="{x:Type TreeViewItem}" x:Key="ShinyRegexTreeViewItem">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition MinWidth="19" Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+             mc:Ignorable="d" Width="555"
+             d:DataContext="{d:DesignInstance {x:Type assistant:RegexAssistantViewModel}, IsDesignTimeCreatable=False}" Height="302">
 
-                            <ToggleButton x:Name="Expander"
-                                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
-                                              ClickMode="Press"/>
-                            <Border Name="Bd"
-                                Grid.Column="1"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                Padding="{TemplateBinding Padding}"
-                                SnapsToDevicePixels="True">
-                                <ContentPresenter x:Name="PART_Header"
-                                        ContentSource="Header"
-                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                            </Border>
-                            <Border x:Name="ItemsHostBd" Grid.Row="1" Grid.Column="1">
-                                <ItemsPresenter x:Name="ItemsHost"  />
-                            </Border>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsExpanded" Value="False">
-                                <Setter TargetName="ItemsHostBd" Property="Visibility" Value="Collapsed"/>
-                            </Trigger>
-                            <Trigger Property="HasItems" Value="False">
-                                <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
-                            </Trigger>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                    <Condition Property="IsSelectionActive" Value="False"/>
-                                </MultiTrigger.Conditions>
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                            </MultiTrigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+    <UserControl.Resources>
+        
+        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFD9F4FF" Offset="0"/>
+            <GradientStop Color="#FF9BDDFB" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFEEEDED" Offset="0"/>
+            <GradientStop Color="#FFDDDDDD" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+
+        <Style x:Key="ShinyTreeView" TargetType="{x:Type TreeViewItem}">
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="2" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True"/>
+                        <Condition Property="IsSelectionActive" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                </MultiTrigger>
+            </Style.Triggers>
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
         </Style>
 
         <HierarchicalDataTemplate
-            x:Key="RecursiveData" DataType="TreeViewItem" 
-            ItemContainerStyle="{StaticResource ShinyRegexTreeViewItem}" 
+            x:Key="RecursiveData" 
+            DataType="TreeViewItem"
+            ItemContainerStyle="{StaticResource ShinyTreeView}"
             ItemsSource="{Binding Items}">
         </HierarchicalDataTemplate>
+        
     </UserControl.Resources>
-    <Grid Margin="0,0,0,0">
-        <ScrollViewer VerticalContentAlignment="Stretch">
-            <StackPanel Margin="5,5,5,5">
-                <Label DockPanel.Dock="Top" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_Caption}"
-                   Background="DarkGray"
-                   Foreground="White"
-                   FontWeight="SemiBold"
-                   Margin="0,0,0,3">
-                    <Label.Style>
-                        <Style>
-                            <Style.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius" Value="5"/>
-                                </Style>
-                            </Style.Resources>
-                        </Style>
-                    </Label.Style>
-                </Label>
-                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_RegexPatternLabel}"
-                   FontWeight="SemiBold" />
-                <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" 
-                    VerticalAlignment="Top" MinWidth="250" MinHeight="23" MaxHeight="23"
-                    VerticalContentAlignment="Center" Margin="15,5,5,5" Text="{Binding Pattern}"/>
-                <StackPanel Orientation="Horizontal">
-                    <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_GlobalFlag}" 
-                        HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" MinWidth="110"
-                        Margin="15,5,5,5" IsChecked="{Binding GlobalFlag}"/>
-                    <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_IgnoreCaseFlag}"
-                        HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" MinWidth="110"
-                        Margin="15,5,5,5" IsChecked="{Binding IgnoreCaseFlag}"/>
-                </StackPanel>
-                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_DescriptionResultsLabel}"
-                        FontWeight="SemiBold" />
+    
+    <Grid Margin="5">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="180"/>
+        </Grid.RowDefinitions>
 
-                <TreeView x:Name="treeView" ItemTemplate="{StaticResource RecursiveData}" ItemContainerStyle="{StaticResource ShinyRegexTreeViewItem}"
-                        VerticalAlignment="Stretch" Margin="15,10,10,10" HorizontalContentAlignment="Stretch" Height="Auto"
-                        ItemsSource="{Binding ResultItems}" DockPanel.Dock="Bottom" />
+        <GroupBox Grid.Row="0">
+            <GroupBox.Header>
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_RegexPatternLabel}" FontWeight="SemiBold" />
+            </GroupBox.Header>
+
+            <StackPanel>
+                <TextBox HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top" Height="23"
+                            VerticalContentAlignment="Center" Margin="5" 
+                            Text="{Binding Pattern}"/>
+
+                <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+                    <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_GlobalFlag}" 
+                                IsChecked="{Binding GlobalFlag}"
+                                Margin="0,0,5,0"/>
+                    <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_IgnoreCaseFlag}"
+                                IsChecked="{Binding IgnoreCaseFlag}"
+                                Margin="0,0,5,0"/>
+                </StackPanel>
             </StackPanel>
-        </ScrollViewer>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Margin="5">
+            <GroupBox.Header>
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_DescriptionResultsLabel}" FontWeight="SemiBold" />
+            </GroupBox.Header>
+
+            <TreeView Margin="5" 
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ItemTemplate="{StaticResource RecursiveData}" 
+                      ItemContainerStyle="{StaticResource ShinyTreeView}"
+                      ItemsSource="{Binding ResultItems}"/>
+        </GroupBox>
     </Grid>
 </UserControl>

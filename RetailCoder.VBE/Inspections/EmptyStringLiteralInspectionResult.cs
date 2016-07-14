@@ -13,9 +13,10 @@ namespace Rubberduck.Inspections
         public EmptyStringLiteralInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                new RepaceEmptyStringLiteralStatementQuickFix(Context, QualifiedSelection), 
+                new RepaceEmptyStringLiteralStatementQuickFix(Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
             };
         }
 
