@@ -5,12 +5,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Common.WinAPI;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.Refactorings;
 using NLog;
+using Rubberduck.UI;
 
 namespace Rubberduck.Common
 {
@@ -18,8 +21,12 @@ namespace Rubberduck.Common
     {
         private readonly VBE _vbe;
         private readonly IntPtr _mainWindowHandle;
+        private readonly IntPtr _oldWndPointer;
         private readonly User32.WndProc _oldWndProc;
+        private User32.WndProc _newWndProc;
         private RawInput _rawinput;
+        private IRawDevice _kb;
+        private IRawDevice _mouse;
         private readonly IGeneralConfigService _config;
         private readonly IEnumerable<CommandBase> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
@@ -30,8 +37,9 @@ namespace Rubberduck.Common
             _vbe = vbe;
             _mainWindowHandle = (IntPtr)vbe.MainWindow.HWnd;
             _oldWndProc = WindowProc;
-            var oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, WindowProc);
-            _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(oldWndPointer, typeof(User32.WndProc));
+            _newWndProc = WindowProc;
+            _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
+            _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
             _commands = commands;
             _config = config;
@@ -55,10 +63,12 @@ namespace Rubberduck.Common
             var kb = (RawKeyboard)_rawinput.CreateKeyboard();
             _rawinput.AddDevice(kb);
             kb.RawKeyInputReceived += Keyboard_RawKeyboardInputReceived;
+            _kb = kb;
 
             var mouse = (RawMouse)_rawinput.CreateMouse();
             _rawinput.AddDevice(mouse);
             mouse.RawMouseInputReceived += Mouse_RawMouseInputReceived;
+            _mouse = mouse;
 
             foreach (var hotkey in settings.Settings.Where(hotkey => hotkey.IsEnabled))
             {
@@ -165,7 +175,7 @@ namespace Rubberduck.Common
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
             var hotkey = sender as IHotkey;
-            if (hotkey != null && hotkey.Command.CanExecute(null))
+            if (hotkey != null)
             {
                 hotkey.Command.Execute(null);
                 return;
