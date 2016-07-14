@@ -16,9 +16,10 @@ namespace Rubberduck.Inspections
         public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state)
             : base(inspection, target)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new EncapsulateFieldQuickFix(target.Context, target.QualifiedSelection, target, state),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
             };
         }
 

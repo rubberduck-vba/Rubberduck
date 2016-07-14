@@ -86,6 +86,41 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void UntypedFunctionUsage_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim str As String
+
+    '@Ignore UntypedFunctionUsage
+    str = Left(""test"", 1)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new UntypedFunctionUsageInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void UntypedFunctionUsage_QuickFixWorks()
         {
             const string inputCode =
@@ -123,6 +158,49 @@ End Sub";
 
             inspectionResults.First().QuickFixes.First().Fix();
             
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UntypedFunctionUsage_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim str As String
+    str = Left(""test"", 1)
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    Dim str As String
+'@Ignore UntypedFunctionUsage
+    str = Left(""test"", 1)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new UntypedFunctionUsageInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+
             Assert.AreEqual(expectedCode, module.Lines());
         }
 

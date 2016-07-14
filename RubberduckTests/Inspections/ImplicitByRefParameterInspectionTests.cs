@@ -117,6 +117,31 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ImplicitByRefParameter_DoesNotReturnResult_ParamArray()
+        {
+            const string inputCode =
+@"Sub Foo(ParamArray arg1 As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ImplicitByRefParameterInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_ReturnsResult_SomePassedByRefImplicitely()
         {
             const string inputCode =
@@ -177,6 +202,32 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ImplicitByRefParameter_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"'@Ignore ImplicitByRefParameter
+Sub Foo(arg1 As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ImplicitByRefParameterInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ImplicitByRefParameter_QuickFixWorks_PassByRef()
         {
             const string inputCode =
@@ -210,16 +261,23 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ImplicitByRefParameter_QuickFixWorks_ParamArrayIsIgnored()
+        public void ImplicitByRefParameter_IgnoredQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo(ParamArray arg1 As Integer)
+@"Sub Foo(arg1 As Integer)
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore ImplicitByRefParameter
+Sub Foo(arg1 As Integer)
 End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
@@ -230,7 +288,9 @@ End Sub";
             var inspection = new ImplicitByRefParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]

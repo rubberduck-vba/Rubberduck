@@ -13,7 +13,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class VariableIsNeverAssignedInspectionTests
+    public class VariableNotAssignedInspectionTests
     {
         [TestMethod]
         [TestCategory("Inspections")]
@@ -122,6 +122,33 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void VariableNotAssigned_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Sub Foo()
+    '@Ignore VariableNotAssigned
+    Dim var1 As String
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new VariableNotAssignedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         [TestMethod]
@@ -252,6 +279,40 @@ End Sub";
 
             var inspection = new VariableNotAssignedInspection(parser.State);
             inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnassignedVariable_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 as Integer
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+'@Ignore VariableNotAssigned
+    Dim var1 as Integer
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new VariableNotAssignedInspection(parser.State);
+            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }

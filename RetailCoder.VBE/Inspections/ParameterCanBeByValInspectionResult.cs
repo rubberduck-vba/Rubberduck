@@ -13,9 +13,10 @@ namespace Rubberduck.Inspections
         public ParameterCanBeByValInspectionResult(IInspection inspection, Declaration target, ParserRuleContext context, QualifiedMemberName qualifiedName)
             : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                new PassParameterByValueQuickFix(Context, QualifiedSelection), 
+                new PassParameterByValueQuickFix(Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, inspection.AnnotationName)
             };
         }
 
