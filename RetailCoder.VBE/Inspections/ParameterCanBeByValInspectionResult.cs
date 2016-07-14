@@ -46,43 +46,48 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            if (!_state.AllUserDeclarations.FindInterfaceMembers().Contains(_target.ParentDeclaration))
+            if (_state.AllUserDeclarations.FindInterfaceMembers().Contains(_target.ParentDeclaration))
             {
-                FixMethod((VBAParser.ArgContext) Context, Selection);
+                FixInterfaceMethods();
             }
             else
             {
-                var declarationParameters =
+                FixMethod((VBAParser.ArgContext)Context, Selection);
+            }
+        }
+
+        private void FixInterfaceMethods()
+        {
+            var declarationParameters =
                     _state.AllUserDeclarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
                                                       declaration.ParentDeclaration == _target.ParentDeclaration)
                                 .OrderBy(o => o.Selection.StartLine)
                                 .ThenBy(t => t.Selection.StartColumn)
                                 .ToList();
 
-                var parameterIndex = declarationParameters.IndexOf(_target);
+            var parameterIndex = declarationParameters.IndexOf(_target);
 
-                if (parameterIndex == -1)
-                {
-                    return; // should only happen if the parse results are stale; prevents a crash in that case
-                }
-
-                var implementations = _state.AllUserDeclarations.FindInterfaceImplementationMembers(_target.ParentDeclaration);
-                foreach (var member in implementations)
-                {
-                    var parameters =
-                        _state.AllUserDeclarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
-                                                          declaration.ParentDeclaration == member)
-                                    .OrderBy(o => o.Selection.StartLine)
-                                    .ThenBy(t => t.Selection.StartColumn)
-                                    .ToList();
-
-                    FixMethod((VBAParser.ArgContext) parameters[parameterIndex].Context,
-                        parameters[parameterIndex].QualifiedSelection);
-                }
-
-                FixMethod((VBAParser.ArgContext) declarationParameters[parameterIndex].Context,
-                    declarationParameters[parameterIndex].QualifiedSelection);
+            if (parameterIndex == -1)
+            {
+                return; // should only happen if the parse results are stale; prevents a crash in that case
             }
+
+            var implementations = _state.AllUserDeclarations.FindInterfaceImplementationMembers(_target.ParentDeclaration);
+            foreach (var member in implementations)
+            {
+                var parameters =
+                    _state.AllUserDeclarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
+                                                      declaration.ParentDeclaration == member)
+                                .OrderBy(o => o.Selection.StartLine)
+                                .ThenBy(t => t.Selection.StartColumn)
+                                .ToList();
+
+                FixMethod((VBAParser.ArgContext)parameters[parameterIndex].Context,
+                    parameters[parameterIndex].QualifiedSelection);
+            }
+
+            FixMethod((VBAParser.ArgContext)declarationParameters[parameterIndex].Context,
+                declarationParameters[parameterIndex].QualifiedSelection);
         }
 
         private void FixMethod(VBAParser.ArgContext context, QualifiedSelection qualifiedSelection)

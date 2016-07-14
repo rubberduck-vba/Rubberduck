@@ -24,9 +24,38 @@ namespace Rubberduck.Inspections
             var issues = new List<ParameterCanBeByValInspectionResult>();
 
             var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToList();
-            var interfaceImplementationMembers = declarations.FindInterfaceImplementationMembers().ToList();
-            var allInterfaceMembers = interfaceImplementationMembers.Concat(interfaceDeclarationMembers);
+            var allInterfaceMembers = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers);
+            issues.AddRange(GetInterfaceResults(declarations, interfaceDeclarationMembers));
 
+            var formEventHandlerScopes = State.FindFormEventHandlers()
+                .Select(handler => handler.Scope);
+
+            var eventScopes = declarations.Where(item =>
+                !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event)
+                .Select(e => e.Scope).Concat(State.AllDeclarations.FindBuiltInEventHandlers().Select(e => e.Scope));
+
+            var declareScopes = declarations.Where(item =>
+                    item.DeclarationType == DeclarationType.LibraryFunction
+                    || item.DeclarationType == DeclarationType.LibraryProcedure)
+                .Select(e => e.Scope);
+
+            var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
+
+            issues.AddRange(declarations.Where(declaration =>
+                !declaration.IsArray
+                && !ignoredScopes.Contains(declaration.ParentScope)
+                && declaration.DeclarationType == DeclarationType.Parameter
+                && !allInterfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
+                && ((VBAParser.ArgContext)declaration.Context).BYVAL() == null
+                && !IsUsedAsByRefParam(declarations, declaration)
+                && !declaration.References.Any(reference => reference.IsAssignment))
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, State, issue, issue.Context, issue.QualifiedName)));
+
+            return issues;
+        }
+
+        private IEnumerable<ParameterCanBeByValInspectionResult> GetInterfaceResults(List<Declaration> declarations, List<Declaration> interfaceDeclarationMembers)
+        {
             foreach (var member in interfaceDeclarationMembers)
             {
                 var declarationParameters =
@@ -60,37 +89,11 @@ namespace Rubberduck.Inspections
                 {
                     if (parametersAreByRef[i])
                     {
-                        issues.Add(new ParameterCanBeByValInspectionResult(this, State, declarationParameters[i],
-                            declarationParameters[i].Context, declarationParameters[i].QualifiedName));
+                        yield return new ParameterCanBeByValInspectionResult(this, State, declarationParameters[i],
+                            declarationParameters[i].Context, declarationParameters[i].QualifiedName);
                     }
                 }
             }
-
-            var formEventHandlerScopes = State.FindFormEventHandlers()
-                .Select(handler => handler.Scope);
-
-            var eventScopes = declarations.Where(item =>
-                !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event)
-                .Select(e => e.Scope).Concat(State.AllDeclarations.FindBuiltInEventHandlers().Select(e => e.Scope));
-
-            var declareScopes = declarations.Where(item =>
-                    item.DeclarationType == DeclarationType.LibraryFunction
-                    || item.DeclarationType == DeclarationType.LibraryProcedure)
-                .Select(e => e.Scope);
-
-            var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
-
-            issues.AddRange(declarations.Where(declaration =>
-                !declaration.IsArray
-                && !ignoredScopes.Contains(declaration.ParentScope)
-                && declaration.DeclarationType == DeclarationType.Parameter
-                && !allInterfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
-                && ((VBAParser.ArgContext)declaration.Context).BYVAL() == null
-                && !IsUsedAsByRefParam(declarations, declaration)
-                && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, State, issue, issue.Context, issue.QualifiedName)));
-
-            return issues;
         }
 
         private static bool IsUsedAsByRefParam(IEnumerable<Declaration> declarations, Declaration parameter)
