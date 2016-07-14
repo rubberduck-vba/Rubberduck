@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections
 
             var results = new List<ObsoleteCallStatementUsageInspectionResult>();
 
-            foreach (var context in ParseTreeResults.ObsoleteCallContexts)
+            foreach (var context in ParseTreeResults.ObsoleteCallContexts.Where(o => !IsInspectionDisabled(o.ModuleName.Component, o.Context.Start.Line)))
             {
                 var lines = context.ModuleName.Component.CodeModule.Lines[
                         context.Context.Start.Line, context.Context.Stop.Line - context.Context.Start.Line + 1];

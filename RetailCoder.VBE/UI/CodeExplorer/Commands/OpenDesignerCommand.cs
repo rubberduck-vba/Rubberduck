@@ -6,9 +6,10 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerOpenDesignerCommand : CommandBase
+    [CodeExplorerCommand]
+    public class OpenDesignerCommand : CommandBase
     {
-        public CodeExplorerOpenDesignerCommand() : base(LogManager.GetCurrentClassLogger()) { }
+        public OpenDesignerCommand() : base(LogManager.GetCurrentClassLogger()) { }
 
         protected override bool CanExecuteImpl(object parameter)
         {

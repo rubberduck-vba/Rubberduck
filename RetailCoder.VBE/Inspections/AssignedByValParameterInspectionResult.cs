@@ -13,9 +13,10 @@ namespace Rubberduck.Inspections
         public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target)
             : base(inspection, target)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new PassParameterByReferenceQuickFix(target.Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, inspection.AnnotationName)
             };
         }
 

@@ -9,12 +9,13 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerCopyResultsCommand : CommandBase
+    [CodeExplorerCommand]
+    public class CopyResultsCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IClipboardWriter _clipboard;
 
-        public CodeExplorerCopyResultsCommand(RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
+        public CopyResultsCommand(RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _clipboard = new ClipboardWriter();

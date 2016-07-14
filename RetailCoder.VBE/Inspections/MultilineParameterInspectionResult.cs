@@ -12,9 +12,10 @@ namespace Rubberduck.Inspections
         public MultilineParameterInspectionResult(IInspection inspection, Declaration target)
             : base(inspection, target)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                new MakeSingleLineParameterQuickFix(Context, QualifiedSelection), 
+                new MakeSingleLineParameterQuickFix(Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Target.ParentDeclaration.Context, Target.ParentDeclaration.QualifiedSelection, Inspection.AnnotationName) 
             };
         }
 

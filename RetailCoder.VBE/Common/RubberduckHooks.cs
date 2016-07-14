@@ -13,6 +13,7 @@ using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using NLog;
+using Rubberduck.UI;
 
 namespace Rubberduck.Common
 {

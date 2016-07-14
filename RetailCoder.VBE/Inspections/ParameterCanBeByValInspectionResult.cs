@@ -13,9 +13,10 @@ namespace Rubberduck.Inspections
         public ParameterCanBeByValInspectionResult(IInspection inspection, Declaration target, ParserRuleContext context, QualifiedMemberName qualifiedName)
             : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                new PassParameterByValueQuickFix(Context, QualifiedSelection), 
+                new PassParameterByValueQuickFix(Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, inspection.AnnotationName)
             };
         }
 
@@ -36,14 +37,13 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            var parameter = Context.Parent.GetText();
-            var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
             var selection = Selection.Selection;
+            var selectionLength = ((VBAParser.ArgContext) Context).BYREF() == null ? 0 : 6;
 
             var module = Selection.QualifiedName.Component.CodeModule;
-            var lines = module.Lines[selection.StartLine, selection.LineCount];
+            var lines = module.Lines[selection.StartLine, 1];
 
-            var result = lines.Replace(parameter, newContent);
+            var result = lines.Remove(selection.StartColumn - 1, selectionLength).Insert(selection.StartColumn - 1, Tokens.ByVal + ' ');
             module.ReplaceLine(selection.StartLine, result);
         }
     }

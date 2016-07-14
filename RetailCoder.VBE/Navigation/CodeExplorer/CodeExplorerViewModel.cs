@@ -33,35 +33,35 @@ namespace Rubberduck.Navigation.CodeExplorer
             _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => _state.OnParseRequested(this),
                 param => !IsBusy && _state.IsDirty());
             
-            _navigateCommand = commands.OfType<CodeExplorerNavigateCommand>().FirstOrDefault();
+            _navigateCommand = commands.OfType<UI.CodeExplorer.Commands.NavigateCommand>().FirstOrDefault();
 
-            _addTestModuleCommand = commands.OfType<CodeExplorerAddTestModuleCommand>().FirstOrDefault();
-            _addStdModuleCommand = commands.OfType<CodeExplorerAddStdModuleCommand>().FirstOrDefault();
-            _addClassModuleCommand = commands.OfType<CodeExplorerAddClassModuleCommand>().FirstOrDefault();
-            _addUserFormCommand = commands.OfType<CodeExplorerAddUserFormCommand>().FirstOrDefault();
+            _addTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().FirstOrDefault();
+            _addStdModuleCommand = commands.OfType<AddStdModuleCommand>().FirstOrDefault();
+            _addClassModuleCommand = commands.OfType<AddClassModuleCommand>().FirstOrDefault();
+            _addUserFormCommand = commands.OfType<AddUserFormCommand>().FirstOrDefault();
 
-            _openDesignerCommand = commands.OfType<CodeExplorerOpenDesignerCommand>().FirstOrDefault();
-            _openProjectPropertiesCommand = commands.OfType<CodeExplorerOpenProjectPropertiesCommand>().FirstOrDefault();
-            _renameCommand = commands.OfType<CodeExplorerRenameCommand>().FirstOrDefault();
-            _indenterCommand = commands.OfType<CodeExplorerIndentCommand>().FirstOrDefault();
+            _openDesignerCommand = commands.OfType<OpenDesignerCommand>().FirstOrDefault();
+            _openProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().FirstOrDefault();
+            _renameCommand = commands.OfType<RenameCommand>().FirstOrDefault();
+            _indenterCommand = commands.OfType<IndentCommand>().FirstOrDefault();
 
-            _findAllReferencesCommand = commands.OfType<CodeExplorerFindAllReferencesCommand>().FirstOrDefault();
-            _findAllImplementationsCommand = commands.OfType<CodeExplorerFindAllImplementationsCommand>().FirstOrDefault();
+            _findAllReferencesCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllReferencesCommand>().FirstOrDefault();
+            _findAllImplementationsCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllImplementationsCommand>().FirstOrDefault();
 
-            _importCommand = commands.OfType<CodeExplorerImportCommand>().FirstOrDefault();
-            _exportCommand = commands.OfType<CodeExplorerExportCommand>().FirstOrDefault();
-            _externalRemoveCommand = commands.OfType<CodeExplorerRemoveCommand>().FirstOrDefault();
+            _importCommand = commands.OfType<ImportCommand>().FirstOrDefault();
+            _exportCommand = commands.OfType<ExportCommand>().FirstOrDefault();
+            _externalRemoveCommand = commands.OfType<RemoveCommand>().FirstOrDefault();
             if (_externalRemoveCommand != null)
             {
                 _removeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
             }
 
-            _printCommand = commands.OfType<CodeExplorerPrintCommand>().FirstOrDefault();
+            _printCommand = commands.OfType<PrintCommand>().FirstOrDefault();
 
-            _commitCommand = commands.OfType<CodeExplorerCommitCommand>().FirstOrDefault();
-            _undoCommand = commands.OfType<CodeExplorerUndoCommand>().FirstOrDefault();
+            _commitCommand = commands.OfType<CommitCommand>().FirstOrDefault();
+            _undoCommand = commands.OfType<UndoCommand>().FirstOrDefault();
 
-            _copyResultsCommand = commands.OfType<CodeExplorerCopyResultsCommand>().FirstOrDefault();
+            _copyResultsCommand = commands.OfType<CopyResultsCommand>().FirstOrDefault();
 
             _setNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {

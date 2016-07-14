@@ -376,6 +376,7 @@
     </Compile>
     <Compile Include="Inspections\IParseTreeInspection.cs" />
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
+    <Compile Include="Inspections\MalformedAnnotationInspection.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
@@ -414,29 +415,30 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommitCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerAddUserFormCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCopyResultsCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerOpenProjectPropertiesCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerRenameCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerFindAllReferencesCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerFindAllImplementationsCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerIndentCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerNavigateCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerRemoveCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerExportCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerImportCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerPrintCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerOpenDesignerCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerAddClassModuleCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerAddStdModuleCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerAddTestModuleCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\OpenProjectPropertiesCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\RenameCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\FindAllReferencesCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\FindAllImplementationsCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\IndentCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\NavigateCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\RemoveCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\ExportCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\ImportCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\PrintCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\OpenDesignerCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\AddClassModuleCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\Controls\LinkButton.xaml.cs">
       <DependentUpon>LinkButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Converters\InvertBoolValueConverter.cs" />
     <Compile Include="UI\Converters\BoolToHiddenVisibilityConverter.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerUndoCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\UndoCommand.cs" />
     <Compile Include="UI\Command\MenuItems\NoIndentAnnotationCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentModuleCommandMenuItem.cs" />
     <Compile Include="UI\Command\NoIndentAnnotationCommand.cs" />
@@ -579,6 +581,7 @@
     <Compile Include="Navigation\CodeExplorer\CodeExplorerMemberViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerProjectViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerViewModel.cs" />
+    <Compile Include="UI\HotkeyDisplayConverter.cs" />
     <Compile Include="UI\Inspections\InspectionDescriptionConverter.cs" />
     <Compile Include="UI\Inspections\InspectionImageSourceConverter.cs" />
     <Compile Include="UI\Inspections\InspectionResultsControl.xaml.cs">
@@ -703,6 +706,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\Converters\HotkeyDisplayConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\DelimiterToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToTextConverter.cs" />

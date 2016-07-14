@@ -7,6 +7,7 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -109,6 +110,38 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenObjectVariableNotSet_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+Private Sub Workbook_Open()
+    
+    Dim target As Range
+'@Ignore ObjectVariableNotSet
+    target = Range(""A1"")
+    
+    target.Value = ""forgot something?""
+
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ObjectVariableNotSetInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenSetObjectVariable_ReturnsNoResult()
         {
             const string inputCode = @"
@@ -136,6 +169,51 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_IgnoreQuickFixWorks()
+        {
+            const string inputCode = @"
+Private Sub Workbook_Open()
+    
+    Dim target As Range
+    target = Range(""A1"")
+    
+    target.Value = ""forgot something?""
+
+End Sub";
+
+            const string expectedCode = @"
+Private Sub Workbook_Open()
+    
+    Dim target As Range
+'@Ignore ObjectVariableNotSet
+    target = Range(""A1"")
+    
+    target.Value = ""forgot something?""
+
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var module = vbe.Object.VBProjects.Item(0).VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ObjectVariableNotSetInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
         }
     }
 }

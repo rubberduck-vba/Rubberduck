@@ -5,11 +5,12 @@ using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerCommitCommand : CommandBase
+    [CodeExplorerCommand]
+    public class CommitCommand : CommandBase
     {
         private readonly SourceControlDockablePresenter _presenter;
 
-        public CodeExplorerCommitCommand(SourceControlDockablePresenter presenter) : base(LogManager.GetCurrentClassLogger())
+        public CommitCommand(SourceControlDockablePresenter presenter) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }

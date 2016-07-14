@@ -8,14 +8,15 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerRenameCommand : CommandBase, IDisposable
+    [CodeExplorerCommand]
+    public class RenameCommand : CommandBase, IDisposable
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IRenameDialog _view;
         private readonly IMessageBox _msgBox;
 
-        public CodeExplorerRenameCommand(VBE vbe, RubberduckParserState state, IRenameDialog view, IMessageBox msgBox) : base(LogManager.GetCurrentClassLogger())
+        public RenameCommand(VBE vbe, RubberduckParserState state, IRenameDialog view, IMessageBox msgBox) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;

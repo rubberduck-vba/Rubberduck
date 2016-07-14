@@ -26,8 +26,9 @@ namespace Rubberduck.Inspections
             {
                 return new InspectionResultBase[] { };
             }
-            return ParseTreeResults.EmptyStringLiterals.Select(
-                    context => new EmptyStringLiteralInspectionResult(this,
+            return ParseTreeResults.EmptyStringLiterals
+                .Where(s => !IsInspectionDisabled(s.ModuleName.Component, s.Context.Start.Line))
+                .Select(context => new EmptyStringLiteralInspectionResult(this,
                             new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
 

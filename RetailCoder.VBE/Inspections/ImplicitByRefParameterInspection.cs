@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections
 
             var issues = (from item in UserDeclarations
                 where
-                    !item.IsInspectionDisabled(AnnotationName)
+                    !IsInspectionDisabled(item, AnnotationName)
                     && item.DeclarationType == DeclarationType.Parameter
                     // ParamArray parameters do not allow an explicit "ByRef" parameter mechanism.               
                     && !((ParameterDeclaration)item).IsParamArray

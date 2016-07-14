@@ -9,13 +9,14 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerIndentCommand : CommandBase
+    [CodeExplorerCommand]
+    public class IndentCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
         private readonly INavigateCommand _navigateCommand;
 
-        public CodeExplorerIndentCommand(RubberduckParserState state, IIndenter indenter, INavigateCommand navigateCommand) : base(LogManager.GetCurrentClassLogger())
+        public IndentCommand(RubberduckParserState state, IIndenter indenter, INavigateCommand navigateCommand) : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _indenter = indenter;
