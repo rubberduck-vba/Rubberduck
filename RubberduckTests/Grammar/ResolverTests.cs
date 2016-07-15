@@ -1849,6 +1849,26 @@ End Sub
         }
 
         [TestMethod]
+        public void LineInputStmt_ReferenceIsAssignment()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim file As Integer, content
+    Line Input #file, content
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "content");
+
+            Assert.IsTrue(declaration.References.Single().IsAssignment);
+        }
+
+        [TestMethod]
         public void WidthStmt_IsReferenceToLocalVariable()
         {
             // arrange
@@ -1929,6 +1949,39 @@ End Sub
         }
 
         [TestMethod]
+        public void InputStmt_ReferenceIsAssignment()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim str As String
+    Dim xCoord, yCoord, zCoord As Double
+    Input #1, str, xCoord, yCoord, zCoord
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var strDeclaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "str");
+
+            var xCoordDeclaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "xCoord");
+
+            var yCoordDeclaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "yCoord");
+
+            var zCoordDeclaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "zCoord");
+
+            Assert.IsTrue(strDeclaration.References.Single().IsAssignment);
+            Assert.IsTrue(xCoordDeclaration.References.Single().IsAssignment);
+            Assert.IsTrue(yCoordDeclaration.References.Single().IsAssignment);
+            Assert.IsTrue(zCoordDeclaration.References.Single().IsAssignment);
+        }
+
+        [TestMethod]
         public void PutStmt_IsReferenceToLocalVariable()
         {
             // arrange
@@ -1955,7 +2008,7 @@ End Sub
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
-    Get referenced,referenced,referenced
+    Get #referenced,referenced,referenced
 End Sub
 ";
             // act
@@ -1966,6 +2019,26 @@ End Sub
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
             Assert.AreEqual(3, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void GetStmt_ReferenceIsAssignment()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim fileNumber As Integer, recordNumber, variable
+    Get #fileNumber, recordNumber, variable
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var variableDeclaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "variable");
+
+            Assert.IsTrue(variableDeclaration.References.Single().IsAssignment);
         }
 
         [TestMethod]
