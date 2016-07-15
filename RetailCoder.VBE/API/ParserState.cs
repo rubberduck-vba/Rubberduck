@@ -14,7 +14,56 @@ using Rubberduck.Parsing.Symbols;
 namespace Rubberduck.API
 {
     [ComVisible(true)]
-    public interface IParserState
+    public enum ParserState
+    {
+        /// <summary>
+        /// Parse was requested but hasn't started yet.
+        /// </summary>
+        Pending,
+        /// <summary>
+        /// Project references are being loaded into parser state.
+        /// </summary>
+        LoadingReference,
+        /// <summary>
+        /// Code from modified modules is being parsed.
+        /// </summary>
+        Parsing,
+        /// <summary>
+        /// Parse tree is waiting to be walked for identifier resolution.
+        /// </summary>
+        Parsed,
+        /// <summary>
+        /// Resolving declarations.
+        /// </summary>
+        ResolvingDeclarations,
+        /// <summary>
+        /// Resolved declarations.
+        /// </summary>
+        ResolvedDeclarations,
+        /// <summary>
+        /// Resolving identifier references.
+        /// </summary>
+        ResolvingReferences,
+        /// <summary>
+        /// Parser state is in sync with the actual code in the VBE.
+        /// </summary>
+        Ready,
+        /// <summary>
+        /// Parsing could not be completed for one or more modules.
+        /// </summary>
+        Error,
+        /// <summary>
+        /// Parsing completed, but identifier references could not be resolved for one or more modules.
+        /// </summary>
+        ResolverError,
+        /// <summary>
+        /// This component doesn't need a state.  Use for built-in declarations.
+        /// </summary>
+        None,
+    }
+
+    [ComVisible(true)]
+    public interface IRubberduckParserState
     {
         void Initialize(VBE vbe);
 
@@ -28,30 +77,28 @@ namespace Rubberduck.API
     [ComVisible(true)]
     [Guid("3D8EAA28-8983-44D5-83AF-2EEC4C363079")]
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface IParserStateEvents
+    public interface IRubberduckParserStateEvents
     {
-        void OnParsed();
-        void OnReady();
-        void OnError();
+        void OnStateChanged(ParserState state);
     }
 
     [ComVisible(true)]
     [Guid(ClassId)]
     [ProgId(ProgId)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
-    [ComDefaultInterface(typeof(IParserState))]
-    [ComSourceInterfaces(typeof(IParserStateEvents))]
+    [ComDefaultInterface(typeof(IRubberduckParserState))]
+    [ComSourceInterfaces(typeof(IRubberduckParserStateEvents))]
     [EditorBrowsable(EditorBrowsableState.Always)]
-    public sealed class ParserState : IParserState, IDisposable
+    public sealed class RubberduckParserState : IRubberduckParserState, IDisposable
     {
         private const string ClassId = "28754D11-10CC-45FD-9F6A-525A65412B7A";
         private const string ProgId = "Rubberduck.ParserState";
 
-        private RubberduckParserState _state;
+        private Parsing.VBA.RubberduckParserState _state;
         private AttributeParser _attributeParser;
         private RubberduckParser _parser;
 
-        public ParserState()
+        public RubberduckParserState()
         {
             UiDispatcher.Initialize();
         }
@@ -63,7 +110,7 @@ namespace Rubberduck.API
                 throw new InvalidOperationException("ParserState is already initialized.");
             }
 
-            _state = new RubberduckParserState(vbe, new Sinks(vbe));
+            _state = new Parsing.VBA.RubberduckParserState(vbe, new Sinks(vbe));
             _state.StateChanged += _state_StateChanged;
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
@@ -90,11 +137,9 @@ namespace Rubberduck.API
             UiDispatcher.Invoke(() => _state.OnParseRequested(this));
         }
 
-        public event Action OnParsed;
-        public event Action OnReady;
-        public event Action OnError;
+        public event Action<ParserState> OnStateChanged;
 
-        private void _state_StateChanged(object sender, System.EventArgs e)
+        private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
             _allDeclarations = _state.AllDeclarations
                                      .Select(item => new Declaration(item))
@@ -104,22 +149,13 @@ namespace Rubberduck.API
                                      .Select(item => new Declaration(item))
                                      .ToArray();
 
-            var errorHandler = OnError;
-            if (_state.Status == Parsing.VBA.ParserState.Error && errorHandler != null)
+            var stateChangedHandler = OnStateChanged;
+            if (stateChangedHandler != null)
             {
-                UiDispatcher.Invoke(errorHandler.Invoke);
-            }
-
-            var parsedHandler = OnParsed;
-            if (_state.Status == Parsing.VBA.ParserState.Parsed && parsedHandler != null)
-            {
-                UiDispatcher.Invoke(parsedHandler.Invoke);
-            }
-
-            var readyHandler = OnReady;
-            if (_state.Status == Parsing.VBA.ParserState.Ready && readyHandler != null)
-            {
-                UiDispatcher.Invoke(readyHandler.Invoke);
+                UiDispatcher.Invoke(() =>
+                {
+                    stateChangedHandler((ParserState) Enum.Parse(typeof(ParserState), e.State.ToString()));
+                });
             }
         }
 
