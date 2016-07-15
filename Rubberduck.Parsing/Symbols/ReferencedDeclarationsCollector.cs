@@ -220,7 +220,7 @@ namespace Rubberduck.Parsing.Symbols
                         break;
                     case DeclarationType.ClassModule:
                         var module = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
-                        var implements = GetImplementedInterfaceNames(typeAttributes, info);
+                        var implements = GetImplementedInterfaceNames(typeAttributes, info, module);
                         foreach (var supertypeName in implements)
                         {
                             module.AddSupertype(supertypeName);
@@ -575,7 +575,7 @@ namespace Rubberduck.Parsing.Symbols
             return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, paramInfo.Name, null, null, isOptional, paramInfo.IsByRef, paramInfo.IsArray);
         }
 
-        private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info)
+        private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info, Declaration module)
         {
             var output = new List<string>();
             for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
@@ -616,7 +616,7 @@ namespace Rubberduck.Parsing.Symbols
                     else
                     {
                         _comInformation.Add(typeAttributes.guid,
-                            new ComInformation(typeAttributes, flags, implTypeInfo, implTypeName, new QualifiedModuleName(), null, 0));
+                            new ComInformation(typeAttributes, flags, implTypeInfo, implTypeName, module.QualifiedName.QualifiedModuleName, module, 0));
                     }
                 }
 
