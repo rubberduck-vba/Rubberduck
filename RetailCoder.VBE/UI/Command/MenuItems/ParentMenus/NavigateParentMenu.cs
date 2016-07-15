@@ -11,4 +11,13 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
         public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.Navigate; } }
     }
+
+    public enum NavigationMenuItemDisplayOrder
+    {
+        CodeExplorer,
+        RegexSearchReplace,
+        FindSymbol,
+        FindAllReferences,
+        FindImplementations
+    }
 }

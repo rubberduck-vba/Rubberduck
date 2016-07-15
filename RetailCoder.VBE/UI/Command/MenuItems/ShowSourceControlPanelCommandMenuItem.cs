@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RubberduckMenu_SourceControl"; } }
-        public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.SourceControl; } }
+        public override string Key { get { return "ToolsMenu_SourceControl"; } }
+        public override int DisplayOrder { get { return (int)ToolsMenuItemDisplayOrder.SourceControl; } }
     }
 }
