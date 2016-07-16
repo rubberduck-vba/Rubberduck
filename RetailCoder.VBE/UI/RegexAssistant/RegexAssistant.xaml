@@ -70,7 +70,7 @@
                 <TextBox HorizontalAlignment="Stretch"
                             VerticalAlignment="Top" Height="23"
                             VerticalContentAlignment="Center" Margin="5" 
-                            Text="{Binding Pattern}"/>
+                            Text="{Binding Pattern, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
                     <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_GlobalFlag}" 
