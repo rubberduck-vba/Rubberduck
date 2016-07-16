@@ -2873,7 +2873,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file to our GitHub page..
+        ///   Looks up a localized string similar to Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file located at &quot;C:\Users\{username}\AppData\Roaming\Rubberduck\Logs\RubberduckLog.txt&quot; to a GitHub issue at &quot;https://github.com/rubberduck-vba/Rubberduck/issues/new&quot;..
         /// </summary>
         public static string RubberduckFatalError {
             get {
