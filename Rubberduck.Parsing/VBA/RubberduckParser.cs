@@ -32,16 +32,20 @@ namespace Rubberduck.Parsing.VBA
         private readonly IEnumerable<ICustomDeclarationLoader> _customDeclarationLoaders;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        private readonly bool _isTestScope;
+
         public RubberduckParser(
             RubberduckParserState state,
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
-            IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders)
+            IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders,
+            bool isTestScope = false)
         {
             _state = state;
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
+            _isTestScope = isTestScope;
 
             state.ParseRequest += ReparseRequested;
         }
@@ -53,8 +57,15 @@ namespace Rubberduck.Parsing.VBA
 
         private void ReparseRequested(object sender, EventArgs e)
         {
-            Cancel();
-            Task.Run(() => ParseAll(_cancellationTokens[0]));
+            if (!_isTestScope)
+            {
+                Cancel();
+                Task.Run(() => ParseAll(_cancellationTokens[0]));
+            }
+            else
+            {
+                Parse(_cancellationTokens[0]);
+            }
         }
 
         /// <summary>
