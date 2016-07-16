@@ -228,9 +228,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             get { return _projects; }
             set
             {
+                ReorderChildNodes(value);
                 _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
-
-                ReorderChildNodes(_projects);
+                
                 OnPropertyChanged();
             }
         }
