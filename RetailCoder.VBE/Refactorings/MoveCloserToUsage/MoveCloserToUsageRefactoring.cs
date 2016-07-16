@@ -110,7 +110,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State != ParserState.ResolvedDeclarations) { return; }
+            if (e.State != ParserState.Ready) { return; }
 
             var newTarget = _state.AllUserDeclarations.FirstOrDefault(
                     item => item.ComponentName == _target.ComponentName &&
@@ -285,9 +285,14 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             foreach (var reference in references.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
             {
                 var parent = reference.Context.Parent;
-                while (!(parent is VBAParser.MemberAccessExprContext))
+                while (!(parent is VBAParser.MemberAccessExprContext) && parent.Parent != null)
                 {
                     parent = parent.Parent;
+                }
+
+                if (!(parent is VBAParser.MemberAccessExprContext))
+                {
+                    continue;
                 }
 
                 var parentSelection = ((VBAParser.MemberAccessExprContext)parent).GetSelection();
