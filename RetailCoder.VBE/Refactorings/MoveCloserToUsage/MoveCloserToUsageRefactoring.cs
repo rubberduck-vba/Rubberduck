@@ -121,7 +121,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
             if (newTarget != null)
             {
-                UpdateCallsToOtherModule(newTarget.References);
+                UpdateCallsToOtherModule(newTarget.References.ToList());
                 RemoveField(newTarget);
             }
 
@@ -273,13 +273,16 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
         }
 
-        private void UpdateCallsToOtherModule(IEnumerable<IdentifierReference> references)
+        private void UpdateCallsToOtherModule(List<IdentifierReference> references)
         {
-            var identifierReferences = references.ToList();
+            if (!references.Any())
+            {
+                return;
+            }
 
-            var module = identifierReferences[0].QualifiedModuleName.Component.CodeModule;
+            var module = references[0].QualifiedModuleName.Component.CodeModule;
 
-            foreach (var reference in identifierReferences.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
+            foreach (var reference in references.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
             {
                 var parent = reference.Context.Parent;
                 while (!(parent is VBAParser.MemberAccessExprContext))
