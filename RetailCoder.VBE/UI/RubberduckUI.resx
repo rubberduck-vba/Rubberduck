@@ -1716,7 +1716,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Publish Existing Repository</value>
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
-    <value>Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file to our GitHub page.</value>
+    <value>Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file located at "C:\Users\{username}\AppData\Roaming\Rubberduck\Logs\RubberduckLog.txt" to a GitHub issue at "https://github.com/rubberduck-vba/Rubberduck/issues/new".</value>
   </data>
   <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
     <value>Test Method (&amp;Expected Error)</value>

@@ -273,7 +273,7 @@ namespace RubberduckTests.Mocks
 
             // ReSharper disable once UseIndexedProperty
             codeModule.Setup(m => m.get_Lines(It.IsAny<int>(), It.IsAny<int>()))
-                .Returns<int, int>((start, count) => String.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
+                .Returns<int, int>((start, count) => string.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
 
             codeModule.Setup(m => m.ReplaceLine(It.IsAny<int>(), It.IsAny<string>()))
                 .Callback<int, string>((index, str) => lines[index - 1] = str);
@@ -286,11 +286,11 @@ namespace RubberduckTests.Mocks
                 {
                     if (index - 1 >= lines.Count)
                     {
-                        lines.Add(newLine);
+                        lines.AddRange(newLine.Split(new[] {Environment.NewLine}, StringSplitOptions.None));
                     }
                     else
                     {
-                        lines.Insert(index - 1, newLine);
+                        lines.InsertRange(index - 1, newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                     }
                 });
 
