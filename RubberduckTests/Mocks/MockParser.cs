@@ -6,13 +6,12 @@ using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using System.Threading;
 using Rubberduck.Parsing;
 
-namespace RubberduckTests
+namespace RubberduckTests.Mocks
 {
     public static class MockParser
     {
@@ -24,7 +23,7 @@ namespace RubberduckTests
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             qualifiedModuleName = new QualifiedModuleName(component);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -43,7 +42,7 @@ namespace RubberduckTests
         {
             return new RubberduckParser(state, attributeParser,
                 () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
-                new List<ICustomDeclarationLoader> {new DebugDeclarations(state), new FormEventDeclarations(state), new AliasDeclarations(state)});
+                new List<ICustomDeclarationLoader> {new DebugDeclarations(state), new FormEventDeclarations(state), new AliasDeclarations(state)}, true);
         }
     }
 }
