@@ -84,24 +84,26 @@ namespace Rubberduck.UI.UnitTesting
             TotalDuration = e.Duration;
         }
 
+        private static readonly ParserState[] AllowedRunStates = { ParserState.ResolvedDeclarations, ParserState.ResolvingReferences, ParserState.Ready };
+
         private bool CanExecuteRunPassedTestsCommand(object obj)
         {
-            return _vbe.IsInDesignMode() && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Succeeded);
+            return _vbe.IsInDesignMode() && AllowedRunStates.Contains(_state.Status) && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Succeeded);
         }
 
         private bool CanExecuteRunFailedTestsCommand(object obj)
         {
-            return _vbe.IsInDesignMode() && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Failed);
+            return _vbe.IsInDesignMode() && AllowedRunStates.Contains(_state.Status) && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Failed);
         }
 
         private bool CanExecuteRunNotExecutedTestsCommand(object obj)
         {
-            return _vbe.IsInDesignMode() && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
+            return _vbe.IsInDesignMode() && AllowedRunStates.Contains(_state.Status) && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
         }
 
         private bool CanExecuteRepeatLastRunCommand(object obj)
         {
-            return _vbe.IsInDesignMode() && _model.LastRun.Any();
+            return _vbe.IsInDesignMode() && AllowedRunStates.Contains(_state.Status) && _model.LastRun.Any();
         }
 
         public event EventHandler<EventArgs> TestCompleted;
