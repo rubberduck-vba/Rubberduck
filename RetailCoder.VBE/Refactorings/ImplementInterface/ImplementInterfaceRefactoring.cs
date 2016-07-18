@@ -17,7 +17,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        private List<Declaration> _declarations;
+        private readonly List<Declaration> _declarations;
         private Declaration _targetInterface;
         private Declaration _targetClass;
 

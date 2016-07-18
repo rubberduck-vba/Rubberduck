@@ -158,17 +158,18 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => Components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(Components.Count);
 
-            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>())).Callback((vbext_ComponentType c) =>
-            {
-                _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection()));
-            });
-            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>())).Returns(() =>
-            {
-                var lastComponent = _componentsMock.LastOrDefault();
-                return lastComponent == null
-                    ? null
-                    : lastComponent.Object;
-            });
+            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>()))
+                .Callback((vbext_ComponentType c) =>
+                {
+                    _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection()));
+                })
+                .Returns(() =>
+                {
+                    var lastComponent = _componentsMock.LastOrDefault();
+                    return lastComponent == null
+                        ? null
+                        : lastComponent.Object;
+                });
 
             result.Setup(m => m.Remove(It.IsAny<VBComponent>())).Callback((VBComponent c) =>
             {
@@ -269,7 +270,17 @@ namespace RubberduckTests.Mocks
             var codeModule = new Mock<CodeModule>();
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
-                lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).Count());
+            {
+                var declarationLines =  lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).ToList();
+                for (var i = declarationLines.Count - 1; i >= 0; i--)
+                {
+                    if (!string.IsNullOrWhiteSpace(declarationLines[i]))
+                    {
+                        return i;
+                    }
+                }
+                return 0;
+            });
 
             // ReSharper disable once UseIndexedProperty
             codeModule.Setup(m => m.get_Lines(It.IsAny<int>(), It.IsAny<int>()))
