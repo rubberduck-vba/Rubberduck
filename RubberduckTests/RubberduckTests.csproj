@@ -103,7 +103,7 @@
     <Compile Include="Inspections\UntypedFunctionUsageInspectionTests.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspectionTests.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspectionTests.cs" />
-    <Compile Include="MockParser.cs" />
+    <Compile Include="Mocks\MockParser.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionTests.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />

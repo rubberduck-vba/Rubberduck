@@ -44,6 +44,7 @@ namespace Rubberduck.Inspections
             
             issues.AddRange(declarations.Where(declaration =>
                 !declaration.IsArray
+                && (declaration.AsTypeDeclaration == null || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
                 && !declareScopes.Contains(declaration.ParentScope)
                 && !eventScopes.Contains(declaration.ParentScope)
                 && !interfaceScopes.Contains(declaration.ParentScope)

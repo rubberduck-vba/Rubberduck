@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
@@ -13,6 +14,7 @@ namespace Rubberduck.UI.Command.MenuItems
     {
         private readonly RubberduckParserState _state;
         private readonly VBE _vbe;
+        private readonly ISinks _sinks;
         private readonly IShowParserErrorsCommand _command;
 
         private CommandBarButton _refreshButton;
@@ -20,16 +22,45 @@ namespace Rubberduck.UI.Command.MenuItems
         private CommandBarButton _selectionButton;
         private CommandBar _commandbar;
 
-        public RubberduckCommandBar(RubberduckParserState state, VBE vbe, IShowParserErrorsCommand command)
+        public RubberduckCommandBar(RubberduckParserState state, VBE vbe, ISinks sinks, IShowParserErrorsCommand command)
         {
             _state = state;
             _vbe = vbe;
+            _sinks = sinks;
             _command = command;
             _state.StateChanged += State_StateChanged;
             Initialize();
+
+            _sinks.ProjectRemoved += ProjectRemoved;
+            _sinks.ComponentActivated += ComponentActivated;
+            _sinks.ComponentSelected += ComponentSelected;
         }
 
-        private void _statusButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void ProjectRemoved(object sender, IProjectEventArgs e)
+        {
+            SetSelectionText();
+        }
+
+        private void ComponentActivated(object sender, IComponentEventArgs e)
+        {
+            SetSelectionText();
+        }
+
+        private void ComponentSelected(object sender, IComponentEventArgs e)
+        {
+            SetSelectionText();
+        }
+
+        private void SetSelectionText()
+        {
+            var selectedDeclaration = _vbe.ActiveCodePane != null
+                            ? _state.FindSelectedDeclaration(_vbe.ActiveCodePane)
+                            : null;
+
+            SetSelectionText(selectedDeclaration);
+        }
+
+        private void _statusButton_Click(CommandBarButton ctrl, ref bool cancelDefault)
         {
             if (_state.Status == ParserState.Error)
             {
@@ -39,7 +70,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public void SetStatusText(string value = null)
         {
-            var text = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status, UI.Settings.Settings.Culture);
+            var text = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status, Settings.Settings.Culture);
             UiDispatcher.Invoke(() => _statusButton.Caption = text);
         }
 
@@ -51,6 +82,10 @@ namespace Rubberduck.UI.Command.MenuItems
                 if (selection.HasValue) { SetSelectionText(selection.Value); }
                 _selectionButton.TooltipText = _selectionButton.Caption;
             }
+            else if (declaration == null && _vbe.ActiveCodePane == null)
+            {
+                UiDispatcher.Invoke(() => _selectionButton.Caption = string.Empty);
+            }
             else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
             {
                 var typeName = declaration.HasTypeHint
@@ -61,7 +96,7 @@ namespace Rubberduck.UI.Command.MenuItems
                     declaration.QualifiedSelection.Selection,
                     declaration.QualifiedName.QualifiedModuleName,
                     declaration.IdentifierName,
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture),
                     string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + typeName);
 
                 _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
@@ -82,7 +117,7 @@ namespace Rubberduck.UI.Command.MenuItems
                         selection.Value.Selection,
                         declaration.QualifiedName.QualifiedModuleName,
                         declaration.IdentifierName,
-                        RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
+                        RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture),
                         string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + typeName);
                 }
                 _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
@@ -100,7 +135,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             if (_state.Status != ParserState.ResolvedDeclarations)
             {
-                SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status, UI.Settings.Settings.Culture));
+                SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status, Settings.Settings.Culture));
             }
         }
 
@@ -115,7 +150,7 @@ namespace Rubberduck.UI.Command.MenuItems
             }
         }
 
-        public void Initialize()
+        private void Initialize()
         {
             _commandbar = _vbe.CommandBars.Add("Rubberduck", MsoBarPosition.msoBarTop, false, true);
 
@@ -139,7 +174,7 @@ namespace Rubberduck.UI.Command.MenuItems
             _commandbar.Visible = true;
         }
 
-        private void refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void refreshButton_Click(CommandBarButton ctrl, ref bool cancelDefault)
         {
             OnRefresh();
         }
@@ -153,6 +188,10 @@ namespace Rubberduck.UI.Command.MenuItems
             }
 
             _state.StateChanged -= State_StateChanged;
+
+            _sinks.ProjectRemoved -= ProjectRemoved;
+            _sinks.ComponentActivated -= ComponentActivated;
+            _sinks.ComponentSelected -= ComponentSelected;
 
             _refreshButton.Delete();
             _selectionButton.Delete();
