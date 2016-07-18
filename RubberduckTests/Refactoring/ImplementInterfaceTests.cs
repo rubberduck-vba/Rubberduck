@@ -65,6 +65,59 @@ End Sub
         }
 
         [TestMethod]
+        public void ImplementInterface_Procedure_ClassHasOtherProcedure()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub Foo()
+End Sub";
+
+            const string inputCode2 =
+@"Implements Class1
+Public Sub Bar()
+End Sub";
+
+            var selection = new Selection(1, 1, 1, 1);
+
+            //Expectation
+            const string expectedCode =
+@"Implements Class1
+
+Private Sub Class1_Foo()
+    Err.Raise 5 'TODO implement interface member
+End Sub
+
+Public Sub Bar()
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                 .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents.Item(1);
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module = project.Object.VBComponents.Item(1).CodeModule;
+
+            //Act
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
         public void ImplementInterface_Procedure_WithParams()
         {
             //Input
