@@ -38,7 +38,6 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
 
             _model = presenter.Show();
-
             if (_model == null)
             {
                 return;
