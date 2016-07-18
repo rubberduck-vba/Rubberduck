@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations
-                .Where(item => !item.IsInspectionDisabled(AnnotationName))
+                .Where(item => !IsInspectionDisabled(item, AnnotationName))
                 .Where(item => item.DeclarationType == DeclarationType.Variable
                             || item.DeclarationType == DeclarationType.Constant)
                 .GroupBy(variable => variable.Context.Parent as ParserRuleContext)

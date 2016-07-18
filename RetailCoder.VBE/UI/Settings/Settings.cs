@@ -42,7 +42,7 @@ namespace Rubberduck.UI.Settings
         {
             if (_configService == null)
             {
-                _cultureInfo = RubberduckUI.Culture;
+                _cultureInfo = RubberduckUI.Culture ?? Dispatcher.CurrentDispatcher.Thread.CurrentUICulture;
                 return;
             }
 

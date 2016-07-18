@@ -34,9 +34,10 @@ namespace Rubberduck.Inspections
             var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements);
             var compositeFix = new CompositeCodeInspectionFix(root);
             children.ToList().ForEach(child => compositeFix.AddChild(new ConvertToProcedureQuickFix(child.Item1, child.Item2, child.Item3)));
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                compositeFix
+                compositeFix,
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
             };
         }
 

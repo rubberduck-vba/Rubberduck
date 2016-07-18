@@ -1,0 +1,90 @@
+using System;
+using System.Linq;
+using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
+using NLog;
+using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.UI.Command;
+
+namespace Rubberduck.UI.CodeExplorer.Commands
+{
+    [CodeExplorerCommand]
+    public class ImportCommand : CommandBase, IDisposable
+    {
+        private readonly VBE _vbe;
+        private readonly IOpenFileDialog _openFileDialog;
+
+        public ImportCommand(VBE vbe, IOpenFileDialog openFileDialog) : base(LogManager.GetCurrentClassLogger())
+        {
+            _vbe = vbe;
+            _openFileDialog = openFileDialog;
+
+            _openFileDialog.AddExtension = true;
+            _openFileDialog.AutoUpgradeEnabled = true;
+            _openFileDialog.CheckFileExists = true;
+            _openFileDialog.Multiselect = true;
+            _openFileDialog.ShowHelp = false;   // we don't want 1996's file picker.
+            _openFileDialog.Filter = @"VB Files|*.cls;*.bas;*.frm";
+            _openFileDialog.CheckFileExists = true;
+        }
+
+        protected override bool CanExecuteImpl(object parameter)
+        {
+            return parameter != null || _vbe.VBProjects.Count == 1 || _vbe.ActiveVBProject != null;
+        }
+
+        protected override void ExecuteImpl(object parameter)
+        {
+            var project = GetNodeProject((CodeExplorerItemViewModel)parameter);
+            if (project == null)
+            {
+                if (_vbe.VBProjects.Count == 1)
+                {
+                    project = _vbe.VBProjects.Item(1);
+                }
+                else if (_vbe.ActiveVBProject != null)
+                {
+                    project = _vbe.ActiveVBProject;
+                }
+            }
+
+            if (_openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                var fileExts = _openFileDialog.FileNames.Select(s => s.Split('.').Last());
+                if (fileExts.Any(fileExt => !new[] {"bas", "cls", "frm"}.Contains(fileExt)))
+                {
+                    return;
+                }
+
+                foreach (var filename in _openFileDialog.FileNames)
+                {
+                    project.VBComponents.Import(filename);
+                }
+            }
+        }
+
+        private VBProject GetNodeProject(CodeExplorerItemViewModel parameter)
+        {
+            if (parameter is ICodeExplorerDeclarationViewModel)
+            {
+                return parameter.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Project;
+            }
+
+            var node = parameter.Parent;
+            while (!(node is ICodeExplorerDeclarationViewModel))
+            {
+                node = node.Parent;
+            }
+
+            return ((ICodeExplorerDeclarationViewModel)node).Declaration.QualifiedName.QualifiedModuleName.Project;
+        }
+
+        public void Dispose()
+        {
+            if (_openFileDialog != null)
+            {
+                _openFileDialog.Dispose();
+            }
+        }
+    }
+}

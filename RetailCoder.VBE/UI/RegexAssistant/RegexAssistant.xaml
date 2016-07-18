@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="Rubberduck.UI.RegexAssistant.RegexAssistant"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:assistant="clr-namespace:Rubberduck.UI.RegexAssistant"
+             mc:Ignorable="d" Width="555"
+             d:DataContext="{d:DesignInstance {x:Type assistant:RegexAssistantViewModel}, IsDesignTimeCreatable=False}" Height="302">
+
+    <UserControl.Resources>
+        
+        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFD9F4FF" Offset="0"/>
+            <GradientStop Color="#FF9BDDFB" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFEEEDED" Offset="0"/>
+            <GradientStop Color="#FFDDDDDD" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+
+        <Style x:Key="ShinyTreeView" TargetType="{x:Type TreeViewItem}">
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="2" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True"/>
+                        <Condition Property="IsSelectionActive" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                </MultiTrigger>
+            </Style.Triggers>
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <HierarchicalDataTemplate
+            x:Key="RecursiveData" 
+            DataType="TreeViewItem"
+            ItemContainerStyle="{StaticResource ShinyTreeView}"
+            ItemsSource="{Binding Items}">
+        </HierarchicalDataTemplate>
+        
+    </UserControl.Resources>
+    
+    <Grid Margin="5">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="180"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Grid.Row="0">
+            <GroupBox.Header>
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_RegexPatternLabel}" FontWeight="SemiBold" />
+            </GroupBox.Header>
+
+            <StackPanel>
+                <TextBox HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top" Height="23"
+                            VerticalContentAlignment="Center" Margin="5" 
+                            Text="{Binding Pattern, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+                    <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_GlobalFlag}" 
+                                IsChecked="{Binding GlobalFlag}"
+                                Margin="0,0,5,0"/>
+                    <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_IgnoreCaseFlag}"
+                                IsChecked="{Binding IgnoreCaseFlag}"
+                                Margin="0,0,5,0"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Margin="5">
+            <GroupBox.Header>
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RegexAssistant_DescriptionResultsLabel}" FontWeight="SemiBold" />
+            </GroupBox.Header>
+
+            <TreeView Margin="5" 
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ItemTemplate="{StaticResource RecursiveData}" 
+                      ItemContainerStyle="{StaticResource ShinyTreeView}"
+                      ItemsSource="{Binding ResultItems}"/>
+        </GroupBox>
+    </Grid>
+</UserControl>

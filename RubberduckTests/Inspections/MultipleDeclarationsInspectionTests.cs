@@ -149,6 +149,33 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void MultipleDeclarations_Ignore_DoesNotReturnResult_Variables()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    '@Ignore MultipleDeclarations
+    Dim var1 As Integer, var2 As String
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MultipleDeclarationsInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleDeclarations_QuickFixWorks_Variables()
         {
             const string inputCode =
@@ -254,6 +281,42 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MultipleDeclarations_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer, var2 As String
+End Sub";
+
+            const string expectedCode =
+@"Public Sub Foo()
+'@Ignore MultipleDeclarations
+    Dim var1 As Integer, var2 As String
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MultipleDeclarationsInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }

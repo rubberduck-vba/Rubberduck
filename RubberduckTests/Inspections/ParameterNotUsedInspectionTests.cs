@@ -158,6 +158,32 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ParameterNotUsed_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"'@Ignore ParameterNotUsed
+Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void GivenPrivateSub_DefaultQuickFixRemovesParameter()
         {
             const string inputCode =
@@ -185,6 +211,40 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void GivenPrivateSub_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore ParameterNotUsed
+Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }

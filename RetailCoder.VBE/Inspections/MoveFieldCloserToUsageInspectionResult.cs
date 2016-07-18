@@ -15,9 +15,10 @@ namespace Rubberduck.Inspections
         public MoveFieldCloserToUsageInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
             : base(inspection, target)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new MoveFieldCloserToUsageQuickFix(target.Context, target.QualifiedSelection, target, state, messageBox),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
             };
         }
 

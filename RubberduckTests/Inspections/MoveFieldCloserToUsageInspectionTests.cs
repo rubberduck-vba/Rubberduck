@@ -7,6 +7,7 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -211,43 +212,108 @@ End Property";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MoveFieldCloserToUsage_QuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Private bar As String
-//Public Sub Foo()
-//    bar = ""test""
-//End Sub";
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MoveFieldCloserToUsage_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"'@Ignore MoveFieldCloserToUsage
+Private bar As String
+Public Sub Foo()
+    bar = ""test""
+End Sub";
 
-//            const string expectedCode =
-//@"Public Sub Foo()
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
 
-//    Dim bar As String
-//    bar = ""test""
-//End Sub";
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            VBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var project = vbe.Object.VBProjects.Item(0);
-//            var module = project.VBComponents.Item(0).CodeModule;
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+            var inspection = new MoveFieldCloserToUsageInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            Assert.IsFalse(inspectionResults.Any());
+        }
 
-//            var inspection = new MoveFieldCloserToUsageInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MoveFieldCloserToUsage_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Private bar As String
+Public Sub Foo()
+    bar = ""test""
+End Sub";
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+            const string expectedCode =
+@"'@Ignore MoveFieldCloserToUsage
+Private bar As String
+Public Sub Foo()
+    bar = ""test""
+End Sub";
 
-//            Assert.AreEqual(expectedCode, module.Lines());
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var module = vbe.Object.VBProjects.Item(0).VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MoveFieldCloserToUsageInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MoveFieldCloserToUsage_QuickFixWorks()
+        {
+            const string inputCode =
+@"Private bar As String
+Public Sub Foo()
+    bar = ""test""
+End Sub";
+
+            const string expectedCode =
+@"Public Sub Foo()
+
+    Dim bar As String
+    bar = ""test""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MoveFieldCloserToUsageInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
 
         [TestMethod]
         [TestCategory("Inspections")]

@@ -33,6 +33,7 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI.CodeExplorer.Commands;
 
 namespace Rubberduck.Root
 {
@@ -143,6 +144,7 @@ namespace Rubberduck.Root
             ConfigureFormDesignerContextMenu();
             ConfigureFormDesignerControlContextMenu();
             ConfigureProjectExplorerContextMenu();
+            
 
             BindWindowsHooks();
         }
@@ -217,9 +219,25 @@ namespace Rubberduck.Root
             // multibinding for IEnumerable<IInspection> dependency
             foreach (var inspection in inspections)
             {
-                var binding = Bind<IInspection>().To(inspection).InSingletonScope();
-                binding.Intercept().With<TimedCallLoggerInterceptor>();
-                binding.Intercept().With<EnumerableCounterInterceptor<InspectionResultBase>>();
+                if (typeof(IParseTreeInspection).IsAssignableFrom(inspection))
+                {
+                    var binding = Bind<IParseTreeInspection>()
+                        .To(inspection)
+                        .InSingletonScope()
+                        .Named(inspection.FullName);
+
+                    binding.Intercept().With<TimedCallLoggerInterceptor>();
+                    binding.Intercept().With<EnumerableCounterInterceptor<InspectionResultBase>>();
+
+                    Bind<IInspection>().ToMethod(
+                        c => c.Kernel.Get<IParseTreeInspection>(inspection.FullName));
+                }
+                else
+                {
+                    var binding = Bind<IInspection>().To(inspection).InSingletonScope();
+                    binding.Intercept().With<TimedCallLoggerInterceptor>();
+                    binding.Intercept().With<EnumerableCounterInterceptor<InspectionResultBase>>();
+                }
             }
         }
 
@@ -339,9 +357,7 @@ namespace Rubberduck.Root
         {
             var commands = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(type => type.IsClass && type.Namespace != null &&
-                               type.Namespace == "Rubberduck.UI.CodeExplorer.Commands" &&
-                               type.Name.StartsWith("CodeExplorer_") && 
-                               type.Name.EndsWith("Command"));
+                               type.CustomAttributes.Any(a => a.AttributeType == typeof(CodeExplorerCommandAttribute)));
 
             foreach (var command in commands)
             {
@@ -368,9 +384,9 @@ namespace Rubberduck.Root
                 Kernel.Get<AboutCommandMenuItem>(),
                 Kernel.Get<SettingsCommandMenuItem>(),
                 Kernel.Get<InspectionResultsCommandMenuItem>(),
-                Kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
                 GetSmartIndenterParentMenu(),
+                GetToolsParentMenu(),
                 GetRefactoringsParentMenu(),
                 GetNavigateParentMenu(),
             };
@@ -412,7 +428,6 @@ namespace Rubberduck.Root
             var items = new IMenuItem[]
             {
                 Kernel.Get<CodeExplorerCommandMenuItem>(),
-                Kernel.Get<ToDoExplorerCommandMenuItem>(),
                 //Kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 Kernel.Get<FindSymbolCommandMenuItem>(),
                 Kernel.Get<FindAllReferencesCommandMenuItem>(),
@@ -439,11 +454,22 @@ namespace Rubberduck.Root
             {
                 GetRefactoringsParentMenu(),
                 GetSmartIndenterParentMenu(),
-                //Kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 Kernel.Get<FindSymbolCommandMenuItem>(),
                 Kernel.Get<FindAllReferencesCommandMenuItem>(),
                 Kernel.Get<FindAllImplementationsCommandMenuItem>(),
             };
+        }
+
+        private IMenuItem GetToolsParentMenu()
+        {
+            var items = new IMenuItem[]
+            {
+                Kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
+                Kernel.Get<RegexAssistantCommandMenuItem>(),
+                Kernel.Get<ToDoExplorerCommandMenuItem>(),
+            };
+
+            return new ToolsParentMenu(items);
         }
 
         private IEnumerable<IMenuItem> GetFormDesignerContextMenuItems()

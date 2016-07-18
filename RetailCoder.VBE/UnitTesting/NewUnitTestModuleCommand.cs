@@ -28,7 +28,7 @@ namespace Rubberduck.UnitTesting
         private readonly string _moduleInit = string.Concat(
             "'@ModuleInitialize\n"
             , "Public Sub ModuleInitialize()\n"
-            , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\n{0}\n"
+            , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\n    {0}\n"
             , "End Sub\n\n"
             , "'@ModuleCleanup\n"
             , "Public Sub ModuleCleanup()\n"

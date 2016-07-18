@@ -93,7 +93,7 @@ namespace Rubberduck.Parsing.VBA
             
             Debug.Assert(e.ProjectId != null);
 
-            RemoveProject(e.ProjectId);
+            RemoveProject(e.ProjectId, true);
             OnParseRequested(sender);
         }
 
@@ -224,27 +224,14 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void RemoveProject(string projectId)
+        private void RemoveProject(string projectId, bool notifyStateChanged = false)
         {
-            VBProject project = null;
-            foreach (var p in Projects)
-            {
-                if (p.HelpFile == projectId)
-                {
-                    project = p;
-                    break;
-                }
-            }
-
             if (_projects.ContainsKey(projectId))
             {
                 _projects.Remove(projectId);
             }
 
-            if (project != null)
-            {
-                ClearStateCache(project);
-            }
+            ClearStateCache(projectId, notifyStateChanged);
         }
 
         public List<VBProject> Projects
@@ -654,20 +641,30 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ClearStateCache(VBProject project, bool notifyStateChanged = false)
+        private void ClearStateCache(string projectId, bool notifyStateChanged = false)
         {
             try
             {
-                foreach (VBComponent component in project.VBComponents)
+                var qualifiedModuleName = new QualifiedModuleName();
+
+                foreach (var moduleState in _moduleStates)
                 {
-                    while (!ClearStateCache(component))
+                    if (moduleState.Key.ProjectId == projectId && moduleState.Key.Component != null)
                     {
-                        // until Hell freezes over?
+                        while (!ClearStateCache(moduleState.Key.Component))
+                        {
+                            // until Hell freezes over?
+                        }
+                    }
+                    else if (moduleState.Key.ProjectId == projectId && moduleState.Key.Component == null)
+                    {
+                        // store project module name
+                        qualifiedModuleName = moduleState.Key;
                     }
                 }
 
                 ModuleState state;
-                if (_moduleStates.TryRemove(new QualifiedModuleName(project), out state))
+                if (_moduleStates.TryRemove(qualifiedModuleName, out state))
                 {
                     state.Dispose();
                 }

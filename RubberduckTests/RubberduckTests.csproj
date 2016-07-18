@@ -98,10 +98,12 @@
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MultipleFolderAnnotationsInspectionTests.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInpsectionTests.cs" />
+    <Compile Include="Inspections\MalformedAnnotationInspectionTests.cs" />
+    <Compile Include="Inspections\SelfAssignedDeclarationInspectionTests.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionTests.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspectionTests.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspectionTests.cs" />
-    <Compile Include="MockParser.cs" />
+    <Compile Include="Mocks\MockParser.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionTests.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
@@ -125,8 +127,8 @@
     <Compile Include="Inspections\ParameterCanBeByValInspectionTests.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\ProcedureNotUsedInspectionTests.cs" />
-    <Compile Include="Inspections\VariableIsNeverAssignedInspectionTests.cs" />
-    <Compile Include="Inspections\VariableNeverUsedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableNotAssignedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionTests.cs" />
     <Compile Include="Mocks\MockFactory.cs" />
     <Compile Include="Mocks\MockProjectBuilder.cs" />

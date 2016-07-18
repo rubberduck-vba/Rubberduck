@@ -5,20 +5,17 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Common.WinAPI;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.Refactorings;
 using NLog;
 
 namespace Rubberduck.Common
 {
     public class RubberduckHooks : IRubberduckHooks
     {
-        private readonly VBE _vbe;
         private readonly IntPtr _mainWindowHandle;
         private readonly IntPtr _oldWndPointer;
         private readonly User32.WndProc _oldWndProc;
@@ -33,7 +30,6 @@ namespace Rubberduck.Common
 
         public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<CommandBase> commands)
         {
-            _vbe = vbe;
             _mainWindowHandle = (IntPtr)vbe.MainWindow.HWnd;
             _oldWndProc = WindowProc;
             _newWndProc = WindowProc;
@@ -174,7 +170,7 @@ namespace Rubberduck.Common
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
             var hotkey = sender as IHotkey;
-            if (hotkey != null)
+            if (hotkey != null && hotkey.Command.CanExecute(null))
             {
                 hotkey.Command.Execute(null);
                 return;

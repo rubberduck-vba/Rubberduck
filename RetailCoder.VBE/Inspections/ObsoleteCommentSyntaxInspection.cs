@@ -21,7 +21,8 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            return State.AllComments.Where(comment => comment.Marker == Tokens.Rem)
+            return State.AllComments.Where(comment => comment.Marker == Tokens.Rem &&
+                                            !IsInspectionDisabled(comment.QualifiedSelection.QualifiedName.Component, comment.QualifiedSelection.Selection.StartLine))
                 .Select(comment => new ObsoleteCommentSyntaxInspectionResult(this, comment));
         }
     }
