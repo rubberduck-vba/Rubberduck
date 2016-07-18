@@ -139,6 +139,7 @@
     <Compile Include="Preprocessing\VBAPreprocessorTests.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorVisitorTests.cs" />
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
+    <Compile Include="Refactoring\ExtractInterfaceTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractedMethodRefactoringTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractMethodExtractionTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractMethodParameterClassificationTests.cs" />

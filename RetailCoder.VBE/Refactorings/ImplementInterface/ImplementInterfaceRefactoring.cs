@@ -17,7 +17,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        private List<Declaration> _declarations;
+        private readonly List<Declaration> _declarations;
         private Declaration _targetInterface;
         private Declaration _targetClass;
 
@@ -91,7 +91,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             var missingMembersText = members.Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
 
-            module.InsertLines(module.CountOfDeclarationLines + 2, missingMembersText);
+            module.InsertLines(module.CountOfDeclarationLines + 1, missingMembersText);
         }
 
         private string GetInterfaceMember(Declaration member)

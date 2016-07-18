@@ -17,11 +17,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
-        private readonly IRefactoringPresenterFactory<ExtractInterfacePresenter> _factory;
+        private readonly IRefactoringPresenterFactory<IExtractInterfacePresenter> _factory;
         private ExtractInterfaceModel _model;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ExtractInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<ExtractInterfacePresenter> factory)
+        public ExtractInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<IExtractInterfacePresenter> factory)
         {
             _vbe = vbe;
             _state = state;
@@ -38,7 +38,6 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
 
             _model = presenter.Show();
-
             if (_model == null)
             {
                 return;
@@ -66,8 +65,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var interfaceComponent = _model.TargetDeclaration.Project.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
             interfaceComponent.Name = _model.InterfaceName;
 
-            _vbe.ActiveCodePane.CodeModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
-            _vbe.ActiveCodePane.CodeModule.InsertLines(3, GetInterfaceModuleBody());
+            interfaceComponent.CodeModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
+            interfaceComponent.CodeModule.InsertLines(3, GetInterfaceModuleBody());
 
             var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;
 
@@ -85,14 +84,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
             {
                 return;
             }
-            
+
+            _state.StateChanged -= _state_StateChanged;
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
             _vbe.ActiveCodePane.CodeModule.SetSelection(qualifiedSelection);
 
             var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _state, _messageBox);
             implementInterfaceRefactoring.Refactor(qualifiedSelection);
-
-            _state.StateChanged -= _state_StateChanged;
         }
 
         private string GetInterfaceModuleBody()
