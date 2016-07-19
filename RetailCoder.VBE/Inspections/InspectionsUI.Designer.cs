@@ -1240,7 +1240,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions..
+        ///   Looks up a localized string similar to A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions. However, this function will crash if passed a &apos;Null&apos; value, so do not use it if the value passed can be &apos;Null&apos;..
         /// </summary>
         public static string UntypedFunctionUsageInspectionMeta {
             get {
