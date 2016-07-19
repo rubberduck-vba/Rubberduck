@@ -404,6 +404,7 @@
     <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="Settings\ToDoListConfigProvider.cs" />
     <Compile Include="Settings\UnitTestConfigProvider.cs" />
+    <Compile Include="Settings\WhitelistedNameSetting.cs" />
     <Compile Include="Sinks.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>

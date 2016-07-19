@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -10,11 +13,13 @@ namespace Rubberduck.Inspections
     public sealed class UseMeaningfulNameInspection : InspectionBase
     {
         private readonly IMessageBox _messageBox;
+        private readonly IPersistanceService<CodeInspectionSettings> _settings;
 
-        public UseMeaningfulNameInspection(IMessageBox messageBox, RubberduckParserState state)
+        public UseMeaningfulNameInspection(IMessageBox messageBox, RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
             _messageBox = messageBox;
+            _settings = settings;
         }
 
         public override string Description { get { return InspectionsUI.UseMeaningfulNameInspectionName; } }
@@ -22,8 +27,17 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
+            var whitelistedNames = new List<string>();
+
+            try
+            {
+                whitelistedNames = _settings.Load(new CodeInspectionSettings()).WhitelistedNames.Select(s => s.Name).ToList();
+            }
+            catch (IOException) { }
+
             var issues = UserDeclarations
-                            .Where(declaration => declaration.DeclarationType != DeclarationType.ModuleOption && 
+                            .Where(declaration => declaration.DeclarationType != DeclarationType.ModuleOption &&
+                                                  !whitelistedNames.Contains(declaration.IdentifierName) &&
                                                   (declaration.IdentifierName.Length < 3 ||
                                                   char.IsDigit(declaration.IdentifierName.Last()) ||
                                                   !declaration.IdentifierName.Any(c => 

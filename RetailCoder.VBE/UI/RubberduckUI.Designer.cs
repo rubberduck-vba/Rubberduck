@@ -679,6 +679,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Whitelisted Names.
+        /// </summary>
+        public static string CodeInspectionSettings_WhitelistedNamesLabel {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_WhitelistedNamesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do Not Show.
         /// </summary>
         public static string CodeInspectionSeverity_DoNotShow {

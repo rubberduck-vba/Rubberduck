@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using NLog;
 using Rubberduck.Inspections;
 using Rubberduck.Settings;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
@@ -12,6 +16,9 @@ namespace Rubberduck.UI.Settings
         {
             InspectionSettings = new ListCollectionView(
                     config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
+
+            WhitelistedNameSettings = new ObservableCollection<WhitelistedNameSetting>(
+                config.UserSettings.CodeInspectionSettings.WhitelistedNames.Distinct());
 
             if (InspectionSettings.GroupDescriptions != null)
             {
@@ -45,9 +52,24 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private ObservableCollection<WhitelistedNameSetting> _whitelistedNameSettings;
+        public ObservableCollection<WhitelistedNameSetting> WhitelistedNameSettings
+        {
+            get { return _whitelistedNameSettings; }
+            set
+            {
+                if (_whitelistedNameSettings != value)
+                {
+                    _whitelistedNameSettings = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.CodeInspectionSettings.CodeInspections = new HashSet<CodeInspectionSetting>(InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>());
+            config.UserSettings.CodeInspectionSettings.WhitelistedNames = WhitelistedNameSettings.Distinct().ToArray();
         }
 
         public void SetToDefaults(Configuration config)
@@ -58,6 +80,43 @@ namespace Rubberduck.UI.Settings
             if (InspectionSettings.GroupDescriptions != null)
             {
                 InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
+            }
+
+            WhitelistedNameSettings = new ObservableCollection<WhitelistedNameSetting>();
+        }
+
+        private CommandBase _addWhitelistedNameCommand;
+        public CommandBase AddWhitelistedNameCommand
+        {
+            get
+            {
+                if (_addWhitelistedNameCommand != null)
+                {
+                    return _addWhitelistedNameCommand;
+                }
+                return _addWhitelistedNameCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
+                {
+                    var placeholder = WhitelistedNameSettings.Count(m => m.Name.StartsWith("PLACEHOLDER")) + 1;
+                    WhitelistedNameSettings.Add(
+                        new WhitelistedNameSetting(string.Format("PLACEHOLDER{0}",
+                            placeholder == 1 ? string.Empty : placeholder.ToString(CultureInfo.InvariantCulture))));
+                });
+            }
+        }
+
+        private CommandBase _deleteWhitelistedNameCommand;
+        public CommandBase DeleteWhitelistedNameCommand
+        {
+            get
+            {
+                if (_deleteWhitelistedNameCommand != null)
+                {
+                    return _deleteWhitelistedNameCommand;
+                }
+                return _deleteWhitelistedNameCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), value =>
+                {
+                    WhitelistedNameSettings.Remove(value as WhitelistedNameSetting);
+                });
             }
         }
     }
