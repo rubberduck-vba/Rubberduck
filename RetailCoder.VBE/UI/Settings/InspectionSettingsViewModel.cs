@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Settings
                     config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
 
             WhitelistedNameSettings = new ObservableCollection<WhitelistedNameSetting>(
-                config.UserSettings.CodeInspectionSettings.WhitelistedNames.Distinct());
+                config.UserSettings.CodeInspectionSettings.WhitelistedNames.OrderBy(o => o.Name).Distinct());
 
             if (InspectionSettings.GroupDescriptions != null)
             {

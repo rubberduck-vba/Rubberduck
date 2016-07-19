@@ -1575,7 +1575,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Parser Errors</value>
   </data>
   <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimum Log Level</value>
+    <value>Minimum Log Level:</value>
   </data>
   <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
     <value>Debug</value>
@@ -1764,6 +1764,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Regular Expression Analyzer</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedNamesLabel" xml:space="preserve">
-    <value>Whitelisted Names</value>
+    <value>Whitelisted Names:</value>
   </data>
 </root>

@@ -679,7 +679,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Whitelisted Names.
+        ///   Looks up a localized string similar to Whitelisted Names:.
         /// </summary>
         public static string CodeInspectionSettings_WhitelistedNamesLabel {
             get {
@@ -1408,7 +1408,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimum Log Level.
+        ///   Looks up a localized string similar to Minimum Log Level:.
         /// </summary>
         public static string GeneralSettings_MinimumLogLevelLabel {
             get {

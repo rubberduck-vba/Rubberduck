@@ -275,52 +275,56 @@
                         </Style>
                     </Label.Style>
                 </Label>
-                <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}"
-                                       AutoGenerateColumns="False"
-                                       CanUserReorderColumns="False"
-                                       IsReadOnly="False"
-                                       SelectionMode="Single"
-                                       CanUserAddRows="False"
-                                       HorizontalGridLinesBrush="Transparent"
-                                       VerticalGridLinesBrush="Transparent"
-                                       HeadersVisibility="None"
-                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                       ColumnHeaderHeight="22"
-                                       BorderThickness="0"
-                                       CellEditEnding="GroupingGrid_CellEditEnding"
-                                       MaxHeight="200">
-                    <controls:GroupingGrid.Columns>
-                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}"
-                                                Width="2.75*"
-                                                IsReadOnly="True"
-                                                SortMemberPath="{Binding LocalizedName}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding LocalizedName}">
-                                        <TextBlock.ToolTip>
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding LocalizedName}"
-                                                           FontWeight="SemiBold"
-                                                           MaxWidth="300"
-                                                           TextWrapping="WrapWithOverflow" />
-                                                <TextBlock Text="{Binding Meta}"
-                                                           MaxWidth="300"
-                                                           TextWrapping="WrapWithOverflow" />
-                                            </StackPanel>
-                                        </TextBlock.ToolTip>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}"
-                                                Width="*"
-                                                ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}"
-                                                SelectedItemBinding="{Binding Path=SeverityLabel}" />
-                    </controls:GroupingGrid.Columns>
-                </controls:GroupingGrid>
+                <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
+                    <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}"
+                                           AutoGenerateColumns="False"
+                                           CanUserReorderColumns="False"
+                                           IsReadOnly="False"
+                                           SelectionMode="Single"
+                                           CanUserAddRows="False"
+                                           HorizontalGridLinesBrush="Transparent"
+                                           VerticalGridLinesBrush="Transparent"
+                                           HeadersVisibility="None"
+                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                           ColumnHeaderHeight="22"
+                                           BorderThickness="0"
+                                           CellEditEnding="GroupingGrid_CellEditEnding"
+                                           Height="200">
+                        <controls:GroupingGrid.Columns>
+                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}"
+                                                    Width="2.75*"
+                                                    IsReadOnly="True"
+                                                    SortMemberPath="{Binding LocalizedName}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding LocalizedName}">
+                                            <TextBlock.ToolTip>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding LocalizedName}"
+                                                               FontWeight="SemiBold"
+                                                               MaxWidth="300"
+                                                               TextWrapping="WrapWithOverflow" />
+                                                    <TextBlock Text="{Binding Meta}"
+                                                               MaxWidth="300"
+                                                               TextWrapping="WrapWithOverflow" />
+                                                </StackPanel>
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}"
+                                                    Width="*"
+                                                    ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}"
+                                                    SelectedItemBinding="{Binding Path=SeverityLabel}" />
+                        </controls:GroupingGrid.Columns>
+                    </controls:GroupingGrid>
+                </Border>
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_WhitelistedNamesLabel}"
+                       FontWeight="SemiBold"
+                       Margin="0,5,0,0" />
                 <ToolBarTray IsLocked="True"
-                             Background="Transparent"
-                             Margin="0,5,0,0">
+                             Background="Transparent">
                     <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
                              Background="Transparent">
                         <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}"
@@ -335,10 +339,10 @@
                         </Button>
                         <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}"
                                 Command="{Binding DeleteWhitelistedNameCommand}"
-                                CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=CurrentItem}"
+                                CommandParameter="{Binding ElementName=WhitelistedNamesGrid, Path=CurrentItem}"
                                 BorderThickness="0"
                                 Background="Transparent"
-                                IsEnabled="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
+                                IsEnabled="{Binding ElementName=WhitelistedNamesGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="{StaticResource DeleteImage}" />
                                 <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}"
@@ -347,40 +351,41 @@
                         </Button>
                     </ToolBar>
                 </ToolBarTray>
-                <DataGrid Name="WhitelistedNamesGrid"
-                          ItemsSource="{Binding WhitelistedNameSettings}"
-                          AutoGenerateColumns="False"
-                          CanUserReorderColumns="False"
-                          IsReadOnly="False"
-                          SelectionMode="Single"
-                          CanUserAddRows="False"
-                          CanUserSortColumns="False"
-                          HorizontalGridLinesBrush="Transparent"
-                          VerticalGridLinesBrush="Transparent"
-                          HeadersVisibility="Column"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                          ItemContainerStyle="{StaticResource PrettifyRow}"
-                          ColumnHeaderHeight="22"
-                          BorderThickness="0">
-                    <DataGrid.InputBindings>
-                        <KeyBinding Key="Delete"
-                                    Command="{Binding DeleteWhitelistedNameCommand}"
-                                    CommandParameter="{Binding ElementName=WhitelistedNamesGrid, Path=SelectedItem}" />
-                    </DataGrid.InputBindings>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}">
-                            <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="Background" Value="Transparent" />
-                        </Style>
-                    </DataGrid.CellStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_WhitelistedNamesLabel}"
-                                            Width="*"
-                                            Binding="{Binding Name}"
-                                            SortDirection="Ascending" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
+                    <DataGrid Name="WhitelistedNamesGrid"
+                              ItemsSource="{Binding WhitelistedNameSettings}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              IsReadOnly="False"
+                              SelectionMode="Single"
+                              CanUserAddRows="False"
+                              CanUserSortColumns="False"
+                              HorizontalGridLinesBrush="Transparent"
+                              VerticalGridLinesBrush="Transparent"
+                              HeadersVisibility="None"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
+                              ColumnHeaderHeight="22"
+                              BorderThickness="0"
+                              Height="200">
+                        <DataGrid.InputBindings>
+                            <KeyBinding Key="Delete"
+                                        Command="{Binding DeleteWhitelistedNameCommand}"
+                                        CommandParameter="{Binding ElementName=WhitelistedNamesGrid, Path=SelectedItem}" />
+                        </DataGrid.InputBindings>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="*"
+                                                Binding="{Binding Name}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
             </StackPanel>
         </ScrollViewer>
     </Grid>
