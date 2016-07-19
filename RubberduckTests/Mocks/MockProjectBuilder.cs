@@ -158,17 +158,18 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => Components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(Components.Count);
 
-            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>())).Callback((vbext_ComponentType c) =>
-            {
-                _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection()));
-            });
-            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>())).Returns(() =>
-            {
-                var lastComponent = _componentsMock.LastOrDefault();
-                return lastComponent == null
-                    ? null
-                    : lastComponent.Object;
-            });
+            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>()))
+                .Callback((vbext_ComponentType c) =>
+                {
+                    _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection()));
+                })
+                .Returns(() =>
+                {
+                    var lastComponent = _componentsMock.LastOrDefault();
+                    return lastComponent == null
+                        ? null
+                        : lastComponent.Object;
+                });
 
             result.Setup(m => m.Remove(It.IsAny<VBComponent>())).Callback((VBComponent c) =>
             {
@@ -273,7 +274,7 @@ namespace RubberduckTests.Mocks
 
             // ReSharper disable once UseIndexedProperty
             codeModule.Setup(m => m.get_Lines(It.IsAny<int>(), It.IsAny<int>()))
-                .Returns<int, int>((start, count) => String.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
+                .Returns<int, int>((start, count) => string.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
 
             codeModule.Setup(m => m.ReplaceLine(It.IsAny<int>(), It.IsAny<string>()))
                 .Callback<int, string>((index, str) => lines[index - 1] = str);
@@ -286,11 +287,11 @@ namespace RubberduckTests.Mocks
                 {
                     if (index - 1 >= lines.Count)
                     {
-                        lines.Add(newLine);
+                        lines.AddRange(newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                     }
                     else
                     {
-                        lines.Insert(index - 1, newLine);
+                        lines.InsertRange(index - 1, newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                     }
                 });
 

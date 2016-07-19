@@ -6,6 +6,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
+using System.Linq;
 
 namespace Rubberduck.UI.Command
 {
@@ -27,9 +28,11 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
+        private static readonly ParserState[] AllowedRunStates = { ParserState.ResolvedDeclarations, ParserState.ResolvingReferences, ParserState.Ready };
+
         protected override bool CanExecuteImpl(object parameter)
         {
-            return _vbe.IsInDesignMode();
+            return _vbe.IsInDesignMode() && AllowedRunStates.Contains(_state.Status);
         }
 
         protected override void ExecuteImpl(object parameter)

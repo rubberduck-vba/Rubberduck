@@ -27,6 +27,7 @@ OutputDir={#OutputDirectory}
 OutputBaseFilename=Rubberduck.Setup.{#AppVersion}
 Compression=lzma
 SolidCompression=yes
+SignTool=RubberduckSignTool /d $qRubberduck Installer$q $f
 
 ArchitecturesAllowed=x86 x64
 ArchitecturesInstallIn64BitMode=x64

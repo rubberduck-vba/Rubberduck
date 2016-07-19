@@ -6,6 +6,7 @@ using System.Threading;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.ToDoItems;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 using Rubberduck.Common;
@@ -71,6 +72,37 @@ namespace RubberduckTests.TodoExplorer
             var comments = vm.Items.Select(s => s.Type);
 
             Assert.IsTrue(comments.SequenceEqual(new[] { "TODO ", "NOTE ", "BUG ", "BUG " }));
+        }
+
+        [TestMethod]
+        public void RemoveRemovesComment()
+        {
+            var input =
+@"Dim d As Variant  ' bug should be Integer";
+
+            var expected =
+@"Dim d As Variant  ";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, input)
+                .Build();
+
+            var vbe = builder.AddProject(project).Build();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+
+            var vm = new ToDoExplorerViewModel(parser.State, GetConfigService(), GetOperatingSystemMock().Object);
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Items.Single();
+            vm.RemoveCommand.Execute(null);
+
+            Assert.AreEqual(expected, project.Object.VBComponents.Item(0).CodeModule.Lines());
+            Assert.IsFalse(vm.Items.Any());
         }
 
         private IGeneralConfigService GetConfigService()
