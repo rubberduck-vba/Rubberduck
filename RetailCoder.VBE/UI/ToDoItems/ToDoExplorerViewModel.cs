@@ -107,7 +107,7 @@ namespace Rubberduck.UI.ToDoItems
 
         private void _state_StateChanged(object sender, EventArgs e)
         {
-            if (_state.Status != ParserState.Ready)
+            if (_state.Status != ParserState.ResolvedDeclarations)
             {
                 return;
             }
