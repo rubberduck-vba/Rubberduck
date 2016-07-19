@@ -274,6 +274,7 @@
             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
+            <EventSetter Event="MouseDoubleClick" Handler="TreeView_OnMouseDoubleClick" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
@@ -726,7 +727,6 @@
                   Background="White"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
-                  MouseDoubleClick="TreeView_OnMouseDoubleClick"
                   Style="{StaticResource CodeExplorerTreeViewStyle}" BorderThickness="0,1"
                   VirtualizingPanel.IsVirtualizing="False">
             <i:Interaction.Behaviors>
