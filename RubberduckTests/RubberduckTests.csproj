@@ -88,6 +88,7 @@
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="FindCommands\FindAllImplementationsTests.cs" />
     <Compile Include="FindCommands\FindAllReferencesTests.cs" />
     <Compile Include="Grammar\AnnotationTests.cs" />
     <Compile Include="Grammar\ResolverTests.cs" />
