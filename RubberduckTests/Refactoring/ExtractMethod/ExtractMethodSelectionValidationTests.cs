@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
