@@ -43,8 +43,20 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return;
             }
 
+            QualifiedSelection? oldSelection = null;
+            if (_vbe.ActiveCodePane != null)
+            {
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            }
+
             AdjustReferences(_model.TargetDeclaration.References);
             AdjustSignatures();
+
+            if (oldSelection.HasValue)
+            {
+                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
+                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+            }
 
             _model.State.OnParseRequested(this);
         }
