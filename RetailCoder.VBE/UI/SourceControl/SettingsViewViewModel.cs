@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using System.Windows.Input;
 using NLog;
 using Rubberduck.UI.Command;
 using Rubberduck.SourceControl;
@@ -45,7 +44,12 @@ namespace Rubberduck.UI.SourceControl
         }
 
         public ISourceControlProvider Provider { get; set; }
-        public void RefreshView() {} // nothing to refresh here
+        public void RefreshView() { } // nothing to refresh here
+
+        public void ResetView()
+        {
+            Provider = null;
+        }
 
         public SourceControlTab Tab { get { return SourceControlTab.Settings; } }
 

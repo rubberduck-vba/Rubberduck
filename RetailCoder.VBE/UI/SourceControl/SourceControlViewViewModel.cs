@@ -93,6 +93,7 @@ namespace Rubberduck.UI.SourceControl
             _sinks.ComponentAdded += ComponentAdded;
             _sinks.ComponentRemoved += ComponentRemoved;
             _sinks.ComponentRenamed += ComponentRenamed;
+            _sinks.ProjectRemoved += ProjectRemoved;
 
             TabItems = new ObservableCollection<IControlView>
             {
@@ -175,6 +176,38 @@ namespace Rubberduck.UI.SourceControl
                 Provider.RemoveFile(e.OldName + fileExt, false);
                 Provider.AddFile(e.ComponentName + fileExt);
             }
+        }
+
+        private void ProjectRemoved(object sender, IProjectEventArgs e)
+        {
+            if (Provider == null || !Provider.HandleVbeSinkEvents)
+            {
+                return;
+            }
+
+            if (e.ProjectId != Provider.CurrentRepository.Id)
+            {
+                return;
+            }
+
+            ResetView();
+        }
+
+        private void ResetView()
+        {
+            Logger.Trace("Resetting view");
+
+            _provider = null;
+            OnPropertyChanged("RepoDoesNotHaveRemoteLocation");
+            Status = RubberduckUI.Offline;
+
+            UiDispatcher.InvokeAsync(() =>
+            {
+                foreach (var tab in _tabItems)
+                {
+                    tab.ViewModel.ResetView();
+                }
+            });
         }
 
         private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =

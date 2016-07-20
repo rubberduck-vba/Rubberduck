@@ -31,8 +31,8 @@ namespace Rubberduck.SourceControl
         public abstract IEnumerable<IBranch> Branches { get; }
         public abstract IList<ICommit> UnsyncedLocalCommits { get; }
         public abstract IList<ICommit> UnsyncedRemoteCommits { get; }
-        public bool NotifyExternalFileChanges { get; protected set; }
-        public bool HandleVbeSinkEvents { get; protected set; }
+        public bool NotifyExternalFileChanges { get; set; }
+        public bool HandleVbeSinkEvents { get; set; }
         public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory, SecureCredentials credentials = null);
         public abstract void Push();
         public abstract void Fetch(string remoteName);
