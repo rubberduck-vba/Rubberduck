@@ -66,7 +66,7 @@ namespace Rubberduck.Inspections
                 return;
             }
 
-            var fixedCodeLine = codeLine.Replace(originalInstruction, fix);
+            var fixedCodeLine = codeLine.Remove(Context.Start.Column, originalInstruction.Length).Insert(Context.Start.Column, fix);
             codeModule.ReplaceLine(Selection.Selection.StartLine, fixedCodeLine);
         }
 
