@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Windows.Controls;
 using Rubberduck.Inspections;
+using System.Collections.ObjectModel;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -32,6 +34,19 @@ namespace Rubberduck.UI.Settings
             var selectedSeverity = severities.Single(s => RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, UI.Settings.Settings.Culture) == selectedSeverityName);
 
             ((InspectionSettingsViewModel) ViewModel).UpdateCollection(selectedSeverity);
+        }
+
+        private void WhitelistedIdentifierGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.Cancel || e.EditAction == DataGridEditAction.Cancel) { return; }
+
+            var identifiers = WhitelistedIdentifiersGrid.ItemsSource.OfType<WhitelistedIdentifierSetting>().ToList();
+
+            var editedIndex = e.Row.GetIndex();
+            identifiers.RemoveAt(editedIndex);
+            identifiers.Insert(editedIndex, new WhitelistedIdentifierSetting(((TextBox)e.EditingElement).Text));
+
+            ((InspectionSettingsViewModel)ViewModel).WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>(identifiers);
         }
     }
 }
