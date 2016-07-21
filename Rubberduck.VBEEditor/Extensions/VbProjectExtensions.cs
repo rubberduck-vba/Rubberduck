@@ -159,7 +159,7 @@ namespace Rubberduck.VBEditor.Extensions
                         }
                         catch (IndexOutOfRangeException)
                         {
-                            exceptions.Add(new IndexOutOfRangeException(string.Format("Document-type component {0} does not exist", Path.GetFileNameWithoutExtension(file.FullName))));
+                            exceptions.Add(new IndexOutOfRangeException(string.Format(VBEEditorText.NonexistentComponentErrorText, Path.GetFileNameWithoutExtension(file.FullName))));
                         }
                     }
                 }
@@ -181,7 +181,7 @@ namespace Rubberduck.VBEditor.Extensions
                         }
                         catch (IndexOutOfRangeException)
                         {
-                            exceptions.Add(new IndexOutOfRangeException(string.Format("Document-type component {0} does not exist", Path.GetFileNameWithoutExtension(file.FullName))));
+                            exceptions.Add(new IndexOutOfRangeException(string.Format(VBEEditorText.NonexistentComponentErrorText, Path.GetFileNameWithoutExtension(file.FullName))));
                         }
                     }
                 }
