@@ -586,9 +586,9 @@ namespace Rubberduck.UI.SourceControl
             }
             else
             {
-                Logger.Trace("Displaying {0} with title '{1}' and message '{2}'", e.NotificationType, e.Message, e.InnerMessage);
+                Logger.Trace("Displaying {0} with title '{1}' and message '{2}'", e.NotificationType, e.Title, e.InnerMessage);
 
-                ErrorTitle = e.Message;
+                ErrorTitle = e.Title;
                 ErrorMessage = e.InnerMessage;
 
                 IconMappings.TryGetValue(e.NotificationType, out _errorIcon);
@@ -643,7 +643,7 @@ namespace Rubberduck.UI.SourceControl
                 catch (SourceControlException ex)
                 {
                     ViewModel_ErrorThrown(this,
-                        new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                        new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                 }
                 catch
                 {
@@ -722,7 +722,7 @@ namespace Rubberduck.UI.SourceControl
                 catch (SourceControlException ex)
                 {
                     _sinks.IsEnabled = true;
-                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                     return;
                 }
                 catch
@@ -769,7 +769,7 @@ namespace Rubberduck.UI.SourceControl
                     _isCloning = false;
                 }
 
-                ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                 return;
             }
             catch
@@ -805,7 +805,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
             }
             catch
             {
@@ -876,7 +876,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                 Status = RubberduckUI.Offline;
 
                 _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));

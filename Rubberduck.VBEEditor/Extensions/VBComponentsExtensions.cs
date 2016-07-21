@@ -47,13 +47,9 @@ namespace Rubberduck.VBEditor.Extensions
             var codeLines = codeString.Split(new []{Environment.NewLine}, StringSplitOptions.None);
             if (ext == VBComponentExtensions.DocClassExtension)
             {
-                try
-                {
-                    var component = components.Item(name);
-                    component.CodeModule.Clear();
-                    component.CodeModule.AddFromString(codeString);
-                }
-                catch (IndexOutOfRangeException) { }    // component doesn't exist
+                var component = components.Item(name);
+                component.CodeModule.Clear();
+                component.CodeModule.AddFromString(codeString);
             }
             else if (ext == VBComponentExtensions.FormExtension)
             {

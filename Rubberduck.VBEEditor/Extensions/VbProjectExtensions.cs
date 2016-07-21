@@ -103,7 +103,33 @@ namespace Rubberduck.VBEditor.Extensions
                 project.VBComponents.ImportSourceFile(file.FullName);
             }
         }
-        
+
+
+        /// <summary>
+        /// Imports all source code files from target directory into project.
+        /// </summary>
+        /// <remarks>
+        /// Only files with extensions "cls", "bas, "frm", and "doccls" are imported.
+        /// It is the callers responsibility to remove any existing components prior to importing.
+        /// </remarks>
+        /// <param name="project"></param>
+        /// <param name="filePath">Directory path containing the source files.</param>
+        public static void ImportDocumentTypeSourceFiles(this VBProject project, string filePath)
+        {
+            var dirInfo = new DirectoryInfo(filePath);
+
+            var files = dirInfo.EnumerateFiles()
+                                .Where(f => f.Extension == VBComponentExtensions.DocClassExtension);
+            foreach (var file in files)
+            {
+                try
+                {
+                    project.VBComponents.ImportSourceFile(file.FullName);
+                }
+                catch (IndexOutOfRangeException) { }    // component didn't exist
+            }
+        }
+
         public static void LoadAllComponents(this VBProject project, string filePath)
         {
             var dirInfo = new DirectoryInfo(filePath);
@@ -127,7 +153,14 @@ namespace Rubberduck.VBEditor.Extensions
                     var file = files.SingleOrDefault(f => f.Name == name + f.Extension);
                     if (file != null)
                     {
-                        project.VBComponents.ImportSourceFile(file.FullName);
+                        try
+                        {
+                            project.VBComponents.ImportSourceFile(file.FullName);
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            exceptions.Add(new IndexOutOfRangeException(string.Format("Document-type component {0} does not exist", Path.GetFileNameWithoutExtension(file.FullName))));
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -142,7 +175,14 @@ namespace Rubberduck.VBEditor.Extensions
                 {
                     if (project.VBComponents.OfType<VBComponent>().All(v => v.Name + file.Extension != file.Name))
                     {
-                        project.VBComponents.ImportSourceFile(file.FullName);
+                        try
+                        {
+                            project.VBComponents.ImportSourceFile(file.FullName);
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            exceptions.Add(new IndexOutOfRangeException(string.Format("Document-type component {0} does not exist", Path.GetFileNameWithoutExtension(file.FullName))));
+                        }
                     }
                 }
                 catch (Exception ex)
