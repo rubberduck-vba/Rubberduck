@@ -1575,7 +1575,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Parser Errors</value>
   </data>
   <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimum Log Level</value>
+    <value>Minimum Log Level:</value>
   </data>
   <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
     <value>Debug</value>
@@ -1762,5 +1762,14 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Regular Expression Analyzer</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Whitelisted Identifiers</value>
+  </data>
+  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Inspection Severities</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>These identifiers will be ignored by the 'Use meaningful names' inspection</value>
   </data>
 </root>
