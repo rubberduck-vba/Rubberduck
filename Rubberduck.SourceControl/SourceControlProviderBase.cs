@@ -120,8 +120,6 @@ namespace Rubberduck.SourceControl
 
         public virtual void Undo(string filePath)
         {
-            var componentName = Path.GetFileNameWithoutExtension(filePath);
-
             if (File.Exists(filePath))
             {
                 var component = Project.VBComponents.OfType<VBComponent>().FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
@@ -142,6 +140,7 @@ namespace Rubberduck.SourceControl
         {
             NotifyExternalFileChanges = false;
             Project.ExportSourceFiles(CurrentRepository.LocalLocation);
+            Project.ImportDocumentTypeSourceFiles(CurrentRepository.LocalLocation);
             NotifyExternalFileChanges = true;
             return null;
         }

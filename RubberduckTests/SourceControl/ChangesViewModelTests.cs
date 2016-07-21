@@ -86,7 +86,7 @@ namespace RubberduckTests.SourceControl
                 lock (errorThrown)
                 {
                     MultiAssert.Aggregate(
-                        () => Assert.AreEqual(e.Message, Rubberduck.UI.RubberduckUI.SourceControl_CommitStatus),
+                        () => Assert.AreEqual(e.Title, Rubberduck.UI.RubberduckUI.SourceControl_CommitStatus),
                         () =>
                             Assert.AreEqual(e.InnerMessage,
                                 Rubberduck.UI.RubberduckUI.SourceControl_CommitStatus_CommitSuccess),
