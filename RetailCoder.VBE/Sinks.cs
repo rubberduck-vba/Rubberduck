@@ -11,18 +11,22 @@ namespace Rubberduck
 {
     public class ProjectEventArgs : EventArgs, IProjectEventArgs
     {
-        public ProjectEventArgs(string projectId)
+        public ProjectEventArgs(string projectId, VBProject project)
         {
             _projectId = projectId;
+            _project = project;
         }
 
         private readonly string _projectId;
         public string ProjectId { get { return _projectId; } }
+
+        private readonly VBProject _project;
+        public VBProject Project { get { return _project; } }
     }
 
     public class ProjectRenamedEventArgs : ProjectEventArgs, IProjectRenamedEventArgs
     {
-        public ProjectRenamedEventArgs(string projectId, string oldName) : base(projectId)
+        public ProjectRenamedEventArgs(string projectId, VBProject project, string oldName) : base(projectId, project)
         {
             _oldName = oldName;
         }
@@ -33,27 +37,28 @@ namespace Rubberduck
 
     public class ComponentEventArgs : EventArgs, IComponentEventArgs
     {
-        public ComponentEventArgs(string projectId, string componentName, vbext_ComponentType type)
+        public ComponentEventArgs(string projectId, VBProject project, VBComponent component)
         {
             _projectId = projectId;
-            _componentName = componentName;
-            _type = type;
+            _project = project;
+            _component = component;
         }
 
         private readonly string _projectId;
         public string ProjectId { get { return _projectId; } }
 
-        private readonly string _componentName;
-        public string ComponentName { get { return _componentName; } }
+        private readonly VBProject _project;
+        public VBProject Project { get { return _project; } }
 
-        private readonly vbext_ComponentType _type;
-        public vbext_ComponentType Type { get { return _type; } }
+        private readonly VBComponent _component;
+        public VBComponent Component { get { return _component; } }
+
     }
 
     public class ComponentRenamedEventArgs : ComponentEventArgs, IComponentRenamedEventArgs
     {
-        public ComponentRenamedEventArgs(string projectId, string componentName, vbext_ComponentType type, string oldName)
-            : base(projectId, componentName, type)
+        public ComponentRenamedEventArgs(string projectId, VBProject project, VBComponent component, string oldName)
+            : base(projectId, project, component)
         {
             _oldName = oldName;
         }
@@ -108,7 +113,7 @@ namespace Rubberduck
                 var handler = ProjectActivated;
                 if (handler != null)
                 {
-                    handler(sender, new ProjectEventArgs(projectId));
+                    handler(sender, new ProjectEventArgs(projectId, e.Item));
                 }
             });
         }
@@ -127,7 +132,7 @@ namespace Rubberduck
                 var handler = ProjectAdded;
                 if (handler != null)
                 {
-                    handler(sender, new ProjectEventArgs(projectId));
+                    handler(sender, new ProjectEventArgs(projectId, e.Item));
                 }
             });
         }
@@ -144,7 +149,7 @@ namespace Rubberduck
                 var handler = ProjectRemoved;
                 if (handler != null)
                 {
-                    handler(sender, new ProjectEventArgs(projectId));
+                    handler(sender, new ProjectEventArgs(projectId, e.Item));
                 }
             });
         }
@@ -161,7 +166,7 @@ namespace Rubberduck
                 var handler = ProjectRenamed;
                 if (handler != null)
                 {
-                    handler(sender, new ProjectRenamedEventArgs(projectId, oldName));
+                    handler(sender, new ProjectRenamedEventArgs(projectId, e.Item, oldName));
                 }
             });
         }
@@ -228,12 +233,11 @@ namespace Rubberduck
             if (!IsEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
 
             var handler = ComponentActivated;
             if (handler != null)
             {
-                handler(sender, new ComponentEventArgs(projectId, componentName, e.Item.Type));
+                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
             }
         }
 
@@ -247,7 +251,7 @@ namespace Rubberduck
             var handler = ComponentAdded;
             if (handler != null)
             {
-                handler(sender, new ComponentEventArgs(projectId, componentName, e.Item.Type));
+                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
             }
         }
 
@@ -261,7 +265,7 @@ namespace Rubberduck
             var handler = ComponentReloaded;
             if (handler != null)
             {
-                handler(sender, new ComponentEventArgs(projectId, componentName, e.Item.Type));
+                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
             }
         }
 
@@ -275,7 +279,7 @@ namespace Rubberduck
             var handler = ComponentRemoved;
             if (handler != null)
             {
-                handler(sender, new ComponentEventArgs(projectId, componentName, e.Item.Type));
+                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
             }
         }
 
@@ -290,7 +294,7 @@ namespace Rubberduck
             var handler = ComponentRenamed;
             if (handler != null)
             {
-                handler(sender, new ComponentRenamedEventArgs(projectId, componentName, e.Item.Type, oldName));
+                handler(sender, new ComponentRenamedEventArgs(projectId, e.Item.Collection.Parent, e.Item, e.OldName));
             }
         }
 
@@ -304,7 +308,7 @@ namespace Rubberduck
             var handler = ComponentSelected;
             if (handler != null)
             {
-                handler(sender, new ComponentEventArgs(projectId, componentName, e.Item.Type));
+                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
             }
         }
         #endregion

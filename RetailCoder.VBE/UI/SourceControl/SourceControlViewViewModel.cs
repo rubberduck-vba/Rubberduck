@@ -126,8 +126,8 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            Logger.Trace("Component {0} added", e.ComponentName);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.ComponentName);
+            Logger.Trace("Component {0} added", e.Component.Name);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Component.Name);
             if (fileStatus != null)
             {
                 Provider.AddFile(fileStatus.FilePath);
@@ -143,8 +143,8 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            Logger.Trace("Component {0] removed", e.ComponentName);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.ComponentName);
+            Logger.Trace("Component {0] removed", e.Component.Name);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Component.Name);
             if (fileStatus != null)
             {
                 Provider.RemoveFile(fileStatus.FilePath, true);
@@ -160,7 +160,7 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            Logger.Trace("Component {0} renamed to {1}", e.OldName, e.ComponentName);
+            Logger.Trace("Component {0} renamed to {1}", e.OldName, e.Component.Name);
             var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.OldName);
             if (fileStatus != null)
             {
@@ -170,11 +170,11 @@ namespace Rubberduck.UI.SourceControl
                 var fileExt = "." + fileStatus.FilePath.Split('.').Last();
 
                 _fileSystemWatcher.EnableRaisingEvents = false;
-                File.Move(directory + fileStatus.FilePath, directory + e.ComponentName + fileExt);
+                File.Move(directory + fileStatus.FilePath, directory + e.Component.Name + fileExt);
                 _fileSystemWatcher.EnableRaisingEvents = true;
 
                 Provider.RemoveFile(e.OldName + fileExt, false);
-                Provider.AddFile(e.ComponentName + fileExt);
+                Provider.AddFile(e.Component.Name + fileExt);
             }
         }
 

@@ -25,6 +25,6 @@ namespace Rubberduck.Inspections
         public IEnumerable<QualifiedContext> ObsoleteLetContexts;
         public IEnumerable<QualifiedContext> ArgListsWithOneByRefParam;
         public IEnumerable<QualifiedContext> EmptyStringLiterals;
-        public IEnumerable<QualifiedContext<VBAParser.AnnotationContext>> MalformedAnnotations;
+        public IEnumerable<QualifiedContext> MalformedAnnotations;
     }
 }

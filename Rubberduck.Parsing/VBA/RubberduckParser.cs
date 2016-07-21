@@ -25,7 +25,8 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
-        
+
+        private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
@@ -35,12 +36,14 @@ namespace Rubberduck.Parsing.VBA
         private readonly bool _isTestScope;
 
         public RubberduckParser(
+            VBE vbe,
             RubberduckParserState state,
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
             IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders,
             bool isTestScope = false)
         {
+            _vbe = vbe;
             _state = state;
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
@@ -73,7 +76,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void Parse(CancellationTokenSource token)
         {
-            State.RefreshProjects();
+            State.RefreshProjects(_vbe);
 
             var components = new List<VBComponent>();
             foreach (var project in State.Projects)
@@ -149,7 +152,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private void ParseAll(CancellationTokenSource token)
         {
-            State.RefreshProjects();
+            State.RefreshProjects(_vbe);
 
             var components = new List<VBComponent>();
             foreach (var project in State.Projects)

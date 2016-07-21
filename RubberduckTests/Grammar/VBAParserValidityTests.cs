@@ -47,7 +47,7 @@ namespace RubberduckTests.Grammar
             var vbe = builder.BuildFromSingleStandardModule(code, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var state = new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object);
+            var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error: " + filename); }
