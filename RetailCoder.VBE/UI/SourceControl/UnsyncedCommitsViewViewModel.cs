@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using NLog;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -42,6 +41,18 @@ namespace Rubberduck.UI.SourceControl
 
             IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
             OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
+        }
+
+        public void ResetView()
+        {
+            Logger.Trace("Resetting view");
+
+            _provider.BranchChanged -= Provider_BranchChanged;
+            _provider = null;
+            CurrentBranch = string.Empty;
+
+            IncomingCommits = new ObservableCollection<ICommit>();
+            OutgoingCommits = new ObservableCollection<ICommit>();
         }
 
         public SourceControlTab Tab { get { return SourceControlTab.UnsyncedCommits; } }

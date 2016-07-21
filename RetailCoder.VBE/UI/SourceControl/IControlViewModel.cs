@@ -25,5 +25,6 @@ namespace Rubberduck.UI.SourceControl
         event EventHandler<ErrorEventArgs> ErrorThrown;
 
         void RefreshView();
+        void ResetView();
     }
 }

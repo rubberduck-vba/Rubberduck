@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 using NLog;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -72,6 +71,19 @@ namespace Rubberduck.UI.SourceControl
                 ? new ObservableCollection<IFileStatusEntry>()
                 : new ObservableCollection<IFileStatusEntry>(
                     Provider.Status().Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
+        }
+
+        public void ResetView()
+        {
+            Logger.Trace("Resetting view");
+
+            _provider.BranchChanged -= Provider_BranchChanged;
+            _provider = null;
+
+            OnPropertyChanged("CurrentBranch");
+
+            IncludedChanges = new ObservableCollection<IFileStatusEntry>();
+            UntrackedFiles = new ObservableCollection<IFileStatusEntry>();
         }
 
         public SourceControlTab Tab { get { return SourceControlTab.Changes; } }
