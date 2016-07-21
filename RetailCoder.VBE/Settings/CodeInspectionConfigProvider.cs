@@ -27,7 +27,7 @@ namespace Rubberduck.Settings
             if (inspections == null) return null;
 
             _inspections = inspections;
-            var prototype = new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedNameSetting[] {});
+            var prototype = new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] {});
             return _persister.Load(prototype) ?? prototype;
         }
 
@@ -35,7 +35,7 @@ namespace Rubberduck.Settings
         {
             //This sucks.
             return _inspections != null
-                ? new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedNameSetting[] {})
+                ? new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] {})
                 : null;
         }
 

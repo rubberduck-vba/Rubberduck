@@ -258,12 +258,11 @@
     </UserControl.Resources>
     <Grid>
         <ScrollViewer>
-            <StackPanel Margin="5,5,5,0" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <Label DockPanel.Dock="Top"
-                       Background="DarkGray"
+            <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <Label Background="DarkGray"
                        Foreground="White"
                        FontWeight="SemiBold"
-                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_InspectionSettings}"
+                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}"
                        Margin="0,0,0,3">
                     <Label.Style>
                         <Style>
@@ -320,9 +319,22 @@
                         </controls:GroupingGrid.Columns>
                     </controls:GroupingGrid>
                 </Border>
-                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_WhitelistedNamesLabel}"
+                <Label Background="DarkGray"
+                       Foreground="White"
                        FontWeight="SemiBold"
-                       Margin="0,5,0,0" />
+                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersLabel}"
+                       Margin="0,5,0,3">
+                    <Label.Style>
+                        <Style>
+                            <Style.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersDescription}" />
                 <ToolBarTray IsLocked="True"
                              Background="Transparent">
                     <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
@@ -339,10 +351,10 @@
                         </Button>
                         <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}"
                                 Command="{Binding DeleteWhitelistedNameCommand}"
-                                CommandParameter="{Binding ElementName=WhitelistedNamesGrid, Path=CurrentItem}"
+                                CommandParameter="{Binding ElementName=WhitelistedIdentifiersGrid, Path=CurrentItem}"
                                 BorderThickness="0"
                                 Background="Transparent"
-                                IsEnabled="{Binding ElementName=WhitelistedNamesGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
+                                IsEnabled="{Binding ElementName=WhitelistedIdentifiersGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="{StaticResource DeleteImage}" />
                                 <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}"
@@ -352,8 +364,8 @@
                     </ToolBar>
                 </ToolBarTray>
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
-                    <DataGrid Name="WhitelistedNamesGrid"
-                              ItemsSource="{Binding WhitelistedNameSettings}"
+                    <DataGrid Name="WhitelistedIdentifiersGrid"
+                              ItemsSource="{Binding WhitelistedIdentifierSettings}"
                               AutoGenerateColumns="False"
                               CanUserReorderColumns="False"
                               IsReadOnly="False"
@@ -367,11 +379,12 @@
                               ItemContainerStyle="{StaticResource PrettifyRow}"
                               ColumnHeaderHeight="22"
                               BorderThickness="0"
-                              Height="200">
+                              Height="200"
+                              CellEditEnding="WhitelistedIdentifierGrid_CellEditEnding">
                         <DataGrid.InputBindings>
                             <KeyBinding Key="Delete"
                                         Command="{Binding DeleteWhitelistedNameCommand}"
-                                        CommandParameter="{Binding ElementName=WhitelistedNamesGrid, Path=SelectedItem}" />
+                                        CommandParameter="{Binding ElementName=WhitelistedIdentifiersGrid, Path=SelectedItem}" />
                         </DataGrid.InputBindings>
                         <DataGrid.CellStyle>
                             <Style TargetType="{x:Type DataGridCell}">
@@ -382,7 +395,7 @@
                         </DataGrid.CellStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="*"
-                                                Binding="{Binding Name}" />
+                                                Binding="{Binding Identifier}" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>

@@ -301,7 +301,7 @@ End Sub";
             settings.Setup(s => s.Load(It.IsAny<CodeInspectionSettings>()))
                 .Returns(new CodeInspectionSettings(null, new[]
                 {
-                    new WhitelistedNameSetting("sss")
+                    new WhitelistedIdentifierSetting("sss")
                 }));
 
             return settings;

@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections
 
             try
             {
-                whitelistedNames = _settings.Load(new CodeInspectionSettings()).WhitelistedNames.Select(s => s.Name).ToList();
+                whitelistedNames = _settings.Load(new CodeInspectionSettings()).WhitelistedIdentifiers.Select(s => s.Identifier).ToList();
             }
             catch (IOException) { }
 

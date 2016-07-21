@@ -661,6 +661,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inspection Severities.
+        /// </summary>
+        public static string CodeInspectionSettings_InspectionSeveritySettingsLabel {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_InspectionSeveritySettingsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language Opportunities.
         /// </summary>
         public static string CodeInspectionSettings_LanguageOpportunities {
@@ -679,11 +688,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Whitelisted Names:.
+        ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection.
         /// </summary>
-        public static string CodeInspectionSettings_WhitelistedNamesLabel {
+        public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {
             get {
-                return ResourceManager.GetString("CodeInspectionSettings_WhitelistedNamesLabel", resourceCulture);
+                return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whitelisted Identifiers.
+        /// </summary>
+        public static string CodeInspectionSettings_WhitelistedIdentifiersLabel {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersLabel", resourceCulture);
             }
         }
         

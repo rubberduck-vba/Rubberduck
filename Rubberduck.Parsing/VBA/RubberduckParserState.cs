@@ -238,13 +238,7 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                var projects = new List<VBProject>();
-                foreach (var project in _projects.Values)
-                {
-                    projects.Add(project);
-                }
-
-                return projects;
+                return new List<VBProject>(_projects.Values);
             }
         }
 

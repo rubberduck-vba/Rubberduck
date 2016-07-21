@@ -17,8 +17,8 @@ namespace Rubberduck.UI.Settings
             InspectionSettings = new ListCollectionView(
                     config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
 
-            WhitelistedNameSettings = new ObservableCollection<WhitelistedNameSetting>(
-                config.UserSettings.CodeInspectionSettings.WhitelistedNames.OrderBy(o => o.Name).Distinct());
+            WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>(
+                config.UserSettings.CodeInspectionSettings.WhitelistedIdentifiers.OrderBy(o => o.Identifier).Distinct());
 
             if (InspectionSettings.GroupDescriptions != null)
             {
@@ -52,8 +52,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private ObservableCollection<WhitelistedNameSetting> _whitelistedNameSettings;
-        public ObservableCollection<WhitelistedNameSetting> WhitelistedNameSettings
+        private ObservableCollection<WhitelistedIdentifierSetting> _whitelistedNameSettings;
+        public ObservableCollection<WhitelistedIdentifierSetting> WhitelistedIdentifierSettings
         {
             get { return _whitelistedNameSettings; }
             set
@@ -69,7 +69,7 @@ namespace Rubberduck.UI.Settings
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.CodeInspectionSettings.CodeInspections = new HashSet<CodeInspectionSetting>(InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>());
-            config.UserSettings.CodeInspectionSettings.WhitelistedNames = WhitelistedNameSettings.Distinct().ToArray();
+            config.UserSettings.CodeInspectionSettings.WhitelistedIdentifiers = WhitelistedIdentifierSettings.Distinct().ToArray();
         }
 
         public void SetToDefaults(Configuration config)
@@ -82,7 +82,7 @@ namespace Rubberduck.UI.Settings
                 InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
             }
 
-            WhitelistedNameSettings = new ObservableCollection<WhitelistedNameSetting>();
+            WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>();
         }
 
         private CommandBase _addWhitelistedNameCommand;
@@ -96,10 +96,7 @@ namespace Rubberduck.UI.Settings
                 }
                 return _addWhitelistedNameCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
                 {
-                    var placeholder = WhitelistedNameSettings.Count(m => m.Name.StartsWith("PLACEHOLDER")) + 1;
-                    WhitelistedNameSettings.Add(
-                        new WhitelistedNameSetting(string.Format("PLACEHOLDER{0}",
-                            placeholder == 1 ? string.Empty : placeholder.ToString(CultureInfo.InvariantCulture))));
+                    WhitelistedIdentifierSettings.Add(new WhitelistedIdentifierSetting());
                 });
             }
         }
@@ -115,7 +112,7 @@ namespace Rubberduck.UI.Settings
                 }
                 return _deleteWhitelistedNameCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), value =>
                 {
-                    WhitelistedNameSettings.Remove(value as WhitelistedNameSetting);
+                    WhitelistedIdentifierSettings.Remove(value as WhitelistedIdentifierSetting);
                 });
             }
         }
