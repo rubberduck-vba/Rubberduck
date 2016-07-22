@@ -50,11 +50,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void Refactor(QualifiedSelection target)
         {
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
             Refactor();
         }
 
         public void Refactor(Declaration target)
         {
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target.QualifiedSelection);
             Refactor();
         }
 
@@ -188,7 +190,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var getterText = string.Join(Environment.NewLine,
                 string.Format(Environment.NewLine + "Public Property Get {0}() As {1}", _model.PropertyName,
                     _model.TargetDeclaration.AsTypeName),
-                string.Format("    {0} = {1}", _model.PropertyName, _model.TargetDeclaration.IdentifierName),
+                string.Format("    {0}{1} = {2}", !_model.CanImplementLet || _model.ImplementSetSetterType ? "Set " : string.Empty, _model.PropertyName, _model.TargetDeclaration.IdentifierName),
                 "End Property" + Environment.NewLine);
 
             var letterText = string.Join(Environment.NewLine,
@@ -200,7 +202,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var setterText = string.Join(Environment.NewLine,
                 string.Format(Environment.NewLine + "Public Property Set {0}(ByVal {1} As {2})",
                     _model.PropertyName, _model.ParameterName, _model.TargetDeclaration.AsTypeName),
-                string.Format("    {0} = {1}", _model.TargetDeclaration.IdentifierName, _model.ParameterName),
+                string.Format("    Set {0} = {1}", _model.TargetDeclaration.IdentifierName, _model.ParameterName),
                 "End Property" + Environment.NewLine);
 
             return string.Join(string.Empty,
