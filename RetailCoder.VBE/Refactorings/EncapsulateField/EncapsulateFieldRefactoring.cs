@@ -13,11 +13,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
-        private readonly Indenter _indenter;
+        private readonly IIndenter _indenter;
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
         private EncapsulateFieldModel _model;
 
-        public EncapsulateFieldRefactoring(VBE vbe, Indenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
+        public EncapsulateFieldRefactoring(VBE vbe, IIndenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
         {
             _vbe = vbe;
             _indenter = indenter;

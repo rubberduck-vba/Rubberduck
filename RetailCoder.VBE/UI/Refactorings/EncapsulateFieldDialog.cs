@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Refactorings
 
     public partial class EncapsulateFieldDialog : Form, IEncapsulateFieldDialog
     {
-        private readonly Indenter _indenter;
+        private readonly IIndenter _indenter;
 
         public string NewPropertyName
         {
@@ -79,7 +79,7 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public EncapsulateFieldDialog(Indenter indenter)
+        public EncapsulateFieldDialog(IIndenter indenter)
         {
             _indenter = indenter;
             InitializeComponent();

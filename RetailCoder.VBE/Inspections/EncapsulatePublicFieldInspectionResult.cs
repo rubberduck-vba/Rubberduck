@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, Indenter indenter)
+        public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, IIndenter indenter)
             : base(inspection, target)
         {
             _quickFixes = new CodeInspectionQuickFix[]
@@ -40,9 +40,9 @@ namespace Rubberduck.Inspections
     {
         private readonly Declaration _target;
         private readonly RubberduckParserState _state;
-        private readonly Indenter _indenter;
+        private readonly IIndenter _indenter;
 
-        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, Indenter indenter)
+        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, IIndenter indenter)
             : base(context, selection, string.Format(InspectionsUI.EncapsulatePublicFieldInspectionQuickFix, target.IdentifierName))
         {
             _target = target;

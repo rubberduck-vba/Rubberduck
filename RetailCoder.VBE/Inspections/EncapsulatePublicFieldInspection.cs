@@ -9,9 +9,9 @@ namespace Rubberduck.Inspections
 
     public sealed class EncapsulatePublicFieldInspection : InspectionBase
     {
-        private readonly Indenter _indenter;
+        private readonly IIndenter _indenter;
 
-        public EncapsulatePublicFieldInspection(RubberduckParserState state, Indenter indenter)
+        public EncapsulatePublicFieldInspection(RubberduckParserState state, IIndenter indenter)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
             _indenter = indenter;
