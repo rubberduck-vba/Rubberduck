@@ -7,8 +7,12 @@ using Rubberduck.Refactorings.EncapsulateField;
 
 namespace Rubberduck.UI.Refactorings
 {
+    using SmartIndenter;
+
     public partial class EncapsulateFieldDialog : Form, IEncapsulateFieldDialog
     {
+        private readonly IIndenter _indenter;
+
         public string NewPropertyName
         {
             get { return PropertyNameTextBox.Text; }
@@ -75,8 +79,9 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public EncapsulateFieldDialog()
+        public EncapsulateFieldDialog(IIndenter indenter)
         {
+            _indenter = indenter;
             InitializeComponent();
             LocalizeDialog();
 
@@ -151,9 +156,12 @@ namespace Rubberduck.UI.Refactorings
                 string.Format("    Set {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
                 "End Property");
 
-            return getterText +
+            var propertyText = getterText +
                     (MustImplementLetSetterType ? letterText : string.Empty) +
                     (MustImplementSetSetterType ? setterText : string.Empty);
+
+            var propertyTextLines = propertyText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, "test", false));
         }
 
         private void ValidatePropertyName()

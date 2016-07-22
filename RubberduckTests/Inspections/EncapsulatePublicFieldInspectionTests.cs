@@ -4,10 +4,8 @@ using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
-using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
@@ -35,7 +33,7 @@ namespace RubberduckTests.Inspections
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new EncapsulatePublicFieldInspection(parser.State);
+            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -61,7 +59,7 @@ Public buzz As Integer, _
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new EncapsulatePublicFieldInspection(parser.State);
+            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(3, inspectionResults.Count());
@@ -85,7 +83,7 @@ Public buzz As Integer, _
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new EncapsulatePublicFieldInspection(parser.State);
+            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -110,7 +108,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new EncapsulatePublicFieldInspection(parser.State);
+            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -135,7 +133,7 @@ Public fizz As Boolean";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new EncapsulatePublicFieldInspection(parser.State);
+            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -165,7 +163,7 @@ Public fizz As Boolean";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new EncapsulatePublicFieldInspection(parser.State);
+            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
@@ -177,7 +175,7 @@ Public fizz As Boolean";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new EncapsulatePublicFieldInspection(null);
+            var inspection = new EncapsulatePublicFieldInspection(null, null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
@@ -186,7 +184,7 @@ Public fizz As Boolean";
         public void InspectionName()
         {
             const string inspectionName = "EncapsulatePublicFieldInspection";
-            var inspection = new EncapsulatePublicFieldInspection(null);
+            var inspection = new EncapsulatePublicFieldInspection(null, null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

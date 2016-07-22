@@ -13,6 +13,8 @@ using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
+using Rubberduck.SmartIndenter;
+using Selection = Rubberduck.VBEditor.Selection;
 
 namespace RubberduckTests.Refactoring
 {
@@ -68,7 +70,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -127,7 +129,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -183,7 +185,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -235,7 +237,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -304,7 +306,7 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -379,7 +381,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -437,7 +439,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -500,7 +502,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -559,7 +561,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -618,7 +620,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -674,7 +676,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -745,7 +747,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -835,7 +837,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             var actualCode1 = module1.Lines();
@@ -895,7 +897,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(parser.State.AllUserDeclarations.FindVariable(qualifiedSelection));
 
             //Assert
@@ -924,7 +926,7 @@ End Property
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, null);
 
             //act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, module.Lines());
@@ -956,7 +958,7 @@ End Property
             var factory = SetupFactory(null);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1627,6 +1629,28 @@ End Sub";
             return factory;
         }
 
+        private static IIndenter CreateIndenter(VBE vbe)
+        {
+            var settings = new Mock<IndenterSettings>();
+            settings.Setup(s => s.IndentEntireProcedureBody).Returns(true);
+            settings.Setup(s => s.IndentFirstCommentBlock).Returns(true);
+            settings.Setup(s => s.IndentFirstDeclarationBlock).Returns(true);
+            settings.Setup(s => s.AlignCommentsWithCode).Returns(true);
+            settings.Setup(s => s.AlignContinuations).Returns(true);
+            settings.Setup(s => s.IgnoreOperatorsInContinuations).Returns(true);
+            settings.Setup(s => s.IndentCase).Returns(false);
+            settings.Setup(s => s.ForceDebugStatementsInColumn1).Returns(false);
+            settings.Setup(s => s.ForceCompilerDirectivesInColumn1).Returns(false);
+            settings.Setup(s => s.IndentCompilerDirectives).Returns(true);
+            settings.Setup(s => s.AlignDims).Returns(false);
+            settings.Setup(s => s.AlignDimColumn).Returns(15);
+            settings.Setup(s => s.EnableUndo).Returns(true);
+            settings.Setup(s => s.EndOfLineCommentStyle).Returns(EndOfLineCommentStyle.AlignInColumn);
+            settings.Setup(s => s.EndOfLineCommentColumnSpaceAlignment).Returns(50);
+            settings.Setup(s => s.IndentSpaces).Returns(4);
+
+            return new Indenter(vbe, () => new IndenterSettings());
+        }
         #endregion
     }
 }
