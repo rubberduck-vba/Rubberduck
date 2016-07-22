@@ -330,12 +330,6 @@
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Refactorer</value>
   </data>
-  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
-    <value>Contrôle des &amp;Sources</value>
-  </data>
-  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
-    <value>Liste de To&amp;Do</value>
-  </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>&amp;Tests Unitaires</value>
   </data>
@@ -750,9 +744,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SourceControl_IncomingCommits" xml:space="preserve">
     <value>Consignations</value>
   </data>
-  <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
-    <value>Initialiser un nouveau dépôt pour ce projet</value>
-  </data>
   <data name="SourceControl_MergeBranch" xml:space="preserve">
     <value>Fusionner</value>
   </data>
@@ -1111,9 +1102,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
     <value>Aligner dans la colonne</value>
   </data>
-  <data name="SourceControl_CloneRepoButtonToolTip" xml:space="preserve">
-    <value>Cloner le repository</value>
-  </data>
   <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
     <value>Inspections</value>
   </data>
@@ -1227,9 +1215,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
     <value>Renommer le test</value>
-  </data>
-  <data name="ParserState_Resolving" xml:space="preserve">
-    <value>Résolution...</value>
   </data>
   <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
     <value>Activer la sauvegarde auto</value>
@@ -1490,17 +1475,11 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
     <value>Module de classe (.cls)</value>
   </data>
-  <data name="information" xml:space="preserve">
-    <value>..\Resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="CodeExplorer_Import" xml:space="preserve">
     <value>Importer...</value>
   </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Erreurs d'analyse</value>
-  </data>
-  <data name="SortStyle_BySelection" xml:space="preserve">
-    <value>Par emplacement</value>
   </data>
   <data name="SourceControl_MissingCredentials" xml:space="preserve">
     <value>Informations manquantes</value>
@@ -1516,9 +1495,6 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   </data>
   <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
     <value>Warn</value>
-  </data>
-  <data name="cross_circle" xml:space="preserve">
-    <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Afficher dans le dossier</value>
@@ -1576,9 +1552,6 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   </data>
   <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
     <value>Délimiteur de dossiers:</value>
-  </data>
-  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
-    <value>Rafraîchir le module</value>
   </data>
   <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
     <value>Niveau minimum du journal</value>
