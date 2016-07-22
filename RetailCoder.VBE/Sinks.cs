@@ -107,15 +107,12 @@ namespace Rubberduck
         {
             if (!IsEnabled) { return; }
             var projectId = e.Item.HelpFile;
-
-            Task.Run(() =>
+            
+            var handler = ProjectActivated;
+            if (handler != null)
             {
-                var handler = ProjectActivated;
-                if (handler != null)
-                {
-                    handler(sender, new ProjectEventArgs(projectId, e.Item));
-                }
-            });
+                handler(sender, new ProjectEventArgs(projectId, e.Item));
+            }
         }
 
         private void _sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
@@ -126,15 +123,12 @@ namespace Rubberduck
             var projectId = e.Item.HelpFile;
 
             RegisterComponentsEventSink(e.Item.VBComponents, projectId);
-
-            Task.Run(() =>
+            
+            var handler = ProjectAdded;
+            if (handler != null)
             {
-                var handler = ProjectAdded;
-                if (handler != null)
-                {
-                    handler(sender, new ProjectEventArgs(projectId, e.Item));
-                }
-            });
+                handler(sender, new ProjectEventArgs(projectId, e.Item));
+            }
         }
 
         private void _sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
@@ -143,15 +137,12 @@ namespace Rubberduck
             if (!IsEnabled) { return; }
 
             var projectId = e.Item.HelpFile;
-
-            Task.Run(() =>
+            
+            var handler = ProjectRemoved;
+            if (handler != null)
             {
-                var handler = ProjectRemoved;
-                if (handler != null)
-                {
-                    handler(sender, new ProjectEventArgs(projectId, e.Item));
-                }
-            });
+                handler(sender, new ProjectEventArgs(projectId, e.Item));
+            }
         }
 
         private void _sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
@@ -160,15 +151,12 @@ namespace Rubberduck
 
             var projectId = e.Item.HelpFile;
             var oldName = e.OldName;
-
-            Task.Run(() =>
+            
+            var handler = ProjectRenamed;
+            if (handler != null)
             {
-                var handler = ProjectRenamed;
-                if (handler != null)
-                {
-                    handler(sender, new ProjectRenamedEventArgs(projectId, e.Item, oldName));
-                }
-            });
+                handler(sender, new ProjectRenamedEventArgs(projectId, e.Item, oldName));
+            }
         }
 
         #endregion

@@ -190,6 +190,8 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
+            _fileSystemWatcher.EnableRaisingEvents = false;
+            Provider.Status();  // exports files
             ResetView();
         }
 
