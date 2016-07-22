@@ -34,7 +34,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspection = new ParameterNotUsedInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -62,7 +62,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspection = new ParameterNotUsedInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
@@ -88,7 +88,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspection = new ParameterNotUsedInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -114,7 +114,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspection = new ParameterNotUsedInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -149,7 +149,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspection = new ParameterNotUsedInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(1, inspectionResults.Count);
@@ -176,7 +176,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspection = new ParameterNotUsedInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -207,7 +207,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspection = new ParameterNotUsedInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
@@ -241,7 +241,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspection = new ParameterNotUsedInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
@@ -253,7 +253,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new ParameterNotUsedInspection(null, null, null);
+            var inspection = new ParameterNotUsedInspection(null, null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -262,7 +262,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "ParameterNotUsedInspection";
-            var inspection = new ParameterNotUsedInspection(null, null, null);
+            var inspection = new ParameterNotUsedInspection(null, null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
