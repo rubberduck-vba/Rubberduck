@@ -187,7 +187,7 @@ End Sub";
 End Sub";
 
             //Arrange
-            var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null);
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 

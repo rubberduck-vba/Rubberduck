@@ -37,9 +37,17 @@ namespace Rubberduck.UI.Command
             var viewModel = new FindSymbolViewModel(_state.AllDeclarations.Where(item => !item.IsBuiltIn), _iconCache);
             using (var view = new FindSymbolDialog(viewModel))
             {
-                viewModel.Navigate += (sender, e) => { _navigateCommand.Execute(e); view.Hide(); };
+                viewModel.Navigate += (sender, e) => { view.Hide(); };
+                viewModel.Navigate += OnDialogNavigate;
                 view.ShowDialog();
+                _navigateCommand.Execute(_selected);
             }
+        }
+
+        private NavigateCodeEventArgs _selected;
+        private void OnDialogNavigate(object sender, NavigateCodeEventArgs e)
+        {
+            _selected = e;
         }
     }
 }
