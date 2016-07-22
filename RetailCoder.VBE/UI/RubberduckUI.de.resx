@@ -331,12 +331,6 @@
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>Um&amp;gestalten</value>
   </data>
-  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
-    <value>&amp;Versionskontrolle</value>
-  </data>
-  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
-    <value>To&amp;Do Liste</value>
-  </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>Unit &amp;Tests</value>
   </data>
@@ -1519,9 +1513,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="NoIndentAnnotation" xml:space="preserve">
     <value>Füge '@&amp;NoIndent hinzu</value>
   </data>
-  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
-    <value>Aktualisiere Komponente</value>
-  </data>
   <data name="SourceControl_UndoTitle" xml:space="preserve">
     <value>Versionskontrolle - Rückgänig</value>
   </data>
@@ -1570,14 +1561,8 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Logging-Ordner anzeigen</value>
   </data>
-  <data name="information" xml:space="preserve">
-    <value>..\Resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
     <value>In Zwischenablage kopieren</value>
-  </data>
-  <data name="cross_circle" xml:space="preserve">
-    <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SourceControl_PublishRepo_FailureTitle" xml:space="preserve">
     <value>Veröffentliche Repository</value>
