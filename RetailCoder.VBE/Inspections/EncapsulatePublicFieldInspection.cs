@@ -5,11 +5,16 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
+    using SmartIndenter;
+
     public sealed class EncapsulatePublicFieldInspection : InspectionBase
     {
-        public EncapsulatePublicFieldInspection(RubberduckParserState state)
+        private readonly IIndenter _indenter;
+
+        public EncapsulatePublicFieldInspection(RubberduckParserState state, IIndenter indenter)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
+            _indenter = indenter;
         }
 
         public override string Meta { get { return InspectionsUI.EncapsulatePublicFieldInspectionMeta; } }
@@ -21,7 +26,7 @@ namespace Rubberduck.Inspections
             var issues = UserDeclarations
                             .Where(declaration => declaration.DeclarationType == DeclarationType.Variable
                                                 && declaration.Accessibility == Accessibility.Public)
-                            .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue, State))
+                            .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue, State, _indenter))
                             .ToList();
 
             return issues;
