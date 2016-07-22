@@ -59,6 +59,7 @@ End Property
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -117,6 +118,7 @@ End Property
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -145,11 +147,11 @@ End Property
 @"Private fizz As Variant
 
 Public Property Get Name() As Variant
-    Name = fizz
+    Set Name = fizz
 End Property
 
 Public Property Set Name(ByVal value As Variant)
-    fizz = value
+    Set fizz = value
 End Property
 ";
 
@@ -172,6 +174,7 @@ End Property
             {
                 ImplementLetSetterType = false,
                 ImplementSetSetterType = true,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -223,6 +226,7 @@ End Property
             {
                 ImplementLetSetterType = false,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -291,6 +295,7 @@ End Function";
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -365,6 +370,7 @@ End Property";
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -422,6 +428,7 @@ End Property
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -453,7 +460,7 @@ End Property
 Private fizz As Variant
 
 Public Property Get Name() As Variant
-    Name = fizz
+    Set Name = fizz
 End Property
 
 Public Property Let Name(ByVal value As Variant)
@@ -461,7 +468,7 @@ Public Property Let Name(ByVal value As Variant)
 End Property
 
 Public Property Set Name(ByVal value As Variant)
-    fizz = value
+    Set fizz = value
 End Property
 ";   // note: VBE removes excess spaces
 
@@ -484,6 +491,7 @@ End Property
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = true,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -542,6 +550,7 @@ End Property
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -600,6 +609,7 @@ End Property
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -655,6 +665,7 @@ End Property
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -725,6 +736,7 @@ End Sub";
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -814,6 +826,7 @@ End Sub";
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -873,6 +886,7 @@ End Property
             {
                 ImplementLetSetterType = true,
                 ImplementSetSetterType = false,
+                CanImplementLet = true,
                 ParameterName = "value",
                 PropertyName = "Name"
             };
@@ -889,7 +903,7 @@ End Property
         }
 
         [TestMethod]
-        public void RemoveParams_PresenterIsNull()
+        public void EncapsulateField_PresenterIsNull()
         {
             //Input
             const string inputCode =
@@ -917,7 +931,7 @@ End Property
         }
 
         [TestMethod]
-        public void RemoveParams_ModelIsNull()
+        public void EncapsulateField_ModelIsNull()
         {
             //Input
             const string inputCode =
@@ -1131,6 +1145,36 @@ End Sub";
             var presenter = factory.Create();
 
             Assert.AreEqual("MyProperty", presenter.Show().PropertyName);
+        }
+
+        [TestMethod]
+        public void Presenter_Accept_ReturnsModelWithCanImplementLetChanged()
+        {
+            //Input
+            const string inputCode =
+@"Private fizz As Variant";
+            var selection = new Selection(1, 15, 1, 15);
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var view = new Mock<IEncapsulateFieldDialog>();
+            view.SetupProperty(v => v.CanImplementLetSetterType, true);
+            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
+
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
+
+            var presenter = factory.Create();
+
+            Assert.AreEqual(true, presenter.Show().CanImplementLet);
         }
 
         [TestMethod]
