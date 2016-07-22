@@ -331,12 +331,6 @@
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>Um&amp;gestalten</value>
   </data>
-  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
-    <value>&amp;Versionskontrolle</value>
-  </data>
-  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
-    <value>To&amp;Do Liste</value>
-  </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>Unit &amp;Tests</value>
   </data>
@@ -835,7 +829,8 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Rubberduck - Zweig erstellen</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck Code Untersuchung - {0} {1} Problem gefunden.</value>
+    <value>Rubberduck Code Untersuchung - {0} 
+{1} Problem gefunden.</value>
   </data>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>Kein Repository gefunden.</value>
@@ -865,7 +860,8 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Vorschlag</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck Code Untersuchung - {0} {1} Probleme gefunden</value>
+    <value>Rubberduck Code Untersuchung - {0} 
+{1} Probleme gefunden</value>
   </data>
   <data name="CodeInspectionSeverity_Error" xml:space="preserve">
     <value>Fehler</value>
@@ -1519,9 +1515,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="NoIndentAnnotation" xml:space="preserve">
     <value>Füge '@&amp;NoIndent hinzu</value>
   </data>
-  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
-    <value>Aktualisiere Komponente</value>
-  </data>
   <data name="SourceControl_UndoTitle" xml:space="preserve">
     <value>Versionskontrolle - Rückgänig</value>
   </data>
@@ -1570,14 +1563,8 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Logging-Ordner anzeigen</value>
   </data>
-  <data name="information" xml:space="preserve">
-    <value>..\Resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
     <value>In Zwischenablage kopieren</value>
-  </data>
-  <data name="cross_circle" xml:space="preserve">
-    <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SourceControl_PublishRepo_FailureTitle" xml:space="preserve">
     <value>Veröffentliche Repository</value>
@@ -1698,5 +1685,65 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>In Rubberduck ist ein Fehler aufgetreten. Bitte speichern Sie Ihre Arbeit und starten Sie das Hostprogramm neu. Laden Sie dann Ihre Logdatei zu unserer GitHub-Seite hoch.</value>
+  </data>
+  <data name="ToolsMenu_SourceControl">
+    <value>Version&amp;skontrolle</value>
+  </data>
+  <data name="RegexAssistant_NoPatternError">
+    <value>(kein Ausdruck gegeben)</value>
+  </data>
+  <data name="TestExplorerMenu_AddTestModule">
+    <value>Testm&amp;odul</value>
+  </data>
+  <data name="RegexAssistant_GlobalFlag">
+    <value>Global</value>
+  </data>
+  <data name="RegexAssistant_Caption">
+    <value>Rubberduck - Regexassistent</value>
+  </data>
+  <data name="ToolsMenu">
+    <value>T&amp;ools</value>
+  </data>
+  <data name="ToolsMenu_RegexAssistant">
+    <value>Regex&amp;assistent</value>
+  </data>
+  <data name="RegexAssistant_Title">
+    <value>Assistent für Reguläre Ausdrücke</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel">
+    <value>Explizit erlaubte Namen</value>
+  </data>
+  <data name="ToolsMenu_TodoItems">
+    <value>To&amp;Do Liste</value>
+  </data>
+  <data name="RegexAssistant_Instructions">
+    <value>Einen Regulären Ausdruck zur Analyse in die Box unten eingeben.</value>
+  </data>
+  <data name="TestExplorerMenu_AddTestMethod">
+    <value>Test&amp;methode</value>
+  </data>
+  <data name="RegexAssistant_IgnoreCaseFlag">
+    <value>Ignoriere Groß-/Kleinschreibung</value>
+  </data>
+  <data name="HotkeyDescription_SourceControl">
+    <value>Versionskontrolle</value>
+  </data>
+  <data name="TestExplorerMenu_AddExpectedErrorTestMethod">
+    <value>Testmethode (&amp;erwartet Fehler)</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription">
+    <value>Diese Namen werden von der Inspektion "Nutze aussagekräftige Namen" ignoriert.</value>
+  </data>
+  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel">
+    <value>Inspektionsschwere</value>
+  </data>
+  <data name="RegexAssistant_DescriptionResultsLabel">
+    <value>Beschreibung</value>
+  </data>
+  <data name="CodeExplorer_Indent">
+    <value>Einrücken</value>
+  </data>
+  <data name="RegexAssistant_RegexPatternLabel">
+    <value>Ausdruck</value>
   </data>
 </root>

@@ -304,7 +304,8 @@
     <value>Variable is used but not assigned</value>
   </data>
   <data name="UntypedFunctionUsageInspectionMeta" xml:space="preserve">
-    <value>A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions. If the parameter can be null, ignore this inspection result; passing a null value to a function expecting a string would raise a type mismatch runtime error.</value>
+    <value>A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions. 
+If the parameter can be null, ignore this inspection result; passing a null value to a function expecting a string would raise a type mismatch runtime error.</value>
   </data>
   <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
     <value>Use of variant-returning string function</value>

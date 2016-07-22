@@ -701,12 +701,6 @@
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Rリファクタリング</value>
   </data>
-  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
-    <value>&amp;Sソース管理</value>
-  </data>
-  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
-    <value>&amp;DTODO項目</value>
-  </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>&amp;Tユニットテスト</value>
   </data>
@@ -835,9 +829,6 @@
   </data>
   <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
     <value>未公開ブランチ</value>
-  </data>
-  <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
-    <value>現在のプロジェクトから新規リポジトリを作成する</value>
   </data>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>リスト：</value>
@@ -1100,9 +1091,6 @@
   <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
     <value />
   </data>
-  <data name="SourceControl_CloneRepoButtonToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
     <value>コード検査</value>
   </data>
@@ -1215,9 +1203,6 @@
     <value />
   </data>
   <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ParserState_Resolving" xml:space="preserve">
     <value />
   </data>
   <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
@@ -1508,16 +1493,10 @@
   <data name="CodeExplorer_AddClassModuleText">
     <value />
   </data>
-  <data name="information">
-    <value />
-  </data>
   <data name="CodeExplorer_Import">
     <value />
   </data>
   <data name="Parser_ParserError">
-    <value />
-  </data>
-  <data name="SortStyle_BySelection">
     <value />
   </data>
   <data name="SourceControl_MissingCredentials">
@@ -1530,9 +1509,6 @@
     <value />
   </data>
   <data name="CodeExplorer_Commit">
-    <value />
-  </data>
-  <data name="cross_circle">
     <value />
   </data>
   <data name="CodeExplorer_Export">
@@ -1569,9 +1545,6 @@
     <value />
   </data>
   <data name="CodeExplorer_Remove">
-    <value />
-  </data>
-  <data name="CodeExplorer_RefreshComponent">
     <value />
   </data>
   <data name="CodeExplorer_Sort">
