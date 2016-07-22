@@ -95,8 +95,20 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
+            QualifiedSelection? oldSelection = null;
+            if (_vbe.ActiveCodePane != null)
+            {
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            }
+
             RemoveVariable(target);
             UpdateSignature(target);
+
+            if (oldSelection.HasValue)
+            {
+                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
+                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+            }
 
             _state.OnParseRequested(this);
         }

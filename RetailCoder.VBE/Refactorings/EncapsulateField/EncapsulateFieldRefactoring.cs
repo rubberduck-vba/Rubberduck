@@ -29,10 +29,21 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             _model = presenter.Show();
-
             if (_model == null) { return; }
 
+            QualifiedSelection? oldSelection = null;
+            if (_vbe.ActiveCodePane != null)
+            {
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            }
+
             AddProperty();
+
+            if (oldSelection.HasValue)
+            {
+                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
+                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+            }
 
             _model.State.OnParseRequested(this);
         }

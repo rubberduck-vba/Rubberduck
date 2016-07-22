@@ -11,6 +11,8 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ImplementInterface
 {
+    using VBEditor.Extensions;
+
     public class ImplementInterfaceRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
@@ -66,7 +68,19 @@ namespace Rubberduck.Refactorings.ImplementInterface
                 return;
             }
 
+            QualifiedSelection? oldSelection = null;
+            if (_vbe.ActiveCodePane != null)
+            {
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            }
+
             ImplementMissingMembers();
+
+            if (oldSelection.HasValue)
+            {
+                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
+                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+            }
 
             _state.OnParseRequested(this);
         }
