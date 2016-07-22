@@ -1606,6 +1606,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refactor / Encapsulate Field.
+        /// </summary>
+        public static string HotkeyDescription_RefactorEncapsulateField {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_RefactorEncapsulateField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refactor / Extract Method.
         /// </summary>
         public static string HotkeyDescription_RefactorExtractMethod {
@@ -1615,7 +1624,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move declaration closer to usage.
+        ///   Looks up a localized string similar to Refactor / Move declaration closer to usage.
         /// </summary>
         public static string HotkeyDescription_RefactorMoveCloserToUsage {
             get {

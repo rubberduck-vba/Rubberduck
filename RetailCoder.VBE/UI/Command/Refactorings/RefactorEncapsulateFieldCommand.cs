@@ -4,11 +4,11 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.SmartIndenter;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
-    using SmartIndenter;
-
     [ComVisible(false)]
     public class RefactorEncapsulateFieldCommand : RefactorCommandBase
     {
@@ -52,6 +52,11 @@ namespace Rubberduck.UI.Command.Refactorings
                 var refactoring = new EncapsulateFieldRefactoring(Vbe, _indenter, factory);
                 refactoring.Refactor();
             }
+        }
+
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.RefactorEncapsulateField; }
         }
     }
 }
