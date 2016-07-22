@@ -7,6 +7,8 @@ using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
+    using Rubberduck.Settings;
+
     [ComVisible(false)]
     public class RefactorEncapsulateFieldCommand : RefactorCommandBase
     {
@@ -48,6 +50,11 @@ namespace Rubberduck.UI.Command.Refactorings
                 var refactoring = new EncapsulateFieldRefactoring(Vbe, factory);
                 refactoring.Refactor();
             }
+        }
+
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.RefactorEncapsulateField; }
         }
     }
 }

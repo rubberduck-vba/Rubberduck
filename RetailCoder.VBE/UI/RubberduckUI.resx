@@ -1485,7 +1485,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Find symbol</value>
   </data>
   <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
-    <value>Move declaration closer to usage</value>
+    <value>Refactor / Move declaration closer to usage</value>
   </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rege&amp;x Search/Replace</value>
@@ -1771,5 +1771,8 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>These identifiers will be ignored by the 'Use meaningful names' inspection</value>
+  </data>
+  <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
+    <value>Refactor / Encapsulate Field</value>
   </data>
 </root>
