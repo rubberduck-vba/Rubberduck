@@ -1930,24 +1930,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Japanese.
-        /// </summary>
-        public static string Language_JA {
-            get {
-                return ResourceManager.GetString("Language_JA", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Swedish.
-        /// </summary>
-        public static string Language_SV {
-            get {
-                return ResourceManager.GetString("Language_SV", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Line.
         /// </summary>
         public static string Line {
