@@ -48,11 +48,8 @@ namespace Rubberduck.VBEditor.Extensions
             if (ext == VBComponentExtensions.DocClassExtension)
             {
                 var component = components.Item(name);
-                if (component != null)
-                {
-                    component.CodeModule.Clear();
-                    component.CodeModule.AddFromString(codeString);
-                }
+                component.CodeModule.Clear();
+                component.CodeModule.AddFromString(codeString);
             }
             else if (ext == VBComponentExtensions.FormExtension)
             {
