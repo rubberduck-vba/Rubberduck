@@ -5,18 +5,22 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.SmartIndenter;
+using Selection = Rubberduck.VBEditor.Selection;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
+        private readonly Indenter _indenter;
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
         private EncapsulateFieldModel _model;
 
-        public EncapsulateFieldRefactoring(VBE vbe, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
+        public EncapsulateFieldRefactoring(VBE vbe, Indenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
         {
             _vbe = vbe;
+            _indenter = indenter;
             _factory = factory;
         }
 
@@ -205,10 +209,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 string.Format("    Set {0} = {1}", _model.TargetDeclaration.IdentifierName, _model.ParameterName),
                 "End Property" + Environment.NewLine);
 
-            return string.Join(string.Empty,
+            var propertyText =  string.Join(string.Empty,
                         getterText,
                         (_model.ImplementLetSetterType ? letterText : string.Empty),
                         (_model.ImplementSetSetterType ? setterText : string.Empty)).TrimEnd() + Environment.NewLine;
+
+            var propertyTextLines = propertyText.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, "test", false));
         }
     }
 }
