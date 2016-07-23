@@ -334,12 +334,6 @@
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Refaktorera</value>
   </data>
-  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
-    <value>&amp;Källkontroll</value>
-  </data>
-  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
-    <value>Lista över To&amp;Do</value>
-  </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>Enhets&amp;tester</value>
   </data>
@@ -740,9 +734,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
   <data name="SourceControl_IncomingCommits" xml:space="preserve">
     <value>Inkommande commits</value>
   </data>
-  <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
-    <value>Initiera nytt Repo från detta Projekt</value>
-  </data>
   <data name="SourceControl_MergeBranch" xml:space="preserve">
     <value>Mergea</value>
   </data>
@@ -1108,9 +1099,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
   <data name="EndOfLineCommentStyle_AlignInColumn">
     <value />
   </data>
-  <data name="SourceControl_CloneRepoButtonToolTip">
-    <value />
-  </data>
   <data name="HotkeyDescription_InspectionResults">
     <value />
   </data>
@@ -1223,9 +1211,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
     <value />
   </data>
   <data name="UnitTest_NewMethod_Rename">
-    <value />
-  </data>
-  <data name="ParserState_Resolving">
     <value />
   </data>
   <data name="GeneralSettings_AutoSaveEnabled">
@@ -1483,16 +1468,10 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
   <data name="CodeExplorer_AddClassModuleText">
     <value />
   </data>
-  <data name="information">
-    <value />
-  </data>
   <data name="CodeExplorer_Import">
     <value />
   </data>
   <data name="Parser_ParserError">
-    <value />
-  </data>
-  <data name="SortStyle_BySelection">
     <value />
   </data>
   <data name="SourceControl_MissingCredentials">
@@ -1508,9 +1487,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
     <value />
   </data>
   <data name="GeneralSettings_WarnLogLevel">
-    <value />
-  </data>
-  <data name="cross_circle">
     <value />
   </data>
   <data name="GeneralSettings_ShowLogFolder">
@@ -1568,9 +1544,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
     <value />
   </data>
   <data name="GeneralSettings_FolderDelimiterLabel">
-    <value />
-  </data>
-  <data name="CodeExplorer_RefreshComponent">
     <value />
   </data>
   <data name="GeneralSettings_MinimumLogLevelLabel">

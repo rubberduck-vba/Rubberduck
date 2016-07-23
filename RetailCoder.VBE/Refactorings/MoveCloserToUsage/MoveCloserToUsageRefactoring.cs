@@ -101,8 +101,20 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 return;
             }
 
+            QualifiedSelection? oldSelection = null;
+            if (_vbe.ActiveCodePane != null)
+            {
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            }
+
             // it doesn't make sense to do it backwards, but we need to work from the bottom up so our selections are accurate
             InsertDeclaration();
+
+            if (oldSelection.HasValue)
+            {
+                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
+                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+            }
 
             _state.StateChanged += _state_StateChanged;
             _state.OnParseRequested(this);
@@ -111,6 +123,12 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
             if (e.State != ParserState.Ready) { return; }
+
+            QualifiedSelection? oldSelection = null;
+            if (_vbe.ActiveCodePane != null)
+            {
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            }
 
             var newTarget = _state.AllUserDeclarations.FirstOrDefault(
                     item => item.ComponentName == _target.ComponentName &&
@@ -123,6 +141,12 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             {
                 UpdateCallsToOtherModule(newTarget.References.ToList());
                 RemoveField(newTarget);
+            }
+
+            if (oldSelection.HasValue)
+            {
+                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
+                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
             }
 
             _state.StateChanged -= _state_StateChanged;

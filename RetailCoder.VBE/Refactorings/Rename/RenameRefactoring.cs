@@ -38,9 +38,21 @@ namespace Rubberduck.Refactorings.Rename
             var presenter = _factory.Create();
             _model = presenter.Show();
 
+            QualifiedSelection? oldSelection = null;
+            if (_vbe.ActiveCodePane != null)
+            {
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            }
+
             if (_model != null && _model.Declarations != null)
             {
                 Rename();
+            }
+
+            if (oldSelection.HasValue)
+            {
+                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
+                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
             }
         }
 
@@ -55,9 +67,21 @@ namespace Rubberduck.Refactorings.Rename
             var presenter = _factory.Create();
             _model = presenter.Show(target);
 
+            QualifiedSelection? oldSelection = null;
+            if (_vbe.ActiveCodePane != null)
+            {
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            }
+
             if (_model != null && _model.Declarations != null)
             {
                 Rename();
+            }
+
+            if (oldSelection.HasValue)
+            {
+                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
+                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
             }
         }
 

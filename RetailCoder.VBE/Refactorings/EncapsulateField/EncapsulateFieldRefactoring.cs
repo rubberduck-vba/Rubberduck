@@ -5,18 +5,22 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.SmartIndenter;
+using Selection = Rubberduck.VBEditor.Selection;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
+        private readonly IIndenter _indenter;
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
         private EncapsulateFieldModel _model;
 
-        public EncapsulateFieldRefactoring(VBE vbe, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
+        public EncapsulateFieldRefactoring(VBE vbe, IIndenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
         {
             _vbe = vbe;
+            _indenter = indenter;
             _factory = factory;
         }
 
@@ -29,21 +33,34 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             _model = presenter.Show();
-
             if (_model == null) { return; }
 
+            QualifiedSelection? oldSelection = null;
+            if (_vbe.ActiveCodePane != null)
+            {
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            }
+
             AddProperty();
+
+            if (oldSelection.HasValue)
+            {
+                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
+                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+            }
 
             _model.State.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
         {
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
             Refactor();
         }
 
         public void Refactor(Declaration target)
         {
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target.QualifiedSelection);
             Refactor();
         }
 
@@ -177,7 +194,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var getterText = string.Join(Environment.NewLine,
                 string.Format(Environment.NewLine + "Public Property Get {0}() As {1}", _model.PropertyName,
                     _model.TargetDeclaration.AsTypeName),
-                string.Format("    {0} = {1}", _model.PropertyName, _model.TargetDeclaration.IdentifierName),
+                string.Format("    {0}{1} = {2}", !_model.CanImplementLet || _model.ImplementSetSetterType ? "Set " : string.Empty, _model.PropertyName, _model.TargetDeclaration.IdentifierName),
                 "End Property" + Environment.NewLine);
 
             var letterText = string.Join(Environment.NewLine,
@@ -189,13 +206,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var setterText = string.Join(Environment.NewLine,
                 string.Format(Environment.NewLine + "Public Property Set {0}(ByVal {1} As {2})",
                     _model.PropertyName, _model.ParameterName, _model.TargetDeclaration.AsTypeName),
-                string.Format("    {0} = {1}", _model.TargetDeclaration.IdentifierName, _model.ParameterName),
+                string.Format("    Set {0} = {1}", _model.TargetDeclaration.IdentifierName, _model.ParameterName),
                 "End Property" + Environment.NewLine);
 
-            return string.Join(string.Empty,
+            var propertyText =  string.Join(string.Empty,
                         getterText,
                         (_model.ImplementLetSetterType ? letterText : string.Empty),
                         (_model.ImplementSetSetterType ? setterText : string.Empty)).TrimEnd() + Environment.NewLine;
+
+            var propertyTextLines = propertyText.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, "test", false));
         }
     }
 }

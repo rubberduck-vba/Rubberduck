@@ -43,7 +43,6 @@ namespace Rubberduck.Parsing.VBA
 
     public sealed class RubberduckParserState : IDisposable
     {
-        private readonly VBE _vbe;
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
         private readonly IDictionary<string, VBProject> _projects = new Dictionary<string, VBProject>();
 
@@ -59,9 +58,8 @@ namespace Rubberduck.Parsing.VBA
 
         public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
-        public RubberduckParserState(VBE vbe, ISinks sinks)
+        public RubberduckParserState(ISinks sinks)
         {
-            _vbe = vbe;
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
             {
@@ -79,17 +77,17 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectAdded(object sender, IProjectEventArgs e)
         {
-            if (!_vbe.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode()) { return; }
 
             Logger.Debug("Project '{0}' was added.", e.ProjectId);
 
-            RefreshProjects(); // note side-effect: assigns ProjectId/HelpFile
+            RefreshProjects(e.Project.VBE); // note side-effect: assigns ProjectId/HelpFile
             OnParseRequested(sender);
         }
 
         private void Sinks_ProjectRemoved(object sender, IProjectEventArgs e)
         {
-            if (!_vbe.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode()) { return; }
             
             Debug.Assert(e.ProjectId != null);
 
@@ -99,7 +97,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectRenamed(object sender, IProjectRenamedEventArgs e)
         {
-            if (!_vbe.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode()) { return; }
 
             if (AllDeclarations.Count == 0)
             {
@@ -109,47 +107,47 @@ namespace Rubberduck.Parsing.VBA
             Logger.Debug("Project {0} was renamed.", e.ProjectId);
 
             RemoveProject(e.ProjectId);
-            RefreshProjects();
+            RefreshProjects(e.Project.VBE);
 
             OnParseRequested(sender);
         }
 
         private void Sinks_ComponentAdded(object sender, IComponentEventArgs e)
         {
-            if (!_vbe.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode()) { return; }
 
             if (AllDeclarations.Count == 0)
             {
                 return;
             }
 
-            Logger.Debug("Component '{0}' was added.", e.ComponentName);
+            Logger.Debug("Component '{0}' was added.", e.Component.Name);
             OnParseRequested(sender);
         }
 
         private void Sinks_ComponentRemoved(object sender, IComponentEventArgs e)
         {
-            if (!_vbe.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode()) { return; }
 
             if (AllDeclarations.Count == 0)
             {
                 return;
             }
 
-            Logger.Debug("Component '{0}' was removed.", e.ComponentName);
+            Logger.Debug("Component '{0}' was removed.", e.Component.Name);
             OnParseRequested(sender);
         }
 
         private void Sinks_ComponentRenamed(object sender, IComponentRenamedEventArgs e)
         {
-            if (!_vbe.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode()) { return; }
 
             if (AllDeclarations.Count == 0)
             {
                 return;
             }
 
-            Logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.ComponentName);
+            Logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Component.Name);
 
             var componentIsWorksheet = false;
             foreach (var declaration in AllUserDeclarations)
@@ -174,9 +172,9 @@ namespace Rubberduck.Parsing.VBA
             if (componentIsWorksheet)
             {
                 RemoveProject(e.ProjectId);
-                Logger.Debug("Project '{0}' was removed.", e.ComponentName);
+                Logger.Debug("Project '{0}' was removed.", e.Component.Name);
 
-                RefreshProjects();
+                RefreshProjects(e.Project.VBE);
             }
             else
             {
@@ -202,12 +200,12 @@ namespace Rubberduck.Parsing.VBA
         /// were projects with duplicate ID's to clear the old
         /// declarations referencing the project by the old ID.
         /// </summary>
-        public void RefreshProjects()
+        public void RefreshProjects(VBE vbe)
         {
             lock (_projects)
             {
                 _projects.Clear();
-                foreach (VBProject project in _vbe.VBProjects)
+                foreach (VBProject project in vbe.VBProjects)
                 {
                     if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
                     {
@@ -238,13 +236,7 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                var projects = new List<VBProject>();
-                foreach (var project in _projects.Values)
-                {
-                    projects.Add(project);
-                }
-
-                return projects;
+                return new List<VBProject>(_projects.Values);
             }
         }
 

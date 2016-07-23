@@ -96,6 +96,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _model.PropertyName = _view.NewPropertyName;
             _model.ImplementLetSetterType = _view.MustImplementLetSetterType;
             _model.ImplementSetSetterType = _view.MustImplementSetSetterType;
+            _model.CanImplementLet = _view.CanImplementLetSetterType;
 
             _model.ParameterName = _view.ParameterName;
             return _model;

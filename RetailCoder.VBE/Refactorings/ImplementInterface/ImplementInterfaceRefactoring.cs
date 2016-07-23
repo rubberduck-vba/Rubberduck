@@ -11,13 +11,15 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ImplementInterface
 {
+    using VBEditor.Extensions;
+
     public class ImplementInterfaceRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        private List<Declaration> _declarations;
+        private readonly List<Declaration> _declarations;
         private Declaration _targetInterface;
         private Declaration _targetClass;
 
@@ -66,7 +68,19 @@ namespace Rubberduck.Refactorings.ImplementInterface
                 return;
             }
 
+            QualifiedSelection? oldSelection = null;
+            if (_vbe.ActiveCodePane != null)
+            {
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            }
+
             ImplementMissingMembers();
+
+            if (oldSelection.HasValue)
+            {
+                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
+                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+            }
 
             _state.OnParseRequested(this);
         }
@@ -91,7 +105,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             var missingMembersText = members.Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
 
-            module.InsertLines(module.CountOfDeclarationLines + 2, missingMembersText);
+            module.InsertLines(module.CountOfDeclarationLines + 1, missingMembersText);
         }
 
         private string GetInterfaceMember(Declaration member)

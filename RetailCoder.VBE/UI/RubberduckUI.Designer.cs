@@ -661,6 +661,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inspection Severities.
+        /// </summary>
+        public static string CodeInspectionSettings_InspectionSeveritySettingsLabel {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_InspectionSeveritySettingsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language Opportunities.
         /// </summary>
         public static string CodeInspectionSettings_LanguageOpportunities {
@@ -675,6 +684,24 @@ namespace Rubberduck.UI {
         public static string CodeInspectionSettings_MaintainabilityAndReadabilityIssues {
             get {
                 return ResourceManager.GetString("CodeInspectionSettings_MaintainabilityAndReadabilityIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection.
+        /// </summary>
+        public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whitelisted Identifiers.
+        /// </summary>
+        public static string CodeInspectionSettings_WhitelistedIdentifiersLabel {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersLabel", resourceCulture);
             }
         }
         
@@ -1399,7 +1426,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimum Log Level.
+        ///   Looks up a localized string similar to Minimum Log Level:.
         /// </summary>
         public static string GeneralSettings_MinimumLogLevelLabel {
             get {
@@ -1579,6 +1606,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refactor / Encapsulate Field.
+        /// </summary>
+        public static string HotkeyDescription_RefactorEncapsulateField {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_RefactorEncapsulateField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refactor / Extract Method.
         /// </summary>
         public static string HotkeyDescription_RefactorExtractMethod {
@@ -1588,7 +1624,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move declaration closer to usage.
+        ///   Looks up a localized string similar to Refactor / Move declaration closer to usage.
         /// </summary>
         public static string HotkeyDescription_RefactorMoveCloserToUsage {
             get {

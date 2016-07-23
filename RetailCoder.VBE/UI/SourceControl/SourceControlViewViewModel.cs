@@ -93,6 +93,7 @@ namespace Rubberduck.UI.SourceControl
             _sinks.ComponentAdded += ComponentAdded;
             _sinks.ComponentRemoved += ComponentRemoved;
             _sinks.ComponentRenamed += ComponentRenamed;
+            _sinks.ProjectRemoved += ProjectRemoved;
 
             TabItems = new ObservableCollection<IControlView>
             {
@@ -125,8 +126,8 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            Logger.Trace("Component {0} added", e.ComponentName);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.ComponentName);
+            Logger.Trace("Component {0} added", e.Component.Name);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Component.Name);
             if (fileStatus != null)
             {
                 Provider.AddFile(fileStatus.FilePath);
@@ -142,8 +143,8 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            Logger.Trace("Component {0] removed", e.ComponentName);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.ComponentName);
+            Logger.Trace("Component {0] removed", e.Component.Name);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Component.Name);
             if (fileStatus != null)
             {
                 Provider.RemoveFile(fileStatus.FilePath, true);
@@ -159,7 +160,7 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            Logger.Trace("Component {0} renamed to {1}", e.OldName, e.ComponentName);
+            Logger.Trace("Component {0} renamed to {1}", e.OldName, e.Component.Name);
             var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.OldName);
             if (fileStatus != null)
             {
@@ -169,12 +170,46 @@ namespace Rubberduck.UI.SourceControl
                 var fileExt = "." + fileStatus.FilePath.Split('.').Last();
 
                 _fileSystemWatcher.EnableRaisingEvents = false;
-                File.Move(directory + fileStatus.FilePath, directory + e.ComponentName + fileExt);
+                File.Move(directory + fileStatus.FilePath, directory + e.Component.Name + fileExt);
                 _fileSystemWatcher.EnableRaisingEvents = true;
 
                 Provider.RemoveFile(e.OldName + fileExt, false);
-                Provider.AddFile(e.ComponentName + fileExt);
+                Provider.AddFile(e.Component.Name + fileExt);
             }
+        }
+
+        private void ProjectRemoved(object sender, IProjectEventArgs e)
+        {
+            if (Provider == null || !Provider.HandleVbeSinkEvents)
+            {
+                return;
+            }
+
+            if (e.ProjectId != Provider.CurrentRepository.Id)
+            {
+                return;
+            }
+
+            _fileSystemWatcher.EnableRaisingEvents = false;
+            Provider.Status();  // exports files
+            ResetView();
+        }
+
+        private void ResetView()
+        {
+            Logger.Trace("Resetting view");
+
+            _provider = null;
+            OnPropertyChanged("RepoDoesNotHaveRemoteLocation");
+            Status = RubberduckUI.Offline;
+
+            UiDispatcher.InvokeAsync(() =>
+            {
+                foreach (var tab in _tabItems)
+                {
+                    tab.ViewModel.ResetView();
+                }
+            });
         }
 
         private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
@@ -553,9 +588,9 @@ namespace Rubberduck.UI.SourceControl
             }
             else
             {
-                Logger.Trace("Displaying {0} with title '{1}' and message '{2}'", e.NotificationType, e.Message, e.InnerMessage);
+                Logger.Trace("Displaying {0} with title '{1}' and message '{2}'", e.NotificationType, e.Title, e.InnerMessage);
 
-                ErrorTitle = e.Message;
+                ErrorTitle = e.Title;
                 ErrorMessage = e.InnerMessage;
 
                 IconMappings.TryGetValue(e.NotificationType, out _errorIcon);
@@ -610,7 +645,7 @@ namespace Rubberduck.UI.SourceControl
                 catch (SourceControlException ex)
                 {
                     ViewModel_ErrorThrown(this,
-                        new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                        new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                 }
                 catch
                 {
@@ -689,7 +724,7 @@ namespace Rubberduck.UI.SourceControl
                 catch (SourceControlException ex)
                 {
                     _sinks.IsEnabled = true;
-                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                     return;
                 }
                 catch
@@ -736,7 +771,7 @@ namespace Rubberduck.UI.SourceControl
                     _isCloning = false;
                 }
 
-                ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                 return;
             }
             catch
@@ -772,7 +807,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
             }
             catch
             {
@@ -843,7 +878,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                 Status = RubberduckUI.Offline;
 
                 _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));

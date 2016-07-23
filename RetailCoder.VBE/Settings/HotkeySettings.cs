@@ -24,7 +24,8 @@ namespace Rubberduck.Settings
             new HotkeySetting{Name=RubberduckHotkey.RefactorMoveCloserToUsage.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="C" },
             new HotkeySetting{Name=RubberduckHotkey.RefactorRename.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R" },
             new HotkeySetting{Name=RubberduckHotkey.RefactorExtractMethod.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M" },
-            new HotkeySetting{Name=RubberduckHotkey.SourceControl.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="D6" }
+            new HotkeySetting{Name=RubberduckHotkey.SourceControl.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="D6" },
+            new HotkeySetting{Name=RubberduckHotkey.RefactorEncapsulateField.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="E" }
         };
 
         private HashSet<HotkeySetting> _settings;

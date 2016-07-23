@@ -7,8 +7,12 @@ using Rubberduck.Refactorings.EncapsulateField;
 
 namespace Rubberduck.UI.Refactorings
 {
+    using SmartIndenter;
+
     public partial class EncapsulateFieldDialog : Form, IEncapsulateFieldDialog
     {
+        private readonly IIndenter _indenter;
+
         public string NewPropertyName
         {
             get { return PropertyNameTextBox.Text; }
@@ -75,8 +79,9 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public EncapsulateFieldDialog()
+        public EncapsulateFieldDialog(IIndenter indenter)
         {
+            _indenter = indenter;
             InitializeComponent();
             LocalizeDialog();
 
@@ -127,11 +132,16 @@ namespace Rubberduck.UI.Refactorings
 
         private void UpdatePreview()
         {
-            if (TargetDeclaration == null) { return; }
+            PreviewBox.Text = GetPropertyText();
+        }
+
+        private string GetPropertyText()
+        {
+            if (TargetDeclaration == null) { return string.Empty; }
 
             var getterText = string.Join(Environment.NewLine,
                 string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
-                string.Format("    {0} = {1}", NewPropertyName, TargetDeclaration.IdentifierName),
+                string.Format("    {0}{1} = {2}", MustImplementSetSetterType || !CanImplementLetSetterType ? "Set " : string.Empty, NewPropertyName, TargetDeclaration.IdentifierName),
                 "End Property");
 
             var letterText = string.Join(Environment.NewLine,
@@ -143,12 +153,15 @@ namespace Rubberduck.UI.Refactorings
             var setterText = string.Join(Environment.NewLine,
                 string.Format(Environment.NewLine + Environment.NewLine + "Public Property Set {0}(ByVal {1} As {2})",
                     NewPropertyName, ParameterName, TargetDeclaration.AsTypeName),
-                string.Format("    {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
+                string.Format("    Set {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
                 "End Property");
 
-            PreviewBox.Text = getterText +
-                              (MustImplementLetSetterType ? letterText : string.Empty) +
-                              (MustImplementSetSetterType ? setterText : string.Empty);
+            var propertyText = getterText +
+                    (MustImplementLetSetterType ? letterText : string.Empty) +
+                    (MustImplementSetSetterType ? setterText : string.Empty);
+
+            var propertyTextLines = propertyText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, "test", false));
         }
 
         private void ValidatePropertyName()
