@@ -494,9 +494,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Language_FR" xml:space="preserve">
     <value>French</value>
   </data>
-  <data name="Language_JA" xml:space="preserve">
-    <value>Japanese</value>
-  </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Remove Parameters</value>
   </data>
@@ -715,9 +712,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Rename {0}</value>
-  </data>
-  <data name="Language_SV" xml:space="preserve">
-    <value>Swedish</value>
   </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
