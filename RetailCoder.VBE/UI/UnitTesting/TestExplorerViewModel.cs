@@ -32,8 +32,6 @@ namespace Rubberduck.UI.UnitTesting
              ITestEngine testEngine,
              TestExplorerModel model,
              IClipboardWriter clipboard,
-             NewUnitTestModuleCommand newTestModuleCommand,
-             NewTestMethodCommand newTestMethodCommand,
              IGeneralConfigService configService,
              IOperatingSystem operatingSystem)
         {
@@ -51,9 +49,9 @@ namespace Rubberduck.UI.UnitTesting
             _runAllTestsCommand = new RunAllTestsCommand(vbe, state, testEngine, model);
             _runAllTestsCommand.RunCompleted += RunCompleted;
 
-            _addTestModuleCommand = new AddTestModuleCommand(vbe, newTestModuleCommand);
-            _addTestMethodCommand = new AddTestMethodCommand(vbe, state, newTestMethodCommand);
-            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, state, newTestMethodCommand);
+            _addTestModuleCommand = new AddTestModuleCommand(vbe, state, configService);
+            _addTestMethodCommand = new AddTestMethodCommand(vbe, state);
+            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, state);
 
             _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRefreshCommand, CanExecuteRefreshCommand);
             _repeatLastRunCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);

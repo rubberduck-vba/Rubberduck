@@ -7,7 +7,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
-using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
@@ -41,15 +40,14 @@ Private Assert As Object
             {
                 Assert.Inconclusive("Parser Error");
             }
-
-            var newTestMethodCommand = new Mock<NewTestMethodCommand>(vbe.Object, parser.State);
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State, newTestMethodCommand.Object);
+            
+            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
 
             addTestMethodCommand.Execute(null);
 
             Assert.AreEqual(
                 string.Format(input,
-                    NewTestMethodCommand.TestMethodTemplate.Replace(NewTestMethodCommand.NamePlaceholder, "TestMethod1")) +
+                    AddTestMethodCommand.TestMethodTemplate.Replace(AddTestMethodCommand.NamePlaceholder, "TestMethod1")) +
                 Environment.NewLine, component.CodeModule.Lines());
         }
 
@@ -78,9 +76,8 @@ Private Assert As Object
             {
                 Assert.Inconclusive("Parser Error");
             }
-
-            var newTestMethodCommand = new Mock<NewTestMethodCommand>(vbe.Object, parser.State);
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State, newTestMethodCommand.Object);
+            
+            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
 
             addTestMethodCommand.Execute(null);
 
@@ -104,7 +101,7 @@ Private Assert As Object
             }
             parser.State.SetStatusAndFireStateChanged(ParserState.ResolvingReferences);
             
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State, null);
+            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -124,7 +121,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State, null);
+            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -153,7 +150,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
             
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State, null);
+            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
 
             Assert.IsTrue(addTestMethodCommand.CanExecute(null));
         }
@@ -179,15 +176,14 @@ Private Assert As Object
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var newTestMethodCommand = new Mock<NewTestMethodCommand>(vbe.Object, parser.State);
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State, newTestMethodCommand.Object);
+            
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
 
             addTestMethodCommand.Execute(null);
 
             Assert.AreEqual(
                 string.Format(input,
-                    NewTestMethodCommand.TestMethodExpectedErrorTemplate.Replace(NewTestMethodCommand.NamePlaceholder,
+                    AddTestMethodExpectedErrorCommand.TestMethodExpectedErrorTemplate.Replace(AddTestMethodExpectedErrorCommand.NamePlaceholder,
                         "TestMethod1")) + Environment.NewLine, component.CodeModule.Lines());
         }
 
@@ -208,7 +204,7 @@ Private Assert As Object
             }
             parser.State.SetStatusAndFireStateChanged(ParserState.ResolvingReferences);
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State, null);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -228,7 +224,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State, null);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -257,8 +253,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State, null);
-
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
             Assert.IsTrue(addTestMethodCommand.CanExecute(null));
         }
 
@@ -284,10 +279,8 @@ Private Assert As Object
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var newTestMethodCommand = new Mock<NewTestMethodCommand>(vbe.Object, parser.State);
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State, newTestMethodCommand.Object);
-
+            
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
             addTestMethodCommand.Execute(null);
 
             Assert.AreEqual(input, component.CodeModule.Lines());
@@ -321,10 +314,8 @@ Private Assert As New Rubberduck.AssertClass
             var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null);
             var config = GetUnitTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            var newTestModuleCommand = new Mock<NewUnitTestModuleCommand>(parser.State, settings.Object);
-            var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, newTestModuleCommand.Object);
-
+            
+            var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, parser.State, settings.Object);
             addTestModuleCommand.Execute(null);
 
             // mock suite auto-assigns "TestModule1" to the first component when we create the mock

@@ -128,7 +128,7 @@ namespace RubberduckTests.CodeExplorer
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new Rubberduck.UI.CodeExplorer.Commands.AddTestModuleCommand(vbe.Object, new NewUnitTestModuleCommand(state, configLoader.Object))
+                new Rubberduck.UI.CodeExplorer.Commands.AddTestModuleCommand(vbe.Object, new Rubberduck.UI.Command.AddTestModuleCommand(vbe.Object, state, configLoader.Object))
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);

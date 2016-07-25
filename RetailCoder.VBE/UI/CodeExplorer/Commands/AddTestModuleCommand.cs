@@ -4,7 +4,6 @@ using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
-using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -12,9 +11,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     public class AddTestModuleCommand : CommandBase
     {
         private readonly VBE _vbe;
-        private readonly NewUnitTestModuleCommand _newUnitTestModuleCommand;
+        private readonly Command.AddTestModuleCommand _newUnitTestModuleCommand;
 
-        public AddTestModuleCommand(VBE vbe, NewUnitTestModuleCommand newUnitTestModuleCommand) : base(LogManager.GetCurrentClassLogger())
+        public AddTestModuleCommand(VBE vbe, Command.AddTestModuleCommand newUnitTestModuleCommand) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
@@ -34,14 +33,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void ExecuteImpl(object parameter)
         {
-            if (parameter != null)
-            {
-                _newUnitTestModuleCommand.NewUnitTestModule(GetDeclaration(parameter).Project);
-            }
-            else
-            {
-                _newUnitTestModuleCommand.NewUnitTestModule(_vbe.VBProjects.Item(1));
-            }
+            _newUnitTestModuleCommand.Execute(parameter != null
+                ? GetDeclaration(parameter).Project
+                : _vbe.VBProjects.Item(1));
         }
 
         private Declaration GetDeclaration(object parameter)
