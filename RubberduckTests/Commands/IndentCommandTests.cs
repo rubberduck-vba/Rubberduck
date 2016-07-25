@@ -175,6 +175,48 @@ End Sub
             Assert.AreEqual(expected, project.Object.VBComponents.Item("Comp2").CodeModule.Lines());
         }
 
+        [TestMethod]
+        public void IndentModule_CanExecute_NullActiveCodePane()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            vbe.Setup(v => v.ActiveCodePane).Returns((CodePane) null);
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object));
+            Assert.IsFalse(indentCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void IndentModule_CanExecute()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object));
+            Assert.IsTrue(indentCommand.CanExecute(null));
+        }
+
         private static IIndenter CreateIndenter(VBE vbe)
         {
             var settings = new Mock<IndenterSettings>();
