@@ -43,7 +43,7 @@ namespace RubberduckTests.Settings
         {
             var generalSettings = new GeneralSettings
             {
-                Language = new DisplayLanguageSetting("sv-SE"),
+                Language = new DisplayLanguageSetting("fr-CA"),
                 AutoSaveEnabled = true,
                 AutoSavePeriod = 5,
                 Delimiter = '/'
