@@ -21,40 +21,40 @@ namespace Rubberduck.UnitTesting
         private const string TestMethodBaseName = "TestMethod";
 
         public static readonly string TestMethodTemplate = string.Concat(
-            "'@TestMethod\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\n",
-            "    On Error GoTo TestFail\n",
-            "    \n",
-            "    'Arrange:\n\n",
-            "    'Act:\n\n",
-            "    'Assert:\n",
-            "    Assert.Inconclusive\n\n",
-            "TestExit:\n",
-            "    Exit Sub\n",
-            "TestFail:\n",
-            "    Assert.Fail \"", RubberduckUI.UnitTest_NewMethod_RaisedTestError, ": #\" & Err.Number & \" - \" & Err.Description\n",
-            "End Sub\n"
+            "'@TestMethod\r\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\r\n",
+            "    On Error GoTo TestFail\r\n",
+            "    \r\n",
+            "    'Arrange:\r\n\r\n",
+            "    'Act:\r\n\r\n",
+            "    'Assert:\r\n",
+            "    Assert.Inconclusive\r\n\r\n",
+            "TestExit:\r\n",
+            "    Exit Sub\r\n",
+            "TestFail:\r\n",
+            "    Assert.Fail \"", RubberduckUI.UnitTest_NewMethod_RaisedTestError, ": #\" & Err.Number & \" - \" & Err.Description\r\n",
+            "End Sub\r\n"
             );
 
         public static readonly string TestMethodExpectedErrorTemplate = string.Concat(
-            "'@TestMethod\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\n",
-            "    Const ExpectedError As Long = 0 'TODO ", RubberduckUI.UnitTest_NewMethod_ChangeErrorNo, "\n",
-            "    On Error GoTo TestFail\n",
-            "    \n",
-            "    'Arrange:\n\n",
-            "    'Act:\n\n",
-            "Assert:\n",
-            "    Assert.Fail \"", RubberduckUI.UnitTest_NewMethod_ErrorNotRaised, ".\"\n\n",
-            "TestExit:\n",
-            "    Exit Sub\n",
-            "TestFail:\n",
-            "    If Err.Number = ExpectedError Then\n",
-            "        Resume TestExit\n",
-            "    Else\n",
-            "        Resume Assert\n",
-            "    End If\n",
-            "End Sub\n"
+            "'@TestMethod\r\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\r\n",
+            "    Const ExpectedError As Long = 0 'TODO ", RubberduckUI.UnitTest_NewMethod_ChangeErrorNo, "\r\n",
+            "    On Error GoTo TestFail\r\n",
+            "    \r\n",
+            "    'Arrange:\r\n\r\n",
+            "    'Act:\r\n\r\n",
+            "Assert:\r\n",
+            "    Assert.Fail \"", RubberduckUI.UnitTest_NewMethod_ErrorNotRaised, ".\"\r\n\r\n",
+            "TestExit:\r\n",
+            "    Exit Sub\r\n",
+            "TestFail:\r\n",
+            "    If Err.Number = ExpectedError Then\r\n",
+            "        Resume TestExit\r\n",
+            "    Else\r\n",
+            "        Resume Assert\r\n",
+            "    End If\r\n",
+            "End Sub\r\n"
             );
 
         public void NewTestMethod()
