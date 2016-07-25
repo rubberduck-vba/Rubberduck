@@ -25,9 +25,7 @@ namespace Rubberduck.UI.Settings
             {
                 new DisplayLanguageSetting("en-US"),
                 new DisplayLanguageSetting("fr-CA"),
-                new DisplayLanguageSetting("de-DE"),
-                new DisplayLanguageSetting("sv-SE"),
-                new DisplayLanguageSetting("ja-JP")
+                new DisplayLanguageSetting("de-DE")
             });
 
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
