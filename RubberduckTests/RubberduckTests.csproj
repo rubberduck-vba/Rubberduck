@@ -86,11 +86,12 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
-    <Compile Include="Commands\AddTestMethodCommandTests.cs" />
+    <Compile Include="Commands\IndentCommandTests.cs" />
+    <Compile Include="Commands\UnitTestCommandTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
-    <Compile Include="FindCommands\FindAllImplementationsTests.cs" />
-    <Compile Include="FindCommands\FindAllReferencesTests.cs" />
+    <Compile Include="Commands\FindAllImplementationsTests.cs" />
+    <Compile Include="Commands\FindAllReferencesTests.cs" />
     <Compile Include="Grammar\AnnotationTests.cs" />
     <Compile Include="Grammar\ResolverTests.cs" />
     <Compile Include="Grammar\VBAParserTests.cs" />

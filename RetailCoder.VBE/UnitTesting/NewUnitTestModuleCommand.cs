@@ -19,32 +19,32 @@ namespace Rubberduck.UnitTesting
             _configLoader = configLoader;
         }
 
-        private const string ModuleLateBinding = "Private Assert As Object\n";
-        private const string ModuleEarlyBinding = "Private Assert As New Rubberduck.{0}AssertClass\n";
+        private const string ModuleLateBinding = "Private Assert As Object\r\n";
+        private const string ModuleEarlyBinding = "Private Assert As New Rubberduck.{0}AssertClass\r\n";
 
-        private const string TestModuleEmptyTemplate = "'@TestModule\n{0}\n";
+        private const string TestModuleEmptyTemplate = "'@TestModule\r\n{0}\r\n";
 
-        private const string ModuleInitLateBinding = "Set Assert = CreateObject(\"Rubberduck.{0}AssertClass\")\n";
+        private const string ModuleInitLateBinding = "Set Assert = CreateObject(\"Rubberduck.{0}AssertClass\")\r\n";
         private readonly string _moduleInit = string.Concat(
-            "'@ModuleInitialize\n"
-            , "Public Sub ModuleInitialize()\n"
-            , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\n    {0}\n"
-            , "End Sub\n\n"
-            , "'@ModuleCleanup\n"
-            , "Public Sub ModuleCleanup()\n"
-            , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\n"
-            , "End Sub\n\n"
+            "'@ModuleInitialize\r\n"
+            , "Public Sub ModuleInitialize()\r\n"
+            , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\r\n    {0}\r\n"
+            , "End Sub\r\n\r\n"
+            , "'@ModuleCleanup\r\n"
+            , "Public Sub ModuleCleanup()\r\n"
+            , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\r\n"
+            , "End Sub\r\n\r\n"
         );
 
         private readonly string _methodInit = string.Concat(
-            "'@TestInitialize\n"
-            , "Public Sub TestInitialize()\n"
-            , "    '", RubberduckUI.UnitTest_NewModule_RunBeforeTest, ".\n"
-            , "End Sub\n\n"
-            , "'@TestCleanup\n"
-            , "Public Sub TestCleanup()\n"
-            , "    '", RubberduckUI.UnitTest_NewModule_RunAfterTest, ".\n"
-            , "End Sub\n\n"
+            "'@TestInitialize\r\n"
+            , "Public Sub TestInitialize()\r\n"
+            , "    '", RubberduckUI.UnitTest_NewModule_RunBeforeTest, ".\r\n"
+            , "End Sub\r\n\r\n"
+            , "'@TestCleanup\r\n"
+            , "Public Sub TestCleanup()\r\n"
+            , "    '", RubberduckUI.UnitTest_NewModule_RunAfterTest, ".\r\n"
+            , "End Sub\r\n\r\n"
         );
 
         private const string TestModuleBaseName = "TestModule";
@@ -95,7 +95,7 @@ namespace Rubberduck.UnitTesting
                     hasOptionExplicit = component.CodeModule.Lines[1, component.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
                 }
 
-                var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
+                var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n", "Option Private Module\r\n\r\n");
 
                 var defaultTestMethod = string.Empty;
                 if (settings.DefaultTestStubInNewModule)

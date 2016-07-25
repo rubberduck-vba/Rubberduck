@@ -1,7 +1,6 @@
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using NLog;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
 
@@ -16,7 +15,7 @@ namespace Rubberduck.UI.Command
         private readonly VBE _vbe;
         private readonly NewUnitTestModuleCommand _command;
 
-        public AddTestModuleCommand(VBE vbe, RubberduckParserState state, NewUnitTestModuleCommand command) : base(LogManager.GetCurrentClassLogger())
+        public AddTestModuleCommand(VBE vbe, NewUnitTestModuleCommand command) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _command = command;
