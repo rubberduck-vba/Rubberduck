@@ -33,7 +33,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( )
+@"Private Sub Foo()
 End Sub";
 
             //Arrange
@@ -120,8 +120,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( ByVal arg2 As String)
-End Sub"; //note: The IDE strips out the extra whitespace
+@"Private Sub Foo(ByVal arg2 As String)
+End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -163,8 +163,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer )
-End Sub"; //note: The IDE strips out the extra whitespace
+@"Private Sub Foo(ByVal arg1 As Integer)
+End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -211,13 +211,13 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String )
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
 Public Sub Goo()
     Foo arg2:=""test44"",  arg1:=3
 End Sub
-"; //note: The IDE strips out the extra whitespace
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -259,8 +259,8 @@ End Function";
 
             //Expectation
             const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer ) As Boolean
-End Function"; //note: The IDE strips out the extra whitespace
+@"Private Function Foo(ByVal arg1 As Integer) As Boolean
+End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -302,8 +302,8 @@ End Function";
 
             //Expectation
             const string expectedCode =
-@"Private Function Foo( ) As Boolean
-End Function"; //note: The IDE strips out the extra whitespace
+@"Private Function Foo() As Boolean
+End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -350,13 +350,13 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Private Function Foo( ) As Boolean
+@"Private Function Foo() As Boolean
 End Function
 
 Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
     Foo  
 End Sub
-"; //note: The IDE strips out the extra whitespace
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -388,6 +388,60 @@ End Sub
         }
 
         [TestMethod]
+        public void RemoveParametersRefactoring_ParentIdentifierContainsParameterName()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub foo(a, b, c, d, e, f, g)
+End Sub
+
+Private Sub goo()
+    foo 1, 2, 3, 4, 5, 6, 7
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub foo(a, b, e, g)
+End Sub
+
+Private Sub goo()
+    foo 1, 2,   5,  7
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters.ElementAt(2).IsRemoved = true;
+            model.Parameters.ElementAt(3).IsRemoved = true;
+            model.Parameters.ElementAt(5).IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveFromGetter()
         {
             //Input
@@ -399,7 +453,7 @@ End Property";
             //Expectation
             const string expectedCode =
 @"Private Property Get Foo() As Boolean
-End Property"; //note: The IDE strips out the extra whitespace
+End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -441,8 +495,8 @@ End Property";
 
             //Expectation
             const string expectedCode =
-@"Private Property Set Foo( ByVal arg2 As String)
-End Property"; //note: The IDE strips out the extra whitespace
+@"Private Property Set Foo(ByVal arg2 As String)
+End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -483,8 +537,8 @@ End Property";
 
             //Expectation
             const string expectedCode =
-@"Private Property Set Foo( ByVal arg2 As String)
-End Property"; //note: The IDE strips out the extra whitespace
+@"Private Property Set Foo(ByVal arg2 As String)
+End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -531,13 +585,13 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( ByVal arg2 As String)
+@"Private Sub Foo(ByVal arg2 As String)
 End Sub
 
 Private Sub Bar()
     Foo  ""Hello""
 End Sub
-"; //note: The IDE strips out the extra whitespace
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -584,7 +638,7 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer )
+@"Private Sub Foo(ByVal arg1 As Integer)
 End Sub
 
 Private Sub Bar()
@@ -643,7 +697,7 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Sub Foo(ByVal arg1 As String )
+@"Sub Foo(ByVal arg1 As String)
 End Sub
 
 Public Sub Goo(ByVal arg1 As Integer, _
@@ -759,8 +813,8 @@ End Property";
 @"Private Property Get Foo()
 End Property
 
-Private Property Set Foo( ByVal arg2 As String)
-End Property"; //note: The IDE strips out the extra whitespace
+Private Property Set Foo(ByVal arg2 As String)
+End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -808,8 +862,8 @@ End Property";
 @"Private Property Get Foo()
 End Property
 
-Private Property Let Foo( ByVal arg2 As String)
-End Property"; //note: The IDE strips out the extra whitespace
+Private Property Let Foo(ByVal arg2 As String)
+End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -855,7 +909,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( Optional ByVal arg2 As String)
+@"Private Sub Foo(Optional ByVal arg2 As String)
 End Sub
 
 Private Sub Goo(ByVal arg1 As Integer)
@@ -904,7 +958,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(                  ByVal arg2 As String,                  ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg2 As String, ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
             //Arrange
@@ -949,7 +1003,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer,                                    ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
             //Arrange
@@ -994,7 +1048,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer,                  ByVal arg2 As String                  )
+@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";   // note: VBE removes excess spaces
 
             //Arrange
@@ -1039,7 +1093,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(                  ByVal arg2 As String,                  ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg2 As String, ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
             //Arrange
@@ -1091,7 +1145,7 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( ByVal arg2 As String, ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg2 As String, ByVal arg3 As Date)
 End Sub
 
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
@@ -1147,12 +1201,12 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Sub DoSomething(ByVal a As Integer )
+@"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
             const string expectedCode2 =
 @"Implements IClass1
 
-Private Sub IClass1_DoSomething(ByVal a As Integer )
+Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1209,12 +1263,12 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Sub DoSomething(ByVal a As Integer )
+@"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
             const string expectedCode2 =
 @"Implements IClass1
 
-Private Sub IClass1_DoSomething(ByVal v1 As Integer )
+Private Sub IClass1_DoSomething(ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1276,17 +1330,17 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Sub DoSomething(ByVal a As Integer )
+@"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
             const string expectedCode2 =
 @"Implements IClass1
 
-Private Sub IClass1_DoSomething(ByVal v1 As Integer )
+Private Sub IClass1_DoSomething(ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
             const string expectedCode3 =
 @"Implements IClass1
 
-Private Sub IClass1_DoSomething(ByVal i As Integer )
+Private Sub IClass1_DoSomething(ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1346,12 +1400,12 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Event Foo(ByVal arg1 As Integer )";
+@"Public Event Foo(ByVal arg1 As Integer)";
 
             const string expectedCode2 =
 @"Private WithEvents abc As Class1
 
-Private Sub abc_Foo(ByVal arg1 As Integer )
+Private Sub abc_Foo(ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1410,11 +1464,11 @@ End Sub";
             const string expectedCode1 =
 @"Private WithEvents abc As Class2
 
-Private Sub abc_Foo(ByVal arg1 As Integer )
+Private Sub abc_Foo(ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             const string expectedCode2 =
-@"Public Event Foo(ByVal arg1 As Integer )";
+@"Public Event Foo(ByVal arg1 As Integer)";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1469,12 +1523,12 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Event Foo(ByVal arg1 As Integer )";
+@"Public Event Foo(ByVal arg1 As Integer)";
 
             const string expectedCode2 =
 @"Private WithEvents abc As Class1
 
-Private Sub abc_Foo(ByVal i As Integer )
+Private Sub abc_Foo(ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1536,17 +1590,17 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Event Foo(ByVal arg1 As Integer )";
+@"Public Event Foo(ByVal arg1 As Integer)";
 
             const string expectedCode2 =
 @"Private WithEvents abc As Class1
 
-Private Sub abc_Foo(ByVal i As Integer )
+Private Sub abc_Foo(ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
             const string expectedCode3 =
 @"Private WithEvents abc As Class1
 
-Private Sub abc_Foo(ByVal v1 As Integer )
+Private Sub abc_Foo(ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1608,11 +1662,11 @@ End Sub";
             const string expectedCode1 =
 @"Implements IClass1
 
-Private Sub IClass1_DoSomething(ByVal a As Integer )
+Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             const string expectedCode2 =
-@"Public Sub DoSomething(ByVal a As Integer )
+@"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
 
             //Arrange

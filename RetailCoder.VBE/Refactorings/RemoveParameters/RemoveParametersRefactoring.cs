@@ -345,25 +345,17 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void RemoveSignatureParameters(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
         {
-            var paramNames = paramList.arg();
-
-            var paramsRemoved = _model.Parameters.Where(item => item.IsRemoved).ToList();
+            // property set/let have one more parameter than is listed in the getter parameters
+            var nonRemovedParamNames = paramList.arg().Where((a, s) => s >= _model.Parameters.Count || !_model.Parameters[s].IsRemoved).Select(s => s.GetText());
             var signature = GetOldSignature(target);
+            signature = signature.Remove(signature.IndexOf('('));
+            
+            var asTypeText = target.AsTypeContext == null ? string.Empty : " " + target.AsTypeContext.GetText();
+            signature += '(' + string.Join(", ", nonRemovedParamNames) + ")" + (asTypeText == " " ? string.Empty : asTypeText);
 
-            foreach (var param in paramsRemoved)
-            {
-                try
-                {
-                    signature = ReplaceCommas(signature.Replace(paramNames.ElementAt(param.Index).GetText(), string.Empty), _model.Parameters.FindIndex(item => item == param) - paramsRemoved.FindIndex(item => item == param));
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                }
-            }
-            var lineNum = paramList.GetSelection().LineCount;
-
+            var lineCount = paramList.GetSelection().LineCount;
             module.ReplaceLine(paramList.Start.Line, signature.Replace(" _" + Environment.NewLine, string.Empty));
-            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
+            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
         }
     }
 }
