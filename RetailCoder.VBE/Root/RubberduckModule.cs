@@ -104,10 +104,10 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = Kernel.Get<InspectionResultsViewModel>() });
 
-            Bind<IControlView>().To<ChangesView>().Named("changesView");
-            Bind<IControlView>().To<BranchesView>().Named("branchesView");
-            Bind<IControlView>().To<UnsyncedCommitsView>().Named("unsyncedCommitsView");
-            Bind<IControlView>().To<SettingsView>().Named("settingsView");
+            Bind<IControlView>().To<ChangesView>();
+            Bind<IControlView>().To<BranchesView>();
+            Bind<IControlView>().To<UnsyncedCommitsView>();
+            Bind<IControlView>().To<SettingsView>();
 
             Bind<IControlViewModel>().To<ChangesViewViewModel>()
                 .WhenInjectedInto<ChangesView>();

@@ -52,10 +52,7 @@ namespace Rubberduck.UI.SourceControl
             ISourceControlProviderFactory providerFactory,
             IFolderBrowserFactory folderBrowserFactory,
             ISourceControlConfigProvider configService,
-            [Named("changesView")] IControlView changesView,
-            [Named("branchesView")] IControlView branchesView,
-            [Named("unsyncedCommitsView")] IControlView unsyncedCommitsView,
-            [Named("settingsView")] IControlView settingsView,
+            IEnumerable<IControlView> views,
             ICodePaneWrapperFactory wrapperFactory,
             IMessageBox messageBox)
         {
@@ -95,13 +92,7 @@ namespace Rubberduck.UI.SourceControl
             _sinks.ComponentRenamed += ComponentRenamed;
             _sinks.ProjectRemoved += ProjectRemoved;
 
-            TabItems = new ObservableCollection<IControlView>
-            {
-                changesView,
-                branchesView,
-                unsyncedCommitsView,
-                settingsView
-            };
+            TabItems = new ObservableCollection<IControlView>(views);
             SetTab(SourceControlTab.Changes);
 
             Status = RubberduckUI.Offline;
