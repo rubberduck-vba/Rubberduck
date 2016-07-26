@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
@@ -103,6 +104,16 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 {
                     argumentList = CallStatement.GetArgumentList(callStmt);
                 }
+
+                if (argumentList == null)
+                {
+                    var indexExpression = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
+                    if (indexExpression != null)
+                    {
+                        argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
+                    }
+                }
+
                 if (argumentList == null) { continue; }
                 RemoveCallParameter(argumentList, module);
             }

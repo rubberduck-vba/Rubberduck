@@ -676,6 +676,67 @@ End Sub
         }
 
         [TestMethod]
+        public void RemoveParametersRefactoring_ClientReferencesAreUpdated_FirstParam_ParensAroundCall()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub bar()
+    Dim x As Integer
+    Dim y As Integer
+    y = foo(x, 42)
+    Debug.Print y, x
+End Sub
+
+Private Function foo(ByRef a As Integer, ByVal b As Integer) As Integer
+    a = b
+    foo = a + b
+End Function";
+            var selection = new Selection(8, 20, 8, 20);
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub bar()
+    Dim x As Integer
+    Dim y As Integer
+    y = foo(42)
+    Debug.Print y, x
+End Sub
+
+Private Function foo(ByVal b As Integer) As Integer
+    a = b
+    foo = a + b
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var module = component.CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters[0].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_LastParam()
         {
             //Input
