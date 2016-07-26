@@ -215,9 +215,62 @@ End Sub
 End Sub
 
 Public Sub Goo()
-    Foo arg2:=""test44"",  arg1:=3
+    Foo arg2:=""test44"", arg1:=3
 End Sub
 ";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var module = component.CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters[2].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_CallerArgNameContainsOtherArgName()
+        {
+            //Input
+            const string inputCode =
+@"Sub foo(a, b, c)
+
+End Sub
+
+Sub goo()
+    foo asd, sdf, s
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+@"Sub foo(a, b)
+
+End Sub
+
+Sub goo()
+    foo asd, sdf
+End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -354,7 +407,7 @@ End Sub
 End Function
 
 Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Foo  
+    Foo 
 End Sub
 ";
 
@@ -406,7 +459,7 @@ End Sub";
 End Sub
 
 Private Sub goo()
-    foo 1, 2,   5,  7
+    foo 1, 2, 5, 7
 End Sub";
 
             //Arrange
@@ -589,7 +642,7 @@ End Sub
 End Sub
 
 Private Sub Bar()
-    Foo  ""Hello""
+    Foo ""Hello""
 End Sub
 ";
 
@@ -642,9 +695,9 @@ End Sub
 End Sub
 
 Private Sub Bar()
-    Foo 10 
+    Foo 10
 End Sub
-"; //note: The IDE strips out the extra whitespace, you can't see it but there's a space after "Foo 10 "
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -707,9 +760,9 @@ Public Sub Goo(ByVal arg1 As Integer, _
                ByVal arg5 As Integer, _
                ByVal arg6 As Integer)
               
-    Foo ""test""      
+    Foo ""test""
 End Sub
-"; //note: The IDE strips out the extra whitespace, you can't see it but there are several spaces after " ParamArrayTest ""test""      "
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -946,6 +999,59 @@ End Sub";
         }
 
         [TestMethod]
+        public void RemoveParametersRefactoring_RemoveOptionalParam()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, Optional ByVal arg2 As String)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+    Foo 1, ""test""
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ByVal arg1 As Integer)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+    Foo 1
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var module = component.CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters[1].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines()
         {
             //Input
@@ -1150,7 +1256,7 @@ End Sub
 
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
-    Foo  arg2, arg3
+    Foo arg2, arg3
 
 End Sub
 ";   // note: IDE removes excess spaces

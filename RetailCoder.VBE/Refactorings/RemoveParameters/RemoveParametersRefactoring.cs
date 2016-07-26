@@ -96,7 +96,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
-                var proc = (dynamic)reference.Context;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
                 VBAParser.ArgumentListContext argumentList = null;
                 var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
@@ -111,7 +110,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void RemoveCallParameter(VBAParser.ArgumentListContext paramList, CodeModule module)
         {
-            List<string> paramNames = new List<string>();
+            var paramNames = new List<string>();
             if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
             {
                 paramNames.AddRange(paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
@@ -120,10 +119,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     {
                         return ((VBAParser.SpecifiedPositionalArgumentContext)p).positionalArgument().GetText();
                     }
-                    else
-                    {
-                        return string.Empty;
-                    }
+
+                    return string.Empty;
                 }).ToList());
             }
             if (paramList.positionalOrNamedArgumentList().namedArgumentList() != null)
@@ -136,48 +133,46 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _" + Environment.NewLine, string.Empty).RemoveExtraSpacesLeavingIndentation();
-            var currentStringIndex = 0;
+            var newContent = module.Lines[paramList.Start.Line, lineCount];
+            newContent = newContent.Remove(paramList.Start.Column, paramList.GetText().Length);
 
-            foreach (
-                var param in
-                    _model.Parameters.Where(item => item.IsRemoved && item.Index < paramNames.Count)
-                        .Select(item => item.Declaration))
+            var savedParamNames = paramNames;
+            for (var index = _model.Parameters.Count - 1; index >= 0; index--)
             {
-                var paramIndex = _model.Parameters.FindIndex(item => item.Declaration.Context.GetText() == param.Context.GetText());
-                if (paramIndex >= paramNames.Count) { return; }
-
-                do
+                var param = _model.Parameters[index];
+                if (!param.IsRemoved)
                 {
-                    var paramToRemoveName = paramNames.ElementAt(0).Contains(":=")
-                        ? paramNames.Find(item => item.Contains(param.IdentifierName + ":="))
-                        : paramNames.ElementAt(paramIndex);
+                    continue;
+                }
 
-                    if (paramToRemoveName == null || !newContent.Contains(paramToRemoveName))
+                if (param.Name.Contains("ParamArray"))
+                {
+                    // handle param arrays
+                    while (savedParamNames.Count > index)
                     {
-                        continue;
+                        savedParamNames.RemoveAt(index);
                     }
-
-                    var valueToRemove = paramToRemoveName != paramNames.Last()
-                        ? paramToRemoveName + ","
-                        : paramToRemoveName;
-
-                    var parameterStringIndex = newContent.IndexOf(valueToRemove, currentStringIndex, StringComparison.Ordinal);
-                    if (parameterStringIndex <= -1) { continue; }
-
-                    newContent = newContent.Remove(parameterStringIndex, valueToRemove.Length);
-
-                    currentStringIndex = parameterStringIndex;
-
-                    if (paramToRemoveName == paramNames.Last() && newContent.LastIndexOf(',') != -1)
+                }
+                else
+                {
+                    if (index < savedParamNames.Count && !savedParamNames[index].StripStringLiterals().Contains(":="))
                     {
-                        newContent = newContent.Remove(newContent.LastIndexOf(','), 1);
+                        savedParamNames.RemoveAt(index);
                     }
-                } while (paramIndex >= _model.Parameters.Count - 1 && ++paramIndex < paramNames.Count &&
-                         newContent.Contains(paramNames.ElementAt(paramIndex)));
+                    else
+                    {
+                        var paramIndex = savedParamNames.FindIndex(s => s.StartsWith(param.Declaration.IdentifierName + ":="));
+                        if (paramIndex != -1 && paramIndex < savedParamNames.Count)
+                        {
+                            savedParamNames.RemoveAt(paramIndex);
+                        }
+                    }
+                }
             }
 
-            module.ReplaceLine(paramList.Start.Line, newContent);
+            newContent = newContent.Insert(paramList.Start.Column, string.Join(", ", savedParamNames));
+
+            module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
             module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
         }
 
@@ -249,26 +244,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
-        }
-
-        private string ReplaceCommas(string signature, int indexParamRemoved)
-        {
-            if (signature.Count(c => c == ',') > indexParamRemoved) { indexParamRemoved++; }
-
-            for (int i = 0, commaCounter = 0; i < signature.Length && indexParamRemoved != 0; i++)
-            {
-                if (signature.ElementAt(i) == ',')
-                {
-                    commaCounter++;
-                }
-
-                if (commaCounter == indexParamRemoved)
-                {
-                    return signature.Remove(i, 1);
-                }
-            }
-
-            return signature;
         }
 
         private void AdjustSignatures()
