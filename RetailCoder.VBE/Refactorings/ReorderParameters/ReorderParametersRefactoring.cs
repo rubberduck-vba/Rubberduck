@@ -112,6 +112,16 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 {
                     argumentList = CallStatement.GetArgumentList(callStmt);
                 }
+                
+                if (argumentList == null)
+                {
+                    var indexExpression = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
+                    if (indexExpression != null)
+                    {
+                        argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
+                    }
+                }
+
                 if (argumentList == null) { continue; }
                 RewriteCall(argumentList, module);
             }
