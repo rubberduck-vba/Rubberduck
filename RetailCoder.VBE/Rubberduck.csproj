@@ -952,8 +952,6 @@
     <Compile Include="UnitTesting\IAssert.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\ITestRunner.cs" />
-    <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
-    <Compile Include="UnitTesting\NewUnitTestModuleCommand.cs" />
     <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />

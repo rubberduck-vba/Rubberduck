@@ -110,9 +110,16 @@ namespace RubberduckTests.SourceControl
 
         private void SetupVM()
         {
+            var views = new List<IControlView>
+            {
+                new ChangesView(_changesVM),
+                new BranchesView(_branchesVM),
+                new UnsyncedCommitsView(_unsyncedVM),
+                new SettingsView(_settingsVM)
+            };
+
             _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object), new Mock<ISinks>().Object, _providerFactory.Object, _folderBrowserFactory.Object,
-                _configService.Object, new ChangesView(_changesVM), new BranchesView(_branchesVM),
-                new UnsyncedCommitsView(_unsyncedVM), new SettingsView(_settingsVM), new CodePaneWrapperFactory(), new Mock<IMessageBox>().Object);
+                _configService.Object, views, new CodePaneWrapperFactory(), new Mock<IMessageBox>().Object);
         }
 
         [TestMethod]

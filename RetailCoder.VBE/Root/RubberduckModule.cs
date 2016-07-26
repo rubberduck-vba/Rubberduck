@@ -27,7 +27,6 @@ using Rubberduck.UI.Controls;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
-using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
@@ -63,8 +62,6 @@ namespace Rubberduck.Root
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             Bind<GitProvider>().ToSelf().InSingletonScope();
-            Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
-            Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
             Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
@@ -107,10 +104,10 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = Kernel.Get<InspectionResultsViewModel>() });
 
-            Bind<IControlView>().To<ChangesView>().Named("changesView");
-            Bind<IControlView>().To<BranchesView>().Named("branchesView");
-            Bind<IControlView>().To<UnsyncedCommitsView>().Named("unsyncedCommitsView");
-            Bind<IControlView>().To<SettingsView>().Named("settingsView");
+            Bind<IControlView>().To<ChangesView>();
+            Bind<IControlView>().To<BranchesView>();
+            Bind<IControlView>().To<UnsyncedCommitsView>();
+            Bind<IControlView>().To<SettingsView>();
 
             Bind<IControlViewModel>().To<ChangesViewViewModel>()
                 .WhenInjectedInto<ChangesView>();
