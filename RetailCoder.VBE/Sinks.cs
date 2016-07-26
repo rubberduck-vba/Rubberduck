@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
@@ -78,11 +77,11 @@ namespace Rubberduck
         private readonly IDictionary<string, Tuple<IConnectionPoint, int>> _componentsEventsConnectionPoints =
             new Dictionary<string, Tuple<IConnectionPoint, int>>();
 
-        public bool IsEnabled { get; set; }
+        public bool ComponentSinksEnabled { get; set; }
 
         public Sinks(VBE vbe)
         {
-            IsEnabled = true;
+            ComponentSinksEnabled = true;
 
             _sink = new VBProjectsEventsSink();
             var connectionPointContainer = (IConnectionPointContainer)vbe.VBProjects;
@@ -105,7 +104,6 @@ namespace Rubberduck
 
         private void _sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
         {
-            if (!IsEnabled) { return; }
             var projectId = e.Item.HelpFile;
             
             var handler = ProjectActivated;
@@ -117,8 +115,6 @@ namespace Rubberduck
 
         private void _sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
-            if (!IsEnabled) { return; }
-
             e.Item.AssignProjectId();
             var projectId = e.Item.HelpFile;
 
@@ -134,7 +130,6 @@ namespace Rubberduck
         private void _sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
             UnregisterComponentsEventSink(e.Item.HelpFile);
-            if (!IsEnabled) { return; }
 
             var projectId = e.Item.HelpFile;
             
@@ -147,8 +142,6 @@ namespace Rubberduck
 
         private void _sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
         {
-            if (!IsEnabled) { return; }
-
             var projectId = e.Item.HelpFile;
             var oldName = e.OldName;
             
@@ -218,7 +211,7 @@ namespace Rubberduck
 
         private void ComponentsSink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
 
@@ -231,7 +224,7 @@ namespace Rubberduck
 
         private void ComponentsSink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
             var componentName = e.Item.Name;
@@ -245,7 +238,7 @@ namespace Rubberduck
 
         private void ComponentsSink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
             var componentName = e.Item.Name;
@@ -259,7 +252,7 @@ namespace Rubberduck
 
         private void ComponentsSink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
             var componentName = e.Item.Name;
@@ -273,7 +266,7 @@ namespace Rubberduck
 
         private void ComponentsSink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
             var componentName = e.Item.Name;
@@ -288,7 +281,7 @@ namespace Rubberduck
 
         private void ComponentsSink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
             var componentName = e.Item.Name;

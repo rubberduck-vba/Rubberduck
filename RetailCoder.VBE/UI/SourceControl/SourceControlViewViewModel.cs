@@ -707,14 +707,14 @@ namespace Rubberduck.UI.SourceControl
                 var project = _vbe.ActiveVBProject;
                 var repo = new Repository(project.HelpFile, folderPicker.SelectedPath, string.Empty);
 
-                _sinks.IsEnabled = false;
+                _sinks.ComponentSinksEnabled = false;
                 try
                 {
                     Provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
                 }
                 catch (SourceControlException ex)
                 {
-                    _sinks.IsEnabled = true;
+                    _sinks.ComponentSinksEnabled = true;
                     ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                     return;
                 }
@@ -726,7 +726,7 @@ namespace Rubberduck.UI.SourceControl
                     throw;
                 }
 
-                _sinks.IsEnabled = true;
+                _sinks.ComponentSinksEnabled = true;
 
                 AddOrUpdateLocalPathConfig(repo);
 
@@ -738,7 +738,7 @@ namespace Rubberduck.UI.SourceControl
         private void CloneRepo(SecureCredentials credentials = null)
         {
             _isCloning = true;
-            _sinks.IsEnabled = false;
+            _sinks.ComponentSinksEnabled = false;
 
             Logger.Trace("Cloning repo");
             try
@@ -774,7 +774,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             _isCloning = false;
-            _sinks.IsEnabled = true;
+            _sinks.ComponentSinksEnabled = true;
             CloseCloneRepoGrid();
             
             Status = RubberduckUI.Online;
@@ -862,7 +862,7 @@ namespace Rubberduck.UI.SourceControl
             Logger.Trace("Opening repo assigned to project");
             try
             {
-                _sinks.IsEnabled = false;
+                _sinks.ComponentSinksEnabled = false;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
                     _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile), _wrapperFactory);
                 Status = RubberduckUI.Online;
@@ -883,7 +883,7 @@ namespace Rubberduck.UI.SourceControl
                 throw;
             }
 
-            _sinks.IsEnabled = true;
+            _sinks.ComponentSinksEnabled = true;
         }
 
         private void Refresh()

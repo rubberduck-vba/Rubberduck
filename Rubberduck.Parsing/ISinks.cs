@@ -29,7 +29,7 @@ namespace Rubberduck.Parsing
 
     public interface ISinks
     {
-        bool IsEnabled { get; set; }
+        bool ComponentSinksEnabled { get; set; }
 
         event EventHandler<IProjectEventArgs> ProjectActivated;
         event EventHandler<IProjectEventArgs> ProjectAdded;
