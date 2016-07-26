@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 
 namespace Rubberduck.UI.Refactorings
@@ -11,6 +12,7 @@ namespace Rubberduck.UI.Refactorings
 
     public partial class EncapsulateFieldDialog : Form, IEncapsulateFieldDialog
     {
+        private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
 
         public string NewPropertyName
@@ -79,8 +81,9 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public EncapsulateFieldDialog(IIndenter indenter)
+        public EncapsulateFieldDialog(RubberduckParserState state, IIndenter indenter)
         {
+            _state = state;
             _indenter = indenter;
             InitializeComponent();
             LocalizeDialog();
@@ -166,7 +169,9 @@ namespace Rubberduck.UI.Refactorings
 
         private void ValidatePropertyName()
         {
-            InvalidPropertyNameIcon.Visible = ValidateName(NewPropertyName, ParameterName);
+            InvalidPropertyNameIcon.Visible = ValidateName(NewPropertyName, ParameterName) ||
+                                              _state.AllUserDeclarations.Where(a => a.ParentScope == TargetDeclaration.ParentScope)
+                                                                        .Any(a => a.IdentifierName == NewPropertyName);
 
             SetOkButtonEnabledState();
         }

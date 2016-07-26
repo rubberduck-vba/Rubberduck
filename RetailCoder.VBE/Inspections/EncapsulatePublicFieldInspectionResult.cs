@@ -54,7 +54,7 @@ namespace Rubberduck.Inspections
         {
             var vbe = Selection.QualifiedName.Project.VBE;
 
-            using (var view = new EncapsulateFieldDialog(_indenter))
+            using (var view = new EncapsulateFieldDialog(_state, _indenter))
             {
                 var factory = new EncapsulateFieldPresenterFactory(vbe, _state, view);
                 var refactoring = new EncapsulateFieldRefactoring(vbe, _indenter, factory);
