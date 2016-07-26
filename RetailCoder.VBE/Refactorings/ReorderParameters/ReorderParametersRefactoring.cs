@@ -4,7 +4,6 @@ using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
@@ -106,7 +105,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             foreach (var reference in references.Where(item => item.Context != _model.TargetDeclaration.Context))
             {
-                dynamic proc = reference.Context;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
                 VBAParser.ArgumentListContext argumentList = null;
                 var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
@@ -121,55 +119,52 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private void RewriteCall(VBAParser.ArgumentListContext paramList, CodeModule module)
         {
-            List<string> paramNames = new List<string>();
+            var argValues = new List<string>();
             if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
             {
-                paramNames.AddRange(paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
+                argValues.AddRange(paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
                 {
                     if (p is VBAParser.SpecifiedPositionalArgumentContext)
                     {
                         return ((VBAParser.SpecifiedPositionalArgumentContext)p).positionalArgument().GetText();
                     }
-                    else
-                    {
-                        return string.Empty;
-                    }
+
+                    return string.Empty;
                 }).ToList());
             }
             if (paramList.positionalOrNamedArgumentList().namedArgumentList() != null)
             {
-                paramNames.AddRange(paramList.positionalOrNamedArgumentList().namedArgumentList().namedArgument().Select(p => p.GetText()).ToList());
+                argValues.AddRange(paramList.positionalOrNamedArgumentList().namedArgumentList().namedArgument().Select(p => p.GetText()).ToList());
             }
             if (paramList.positionalOrNamedArgumentList().requiredPositionalArgument() != null)
             {
-                paramNames.Add(paramList.positionalOrNamedArgumentList().requiredPositionalArgument().GetText());
+                argValues.Add(paramList.positionalOrNamedArgumentList().requiredPositionalArgument().GetText());
             }
 
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _" + Environment.NewLine, string.Empty).RemoveExtraSpacesLeavingIndentation();
+            var newContent = module.Lines[paramList.Start.Line, lineCount];
+            newContent = newContent.Remove(paramList.Start.Column, paramList.GetText().Length);
 
-            var parameterIndex = 0;
-            var currentStringIndex = 0;
-
-            for (var i = 0; i < paramNames.Count && parameterIndex < _model.Parameters.Count; i++)
+            var reorderedArgValues = new List<string>();
+            foreach (var param in _model.Parameters)
             {
-                var parameterStringIndex = newContent.IndexOf(paramNames.ElementAt(i), currentStringIndex, StringComparison.Ordinal);
-
-                if (parameterStringIndex <= -1) { continue; }
-
-                var oldParameterString = paramNames.ElementAt(i);
-                var newParameterString = paramNames.ElementAt(_model.Parameters.ElementAt(parameterIndex).Index);
-                var beginningSub = newContent.Substring(0, parameterStringIndex);
-                var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldParameterString, newParameterString);
-
-                newContent = beginningSub + replaceSub;
-
-                parameterIndex++;
-                currentStringIndex = beginningSub.Length + newParameterString.Length;
+                var argAtIndex = argValues.ElementAtOrDefault(param.Index);
+                if (argAtIndex != null)
+                {
+                    reorderedArgValues.Add(argAtIndex);
+                }
             }
 
-            module.ReplaceLine(paramList.Start.Line, newContent);
+            // property let/set and paramarrays
+            for (var index = reorderedArgValues.Count; index < argValues.Count; index++)
+            {
+                reorderedArgValues.Add(argValues[index]);
+            }
+
+            newContent = newContent.Insert(paramList.Start.Column, string.Join(", ", reorderedArgValues));
+
+            module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
             module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
         }
 
