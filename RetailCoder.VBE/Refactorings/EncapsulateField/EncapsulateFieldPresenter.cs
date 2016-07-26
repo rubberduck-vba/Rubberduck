@@ -41,8 +41,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (_model.TargetDeclaration == null) { return null; }
 
-            _view.NewPropertyName = _model.TargetDeclaration.IdentifierName;
             _view.TargetDeclaration = _model.TargetDeclaration;
+            _view.NewPropertyName = _model.TargetDeclaration.IdentifierName;
 
             if (_model.TargetDeclaration.References.Any(r => r.IsAssignment))
             {
