@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            if (_state.Status != ParserState.Ready)
             {
                 return false;
             }
@@ -38,9 +38,7 @@ namespace Rubberduck.UI.Command.Refactorings
                         !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
                         d.QualifiedSelection.QualifiedName.Equals(selection.Value.QualifiedName));
 
-            var canExecute = targetInterface != null && targetClass != null;
-
-            return canExecute;
+            return targetInterface != null && targetClass != null;
         }
 
         protected override void ExecuteImpl(object parameter)
