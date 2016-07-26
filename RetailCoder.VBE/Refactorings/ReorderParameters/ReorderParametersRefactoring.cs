@@ -244,34 +244,33 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private void RewriteSignature(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
         {
-            var argList = paramList.arg();
+            var parameters = paramList.arg().Select((s, i) => new {Index = i, Text = s.GetText()}).ToList();
 
-            var newContent = GetOldSignature(target);
-            var lineNum = paramList.GetSelection().LineCount;
-
-            var parameterIndex = 0;
-            var currentStringIndex = 0;
-
-            for (var i = parameterIndex; i < _model.Parameters.Count; i++)
+            var reorderedParams = new List<string>();
+            foreach (var param in _model.Parameters)
             {
-                var oldParam = argList.ElementAt(parameterIndex).GetText();
-                var newParam = argList.ElementAt(_model.Parameters.ElementAt(parameterIndex).Index).GetText();
-                var parameterStringIndex = newContent.IndexOf(oldParam, currentStringIndex, StringComparison.Ordinal);
-
-                if (parameterStringIndex > -1)
+                var parameterAtIndex = parameters.SingleOrDefault(s => s.Index == param.Index);
+                if (parameterAtIndex != null)
                 {
-                    var beginningSub = newContent.Substring(0, parameterStringIndex);
-                    var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldParam, newParam);
-
-                    newContent = beginningSub + replaceSub;
-
-                    parameterIndex++;
-                    currentStringIndex = beginningSub.Length + newParam.Length;
+                    reorderedParams.Add(parameterAtIndex.Text);
                 }
             }
 
-            module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
-            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
+            // property let/set and paramarrays
+            for (var index = reorderedParams.Count; index < parameters.Count; index++)
+            {
+                reorderedParams.Add(parameters[index].Text);
+            }
+
+            var signature = GetOldSignature(target);
+            signature = signature.Remove(signature.IndexOf('('));
+
+            var asTypeText = target.AsTypeContext == null ? string.Empty : " " + target.AsTypeContext.GetText();
+            signature += '(' + string.Join(", ", reorderedParams) + ")" + (asTypeText == " " ? string.Empty : asTypeText);
+
+            var lineCount = paramList.GetSelection().LineCount;
+            module.ReplaceLine(paramList.Start.Line, signature.Replace(" _" + Environment.NewLine, string.Empty));
+            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
         }
 
         private string GetOldSignature(Declaration target)

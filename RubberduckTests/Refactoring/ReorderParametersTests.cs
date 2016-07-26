@@ -66,6 +66,49 @@ End Sub";
         }
 
         [TestMethod]
+        public void ReorderParams_SwapPositions_SignatureContainsParamName()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(a, ba)
+End Sub";
+            var selection = new Selection(1, 16, 1, 16);
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ba, a)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //set up model
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters.Reverse();
+
+            var factory = SetupFactory(model);
+
+            //act
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
         public void ReorderParams_RefactorDeclaration()
         {
             //Input
@@ -634,7 +677,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg3 As Date,                  ByVal arg2 As String,                  ByVal arg1 As Integer)
+@"Private Sub Foo(ByVal arg3 As Date, ByVal arg2 As String, ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
