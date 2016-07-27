@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using NLog;
+using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.SourceControl;
 
@@ -10,13 +11,13 @@ namespace Rubberduck.UI.SourceControl
 {
     public class SettingsViewViewModel : ViewModelBase, IControlViewModel, IDisposable
     {
-        private readonly ISourceControlConfigProvider _configService;
+        private readonly IConfigProvider<SourceControlSettings> _configService;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly IOpenFileDialog _openFileDialog;
         private readonly SourceControlSettings _config;
 
         public SettingsViewViewModel(
-            ISourceControlConfigProvider configService,
+            IConfigProvider<SourceControlSettings> configService,
             IFolderBrowserFactory folderBrowserFactory,
             IOpenFileDialog openFileDialog)
         {

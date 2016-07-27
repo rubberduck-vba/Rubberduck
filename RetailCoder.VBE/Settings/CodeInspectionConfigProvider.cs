@@ -4,14 +4,7 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
 {
-    public interface ICodeInspectionConfigProvider
-    {
-        CodeInspectionSettings Create();
-        CodeInspectionSettings CreateDefaults();
-        void Save(CodeInspectionSettings settings);
-    }
-
-    public class CodeInspectionConfigProvider : ICodeInspectionConfigProvider
+    public class CodeInspectionConfigProvider : IConfigProvider<CodeInspectionSettings>
     {
         private readonly IPersistanceService<CodeInspectionSettings> _persister;
 

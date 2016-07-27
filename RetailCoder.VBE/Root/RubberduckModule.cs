@@ -76,8 +76,8 @@ namespace Rubberduck.Root
                 Assembly.GetAssembly(typeof(IIndenter))
             };
 
-            ApplyConfigurationConvention(assemblies);
             ApplyDefaultInterfacesConvention(assemblies);
+            ApplyConfigurationConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
 
             BindCommandsToMenuItems();
@@ -169,16 +169,16 @@ namespace Rubberduck.Root
                 .BindAllInterfaces()
                 .Configure(binding => binding.InSingletonScope()));
 
-            Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InSingletonScope();
-            Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InSingletonScope();
-            Bind<IPersistanceService<HotkeySettings>>().To<XmlPersistanceService<HotkeySettings>>().InSingletonScope();
-            Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InSingletonScope();
-            Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InSingletonScope();
-            Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InSingletonScope();
-            Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InSingletonScope();
+            Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InCallScope();
+            Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InCallScope();
+            Bind<IPersistanceService<HotkeySettings>>().To<XmlPersistanceService<HotkeySettings>>().InCallScope();
+            Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InCallScope();
+            Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InCallScope();
+            Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InCallScope();
+            Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InCallScope();
 
-            Bind<IIndenterConfigProvider>().To<IndenterConfigProvider>().InSingletonScope();
-            Bind<ISourceControlConfigProvider>().To<SourceControlConfigProvider>().InSingletonScope();
+            Bind<IConfigProvider<IndenterSettings>>().To<IndenterConfigProvider>().InCallScope();
+            Bind<IConfigProvider<SourceControlSettings>>().To<SourceControlConfigProvider>().InCallScope();
 
             Bind<ICodeInspectionSettings>().To<CodeInspectionSettings>().InCallScope();
             Bind<IGeneralSettings>().To<GeneralSettings>().InCallScope();
@@ -311,7 +311,7 @@ namespace Rubberduck.Root
         private void BindCommandsToMenuItems()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? String.Empty))
+                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
                 .ToList();
 
             // note: CommandBase naming convention: [Foo]Command
@@ -333,7 +333,7 @@ namespace Rubberduck.Root
                             binding.WhenInjectedInto<RubberduckHooks>().BindingConfiguration.Condition;
 
                         binding.When(request => whenCommandMenuItemCondition(request) || whenHooksCondition(request))
-                            .InSingletonScope();
+                            .InCallScope();
                     }
                 }
                 catch (InvalidOperationException)

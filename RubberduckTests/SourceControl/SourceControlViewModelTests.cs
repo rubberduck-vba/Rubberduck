@@ -5,9 +5,9 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
@@ -34,7 +34,7 @@ namespace RubberduckTests.SourceControl
         private UnsyncedCommitsViewViewModel _unsyncedVM;
         private SettingsViewViewModel _settingsVM;
 
-        private Mock<ISourceControlConfigProvider> _configService;
+        private Mock<IConfigProvider<SourceControlSettings>> _configService;
 
         private Mock<IFolderBrowserFactory> _folderBrowserFactory;
         private Mock<IFolderBrowser> _folderBrowser;
@@ -52,7 +52,7 @@ namespace RubberduckTests.SourceControl
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            _configService = new Mock<ISourceControlConfigProvider>();
+            _configService = new Mock<IConfigProvider<SourceControlSettings>>();
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             _folderBrowser = new Mock<IFolderBrowser>();

@@ -9,10 +9,10 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
-using Ninject;
 using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
@@ -36,7 +36,7 @@ namespace Rubberduck.UI.SourceControl
         private readonly ISinks _sinks;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
-        private readonly ISourceControlConfigProvider _configService;
+        private readonly IConfigProvider<SourceControlSettings> _configService;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IMessageBox _messageBox;
         private readonly FileSystemWatcher _fileSystemWatcher;
@@ -51,7 +51,7 @@ namespace Rubberduck.UI.SourceControl
             ISinks sinks,
             ISourceControlProviderFactory providerFactory,
             IFolderBrowserFactory folderBrowserFactory,
-            ISourceControlConfigProvider configService,
+            IConfigProvider<SourceControlSettings> configService,
             IEnumerable<IControlView> views,
             ICodePaneWrapperFactory wrapperFactory,
             IMessageBox messageBox)
