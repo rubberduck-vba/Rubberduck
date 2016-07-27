@@ -85,8 +85,12 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             foreach (var child in _items.Keys.Select(item => item as IParentMenuItem).Where(child => child != null))
             {
                 child.RemoveChildren();
-                Debug.Assert(_items[child] is CommandBarPopup);
-                (_items[child] as CommandBarPopup).Delete();
+
+                if (_items[child] != null)
+                {
+                    Debug.Assert(_items[child] is CommandBarPopup);
+                    (_items[child] as CommandBarPopup).Delete();
+                }
             }
             foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
             {
