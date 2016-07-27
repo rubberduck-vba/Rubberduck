@@ -6,7 +6,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public interface IInspector
+    public interface IInspector : IDisposable
     {
         Task<IEnumerable<ICodeInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token);
     }

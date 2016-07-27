@@ -10,21 +10,21 @@ namespace Rubberduck.UI.ToDoItems
         string IDockableUserControl.ClassId { get { return ClassId; } }
         string IDockableUserControl.Caption { get { return RubberduckUI.TodoExplorer_Caption; } }
 
-        public ToDoExplorerWindow()
+        private ToDoExplorerWindow()
         {
             InitializeComponent();
         }
 
-        private ToDoExplorerViewModel _viewModel;
+        public ToDoExplorerWindow(ToDoExplorerViewModel viewModel) : this()
+        {
+            _viewModel = viewModel;
+            TodoExplorerControl.DataContext = _viewModel;
+        }
+
+        private readonly ToDoExplorerViewModel _viewModel;
         public ToDoExplorerViewModel ViewModel
         {
             get { return _viewModel; }
-            set
-            {
-                _viewModel = value;
-                TodoExplorerControl.DataContext = _viewModel;
-            }
         }
-
     }
 }

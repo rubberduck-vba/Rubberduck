@@ -8,20 +8,21 @@ namespace Rubberduck.UI.Inspections
         string IDockableUserControl.ClassId { get { return ClassId; } }
         string IDockableUserControl.Caption { get { return RubberduckUI.CodeInspections; } }
         
-        public CodeInspectionsWindow()
+        private CodeInspectionsWindow()
         {
             InitializeComponent();
         }
 
-        private InspectionResultsViewModel _viewModel;
+        public CodeInspectionsWindow(InspectionResultsViewModel viewModel) : this()
+        {
+            _viewModel = viewModel;
+            wpfInspectionResultsControl.DataContext = _viewModel;
+        }
+
+        private readonly InspectionResultsViewModel _viewModel;
         public InspectionResultsViewModel ViewModel
         {
             get { return _viewModel; }
-            set
-            {
-                _viewModel = value;
-                wpfInspectionResultsControl.DataContext = _viewModel;
-            }
         }
     }
 }

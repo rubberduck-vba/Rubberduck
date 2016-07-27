@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
 {
     namespace Rubberduck.Inspections
     {
-        public class Inspector : IInspector, IDisposable
+        public class Inspector : IInspector
         {
             private readonly IGeneralConfigService _configService;
             private readonly IEnumerable<IInspection> _inspections;
