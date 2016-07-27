@@ -34,11 +34,9 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
-            var canExecute = target != null 
+            return target != null 
                 && (target.DeclarationType == DeclarationType.Variable || target.DeclarationType == DeclarationType.Constant)
                 && target.References.Any();
-
-            return canExecute;
         }
 
         protected override void ExecuteImpl(object parameter)

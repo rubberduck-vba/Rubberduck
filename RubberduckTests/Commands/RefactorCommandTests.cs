@@ -481,7 +481,7 @@ End Property";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
                 .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, "")
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, "Implements IClass1", new Selection(1, 1, 1, 1))
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, "Implements IClass1", Selection.Home)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
@@ -497,6 +497,1022 @@ End Property";
 
             var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, parser.State);
             Assert.IsTrue(implementInterfaceCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void IntroduceField_CanExecute_NullActiveCodePane()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            vbe.Setup(v => v.ActiveCodePane).Returns((CodePane)null);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            Assert.IsFalse(introduceFieldCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void IntroduceField_CanExecute_NonReadyState()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            Assert.IsFalse(introduceFieldCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void IntroduceField_CanExecute_Field()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("Dim d As Boolean", out component, Selection.Home);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            Assert.IsFalse(introduceFieldCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void IntroduceField_CanExecute_LocalVariable()
+        {
+            var input =
+@"Property Get foo() As Boolean
+    Dim d As Boolean
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            Assert.IsTrue(introduceFieldCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void IntroduceParameter_CanExecute_NullActiveCodePane()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            vbe.Setup(v => v.ActiveCodePane).Returns((CodePane)null);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            Assert.IsFalse(introduceParameterCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void IntroduceParameter_CanExecute_NonReadyState()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            Assert.IsFalse(introduceParameterCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void IntroduceParameter_CanExecute_Field()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("Dim d As Boolean", out component, Selection.Home);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            Assert.IsFalse(introduceParameterCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void IntroduceParameter_CanExecute_LocalVariable()
+        {
+            var input =
+@"Property Get foo() As Boolean
+    Dim d As Boolean
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            Assert.IsTrue(introduceParameterCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void MoveCloserToUsage_CanExecute_NullActiveCodePane()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            vbe.Setup(v => v.ActiveCodePane).Returns((CodePane)null);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void MoveCloserToUsage_CanExecute_NonReadyState()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void MoveCloserToUsage_CanExecute_Field_NoReferences()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("Dim d As Boolean", out component, Selection.Home);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void MoveCloserToUsage_CanExecute_LocalVariable_NoReferences()
+        {
+            var input =
+@"Property Get foo() As Boolean
+    Dim d As Boolean
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void MoveCloserToUsage_CanExecute_Const_NoReferences()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("Private Const const_abc = 0", out component, Selection.Home);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void MoveCloserToUsage_CanExecute_Field()
+        {
+            var input =
+@"Dim d As Boolean
+Sub Foo()
+    d = True
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 5, 1, 5));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void MoveCloserToUsage_CanExecute_LocalVariable()
+        {
+            var input =
+@"Property Get foo() As Boolean
+    Dim d As Boolean
+    d = True
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void MoveCloserToUsage_CanExecute_Const()
+        {
+            var input =
+@"Private Const const_abc = 0
+Sub Foo()
+    Dim d As Integer
+    d = const_abc
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 17, 1, 17));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_NullActiveCodePane()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            vbe.Setup(v => v.ActiveCodePane).Returns((CodePane)null);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsFalse(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_NonReadyState()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsFalse(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_Event_NoParams()
+        {
+            const string input =
+@"Public Event Foo()";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsFalse(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_Proc_NoParams()
+        {
+            var input =
+@"Sub foo()
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsFalse(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_Function_NoParams()
+        {
+            var input =
+@"Function foo() As Integer
+End Function";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsFalse(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_PropertyGet_NoParams()
+        {
+            var input =
+@"Property Get foo() As Boolean
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsFalse(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_PropertyLet_OneParam()
+        {
+            var input =
+@"Property Let foo(value)
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsFalse(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_PropertySet_OneParam()
+        {
+            var input =
+@"Property Set foo(value)
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsFalse(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_Event_OneParam()
+        {
+            const string input =
+@"Public Event Foo(value)";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsTrue(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_Proc_OneParam()
+        {
+            var input =
+@"Sub foo(value)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsTrue(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_Function_OneParam()
+        {
+            var input =
+@"Function foo(value) As Integer
+End Function";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsTrue(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_PropertyGet_OneParam()
+        {
+            var input =
+@"Property Get foo(value) As Boolean
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsTrue(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_PropertyLet_TwoParams()
+        {
+            var input =
+@"Property Let foo(value1, value2)
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsTrue(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void RemoveParameters_CanExecute_PropertySet_TwoParams()
+        {
+            var input =
+@"Property Set foo(value1, value2)
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            Assert.IsTrue(removeParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_NullActiveCodePane()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            vbe.Setup(v => v.ActiveCodePane).Returns((CodePane)null);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_NonReadyState()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_Event_OneParam()
+        {
+            const string input =
+@"Public Event Foo(value)";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_Proc_OneParam()
+        {
+            var input =
+@"Sub foo(value)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_Function_OneParam()
+        {
+            var input =
+@"Function foo(value) As Integer
+End Function";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_PropertyGet_OneParam()
+        {
+            var input =
+@"Property Get foo(value) As Boolean
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_PropertyLet_TwoParams()
+        {
+            var input =
+@"Property Let foo(value1, value2)
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_PropertySet_TwoParams()
+        {
+            var input =
+@"Property Set foo(value1, value2)
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsFalse(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_Event_TwoParams()
+        {
+            const string input =
+@"Public Event Foo(value1, value2)";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsTrue(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_Proc_TwoParams()
+        {
+            var input =
+@"Sub foo(value1, value2)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsTrue(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_Function_TwoParams()
+        {
+            var input =
+@"Function foo(value1, value2) As Integer
+End Function";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsTrue(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_PropertyGet_TwoParams()
+        {
+            var input =
+@"Property Get foo(value1, value2) As Boolean
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsTrue(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_PropertyLet_ThreeParams()
+        {
+            var input =
+@"Property Let foo(value1, value2, value3)
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsTrue(reorderParametersCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void ReorderParameters_CanExecute_PropertySet_ThreeParams()
+        {
+            var input =
+@"Property Set foo(value1, value2, value3)
+End Property";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
     }
 }
