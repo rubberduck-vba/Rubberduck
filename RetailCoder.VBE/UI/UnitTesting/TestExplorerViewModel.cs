@@ -228,8 +228,22 @@ namespace Rubberduck.UI.UnitTesting
             return !Model.IsBusy && _state.IsDirty();
         }
 
+        private void EnsureRubberduckIsReferencedForEarlyBoundTests()
+        {
+            foreach (var member in _state.AllUserDeclarations)
+            {
+                if (member.AsTypeName == "Rubberduck.PermissiveAssertClass" ||
+                    member.AsTypeName == "Rubberduck.AssertClass")
+                {
+                    member.Project.EnsureReferenceToAddInLibrary();
+                }
+            }
+        }
+
         private void ExecuteRepeatLastRunCommand(object parameter)
         {
+            EnsureRubberduckIsReferencedForEarlyBoundTests();
+
             var tests = _model.LastRun.ToList();
             _model.ClearLastRun();
 
@@ -246,6 +260,8 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRunNotExecutedTestsCommand(object parameter)
         {
+            EnsureRubberduckIsReferencedForEarlyBoundTests();
+
             _model.ClearLastRun();
 
             var stopwatch = new Stopwatch();
@@ -261,6 +277,8 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRunFailedTestsCommand(object parameter)
         {
+            EnsureRubberduckIsReferencedForEarlyBoundTests();
+
             _model.ClearLastRun();
 
             var stopwatch = new Stopwatch();
@@ -276,6 +294,8 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRunPassedTestsCommand(object parameter)
         {
+            EnsureRubberduckIsReferencedForEarlyBoundTests();
+
             _model.ClearLastRun();
 
             var stopwatch = new Stopwatch();
@@ -300,6 +320,8 @@ namespace Rubberduck.UI.UnitTesting
             {
                 return;
             }
+
+            EnsureRubberduckIsReferencedForEarlyBoundTests();
 
             _model.ClearLastRun();
 
