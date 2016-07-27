@@ -195,6 +195,117 @@ End Property";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void WriteOnlyProperty_AddPropertyGetQuickFixWorks_ImplicitTypesAndAccessibility()
+        {
+            const string inputCode =
+@"Property Let Foo(value)
+End Property";
+
+            const string expectedCode =
+@"Public Property Get Foo() As Variant
+End Property
+Property Let Foo(value)
+End Property";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build();
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new WriteOnlyPropertyInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is WriteOnlyPropertyQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void WriteOnlyProperty_AddPropertyGetQuickFixWorks_ExlicitTypesAndAccessibility()
+        {
+            const string inputCode =
+@"Public Property Let Foo(ByVal value As Integer)
+End Property";
+
+            const string expectedCode =
+@"Public Property Get Foo() As Integer
+End Property
+Public Property Let Foo(ByVal value As Integer)
+End Property";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build();
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new WriteOnlyPropertyInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is WriteOnlyPropertyQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void WriteOnlyProperty_AddPropertyGetQuickFixWorks_MultipleParams()
+        {
+            const string inputCode =
+@"Public Property Let Foo(value1, ByVal value2 As Integer, ByRef value3 As Long, value4 As Date, ByVal value5, value6 As String)
+End Property";
+
+            const string expectedCode =
+@"Public Property Get Foo(ByRef value1 As Variant, ByVal value2 As Integer, ByRef value3 As Long, ByRef value4 As Date, ByVal value5 As Variant) As String
+End Property
+Public Property Let Foo(value1, ByVal value2 As Integer, ByRef value3 As Long, value4 As Date, ByVal value5, value6 As String)
+End Property";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build();
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new WriteOnlyPropertyInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is WriteOnlyPropertyQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void WriteOnlyProperty_IgnoreQuickFixWorks()
         {
             const string inputCode =
