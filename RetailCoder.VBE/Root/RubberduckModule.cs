@@ -180,13 +180,13 @@ namespace Rubberduck.Root
             Bind<IIndenterConfigProvider>().To<IndenterConfigProvider>().InSingletonScope();
             Bind<ISourceControlConfigProvider>().To<SourceControlConfigProvider>().InSingletonScope();
 
-            Bind<ICodeInspectionSettings>().To<CodeInspectionSettings>();
-            Bind<IGeneralSettings>().To<GeneralSettings>();
-            Bind<IHotkeySettings>().To<HotkeySettings>();
-            Bind<IToDoListSettings>().To<ToDoListSettings>();
-            Bind<IUnitTestSettings>().To<UnitTestSettings>();
-            Bind<IIndenterSettings>().To<IndenterSettings>();
-            Bind<ISourceControlSettings>().To<SourceControlSettings>();        
+            Bind<ICodeInspectionSettings>().To<CodeInspectionSettings>().InCallScope();
+            Bind<IGeneralSettings>().To<GeneralSettings>().InCallScope();
+            Bind<IHotkeySettings>().To<HotkeySettings>().InCallScope();
+            Bind<IToDoListSettings>().To<ToDoListSettings>().InCallScope();
+            Bind<IUnitTestSettings>().To<UnitTestSettings>().InCallScope();
+            Bind<IIndenterSettings>().To<IndenterSettings>().InCallScope();
+            Bind<ISourceControlSettings>().To<SourceControlSettings>().InCallScope();        
         }
 
         // note convention: abstract factory interface names end with "Factory".
