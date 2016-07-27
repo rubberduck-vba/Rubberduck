@@ -37,6 +37,8 @@ namespace Rubberduck.UI.Command
 
         protected override void ExecuteImpl(object parameter)
         {
+            EnsureRubberduckIsReferencedForEarlyBoundTests();
+
             if (!_state.IsDirty())
             {
                 RunTests();
@@ -45,6 +47,18 @@ namespace Rubberduck.UI.Command
             {
                 _model.TestsRefreshed += TestsRefreshed;
                 _model.Refresh();
+            }
+        }
+
+        private void EnsureRubberduckIsReferencedForEarlyBoundTests()
+        {
+            foreach (var member in _state.AllUserDeclarations)
+            {
+                if (member.AsTypeName == "Rubberduck.PermissiveAssertClass" ||
+                    member.AsTypeName == "Rubberduck.AssertClass")
+                {
+                    member.Project.EnsureReferenceToAddInLibrary();
+                }
             }
         }
 

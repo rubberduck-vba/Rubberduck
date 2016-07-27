@@ -54,6 +54,7 @@ namespace Rubberduck.Inspections
             {
                 return new CodeInspectionQuickFix[]
                 {
+                    new WriteOnlyPropertyQuickFix(Context, Target),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
                 };
             }

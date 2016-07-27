@@ -565,4 +565,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="MalformedAnnotationInspectionResultFormat" xml:space="preserve">
     <value>Malformed '{0}' annotation.</value>
   </data>
+  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+    <value>Add property get</value>
+  </data>
 </root>
