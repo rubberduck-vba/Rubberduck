@@ -35,5 +35,12 @@ namespace Rubberduck.UI.Settings
 
             ((TodoSettingsViewModel)ViewModel).TodoSettings = new ObservableCollection<ToDoMarker>(markers);
         }
+
+        private void AddNewTodoMarker(object sender, System.Windows.RoutedEventArgs e)
+        {
+            TodoMarkerGrid.CommitEdit();
+            ((TodoSettingsViewModel) ViewModel).AddTodoCommand.Execute(null);
+            e.Handled = true;
+        }
     }
 }
