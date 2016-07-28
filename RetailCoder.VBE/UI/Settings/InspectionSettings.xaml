@@ -340,7 +340,7 @@
                     <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
                              Background="Transparent">
                         <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}"
-                                Command="{Binding AddWhitelistedNameCommand}"
+                                Click="AddNewItem"
                                 BorderThickness="0"
                                 Background="Transparent">
                             <StackPanel Orientation="Horizontal">
