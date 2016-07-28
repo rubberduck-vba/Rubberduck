@@ -637,8 +637,6 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
-                var qualifiedModuleName = new QualifiedModuleName();
-
                 foreach (var moduleState in _moduleStates)
                 {
                     if (moduleState.Key.ProjectId == projectId && moduleState.Key.Component != null)
@@ -651,14 +649,13 @@ namespace Rubberduck.Parsing.VBA
                     else if (moduleState.Key.ProjectId == projectId && moduleState.Key.Component == null)
                     {
                         // store project module name
-                        qualifiedModuleName = moduleState.Key;
+                        var qualifiedModuleName = moduleState.Key;
+                        ModuleState state;
+                        if (_moduleStates.TryRemove(qualifiedModuleName, out state))
+                        {
+                            state.Dispose();
+                        }
                     }
-                }
-
-                ModuleState state;
-                if (_moduleStates.TryRemove(qualifiedModuleName, out state))
-                {
-                    state.Dispose();
                 }
             }
             catch (COMException)
