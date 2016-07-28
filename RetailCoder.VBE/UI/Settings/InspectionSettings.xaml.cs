@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Settings
             var selectedSeverityName = ((ComboBox) e.EditingElement).SelectedItem.ToString();
 
             var severities = Enum.GetValues(typeof(CodeInspectionSeverity)).Cast<CodeInspectionSeverity>();
-            var selectedSeverity = severities.Single(s => RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, UI.Settings.Settings.Culture) == selectedSeverityName);
+            var selectedSeverity = severities.Single(s => RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, Settings.Culture) == selectedSeverityName);
 
             ((InspectionSettingsViewModel) ViewModel).UpdateCollection(selectedSeverity);
         }
@@ -47,6 +47,13 @@ namespace Rubberduck.UI.Settings
             identifiers.Insert(editedIndex, new WhitelistedIdentifierSetting(((TextBox)e.EditingElement).Text));
 
             ((InspectionSettingsViewModel)ViewModel).WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>(identifiers);
+        }
+
+        private void AddNewItem(object sender, System.Windows.RoutedEventArgs e)
+        {
+            WhitelistedIdentifiersGrid.CommitEdit();
+            ((InspectionSettingsViewModel) ViewModel).AddWhitelistedNameCommand.Execute(null);
+            e.Handled = true;
         }
     }
 }
