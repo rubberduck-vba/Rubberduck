@@ -179,7 +179,14 @@
             </StackPanel>
         </ScrollViewer>
 
-        <GridSplitter Grid.Row="1" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
+        <GridSplitter Grid.Row="1"
+                      Height="5"
+                      ShowsPreview="False"
+                      Cursor="SizeNS"
+                      HorizontalAlignment="Stretch"
+                      Background="DarkGray"
+                      BorderBrush="Transparent"
+                      BorderThickness="2" />
 
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto"
