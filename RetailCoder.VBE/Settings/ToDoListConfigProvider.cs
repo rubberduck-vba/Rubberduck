@@ -2,14 +2,7 @@
 
 namespace Rubberduck.Settings
 {
-    public interface IToDoListConfigProvider
-    {
-        ToDoListSettings Create();
-        ToDoListSettings CreateDefaults();
-        void Save(ToDoListSettings settings);
-    }
-
-    public class ToDoListConfigProvider : IToDoListConfigProvider
+    public class ToDoListConfigProvider : IConfigProvider<ToDoListSettings>
     {
         private readonly IPersistanceService<ToDoListSettings> _persister;
 

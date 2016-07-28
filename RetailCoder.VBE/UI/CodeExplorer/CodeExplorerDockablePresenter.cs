@@ -6,7 +6,7 @@ namespace Rubberduck.UI.CodeExplorer
     {
         private CodeExplorerWindow Control { get { return UserControl as CodeExplorerWindow; } }
 
-        public CodeExplorerDockablePresenter(VBE vbe, AddIn addIn, IDockableUserControl view)
+        public CodeExplorerDockablePresenter(VBE vbe, AddIn addIn, CodeExplorerWindow view)
             : base(vbe, addIn, view)
         {
         }

@@ -4,7 +4,7 @@ namespace Rubberduck.UI.Inspections
 {
     public class CodeInspectionsDockablePresenter : DockableToolwindowPresenter
     {
-        public CodeInspectionsDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl window)
+        public CodeInspectionsDockablePresenter(VBE vbe, AddIn addin, CodeInspectionsWindow window)
             :base(vbe, addin, window)
         {
         }

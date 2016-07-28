@@ -253,6 +253,10 @@
       <HintPath>..\packages\Ninject.Extensions.Interception.DynamicProxy.3.2.0.0\lib\net45-full\Ninject.Extensions.Interception.DynamicProxy.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Ninject.Extensions.NamedScope, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Extensions.NamedScope.3.2.0.0\lib\net45-full\Ninject.Extensions.NamedScope.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />

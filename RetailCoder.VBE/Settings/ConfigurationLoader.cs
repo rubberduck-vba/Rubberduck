@@ -23,15 +23,15 @@ namespace Rubberduck.Settings
 
     public class ConfigurationLoader : IGeneralConfigService
     {
-        private readonly IGeneralConfigProvider _generalProvider;
-        private readonly IHotkeyConfigProvider _hotkeyProvider;
-        private readonly IToDoListConfigProvider _todoProvider;
-        private readonly ICodeInspectionConfigProvider _inspectionProvider;
-        private readonly IUnitTestConfigProvider _unitTestProvider;
-        private readonly IIndenterConfigProvider _indenterProvider;
+        private readonly IConfigProvider<GeneralSettings> _generalProvider;
+        private readonly IConfigProvider<HotkeySettings> _hotkeyProvider;
+        private readonly IConfigProvider<ToDoListSettings> _todoProvider;
+        private readonly IConfigProvider<CodeInspectionSettings> _inspectionProvider;
+        private readonly IConfigProvider<UnitTestSettings> _unitTestProvider;
+        private readonly IConfigProvider<IndenterSettings> _indenterProvider;
 
-        public ConfigurationLoader(IGeneralConfigProvider generalProvider, IHotkeyConfigProvider hotkeyProvider, IToDoListConfigProvider todoProvider,
-                                   ICodeInspectionConfigProvider inspectionProvider, IUnitTestConfigProvider unitTestProvider, IIndenterConfigProvider indenterProvider)
+        public ConfigurationLoader(IConfigProvider<GeneralSettings> generalProvider, IConfigProvider<HotkeySettings> hotkeyProvider, IConfigProvider<ToDoListSettings> todoProvider,
+                                   IConfigProvider<CodeInspectionSettings> inspectionProvider, IConfigProvider<UnitTestSettings> unitTestProvider, IConfigProvider<IndenterSettings> indenterProvider)
         {
             _generalProvider = generalProvider;
             _hotkeyProvider = hotkeyProvider;
