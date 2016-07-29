@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
                 ? new CodeInspectionQuickFix[] { }
                 : new CodeInspectionQuickFix[]
                 {
-                    new ConvertToProcedureQuickFix(Context, QualifiedSelection),
+                    new ConvertToProcedureQuickFix(Context, QualifiedSelection, target),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
                 };
         }
