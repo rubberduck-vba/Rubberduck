@@ -46,11 +46,10 @@ namespace Rubberduck.Inspections
                            implementationMember =>
                                Tuple.Create(implementationMember.Context,
                                    new QualifiedSelection(implementationMember.QualifiedName.QualifiedModuleName,
-                                       implementationMember.Selection), GetReturnStatements(implementationMember)))
+                                       implementationMember.Selection), implementationMember))
                    select
                        new FunctionReturnValueNotUsedInspectionResult(this, interfaceMember.Context,
-                           interfaceMember.QualifiedName, GetReturnStatements(interfaceMember),
-                           implementationMemberIssues, interfaceMember);
+                           interfaceMember.QualifiedName, implementationMemberIssues, interfaceMember);
         }
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
@@ -62,16 +61,8 @@ namespace Rubberduck.Inspections
                             this,
                             function.Context,
                             function.QualifiedName,
-                            GetReturnStatements(function),
                             function));
             return nonInterfaceIssues;
-        }
-
-        private IEnumerable<string> GetReturnStatements(Declaration function)
-        {
-            return function.References
-                .Where(usage => IsReturnStatement(function, usage))
-                .Select(usage => usage.Context.Parent.Parent.Parent.GetText());
         }
 
         private bool IsReturnValueUsed(Declaration function)
