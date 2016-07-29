@@ -1278,6 +1278,8 @@
     <Resource Include="Resources\Custom\PNG\CollapseUp.png" />
     <Resource Include="Resources\Custom\PNG\ObjectLibrary.png" />
     <Content Include="Resources\Custom\mit_license.txt" />
+    <Resource Include="Resources\folder-open.png" />
+    <Resource Include="Resources\folder.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />

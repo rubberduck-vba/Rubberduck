@@ -1769,4 +1769,10 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
     <value>Refactor / Encapsulate Field</value>
   </data>
+  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
+    <value>Collapse node and all child nodes</value>
+  </data>
+  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
+    <value>Expand node and all child nodes</value>
+  </data>
 </root>
