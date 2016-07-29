@@ -15,14 +15,14 @@ namespace Rubberduck.Inspections
 {
     namespace Rubberduck.Inspections
     {
-        public class Inspector : IInspector, IDisposable
+        public class Inspector : IInspector
         {
             private readonly IGeneralConfigService _configService;
-            private readonly IEnumerable<IInspection> _inspections;
+            private readonly List<IInspection> _inspections;
 
             public Inspector(IGeneralConfigService configService, IEnumerable<IInspection> inspections)
             {
-                _inspections = inspections;
+                _inspections = inspections.ToList();
 
                 _configService = configService;
                 configService.SettingsChanged += ConfigServiceSettingsChanged;
@@ -127,6 +127,8 @@ namespace Rubberduck.Inspections
                 {
                     _configService.SettingsChanged -= ConfigServiceSettingsChanged;
                 }
+
+                _inspections.Clear();
             }
         }
     }

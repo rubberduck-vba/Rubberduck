@@ -11,20 +11,21 @@ namespace Rubberduck.UI.CodeExplorer
         string IDockableUserControl.ClassId { get { return ClassId; } }
         string IDockableUserControl.Caption { get { return RubberduckUI.CodeExplorerDockablePresenter_Caption; } }
 
-        public CodeExplorerWindow()
+        private CodeExplorerWindow()
         {
             InitializeComponent();
         }
 
-        private CodeExplorerViewModel _viewModel;
+        public CodeExplorerWindow(CodeExplorerViewModel viewModel) : this()
+        {
+            _viewModel = viewModel;
+            codeExplorerControl1.DataContext = _viewModel;
+        }
+
+        private readonly CodeExplorerViewModel _viewModel;
         public CodeExplorerViewModel ViewModel
         {
             get { return _viewModel; }
-            set
-            {
-                _viewModel = value;
-                codeExplorerControl1.DataContext = _viewModel;
-            }
         }
     }
 }

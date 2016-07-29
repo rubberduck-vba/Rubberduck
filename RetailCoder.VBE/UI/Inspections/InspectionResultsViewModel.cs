@@ -469,6 +469,11 @@ namespace Rubberduck.UI.Inspections
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
             }
+
+            if (_inspector != null)
+            {
+                _inspector.Dispose();
+            }
         }
     }
 }

@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IConfigProvider.cs" />
     <Compile Include="IPersistanceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XmlPersistanceService.cs" />

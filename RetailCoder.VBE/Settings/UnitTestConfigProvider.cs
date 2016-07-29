@@ -2,15 +2,7 @@
 
 namespace Rubberduck.Settings
 {
-    public interface IUnitTestConfigProvider
-    {
-        UnitTestSettings Create();
-        UnitTestSettings CreateDefaults();
-
-        void Save(UnitTestSettings settings);
-    }
-
-    public class UnitTestConfigProvider : IUnitTestConfigProvider
+    public class UnitTestConfigProvider : IConfigProvider<UnitTestSettings>
     {
         private readonly IPersistanceService<UnitTestSettings> _persister;
 
