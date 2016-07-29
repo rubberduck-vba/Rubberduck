@@ -148,18 +148,6 @@ namespace Rubberduck
             }
         }
 
-        public void Shutdown()
-        {
-            try
-            {
-                _hooks.Detach();
-            }
-            catch
-            {
-                // Won't matter anymore since we're shutting everything down anyway.
-            }
-        }
-
         private void _stateBar_Refresh(object sender, EventArgs e)
         {
             // handles "refresh" button click on "Rubberduck" command bar
@@ -212,6 +200,12 @@ namespace Rubberduck
 
             if (_hooks != null)
             {
+                try
+                {
+                    _hooks.Detach();
+                }
+                catch {} // Won't matter anymore since we're shutting everything down anyway.
+
                 _hooks.MessageReceived -= _hooks_MessageReceived;
                 _hooks.Dispose();
                 _hooks = null;

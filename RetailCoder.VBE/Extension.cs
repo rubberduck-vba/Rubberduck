@@ -74,8 +74,20 @@ namespace Rubberduck
             }
             catch (Exception exception)
             {
+                if (_app != null)
+                {
+                    _app.Dispose();
+                }
+
                 _logger.Fatal(exception);
                 System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // ReSharper disable once UseArrayCreationExpression.1
+                var array = Array.CreateInstance(typeof(object), 0);
+                OnDisconnection(ext_DisconnectMode.ext_dm_UserClosed, ref array);
+
+                var vbe = (VBE)Application;
+                //vbe.Addins.Item(ProgId).Connect = false;    // I tried to disconnect here, but kept getting an Access Violation Exception
             }
         }
 
@@ -100,7 +112,7 @@ namespace Rubberduck
         {
             if (_app != null)
             {
-                _app.Shutdown();
+                _app.Dispose();
                 _app = null;
             }
 
