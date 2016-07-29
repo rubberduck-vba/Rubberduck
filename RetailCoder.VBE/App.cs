@@ -55,8 +55,6 @@ namespace Rubberduck
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
             _stateBar.Refresh += _stateBar_Refresh;
             UiDispatcher.Initialize();
-
-            throw new Exception();
         }
 
         private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)

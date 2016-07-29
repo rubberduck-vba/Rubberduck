@@ -85,7 +85,9 @@ namespace Rubberduck
                 // ReSharper disable once UseArrayCreationExpression.1
                 var array = Array.CreateInstance(typeof(object), 0);
                 OnDisconnection(ext_DisconnectMode.ext_dm_UserClosed, ref array);
-                //((dynamic) Application).AddIns(ProgId).Connect = false;  // I tried to disconnect here, but kept getting an Access Violation Exception
+
+                var vbe = (VBE)Application;
+                //vbe.Addins.Item(ProgId).Connect = false;    // I tried to disconnect here, but kept getting an Access Violation Exception
             }
         }
 
