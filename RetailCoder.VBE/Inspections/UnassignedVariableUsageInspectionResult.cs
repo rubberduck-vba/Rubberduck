@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new RemoveUnassignedVariableUsageQuickFix(Context, QualifiedSelection),
+                //new RemoveUnassignedVariableUsageQuickFix(Context, QualifiedSelection),   // removed until we can reinstate this for a specific reference
                 new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections
             var module = Selection.QualifiedName.Component.CodeModule;
             var selection = Selection.Selection;
 
-            var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
+            var originalCodeLines = module.Lines[selection.StartLine, selection.LineCount]
                 .Replace(Environment.NewLine, " ")
                 .Replace("_", string.Empty);
 
