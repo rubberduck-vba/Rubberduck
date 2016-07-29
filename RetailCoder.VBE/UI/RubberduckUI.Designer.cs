@@ -245,6 +245,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collapse node and all child nodes.
+        /// </summary>
+        public static string CodeExplorer_CollapseSubnodesToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_CollapseSubnodesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commit....
         /// </summary>
         public static string CodeExplorer_Commit {
@@ -286,6 +295,15 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_DisplaySignaturesText {
             get {
                 return ResourceManager.GetString("CodeExplorer_DisplaySignaturesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand node and all child nodes.
+        /// </summary>
+        public static string CodeExplorer_ExpandSubnodesToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ExpandSubnodesToolTip", resourceCulture);
             }
         }
         

@@ -171,7 +171,17 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public bool IsExpanded { get; set; }
+        private bool _isExpanded;
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set
+            {
+                _isExpanded = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsSelected { get; set; }
 
         public abstract string Name { get; }
