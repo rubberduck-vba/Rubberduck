@@ -227,7 +227,6 @@ namespace Rubberduck
             if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
 
             var handler = ComponentAdded;
             if (handler != null)
@@ -241,7 +240,6 @@ namespace Rubberduck
             if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
 
             var handler = ComponentReloaded;
             if (handler != null)
@@ -255,7 +253,6 @@ namespace Rubberduck
             if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
 
             var handler = ComponentRemoved;
             if (handler != null)
@@ -269,8 +266,6 @@ namespace Rubberduck
             if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
-            var oldName = e.OldName;
 
             var handler = ComponentRenamed;
             if (handler != null)
@@ -284,7 +279,6 @@ namespace Rubberduck
             if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
 
             var handler = ComponentSelected;
             if (handler != null)

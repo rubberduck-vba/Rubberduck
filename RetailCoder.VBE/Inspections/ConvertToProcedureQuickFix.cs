@@ -6,24 +6,18 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
     public class ConvertToProcedureQuickFix : CodeInspectionQuickFix
     {
-        private readonly IEnumerable<string> _returnStatements;
+        private readonly Declaration _target;
 
-        public ConvertToProcedureQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : this(context, selection, new List<string>())
-        {
-        }
-
-        public ConvertToProcedureQuickFix(ParserRuleContext context, QualifiedSelection selection, IEnumerable<string> returnStatements)
+        public ConvertToProcedureQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target)
             : base(context, selection, InspectionsUI.ConvertFunctionToProcedureQuickFix)
         {
-            _returnStatements = returnStatements;
+            _target = target;
         }
 
         public override void Fix()
@@ -37,47 +31,53 @@ namespace Rubberduck.Inspections
                 throw new InvalidOperationException(string.Format(InspectionsUI.InvalidContextTypeInspectionFix, Context.GetType(), GetType()));
             }
 
+            var functionName = Context is VBAParser.FunctionStmtContext
+                ? ((VBAParser.FunctionStmtContext) Context).functionName()
+                : ((VBAParser.PropertyGetStmtContext) Context).functionName();
 
-            VBAParser.FunctionNameContext functionName = null;
-            if (Context is VBAParser.FunctionStmtContext)
-            {
-                functionName = ((VBAParser.FunctionStmtContext)Context).functionName();
-            }
-            else
-            {
-                functionName = ((VBAParser.PropertyGetStmtContext)Context).functionName();
-            }
-
-            string token = functionContext != null
+            var token = functionContext != null
                 ? Tokens.Function
                 : Tokens.Property + ' ' + Tokens.Get;
-            string endToken = token == Tokens.Function
+            var endToken = token == Tokens.Function
                 ? token
                 : Tokens.Property;
 
             string visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
-            string name = ' ' + Identifier.GetName(functionName.identifier());
-            bool hasTypeHint = Identifier.GetTypeHintValue(functionName.identifier()) != null;
+            var name = ' ' + Identifier.GetName(functionName.identifier());
+            var hasTypeHint = Identifier.GetTypeHintValue(functionName.identifier()) != null;
 
             string args = context.argList().GetText();
             string asType = context.asTypeClause() == null ? string.Empty : ' ' + context.asTypeClause().GetText();
 
-            string oldSignature = visibility + token + name + (hasTypeHint ? Identifier.GetTypeHintValue(functionName.identifier()) : string.Empty) + args + asType;
-            string newSignature = visibility + Tokens.Sub + name + args;
+            var oldSignature = visibility + token + name + (hasTypeHint ? Identifier.GetTypeHintValue(functionName.identifier()) : string.Empty) + args + asType;
+            var newSignature = visibility + Tokens.Sub + name + args;
 
-            string procedure = Context.GetText();
-            string noReturnStatements = procedure;
-            _returnStatements.ToList().ForEach(returnStatement =>
+            var procedure = Context.GetText();
+            var noReturnStatements = procedure;
+
+            GetReturnStatements(_target).ToList().ForEach(returnStatement =>
                 noReturnStatements = Regex.Replace(noReturnStatements, @"[ \t\f]*" + returnStatement + @"[ \t\f]*\r?\n?", ""));
-            string result = noReturnStatements.Replace(oldSignature, newSignature)
+            var result = noReturnStatements.Replace(oldSignature, newSignature)
                 .Replace(Tokens.End + ' ' + endToken, Tokens.End + ' ' + Tokens.Sub)
                 .Replace(Tokens.Exit + ' ' + endToken, Tokens.Exit + ' ' + Tokens.Sub);
 
-            CodeModule module = Selection.QualifiedName.Component.CodeModule;
-            Selection selection = Context.GetSelection();
+            var module = Selection.QualifiedName.Component.CodeModule;
+            var selection = Context.GetSelection();
 
             module.DeleteLines(selection.StartLine, selection.LineCount);
             module.InsertLines(selection.StartLine, result);
+        }
+
+        private IEnumerable<string> GetReturnStatements(Declaration declaration)
+        {
+            return declaration.References
+                .Where(usage => IsReturnStatement(declaration, usage))
+                .Select(usage => usage.Context.Parent.GetText());
+        }
+
+        private bool IsReturnStatement(Declaration declaration, IdentifierReference assignment)
+        {
+            return assignment.ParentScoping.Equals(declaration) && assignment.Declaration.Equals(declaration);
         }
     }
 }
