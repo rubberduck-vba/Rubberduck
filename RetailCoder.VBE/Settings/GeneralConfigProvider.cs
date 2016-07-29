@@ -3,15 +3,7 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
 {
-    public interface IGeneralConfigProvider
-    {
-        GeneralSettings Create();
-        GeneralSettings CreateDefaults();
-
-        void Save(GeneralSettings settings);
-    }
-
-    public class GeneralConfigProvider : IGeneralConfigProvider
+    public class GeneralConfigProvider : IConfigProvider<GeneralSettings>
     {
         private GeneralSettings _current;
         private readonly IPersistanceService<GeneralSettings> _persister;

@@ -205,6 +205,7 @@ namespace Rubberduck
             {
                 _parser.State.StateChanged -= Parser_StateChanged;
                 _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
+                _parser.State.Dispose();
                 _parser.Dispose();
                 // I won't set this to null because other components may try to release things
             }

@@ -245,6 +245,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collapse node and all child nodes.
+        /// </summary>
+        public static string CodeExplorer_CollapseSubnodesToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_CollapseSubnodesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commit....
         /// </summary>
         public static string CodeExplorer_Commit {
@@ -286,6 +295,15 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_DisplaySignaturesText {
             get {
                 return ResourceManager.GetString("CodeExplorer_DisplaySignaturesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand node and all child nodes.
+        /// </summary>
+        public static string CodeExplorer_ExpandSubnodesToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ExpandSubnodesToolTip", resourceCulture);
             }
         }
         
@@ -1935,24 +1953,6 @@ namespace Rubberduck.UI {
         public static string Language_FR {
             get {
                 return ResourceManager.GetString("Language_FR", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Japanese.
-        /// </summary>
-        public static string Language_JA {
-            get {
-                return ResourceManager.GetString("Language_JA", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Swedish.
-        /// </summary>
-        public static string Language_SV {
-            get {
-                return ResourceManager.GetString("Language_SV", resourceCulture);
             }
         }
         

@@ -9,10 +9,10 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
-using Ninject;
 using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
@@ -36,7 +36,7 @@ namespace Rubberduck.UI.SourceControl
         private readonly ISinks _sinks;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
-        private readonly ISourceControlConfigProvider _configService;
+        private readonly IConfigProvider<SourceControlSettings> _configService;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IMessageBox _messageBox;
         private readonly FileSystemWatcher _fileSystemWatcher;
@@ -51,11 +51,8 @@ namespace Rubberduck.UI.SourceControl
             ISinks sinks,
             ISourceControlProviderFactory providerFactory,
             IFolderBrowserFactory folderBrowserFactory,
-            ISourceControlConfigProvider configService,
-            [Named("changesView")] IControlView changesView,
-            [Named("branchesView")] IControlView branchesView,
-            [Named("unsyncedCommitsView")] IControlView unsyncedCommitsView,
-            [Named("settingsView")] IControlView settingsView,
+            IConfigProvider<SourceControlSettings> configService,
+            IEnumerable<IControlView> views,
             ICodePaneWrapperFactory wrapperFactory,
             IMessageBox messageBox)
         {
@@ -95,13 +92,7 @@ namespace Rubberduck.UI.SourceControl
             _sinks.ComponentRenamed += ComponentRenamed;
             _sinks.ProjectRemoved += ProjectRemoved;
 
-            TabItems = new ObservableCollection<IControlView>
-            {
-                changesView,
-                branchesView,
-                unsyncedCommitsView,
-                settingsView
-            };
+            TabItems = new ObservableCollection<IControlView>(views);
             SetTab(SourceControlTab.Changes);
 
             Status = RubberduckUI.Offline;
@@ -716,14 +707,14 @@ namespace Rubberduck.UI.SourceControl
                 var project = _vbe.ActiveVBProject;
                 var repo = new Repository(project.HelpFile, folderPicker.SelectedPath, string.Empty);
 
-                _sinks.IsEnabled = false;
+                _sinks.ComponentSinksEnabled = false;
                 try
                 {
                     Provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
                 }
                 catch (SourceControlException ex)
                 {
-                    _sinks.IsEnabled = true;
+                    _sinks.ComponentSinksEnabled = true;
                     ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                     return;
                 }
@@ -735,7 +726,7 @@ namespace Rubberduck.UI.SourceControl
                     throw;
                 }
 
-                _sinks.IsEnabled = true;
+                _sinks.ComponentSinksEnabled = true;
 
                 AddOrUpdateLocalPathConfig(repo);
 
@@ -747,7 +738,7 @@ namespace Rubberduck.UI.SourceControl
         private void CloneRepo(SecureCredentials credentials = null)
         {
             _isCloning = true;
-            _sinks.IsEnabled = false;
+            _sinks.ComponentSinksEnabled = false;
 
             Logger.Trace("Cloning repo");
             try
@@ -783,7 +774,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             _isCloning = false;
-            _sinks.IsEnabled = true;
+            _sinks.ComponentSinksEnabled = true;
             CloseCloneRepoGrid();
             
             Status = RubberduckUI.Online;
@@ -871,7 +862,7 @@ namespace Rubberduck.UI.SourceControl
             Logger.Trace("Opening repo assigned to project");
             try
             {
-                _sinks.IsEnabled = false;
+                _sinks.ComponentSinksEnabled = false;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
                     _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile), _wrapperFactory);
                 Status = RubberduckUI.Online;
@@ -892,7 +883,7 @@ namespace Rubberduck.UI.SourceControl
                 throw;
             }
 
-            _sinks.IsEnabled = true;
+            _sinks.ComponentSinksEnabled = true;
         }
 
         private void Refresh()

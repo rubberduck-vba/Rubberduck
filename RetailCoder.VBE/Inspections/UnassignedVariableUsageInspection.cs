@@ -20,19 +20,17 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var usages = UserDeclarations.Where(declaration => 
+            var declarations = UserDeclarations.Where(declaration => 
                 declaration.DeclarationType == DeclarationType.Variable
                 && !UserDeclarations.Any(d => d.DeclarationType == DeclarationType.UserDefinedType
                     && d.IdentifierName == declaration.AsTypeName)
                 && !declaration.IsSelfAssigned
-                && !declaration.References.Any(reference => reference.IsAssignment))
-                .SelectMany(declaration => declaration.References)
-                .Where(usage => !usage.IsInspectionDisabled(AnnotationName));
+                && !declaration.References.Any(reference => reference.IsAssignment));
 
             var lenFunction = BuiltInDeclarations.SingleOrDefault(s => s.Scope == "VBE7.DLL;VBA.Strings.Len");
             var lenbFunction = BuiltInDeclarations.SingleOrDefault(s => s.Scope == "VBE7.DLL;VBA.Strings.LenB");
 
-            foreach (var issue in usages)
+            foreach (var issue in declarations)
             {
                 if (DeclarationReferencesContainsReference(lenFunction, issue) ||
                     DeclarationReferencesContainsReference(lenbFunction, issue))
@@ -40,34 +38,29 @@ namespace Rubberduck.Inspections
                     continue;
                 }
 
-                yield return
-                    new UnassignedVariableUsageInspectionResult(this, issue.Context, issue.QualifiedModuleName,
-                        issue.Declaration);
+                yield return new UnassignedVariableUsageInspectionResult(this, issue.Context, issue.QualifiedName.QualifiedModuleName, issue);
             }
         }
 
-        private bool DeclarationReferencesContainsReference(Declaration parentDeclaration, IdentifierReference issue)
+        private bool DeclarationReferencesContainsReference(Declaration parentDeclaration, Declaration target)
         {
             if (parentDeclaration == null)
             {
                 return false;
             }
-
-            var lenUsesIssue = false;
-            foreach (var reference in parentDeclaration.References)
+            
+            foreach (var targetReference in target.References)
             {
-                var context = (ParserRuleContext) reference.Context.Parent;
-                if (context.GetSelection().Contains(issue.Selection))
+                foreach (var reference in parentDeclaration.References)
                 {
-                    lenUsesIssue = true;
-                    break;
+                    var context = (ParserRuleContext) reference.Context.Parent;
+                    if (context.GetSelection().Contains(targetReference.Selection))
+                    {
+                        return true;
+                    }
                 }
             }
-
-            if (lenUsesIssue)
-            {
-                return true;
-            }
+            
             return false;
         }
     }

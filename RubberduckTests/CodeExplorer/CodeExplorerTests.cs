@@ -15,7 +15,6 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
-using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
@@ -128,7 +127,7 @@ namespace RubberduckTests.CodeExplorer
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new Rubberduck.UI.CodeExplorer.Commands.AddTestModuleCommand(vbe.Object, new NewUnitTestModuleCommand(state, configLoader.Object))
+                new Rubberduck.UI.CodeExplorer.Commands.AddTestModuleCommand(vbe.Object, new Rubberduck.UI.Command.AddTestModuleCommand(vbe.Object, state, configLoader.Object))
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -953,6 +952,120 @@ End Sub";
             vm.RenameCommand.Execute(vm.SelectedItem);
 
             Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void ExpandAllNodes()
+        {
+            var inputCode =
+@"Sub Foo()
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState(new Mock<ISinks>().Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, new List<CommandBase>());
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.Single();
+            vm.ExpandAllSubnodesCommand.Execute(vm.SelectedItem);
+
+            Assert.IsTrue(vm.Projects.Single().IsExpanded);
+            Assert.IsTrue(vm.Projects.Single().Items.Single().IsExpanded);
+            Assert.IsTrue(vm.Projects.Single().Items.Single().Items.Single().IsExpanded);
+            Assert.IsTrue(vm.Projects.Single().Items.Single().Items.Single().Items.Single().IsExpanded);
+        }
+
+        [TestMethod]
+        public void ExpandAllNodes_StartingWithSubnode()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("Proj", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, @"'@Folder ""Foo""")
+                .AddComponent("Comp2", vbext_ComponentType.vbext_ct_ClassModule, @"'@Folder ""Bar""")
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState(new Mock<ISinks>().Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, new List<CommandBase>());
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            
+            vm.Projects.Single().Items.Last().IsExpanded = false;
+
+            vm.SelectedItem = vm.Projects.Single().Items.First();
+            vm.ExpandAllSubnodesCommand.Execute(vm.SelectedItem);
+            
+            Assert.IsTrue(vm.Projects.Single().Items.First().IsExpanded);
+            Assert.IsFalse(vm.Projects.Single().Items.Last().IsExpanded);
+        }
+
+        [TestMethod]
+        public void CollapseAllNodes()
+        {
+            var inputCode =
+@"Sub Foo()
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState(new Mock<ISinks>().Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, new List<CommandBase>());
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.Single();
+            vm.CollapseAllSubnodesCommand.Execute(vm.SelectedItem);
+
+            Assert.IsFalse(vm.Projects.Single().IsExpanded);
+            Assert.IsFalse(vm.Projects.Single().Items.Single().IsExpanded);
+            Assert.IsFalse(vm.Projects.Single().Items.Single().Items.Single().IsExpanded);
+            Assert.IsFalse(vm.Projects.Single().Items.Single().Items.Single().Items.Single().IsExpanded);
+        }
+
+        [TestMethod]
+        public void CollapseAllNodes_StartingWithSubnode()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("Proj", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, @"'@Folder ""Foo""")
+                .AddComponent("Comp2", vbext_ComponentType.vbext_ct_ClassModule, @"'@Folder ""Bar""")
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState(new Mock<ISinks>().Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, new List<CommandBase>());
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.Projects.Single().Items.Last().IsExpanded = true;
+
+            vm.SelectedItem = vm.Projects.Single().Items.First();
+            vm.CollapseAllSubnodesCommand.Execute(vm.SelectedItem);
+
+            Assert.IsFalse(vm.Projects.Single().Items.First().IsExpanded);
+            Assert.IsTrue(vm.Projects.Single().Items.Last().IsExpanded);
         }
 
         [TestMethod]

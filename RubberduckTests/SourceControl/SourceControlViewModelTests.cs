@@ -5,9 +5,9 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
@@ -34,7 +34,7 @@ namespace RubberduckTests.SourceControl
         private UnsyncedCommitsViewViewModel _unsyncedVM;
         private SettingsViewViewModel _settingsVM;
 
-        private Mock<ISourceControlConfigProvider> _configService;
+        private Mock<IConfigProvider<SourceControlSettings>> _configService;
 
         private Mock<IFolderBrowserFactory> _folderBrowserFactory;
         private Mock<IFolderBrowser> _folderBrowser;
@@ -52,7 +52,7 @@ namespace RubberduckTests.SourceControl
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            _configService = new Mock<ISourceControlConfigProvider>();
+            _configService = new Mock<IConfigProvider<SourceControlSettings>>();
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             _folderBrowser = new Mock<IFolderBrowser>();
@@ -110,9 +110,16 @@ namespace RubberduckTests.SourceControl
 
         private void SetupVM()
         {
+            var views = new List<IControlView>
+            {
+                new ChangesView(_changesVM),
+                new BranchesView(_branchesVM),
+                new UnsyncedCommitsView(_unsyncedVM),
+                new SettingsView(_settingsVM)
+            };
+
             _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object), new Mock<ISinks>().Object, _providerFactory.Object, _folderBrowserFactory.Object,
-                _configService.Object, new ChangesView(_changesVM), new BranchesView(_branchesVM),
-                new UnsyncedCommitsView(_unsyncedVM), new SettingsView(_settingsVM), new CodePaneWrapperFactory(), new Mock<IMessageBox>().Object);
+                _configService.Object, views, new CodePaneWrapperFactory(), new Mock<IMessageBox>().Object);
         }
 
         [TestMethod]

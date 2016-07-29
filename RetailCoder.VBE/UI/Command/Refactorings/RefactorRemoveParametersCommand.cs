@@ -45,11 +45,9 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var parameters = _state.AllUserDeclarations.Where(item => item.DeclarationType == DeclarationType.Parameter && member.Equals(item.ParentScopeDeclaration)).ToList();
-            var canExecute = (member.DeclarationType == DeclarationType.PropertyLet || member.DeclarationType == DeclarationType.PropertySet)
+            return member.DeclarationType == DeclarationType.PropertyLet || member.DeclarationType == DeclarationType.PropertySet
                     ? parameters.Count > 1
                     : parameters.Any();
-
-            return canExecute;
         }
 
         protected override void ExecuteImpl(object parameter)

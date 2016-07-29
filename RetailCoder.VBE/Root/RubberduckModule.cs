@@ -9,7 +9,6 @@ using Ninject.Extensions.Conventions;
 using Ninject.Modules;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
-using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -27,11 +26,11 @@ using Rubberduck.UI.Controls;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
-using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using Ninject.Extensions.Interception.Infrastructure.Language;
+using Ninject.Extensions.NamedScope;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer.Commands;
 
@@ -63,8 +62,6 @@ namespace Rubberduck.Root
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             Bind<GitProvider>().ToSelf().InSingletonScope();
-            Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
-            Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
             Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
@@ -79,8 +76,8 @@ namespace Rubberduck.Root
                 Assembly.GetAssembly(typeof(IIndenter))
             };
 
-            ApplyConfigurationConvention(assemblies);
             ApplyDefaultInterfacesConvention(assemblies);
+            ApplyConfigurationConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
 
             BindCommandsToMenuItems();
@@ -99,45 +96,39 @@ namespace Rubberduck.Root
 
             Bind<IPresenter>().To<TestExplorerDockablePresenter>()
                 .WhenInjectedInto<TestExplorerCommand>()
-                .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = Kernel.Get<TestExplorerViewModel>() });
+                .InSingletonScope();
 
             Bind<IPresenter>().To<CodeInspectionsDockablePresenter>()
                 .WhenInjectedInto<InspectionResultsCommand>()
-                .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = Kernel.Get<InspectionResultsViewModel>() });
+                .InSingletonScope();
 
-            Bind<IControlView>().To<ChangesView>().Named("changesView");
-            Bind<IControlView>().To<BranchesView>().Named("branchesView");
-            Bind<IControlView>().To<UnsyncedCommitsView>().Named("unsyncedCommitsView");
-            Bind<IControlView>().To<SettingsView>().Named("settingsView");
+            Bind<IControlView>().To<ChangesView>().InCallScope();
+            Bind<IControlView>().To<BranchesView>().InCallScope();
+            Bind<IControlView>().To<UnsyncedCommitsView>().InCallScope();
+            Bind<IControlView>().To<SettingsView>().InCallScope();
 
             Bind<IControlViewModel>().To<ChangesViewViewModel>()
-                .WhenInjectedInto<ChangesView>();
+                .WhenInjectedInto<ChangesView>().InCallScope();
             Bind<IControlViewModel>().To<BranchesViewViewModel>()
-                .WhenInjectedInto<BranchesView>();
+                .WhenInjectedInto<BranchesView>().InCallScope();
             Bind<IControlViewModel>().To<UnsyncedCommitsViewViewModel>()
-                .WhenInjectedInto<UnsyncedCommitsView>();
+                .WhenInjectedInto<UnsyncedCommitsView>().InCallScope();
             Bind<IControlViewModel>().To<SettingsViewViewModel>()
-                .WhenInjectedInto<SettingsView>();
+                .WhenInjectedInto<SettingsView>().InCallScope();
 
             Bind<ISourceControlProviderFactory>().To<SourceControlProviderFactory>()
                 .WhenInjectedInto<SourceControlViewViewModel>();
 
-            Bind<SourceControlDockablePresenter>().ToSelf()
-                .InSingletonScope()
-                .WithConstructorArgument(new SourceControlPanel { ViewModel = Kernel.Get<SourceControlViewViewModel>() });
+            Bind<SourceControlDockablePresenter>().ToSelf().InSingletonScope();
             
             BindCommandsToCodeExplorer();
             Bind<IPresenter>().To<CodeExplorerDockablePresenter>()
                 .WhenInjectedInto<CodeExplorerCommand>()
-                .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new CodeExplorerWindow { ViewModel = Kernel.Get<CodeExplorerViewModel>() });
+                .InSingletonScope();
 
             Bind<IPresenter>().To<ToDoExplorerDockablePresenter>()
                 .WhenInjectedInto<ToDoExplorerCommand>()
-                .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = Kernel.Get<ToDoExplorerViewModel>() });
+                .InSingletonScope();
 
             ConfigureRubberduckMenu();
             ConfigureCodePaneContextMenu();
@@ -145,7 +136,6 @@ namespace Rubberduck.Root
             ConfigureFormDesignerControlContextMenu();
             ConfigureProjectExplorerContextMenu();
             
-
             BindWindowsHooks();
         }
 
@@ -167,7 +157,7 @@ namespace Rubberduck.Root
                 // inspections & factories have their own binding rules
                 .Where(type => !type.Name.EndsWith("Factory") && !type.Name.EndsWith("ConfigProvider") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
-                .Configure(binding => binding.InThreadScope())); // TransientScope wouldn't dispose disposables
+                .Configure(binding => binding.InCallScope())); // TransientScope wouldn't dispose disposables
         }
 
         // note: settings namespace classes are injected in singleton scope
@@ -179,24 +169,24 @@ namespace Rubberduck.Root
                 .BindAllInterfaces()
                 .Configure(binding => binding.InSingletonScope()));
 
-            Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InSingletonScope();
-            Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InSingletonScope();
-            Bind<IPersistanceService<HotkeySettings>>().To<XmlPersistanceService<HotkeySettings>>().InSingletonScope();
-            Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InSingletonScope();
-            Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InSingletonScope();
-            Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InSingletonScope();
-            Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InSingletonScope();
+            Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InCallScope();
+            Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InCallScope();
+            Bind<IPersistanceService<HotkeySettings>>().To<XmlPersistanceService<HotkeySettings>>().InCallScope();
+            Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InCallScope();
+            Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InCallScope();
+            Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InCallScope();
+            Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InCallScope();
 
-            Bind<IIndenterConfigProvider>().To<IndenterConfigProvider>().InSingletonScope();
-            Bind<ISourceControlConfigProvider>().To<SourceControlConfigProvider>().InSingletonScope();
+            Bind<IConfigProvider<IndenterSettings>>().To<IndenterConfigProvider>().InCallScope();
+            Bind<IConfigProvider<SourceControlSettings>>().To<SourceControlConfigProvider>().InCallScope();
 
-            Bind<ICodeInspectionSettings>().To<CodeInspectionSettings>();
-            Bind<IGeneralSettings>().To<GeneralSettings>();
-            Bind<IHotkeySettings>().To<HotkeySettings>();
-            Bind<IToDoListSettings>().To<ToDoListSettings>();
-            Bind<IUnitTestSettings>().To<UnitTestSettings>();
-            Bind<IIndenterSettings>().To<IndenterSettings>();
-            Bind<ISourceControlSettings>().To<SourceControlSettings>();        
+            Bind<ICodeInspectionSettings>().To<CodeInspectionSettings>().InCallScope();
+            Bind<IGeneralSettings>().To<GeneralSettings>().InCallScope();
+            Bind<IHotkeySettings>().To<HotkeySettings>().InCallScope();
+            Bind<IToDoListSettings>().To<ToDoListSettings>().InCallScope();
+            Bind<IUnitTestSettings>().To<UnitTestSettings>().InCallScope();
+            Bind<IIndenterSettings>().To<IndenterSettings>().InCallScope();
+            Bind<ISourceControlSettings>().To<SourceControlSettings>().InCallScope();        
         }
 
         // note convention: abstract factory interface names end with "Factory".
@@ -223,7 +213,7 @@ namespace Rubberduck.Root
                 {
                     var binding = Bind<IParseTreeInspection>()
                         .To(inspection)
-                        .InSingletonScope()
+                        .InCallScope()
                         .Named(inspection.FullName);
 
                     binding.Intercept().With<TimedCallLoggerInterceptor>();
@@ -234,7 +224,7 @@ namespace Rubberduck.Root
                 }
                 else
                 {
-                    var binding = Bind<IInspection>().To(inspection).InSingletonScope();
+                    var binding = Bind<IInspection>().To(inspection).InCallScope();
                     binding.Intercept().With<TimedCallLoggerInterceptor>();
                     binding.Intercept().With<EnumerableCounterInterceptor<InspectionResultBase>>();
                 }
@@ -299,7 +289,7 @@ namespace Rubberduck.Root
         {
             Bind<IParentMenuItem>().To(typeof(TParentMenu))
                 .WhenInjectedInto<IAppMenu>()
-                .InThreadScope()
+                .InCallScope()
                 .WithConstructorArgument("items", items)
                 .WithConstructorArgument("beforeIndex", beforeIndex)
                 .WithPropertyValue("Parent", parent);
@@ -321,7 +311,7 @@ namespace Rubberduck.Root
         private void BindCommandsToMenuItems()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? String.Empty))
+                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
                 .ToList();
 
             // note: CommandBase naming convention: [Foo]Command
@@ -343,7 +333,7 @@ namespace Rubberduck.Root
                             binding.WhenInjectedInto<RubberduckHooks>().BindingConfiguration.Condition;
 
                         binding.When(request => whenCommandMenuItemCondition(request) || whenHooksCondition(request))
-                            .InSingletonScope();
+                            .InCallScope();
                     }
                 }
                 catch (InvalidOperationException)

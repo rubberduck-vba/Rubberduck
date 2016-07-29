@@ -254,7 +254,6 @@ namespace RubberduckTests.Mocks
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
 
             result.Setup(m => m.AddFromFile(It.IsAny<string>()));
-            result.Setup(m => m.AddFromString(It.IsAny<string>()));
             return result;
         }
 
@@ -293,6 +292,12 @@ namespace RubberduckTests.Mocks
                     {
                         lines.InsertRange(index - 1, newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                     }
+                });
+
+            codeModule.Setup(m => m.AddFromString(It.IsAny<string>()))
+                .Callback<string>(newLine =>
+                {
+                    lines.AddRange(newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                 });
 
             return codeModule;

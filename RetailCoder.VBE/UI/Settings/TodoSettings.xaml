@@ -266,7 +266,7 @@
                 <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
                          Background="Transparent">
                     <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}"
-                            Command="{Binding AddTodoCommand}"
+                            Click="AddNewTodoMarker"
                             BorderThickness="0"
                             Background="Transparent">
                         <StackPanel Orientation="Horizontal">

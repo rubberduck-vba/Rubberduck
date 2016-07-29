@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -303,9 +303,6 @@
   <data name="UnassignedVariableUsageInspectionName" xml:space="preserve">
     <value>La variable est utilisée, mais non assignée</value>
   </data>
-  <data name="UntypedFunctionUsageInspectionMeta" xml:space="preserve">
-    <value>Une fonction équivalente existe, qui retourne une valeur 'String' et pourrait éviter une conversion implicite de type.</value>
-  </data>
   <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
     <value>Utilisation d'une fonction retournant une 'String' dans une variable 'Variant'</value>
   </data>
@@ -494,64 +491,67 @@
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Désactiver cette inspection</value>
   </data>
-  <data name="InvalidContextTypeInspectionFix">
+  <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
     <value>Le type de contexte '{0}' est invalide pour {1}.</value>
   </data>
-  <data name="SetObjectVariableQuickFix">
+  <data name="SetObjectVariableQuickFix" xml:space="preserve">
     <value>Utiliser le mot-clé 'Set'</value>
   </data>
-  <data name="QualifiedSelectionInspection">
+  <data name="QualifiedSelectionInspection" xml:space="preserve">
     <value>{0}: {1} - {2} {3}.{4}, ligne {5}</value>
   </data>
-  <data name="ObjectVariableNotSetInspectionName">
+  <data name="ObjectVariableNotSetInspectionName" xml:space="preserve">
     <value>L'assignation d'une référence d'objet requiert le mot-clé 'Set'</value>
   </data>
-  <data name="EmptyStringLiteralInspectionResultFormat">
+  <data name="EmptyStringLiteralInspectionResultFormat" xml:space="preserve">
     <value>Préférez 'vbNullString' à une chaîne de caractères vide</value>
   </data>
-  <data name="ObjectVariableNotSetInspectionResultFormat">
+  <data name="ObjectVariableNotSetInspectionResultFormat" xml:space="preserve">
     <value>La variable '{0}' est assignée dans le mot-clé 'Set'</value>
   </data>
-  <data name="ObjectVariableNotSetInspectionMeta">
+  <data name="ObjectVariableNotSetInspectionMeta" xml:space="preserve">
     <value>Rubberduck voit cette variable comme étant une référence à un objet, assignée sans le mot-clé 'Set'. Ceci cause une erreur d'exécution (#91 'Object or With block variable not set').</value>
   </data>
-  <data name="ImplicitActiveWorkbookReferenceInspectionResultFormat">
+  <data name="ImplicitActiveWorkbookReferenceInspectionResultFormat" xml:space="preserve">
     <value>Le membre '{0}' réfère implicitement au classeur actif</value>
   </data>
-  <data name="MultipleDeclarationsInspectionResultFormat">
+  <data name="MultipleDeclarationsInspectionResultFormat" xml:space="preserve">
     <value>L'instruction comporte plusieurs déclarations</value>
   </data>
-  <data name="Inspections_Usage">
+  <data name="Inspections_Usage" xml:space="preserve">
     <value>Utilisation</value>
   </data>
-  <data name="Inspections_Declaration">
+  <data name="Inspections_Declaration" xml:space="preserve">
     <value>Déclaration</value>
   </data>
-  <data name="VariableTypeNotDeclaredInspectionResultFormat">
+  <data name="VariableTypeNotDeclaredInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' est implicitement de type 'Variant'</value>
   </data>
-  <data name="DefaultProjectNameInspectionResultFormat">
+  <data name="DefaultProjectNameInspectionResultFormat" xml:space="preserve">
     <value>Le projet '{0}' n'est pas nommé</value>
   </data>
-  <data name="ObsoleteCallStatementInspectionResultFormat">
+  <data name="ObsoleteCallStatementInspectionResultFormat" xml:space="preserve">
     <value>L'assignation utilise le mot-clé obsolète 'Call'</value>
   </data>
-  <data name="ObsoleteLetStatementInspectionResultFormat">
+  <data name="ObsoleteLetStatementInspectionResultFormat" xml:space="preserve">
     <value>L'assignation utilise le mot-clé obsolète 'Let'</value>
   </data>
-  <data name="OptionBaseInspectionResultFormat">
+  <data name="OptionBaseInspectionResultFormat" xml:space="preserve">
     <value>Le module '{0}' utilise 'Option Base 1'</value>
   </data>
-  <data name="ObsoleteCommentSyntaxInspectionResultFormat">
+  <data name="ObsoleteCommentSyntaxInspectionResultFormat" xml:space="preserve">
     <value>Le commentaire utilise la forme obsolète 'Rem'</value>
   </data>
-  <data name="ObsoleteTypeHintInspectionResultFormat">
+  <data name="ObsoleteTypeHintInspectionResultFormat" xml:space="preserve">
     <value>{0} de {1} '{2}' utilise un indicateur de type</value>
   </data>
-  <data name="ImplicitActiveSheetReferenceInspectionResultFormat">
+  <data name="ImplicitActiveSheetReferenceInspectionResultFormat" xml:space="preserve">
     <value>Le membre '{0}' réfère implicitement à la feuille active</value>
   </data>
-  <data name="UntypedFunctionUsageInspectionResultFormat">
+  <data name="UntypedFunctionUsageInspectionResultFormat" xml:space="preserve">
     <value>Remplacer la fonction '{0}' par la fonction typée équivalente</value>
+  </data>
+  <data name="UntypedFunctionUsageInspectionMeta" xml:space="preserve">
+    <value />
   </data>
 </root>

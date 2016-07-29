@@ -253,6 +253,10 @@
       <HintPath>..\packages\Ninject.Extensions.Interception.DynamicProxy.3.2.0.0\lib\net45-full\Ninject.Extensions.Interception.DynamicProxy.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Ninject.Extensions.NamedScope, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Extensions.NamedScope.3.2.0.0\lib\net45-full\Ninject.Extensions.NamedScope.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
@@ -364,21 +368,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Inspections\InspectionsUI.sv.Designer.cs">
-      <DependentUpon>InspectionsUI.sv.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Inspections\InspectionsUI.ja.Designer.cs">
-      <DependentUpon>InspectionsUI.ja.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Inspections\IParseTreeInspection.cs" />
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\MalformedAnnotationInspection.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="Inspections\WriteOnlyPropertyQuickFix.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
@@ -714,16 +709,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\RubberduckUI.ja.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.ja.resx</DependentUpon>
-    </Compile>
-    <Compile Include="UI\RubberduckUI.sv.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
-    </Compile>
     <Compile Include="UI\Settings\Converters\HotkeyDisplayConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\DelimiterToTextConverter.cs" />
@@ -972,8 +957,6 @@
     <Compile Include="UnitTesting\IAssert.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\ITestRunner.cs" />
-    <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
-    <Compile Include="UnitTesting\NewUnitTestModuleCommand.cs" />
     <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
@@ -1001,16 +984,6 @@
     <EmbeddedResource Include="Inspections\InspectionsUI.fr.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI.fr.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Inspections\InspectionsUI.sv.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.sv.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Inspections\InspectionsUI.ja.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.ja.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\About\AboutDialog.resx">
@@ -1050,16 +1023,6 @@
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.ja.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckUI.ja.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckUI.sv.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\SettingsForm.resx">
@@ -1315,6 +1278,8 @@
     <Resource Include="Resources\Custom\PNG\CollapseUp.png" />
     <Resource Include="Resources\Custom\PNG\ObjectLibrary.png" />
     <Content Include="Resources\Custom\mit_license.txt" />
+    <Resource Include="Resources\folder-open.png" />
+    <Resource Include="Resources\folder.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />

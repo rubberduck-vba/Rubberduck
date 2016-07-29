@@ -16,19 +16,36 @@ namespace Rubberduck.UI.Command
     public class AddTestMethodCommand : CommandBase
     {
         private readonly VBE _vbe;
-        private readonly NewTestMethodCommand _command;
         private readonly RubberduckParserState _state;
 
-        public AddTestMethodCommand(VBE vbe, RubberduckParserState state, NewTestMethodCommand command) : base(LogManager.GetCurrentClassLogger())
+        public AddTestMethodCommand(VBE vbe, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
-            _command = command;
             _state = state;
         }
 
+        public const string NamePlaceholder = "%METHODNAME%";
+        private const string TestMethodBaseName = "TestMethod";
+
+        public static readonly string TestMethodTemplate = string.Concat(
+            "'@TestMethod\r\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\r\n",
+            "    On Error GoTo TestFail\r\n",
+            "    \r\n",
+            "    'Arrange:\r\n\r\n",
+            "    'Act:\r\n\r\n",
+            "    'Assert:\r\n",
+            "    Assert.Inconclusive\r\n\r\n",
+            "TestExit:\r\n",
+            "    Exit Sub\r\n",
+            "TestFail:\r\n",
+            "    Assert.Fail \"", RubberduckUI.UnitTest_NewMethod_RaisedTestError, ": #\" & Err.Number & \" - \" & Err.Description\r\n",
+            "End Sub\r\n"
+            );
+
         protected override bool CanExecuteImpl(object parameter)
         {
-            if (_state.Status != ParserState.Ready) { return false; }
+            if (_state.Status != ParserState.Ready || _vbe.ActiveCodePane == null) { return false; }
 
             var testModules = _state.AllUserDeclarations.Where(d =>
                         d.DeclarationType == DeclarationType.ProceduralModule &&
@@ -49,7 +66,34 @@ namespace Rubberduck.UI.Command
 
         protected override void ExecuteImpl(object parameter)
         {
-            _command.NewTestMethod();
+            if (_vbe.ActiveCodePane == null) { return; }
+
+            try
+            {
+                var declaration = _state.GetTestModules().FirstOrDefault(f =>
+                            f.QualifiedName.QualifiedModuleName.Component.CodeModule == _vbe.ActiveCodePane.CodeModule);
+
+                if (declaration != null)
+                {
+                    var module = _vbe.ActiveCodePane.CodeModule;
+                    var name = GetNextTestMethodName(module.Parent);
+                    var body = TestMethodTemplate.Replace(NamePlaceholder, name);
+                    module.InsertLines(module.CountOfLines, body);
+                }
+            }
+            catch (COMException)
+            {
+            }
+
+            _state.OnParseRequested(this, _vbe.SelectedVBComponent);
+        }
+
+        private string GetNextTestMethodName(VBComponent component)
+        {
+            var names = component.GetTests(_vbe, _state).Select(test => test.Declaration.IdentifierName);
+            var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;
+
+            return string.Concat(TestMethodBaseName, index);
         }
     }
 }

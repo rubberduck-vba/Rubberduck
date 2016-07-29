@@ -46,7 +46,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            using (var view = new EncapsulateFieldDialog(_indenter))
+            using (var view = new EncapsulateFieldDialog(_state, _indenter))
             {
                 var factory = new EncapsulateFieldPresenterFactory(Vbe, _state, view);
                 var refactoring = new EncapsulateFieldRefactoring(Vbe, _indenter, factory);
