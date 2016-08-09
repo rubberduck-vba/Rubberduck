@@ -141,9 +141,7 @@
     <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="VBEEditorText.de.resx" />
     <EmbeddedResource Include="VBEEditorText.fr.resx" />
-    <EmbeddedResource Include="VBEEditorText.ja.resx" />
     <EmbeddedResource Include="VBEEditorText.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>VBEEditorText.Designer.cs</LastGenOutput>

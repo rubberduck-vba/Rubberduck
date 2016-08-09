@@ -27,16 +27,18 @@ namespace Rubberduck.Inspections
 
             var results = new List<MalformedAnnotationInspectionResult>();
 
-            foreach (var context in ParseTreeResults.MalformedAnnotations)
+            foreach (var result in ParseTreeResults.MalformedAnnotations)
             {
-                if (context.Context.annotationName().GetText() == AnnotationType.Ignore.ToString() ||
-                    context.Context.annotationName().GetText() == AnnotationType.Folder.ToString())
+                var context = (VBAParser.AnnotationContext)result.Context;
+
+                if (context.annotationName().GetText() == AnnotationType.Ignore.ToString() ||
+                    context.annotationName().GetText() == AnnotationType.Folder.ToString())
                 {
-                    if (context.Context.annotationArgList() == null)
+                    if (context.annotationArgList() == null)
                     {
                         results.Add(new MalformedAnnotationInspectionResult(this,
-                            new QualifiedContext<VBAParser.AnnotationContext>(context.ModuleName,
-                                context.Context)));
+                            new QualifiedContext<VBAParser.AnnotationContext>(result.ModuleName,
+                                context)));
                     }
                 }
             }

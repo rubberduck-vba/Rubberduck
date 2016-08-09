@@ -1,24 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
-using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ParameterNotUsedInspection : InspectionBase
     {
-        private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
 
-        public ParameterNotUsedInspection(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public ParameterNotUsedInspection(RubberduckParserState state, IMessageBox messageBox)
             : base(state)
         {
-            _vbe = vbe;
             _messageBox = messageBox;
         }
 
@@ -41,8 +36,6 @@ namespace Rubberduck.Inspections
                 && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryProcedure);
 
             var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
-            var quickFixRefactoring =
-                new RemoveParametersRefactoring(_vbe, new RemoveParametersPresenterFactory(_vbe, new RemoveParametersDialog(), State, _messageBox));
 
             var issues = from issue in unused.Where(parameter =>
                 !IsInterfaceMemberParameter(parameter, interfaceMemberScopes)
@@ -50,7 +43,7 @@ namespace Rubberduck.Inspections
                 let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
                 select new ParameterNotUsedInspectionResult(this, issue,
                         ((dynamic) issue.Context).unrestrictedIdentifier(), issue.QualifiedName,
-                        isInterfaceImplementationMember, quickFixRefactoring, State);
+                        isInterfaceImplementationMember, issue.Project.VBE, State, _messageBox);
 
             return issues.ToList();
         }

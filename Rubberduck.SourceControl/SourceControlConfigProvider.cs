@@ -1,18 +1,11 @@
 ﻿using System;
 using System.IO;
+using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.SourceControl
 {
-    public interface ISourceControlConfigProvider
-    {
-        SourceControlSettings Create();
-        SourceControlSettings CreateDefaults();
-
-        void Save(SourceControlSettings settings);
-    }
-
-    public class SourceControlConfigProvider : ISourceControlConfigProvider
+    public class SourceControlConfigProvider : IConfigProvider<SourceControlSettings>
     {
         private readonly string _rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck");
         private readonly IFilePersistanceService<SourceControlSettings> _persister;

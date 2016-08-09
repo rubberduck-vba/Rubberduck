@@ -48,7 +48,7 @@ namespace Rubberduck.Inspections
                 return;
             }
 
-            var content = module.get_Lines(Selection.Selection.StartLine, Selection.Selection.LineCount);
+            var content = module.Lines[Selection.Selection.StartLine, Selection.Selection.LineCount];
 
             int markerPosition;
             if (!content.HasComment(out markerPosition))
@@ -59,7 +59,7 @@ namespace Rubberduck.Inspections
             var code = string.Empty;
             if (markerPosition > 0)
             {
-                code = content.Substring(0, markerPosition - 1);
+                code = content.Substring(0, markerPosition).TrimEnd();
             }
 
             if (_comment.QualifiedSelection.Selection.LineCount > 1)
@@ -89,7 +89,7 @@ namespace Rubberduck.Inspections
                 return;
             }
 
-            var content = module.get_Lines(Selection.Selection.StartLine, Selection.Selection.LineCount);
+            var content = module.Lines[Selection.Selection.StartLine, Selection.Selection.LineCount];
 
             int markerPosition;
             if (!content.HasComment(out markerPosition))
@@ -100,7 +100,7 @@ namespace Rubberduck.Inspections
             var code = string.Empty;
             if (markerPosition > 0)
             {
-                code = content.Substring(0, markerPosition - 1);
+                code = content.Substring(0, markerPosition);
             }
 
             var newContent = code + Tokens.CommentMarker + " " + _comment.CommentText;

@@ -6,6 +6,7 @@ namespace Rubberduck.Parsing
     public interface IProjectEventArgs
     {
         string ProjectId { get; }
+        VBProject Project { get; }
     }
 
     public interface IProjectRenamedEventArgs : IProjectEventArgs
@@ -16,8 +17,9 @@ namespace Rubberduck.Parsing
     public interface IComponentEventArgs
     {
         string ProjectId { get; }
-        string ComponentName { get; }
-        vbext_ComponentType Type { get; }
+
+        VBProject Project { get; }
+        VBComponent Component { get; }
     }
 
     public interface IComponentRenamedEventArgs : IComponentEventArgs
@@ -27,7 +29,7 @@ namespace Rubberduck.Parsing
 
     public interface ISinks
     {
-        bool IsEnabled { get; set; }
+        bool ComponentSinksEnabled { get; set; }
 
         event EventHandler<IProjectEventArgs> ProjectActivated;
         event EventHandler<IProjectEventArgs> ProjectAdded;

@@ -158,17 +158,18 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => Components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(Components.Count);
 
-            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>())).Callback((vbext_ComponentType c) =>
-            {
-                _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection()));
-            });
-            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>())).Returns(() =>
-            {
-                var lastComponent = _componentsMock.LastOrDefault();
-                return lastComponent == null
-                    ? null
-                    : lastComponent.Object;
-            });
+            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>()))
+                .Callback((vbext_ComponentType c) =>
+                {
+                    _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection()));
+                })
+                .Returns(() =>
+                {
+                    var lastComponent = _componentsMock.LastOrDefault();
+                    return lastComponent == null
+                        ? null
+                        : lastComponent.Object;
+                });
 
             result.Setup(m => m.Remove(It.IsAny<VBComponent>())).Callback((VBComponent c) =>
             {
@@ -253,7 +254,6 @@ namespace RubberduckTests.Mocks
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
 
             result.Setup(m => m.AddFromFile(It.IsAny<string>()));
-            result.Setup(m => m.AddFromString(It.IsAny<string>()));
             return result;
         }
 
@@ -286,12 +286,18 @@ namespace RubberduckTests.Mocks
                 {
                     if (index - 1 >= lines.Count)
                     {
-                        lines.AddRange(newLine.Split(new[] {Environment.NewLine}, StringSplitOptions.None));
+                        lines.AddRange(newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                     }
                     else
                     {
                         lines.InsertRange(index - 1, newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                     }
+                });
+
+            codeModule.Setup(m => m.AddFromString(It.IsAny<string>()))
+                .Callback<string>(newLine =>
+                {
+                    lines.AddRange(newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                 });
 
             return codeModule;

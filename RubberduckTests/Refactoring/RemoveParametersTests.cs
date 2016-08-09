@@ -33,7 +33,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( )
+@"Private Sub Foo()
 End Sub";
 
             //Arrange
@@ -44,7 +44,7 @@ End Sub";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -87,7 +87,7 @@ End Sub";
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -120,8 +120,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( ByVal arg2 As String)
-End Sub"; //note: The IDE strips out the extra whitespace
+@"Private Sub Foo(ByVal arg2 As String)
+End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -130,7 +130,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -163,8 +163,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer )
-End Sub"; //note: The IDE strips out the extra whitespace
+@"Private Sub Foo(ByVal arg1 As Integer)
+End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -173,7 +173,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -211,13 +211,13 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String )
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
 Public Sub Goo()
-    Foo arg2:=""test44"",  arg1:=3
+    Foo arg2:=""test44"", arg1:=3
 End Sub
-"; //note: The IDE strips out the extra whitespace
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -226,7 +226,60 @@ End Sub
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters[2].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_CallerArgNameContainsOtherArgName()
+        {
+            //Input
+            const string inputCode =
+@"Sub foo(a, b, c)
+
+End Sub
+
+Sub goo()
+    foo asd, sdf, s
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+@"Sub foo(a, b)
+
+End Sub
+
+Sub goo()
+    foo asd, sdf
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var module = component.CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -259,8 +312,8 @@ End Function";
 
             //Expectation
             const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer ) As Boolean
-End Function"; //note: The IDE strips out the extra whitespace
+@"Private Function Foo(ByVal arg1 As Integer) As Boolean
+End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -269,7 +322,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -302,8 +355,8 @@ End Function";
 
             //Expectation
             const string expectedCode =
-@"Private Function Foo( ) As Boolean
-End Function"; //note: The IDE strips out the extra whitespace
+@"Private Function Foo() As Boolean
+End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -312,7 +365,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -350,13 +403,13 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Private Function Foo( ) As Boolean
+@"Private Function Foo() As Boolean
 End Function
 
 Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Foo  
+    Foo 
 End Sub
-"; //note: The IDE strips out the extra whitespace
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -365,7 +418,7 @@ End Sub
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -375,6 +428,60 @@ End Sub
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_ParentIdentifierContainsParameterName()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub foo(a, b, c, d, e, f, g)
+End Sub
+
+Private Sub goo()
+    foo 1, 2, 3, 4, 5, 6, 7
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub foo(a, b, e, g)
+End Sub
+
+Private Sub goo()
+    foo 1, 2, 5, 7
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters.ElementAt(2).IsRemoved = true;
+            model.Parameters.ElementAt(3).IsRemoved = true;
+            model.Parameters.ElementAt(5).IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -399,7 +506,7 @@ End Property";
             //Expectation
             const string expectedCode =
 @"Private Property Get Foo() As Boolean
-End Property"; //note: The IDE strips out the extra whitespace
+End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -408,7 +515,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -441,8 +548,8 @@ End Property";
 
             //Expectation
             const string expectedCode =
-@"Private Property Set Foo( ByVal arg2 As String)
-End Property"; //note: The IDE strips out the extra whitespace
+@"Private Property Set Foo(ByVal arg2 As String)
+End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -451,7 +558,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -483,8 +590,8 @@ End Property";
 
             //Expectation
             const string expectedCode =
-@"Private Property Set Foo( ByVal arg2 As String)
-End Property"; //note: The IDE strips out the extra whitespace
+@"Private Property Set Foo(ByVal arg2 As String)
+End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -493,7 +600,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -531,13 +638,13 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( ByVal arg2 As String)
+@"Private Sub Foo(ByVal arg2 As String)
 End Sub
 
 Private Sub Bar()
-    Foo  ""Hello""
+    Foo ""Hello""
 End Sub
-"; //note: The IDE strips out the extra whitespace
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -546,7 +653,68 @@ End Sub
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters[0].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_ClientReferencesAreUpdated_FirstParam_ParensAroundCall()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub bar()
+    Dim x As Integer
+    Dim y As Integer
+    y = foo(x, 42)
+    Debug.Print y, x
+End Sub
+
+Private Function foo(ByRef a As Integer, ByVal b As Integer) As Integer
+    a = b
+    foo = a + b
+End Function";
+            var selection = new Selection(8, 20, 8, 20);
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub bar()
+    Dim x As Integer
+    Dim y As Integer
+    y = foo(42)
+    Debug.Print y, x
+End Sub
+
+Private Function foo(ByVal b As Integer) As Integer
+    a = b
+    foo = a + b
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var module = component.CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -584,13 +752,13 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer )
+@"Private Sub Foo(ByVal arg1 As Integer)
 End Sub
 
 Private Sub Bar()
-    Foo 10 
+    Foo 10
 End Sub
-"; //note: The IDE strips out the extra whitespace, you can't see it but there's a space after "Foo 10 "
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -599,7 +767,7 @@ End Sub
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -643,7 +811,7 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Sub Foo(ByVal arg1 As String )
+@"Sub Foo(ByVal arg1 As String)
 End Sub
 
 Public Sub Goo(ByVal arg1 As Integer, _
@@ -653,9 +821,9 @@ Public Sub Goo(ByVal arg1 As Integer, _
                ByVal arg5 As Integer, _
                ByVal arg6 As Integer)
               
-    Foo ""test""      
+    Foo ""test""
 End Sub
-"; //note: The IDE strips out the extra whitespace, you can't see it but there are several spaces after " ParamArrayTest ""test""      "
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -664,7 +832,7 @@ End Sub
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -701,7 +869,7 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -729,7 +897,7 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -759,8 +927,8 @@ End Property";
 @"Private Property Get Foo()
 End Property
 
-Private Property Set Foo( ByVal arg2 As String)
-End Property"; //note: The IDE strips out the extra whitespace
+Private Property Set Foo(ByVal arg2 As String)
+End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -769,7 +937,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -808,8 +976,8 @@ End Property";
 @"Private Property Get Foo()
 End Property
 
-Private Property Let Foo( ByVal arg2 As String)
-End Property"; //note: The IDE strips out the extra whitespace
+Private Property Let Foo(ByVal arg2 As String)
+End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -818,7 +986,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -855,7 +1023,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( Optional ByVal arg2 As String)
+@"Private Sub Foo(Optional ByVal arg2 As String)
 End Sub
 
 Private Sub Goo(ByVal arg1 As Integer)
@@ -869,7 +1037,7 @@ End Sub";
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -879,6 +1047,59 @@ End Sub";
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_RemoveOptionalParam()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, Optional ByVal arg2 As String)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+    Foo 1, ""test""
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ByVal arg1 As Integer)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+    Foo 1
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var module = component.CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -904,7 +1125,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(                  ByVal arg2 As String,                  ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg2 As String, ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
             //Arrange
@@ -914,7 +1135,7 @@ End Sub";   // note: VBE removes excess spaces
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -949,7 +1170,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer,                                    ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
             //Arrange
@@ -959,7 +1180,7 @@ End Sub";   // note: VBE removes excess spaces
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -994,7 +1215,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer,                  ByVal arg2 As String                  )
+@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";   // note: VBE removes excess spaces
 
             //Arrange
@@ -1004,7 +1225,7 @@ End Sub";   // note: VBE removes excess spaces
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1039,7 +1260,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(                  ByVal arg2 As String,                  ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg2 As String, ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
             //Arrange
@@ -1049,7 +1270,7 @@ End Sub";   // note: VBE removes excess spaces
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1091,12 +1312,12 @@ End Sub
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( ByVal arg2 As String, ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg2 As String, ByVal arg3 As Date)
 End Sub
 
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
-    Foo  arg2, arg3
+    Foo arg2, arg3
 
 End Sub
 ";   // note: IDE removes excess spaces
@@ -1108,7 +1329,7 @@ End Sub
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1147,12 +1368,12 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Sub DoSomething(ByVal a As Integer )
+@"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
             const string expectedCode2 =
 @"Implements IClass1
 
-Private Sub IClass1_DoSomething(ByVal a As Integer )
+Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1166,7 +1387,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1209,12 +1430,12 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Sub DoSomething(ByVal a As Integer )
+@"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
             const string expectedCode2 =
 @"Implements IClass1
 
-Private Sub IClass1_DoSomething(ByVal v1 As Integer )
+Private Sub IClass1_DoSomething(ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1228,7 +1449,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1276,17 +1497,17 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Sub DoSomething(ByVal a As Integer )
+@"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
             const string expectedCode2 =
 @"Implements IClass1
 
-Private Sub IClass1_DoSomething(ByVal v1 As Integer )
+Private Sub IClass1_DoSomething(ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
             const string expectedCode3 =
 @"Implements IClass1
 
-Private Sub IClass1_DoSomething(ByVal i As Integer )
+Private Sub IClass1_DoSomething(ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1301,7 +1522,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1346,12 +1567,12 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Event Foo(ByVal arg1 As Integer )";
+@"Public Event Foo(ByVal arg1 As Integer)";
 
             const string expectedCode2 =
 @"Private WithEvents abc As Class1
 
-Private Sub abc_Foo(ByVal arg1 As Integer )
+Private Sub abc_Foo(ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1365,7 +1586,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1410,11 +1631,11 @@ End Sub";
             const string expectedCode1 =
 @"Private WithEvents abc As Class2
 
-Private Sub abc_Foo(ByVal arg1 As Integer )
+Private Sub abc_Foo(ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             const string expectedCode2 =
-@"Public Event Foo(ByVal arg1 As Integer )";
+@"Public Event Foo(ByVal arg1 As Integer)";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1427,7 +1648,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1469,12 +1690,12 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Event Foo(ByVal arg1 As Integer )";
+@"Public Event Foo(ByVal arg1 As Integer)";
 
             const string expectedCode2 =
 @"Private WithEvents abc As Class1
 
-Private Sub abc_Foo(ByVal i As Integer )
+Private Sub abc_Foo(ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1488,7 +1709,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1536,17 +1757,17 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public Event Foo(ByVal arg1 As Integer )";
+@"Public Event Foo(ByVal arg1 As Integer)";
 
             const string expectedCode2 =
 @"Private WithEvents abc As Class1
 
-Private Sub abc_Foo(ByVal i As Integer )
+Private Sub abc_Foo(ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
             const string expectedCode3 =
 @"Private WithEvents abc As Class1
 
-Private Sub abc_Foo(ByVal v1 As Integer )
+Private Sub abc_Foo(ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
@@ -1561,7 +1782,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1608,11 +1829,11 @@ End Sub";
             const string expectedCode1 =
 @"Implements IClass1
 
-Private Sub IClass1_DoSomething(ByVal a As Integer )
+Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             const string expectedCode2 =
-@"Public Sub DoSomething(ByVal a As Integer )
+@"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
 
             //Arrange
@@ -1626,7 +1847,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1682,7 +1903,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1713,7 +1934,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1759,7 +1980,7 @@ End Sub";
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1789,7 +2010,7 @@ End Sub";
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1825,7 +2046,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1861,7 +2082,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1897,7 +2118,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1933,7 +2154,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1967,7 +2188,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -2004,7 +2225,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }

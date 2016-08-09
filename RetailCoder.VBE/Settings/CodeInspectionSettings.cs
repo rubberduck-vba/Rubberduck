@@ -10,6 +10,7 @@ namespace Rubberduck.Settings
     public interface ICodeInspectionSettings
     {
         HashSet<CodeInspectionSetting> CodeInspections { get; set; }
+        WhitelistedIdentifierSetting[] WhitelistedIdentifiers { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
@@ -18,14 +19,17 @@ namespace Rubberduck.Settings
         [XmlArrayItem("CodeInspection", IsNullable = false)]
         public HashSet<CodeInspectionSetting> CodeInspections { get; set; }
 
-        public CodeInspectionSettings()
+        [XmlArrayItem("WhitelistedIdentifier", IsNullable = false)]
+        public WhitelistedIdentifierSetting[] WhitelistedIdentifiers { get; set; }
+
+        public CodeInspectionSettings() : this(new HashSet<CodeInspectionSetting>(), new WhitelistedIdentifierSetting[] {})
         {
-            CodeInspections =new HashSet<CodeInspectionSetting>();
         }
 
-        public CodeInspectionSettings(HashSet<CodeInspectionSetting> inspections)
+        public CodeInspectionSettings(HashSet<CodeInspectionSetting> inspections, WhitelistedIdentifierSetting[] whitelistedNames)
         {
             CodeInspections = inspections;
+            WhitelistedIdentifiers = whitelistedNames;
         }
 
         public CodeInspectionSetting GetSetting(Type inspection)

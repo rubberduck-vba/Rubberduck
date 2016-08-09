@@ -33,35 +33,38 @@ namespace Rubberduck.Navigation.CodeExplorer
             _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => _state.OnParseRequested(this),
                 param => !IsBusy && _state.IsDirty());
             
-            _navigateCommand = commands.OfType<UI.CodeExplorer.Commands.NavigateCommand>().FirstOrDefault();
+            _navigateCommand = commands.OfType<UI.CodeExplorer.Commands.NavigateCommand>().SingleOrDefault();
 
-            _addTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().FirstOrDefault();
-            _addStdModuleCommand = commands.OfType<AddStdModuleCommand>().FirstOrDefault();
-            _addClassModuleCommand = commands.OfType<AddClassModuleCommand>().FirstOrDefault();
-            _addUserFormCommand = commands.OfType<AddUserFormCommand>().FirstOrDefault();
+            _addTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
+            _addStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
+            _addClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
+            _addUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
 
-            _openDesignerCommand = commands.OfType<OpenDesignerCommand>().FirstOrDefault();
-            _openProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().FirstOrDefault();
-            _renameCommand = commands.OfType<RenameCommand>().FirstOrDefault();
-            _indenterCommand = commands.OfType<IndentCommand>().FirstOrDefault();
+            _openDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
+            _openProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().SingleOrDefault();
+            _renameCommand = commands.OfType<RenameCommand>().SingleOrDefault();
+            _indenterCommand = commands.OfType<IndentCommand>().SingleOrDefault();
 
-            _findAllReferencesCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllReferencesCommand>().FirstOrDefault();
-            _findAllImplementationsCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllImplementationsCommand>().FirstOrDefault();
+            _findAllReferencesCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllReferencesCommand>().SingleOrDefault();
+            _findAllImplementationsCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllImplementationsCommand>().SingleOrDefault();
 
-            _importCommand = commands.OfType<ImportCommand>().FirstOrDefault();
-            _exportCommand = commands.OfType<ExportCommand>().FirstOrDefault();
-            _externalRemoveCommand = commands.OfType<RemoveCommand>().FirstOrDefault();
+            _collapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes);
+            _expandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes);
+
+            _importCommand = commands.OfType<ImportCommand>().SingleOrDefault();
+            _exportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
+            _externalRemoveCommand = commands.OfType<RemoveCommand>().SingleOrDefault();
             if (_externalRemoveCommand != null)
             {
                 _removeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
             }
 
-            _printCommand = commands.OfType<PrintCommand>().FirstOrDefault();
+            _printCommand = commands.OfType<PrintCommand>().SingleOrDefault();
 
-            _commitCommand = commands.OfType<CommitCommand>().FirstOrDefault();
-            _undoCommand = commands.OfType<UndoCommand>().FirstOrDefault();
+            _commitCommand = commands.OfType<CommitCommand>().SingleOrDefault();
+            _undoCommand = commands.OfType<UndoCommand>().SingleOrDefault();
 
-            _copyResultsCommand = commands.OfType<CopyResultsCommand>().FirstOrDefault();
+            _copyResultsCommand = commands.OfType<CopyResultsCommand>().SingleOrDefault();
 
             _setNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
@@ -409,6 +412,33 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private void ExecuteCollapseNodes(object parameter)
+        {
+            var node = parameter as CodeExplorerItemViewModel;
+            if (node == null) { return; }
+
+            SwitchNodeState(node, false);
+        }
+
+        private void ExecuteExpandNodes(object parameter)
+        {
+            var node = parameter as CodeExplorerItemViewModel;
+            if (node == null) { return; }
+
+            SwitchNodeState(node, true);
+        }
+
+        private void SwitchNodeState(CodeExplorerItemViewModel node, bool expandedState)
+        {
+            node.IsExpanded = expandedState;
+
+            foreach (var item in node.Items)
+            {
+                item.IsExpanded = expandedState;
+                SwitchNodeState(item, expandedState);
+            }
+        }
+
         private readonly CommandBase _refreshCommand;
         public CommandBase RefreshCommand { get { return _refreshCommand; } }
 
@@ -444,6 +474,12 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly CommandBase _findAllImplementationsCommand;
         public CommandBase FindAllImplementationsCommand { get { return _findAllImplementationsCommand; } }
+
+        private readonly CommandBase _collapseAllSubnodesCommand;
+        public CommandBase CollapseAllSubnodesCommand { get { return _collapseAllSubnodesCommand; } }
+
+        private readonly CommandBase _expandAllSubnodesCommand;
+        public CommandBase ExpandAllSubnodesCommand { get { return _expandAllSubnodesCommand; } }
 
         private readonly CommandBase _importCommand;
         public CommandBase ImportCommand { get { return _importCommand; } }

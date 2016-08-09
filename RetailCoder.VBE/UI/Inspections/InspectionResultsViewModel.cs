@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
@@ -45,8 +44,8 @@ namespace Rubberduck.UI.Inspections
             _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), async param => await Task.Run(() => ExecuteRefreshCommandAsync()), CanExecuteRefreshCommand);
             _disableInspectionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteDisableInspectionCommand);
             _quickFixCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
-            _quickFixInModuleCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInModuleCommand);
-            _quickFixInProjectCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProjectCommand);
+            _quickFixInModuleCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInModuleCommand, _ => _state.Status == ParserState.Ready);
+            _quickFixInProjectCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProjectCommand, _ => _state.Status == ParserState.Ready);
             _copyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             _openSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
@@ -224,7 +223,15 @@ namespace Rubberduck.UI.Inspections
         }
 
         private bool _canQuickFix;
-        public bool CanQuickFix { get { return _canQuickFix; } set { _canQuickFix = value; OnPropertyChanged(); } }
+                public bool CanQuickFix
+        {
+            get { return _canQuickFix; }
+            set
+            {
+                _canQuickFix = value;
+                OnPropertyChanged();
+            }
+        }
 
         private bool _isBusy;
         public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); } }
@@ -335,7 +342,7 @@ namespace Rubberduck.UI.Inspections
         private bool CanExecuteQuickFixCommand(object parameter)
         {
             var quickFix = parameter as CodeInspectionQuickFix;
-            return !IsBusy && quickFix != null;
+            return !IsBusy && quickFix != null && _state.Status == ParserState.Ready;
         }
 
         private bool _canExecuteQuickFixInModule;
@@ -461,6 +468,11 @@ namespace Rubberduck.UI.Inspections
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
+            }
+
+            if (_inspector != null)
+            {
+                _inspector.Dispose();
             }
         }
     }

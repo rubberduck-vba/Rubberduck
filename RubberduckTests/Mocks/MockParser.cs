@@ -23,7 +23,7 @@ namespace RubberduckTests.Mocks
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             qualifiedModuleName = new QualifiedModuleName(component);
-            var parser = Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -40,7 +40,7 @@ namespace RubberduckTests.Mocks
 
         public static RubberduckParser Create(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
-            return new RubberduckParser(state, attributeParser,
+            return new RubberduckParser(vbe, state, attributeParser,
                 () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
                 new List<ICustomDeclarationLoader> {new DebugDeclarations(state), new FormEventDeclarations(state), new AliasDeclarations(state)}, true);
         }

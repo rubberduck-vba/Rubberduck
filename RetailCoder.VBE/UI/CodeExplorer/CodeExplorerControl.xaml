@@ -15,12 +15,13 @@
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
         <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
+        <BitmapImage x:Key="CollaseNodesImage" UriSource="../../Resources/folder.png" />
+        <BitmapImage x:Key="ExpandNodesImage" UriSource="../../Resources/folder-open.png" />
         <BitmapImage x:Key="UndoImage" UriSource="../../Resources/arrow-circle-left.png" />
         <BitmapImage x:Key="PrintImage" UriSource="../../Resources/printer.png" />
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-        <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
 
         <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -274,6 +275,7 @@
             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
+            <EventSetter Event="MouseDoubleClick" Handler="TreeView_OnMouseDoubleClick" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
@@ -402,6 +404,21 @@
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Indent}"
                                   Command="{Binding IndenterCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_CollapseSubnodesToolTip}"
+                                  Command="{Binding CollapseAllSubnodesCommand}"
+                                  CommandParameter="{Binding SelectedItem}">
+                            <MenuItem.Icon>
+                                <Image Source="{StaticResource CollaseNodesImage}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ExpandSubnodesToolTip}"
+                                  Command="{Binding ExpandAllSubnodesCommand}"
+                                  CommandParameter="{Binding SelectedItem}">
+                            <MenuItem.Icon>
+                                <Image Source="{StaticResource ExpandNodesImage}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Import}"
                                   Command="{Binding ImportCommand}"
@@ -696,6 +713,7 @@
                                   IsCheckable="True" />
                     </MenuItem>
                 </Menu>
+
                 <ToggleButton Name="DisplaySignatures" ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
                     <Image Height="16" Source="../../Resources/Custom/PNG/DisplayFullSignature.png" />
                 </ToggleButton>
@@ -726,7 +744,6 @@
                   Background="White"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
-                  MouseDoubleClick="TreeView_OnMouseDoubleClick"
                   Style="{StaticResource CodeExplorerTreeViewStyle}" BorderThickness="0,1"
                   VirtualizingPanel.IsVirtualizing="False">
             <i:Interaction.Behaviors>

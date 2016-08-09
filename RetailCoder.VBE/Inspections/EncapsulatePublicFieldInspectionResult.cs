@@ -9,16 +9,18 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
+    using SmartIndenter;
+
     public class EncapsulatePublicFieldInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state)
+        public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, IIndenter indenter)
             : base(inspection, target)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new EncapsulateFieldQuickFix(target.Context, target.QualifiedSelection, target, state),
+                new EncapsulateFieldQuickFix(target.Context, target.QualifiedSelection, target, state, indenter),
                 new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
             };
         }
@@ -38,22 +40,24 @@ namespace Rubberduck.Inspections
     {
         private readonly Declaration _target;
         private readonly RubberduckParserState _state;
+        private readonly IIndenter _indenter;
 
-        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state)
+        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, IIndenter indenter)
             : base(context, selection, string.Format(InspectionsUI.EncapsulatePublicFieldInspectionQuickFix, target.IdentifierName))
         {
             _target = target;
             _state = state;
+            _indenter = indenter;
         }
 
         public override void Fix()
         {
             var vbe = Selection.QualifiedName.Project.VBE;
 
-            using (var view = new EncapsulateFieldDialog())
+            using (var view = new EncapsulateFieldDialog(_state, _indenter))
             {
                 var factory = new EncapsulateFieldPresenterFactory(vbe, _state, view);
-                var refactoring = new EncapsulateFieldRefactoring(vbe, factory);
+                var refactoring = new EncapsulateFieldRefactoring(vbe, _indenter, factory);
                 refactoring.Refactor(_target);
                 IsCancelled = view.DialogResult != DialogResult.OK;
             }

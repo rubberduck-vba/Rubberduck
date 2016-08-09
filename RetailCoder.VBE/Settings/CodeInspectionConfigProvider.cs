@@ -1,40 +1,28 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Inspections;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
 {
-    public interface ICodeInspectionConfigProvider
-    {
-        CodeInspectionSettings Create(IEnumerable<IInspection> inspections);
-        CodeInspectionSettings CreateDefaults();
-        void Save(CodeInspectionSettings settings);
-    }
-
-    public class CodeInspectionConfigProvider : ICodeInspectionConfigProvider
+    public class CodeInspectionConfigProvider : IConfigProvider<CodeInspectionSettings>
     {
         private readonly IPersistanceService<CodeInspectionSettings> _persister;
-        private IEnumerable<IInspection> _inspections;
 
         public CodeInspectionConfigProvider(IPersistanceService<CodeInspectionSettings> persister)
         {
             _persister = persister;
         }
 
-        public CodeInspectionSettings Create(IEnumerable<IInspection> inspections)
+        public CodeInspectionSettings Create()
         {
-            if (inspections == null) return null;
-
-            _inspections = inspections;
-            var prototype = new CodeInspectionSettings(GetDefaultCodeInspections());
-            return _persister.Load(prototype) ?? prototype;
+            var prototype = new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] { });
+            return _persister.Load(prototype) ?? prototype;            
         }
 
         public CodeInspectionSettings CreateDefaults()
         {
-            //This sucks.
-            return _inspections != null ? new CodeInspectionSettings(GetDefaultCodeInspections()) : null;
+            //This no longer sucks.
+            return new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] {});
         }
 
         public void Save(CodeInspectionSettings settings)
@@ -44,9 +32,47 @@ namespace Rubberduck.Settings
 
         public HashSet<CodeInspectionSetting> GetDefaultCodeInspections()
         {
-            return new HashSet<CodeInspectionSetting>(_inspections.Select(x =>
-                        new CodeInspectionSetting(x.Name, x.Description, x.InspectionType, x.DefaultSeverity,
-                            x.DefaultSeverity)));
+            //*This* sucks now.
+            return new HashSet<CodeInspectionSetting>
+            {
+                new CodeInspectionSetting("ObjectVariableNotSetInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("FunctionReturnValueNotUsedInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("SelfAssignedDeclarationInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Hint,  CodeInspectionSeverity.Hint),
+                new CodeInspectionSetting("MoveFieldCloserToUsageInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("EncapsulatePublicFieldInspection", string.Empty, CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("EmptyStringLiteralInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("ImplicitActiveSheetReferenceInspection", string.Empty, CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("ImplicitActiveWorkbookReferenceInspection", string.Empty, CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("MultipleFolderAnnotationsInspection", string.Empty, CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error),
+                new CodeInspectionSetting("ProcedureCanBeWrittenAsFunctionInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("UseMeaningfulNameInspection", string.Empty, CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("WriteOnlyPropertyInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("UntypedFunctionUsageInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint,  CodeInspectionSeverity.Hint),
+                new CodeInspectionSetting("AssignedByValParameterInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("ConstantNotUsedInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("DefaultProjectNameInspection", string.Empty, CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("ImplicitPublicMemberInspection", string.Empty, CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Hint,  CodeInspectionSeverity.Hint),
+                new CodeInspectionSetting("MultilineParameterInspection", string.Empty, CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("NonReturningFunctionInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error),
+                new CodeInspectionSetting("ObsoleteCallStatementInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("ObsoleteGlobalInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("ObsoleteLetStatementInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("ObsoleteTypeHintInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("OptionBaseInspection", string.Empty, CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Hint,  CodeInspectionSeverity.Hint),
+                new CodeInspectionSetting("ParameterCanBeByValInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("ParameterNotUsedInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("ProcedureNotUsedInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("UnassignedVariableUsageInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error),
+                new CodeInspectionSetting("VariableNotUsedInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("VariableNotAssignedInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("ImplicitByRefParameterInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Hint,  CodeInspectionSeverity.Hint),
+                new CodeInspectionSetting("ImplicitVariantReturnTypeInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Hint,  CodeInspectionSeverity.Hint),
+                new CodeInspectionSetting("MultipleDeclarationsInspection", string.Empty, CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("ObsoleteCommentSyntaxInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("OptionExplicitInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error),
+                new CodeInspectionSetting("VariableTypeNotDeclaredInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
+                new CodeInspectionSetting("MalformedAnnotationInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error)
+            };
         }
     }
 }

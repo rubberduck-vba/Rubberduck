@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
@@ -21,7 +22,7 @@ namespace RubberduckTests.SourceControl
         private const string OtherRepoLocation = @"C:\Users\KingLear\Documents";
         private const string OtherCommandPromptLocation = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
 
-        private Mock<ISourceControlConfigProvider> _configService;
+        private Mock<IConfigProvider<SourceControlSettings>> _configService;
         private SourceControlSettings _config;
 
         private Mock<IFolderBrowserFactory> _folderBrowserFactory;
@@ -34,7 +35,7 @@ namespace RubberduckTests.SourceControl
         {
             _config = new SourceControlSettings(Name, Email, RepoLocation, new List<Repository>(), CommandPromptLocation);
 
-            _configService = new Mock<ISourceControlConfigProvider>();
+            _configService = new Mock<IConfigProvider<SourceControlSettings>>();
             _configService.Setup(s => s.Create()).Returns(_config);
 
             _folderBrowser = new Mock<IFolderBrowser>();

@@ -46,17 +46,25 @@ namespace Rubberduck.Refactorings.ExtractInterface
             
             GetMethodType();
 
-            MemberParams = declarations.Where(item => item.DeclarationType == DeclarationType.Parameter &&
-                                          item.ParentScope == Member.Scope)
-                                       .OrderBy(o => o.Selection.StartLine)
-                                       .ThenBy(t => t.Selection.StartColumn)
-                                       .Select(p => new Parameter
-                                       {
-                                           ParamAccessibility = ((VBAParser.ArgContext)p.Context).BYREF() == null ? Tokens.ByVal : Tokens.ByRef,
-                                           ParamName = p.IdentifierName,
-                                           ParamType = p.AsTypeName
-                                       })
-                                       .ToList();
+            var memberWithParams = member as IDeclarationWithParameter;
+            if (memberWithParams != null)
+            {
+                MemberParams = memberWithParams.Parameters
+                    .OrderBy(o => o.Selection.StartLine)
+                    .ThenBy(t => t.Selection.StartColumn)
+                    .Select(p => new Parameter
+                    {
+                        ParamAccessibility =
+                            ((VBAParser.ArgContext) p.Context).BYVAL() != null ? Tokens.ByVal : Tokens.ByRef,
+                        ParamName = p.IdentifierName,
+                        ParamType = p.AsTypeName
+                    })
+                    .ToList();
+            }
+            else
+            {
+                MemberParams = new List<Parameter>();
+            }
 
             if (MemberType == "Property Get")
             {

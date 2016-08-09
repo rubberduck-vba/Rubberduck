@@ -86,8 +86,13 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Commands\RefactorCommandTests.cs" />
+    <Compile Include="Commands\IndentCommandTests.cs" />
+    <Compile Include="Commands\UnitTestCommandTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="Commands\FindAllImplementationsTests.cs" />
+    <Compile Include="Commands\FindAllReferencesTests.cs" />
     <Compile Include="Grammar\AnnotationTests.cs" />
     <Compile Include="Grammar\ResolverTests.cs" />
     <Compile Include="Grammar\VBAParserTests.cs" />
@@ -139,6 +144,7 @@
     <Compile Include="Preprocessing\VBAPreprocessorTests.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorVisitorTests.cs" />
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
+    <Compile Include="Refactoring\ExtractInterfaceTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractedMethodRefactoringTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractMethodExtractionTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractMethodParameterClassificationTests.cs" />
@@ -177,7 +183,6 @@
     <Compile Include="SourceControl\SourceControlViewModelTests.cs" />
     <Compile Include="SourceControl\UnsyncedCommitsViewModelTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
-    <Compile Include="TodoControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TodoExplorer\TodoExplorerTests.cs" />
     <Compile Include="UnitTesting\AssertTests.cs" />

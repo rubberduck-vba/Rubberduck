@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using NLog;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -42,6 +41,18 @@ namespace Rubberduck.UI.SourceControl
 
             IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
             OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
+        }
+
+        public void ResetView()
+        {
+            Logger.Trace("Resetting view");
+
+            _provider.BranchChanged -= Provider_BranchChanged;
+            _provider = null;
+            CurrentBranch = string.Empty;
+
+            IncomingCommits = new ObservableCollection<ICommit>();
+            OutgoingCommits = new ObservableCollection<ICommit>();
         }
 
         public SourceControlTab Tab { get { return SourceControlTab.UnsyncedCommits; } }
@@ -104,7 +115,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
+                RaiseErrorEvent(ex.Message, ex.InnerException, NotificationType.Error);
             }
             catch
             {
@@ -125,7 +136,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
+                RaiseErrorEvent(ex.Message, ex.InnerException, NotificationType.Error);
             }
             catch
             {
@@ -146,7 +157,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
+                RaiseErrorEvent(ex.Message, ex.InnerException, NotificationType.Error);
             }
             catch
             {
@@ -168,7 +179,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
+                RaiseErrorEvent(ex.Message, ex.InnerException, NotificationType.Error);
             }
             catch
             {
@@ -215,12 +226,21 @@ namespace Rubberduck.UI.SourceControl
         }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
-        private void RaiseErrorEvent(string message, string innerMessage, NotificationType notificationType)
+        private void RaiseErrorEvent(string message, Exception innerException, NotificationType notificationType)
         {
             var handler = ErrorThrown;
             if (handler != null)
             {
-                handler(this, new ErrorEventArgs(message, innerMessage, notificationType));
+                handler(this, new ErrorEventArgs(message, innerException, notificationType));
+            }
+        }
+
+        private void RaiseErrorEvent(string title, string message, NotificationType notificationType)
+        {
+            var handler = ErrorThrown;
+            if (handler != null)
+            {
+                handler(this, new ErrorEventArgs(title, message, notificationType));
             }
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
@@ -11,18 +10,22 @@ namespace Rubberduck
 {
     public class ProjectEventArgs : EventArgs, IProjectEventArgs
     {
-        public ProjectEventArgs(string projectId)
+        public ProjectEventArgs(string projectId, VBProject project)
         {
             _projectId = projectId;
+            _project = project;
         }
 
         private readonly string _projectId;
         public string ProjectId { get { return _projectId; } }
+
+        private readonly VBProject _project;
+        public VBProject Project { get { return _project; } }
     }
 
     public class ProjectRenamedEventArgs : ProjectEventArgs, IProjectRenamedEventArgs
     {
-        public ProjectRenamedEventArgs(string projectId, string oldName) : base(projectId)
+        public ProjectRenamedEventArgs(string projectId, VBProject project, string oldName) : base(projectId, project)
         {
             _oldName = oldName;
         }
@@ -33,27 +36,28 @@ namespace Rubberduck
 
     public class ComponentEventArgs : EventArgs, IComponentEventArgs
     {
-        public ComponentEventArgs(string projectId, string componentName, vbext_ComponentType type)
+        public ComponentEventArgs(string projectId, VBProject project, VBComponent component)
         {
             _projectId = projectId;
-            _componentName = componentName;
-            _type = type;
+            _project = project;
+            _component = component;
         }
 
         private readonly string _projectId;
         public string ProjectId { get { return _projectId; } }
 
-        private readonly string _componentName;
-        public string ComponentName { get { return _componentName; } }
+        private readonly VBProject _project;
+        public VBProject Project { get { return _project; } }
 
-        private readonly vbext_ComponentType _type;
-        public vbext_ComponentType Type { get { return _type; } }
+        private readonly VBComponent _component;
+        public VBComponent Component { get { return _component; } }
+
     }
 
     public class ComponentRenamedEventArgs : ComponentEventArgs, IComponentRenamedEventArgs
     {
-        public ComponentRenamedEventArgs(string projectId, string componentName, vbext_ComponentType type, string oldName)
-            : base(projectId, componentName, type)
+        public ComponentRenamedEventArgs(string projectId, VBProject project, VBComponent component, string oldName)
+            : base(projectId, project, component)
         {
             _oldName = oldName;
         }
@@ -73,11 +77,11 @@ namespace Rubberduck
         private readonly IDictionary<string, Tuple<IConnectionPoint, int>> _componentsEventsConnectionPoints =
             new Dictionary<string, Tuple<IConnectionPoint, int>>();
 
-        public bool IsEnabled { get; set; }
+        public bool ComponentSinksEnabled { get; set; }
 
         public Sinks(VBE vbe)
         {
-            IsEnabled = true;
+            ComponentSinksEnabled = true;
 
             _sink = new VBProjectsEventsSink();
             var connectionPointContainer = (IConnectionPointContainer)vbe.VBProjects;
@@ -100,70 +104,52 @@ namespace Rubberduck
 
         private void _sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
         {
-            if (!IsEnabled) { return; }
             var projectId = e.Item.HelpFile;
-
-            Task.Run(() =>
+            
+            var handler = ProjectActivated;
+            if (handler != null)
             {
-                var handler = ProjectActivated;
-                if (handler != null)
-                {
-                    handler(sender, new ProjectEventArgs(projectId));
-                }
-            });
+                handler(sender, new ProjectEventArgs(projectId, e.Item));
+            }
         }
 
         private void _sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
-            if (!IsEnabled) { return; }
-
             e.Item.AssignProjectId();
             var projectId = e.Item.HelpFile;
 
             RegisterComponentsEventSink(e.Item.VBComponents, projectId);
-
-            Task.Run(() =>
+            
+            var handler = ProjectAdded;
+            if (handler != null)
             {
-                var handler = ProjectAdded;
-                if (handler != null)
-                {
-                    handler(sender, new ProjectEventArgs(projectId));
-                }
-            });
+                handler(sender, new ProjectEventArgs(projectId, e.Item));
+            }
         }
 
         private void _sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
             UnregisterComponentsEventSink(e.Item.HelpFile);
-            if (!IsEnabled) { return; }
 
             var projectId = e.Item.HelpFile;
-
-            Task.Run(() =>
+            
+            var handler = ProjectRemoved;
+            if (handler != null)
             {
-                var handler = ProjectRemoved;
-                if (handler != null)
-                {
-                    handler(sender, new ProjectEventArgs(projectId));
-                }
-            });
+                handler(sender, new ProjectEventArgs(projectId, e.Item));
+            }
         }
 
         private void _sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
         {
-            if (!IsEnabled) { return; }
-
             var projectId = e.Item.HelpFile;
             var oldName = e.OldName;
-
-            Task.Run(() =>
+            
+            var handler = ProjectRenamed;
+            if (handler != null)
             {
-                var handler = ProjectRenamed;
-                if (handler != null)
-                {
-                    handler(sender, new ProjectRenamedEventArgs(projectId, oldName));
-                }
-            });
+                handler(sender, new ProjectRenamedEventArgs(projectId, e.Item, oldName));
+            }
         }
 
         #endregion
@@ -225,86 +211,79 @@ namespace Rubberduck
 
         private void ComponentsSink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
 
             var handler = ComponentActivated;
             if (handler != null)
             {
-                handler(sender, new ComponentEventArgs(projectId, componentName, e.Item.Type));
+                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
             }
         }
 
         private void ComponentsSink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
 
             var handler = ComponentAdded;
             if (handler != null)
             {
-                handler(sender, new ComponentEventArgs(projectId, componentName, e.Item.Type));
+                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
             }
         }
 
         private void ComponentsSink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
 
             var handler = ComponentReloaded;
             if (handler != null)
             {
-                handler(sender, new ComponentEventArgs(projectId, componentName, e.Item.Type));
+                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
             }
         }
 
         private void ComponentsSink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
 
             var handler = ComponentRemoved;
             if (handler != null)
             {
-                handler(sender, new ComponentEventArgs(projectId, componentName, e.Item.Type));
+                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
             }
         }
 
         private void ComponentsSink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
-            var oldName = e.OldName;
 
             var handler = ComponentRenamed;
             if (handler != null)
             {
-                handler(sender, new ComponentRenamedEventArgs(projectId, componentName, e.Item.Type, oldName));
+                handler(sender, new ComponentRenamedEventArgs(projectId, e.Item.Collection.Parent, e.Item, e.OldName));
             }
         }
 
         private void ComponentsSink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
         {
-            if (!IsEnabled) { return; }
+            if (!ComponentSinksEnabled) { return; }
 
             var projectId = e.Item.Collection.Parent.HelpFile;
-            var componentName = e.Item.Name;
 
             var handler = ComponentSelected;
             if (handler != null)
             {
-                handler(sender, new ComponentEventArgs(projectId, componentName, e.Item.Type));
+                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
             }
         }
         #endregion

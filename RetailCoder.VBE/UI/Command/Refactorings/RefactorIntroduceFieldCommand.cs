@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            if (_state.Status != ParserState.Ready)
             {
                 return false;
             }
@@ -31,9 +31,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
             var target = _state.AllUserDeclarations.FindVariable(selection.Value);
 
-            var canExecute = target != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
-
-            return canExecute;
+            return target != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
         }
 
         protected override void ExecuteImpl(object parameter)

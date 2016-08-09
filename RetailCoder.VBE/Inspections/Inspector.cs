@@ -15,20 +15,20 @@ namespace Rubberduck.Inspections
 {
     namespace Rubberduck.Inspections
     {
-        public class Inspector : IInspector, IDisposable
+        public class Inspector : IInspector
         {
             private readonly IGeneralConfigService _configService;
-            private readonly IEnumerable<IInspection> _inspections;
+            private readonly List<IInspection> _inspections;
 
             public Inspector(IGeneralConfigService configService, IEnumerable<IInspection> inspections)
             {
-                _inspections = inspections;
+                _inspections = inspections.ToList();
 
                 _configService = configService;
-                configService.SettingsChanged += ConfigServiceLanguageChanged;
+                configService.SettingsChanged += ConfigServiceSettingsChanged;
             }
 
-            private void ConfigServiceLanguageChanged(object sender, EventArgs e)
+            private void ConfigServiceSettingsChanged(object sender, EventArgs e)
             {
                 UpdateInspectionSeverity();
             }
@@ -125,8 +125,10 @@ namespace Rubberduck.Inspections
             {
                 if (_configService != null)
                 {
-                    _configService.SettingsChanged -= ConfigServiceLanguageChanged;
+                    _configService.SettingsChanged -= ConfigServiceSettingsChanged;
                 }
+
+                _inspections.Clear();
             }
         }
     }

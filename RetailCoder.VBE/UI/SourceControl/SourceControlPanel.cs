@@ -6,9 +6,15 @@ namespace Rubberduck.UI.SourceControl
     [ExcludeFromCodeCoverage]
     public partial class SourceControlPanel : UserControl, IDockableUserControl
     {
-        public SourceControlPanel()
+        private SourceControlPanel()
         {
             InitializeComponent();
+        }
+
+        public SourceControlPanel(SourceControlViewViewModel viewModel) : this()
+        {
+            _viewModel = viewModel;
+            SourceControlPanelControl.DataContext = viewModel;
         }
 
         public string ClassId
@@ -21,10 +27,10 @@ namespace Rubberduck.UI.SourceControl
             get { return RubberduckUI.SourceControlPanel_Caption; }
         }
 
-        public ViewModelBase ViewModel
+        private readonly SourceControlViewViewModel _viewModel;
+        public SourceControlViewViewModel ViewModel
         {
-            get { return (SourceControlViewViewModel)SourceControlPanelControl.DataContext; }
-            set { SourceControlPanelControl.DataContext = value; }
+            get { return _viewModel; }
         }
     }
 }
