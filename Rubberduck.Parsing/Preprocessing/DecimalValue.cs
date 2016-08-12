@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Rubberduck.Parsing.Preprocessing
 {
@@ -55,13 +56,13 @@ namespace Rubberduck.Parsing.Preprocessing
         {
             get
             {
-                return _value.ToString();
+                return _value.ToString(CultureInfo.InvariantCulture);
             }
         }
 
         public override string ToString()
         {
-            return _value.ToString();
+            return _value.ToString(CultureInfo.InvariantCulture);
         }
     }
 }
