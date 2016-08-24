@@ -81,6 +81,8 @@ namespace Rubberduck.VBEditor.Extensions
                             return new AutoCADApp();
                         case "CorelDRAW":
                             return new CorelDRAWApp();
+                        case "SolidWorks":
+                            return new SolidWorksApp(vbe);
                     }
                 }
                 return null;
@@ -111,6 +113,8 @@ namespace Rubberduck.VBEditor.Extensions
                         return new AutoCADApp();
                     case "CorelDRAW":
                         return new CorelDRAWApp(vbe);
+                    case "SolidWorks":
+                        return new SolidWorksApp(vbe);
                 }
             }
 
@@ -143,6 +147,7 @@ namespace Rubberduck.VBEditor.Extensions
                     case "Microsoft Visio":
                     case "AutoCAD":
                     case "CorelDRAW":
+                    case "SolidWorks":
                         return true;
                     default:
                         return false;
@@ -164,6 +169,7 @@ namespace Rubberduck.VBEditor.Extensions
                     case "Visio":
                     case "AutoCAD":
                     case "CorelDRAW":
+                    case "SolidWorks":
                         return true;
                 }
             }
