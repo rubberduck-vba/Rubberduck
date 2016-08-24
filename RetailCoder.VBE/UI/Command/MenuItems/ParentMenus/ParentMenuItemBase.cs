@@ -178,6 +178,15 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return;
             }
 
+            if (!HasPictureProperty(button))
+            {
+                //Host VBE is using pre-Office XP CommandBars, so Picture/Mask properties don't exist and can't be set.
+                //default to a built-in generic faceid for now.
+                //TODO - use cliboard and button.PasteFace
+                button.FaceId = 39;
+                return;
+            }
+
             try
             {
                 button.Picture = AxHostConverter.ImageToPictureDisp(image);
@@ -187,6 +196,23 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 Logger.Debug("Button image could not be set for button [" + button.Caption + "]\n" + exception);
             }
+        }
+
+        private static bool HasPictureProperty(CommandBarButton button)
+        {
+            try
+            {
+                dynamic control = button;
+                object picture = control.Picture;
+                return true;
+            }
+
+            catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException exception)
+            {
+                Logger.Debug("Button image cannot be set for button [" + button.Caption + "], because Host VBE CommandBars are too old.\n" + exception);
+            }
+
+            return false;
         }
 
         private class AxHostConverter : AxHost
