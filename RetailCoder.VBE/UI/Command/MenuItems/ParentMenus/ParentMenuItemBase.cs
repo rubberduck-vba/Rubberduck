@@ -179,6 +179,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return;
             }
 
+            if (!_useClipboardForMenuIcons.HasValue)
             {
                 _useClipboardForMenuIcons = !HasPictureProperty(button);
             }
