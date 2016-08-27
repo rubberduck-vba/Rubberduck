@@ -18,6 +18,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         private readonly int? _beforeIndex;
         private readonly IDictionary<IMenuItem, CommandBarControl> _items;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static bool? _useClipboardForMenuIcons;
 
         protected ParentMenuItemBase(string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
         {
@@ -178,12 +179,16 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return;
             }
 
-            if (!HasPictureProperty(button))
             {
-                //Host VBE is using pre-Office XP CommandBars, so Picture/Mask properties don't exist and can't be set.
-                //default to a built-in generic faceid for now.
-                //TODO - use cliboard and button.PasteFace
-                button.FaceId = 39;
+                _useClipboardForMenuIcons = !HasPictureProperty(button);
+            }
+
+            if ((bool)_useClipboardForMenuIcons)
+            {
+                Bitmap bitMask = MaskedImage(image, mask);
+                Clipboard.SetImage(bitMask);
+                button.PasteFace();
+                Clipboard.Clear();
                 return;
             }
 
@@ -196,6 +201,24 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 Logger.Debug("Button image could not be set for button [" + button.Caption + "]\n" + exception);
             }
+        }
+
+        private static Bitmap MaskedImage(Image image, Image mask)
+        {
+            //HACK - just blend image with buttonface color (mask is ignored)
+            //TODO - a real solution would use clipboard formats "Toolbar Button Face" AND "Toolbar Button Mask"
+            //because PasteFace apparently needs both to be present on the clipboard
+            //However, the clipboard formats are apparently only accessible in English versions of Office
+            //https://social.msdn.microsoft.com/Forums/office/en-US/33e97c32-9fc2-4531-b208-67c39ccfb048/question-about-toolbar-button-face-in-pasteface-?forum=vsto
+
+            Bitmap output =  new Bitmap(image.Width, image.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            using (Graphics g = Graphics.FromImage(output)) 
+            {
+                g.Clear(SystemColors.ButtonFace);
+                g.DrawImage(image, 0, 0);
+            }
+            return output;
         }
 
         private static bool HasPictureProperty(CommandBarButton button)
