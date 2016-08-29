@@ -14,12 +14,12 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ObjectVariableNotSetInspectionResult(IInspection inspection, IdentifierReference reference)
-            :base(inspection, reference.QualifiedModuleName, reference.Context)
+            : base(inspection, reference.QualifiedModuleName, reference.Context)
         {
             _reference = reference;
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new SetObjectVariableQuickFix(_reference), 
+                new SetObjectVariableQuickFix(_reference),
                 new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
             };
         }
@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
     {
         public SetObjectVariableQuickFix(IdentifierReference reference)
             : base(context: reference.Context.Parent.Parent as ParserRuleContext, // ImplicitCallStmt_InStmtContext 
-                   selection: new QualifiedSelection(reference.QualifiedModuleName, reference.Selection), 
+                   selection: new QualifiedSelection(reference.QualifiedModuleName, reference.Selection),
                    description: InspectionsUI.SetObjectVariableQuickFix)
         {
         }
@@ -96,13 +96,25 @@ namespace Rubberduck.Inspections
                         (item.DeclarationType == DeclarationType.Variable ||
                          item.DeclarationType == DeclarationType.Parameter));
 
+            var interestingMembers =
+                State.AllUserDeclarations.Where(item =>
+                    (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
+                    && item.IsTypeSpecified
+                    && !ValueTypes.Contains(item.AsTypeName));
+
             var interestingReferences = interestingDeclarations
-                .SelectMany(declaration =>
-                    declaration.References.Where(reference =>
-                    {
-                        var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
-                        return reference.IsAssignment && setStmtContext != null && setStmtContext.LET() == null;
-                    }));
+                    .Union(interestingMembers.SelectMany(item =>
+                        item.References.Where(reference =>
+                            reference.ParentScoping == item && reference.IsAssignment
+                        ).Select(reference => reference.Declaration))
+                    )
+                    .SelectMany(declaration =>
+                        declaration.References.Where(reference =>
+                        {
+                            var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+                            return reference.IsAssignment && setStmtContext != null && setStmtContext.LET() == null;
+                        })
+                    );
 
 
             return interestingReferences.Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
