@@ -31,6 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.SldWorks.Extensibility">
+      <HintPath>..\libs\Interop.SldWorks.Extensibility.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.SldWorks.Types">
+      <HintPath>..\libs\Interop.SldWorks.Types.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Access, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
@@ -127,6 +135,7 @@
     <Compile Include="VBEHost\OutlookApp.cs" />
     <Compile Include="VBEHost\PowerPointApp.cs" />
     <Compile Include="VBEHost\PublisherApp.cs" />
+    <Compile Include="VBEHost\SolidWorksApp.cs" />
     <Compile Include="VBEHost\Visio.cs" />
     <Compile Include="VBEHost\WordApp.cs" />
     <Compile Include="VBEHost\AutoCADApp.cs" />
