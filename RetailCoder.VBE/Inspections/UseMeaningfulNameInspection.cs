@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -27,13 +26,8 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var whitelistedNames = new List<string>();
-
-            try
-            {
-                whitelistedNames = _settings.Load(new CodeInspectionSettings()).WhitelistedIdentifiers.Select(s => s.Identifier).ToList();
-            }
-            catch (IOException) { }
+            var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
+            var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToList();
 
             var issues = UserDeclarations
                             .Where(declaration => declaration.DeclarationType != DeclarationType.ModuleOption &&
