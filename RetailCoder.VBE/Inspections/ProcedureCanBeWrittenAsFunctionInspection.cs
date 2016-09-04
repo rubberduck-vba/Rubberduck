@@ -90,7 +90,8 @@ namespace Rubberduck.Inspections
 
             public override void ExitArgList(VBAParser.ArgListContext context)
             {
-                if (context.arg() != null && context.arg().Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)
+                var args = context.arg();
+                if (args != null && args.All(a => a.PARAMARRAY() == null && a.LPAREN() == null) && args.Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)
                 {
                     _contexts.Add(context);
                 }
