@@ -706,6 +706,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Miscellaneous.
+        /// </summary>
+        public static string CodeInspectionSettings_Misc {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_Misc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run inspections automatically on successful parse.
+        /// </summary>
+        public static string CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection.
         /// </summary>
         public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {

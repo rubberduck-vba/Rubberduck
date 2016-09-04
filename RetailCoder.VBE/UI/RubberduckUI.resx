@@ -1775,4 +1775,10 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
     <value>Expand node and all child nodes</value>
   </data>
+  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
+    <value>Miscellaneous</value>
+  </data>
+  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
+    <value>Run inspections automatically on successful parse</value>
+  </data>
 </root>

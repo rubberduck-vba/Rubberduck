@@ -302,7 +302,7 @@ End Sub";
                 .Returns(new CodeInspectionSettings(null, new[]
                 {
                     new WhitelistedIdentifierSetting("sss")
-                }));
+                }, true));
 
             return settings;
         }

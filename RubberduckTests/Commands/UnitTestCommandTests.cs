@@ -99,7 +99,7 @@ Private Assert As Object
             {
                 Assert.Inconclusive("Parser Error");
             }
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvingReferences);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
             
             var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
@@ -202,7 +202,7 @@ Private Assert As Object
             {
                 Assert.Inconclusive("Parser Error");
             }
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvingReferences);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
 
             var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));

@@ -194,7 +194,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var vm = new SearchResultsWindowViewModel();
             var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
@@ -250,7 +250,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var vm = new SearchResultsWindowViewModel();
             var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
