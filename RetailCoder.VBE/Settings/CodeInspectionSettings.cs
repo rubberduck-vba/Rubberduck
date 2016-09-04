@@ -36,14 +36,27 @@ namespace Rubberduck.Settings
             RunInspectionsOnSuccessfulParse = runInspectionsOnParse;
         }
 
+        public CodeInspectionSetting GetSetting<TInspection>() where TInspection : IInspection
+        {
+            return CodeInspections.FirstOrDefault(s => typeof(TInspection).Name.ToString().Equals(s.Name))
+                ?? GetSetting(typeof(TInspection));
+        }
+
         public CodeInspectionSetting GetSetting(Type inspection)
         {
-            var proto = Convert.ChangeType(Activator.CreateInstance(inspection), inspection);
-            var existing = CodeInspections.FirstOrDefault(s => s.Name.Equals(proto.GetType().ToString()));
-            if (existing != null) return existing;
-            var setting = new CodeInspectionSetting(proto as IInspectionModel);
-            CodeInspections.Add(setting);
-            return setting;
+            try
+            {
+                var proto = Convert.ChangeType(Activator.CreateInstance(inspection), inspection);
+                var existing = CodeInspections.FirstOrDefault(s => proto.GetType().ToString().Equals(s.Name));
+                if (existing != null) return existing;
+                var setting = new CodeInspectionSetting(proto as IInspectionModel);
+                CodeInspections.Add(setting);
+                return setting;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 
