@@ -63,7 +63,7 @@ namespace Rubberduck.Parsing.VBA
             if (!_isTestScope)
             {
                 Cancel();
-                Task.Run(() => ParseAll(_cancellationTokens[0]));
+                Task.Run(() => ParseAll(sender, _cancellationTokens[0]));
             }
             else
             {
@@ -142,7 +142,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (State.Status < ParserState.Error)
             {
-                State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+                State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
                 Task.WaitAll(ResolveReferencesAsync(token.Token));
             }
         }
@@ -150,7 +150,7 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Starts parsing all components of all unprotected VBProjects associated with the VBE-Instance passed to the constructor of this parser instance.
         /// </summary>
-        private void ParseAll(CancellationTokenSource token)
+        private void ParseAll(object requestor, CancellationTokenSource token)
         {
             State.RefreshProjects(_vbe);
 
@@ -202,10 +202,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (componentsRemoved)  // trigger UI updates
                 {
-                    State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+                    State.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations);
                 }
 
-                State.SetStatusAndFireStateChanged(State.Status);
+                State.SetStatusAndFireStateChanged(requestor, State.Status);
                 return;
             }
             
@@ -276,7 +276,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (State.Status < ParserState.Error)
             {
-                State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+                State.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations);
                 ResolveReferencesAsync(token.Token);
             }
         }

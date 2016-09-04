@@ -10,7 +10,7 @@
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:InspectionSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <converters:CodeInspectionSeverityEnumToTextConverter x:Key="CodeInspectionSeverityEnumToText" />
@@ -399,6 +399,25 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
+                <Label Background="DarkGray"
+                       Foreground="White"
+                       FontWeight="SemiBold"
+                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_Misc}"
+                       Margin="0,5,0,3">
+                    <Label.Style>
+                        <Style>
+                            <Style.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <StackPanel>
+                    <CheckBox IsChecked="{Binding RunInspectionsOnSuccessfulParse}" 
+                              Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse}" />
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

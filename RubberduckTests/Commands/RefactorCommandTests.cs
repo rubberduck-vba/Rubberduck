@@ -50,7 +50,7 @@ namespace RubberduckTests.Commands
             {
                 Assert.Inconclusive("Parser Error");
             }
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
@@ -167,7 +167,7 @@ End Sub";
             {
                 Assert.Inconclusive("Parser Error");
             }
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
@@ -449,7 +449,7 @@ End Property";
             {
                 Assert.Inconclusive("Parser Error");
             }
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, parser.State);
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
@@ -535,7 +535,7 @@ End Property";
             {
                 Assert.Inconclusive("Parser Error");
             }
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
@@ -622,7 +622,7 @@ End Property";
             {
                 Assert.Inconclusive("Parser Error");
             }
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
@@ -709,7 +709,7 @@ End Property";
             {
                 Assert.Inconclusive("Parser Error");
             }
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
@@ -895,7 +895,7 @@ End Sub";
             {
                 Assert.Inconclusive("Parser Error");
             }
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
@@ -1223,7 +1223,7 @@ End Property";
             {
                 Assert.Inconclusive("Parser Error");
             }
-            parser.State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));

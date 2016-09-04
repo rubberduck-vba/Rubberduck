@@ -19,6 +19,8 @@ namespace Rubberduck.UI.Settings
             WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>(
                 config.UserSettings.CodeInspectionSettings.WhitelistedIdentifiers.OrderBy(o => o.Identifier).Distinct());
 
+            RunInspectionsOnSuccessfulParse = config.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
+
             if (InspectionSettings.GroupDescriptions != null)
             {
                 InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
@@ -51,6 +53,21 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _runInspectionsOnSuccessfulParse;
+
+        public bool RunInspectionsOnSuccessfulParse
+        {
+            get { return _runInspectionsOnSuccessfulParse; }
+            set
+            {
+                if (_runInspectionsOnSuccessfulParse != value)
+                {
+                    _runInspectionsOnSuccessfulParse = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private ObservableCollection<WhitelistedIdentifierSetting> _whitelistedNameSettings;
         public ObservableCollection<WhitelistedIdentifierSetting> WhitelistedIdentifierSettings
         {
@@ -69,6 +86,7 @@ namespace Rubberduck.UI.Settings
         {
             config.UserSettings.CodeInspectionSettings.CodeInspections = new HashSet<CodeInspectionSetting>(InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>());
             config.UserSettings.CodeInspectionSettings.WhitelistedIdentifiers = WhitelistedIdentifierSettings.Distinct().ToArray();
+            config.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse = _runInspectionsOnSuccessfulParse;
         }
 
         public void SetToDefaults(Configuration config)
@@ -82,6 +100,7 @@ namespace Rubberduck.UI.Settings
             }
 
             WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>();
+            RunInspectionsOnSuccessfulParse = true;
         }
 
         private CommandBase _addWhitelistedNameCommand;

@@ -8,9 +8,11 @@ namespace Rubberduck.Settings
     {
         public bool LanguageChanged { get; private set; }
         public bool InspectionSettingsChanged { get; private set; }
+        public bool RunInspectionsOnReparse { get; private set; }
 
-        public ConfigurationChangedEventArgs(bool languageChanged, bool inspectionSettingsChanged)
+        public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged)
         {
+            RunInspectionsOnReparse = runInspections;
             LanguageChanged = languageChanged;
             InspectionSettingsChanged = inspectionSettingsChanged;
         }
@@ -82,6 +84,7 @@ namespace Rubberduck.Settings
             var langChanged = _generalProvider.Create().Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
             var oldInspectionSettings = _inspectionProvider.Create().CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
             var newInspectionSettings = toSerialize.UserSettings.CodeInspectionSettings.CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
+            var inspectOnReparse = toSerialize.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
             _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
             _hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);
@@ -90,7 +93,7 @@ namespace Rubberduck.Settings
             _unitTestProvider.Save(toSerialize.UserSettings.UnitTestSettings);
             _indenterProvider.Save(toSerialize.UserSettings.IndenterSettings);
 
-            OnSettingsChanged(new ConfigurationChangedEventArgs(langChanged, !oldInspectionSettings.SequenceEqual(newInspectionSettings)));
+            OnSettingsChanged(new ConfigurationChangedEventArgs(inspectOnReparse, langChanged, !oldInspectionSettings.SequenceEqual(newInspectionSettings)));
         }
 
         public event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;

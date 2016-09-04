@@ -15,14 +15,14 @@ namespace Rubberduck.Settings
 
         public CodeInspectionSettings Create()
         {
-            var prototype = new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] { });
-            return _persister.Load(prototype) ?? prototype;            
+            var prototype = new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] { }, true);
+            return _persister.Load(prototype) ?? prototype;
         }
 
         public CodeInspectionSettings CreateDefaults()
         {
             //This no longer sucks.
-            return new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] {});
+            return new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] {}, true);
         }
 
         public void Save(CodeInspectionSettings settings)

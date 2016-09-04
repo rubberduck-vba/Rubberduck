@@ -261,12 +261,12 @@ namespace Rubberduck.Parsing.VBA
 
         public event EventHandler<ParserStateEventArgs> StateChanged;
 
-        private void OnStateChanged(ParserState state = ParserState.Pending)
+        private void OnStateChanged(object requestor, ParserState state = ParserState.Pending)
         {
             var handler = StateChanged;
             if (handler != null)
             {
-                handler.Invoke(this, new ParserStateEventArgs(state));
+                handler.Invoke(requestor, new ParserStateEventArgs(state));
             }
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
@@ -467,16 +467,16 @@ namespace Rubberduck.Parsing.VBA
                 if (_status != value)
                 {
                     _status = value;
-                    OnStateChanged(_status);
+                    OnStateChanged(this, _status);
                 }
             }
         }
 
-        public void SetStatusAndFireStateChanged(ParserState status)
+        public void SetStatusAndFireStateChanged(object requestor, ParserState status)
         {
             if (Status == status)
             {
-                OnStateChanged(status);
+                OnStateChanged(requestor, status);
             }
             else
             {
@@ -665,8 +665,8 @@ namespace Rubberduck.Parsing.VBA
 
             if (notifyStateChanged)
             {
-                OnStateChanged(ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
-                OnStateChanged(ParserState.Ready);   // trigger find all references &c. updates
+                OnStateChanged(this, ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
+                OnStateChanged(this, ParserState.Ready);   // trigger find all references &c. updates
             }
         }
 
@@ -707,8 +707,8 @@ namespace Rubberduck.Parsing.VBA
 
             if (notifyStateChanged)
             {
-                OnStateChanged(ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
-                OnStateChanged(ParserState.Ready);   // trigger find all references &c. updates
+                OnStateChanged(this, ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
+                OnStateChanged(this, ParserState.Ready);   // trigger find all references &c. updates
             }
 
             return success;
@@ -729,8 +729,8 @@ namespace Rubberduck.Parsing.VBA
 
             if (success)
             {
-                OnStateChanged(ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
-                OnStateChanged(ParserState.Ready);   // trigger find all references &c. updates
+                OnStateChanged(this, ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
+                OnStateChanged(this, ParserState.Ready);   // trigger find all references &c. updates
             }
 
             return success;

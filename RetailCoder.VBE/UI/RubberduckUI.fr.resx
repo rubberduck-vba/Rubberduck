@@ -1571,4 +1571,10 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
     <value>Activer/désactiver les signatures</value>
   </data>
+  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
+    <value>Autres options</value>
+  </data>
+  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
+    <value>Exécuter les inspections automatiquement</value>
+  </data>
 </root>

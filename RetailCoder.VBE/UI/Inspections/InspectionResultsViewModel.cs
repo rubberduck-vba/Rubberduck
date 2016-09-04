@@ -50,6 +50,9 @@ namespace Rubberduck.UI.Inspections
             _openSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
             _configService.SettingsChanged += _configService_SettingsChanged;
+            
+            // todo: remove I/O work in constructor
+            _runInspectionsOnReparse = _configService.LoadConfiguration().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
             _setInspectionTypeGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
@@ -67,11 +70,12 @@ namespace Rubberduck.UI.Inspections
         }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
-        {
+        {            
             if (e.InspectionSettingsChanged)
             {
                 RefreshInspections();
             }
+            _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
 
         private ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
@@ -238,7 +242,7 @@ namespace Rubberduck.UI.Inspections
 
         private async void ExecuteRefreshCommandAsync()
         {
-            CanRefresh = _vbe.HostApplication() != null && _state.IsDirty();
+            CanRefresh = _vbe.HostApplication() != null;
             if (!CanRefresh)
             {
                 return;
@@ -246,24 +250,27 @@ namespace Rubberduck.UI.Inspections
             await Task.Yield();
 
             IsBusy = true;
-            
+
             _state.OnParseRequested(this);
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
         {
-            return !IsBusy && _state.IsDirty();
+            return !IsBusy;
         }
 
+        private bool _runInspectionsOnReparse;
         private void _state_StateChanged(object sender, EventArgs e)
         {
             if (_state.Status != ParserState.Ready)
             {
-                IsBusy = false;
                 return;
             }
 
-            RefreshInspections();
+            if (sender == this || _runInspectionsOnReparse)
+            {
+                RefreshInspections();
+            }
         }
 
         private async void RefreshInspections()
