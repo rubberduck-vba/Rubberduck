@@ -73,7 +73,8 @@ namespace Rubberduck.Inspections
             return ParseTreeResults.ArgListsWithOneByRefParam
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext &&
                                   subStmtsNotImplementingInterfaces.Contains(context.Context.Parent) &&
-                                  subStmtsNotImplementingEvents.Contains(context.Context.Parent))
+                                  subStmtsNotImplementingEvents.Contains(context.Context.Parent)
+                        && !IsInspectionDisabled(context.ModuleName.Component, context.Context.Start.Line))
                 .Select(context => new ProcedureShouldBeFunctionInspectionResult(this,
                     State,
                     new QualifiedContext<VBAParser.ArgListContext>(context.ModuleName,
