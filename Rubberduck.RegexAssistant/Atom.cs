@@ -14,7 +14,7 @@ namespace Rubberduck.RegexAssistant
     internal class CharacterClass : IAtom
     {
         public static readonly string Pattern = @"(?<!\\)\[(?<expression>.*?)(?<!\\)\]";
-        private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
+        private static readonly Regex Matcher = new Regex("^" + Pattern + "$", RegexOptions.Compiled);
 
         private readonly bool _inverseMatching;
         public bool InverseMatching { get { return _inverseMatching; } }
@@ -25,6 +25,11 @@ namespace Rubberduck.RegexAssistant
 
         public CharacterClass(string specifier, Quantifier quantifier)
         {
+            if (specifier == null || quantifier == null)
+            {
+                throw new NullReferenceException();
+            }
+
             _quantifier = quantifier;
             Match m = Matcher.Match(specifier);
             if (!m.Success)
@@ -53,7 +58,7 @@ namespace Rubberduck.RegexAssistant
             }
         }
 
-        private static readonly Regex CharacterRanges = new Regex(@"(\\[dDwWsS]|(\\[ntfvr]|\\([0-7]{3}|x[\dA-F]{2}|u[\dA-F]{4}|[\\\.\[\]])|.)(-(\\[ntfvr]|\\([0-7]{3}|x[A-F]{2}|u[\dA-F]{4}|[\.\\\[\]])|.))?)");
+        private static readonly Regex CharacterRanges = new Regex(@"(\\[dDwWsS]|(\\[ntfvr]|\\([0-7]{3}|x[\dA-F]{2}|u[\dA-F]{4}|[\\\.\[\]])|.)(-(\\[ntfvr]|\\([0-7]{3}|x[A-F]{2}|u[\dA-F]{4}|[\.\\\[\]])|.))?)", RegexOptions.Compiled);
         private IList<string> ExtractCharacterSpecifiers(string characterClass)
         {
             MatchCollection specifiers = CharacterRanges.Matches(characterClass);
@@ -111,13 +116,18 @@ namespace Rubberduck.RegexAssistant
     public class Group : IAtom
     {
         public static readonly string Pattern = @"(?<!\\)\((?<expression>.*(?<!\\))\)";
-        private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
+        private static readonly Regex Matcher = new Regex("^" + Pattern + "$", RegexOptions.Compiled);
 
         private readonly IRegularExpression _subexpression;
         private readonly string _specifier;
         private readonly Quantifier _quantifier;
 
         public Group(string specifier, Quantifier quantifier) {
+            if (specifier == null || quantifier == null)
+            {
+                throw new NullReferenceException();
+            }
+
             _quantifier = quantifier;
             Match m = Matcher.Match(specifier);
             if (!m.Success)
@@ -171,7 +181,7 @@ namespace Rubberduck.RegexAssistant
     internal class Literal : IAtom
     {
         public static readonly string Pattern = @"(?<expression>\\(u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3}|[bB\(\){}\\\[\]\.+*?1-9nftvrdDwWsS])|[^()\[\]{}\\*+?^$])";
-        private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
+        private static readonly Regex Matcher = new Regex("^" + Pattern + "$", RegexOptions.Compiled);
         private static readonly ISet<char> EscapeLiterals = new HashSet<char>();
         private readonly string _specifier;
         private readonly Quantifier _quantifier;
@@ -198,6 +208,11 @@ namespace Rubberduck.RegexAssistant
 
         public Literal(string specifier, Quantifier quantifier)
         {
+            if (specifier == null || quantifier == null)
+            {
+                throw new NullReferenceException();
+            }
+
             _quantifier = quantifier;
             Match m = Matcher.Match(specifier);
             if (!m.Success)

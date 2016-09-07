@@ -6,7 +6,7 @@ namespace Rubberduck.RegexAssistant
     public class Quantifier
     {
         public static readonly string Pattern = @"(?<quantifier>(?<!\\)[\?\*\+]|(?<!\\)\{(\d+)(,\d*)?(?<!\\)\})";
-        private static readonly Regex Matcher = new Regex(@"^\{(?<min>\d+)(?<max>,\d*)?\}$");
+        private static readonly Regex Matcher = new Regex(@"^\{(?<min>\d+)(?<max>,\d*)?\}$", RegexOptions.Compiled);
 
         public static readonly Quantifier None = new Quantifier("");
 
@@ -16,6 +16,11 @@ namespace Rubberduck.RegexAssistant
 
         public Quantifier(string expression)
         {
+            if (expression == null)
+            {
+                throw new NullReferenceException();
+            }
+
             if (expression.Length == 0)
             {
                 Kind = QuantifierKind.None;

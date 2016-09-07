@@ -1,5 +1,6 @@
 ﻿using Rubberduck.RegexAssistant.Extensions;
 using Rubberduck.RegexAssistant.i18n;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -17,6 +18,11 @@ namespace Rubberduck.RegexAssistant
 
         public ConcatenatedExpression(IList<IRegularExpression> subexpressions)
         {
+            if (subexpressions == null)
+            {
+                throw new NullReferenceException();
+            }
+
             _subexpressions = subexpressions;
         }
 
@@ -43,6 +49,11 @@ namespace Rubberduck.RegexAssistant
 
         public AlternativesExpression(IList<IRegularExpression> subexpressions)
         {
+            if (subexpressions == null)
+            {
+                throw new NullReferenceException();
+            }
+
             _subexpressions = subexpressions;
         }
 
@@ -69,6 +80,11 @@ namespace Rubberduck.RegexAssistant
 
         public SingleAtomExpression(IAtom atom)
         {
+            if (atom == null)
+            {
+                throw new NullReferenceException();
+            }
+
             Atom = atom;
         }
 
@@ -108,6 +124,11 @@ namespace Rubberduck.RegexAssistant
 
         public ErrorExpression(string errorToken)
         {
+            if (errorToken == null)
+            {
+                throw new NullReferenceException();
+            }
+
             _errorToken = errorToken;
         }
 
@@ -146,6 +167,11 @@ namespace Rubberduck.RegexAssistant
         /// <returns>An IRegularExpression that encompasses the complete given specifier</returns>
         public static IRegularExpression Parse(string specifier)
         {
+            if (specifier == null)
+            {
+                throw new NullReferenceException();
+            }
+
             IRegularExpression expression;
             // ByRef requires us to hack around here, because TryParseAsAtom doesn't fail when it doesn't consume the specifier anymore
             string specifierCopy = specifier;
@@ -206,9 +232,9 @@ namespace Rubberduck.RegexAssistant
             return new ConcatenatedExpression(subexpressions);
         }
 
-        private static readonly Regex groupWithQuantifier = new Regex("^" + Group.Pattern + Quantifier.Pattern + "?");
-        private static readonly Regex characterClassWithQuantifier = new Regex("^" + CharacterClass.Pattern + Quantifier.Pattern + "?");
-        private static readonly Regex literalWithQuantifier = new Regex("^" + Literal.Pattern + Quantifier.Pattern + "?");
+        private static readonly Regex groupWithQuantifier = new Regex("^" + Group.Pattern + Quantifier.Pattern + "?", RegexOptions.Compiled);
+        private static readonly Regex characterClassWithQuantifier = new Regex("^" + CharacterClass.Pattern + Quantifier.Pattern + "?", RegexOptions.Compiled);
+        private static readonly Regex literalWithQuantifier = new Regex("^" + Literal.Pattern + Quantifier.Pattern + "?", RegexOptions.Compiled);
         /// <summary>
         /// Tries to parse the given specifier into an Atom. For that all categories of Atoms are checked in the following order:
         ///  1. Group
@@ -222,6 +248,7 @@ namespace Rubberduck.RegexAssistant
         /// <param name="expression">The resulting SingleAtomExpression</param>
         /// <returns>True, if an Atom could be extracted, false otherwise</returns>
         // Note: could be rewritten to not consume the specifier and instead return an integer specifying the consumed length of specifier. This would remove the by-ref passed string hack
+        // internal for testing
         internal static bool TryParseAsAtom(ref string specifier, out IRegularExpression expression)
         {
             Match m = groupWithQuantifier.Match(specifier);
