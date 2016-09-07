@@ -11,7 +11,7 @@ namespace RegexAssistantTests
         [TestMethod]
         public void InvertedCharacterClass()
         {
-            CharacterClass cut = new CharacterClass("[^ ]");
+            CharacterClass cut = new CharacterClass("[^ ]", Quantifier.None);
             Assert.IsTrue(cut.InverseMatching);
             List<string> expectedSpecifiers = new List<string>();
             expectedSpecifiers.Add(" ");
@@ -26,7 +26,7 @@ namespace RegexAssistantTests
         [TestMethod]
         public void SimpleCharacterRange()
         {
-            CharacterClass cut = new CharacterClass("[a-z]");
+            CharacterClass cut = new CharacterClass("[a-z]", Quantifier.None);
             Assert.IsFalse(cut.InverseMatching);
             List<string> expectedSpecifiers = new List<string>();
             expectedSpecifiers.Add("a-z");
@@ -41,7 +41,7 @@ namespace RegexAssistantTests
         [TestMethod]
         public void UnicodeCharacterRange()
         {
-            CharacterClass cut = new CharacterClass(@"[\u00A2-\uFFFF]");
+            CharacterClass cut = new CharacterClass(@"[\u00A2-\uFFFF]", Quantifier.None);
             Assert.IsFalse(cut.InverseMatching);
             List<string> expectedSpecifiers = new List<string>();
             expectedSpecifiers.Add(@"\u00A2-\uFFFF");
@@ -56,7 +56,7 @@ namespace RegexAssistantTests
         [TestMethod]
         public void OctalCharacterRange()
         {
-            CharacterClass cut = new CharacterClass(@"[\011-\777]");
+            CharacterClass cut = new CharacterClass(@"[\011-\777]", Quantifier.None);
             Assert.IsFalse(cut.InverseMatching);
             List<string> expectedSpecifiers = new List<string>();
             expectedSpecifiers.Add(@"\011-\777");
@@ -71,7 +71,7 @@ namespace RegexAssistantTests
         [TestMethod]
         public void HexadecimalCharacterRange()
         {
-            CharacterClass cut = new CharacterClass(@"[\x00-\xFF]");
+            CharacterClass cut = new CharacterClass(@"[\x00-\xFF]", Quantifier.None);
             Assert.IsFalse(cut.InverseMatching);
             List<string> expectedSpecifiers = new List<string>();
             expectedSpecifiers.Add(@"\x00-\xFF");
@@ -86,7 +86,7 @@ namespace RegexAssistantTests
         [TestMethod]
         public void MixedCharacterRanges()
         {
-            CharacterClass cut = new CharacterClass(@"[\x00-\777\u001A-Z]");
+            CharacterClass cut = new CharacterClass(@"[\x00-\777\u001A-Z]", Quantifier.None);
             Assert.IsFalse(cut.InverseMatching);
             List<string> expectedSpecifiers = new List<string>();
             expectedSpecifiers.Add(@"\x00-\777");
@@ -103,7 +103,7 @@ namespace RegexAssistantTests
         public void RangeFailureWithCharacterClass()
         {
             foreach (string charClass in new string[]{ @"\D", @"\d", @"\s", @"\S", @"\w", @"\W" }){
-                CharacterClass cut = new CharacterClass(string.Format("[{0}-F]", charClass));
+                CharacterClass cut = new CharacterClass(string.Format("[{0}-F]", charClass), Quantifier.None);
                 Assert.IsFalse(cut.InverseMatching);
                 List<string> expectedSpecifiers = new List<string>();
                 expectedSpecifiers.Add(charClass);
@@ -123,7 +123,7 @@ namespace RegexAssistantTests
         {
             foreach (string escapedLiteral in new string[] { @"\.", @"\[", @"\]" })
             {
-                CharacterClass cut = new CharacterClass(string.Format("[{0}-F]", escapedLiteral));
+                CharacterClass cut = new CharacterClass(string.Format("[{0}-F]", escapedLiteral), Quantifier.None);
                 Assert.IsFalse(cut.InverseMatching);
                 List<string> expectedSpecifiers = new List<string>();
                 expectedSpecifiers.Add(string.Format("{0}-F",escapedLiteral));
@@ -134,7 +134,7 @@ namespace RegexAssistantTests
                     Assert.AreEqual(expectedSpecifiers[i], cut.CharacterSpecifiers[i]);
                 }
                 // invert this
-                cut = new CharacterClass(string.Format("[F-{0}]", escapedLiteral));
+                cut = new CharacterClass(string.Format("[F-{0}]", escapedLiteral), Quantifier.None);
                 Assert.IsFalse(cut.InverseMatching);
                 expectedSpecifiers.Clear();
                 expectedSpecifiers.Add(string.Format("F-{0}", escapedLiteral));
@@ -152,7 +152,7 @@ namespace RegexAssistantTests
         {
             foreach (string escapedLiteral in new string[] { @"\(", @"\)", @"\{", @"\}", @"\|", @"\?", @"\*" })
             {
-                CharacterClass cut = new CharacterClass(string.Format("[{0}-F]", escapedLiteral));
+                CharacterClass cut = new CharacterClass(string.Format("[{0}-F]", escapedLiteral), Quantifier.None);
                 Assert.IsFalse(cut.InverseMatching);
                 List<string> expectedSpecifiers = new List<string>();
                 expectedSpecifiers.Add(string.Format("{0}-F", escapedLiteral.Substring(1)));
@@ -174,7 +174,7 @@ namespace RegexAssistantTests
             {
                 try
                 {
-                    CharacterClass cut = new CharacterClass(string.Format("[F-{0}]", escapedLiteral));
+                    CharacterClass cut = new CharacterClass(string.Format("[F-{0}]", escapedLiteral), Quantifier.None);
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
                 catch (ArgumentException ex)
@@ -190,7 +190,7 @@ namespace RegexAssistantTests
         [TestMethod]
         public void IgnoresBackreferenceSpecifiers()
         {
-            CharacterClass cut = new CharacterClass(@"[\1]");
+            CharacterClass cut = new CharacterClass(@"[\1]", Quantifier.None);
             Assert.IsFalse(cut.InverseMatching);
 
             List<string> expectedSpecifiers = new List<string>();

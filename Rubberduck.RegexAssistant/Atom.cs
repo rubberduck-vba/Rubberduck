@@ -7,6 +7,7 @@ namespace Rubberduck.RegexAssistant
 {
     public interface IAtom : IDescribable
     {
+        Quantifier Quantifier { get; }
         string Specifier { get; }
     }
 
@@ -20,9 +21,11 @@ namespace Rubberduck.RegexAssistant
         private readonly IList<string> _characterSpecifiers;
         public IList<string> CharacterSpecifiers { get { return _characterSpecifiers; } }
         private readonly string _specifier;
+        private readonly Quantifier _quantifier;
 
-        public CharacterClass(string specifier)
+        public CharacterClass(string specifier, Quantifier quantifier)
         {
+            _quantifier = quantifier;
             Match m = Matcher.Match(specifier);
             if (!m.Success)
             {
@@ -39,6 +42,14 @@ namespace Rubberduck.RegexAssistant
             get
             {
                 return _specifier;
+            }
+        }
+
+        public Quantifier Quantifier
+        {
+            get
+            {
+                return _quantifier;
             }
         }
 
@@ -105,8 +116,10 @@ namespace Rubberduck.RegexAssistant
 
         private readonly IRegularExpression _subexpression;
         private readonly string _specifier;
+        private readonly Quantifier _quantifier;
 
-        public Group(string specifier) {
+        public Group(string specifier, Quantifier quantifier) {
+            _quantifier = quantifier;
             Match m = Matcher.Match(specifier);
             if (!m.Success)
             {
@@ -117,6 +130,14 @@ namespace Rubberduck.RegexAssistant
         }
 
         public IRegularExpression Subexpression { get { return _subexpression; } }
+        
+        public Quantifier Quantifier
+        {
+            get
+            {
+                return _quantifier;
+            }
+        }
 
         public string Specifier
         {
@@ -155,6 +176,7 @@ namespace Rubberduck.RegexAssistant
         private static readonly Regex Matcher = new Regex("^" + Pattern + "$");
         private static readonly ISet<char> EscapeLiterals = new HashSet<char>();
         private readonly string _specifier;
+        private readonly Quantifier _quantifier;
 
         static Literal() {
             foreach (char escape in new char[]{ '.', '+', '*', '?', '(', ')', '{', '}', '[', ']', '|', '\\' })
@@ -176,8 +198,9 @@ namespace Rubberduck.RegexAssistant
             _escapeDescriptions.Add('t', AssistantResources.AtomDescription_HTab);
         }
 
-        public Literal(string specifier)
+        public Literal(string specifier, Quantifier quantifier)
         {
+            _quantifier = quantifier;
             Match m = Matcher.Match(specifier);
             if (!m.Success)
             {
@@ -194,6 +217,13 @@ namespace Rubberduck.RegexAssistant
             }
         }
 
+        public Quantifier Quantifier
+        {
+            get
+            {
+                return _quantifier;
+            }
+        }
 
         private static readonly Dictionary<char, string> _escapeDescriptions = new Dictionary<char, string>();
         public string Description

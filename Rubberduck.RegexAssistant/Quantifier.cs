@@ -8,6 +8,8 @@ namespace Rubberduck.RegexAssistant
         public static readonly string Pattern = @"(?<quantifier>(?<!\\)[\?\*\+]|(?<!\\)\{(\d+)(,\d*)?(?<!\\)\})";
         private static readonly Regex Matcher = new Regex(@"^\{(?<min>\d+)(?<max>,\d*)?\}$");
 
+        public static readonly Quantifier None = new Quantifier("");
+
         public readonly QuantifierKind Kind;
         public readonly int MinimumMatches;
         public readonly int MaximumMatches;

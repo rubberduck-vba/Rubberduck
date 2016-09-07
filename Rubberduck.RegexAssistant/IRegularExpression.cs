@@ -8,19 +8,16 @@ namespace Rubberduck.RegexAssistant
 {
     public interface IRegularExpression : IDescribable
     {
-        Quantifier Quantifier { get; }
         IList<IRegularExpression> Subexpressions { get; }
     }
 
     public class ConcatenatedExpression : IRegularExpression
     {
-        private readonly Quantifier _quantifier;
         private readonly IList<IRegularExpression> _subexpressions;
 
         public ConcatenatedExpression(IList<IRegularExpression> subexpressions)
         {
             _subexpressions = subexpressions;
-            _quantifier = new Quantifier(string.Empty); // these are always exactly once. Quantifying happens through groups
         }
 
         public string Description
@@ -28,14 +25,6 @@ namespace Rubberduck.RegexAssistant
             get
             {
                 return AssistantResources.ExpressionDescription_ConcatenatedExpression;
-            }
-        }
-
-        public Quantifier Quantifier
-        {
-            get
-            {
-                return _quantifier;
             }
         }
 
@@ -50,13 +39,11 @@ namespace Rubberduck.RegexAssistant
 
     public class AlternativesExpression : IRegularExpression
     {
-        private readonly Quantifier _quantifier;
         private readonly IList<IRegularExpression> _subexpressions;
 
         public AlternativesExpression(IList<IRegularExpression> subexpressions)
         {
             _subexpressions = subexpressions;
-            _quantifier = new Quantifier(string.Empty); // these are always exactly once. Quantifying happens through groups
         }
 
         public string Description
@@ -64,14 +51,6 @@ namespace Rubberduck.RegexAssistant
             get
             {
                 return string.Format(AssistantResources.ExpressionDescription_AlternativesExpression, _subexpressions.Count);
-            }
-        }
-
-        public Quantifier Quantifier
-        {
-            get
-            {
-                return _quantifier;
             }
         }
 
@@ -87,27 +66,17 @@ namespace Rubberduck.RegexAssistant
     public class SingleAtomExpression : IRegularExpression
     {
         public readonly IAtom Atom;
-        private readonly Quantifier _quantifier;
 
-        public SingleAtomExpression(IAtom atom, Quantifier quantifier)
+        public SingleAtomExpression(IAtom atom)
         {
             Atom = atom;
-            _quantifier = quantifier;
         }
 
         public string Description
         {
             get
             {
-                return string.Format("{0} {1}.", Atom.Description, Quantifier.HumanReadable());
-            }
-        }
-
-        public Quantifier Quantifier
-        {
-            get
-            {
-                return _quantifier;
+                return string.Format("{0} {1}.", Atom.Description, Atom.Quantifier.HumanReadable());
             }
         }
 
@@ -124,14 +93,14 @@ namespace Rubberduck.RegexAssistant
             if (obj is SingleAtomExpression)
             {
                 SingleAtomExpression other = obj as SingleAtomExpression;
-                return other.Atom.Equals(Atom) && other.Quantifier.Equals(Quantifier);
+                return other.Atom.Equals(Atom);
             }
             return false;
         }
 
         public override int GetHashCode()
         {
-            return Atom.GetHashCode() ^ Quantifier.GetHashCode();
+            return Atom.GetHashCode();
         }
 
     }
@@ -152,15 +121,7 @@ namespace Rubberduck.RegexAssistant
                 return string.Format(AssistantResources.ExpressionDescription_ErrorExpression, _errorToken);
             }
         }
-
-        public Quantifier Quantifier
-        {
-            get
-            {
-                return new Quantifier(string.Empty);
-            }
-        }
-
+        
         public IList<IRegularExpression> Subexpressions
         {
             get
@@ -272,7 +233,7 @@ namespace Rubberduck.RegexAssistant
                 string atom = m.Groups["expression"].Value;
                 string quantifier = m.Groups["quantifier"].Value;
                 specifier = specifier.Substring(atom.Length + 2 + quantifier.Length);
-                expression = new SingleAtomExpression(new Group("("+atom+")"), new Quantifier(quantifier));
+                expression = new SingleAtomExpression(new Group("("+atom+")", new Quantifier(quantifier)));
                 return true;
             }
             m = characterClassWithQuantifier.Match(specifier);
@@ -281,7 +242,7 @@ namespace Rubberduck.RegexAssistant
                 string atom = m.Groups["expression"].Value;
                 string quantifier = m.Groups["quantifier"].Value;
                 specifier = specifier.Substring(atom.Length + 2 + quantifier.Length);
-                expression = new SingleAtomExpression(new CharacterClass("["+atom+"]"), new Quantifier(quantifier));
+                expression = new SingleAtomExpression(new CharacterClass("["+atom+"]", new Quantifier(quantifier)));
                 return true;
             }
             m = literalWithQuantifier.Match(specifier);
@@ -290,7 +251,7 @@ namespace Rubberduck.RegexAssistant
                 string atom = m.Groups["expression"].Value;
                 string quantifier = m.Groups["quantifier"].Value;
                 specifier = specifier.Substring(atom.Length + quantifier.Length);
-                expression = new SingleAtomExpression(new Literal(atom), new Quantifier(quantifier));
+                expression = new SingleAtomExpression(new Literal(atom, new Quantifier(quantifier)));
                 return true;
             }
             expression = null;
