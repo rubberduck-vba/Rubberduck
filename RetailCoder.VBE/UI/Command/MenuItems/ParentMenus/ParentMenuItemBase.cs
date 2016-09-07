@@ -91,8 +91,15 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             }
             foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
             {
-                child.Click -= child_Click;
-                child.Delete();
+                try
+                {
+                    child.Click -= child_Click;
+                    child.Delete();
+                }
+                catch (InvalidComObjectException)
+                {
+                    // oh well
+                }
             }
         }
 
