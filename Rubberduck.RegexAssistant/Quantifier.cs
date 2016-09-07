@@ -18,7 +18,7 @@ namespace Rubberduck.RegexAssistant
         {
             if (expression == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             if (expression.Length == 0)

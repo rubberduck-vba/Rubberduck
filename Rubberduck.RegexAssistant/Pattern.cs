@@ -20,8 +20,13 @@ namespace Rubberduck.RegexAssistant
             }
         }
 
-        public Pattern(string expression, bool ignoreCase, bool global)
+        public Pattern(string expression, bool ignoreCase = false, bool global = false)
         {
+            if (expression == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             Flags = ignoreCase ? MatcherFlags.IgnoreCase : 0;
             Flags = global ? Flags | MatcherFlags.Global : Flags;
 

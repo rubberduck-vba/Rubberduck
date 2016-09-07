@@ -26,7 +26,7 @@ namespace Rubberduck.RegexAssistant
         {
             if (specifier == null || quantifier == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             _quantifier = quantifier;
@@ -124,7 +124,7 @@ namespace Rubberduck.RegexAssistant
         public Group(string specifier, Quantifier quantifier) {
             if (specifier == null || quantifier == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             _quantifier = quantifier;
@@ -209,7 +209,7 @@ namespace Rubberduck.RegexAssistant
         {
             if (specifier == null || quantifier == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             _quantifier = quantifier;

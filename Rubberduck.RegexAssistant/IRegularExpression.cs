@@ -20,7 +20,7 @@ namespace Rubberduck.RegexAssistant
         {
             if (subexpressions == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             _subexpressions = subexpressions;
@@ -51,7 +51,7 @@ namespace Rubberduck.RegexAssistant
         {
             if (subexpressions == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             _subexpressions = subexpressions;
@@ -82,7 +82,7 @@ namespace Rubberduck.RegexAssistant
         {
             if (atom == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             Atom = atom;
@@ -126,7 +126,7 @@ namespace Rubberduck.RegexAssistant
         {
             if (errorToken == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             _errorToken = errorToken;
@@ -168,7 +168,7 @@ namespace Rubberduck.RegexAssistant
         {
             if (specifier == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             IRegularExpression expression;
