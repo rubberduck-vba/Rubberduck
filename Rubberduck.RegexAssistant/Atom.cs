@@ -15,11 +15,10 @@ namespace Rubberduck.RegexAssistant
     {
         public static readonly string Pattern = @"(?<!\\)\[(?<expression>.*?)(?<!\\)\]";
         private static readonly Regex Matcher = new Regex("^" + Pattern + "$", RegexOptions.Compiled);
+        
+        public bool InverseMatching { get; private set; }
+        public IList<string> CharacterSpecifiers { get; private set; }
 
-        private readonly bool _inverseMatching;
-        public bool InverseMatching { get { return _inverseMatching; } }
-        private readonly IList<string> _characterSpecifiers;
-        public IList<string> CharacterSpecifiers { get { return _characterSpecifiers; } }
         private readonly string _specifier;
         private readonly Quantifier _quantifier;
 
@@ -38,8 +37,8 @@ namespace Rubberduck.RegexAssistant
             }
             this._specifier = specifier;
             string actualSpecifier = m.Groups["expression"].Value;
-            _inverseMatching = actualSpecifier.StartsWith("^");
-            _characterSpecifiers= ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier);
+            InverseMatching = actualSpecifier.StartsWith("^");
+            CharacterSpecifiers= ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier);
         }
 
         public string Specifier

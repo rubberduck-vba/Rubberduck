@@ -161,7 +161,6 @@ namespace Rubberduck.RegexAssistant
         /// 
         /// Note that Atoms (or more specifically Groups) can request a Parse of their subexpressions. 
         /// Also note that TryParseAtom is responsible for grabbing an Atom <b>and</b> it's Quantifier.
-        /// If there is no Quantifier following (either because the input is exhausted or there directly is the next atom) then we instead pair with `new Quantifier("")` 
         /// </summary>
         /// <param name="specifier">The full Regular Expression specifier to Parse</param>
         /// <returns>An IRegularExpression that encompasses the complete given specifier</returns>
