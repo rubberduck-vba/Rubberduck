@@ -96,11 +96,10 @@ namespace Rubberduck.RegexAssistant
 
         public override bool Equals(object obj)
         {
-            if (obj is CharacterClass)
-            {
-                return (obj as CharacterClass)._specifier.Equals(_specifier);
-            }
-            return false;
+            var other = obj as CharacterClass;
+            return other != null 
+                && other.Quantifier.Equals(Quantifier)
+                && other._specifier.Equals(_specifier);
         }
 
         public override int GetHashCode()
@@ -157,11 +156,10 @@ namespace Rubberduck.RegexAssistant
 
         public override bool Equals(object obj)
         {
-            if (obj is Group)
-            {
-                return (obj as Group)._specifier.Equals(_specifier);
-            }
-            return false;
+            var other = obj as Group;
+            return other != null
+                && other.Quantifier.Equals(Quantifier)
+                && other._specifier.Equals(_specifier);
         }
 
         public override int GetHashCode()
@@ -278,11 +276,10 @@ namespace Rubberduck.RegexAssistant
 
         public override bool Equals(object obj)
         {
-            if (obj is Literal)
-            {
-                return (obj as Literal)._specifier.Equals(_specifier);
-            }
-            return false;
+            var other = obj as Literal;
+            return other != null
+                && other.Quantifier.Equals(Quantifier)
+                && other._specifier.Equals(_specifier);
         }
 
         public override int GetHashCode()

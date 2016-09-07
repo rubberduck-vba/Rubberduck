@@ -90,12 +90,9 @@ namespace Rubberduck.RegexAssistant
 
         public override bool Equals(object obj)
         {
-            if (obj is SingleAtomExpression)
-            {
-                SingleAtomExpression other = obj as SingleAtomExpression;
-                return other.Atom.Equals(Atom);
-            }
-            return false;
+            var other = obj as SingleAtomExpression;
+            return other != null
+                && other.Atom.Equals(Atom);
         }
 
         public override int GetHashCode()
