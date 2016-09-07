@@ -38,7 +38,7 @@ namespace Rubberduck.RegexAssistant
                         MinimumMatches = 1;
                         break;
                     case '?':
-                        MinimumMatches = 0;
+                        MaximumMatches = 1;
                         break;
                     default:
                         throw new ArgumentException("Passed Quantifier String was not an allowed Quantifier");

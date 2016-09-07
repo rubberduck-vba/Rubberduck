@@ -129,7 +129,7 @@ namespace Rubberduck.RegexAssistant.Tests
         {
             List<IRegularExpression> expected = new List<IRegularExpression>();
             expected.Add(new SingleAtomExpression(new Literal("a", Quantifier.None)));
-            expected.Add(new SingleAtomExpression(new CharacterClass("[abc]", Quantifier.None)));
+            expected.Add(new SingleAtomExpression(new CharacterClass("[abc]", new Quantifier("*"))));
             expected.Add(new SingleAtomExpression(new Literal("b", Quantifier.None)));
 
             IRegularExpression expression = RegularExpression.Parse("a[abc]*b");
