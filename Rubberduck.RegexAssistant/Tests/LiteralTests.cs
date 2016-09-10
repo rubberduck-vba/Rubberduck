@@ -14,7 +14,7 @@ namespace RegexAssistantTests
             char[] literals = new char[] { '(', ')', '{', '}', '[', ']', '.', '?', '+', '*' };
             foreach (char literal in literals)
             {
-                Literal cut = new Literal("\\" + literal);
+                Literal cut = new Literal("\\" + literal, Quantifier.None);
                 Assert.AreEqual("\\" + literal, cut.Specifier);
             }
         }
@@ -25,7 +25,7 @@ namespace RegexAssistantTests
             char[] escapes = "sSwWbBdDrnvtf123456789".ToCharArray();
             foreach (char escape in escapes)
             {
-                Literal cut = new Literal("\\" + escape);
+                Literal cut = new Literal("\\" + escape, Quantifier.None);
                 Assert.AreEqual("\\" + escape, cut.Specifier);
             }
         }
@@ -36,7 +36,7 @@ namespace RegexAssistantTests
             string[] codePoints = { @"\uFFFF", @"\u0000", @"\xFF", @"\x00", @"\777", @"\000" };
             foreach (string codePoint in codePoints)
             {
-                Literal cut = new Literal(codePoint);
+                Literal cut = new Literal(codePoint, Quantifier.None);
                 Assert.AreEqual(codePoint, cut.Specifier);
             }
         }
@@ -47,7 +47,7 @@ namespace RegexAssistantTests
             char[] literals = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"§%&/=ß#'°".ToCharArray();
             foreach (char literal in literals)
             {
-                Literal cut = new Literal("" + literal);
+                Literal cut = new Literal("" + literal, Quantifier.None);
                 Assert.AreEqual("" + literal, cut.Specifier);
             }
         }
@@ -61,7 +61,7 @@ namespace RegexAssistantTests
             {
                 try
                 {
-                    Literal cut = new Literal("a"+blowup);
+                    Literal cut = new Literal("a"+blowup, Quantifier.None);
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
                 catch (ArgumentException ex)
@@ -82,7 +82,7 @@ namespace RegexAssistantTests
             {
                 try
                 {
-                    Literal cut = new Literal(escape);
+                    Literal cut = new Literal(escape, Quantifier.None);
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
                 catch (ArgumentException ex)
