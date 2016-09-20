@@ -6,6 +6,7 @@ using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -29,6 +30,9 @@ namespace Rubberduck
         private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
         private const string ProgId = "Rubberduck.Extension";
 
+        private dynamic _ide;
+        private AddIn _addin;
+
         private IKernel _kernel;
         private App _app;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -39,44 +43,14 @@ namespace Rubberduck
 
         public void OnBeginShutdown(ref Array custom)
         {
+
         }
 
         // ReSharper disable InconsistentNaming
         public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
         {
-            _kernel = new StandardKernel(new NinjectSettings{LoadExtensions = true}, new FuncModule(), new DynamicProxyModule());
-
-            try
-            {
-                var currentDomain = AppDomain.CurrentDomain;
-                currentDomain.AssemblyResolve += LoadFromSameFolder;
-
-                var config = new XmlPersistanceService<GeneralSettings>
-                {
-                    FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck",
-                            "rubberduck.config")
-                };
-
-                var settings = config.Load(null);
-                if (settings != null)
-                {
-                    try
-                    {
-                        var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
-                        Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
-                    }
-                    catch (CultureNotFoundException) { }
-                }
-
-                _kernel.Load(new RubberduckModule((VBE)Application, (AddIn)AddInInst));
-                _app = _kernel.Get<App>();
-                _app.Startup();
-            }
-            catch (Exception exception)
-            {
-                _logger.Fatal(exception);
-                System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            _ide = Application;
+            _addin = (AddIn)AddInInst;
         }
 
         Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
@@ -94,6 +68,51 @@ namespace Rubberduck
 
         public void OnStartupComplete(ref Array custom)
         {
+            Debug.Assert(_kernel == null);
+            _kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new FuncModule(), new DynamicProxyModule());
+
+            try
+            {
+                var currentDomain = AppDomain.CurrentDomain;
+                currentDomain.AssemblyResolve += LoadFromSameFolder;
+
+                var config = new XmlPersistanceService<GeneralSettings>
+                {
+                    FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "rubberduck.config")
+                };
+
+                var settings = config.Load(null);
+                if (settings != null)
+                {
+                    try
+                    {
+                        var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
+                        Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
+                    }
+                    catch (CultureNotFoundException) { }
+                }
+
+                var vbe = _ide as VBE;
+                if (vbe != null)
+                {
+                    _kernel.Load(new RubberduckModule(vbe, _addin));
+                }
+                else
+                {
+                    Type type = _ide.GetType();
+                    var ideName = type.GetProperty("Name");
+                    // VB6?
+                    // todo: wrap up the VBE interface with... ...generic members?    
+                }
+
+                _app = _kernel.Get<App>();
+                _app.Startup();
+            }
+            catch (Exception exception)
+            {
+                _logger.Fatal(exception);
+                System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
@@ -109,6 +128,9 @@ namespace Rubberduck
                 _kernel.Dispose();
                 _kernel = null;
             }
+
+            Marshal.ReleaseComObject(_addin);
+            Marshal.ReleaseComObject(_ide);
         }
     }
 }
