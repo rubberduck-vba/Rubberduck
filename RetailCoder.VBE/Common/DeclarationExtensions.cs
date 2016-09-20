@@ -295,7 +295,7 @@ namespace Rubberduck.Common
             var classModuleHandlers = declarationList.Where(item =>
                         item.DeclarationType == DeclarationType.Procedure &&
                         item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
-                        (item.IdentifierName == "Class_Initialize" || item.IdentifierName == "Class_Terminate"));
+                        (item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) || item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase)));
 
             var handlers = declarationList.Where(declaration => !declaration.IsBuiltIn
                                                      && declaration.DeclarationType == DeclarationType.Procedure
