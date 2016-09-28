@@ -132,7 +132,11 @@ namespace Rubberduck.VBEditor
                         _project.VBE.ActiveVBProject = _project;
                     }
 
-                    _projectDisplayName = _project.VBE.MainWindow.Caption.Split(' ').Last();
+                    var windowCaptionElements = _project.VBE.MainWindow.Caption.Split(' ').ToList();
+                    // without an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2"}
+                    // with an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2", "-", "[Thisworkbook", "(Code)]"}
+                    // so we need to index of the first "-" element; the display name is the element next to that.
+                    _projectDisplayName = windowCaptionElements[windowCaptionElements.IndexOf("-") + 1];
                     return _projectDisplayName;
                 }
                 catch
