@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Vbe.Interop;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor
 {
@@ -66,6 +67,7 @@ namespace Rubberduck.VBEditor
                 // ReSharper disable once UseIndexedProperty
                 ? module.get_Lines(1, module.CountOfLines).GetHashCode()
                 : 0;
+            Marshal.ReleaseComObject(module);
         }
 
         /// <summary>
@@ -125,14 +127,17 @@ namespace Rubberduck.VBEditor
                     return _projectDisplayName;
                 }
 
+                var vbe = _project.VBE;
+                var activeProject = vbe.ActiveVBProject;
+                var mainWindow = vbe.MainWindow;
                 try
                 {
-                    if (_project.HelpFile != _project.VBE.ActiveVBProject.HelpFile)
+                    if (_project.HelpFile != activeProject.HelpFile)
                     {
-                        _project.VBE.ActiveVBProject = _project;
+                        vbe.ActiveVBProject = _project;
                     }
 
-                    var windowCaptionElements = _project.VBE.MainWindow.Caption.Split(' ').ToList();
+                    var windowCaptionElements = mainWindow.Caption.Split(' ').ToList();
                     // without an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2"}
                     // with an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2", "-", "[Thisworkbook", "(Code)]"}
                     // so we need to index of the first "-" element; the display name is the element next to that.
@@ -142,6 +147,12 @@ namespace Rubberduck.VBEditor
                 catch
                 {
                     return string.Empty;
+                }
+                finally
+                {
+                    Marshal.ReleaseComObject(vbe);
+                    Marshal.ReleaseComObject(activeProject);
+                    Marshal.ReleaseComObject(mainWindow);
                 }
             }
         }
