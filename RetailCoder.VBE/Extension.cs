@@ -6,6 +6,7 @@ using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -43,7 +44,7 @@ namespace Rubberduck
 
         public void OnAddInsUpdate(ref Array custom) { }
 
-        // ReSharper disable InconsistentNaming
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
         {
             try
