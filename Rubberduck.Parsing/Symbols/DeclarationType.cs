@@ -83,6 +83,14 @@ namespace Rubberduck.Parsing.Symbols
 
     public class ClassModuleNode : ModuleNode
     {
+        public enum ClassFlags
+        {
+            GlobalNamespace,
+            Creatable,
+            PredeclaredId,
+            Exposed
+        }
+
         public ClassModuleNode(IdentifierNode identifier, IReadOnlyList<ModuleOptionNode> options, IReadOnlyList<MemberNode> members) 
             : base(identifier, options, members)
         {
@@ -132,6 +140,9 @@ namespace Rubberduck.Parsing.Symbols
         public OptionCompareEnum Value { get { return _value; } }
     }
 
+    /// <summary>
+    /// Base class for a node whose immediate parent is a module.
+    /// </summary>
     public abstract class MemberNode
     {
     }
@@ -285,6 +296,14 @@ namespace Rubberduck.Parsing.Symbols
     {
         public PropertySetMemberNode(IdentifierNode identifier, IReadOnlyList<ParameterDeclarationNode> parameters) 
             : base(identifier, parameters)
+        {
+        }
+    }
+
+    public class DeclareStatementMemberNode : NamedMemberNode
+    {
+        public DeclareStatementMemberNode(IdentifierNode identifier) 
+            : base(identifier)
         {
         }
     }
