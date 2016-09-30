@@ -106,10 +106,25 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisposableWrappers\Application.cs" />
+    <Compile Include="DisposableWrappers\CodePane.cs" />
+    <Compile Include="DisposableWrappers\EnvironmentMode.cs" />
+    <Compile Include="DisposableWrappers\IWrapper.cs" />
+    <Compile Include="DisposableWrappers\LinkedWindows.cs" />
+    <Compile Include="DisposableWrappers\ProjectProtection.cs" />
+    <Compile Include="DisposableWrappers\ProjectType.cs" />
+    <Compile Include="DisposableWrappers\VBProject.cs" />
+    <Compile Include="DisposableWrappers\Window.cs" />
+    <Compile Include="DisposableWrappers\WindowKind.cs" />
+    <Compile Include="DisposableWrappers\Windows.cs" />
+    <Compile Include="DisposableWrappers\WindowState.cs" />
+    <Compile Include="DisposableWrappers\WrapperBase.cs" />
+    <Compile Include="DisposableWrappers\WrapperMethodException.cs" />
     <Compile Include="DocumentEventHandlerPrefixes.cs" />
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="CodeModuleSelection.cs" />
     <Compile Include="Extensions\CodePaneExtensions.cs" />
+    <Compile Include="DisposableWrappers\VBE.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="QualifiedMemberName.cs" />
     <Compile Include="QualifiedModuleName.cs" />
