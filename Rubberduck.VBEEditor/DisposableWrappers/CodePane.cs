@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
@@ -34,12 +33,16 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            Invoke((startL, startC, endL, endC) => ComObject.SetSelection(startL, startC, endL, endC), startLine, startColumn, endLine, endColumn);
+            Invoke((startL, startC, endL, endC) => 
+                ComObject.SetSelection(startL, startC, endL, endC), 
+                startLine, startColumn, endLine, endColumn);
         }
 
         public void SetSelection(Selection selection)
         {
-            Invoke(SetSelection, selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+            Invoke((startL, startC, endL, endC) => 
+                ComObject.SetSelection(startL, startC, endL, endC), 
+                selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
         }
 
         public void Show()
@@ -47,13 +50,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             Invoke(() => ComObject.Show());
         }
 
-        public CodePanes Collection
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public CodePanes Collection { get { return new CodePanes(InvokeResult(() => ComObject.Collection)); } }
 
         public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
 
@@ -75,12 +72,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        public vbext_CodePaneview CodePaneView
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public CodePaneView CodePaneView { get { return (CodePaneView)InvokeResult(() => ComObject.CodePaneView); } }
     }
 }

@@ -71,6 +71,32 @@ namespace Rubberduck.VBEditor.DisposableWrappers
                 throw new WrapperMethodException(exception);
             }
         }
+
+        protected TResult InvokeResult<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> member, T1 param1, T2 param2, T3 param3)
+        {
+            ThrowIfDisposed();
+            try
+            {
+                return member.Invoke(param1, param2, param3);
+            }
+            catch (COMException exception)
+            {
+                throw new WrapperMethodException(exception);
+            }
+        }
+
+        protected TResult InvokeResult<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> member, T1 param1, T2 param2, T3 param3, T4 param4)
+        {
+            ThrowIfDisposed();
+            try
+            {
+                return member.Invoke(param1, param2, param3, param4);
+            }
+            catch (COMException exception)
+            {
+                throw new WrapperMethodException(exception);
+            }
+        }
         #endregion
 
         #region protected void Invoke
@@ -132,6 +158,19 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             try
             {
                 member.Invoke(param1, param2, param3, param4);
+            }
+            catch (COMException exception)
+            {
+                throw new WrapperMethodException(exception);
+            }
+        }
+
+        protected void Invoke<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> member, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5)
+        {
+            ThrowIfDisposed();
+            try
+            {
+                member.Invoke(param1, param2, param3, param4, param5);
             }
             catch (COMException exception)
             {

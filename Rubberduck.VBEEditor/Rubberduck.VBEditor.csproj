@@ -107,9 +107,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DisposableWrappers\Application.cs" />
+    <Compile Include="DisposableWrappers\CodeModule.cs" />
     <Compile Include="DisposableWrappers\CodePane.cs" />
+    <Compile Include="DisposableWrappers\CodePanes.cs" />
+    <Compile Include="DisposableWrappers\CodePaneView.cs" />
     <Compile Include="DisposableWrappers\EnvironmentMode.cs" />
     <Compile Include="DisposableWrappers\LinkedWindows.cs" />
+    <Compile Include="DisposableWrappers\ProcKind.cs" />
     <Compile Include="DisposableWrappers\ProjectProtection.cs" />
     <Compile Include="DisposableWrappers\ProjectType.cs" />
     <Compile Include="DisposableWrappers\VBProject.cs" />
