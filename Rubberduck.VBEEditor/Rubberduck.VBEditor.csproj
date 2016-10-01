@@ -106,6 +106,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisposableWrappers\AddIn.cs" />
+    <Compile Include="DisposableWrappers\AddIns.cs" />
     <Compile Include="DisposableWrappers\Application.cs" />
     <Compile Include="DisposableWrappers\CodeModule.cs" />
     <Compile Include="DisposableWrappers\CodePane.cs" />

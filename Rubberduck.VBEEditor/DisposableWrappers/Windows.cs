@@ -22,7 +22,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             ThrowIfDisposed();
             try
             {
-                return new Window(ComObject.CreateToolWindow(addInInst, progId, caption, guidPosition, ref docObj));
+                return new Window(ComObject.CreateToolWindow(addInInst.ComObject, progId, caption, guidPosition, ref docObj));
             }
             catch (COMException exception)
             {

@@ -4,8 +4,8 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 {
     public class VBE : SafeComWrapper<Microsoft.Vbe.Interop.VBE>
     {
-        public VBE(Microsoft.Vbe.Interop.VBE vbe)
-            :base(vbe)
+        public VBE(Microsoft.Vbe.Interop.VBE comObject)
+            :base(comObject)
         {
         }
 
@@ -23,13 +23,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public Window ActiveWindow { get { return new Window(InvokeResult(() => ComObject.ActiveWindow)); } }
 
-        public Microsoft.Vbe.Interop.Addins Addins
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public AddIns AddIns { get { return new AddIns(InvokeResult(() => ComObject.Addins)); } }
 
         public CodePanes CodePanes { get { return new CodePanes(InvokeResult(() => ComObject.CodePanes)); } }
 
