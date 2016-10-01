@@ -99,6 +99,7 @@ namespace Rubberduck.Inspections
             var interestingMembers =
                 State.AllUserDeclarations.Where(item =>
                     (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
+                    && !item.IsArray
                     && item.IsTypeSpecified
                     && !ValueTypes.Contains(item.AsTypeName));
 
