@@ -31,13 +31,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        public Microsoft.Vbe.Interop.CodePanes CodePanes
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public CodePanes CodePanes { get { return new CodePanes(InvokeResult(() => ComObject.CodePanes)); } }
 
         public Microsoft.Office.Core.CommandBars CommandBars
         {
