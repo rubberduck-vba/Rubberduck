@@ -89,6 +89,7 @@ namespace Rubberduck.Inspections
             var interestingDeclarations =
                 State.AllUserDeclarations.Where(item =>
                         !item.IsSelfAssigned &&
+                        !item.IsArray &&
                         !ValueTypes.Contains(item.AsTypeName) &&
                         (item.AsTypeDeclaration == null ||
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration &&
@@ -99,6 +100,7 @@ namespace Rubberduck.Inspections
             var interestingMembers =
                 State.AllUserDeclarations.Where(item =>
                     (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
+                    && !item.IsArray
                     && item.IsTypeSpecified
                     && !ValueTypes.Contains(item.AsTypeName));
 
