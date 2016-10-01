@@ -37,7 +37,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public int CreateEventProc(string eventName, string objectName)
         {
-            Invoke((e, o) => ComObject.CreateEventProc(e, o), eventName, objectName);
+            return InvokeResult((e, o) => ComObject.CreateEventProc(e, o), eventName, objectName);
         }
 
         public Selection? Find(string target, bool wholeWord = false, bool matchCase = false, bool patternSearch = false)
