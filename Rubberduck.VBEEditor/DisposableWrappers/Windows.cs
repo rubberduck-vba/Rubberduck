@@ -1,58 +1,43 @@
 using System.Collections;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class Windows : WrapperBase<Microsoft.Vbe.Interop.Windows>, IEnumerable
+    public class Windows : SafeComWrapper<Microsoft.Vbe.Interop.Windows>, IEnumerable
     {
         public Windows(Microsoft.Vbe.Interop.Windows windows)
             : base(windows)
         {
         }
 
-        public VBE VBE
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new VBE(InvokeMemberValue(() => base.Item.VBE));
-            }
-        }
+        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
 
-        public Application Parent
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new Application(InvokeMemberValue(() => base.Item.Parent));
-            }
-        }
+        public Application Parent { get { return new Application(InvokeResult(() => ComObject.Parent)); } }
 
-        public int Count
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => base.Item.Count);
-            }
-        }
+        public int Count { get { return InvokeResult(() => ComObject.Count); } }
 
         public Window CreateToolWindow(AddIn addInInst, string progId, string caption, string guidPosition, ref object docObj)
         {
             ThrowIfDisposed();
-            return new Window(base.Item.CreateToolWindow(addInInst, progId, caption, guidPosition, ref docObj));
+            try
+            {
+                return new Window(ComObject.CreateToolWindow(addInInst, progId, caption, guidPosition, ref docObj));
+            }
+            catch (COMException exception)
+            {
+                throw new WrapperMethodException(exception);
+            }
         }
 
         public Window Item(object index)
         {
-            ThrowIfDisposed();
-            return new Window(InvokeMemberValue(i => base.Item.Item(i), index));
+            return new Window(InvokeResult(i => ComObject.Item(i), index));
         }
 
         public IEnumerator GetEnumerator()
         {
-            ThrowIfDisposed();
-            return InvokeMemberValue(() => base.Item.GetEnumerator());
+            return InvokeResult(() => ComObject.GetEnumerator());
         }
     }
 }

@@ -3,23 +3,23 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public abstract class WrapperBase<T> : IDisposable
+    public abstract class SafeComWrapper<T> : IDisposable
         where T : class 
     {
-        private readonly T _item;
+        private readonly T _comObject;
         private bool _isDisposed;
 
-        protected WrapperBase(T item)
+        protected SafeComWrapper(T comObject)
         {
-            _item = item;
+            _comObject = comObject;
         }
 
-        protected internal T Item
+        protected internal T ComObject
         {
             get
             {
-                ThrowIfDisposed(_isDisposed);
-                return _item;
+                ThrowIfDisposed();
+                return _comObject;
             }
         }
 
@@ -27,32 +27,15 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         {
             get
             {
-                ThrowIfDisposed(_isDisposed);
-                return _item == null;
+                ThrowIfDisposed();
+                return _comObject == null;
             }
         }
 
-        public static bool operator ==(WrapperBase<T> object1, WrapperBase<T> object2)
+        #region protected TResult InvokeResult<TResult>
+        protected TResult InvokeResult<TResult>(Func<TResult> member)
         {
-            if (object1 != null && object1.IsNull)
-            {
-                return (object)object2 == null;
-            }
-            if (object2 != null && object2.IsNull)
-            {
-                return (object)object1 == null;
-            }
-
-            return ReferenceEquals(object1, object2);
-        }
-
-        public static bool operator !=(WrapperBase<T> object1, WrapperBase<T> object2)
-        {
-            return !(object1 == object2);
-        }
-
-        protected static TResult InvokeMemberValue<TResult>(Func<TResult> member)
-        {
+            ThrowIfDisposed();
             try
             {
                 return member.Invoke();
@@ -63,8 +46,9 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        protected static TResult InvokeMemberValue<T, TResult>(Func<T, TResult> member, T param)
+        protected TResult InvokeResult<T, TResult>(Func<T, TResult> member, T param)
         {
+            ThrowIfDisposed();
             try
             {
                 return member.Invoke(param);
@@ -75,8 +59,9 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        protected static TResult InvokeMemberValue<T1, T2, TResult>(Func<T1, T2, TResult> member, T1 param1, T2 param2)
+        protected TResult InvokeResult<T1, T2, TResult>(Func<T1, T2, TResult> member, T1 param1, T2 param2)
         {
+            ThrowIfDisposed();
             try
             {
                 return member.Invoke(param1, param2);
@@ -86,9 +71,12 @@ namespace Rubberduck.VBEditor.DisposableWrappers
                 throw new WrapperMethodException(exception);
             }
         }
+        #endregion
 
-        protected static void InvokeMember(Action member)
+        #region protected void Invoke
+        protected void Invoke(Action member)
         {
+            ThrowIfDisposed();
             try
             {
                 member.Invoke();
@@ -99,8 +87,9 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        protected static void InvokeMember<T>(Action<T> member, T param)
+        protected void Invoke<T>(Action<T> member, T param)
         {
+            ThrowIfDisposed();
             try
             {
                 member.Invoke(param);
@@ -111,8 +100,9 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        protected static void InvokeMember<T1, T2>(Action<T1, T2> member, T1 param1, T2 param2)
+        protected void Invoke<T1, T2>(Action<T1, T2> member, T1 param1, T2 param2)
         {
+            ThrowIfDisposed();
             try
             {
                 member.Invoke(param1, param2);
@@ -123,8 +113,9 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        protected static void InvokeMember<T1, T2, T3>(Action<T1, T2, T3> member, T1 param1, T2 param2, T3 param3)
+        protected void Invoke<T1, T2, T3>(Action<T1, T2, T3> member, T1 param1, T2 param2, T3 param3)
         {
+            ThrowIfDisposed();
             try
             {
                 member.Invoke(param1, param2, param3);
@@ -135,8 +126,9 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        protected static void InvokeMember<T1, T2, T3, T4>(Action<T1, T2, T3, T4> member, T1 param1, T2 param2, T3 param3, T4 param4)
+        protected void Invoke<T1, T2, T3, T4>(Action<T1, T2, T3, T4> member, T1 param1, T2 param2, T3 param3, T4 param4)
         {
+            ThrowIfDisposed();
             try
             {
                 member.Invoke(param1, param2, param3, param4);
@@ -146,15 +138,14 @@ namespace Rubberduck.VBEditor.DisposableWrappers
                 throw new WrapperMethodException(exception);
             }
         }
-
-        protected static void ThrowIfDisposed(bool isDisposed)
-        {
-            if (isDisposed) { throw new ObjectDisposedException("Object has been disposed."); }
-        }
+        #endregion
 
         protected void ThrowIfDisposed()
         {
-            ThrowIfDisposed(_isDisposed);
+            if (_isDisposed)
+            {
+                throw new ObjectDisposedException("Object has been disposed.");
+            }
         }
 
         public void Dispose()
@@ -164,8 +155,17 @@ namespace Rubberduck.VBEditor.DisposableWrappers
                 return;
             }
 
-            Marshal.ReleaseComObject(_item);
+            if (_comObject != null)
+            {
+                Marshal.ReleaseComObject(_comObject);
+            }
+
             _isDisposed = true;
+        }
+
+        ~SafeComWrapper()
+        {
+            Dispose();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class VBE : WrapperBase<Microsoft.Vbe.Interop.VBE>
+    public class VBE : SafeComWrapper<Microsoft.Vbe.Interop.VBE>
     {
         public VBE(Microsoft.Vbe.Interop.VBE vbe)
             :base(vbe)
@@ -11,46 +11,22 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public CodePane ActiveCodePane
         {
-            get
-            {
-                ThrowIfDisposed();
-                return new CodePane(InvokeMemberValue(() => Item.ActiveCodePane));
-            }
-            set
-            {
-                ThrowIfDisposed();
-                Item.ActiveCodePane = value.Item;
-            }
+            get { return new CodePane(InvokeResult(() => ComObject.ActiveCodePane)); }
+            set { Invoke(o => ComObject.ActiveCodePane = o, value.ComObject); }
         }
 
         public VBProject ActiveVBProject
         {
-            get
-            {
-                ThrowIfDisposed();
-                return new VBProject(InvokeMemberValue(() => Item.ActiveVBProject));
-            }
-            set
-            {
-                ThrowIfDisposed();
-                Item.ActiveVBProject = value.Item;
-            }
+            get { return new VBProject(InvokeResult(() => ComObject.ActiveVBProject)); }
+            set { Invoke(o => ComObject.ActiveVBProject = o, value.ComObject); }
         }
 
-        public Window ActiveWindow
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new Window(InvokeMemberValue(() => Item.ActiveWindow));
-            }
-        }
+        public Window ActiveWindow { get { return new Window(InvokeResult(() => ComObject.ActiveWindow)); } }
 
         public Microsoft.Vbe.Interop.Addins Addins
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
@@ -59,7 +35,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
@@ -68,7 +43,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
@@ -77,25 +51,16 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
 
-        public Window MainWindow
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new Window(InvokeMemberValue(() => Item.MainWindow));
-            }
-        }
+        public Window MainWindow { get { return new Window(InvokeResult(() => ComObject.MainWindow)); } }
 
         public Microsoft.Vbe.Interop.VBComponent SelectedVBComponent
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
@@ -104,27 +69,12 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
 
-        public string Version
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => Item.Version);
-            }
-        }
+        public string Version { get { return InvokeResult(() => ComObject.Version); } }
 
-        public Windows Windows
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new Windows(InvokeMemberValue(() => Item.Windows));
-            }
-        }
+        public Windows Windows { get { return new Windows(InvokeResult(() => ComObject.Windows)); } }
     }
 }

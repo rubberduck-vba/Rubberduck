@@ -3,7 +3,7 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class VBProject : WrapperBase<Microsoft.Vbe.Interop.VBProject>
+    public class VBProject : SafeComWrapper<Microsoft.Vbe.Interop.VBProject>
     {
         public VBProject(Microsoft.Vbe.Interop.VBProject vbProject)
             :base(vbProject)
@@ -12,177 +12,78 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public void SaveAs(string fileName)
         {
-            ThrowIfDisposed();
-            InvokeMember(path => Item.SaveAs(path), fileName);
+            Invoke(path => ComObject.SaveAs(path), fileName);
         }
 
         public void MakeCompiledFile()
         {
-            ThrowIfDisposed();
-            InvokeMember(() => Item.MakeCompiledFile());
+            Invoke(() => ComObject.MakeCompiledFile());
         }
 
-        public Application Application
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new Application(InvokeMemberValue(() => Item.Application));
-            }
-        }
+        public Application Application { get { return new Application(InvokeResult(() => ComObject.Application)); } }
 
-        public Application Parent
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new Application(InvokeMemberValue(() => Item.Parent));
-            }
-        }
+        public Application Parent { get { return new Application(InvokeResult(() => ComObject.Parent)); } }
 
         public string HelpFile
         {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => Item.HelpFile);
-            }
-            set
-            {
-                ThrowIfDisposed();
-                Item.HelpFile = value;
-            }
+            get { return InvokeResult(() => ComObject.HelpFile); }
+            set { Invoke(v => ComObject.HelpFile = v, value); }
         }
 
         public int HelpContextID
         {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => Item.HelpContextID);
-            }
-            set
-            {
-                ThrowIfDisposed();
-                Item.HelpContextID = value;
-            }
+            get { return InvokeResult(() => ComObject.HelpContextID); }
+            set  { Invoke(v => ComObject.HelpContextID = v, value); }
         }
 
-        public string Description {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => Item.Description);
-            }
-            set
-            {
-                ThrowIfDisposed();
-                Item.Description = value;
-            } 
+        public string Description 
+        {
+            get { return InvokeResult(() => ComObject.Description); }
+            set { Invoke(v => ComObject.Description = v, value); } 
         }
 
         public References References
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
 
         public string Name
         {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => Item.Name);
-            }
-            set
-            {
-                ThrowIfDisposed();
-                Item.Name = value;
-            }
+            get { return InvokeResult(() => ComObject.Name); }
+            set { Invoke(v => ComObject.Name = v, value); }
         }
 
-        public EnvironmentMode Mode
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return (EnvironmentMode)InvokeMemberValue(() => Item.Mode);
-            }
-        }
+        public EnvironmentMode Mode { get { return (EnvironmentMode) InvokeResult(() => ComObject.Mode); } }
 
         public VBProjects Collection
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
 
-        public ProjectProtection Protection
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return (ProjectProtection)InvokeMemberValue(() => Item.Protection);
-            }
-        }
+        public ProjectProtection Protection { get { return (ProjectProtection)InvokeResult(() => ComObject.Protection); } }
 
-        public bool Saved
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => Item.Saved);
-            }
-        }
+        public bool Saved { get { return InvokeResult(() => ComObject.Saved); } }
 
         public VBComponents VBComponents
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
 
-        public ProjectType Type
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return (ProjectType)InvokeMemberValue(() => Item.Type);
-            }
-        }
+        public ProjectType Type { get { return (ProjectType)InvokeResult(() => ComObject.Type); } }
 
-        public string FileName
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => Item.FileName);
-            }
-        }
+        public string FileName { get { return InvokeResult(() => ComObject.FileName); } }
 
-        public string BuildFileName
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => Item.BuildFileName);
-            }
-        }
+        public string BuildFileName { get { return InvokeResult(() => ComObject.BuildFileName); } }
 
-        public VBE VBE
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new VBE(InvokeMemberValue(() => Item.VBE));
-            }
-        }
+        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class Window : WrapperBase<Microsoft.Vbe.Interop.Window>, IDisposable
+    public class Window : SafeComWrapper<Microsoft.Vbe.Interop.Window>
     {
         public Window(Microsoft.Vbe.Interop.Window window)
             : base(window)
@@ -12,149 +11,53 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public void Close()
         {
-            ThrowIfDisposed();
-            InvokeMember(() => Item.Close());
+            Invoke(() => ComObject.Close());
         }
 
         public void SetFocus()
         {
-            ThrowIfDisposed();
-            InvokeMember(() => Item.SetFocus());
+            Invoke(() => ComObject.SetFocus());
         }
 
         public void SetKind(WindowKind eKind)
         {
-            ThrowIfDisposed();
-            InvokeMember(kind => Item.SetKind((vbext_WindowType)kind), eKind);
+            Invoke(kind => ComObject.SetKind((vbext_WindowType)kind), eKind);
         }
 
         public void Detach()
         {
-            ThrowIfDisposed();
-            InvokeMember(() => Item.Detach());
+            Invoke(() => ComObject.Detach());
         }
 
         public void Attach(int lWindowHandle)
         {
-            ThrowIfDisposed();
-            InvokeMember(handle => Item.Attach(handle), lWindowHandle);
+            Invoke(handle => ComObject.Attach(handle), lWindowHandle);
         }
 
-        public VBE VBE
-        {
-            get
-            {
-                ThrowIfDisposed(); 
-                return new VBE(InvokeMemberValue(() => Item.VBE));
-            }
-        }
+        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
 
-        public Windows Collection
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new Windows(InvokeMemberValue(() => Item.Collection));
-            }
-        }
+        public Windows Collection { get { return new Windows(InvokeResult(() => ComObject.Collection)); } }
 
-        public string Caption
-        {
-            get
-            {
-                ThrowIfDisposed(); 
-                return InvokeMemberValue(() => Item.Caption);
-            }
-        }
+        public string Caption { get { return InvokeResult(() => ComObject.Caption); } }
 
-        public bool Visible
-        {
-            get
-            {
-                ThrowIfDisposed(); 
-                return InvokeMemberValue(() => Item.Visible);
-            }
-        }
+        public bool Visible { get { return InvokeResult(() => ComObject.Visible); } }
 
-        public int Left
-        {
-            get
-            {
-                ThrowIfDisposed(); 
-                return InvokeMemberValue(() => Item.Left);
-            }
-        }
+        public int Left { get { return InvokeResult(() => ComObject.Left); } }
 
-        public int Top
-        {
-            get
-            {
-                ThrowIfDisposed(); 
-                return InvokeMemberValue(() => Item.Top);
-            }
-        }
+        public int Top { get { return InvokeResult(() => ComObject.Top); } }
 
-        public int Width
-        {
-            get
-            {
-                ThrowIfDisposed(); 
-                return InvokeMemberValue(() => Item.Width);
-            }
-        }
+        public int Width { get { ThrowIfDisposed();  return InvokeResult(() => ComObject.Width); } }
 
-        public int Height
-        {
-            get
-            {
-                ThrowIfDisposed(); 
-                return InvokeMemberValue(() => Item.Height);
-            }
-        }
+        public int Height { get { return InvokeResult(() => ComObject.Height); } }
 
-        public WindowState WindowState
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => (WindowState)Item.WindowState);
-            }
-        }
+        public WindowState WindowState { get { return InvokeResult(() => (WindowState)ComObject.WindowState); } }
 
-        public WindowKind Type
-        {
-            get
-            {
-                ThrowIfDisposed(); 
-                return (WindowKind)InvokeMemberValue(() => Item.Type);
-            }
-        }
+        public WindowKind Type { get { return (WindowKind)InvokeResult(() => ComObject.Type); } }
 
-        public LinkedWindows LinkedWindows
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new LinkedWindows(InvokeMemberValue(() => Item.LinkedWindows));
-            }
-        }
+        public LinkedWindows LinkedWindows { get { return new LinkedWindows(InvokeResult(() => ComObject.LinkedWindows)); } }
 
-        public Window LinkedWindowFrame
-        {
-            get
-            {
-                ThrowIfDisposed(); 
-                return new Window(InvokeMemberValue(() => Item.LinkedWindowFrame));
-            }
-        }
+        public Window LinkedWindowFrame { get { return new Window(InvokeResult(() => ComObject.LinkedWindowFrame)); } }
 
-        public int HWnd
-        {
-            get
-            {
-                ThrowIfDisposed(); 
-                return InvokeMemberValue(() => Item.HWnd);
-            }
-        }
+        public int HWnd { get { return InvokeResult(() => ComObject.HWnd); } }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class CodePane : WrapperBase<Microsoft.Vbe.Interop.CodePane>
+    public class CodePane : SafeComWrapper<Microsoft.Vbe.Interop.CodePane>
     {
         public CodePane(Microsoft.Vbe.Interop.CodePane codePane)
             : base(codePane)
@@ -16,12 +16,15 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             ThrowIfDisposed();
             try
             {
-                int startLine;
-                int startColumn;
-                int endLine;
-                int endColumn;
-                Item.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
-                return new Selection(startLine, startColumn, endLine, endColumn);
+                return InvokeResult(() =>
+                {
+                    int startLine;
+                    int startColumn;
+                    int endLine;
+                    int endColumn;
+                    ComObject.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+                    return new Selection(startLine, startColumn, endLine, endColumn);
+                });
             }
             catch (COMException exception)
             {
@@ -31,76 +34,43 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            ThrowIfDisposed();
-            InvokeMember((startL, startC, endL, endC) => Item.SetSelection(startL, startC, endL, endC), startLine, startColumn, endLine, endColumn);
+            Invoke((startL, startC, endL, endC) => ComObject.SetSelection(startL, startC, endL, endC), startLine, startColumn, endLine, endColumn);
         }
 
         public void SetSelection(Selection selection)
         {
-            SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+            Invoke(SetSelection, selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
         }
 
         public void Show()
         {
-            ThrowIfDisposed();
-            InvokeMember(() => Item.Show());
+            Invoke(() => ComObject.Show());
         }
 
         public CodePanes Collection
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
 
-        public VBE VBE
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new VBE(InvokeMemberValue(() => Item.VBE));
-            }
+        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
+
+        public Window Window { get { return new Window(InvokeResult(() => ComObject.Window)); } }
+
+        public int TopLine 
+        { 
+            get { return InvokeResult(() => ComObject.TopLine); }
+            set { Invoke(v => ComObject.TopLine = v, value); }
         }
 
-        public Window Window
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new Window(InvokeMemberValue(() => Item.Window));
-            }
-        }
-
-        public int TopLine
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => Item.TopLine);
-            }
-            set
-            {
-                ThrowIfDisposed();
-                Item.TopLine = value;
-            }
-        }
-
-        public int CountOfVisibleLines
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => Item.CountOfVisibleLines);
-            }
-        }
+        public int CountOfVisibleLines { get { return InvokeResult(() => ComObject.CountOfVisibleLines); } }
 
         public CodeModule CodeModule
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }
@@ -109,7 +79,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         {
             get
             {
-                ThrowIfDisposed();
                 throw new NotImplementedException();
             }
         }

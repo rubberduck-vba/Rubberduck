@@ -2,62 +2,25 @@ using System.Collections;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class LinkedWindows : WrapperBase<Microsoft.Vbe.Interop.LinkedWindows>, IEnumerable
+    public class LinkedWindows : SafeComWrapper<Microsoft.Vbe.Interop.LinkedWindows>, IEnumerable
     {
         public LinkedWindows(Microsoft.Vbe.Interop.LinkedWindows linkedWindows)
             : base(linkedWindows)
         {
         }
 
-        public Window Item(object index)
-        {
-            ThrowIfDisposed();
-            return new Window(InvokeMemberValue(item => base.Item.Item(item), index));
-        }
+        public Window Item(object index) { return new Window(InvokeResult(item => ComObject.Item(item), index)); }
 
-        public void Remove(Window window)
-        {
-            ThrowIfDisposed();
-            InvokeMember(item => base.Item.Remove(item), window);
-        }
+        public void Remove(Window window) { Invoke(item => ComObject.Remove(item), window.ComObject); }
 
-        public void Add(Window window)
-        {
-            ThrowIfDisposed();
-            InvokeMember(item => base.Item.Add(item), window);
-        }
+        public void Add(Window window) { Invoke(item => ComObject.Add(item), window.ComObject); }
 
-        public VBE VBE
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new VBE(InvokeMemberValue(() => base.Item.VBE));
-            }
-        }
+        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
 
-        public Window Parent
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return new Window(InvokeMemberValue(() => base.Item.Parent));
-            }
-        }
+        public Window Parent { get { return new Window(InvokeResult(() => ComObject.Parent)); } }
 
-        public int Count
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return InvokeMemberValue(() => base.Item.Count);
-            }
-        }
+        public int Count { get { return InvokeResult(() => ComObject.Count); } }
 
-        public IEnumerator GetEnumerator()
-        {
-            ThrowIfDisposed();
-            return InvokeMemberValue(() => base.Item.GetEnumerator());
-        }
+        public IEnumerator GetEnumerator() { return InvokeResult(() => ComObject.GetEnumerator()); }
     }
 }
