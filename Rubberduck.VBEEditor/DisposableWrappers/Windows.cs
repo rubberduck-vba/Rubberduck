@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public Window Item(object index)
         {
-            return new Window(InvokeResult(i => ComObject.Item(i), index));
+            return new Window(InvokeResult(() => ComObject.Item(index)));
         }
 
         public IEnumerator GetEnumerator()

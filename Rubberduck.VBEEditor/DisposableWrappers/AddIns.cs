@@ -11,7 +11,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public AddIn Item(object index)
         {
-            return new AddIn(InvokeResult(i => ComObject.Item(i), index));
+            return new AddIn(InvokeResult(() => ComObject.Item(index)));
         }
 
         public void Update()

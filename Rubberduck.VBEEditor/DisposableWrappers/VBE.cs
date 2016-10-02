@@ -12,13 +12,13 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public CodePane ActiveCodePane
         {
             get { return new CodePane(InvokeResult(() => ComObject.ActiveCodePane)); }
-            set { Invoke(o => ComObject.ActiveCodePane = o, value.ComObject); }
+            set { Invoke(() => ComObject.ActiveCodePane = value.ComObject); }
         }
 
         public VBProject ActiveVBProject
         {
             get { return new VBProject(InvokeResult(() => ComObject.ActiveVBProject)); }
-            set { Invoke(o => ComObject.ActiveVBProject = o, value.ComObject); }
+            set { Invoke(() => ComObject.ActiveVBProject = value.ComObject); }
         }
 
         public Window ActiveWindow { get { return new Window(InvokeResult(() => ComObject.ActiveWindow)); } }

@@ -12,7 +12,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public void SaveAs(string fileName)
         {
-            Invoke(path => ComObject.SaveAs(path), fileName);
+            Invoke(() => ComObject.SaveAs(fileName));
         }
 
         public void MakeCompiledFile()
@@ -27,33 +27,27 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public string HelpFile
         {
             get { return InvokeResult(() => ComObject.HelpFile); }
-            set { Invoke(v => ComObject.HelpFile = v, value); }
+            set { Invoke(() => ComObject.HelpFile = value); }
         }
 
         public int HelpContextID
         {
             get { return InvokeResult(() => ComObject.HelpContextID); }
-            set  { Invoke(v => ComObject.HelpContextID = v, value); }
+            set  { Invoke(() => ComObject.HelpContextID = value); }
         }
 
         public string Description 
         {
             get { return InvokeResult(() => ComObject.Description); }
-            set { Invoke(v => ComObject.Description = v, value); } 
+            set { Invoke(() => ComObject.Description = value); } 
         }
 
-        public References References
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public References References { get { return new References(InvokeResult(() => ComObject.References)); } }
 
         public string Name
         {
             get { return InvokeResult(() => ComObject.Name); }
-            set { Invoke(v => ComObject.Name = v, value); }
+            set { Invoke(() => ComObject.Name = value); }
         }
 
         public EnvironmentMode Mode { get { return (EnvironmentMode) InvokeResult(() => ComObject.Mode); } }

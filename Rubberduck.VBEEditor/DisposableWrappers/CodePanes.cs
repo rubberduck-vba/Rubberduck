@@ -11,7 +11,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public CodePane Item(object index)
         {
-            return new CodePane(InvokeResult(i => ComObject.Item(i), index));
+            return new CodePane(InvokeResult(() => ComObject.Item(index)));
         }
 
         public VBE Parent { get { return new VBE(InvokeResult(() => ComObject.Parent)); } }
@@ -20,7 +20,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public CodePane Current 
         { 
             get{ return new CodePane(InvokeResult(() => ComObject.Current)); }
-            set{ Invoke(v => ComObject.Current = v, value.ComObject);}
+            set{ Invoke(() => ComObject.Current = value.ComObject);}
         }
 
         IEnumerator IEnumerable.GetEnumerator()

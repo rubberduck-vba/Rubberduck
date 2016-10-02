@@ -32,7 +32,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        #region protected TResult InvokeResult<TResult>
         protected TResult InvokeResult<TResult>(Func<TResult> member)
         {
             ThrowIfDisposed();
@@ -46,60 +45,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        protected TResult InvokeResult<T, TResult>(Func<T, TResult> member, T param)
-        {
-            ThrowIfDisposed();
-            try
-            {
-                return member.Invoke(param);
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-        }
-
-        protected TResult InvokeResult<T1, T2, TResult>(Func<T1, T2, TResult> member, T1 param1, T2 param2)
-        {
-            ThrowIfDisposed();
-            try
-            {
-                return member.Invoke(param1, param2);
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-        }
-
-        protected TResult InvokeResult<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> member, T1 param1, T2 param2, T3 param3)
-        {
-            ThrowIfDisposed();
-            try
-            {
-                return member.Invoke(param1, param2, param3);
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-        }
-
-        protected TResult InvokeResult<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> member, T1 param1, T2 param2, T3 param3, T4 param4)
-        {
-            ThrowIfDisposed();
-            try
-            {
-                return member.Invoke(param1, param2, param3, param4);
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-        }
-        #endregion
-
-        #region protected void Invoke
         protected void Invoke(Action member)
         {
             ThrowIfDisposed();
@@ -112,72 +57,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers
                 throw new WrapperMethodException(exception);
             }
         }
-
-        protected void Invoke<T>(Action<T> member, T param)
-        {
-            ThrowIfDisposed();
-            try
-            {
-                member.Invoke(param);
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-        }
-
-        protected void Invoke<T1, T2>(Action<T1, T2> member, T1 param1, T2 param2)
-        {
-            ThrowIfDisposed();
-            try
-            {
-                member.Invoke(param1, param2);
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-        }
-
-        protected void Invoke<T1, T2, T3>(Action<T1, T2, T3> member, T1 param1, T2 param2, T3 param3)
-        {
-            ThrowIfDisposed();
-            try
-            {
-                member.Invoke(param1, param2, param3);
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-        }
-
-        protected void Invoke<T1, T2, T3, T4>(Action<T1, T2, T3, T4> member, T1 param1, T2 param2, T3 param3, T4 param4)
-        {
-            ThrowIfDisposed();
-            try
-            {
-                member.Invoke(param1, param2, param3, param4);
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-        }
-
-        protected void Invoke<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> member, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5)
-        {
-            ThrowIfDisposed();
-            try
-            {
-                member.Invoke(param1, param2, param3, param4, param5);
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-        }
-        #endregion
 
         protected void ThrowIfDisposed()
         {

@@ -33,16 +33,12 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            Invoke((startL, startC, endL, endC) => 
-                ComObject.SetSelection(startL, startC, endL, endC), 
-                startLine, startColumn, endLine, endColumn);
+            Invoke(() => ComObject.SetSelection(startLine, startColumn, endLine, endColumn));
         }
 
         public void SetSelection(Selection selection)
         {
-            Invoke((startL, startC, endL, endC) => 
-                ComObject.SetSelection(startL, startC, endL, endC), 
-                selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+            Invoke(() => ComObject.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn));
         }
 
         public void Show()
@@ -59,18 +55,12 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public int TopLine 
         { 
             get { return InvokeResult(() => ComObject.TopLine); }
-            set { Invoke(v => ComObject.TopLine = v, value); }
+            set { Invoke(() => ComObject.TopLine = value); }
         }
 
         public int CountOfVisibleLines { get { return InvokeResult(() => ComObject.CountOfVisibleLines); } }
 
-        public CodeModule CodeModule
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public CodeModule CodeModule { get { return new CodeModule(InvokeResult(() => ComObject.CodeModule)); } }
 
         public CodePaneView CodePaneView { get { return (CodePaneView)InvokeResult(() => ComObject.CodePaneView); } }
     }

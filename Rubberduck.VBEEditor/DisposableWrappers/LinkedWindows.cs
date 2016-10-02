@@ -9,11 +9,11 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         {
         }
 
-        public Window Item(object index) { return new Window(InvokeResult(item => ComObject.Item(item), index)); }
+        public Window Item(object index) { return new Window(InvokeResult(() => ComObject.Item(index))); }
 
-        public void Remove(Window window) { Invoke(item => ComObject.Remove(item), window.ComObject); }
+        public void Remove(Window window) { Invoke(() => ComObject.Remove(window.ComObject)); }
 
-        public void Add(Window window) { Invoke(item => ComObject.Add(item), window.ComObject); }
+        public void Add(Window window) { Invoke(() => ComObject.Add(window.ComObject)); }
 
         public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
 

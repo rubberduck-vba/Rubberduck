@@ -31,22 +31,22 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public Reference Item(object index)
         {
-            return new Reference(InvokeResult(i => ComObject.Item(i), index));
+            return new Reference(InvokeResult(() => ComObject.Item(index)));
         }
 
         public Reference AddFromGuid(string guid, int major, int minor)
         {
-            return new Reference(InvokeResult((id, maj, min) => ComObject.AddFromGuid(id, maj, min), guid, major, minor));
+            return new Reference(InvokeResult(() => ComObject.AddFromGuid(guid, major, minor)));
         }
 
         public Reference AddFromFile(string path)
         {
-            return new Reference(InvokeResult(name => ComObject.AddFromFile(name), path));
+            return new Reference(InvokeResult(() => ComObject.AddFromFile(path)));
         }
 
         public void Remove(Reference reference)
         {
-            Invoke(item => ComObject.Remove(item), reference.ComObject);
+            Invoke(() => ComObject.Remove(reference.ComObject));
         }
 
         public VBProject Parent { get { return new VBProject(InvokeResult(() => ComObject.Parent)); } }

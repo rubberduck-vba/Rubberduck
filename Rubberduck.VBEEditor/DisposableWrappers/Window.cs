@@ -21,7 +21,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public void SetKind(WindowKind eKind)
         {
-            Invoke(kind => ComObject.SetKind((vbext_WindowType)kind), eKind);
+            Invoke(() => ComObject.SetKind((vbext_WindowType)eKind));
         }
 
         public void Detach()
@@ -31,7 +31,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public void Attach(int lWindowHandle)
         {
-            Invoke(handle => ComObject.Attach(handle), lWindowHandle);
+            Invoke(() => ComObject.Attach(lWindowHandle));
         }
 
         public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }

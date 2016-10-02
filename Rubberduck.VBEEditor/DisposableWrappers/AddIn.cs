@@ -11,7 +11,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public string Description
         {
             get { return InvokeResult(() => ComObject.Description); }
-            set { Invoke(v => ComObject.Description = v, value); }
+            set { Invoke(() => ComObject.Description = value); }
         }
 
         public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
@@ -22,13 +22,13 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public bool Connect
         {
             get { return InvokeResult(() => ComObject.Connect); }
-            set { Invoke(v => ComObject.Connect = v, value); }
+            set { Invoke(() => ComObject.Connect = value); }
         }
 
         public object Object // definitely leaks a COM object
         {
             get { return InvokeResult(() => ComObject.Object); }
-            set { Invoke(v => ComObject.Object = v, value); }
+            set { Invoke(() => ComObject.Object = value); }
         }
     }
 }
