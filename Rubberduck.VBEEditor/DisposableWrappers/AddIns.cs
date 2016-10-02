@@ -20,7 +20,10 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         }
 
         public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
-        // returns the host application COM object. todo: figure out how to make it return an IHostApplication
+
+        /// <summary>
+        /// Getter returns an unwrapped COM object representing the host application; remember to call Marshal.ReleaseComObject on the returned object.
+        /// </summary>
         public object Parent { get { return InvokeResult(() => ComObject.Parent); } } 
         public int Count { get { return InvokeResult(() => ComObject.Count); } }
 

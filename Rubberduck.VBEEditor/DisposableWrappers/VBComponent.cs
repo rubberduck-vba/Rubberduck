@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
     public class VBComponent : SafeComWrapper<Microsoft.Vbe.Interop.VBComponent>
@@ -30,10 +33,27 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             Invoke(() => ComObject.Export(path));
         }
 
-        /// <summary>
-        /// Returns an unwrapped COM object; remember to call Marshal.ReleaseComObject on the returned object.
-        /// </summary>
-        public object Designer { get { return InvokeResult(() => ComObject.Designer); } }
+        public IEnumerable<Control> Controls
+        {
+            get
+            {
+                var designer = InvokeResult(() => ComObject.Designer) as Microsoft.Vbe.Interop.Forms.UserForm;
+                if (designer == null)
+                {
+                    yield break;
+                }
+
+                using (var controls = new Controls(designer.Controls))
+                {
+                    for (var i = 0; i < controls.Count; i++)
+                    {
+                        yield return controls.Item(i);
+                    }
+                }
+
+                Marshal.ReleaseComObject(designer);
+            }
+        }
 
         public CodeModule CodeModule { get { return new CodeModule(InvokeResult(() => ComObject.CodeModule)); } }
         public ComponentType Type { get { return (ComponentType)InvokeResult(() => ComObject.Type); } }
