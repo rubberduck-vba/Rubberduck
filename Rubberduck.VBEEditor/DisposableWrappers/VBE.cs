@@ -35,14 +35,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        public Microsoft.Vbe.Interop.Events Events
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         public Window MainWindow { get { return new Window(InvokeResult(() => ComObject.MainWindow)); } }
 
         public Microsoft.Vbe.Interop.VBComponent SelectedVBComponent

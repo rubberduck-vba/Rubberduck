@@ -114,10 +114,14 @@
     <Compile Include="DisposableWrappers\CodePanes.cs" />
     <Compile Include="DisposableWrappers\CodePaneView.cs" />
     <Compile Include="DisposableWrappers\EnvironmentMode.cs" />
+    <Compile Include="DisposableWrappers\ReferenceEventArgs.cs" />
     <Compile Include="DisposableWrappers\LinkedWindows.cs" />
     <Compile Include="DisposableWrappers\ProcKind.cs" />
     <Compile Include="DisposableWrappers\ProjectProtection.cs" />
     <Compile Include="DisposableWrappers\ProjectType.cs" />
+    <Compile Include="DisposableWrappers\Reference.cs" />
+    <Compile Include="DisposableWrappers\ReferenceKind.cs" />
+    <Compile Include="DisposableWrappers\References.cs" />
     <Compile Include="DisposableWrappers\VBProject.cs" />
     <Compile Include="DisposableWrappers\Window.cs" />
     <Compile Include="DisposableWrappers\WindowKind.cs" />
