@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
@@ -50,7 +49,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             set { Invoke(() => ComObject.Name = value); }
         }
 
-        public EnvironmentMode Mode { get { return (EnvironmentMode) InvokeResult(() => ComObject.Mode); } }
+        public EnvironmentMode Mode { get { return (EnvironmentMode)InvokeResult(() => ComObject.Mode); } }
 
         public VBProjects Collection
         {

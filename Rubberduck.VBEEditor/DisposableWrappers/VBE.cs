@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rubberduck.VBEditor.DisposableWrappers
+﻿namespace Rubberduck.VBEditor.DisposableWrappers
 {
     public class VBE : SafeComWrapper<Microsoft.Vbe.Interop.VBE>
     {
@@ -27,31 +25,16 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public CodePanes CodePanes { get { return new CodePanes(InvokeResult(() => ComObject.CodePanes)); } }
 
-        public Microsoft.Office.Core.CommandBars CommandBars
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// Returns an unwrapped COM object; remember to call Marshal.ReleaseComObject on the returned object.
+        /// </summary>
+        public Microsoft.Office.Core.CommandBars CommandBars { get { return InvokeResult(() => ComObject.CommandBars); } }
 
         public Window MainWindow { get { return new Window(InvokeResult(() => ComObject.MainWindow)); } }
 
-        public Microsoft.Vbe.Interop.VBComponent SelectedVBComponent
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public VBComponent SelectedVBComponent { get { return new VBComponent(InvokeResult(() => ComObject.SelectedVBComponent)); } }
 
-        public Microsoft.Vbe.Interop.VBProjects VBProjects
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public VBProjects VBProjects { get { return new VBProjects(InvokeResult(() => ComObject.VBProjects)); } }
 
         public string Version { get { return InvokeResult(() => ComObject.Version); } }
 

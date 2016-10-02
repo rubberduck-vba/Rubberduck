@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             set{ Invoke(() => ComObject.Current = value.ComObject);}
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public IEnumerator GetEnumerator()
         {
             return InvokeResult(() => ComObject.GetEnumerator());
         }

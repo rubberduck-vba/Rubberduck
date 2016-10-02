@@ -53,7 +53,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
         public int Count { get { return InvokeResult(() => ComObject.Count); } }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public IEnumerator GetEnumerator()
         {
             return InvokeResult(() => ComObject.GetEnumerator());
         }

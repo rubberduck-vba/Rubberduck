@@ -24,7 +24,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public object Parent { get { return InvokeResult(() => ComObject.Parent); } } 
         public int Count { get { return InvokeResult(() => ComObject.Count); } }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public IEnumerator GetEnumerator()
         {
             return InvokeResult(() => ComObject.GetEnumerator());
         }

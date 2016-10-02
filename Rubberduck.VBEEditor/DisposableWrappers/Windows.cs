@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
