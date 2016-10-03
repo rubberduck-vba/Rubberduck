@@ -31,7 +31,7 @@ namespace RubberduckTests.Commands
                 Assert.Inconclusive("Parser Error");
             }
 
-            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
+            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
@@ -52,7 +52,7 @@ namespace RubberduckTests.Commands
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
+            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
@@ -77,7 +77,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
+            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
@@ -102,7 +102,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
+            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
@@ -127,7 +127,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
+            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(encapsulateFieldCommand.CanExecute(null));
         }
 
@@ -148,7 +148,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -169,7 +169,7 @@ End Sub";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -189,7 +189,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -213,7 +213,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -233,7 +233,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -261,7 +261,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -289,7 +289,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -313,7 +313,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -337,7 +337,7 @@ End Function";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -361,7 +361,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -385,7 +385,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -409,7 +409,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -430,7 +430,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, parser.State);
+            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
         }
 
@@ -451,7 +451,7 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, parser.State);
+            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
         }
 
@@ -471,7 +471,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, parser.State);
+            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
         }
 
@@ -495,7 +495,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, parser.State);
+            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(implementInterfaceCommand.CanExecute(null));
         }
 
@@ -516,7 +516,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
@@ -537,7 +537,7 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
@@ -557,7 +557,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
@@ -582,7 +582,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             Assert.IsTrue(introduceFieldCommand.CanExecute(null));
         }
 
@@ -603,7 +603,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
@@ -624,7 +624,7 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
@@ -644,7 +644,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
@@ -669,7 +669,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             Assert.IsTrue(introduceParameterCommand.CanExecute(null));
         }
 
@@ -690,7 +690,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -711,7 +711,7 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -731,7 +731,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -756,7 +756,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -776,7 +776,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -802,7 +802,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -828,7 +828,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -855,7 +855,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -876,7 +876,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -897,7 +897,7 @@ End Sub";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -920,7 +920,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -944,7 +944,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -968,7 +968,7 @@ End Function";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -992,7 +992,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -1016,7 +1016,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -1040,7 +1040,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -1063,7 +1063,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1087,7 +1087,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1111,7 +1111,7 @@ End Function";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1135,7 +1135,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1159,7 +1159,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1183,7 +1183,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1204,7 +1204,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1225,7 +1225,7 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1248,7 +1248,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1272,7 +1272,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1296,7 +1296,7 @@ End Function";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1320,7 +1320,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1344,7 +1344,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1368,7 +1368,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1391,7 +1391,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1415,7 +1415,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1439,7 +1439,7 @@ End Function";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1463,7 +1463,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1487,7 +1487,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1511,7 +1511,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
     }
