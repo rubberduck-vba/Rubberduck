@@ -99,7 +99,7 @@
     </Reference>
     <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
     </Reference>
     <Reference Include="office">

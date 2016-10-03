@@ -84,7 +84,7 @@ namespace Rubberduck
             ComponentSinksEnabled = true;
 
             _sink = new VBProjectsEventsSink();
-            var connectionPointContainer = (IConnectionPointContainer)vbe.VBProjects;
+            var connectionPointContainer = (IConnectionPointContainer)vbe.VBProjects.ComObject;
             var interfaceId = typeof(Microsoft.Vbe.Interop._dispVBProjectsEvents).GUID;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
             _projectsEventsConnectionPoint.Advise(_sink, out _projectsEventsCookie);

@@ -163,7 +163,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         private void DeclareControlsAsMembers(VBComponent form)
         {
-            foreach (var control in form.Controls)
+            foreach (var control in form.Controls.Cast<Control>())
             {
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
@@ -40,18 +41,17 @@ namespace Rubberduck.VBEditor.DisposableWrappers
                 var designer = InvokeResult(() => ComObject.Designer) as Microsoft.Vbe.Interop.Forms.UserForm;
                 if (designer == null)
                 {
-                    yield break;
+                    return Enumerable.Empty<Control>();
                 }
 
+                var result = new List<Control>();
                 using (var controls = new Controls(designer.Controls))
                 {
-                    for (var i = 0; i < controls.Count; i++)
-                    {
-                        yield return controls.Item(i);
-                    }
+                    result.AddRange(controls.Cast<Control>());
                 }
 
                 Marshal.ReleaseComObject(designer);
+                return result;
             }
         }
 
