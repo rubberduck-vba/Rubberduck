@@ -1,10 +1,10 @@
 using System;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -51,7 +51,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _name = _declaration.IdentifierName;
 
             var component = declaration.QualifiedName.QualifiedModuleName.Component;
-            if (component.Type == vbext_ComponentType.vbext_ct_Document)
+            if (component.Type == ComponentType.Document)
             {
                 try
                 {
@@ -81,19 +81,10 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool ContainsBuiltinDocumentPropertiesProperty()
         {
-            var component = _declaration.QualifiedName.QualifiedModuleName.Component;
-
-            try
+            using (var properties = _declaration.QualifiedName.QualifiedModuleName.Component.Properties)
             {
-                component.Properties.Item("BuiltinDocumentProperties");
+                return properties.Any(item => item.Name == "BuiltinDocumentProperties");
             }
-            catch
-            {
-                // gotcha! (this means that the property either doesn't exist or we weren't able to get it for some reason)
-                return false;
-            }
-
-            return true;
         }
 
         private bool _isErrorState;
@@ -132,14 +123,14 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 
-        private vbext_ComponentType ComponentType { get { return _declaration.QualifiedName.QualifiedModuleName.Component.Type; } }
+        private ComponentType ComponentType { get { return _declaration.QualifiedName.QualifiedModuleName.Component.Type; } }
 
-        private static readonly IDictionary<vbext_ComponentType, DeclarationType> DeclarationTypes = new Dictionary<vbext_ComponentType, DeclarationType>
+        private static readonly IDictionary<ComponentType, DeclarationType> DeclarationTypes = new Dictionary<ComponentType, DeclarationType>
         {
-            { vbext_ComponentType.vbext_ct_ClassModule, DeclarationType.ClassModule },
-            { vbext_ComponentType.vbext_ct_StdModule, DeclarationType.ProceduralModule },
-            { vbext_ComponentType.vbext_ct_Document, DeclarationType.Document },
-            { vbext_ComponentType.vbext_ct_MSForm, DeclarationType.UserForm }
+            { ComponentType.ClassModule, DeclarationType.ClassModule },
+            { ComponentType.StandardModule, DeclarationType.ProceduralModule },
+            { ComponentType.Document, DeclarationType.Document },
+            { ComponentType.UserForm, DeclarationType.UserForm }
         };
 
         private DeclarationType DeclarationType

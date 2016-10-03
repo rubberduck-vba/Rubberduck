@@ -1,6 +1,6 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
@@ -22,15 +22,18 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public RemoveParametersPresenter Create()
         {
-            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
-
-            if (!selection.HasValue)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                return null;
-            }
+                var selection = pane.GetQualifiedSelection();
 
-            var model = new RemoveParametersModel(_state, selection.Value, _messageBox);
-            return new RemoveParametersPresenter(_view, model, _messageBox);
+                if (!selection.HasValue)
+                {
+                    return null;
+                }
+
+                var model = new RemoveParametersModel(_state, selection.Value, _messageBox);
+                return new RemoveParametersPresenter(_view, model, _messageBox);
+            }
         }
     }
 }

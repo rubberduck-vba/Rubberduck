@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -197,6 +198,11 @@ namespace Rubberduck.UI.Command.MenuItems
             _selectionButton.Delete();
             _statusButton.Delete();
             _commandbar.Delete();
+
+            Marshal.ReleaseComObject(_refreshButton);
+            Marshal.ReleaseComObject(_selectionButton);
+            Marshal.ReleaseComObject(_statusButton);
+            Marshal.ReleaseComObject(_commandbar);
 
             _isDisposed = true;
         }

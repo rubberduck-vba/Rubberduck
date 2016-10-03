@@ -1,7 +1,7 @@
-﻿using Microsoft.Vbe.Interop;
-using System;
+﻿using System;
 using System.Windows.Forms;
 using NLog;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -9,7 +9,8 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         protected readonly VBE Vbe;
 
-        protected RefactorCommandBase(VBE vbe) : base (LogManager.GetCurrentClassLogger())
+        protected RefactorCommandBase(VBE vbe)
+            : base (LogManager.GetCurrentClassLogger())
         {
             Vbe = vbe;
         }

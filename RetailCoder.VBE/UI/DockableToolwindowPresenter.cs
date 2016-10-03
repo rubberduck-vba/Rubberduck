@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using NLog;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI
 {

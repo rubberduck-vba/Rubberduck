@@ -1,5 +1,5 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.EncapsulateField

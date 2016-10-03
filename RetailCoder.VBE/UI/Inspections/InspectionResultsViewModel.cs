@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
@@ -18,6 +17,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
+using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Inspections

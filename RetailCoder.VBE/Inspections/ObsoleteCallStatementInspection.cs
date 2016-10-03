@@ -29,22 +29,24 @@ namespace Rubberduck.Inspections
 
             foreach (var context in ParseTreeResults.ObsoleteCallContexts.Where(o => !IsInspectionDisabled(o.ModuleName.Component, o.Context.Start.Line)))
             {
-                var lines = context.ModuleName.Component.CodeModule.Lines[
-                        context.Context.Start.Line, context.Context.Stop.Line - context.Context.Start.Line + 1];
-
-                var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
-
-                int commentIndex;
-                if (stringStrippedLines.HasComment(out commentIndex))
+                using (var module = context.ModuleName.Component.CodeModule)
                 {
-                    stringStrippedLines = stringStrippedLines.Remove(commentIndex);
-                }
+                    var lines = module.GetLines(context.Context.Start.Line, context.Context.Stop.Line - context.Context.Start.Line + 1);
 
-                if (!stringStrippedLines.Contains(":"))
-                {
-                    results.Add(new ObsoleteCallStatementUsageInspectionResult(this,
-                            new QualifiedContext<VBAParser.CallStmtContext>(context.ModuleName,
-                                context.Context as VBAParser.CallStmtContext)));
+                    var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
+
+                    int commentIndex;
+                    if (stringStrippedLines.HasComment(out commentIndex))
+                    {
+                        stringStrippedLines = stringStrippedLines.Remove(commentIndex);
+                    }
+
+                    if (!stringStrippedLines.Contains(":"))
+                    {
+                        results.Add(new ObsoleteCallStatementUsageInspectionResult(this,
+                                new QualifiedContext<VBAParser.CallStmtContext>(context.ModuleName,
+                                    context.Context as VBAParser.CallStmtContext)));
+                    }
                 }
             }
 

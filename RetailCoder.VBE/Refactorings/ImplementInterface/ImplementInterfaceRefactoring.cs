@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Refactorings.ImplementInterface
 {
@@ -78,8 +78,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             if (oldSelection.HasValue)
             {
-                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
-                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+                using (var module = oldSelection.Value.QualifiedName.Component.CodeModule)
+                using (var pane = module.CodePane)
+                {
+                    pane.SetSelection(oldSelection.Value.Selection);
+                }
             }
 
             _state.OnParseRequested(this);
@@ -101,11 +104,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private void AddItems(List<Declaration> members)
         {
-            var module = _targetClass.QualifiedSelection.QualifiedName.Component.CodeModule;
-
-            var missingMembersText = members.Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
-
-            module.InsertLines(module.CountOfDeclarationLines + 1, missingMembersText);
+            using (var module = _targetClass.QualifiedSelection.QualifiedName.Component.CodeModule)
+            {
+                var missingMembersText = members.Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
+                module.InsertLines(module.CountOfDeclarationLines + 1, missingMembersText);
+            }
         }
 
         private string GetInterfaceMember(Declaration member)

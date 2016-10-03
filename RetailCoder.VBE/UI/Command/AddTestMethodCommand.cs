@@ -1,11 +1,11 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.Command
 {
@@ -55,8 +55,13 @@ namespace Rubberduck.UI.Command
             {
                 // the code modules consistently match correctly, but the components don't
                 return testModules.Any(a =>
-                            a.QualifiedName.QualifiedModuleName.Component.CodeModule ==
-                            _vbe.SelectedVBComponent.CodeModule);
+                {
+                    using (var module = a.QualifiedName.QualifiedModuleName.Component.CodeModule)
+                    using (var selected = _vbe.SelectedVBComponent.CodeModule)
+                    {
+                        return module.Equals(selected);
+                    }
+                });
             }
             catch (COMException)
             {

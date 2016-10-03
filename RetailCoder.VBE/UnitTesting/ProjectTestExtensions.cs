@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
+﻿using System.Runtime.InteropServices;
 using System.Reflection;
 using System.IO;
+using System.Linq;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UnitTesting
 {
@@ -16,18 +16,18 @@ namespace Rubberduck.UnitTesting
             var name = assembly.GetName().Name.Replace('.', '_');
             var referencePath = Path.ChangeExtension(assembly.Location, ".tlb");
 
-            var references = project.References.Cast<Reference>().ToList();
-
-            var reference = references.SingleOrDefault(r => r.Name == name);
-            if (reference != null)
+            using (var references = project.References)
             {
-                references.Remove(reference);
-                project.References.Remove(reference);
-            }
+                var reference = references.SingleOrDefault(r => r.Name == name);
+                if (reference != null)
+                {
+                    references.Remove(reference);
+                }
 
-            if (references.All(r => r.FullPath != referencePath))
-            {
-                project.References.AddFromFile(referencePath);
+                if (references.All(r => r.FullPath != referencePath))
+                {
+                    references.AddFromFile(referencePath);
+                }
             }
         }
     }

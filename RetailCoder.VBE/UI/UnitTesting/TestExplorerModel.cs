@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.UnitTesting
 {

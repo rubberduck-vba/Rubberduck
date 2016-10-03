@@ -358,6 +358,9 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
+    <Compile Include="Inspections\DeclareAsExplicitVariantQuickFix.cs" />
+    <Compile Include="Inspections\ImplicitActiveSheetReferenceInspectionResult.cs" />
+    <Compile Include="Inspections\ChangeParameterByRefByValQuickFix.cs" />
     <Compile Include="Inspections\InspectionsUI.de.Designer.cs">
       <DependentUpon>InspectionsUI.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -372,7 +375,15 @@
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\MalformedAnnotationInspection.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
+    <Compile Include="Inspections\PassParameterByValueQuickFix.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="Inspections\RemoveExplicitLetStatementQuickFix.cs" />
+    <Compile Include="Inspections\RemoveTypeHintsQuickFix.cs" />
+    <Compile Include="Inspections\RemoveUnassignedVariableUsageQuickFix.cs" />
+    <Compile Include="Inspections\ReplaceObsoleteCommentMarkerQuickFix.cs" />
+    <Compile Include="Inspections\UntypedFunctionUsageQuickFix.cs" />
+    <Compile Include="Inspections\UseSetKeywordForObjectAssignmentQuickFix.cs" />
+    <Compile Include="Inspections\SpecifyExplicitPublicModifierQuickFix.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyQuickFix.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />

@@ -1,8 +1,9 @@
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class Properties : SafeComWrapper<Microsoft.Vbe.Interop.Properties>, IEnumerable
+    public class Properties : SafeComWrapper<Microsoft.Vbe.Interop.Properties>, IEnumerable<Property>
     {
         public Properties(Microsoft.Vbe.Interop.Properties comObject) 
             : base(comObject)
@@ -21,6 +22,11 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public object Parent { get { return InvokeResult(() => ComObject.Parent); } }
         public int Count { get { return InvokeResult(() => ComObject.Count); } }
         public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
+
+        IEnumerator<Property> IEnumerable<Property>.GetEnumerator()
+        {
+            return new ComWrapperEnumerator<Properties,Property>(this);
+        }
 
         public IEnumerator GetEnumerator()
         {

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class CodePanes : SafeComWrapper<Microsoft.Vbe.Interop.CodePanes>, IEnumerable
+    public class CodePanes : SafeComWrapper<Microsoft.Vbe.Interop.CodePanes>, IEnumerable<CodePane>
     {
         public CodePanes(Microsoft.Vbe.Interop.CodePanes comObject) 
             : base(comObject)
@@ -21,6 +22,11 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         { 
             get{ return new CodePane(InvokeResult(() => ComObject.Current)); }
             set{ Invoke(() => ComObject.Current = value.ComObject);}
+        }
+
+        IEnumerator<CodePane> IEnumerable<CodePane>.GetEnumerator()
+        {
+            return new ComWrapperEnumerator<CodePanes,CodePane>(this);
         }
 
         public IEnumerator GetEnumerator()

@@ -38,6 +38,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public void SetSelection(Selection selection)
         {
             Invoke(() => ComObject.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn));
+            this.ForceFocus();
         }
 
         public void Show()
@@ -45,9 +46,9 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             Invoke(() => ComObject.Show());
         }
 
-        public CodePanes Collection { get { return new CodePanes(InvokeResult(() => ComObject.Collection)); } }
+        public CodePanes Collection { get { return new CodePanes(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Collection)); } }
 
-        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
+        public VBE VBE { get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); } }
 
         public Window Window { get { return new Window(InvokeResult(() => ComObject.Window)); } }
 
@@ -59,7 +60,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public int CountOfVisibleLines { get { return InvokeResult(() => ComObject.CountOfVisibleLines); } }
 
-        public CodeModule CodeModule { get { return new CodeModule(InvokeResult(() => ComObject.CodeModule)); } }
+        public CodeModule CodeModule { get { return new CodeModule(IsWrappingNullReference ? null : InvokeResult(() => ComObject.CodeModule)); } }
 
         public CodePaneView CodePaneView { get { return (CodePaneView)InvokeResult(() => ComObject.CodePaneView); } }
     }

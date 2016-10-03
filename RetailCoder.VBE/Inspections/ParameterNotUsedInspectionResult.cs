@@ -4,9 +4,9 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
-using Microsoft.Vbe.Interop;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Inspections
 {

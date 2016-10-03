@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -11,6 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.RemoveParameters
@@ -42,26 +42,36 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             QualifiedSelection? oldSelection = null;
-            if (_vbe.ActiveCodePane != null)
+            using (var pane = _vbe.ActiveCodePane)
+            using (var module = pane.CodeModule)
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+                if (!module.IsWrappingNullReference)
+                {
+                    oldSelection = module.GetSelection();
+                }
+
+                RemoveParameters();
+
+                if (oldSelection.HasValue)
+                {
+                    pane.SetSelection(oldSelection.Value.Selection);
+                }
+
+                _model.State.OnParseRequested(this);
             }
-
-            RemoveParameters();
-
-            if (oldSelection.HasValue)
-            {
-                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
-                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
-            }
-
-            _model.State.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
         {
-            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
-            Refactor();
+            using (var pane = _vbe.ActiveCodePane)
+            {
+                if (pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+                pane.SetSelection(target.Selection);
+                Refactor();
+            }
         }
 
         public void Refactor(Declaration target)
@@ -71,8 +81,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            _vbe.ActiveCodePane.CodeModule.SetSelection(target.QualifiedSelection);
-            Refactor();
+            using (var pane = _vbe.ActiveCodePane)
+            {
+                if (pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+                pane.SetSelection(target.QualifiedSelection.Selection);
+                Refactor();
+            }
         }
 
         public void QuickFix(RubberduckParserState state, QualifiedSelection selection)
@@ -97,25 +114,28 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
-                var module = reference.QualifiedModuleName.Component.CodeModule;
-                VBAParser.ArgumentListContext argumentList = null;
-                var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
-                if (callStmt != null)
+                using (var module = reference.QualifiedModuleName.Component.CodeModule)
                 {
-                    argumentList = CallStatement.GetArgumentList(callStmt);
-                }
-
-                if (argumentList == null)
-                {
-                    var indexExpression = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
-                    if (indexExpression != null)
+                    VBAParser.ArgumentListContext argumentList = null;
+                    var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
+                    if (callStmt != null)
                     {
-                        argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
+                        argumentList = CallStatement.GetArgumentList(callStmt);
                     }
-                }
 
-                if (argumentList == null) { continue; }
-                RemoveCallParameter(argumentList, module);
+                    if (argumentList == null)
+                    {
+                        var indexExpression = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
+                        if (indexExpression != null)
+                        {
+                            argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
+                        }
+                    }
+
+                    if (argumentList == null) { continue; }
+                    RemoveCallParameter(argumentList, module);
+                    
+                }
             }
         }
 
@@ -144,7 +164,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            var newContent = module.Lines[paramList.Start.Line, lineCount];
+            var newContent = module.GetLines(paramList.Start.Line, lineCount);
             newContent = newContent.Remove(paramList.Start.Column, paramList.GetText().Length);
 
             var savedParamNames = paramNames;
@@ -189,12 +209,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private string GetOldSignature(Declaration target)
         {
-            var module = target.QualifiedName.QualifiedModuleName.Component;
-            if (module == null)
+            var component = target.QualifiedName.QualifiedModuleName.Component;
+            if (component == null)
             {
                 throw new InvalidOperationException("Component is null for specified target.");
             }
-            var rewriter = _model.State.GetRewriter(module);
+            var rewriter = _model.State.GetRewriter(component);
 
             var context = target.Context;
             var firstTokenIndex = context.Start.TokenIndex;
@@ -261,72 +281,76 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             var proc = (dynamic)_model.TargetDeclaration.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
-            var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-
-            // if we are adjusting a property getter, check if we need to adjust the letter/setter too
-            if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
+            using (var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule)
             {
-                var setter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertySet);
-                if (setter != null)
+                // if we are adjusting a property getter, check if we need to adjust the letter/setter too
+                if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
                 {
-                    AdjustSignatures(setter);
-                    AdjustReferences(setter.References, setter);
+                    var setter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertySet);
+                    if (setter != null)
+                    {
+                        AdjustSignatures(setter);
+                        AdjustReferences(setter.References, setter);
+                    }
+
+                    var letter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertyLet);
+                    if (letter != null)
+                    {
+                        AdjustSignatures(letter);
+                        AdjustReferences(letter.References, letter);
+                    }
                 }
 
-                var letter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertyLet);
-                if (letter != null)
-                {
-                    AdjustSignatures(letter);
-                    AdjustReferences(letter.References, letter);
-                }
-            }
+                RemoveSignatureParameters(_model.TargetDeclaration, paramList, module);
 
-            RemoveSignatureParameters(_model.TargetDeclaration, paramList, module);
-
-            var eventImplementations =
-                _model.Declarations.Where(
-                    item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName)
+                var eventImplementations = _model.Declarations
+                    .Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName)
                     .SelectMany(withEvents => _model.Declarations.FindEventProcedures(withEvents));
-            foreach (var eventImplementation in eventImplementations)
-            {
-                AdjustReferences(eventImplementation.References, eventImplementation);
-                AdjustSignatures(eventImplementation);
-            }
 
-            var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.ProjectId == _model.TargetDeclaration.ProjectId &&
-                                                               item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
-            foreach (var interfaceImplentation in interfaceImplementations)
-            {
-                AdjustReferences(interfaceImplentation.References, interfaceImplentation);
-                AdjustSignatures(interfaceImplentation);
+                foreach (var eventImplementation in eventImplementations)
+                {
+                    AdjustReferences(eventImplementation.References, eventImplementation);
+                    AdjustSignatures(eventImplementation);
+                }
+
+                var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers().Where(item => 
+                        item.ProjectId == _model.TargetDeclaration.ProjectId 
+                        && item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
+
+                foreach (var interfaceImplentation in interfaceImplementations)
+                {
+                    AdjustReferences(interfaceImplentation.References, interfaceImplentation);
+                    AdjustSignatures(interfaceImplentation);
+                }               
             }
         }
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return _model.Declarations.FirstOrDefault(item => item.Scope == declaration.Scope &&
-                              item.IdentifierName == declaration.IdentifierName &&
-                              item.DeclarationType == declarationType);
+            return _model.Declarations.FirstOrDefault(item => item.Scope == declaration.Scope 
+                && item.IdentifierName == declaration.IdentifierName 
+                && item.DeclarationType == declarationType);
         }
 
         private void AdjustSignatures(Declaration declaration)
         {
             var proc = (dynamic)declaration.Context.Parent;
-            var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            VBAParser.ArgListContext paramList;
-
-            if (declaration.DeclarationType == DeclarationType.PropertySet ||
-                declaration.DeclarationType == DeclarationType.PropertyLet)
+            using (var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule)
             {
-                paramList = (VBAParser.ArgListContext)proc.children[0].argList();
-            }
-            else
-            {
-                paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
-            }
+                VBAParser.ArgListContext paramList;
 
-            RemoveSignatureParameters(declaration, paramList, module);
+                if (declaration.DeclarationType == DeclarationType.PropertySet
+                    || declaration.DeclarationType == DeclarationType.PropertyLet)
+                {
+                    paramList = (VBAParser.ArgListContext)proc.children[0].argList();
+                }
+                else
+                {
+                    paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
+                }
+
+                RemoveSignatureParameters(declaration, paramList, module);
+            }
         }
 
         private void RemoveSignatureParameters(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)

@@ -1,10 +1,10 @@
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -44,22 +44,30 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget()
         {
-            if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.Designer != null)
+            using (var project = _vbe.ActiveVBProject)
+            using (var component = _vbe.SelectedVBComponent)
             {
-                var designer = (dynamic)Vbe.SelectedVBComponent.Designer;
-
-                foreach (var control in designer.Controls)
+                if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.HasDesigner)
                 {
-                    if (!control.InSelection)
-                    {
-                        continue;
-                    }
+                    var designer = (dynamic)component.ComObject.Designer;
 
-                    return _state.AllUserDeclarations
-                        .FirstOrDefault(item => item.DeclarationType == DeclarationType.Control
-                            && Vbe.ActiveVBProject.HelpFile == item.ProjectId
-                            && item.ComponentName == Vbe.SelectedVBComponent.Name
-                            && item.IdentifierName == control.Name);
+                    foreach (var control in designer.Controls)
+                    {
+                        if (!control.InSelection)
+                        {
+                            Marshal.ReleaseComObject(control);
+                            continue;
+                        }
+
+                        var result = _state.AllUserDeclarations
+                            .FirstOrDefault(item => item.DeclarationType == DeclarationType.Control
+                                                    && project.HelpFile == item.ProjectId
+                                                    && item.ComponentName == component.Name
+                                                    && item.IdentifierName == control.Name);
+                        Marshal.ReleaseComObject(control);
+                        Marshal.ReleaseComObject(designer);
+                        return result;
+                    }
                 }
             }
 

@@ -51,25 +51,13 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public EnvironmentMode Mode { get { return (EnvironmentMode)InvokeResult(() => ComObject.Mode); } }
 
-        public VBProjects Collection
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public VBProjects Collection { get { return new VBProjects(InvokeResult(() => ComObject.Collection)); } }
 
         public ProjectProtection Protection { get { return (ProjectProtection)InvokeResult(() => ComObject.Protection); } }
 
         public bool Saved { get { return InvokeResult(() => ComObject.Saved); } }
 
-        public VBComponents VBComponents
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public VBComponents VBComponents { get { return new VBComponents(InvokeResult(() => ComObject.VBComponents)); } }
 
         public ProjectType Type { get { return (ProjectType)InvokeResult(() => ComObject.Type); } }
 

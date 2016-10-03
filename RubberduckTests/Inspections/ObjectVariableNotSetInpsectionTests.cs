@@ -254,7 +254,7 @@ End Function";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
-            foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is SetObjectVariableQuickFix)))
+            foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is UseSetKeywordForObjectAssignmentQuickFix)))
             {
                 fix.Fix();
             }
@@ -293,7 +293,7 @@ End Property
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
-            foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is SetObjectVariableQuickFix)))
+            foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is UseSetKeywordForObjectAssignmentQuickFix)))
             {
                 fix.Fix();
             }

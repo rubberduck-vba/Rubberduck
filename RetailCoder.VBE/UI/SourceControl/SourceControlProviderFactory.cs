@@ -1,14 +1,13 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.SourceControl;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+﻿using Rubberduck.SourceControl;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.SourceControl
 {
     public interface ISourceControlProviderFactory
     {
         ISourceControlProvider CreateProvider(VBProject project);
-        ISourceControlProvider CreateProvider(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory);
-        ISourceControlProvider CreateProvider(VBProject isAny, IRepository repository, SecureCredentials secureCredentials, ICodePaneWrapperFactory wrapperFactory);
+        ISourceControlProvider CreateProvider(VBProject project, IRepository repository);
+        ISourceControlProvider CreateProvider(VBProject isAny, IRepository repository, SecureCredentials secureCredentials);
     }
 
     public class SourceControlProviderFactory : ISourceControlProviderFactory
@@ -18,14 +17,14 @@ namespace Rubberduck.UI.SourceControl
             return new GitProvider(project);
         }
 
-        public ISourceControlProvider CreateProvider(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory)
+        public ISourceControlProvider CreateProvider(VBProject project, IRepository repository)
         {
-            return new GitProvider(project, repository, wrapperFactory);
+            return new GitProvider(project, repository);
         }
 
-        public ISourceControlProvider CreateProvider(VBProject project, IRepository repository, SecureCredentials creds, ICodePaneWrapperFactory wrapperFactory)
+        public ISourceControlProvider CreateProvider(VBProject project, IRepository repository, SecureCredentials creds)
         {
-            return new GitProvider(project, repository, creds, wrapperFactory);
+            return new GitProvider(project, repository, creds);
         }
     }
 }

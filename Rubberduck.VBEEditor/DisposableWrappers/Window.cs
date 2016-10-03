@@ -40,15 +40,35 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public string Caption { get { return InvokeResult(() => ComObject.Caption); } }
 
-        public bool Visible { get { return InvokeResult(() => ComObject.Visible); } }
+        public bool Visible
+        {
+            get { return InvokeResult(() => ComObject.Visible); }
+            set { Invoke(() => ComObject.Visible = value); }
+        }
 
-        public int Left { get { return InvokeResult(() => ComObject.Left); } }
+        public int Left
+        {
+            get { ThrowIfDisposed(); return InvokeResult(() => ComObject.Left); }
+            set { ThrowIfDisposed(); Invoke(() => ComObject.Left = value); }
+        }
 
-        public int Top { get { return InvokeResult(() => ComObject.Top); } }
+        public int Top
+        {
+            get { ThrowIfDisposed(); return InvokeResult(() => ComObject.Top); }
+            set { ThrowIfDisposed(); Invoke(() => ComObject.Top = value); }
+        }
 
-        public int Width { get { ThrowIfDisposed();  return InvokeResult(() => ComObject.Width); } }
+        public int Width
+        {
+            get { ThrowIfDisposed(); return InvokeResult(() => ComObject.Width); }
+            set { ThrowIfDisposed(); Invoke(() => ComObject.Width = value); }
+        }
 
-        public int Height { get { return InvokeResult(() => ComObject.Height); } }
+        public int Height
+        {
+            get { ThrowIfDisposed(); return InvokeResult(() => ComObject.Height); }
+            set { ThrowIfDisposed(); Invoke(() => ComObject.Height = value); }
+        }
 
         public WindowState WindowState { get { return InvokeResult(() => (WindowState)ComObject.WindowState); } }
 

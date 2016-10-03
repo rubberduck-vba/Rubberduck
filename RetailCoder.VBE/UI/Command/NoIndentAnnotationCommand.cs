@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.Command
 {
@@ -14,7 +14,8 @@ namespace Rubberduck.UI.Command
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public NoIndentAnnotationCommand(VBE vbe, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
+        public NoIndentAnnotationCommand(VBE vbe, RubberduckParserState state) 
+            : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
@@ -23,9 +24,11 @@ namespace Rubberduck.UI.Command
         protected override bool CanExecuteImpl(object parameter)
         {
             var target = FindTarget(parameter);
-
-            return _vbe.ActiveCodePane != null && target != null &&
+            using (var pane = _vbe.ActiveCodePane)
+            {
+                return !pane.IsWrappingNullReference && target != null &&
                    target.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
+            }
         }
 
         protected override void ExecuteImpl(object parameter)

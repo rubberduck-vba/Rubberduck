@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {
@@ -47,19 +46,19 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private void _view_FindButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser, new CodePaneWrapperFactory());
+            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser);
             OnFindButtonResults(regexSearchReplace.Search(_view.SearchPattern, _view.Scope));
         }
 
         private void _view_ReplaceButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser, new CodePaneWrapperFactory());
+            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser);
             regexSearchReplace.Replace(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 
         private void _view_ReplaceAllButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser, new CodePaneWrapperFactory());
+            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser);
             regexSearchReplace.ReplaceAll(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 

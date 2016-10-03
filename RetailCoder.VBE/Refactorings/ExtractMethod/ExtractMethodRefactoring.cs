@@ -1,7 +1,8 @@
 using System;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -12,13 +13,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
     /// </summary>
     public class ExtractMethodRefactoring : IRefactoring
     {
-        private readonly ICodeModuleWrapper _codeModule;
+        private readonly CodeModule _codeModule;
         private Func<QualifiedSelection?, string, IExtractMethodModel> _createMethodModel;
         private IExtractMethodExtraction _extraction;
         private Action<Object> _onParseRequest;
         
         public ExtractMethodRefactoring(
-            ICodeModuleWrapper codeModule,
+            CodeModule codeModule,
             Action<Object> onParseRequest,
             Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
             IExtractMethodExtraction extraction)
@@ -41,8 +42,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
 
             */
-            var qualifiedSelection = _codeModule.QualifiedSelection;
-            if (qualifiedSelection == null)
+            var qualifiedSelection = _codeModule.GetSelection();
+            if (!qualifiedSelection.HasValue)
             {
                 return;
             }
@@ -63,15 +64,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
             */
 
-            _extraction.apply(_codeModule, model, selection);
+            _extraction.Apply(_codeModule, model, selection);
 
             _onParseRequest(this);
         }
 
         public void Refactor(QualifiedSelection target)
         {
-            _codeModule.SetSelection(target);
-            Refactor();
+            using (var pane = _codeModule.CodePane)
+            {
+                pane.SetSelection(target.Selection);
+                Refactor();
+            }
         }
 
         public void Refactor(Declaration target)

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Inspections
 {
@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections
             handlers.AddRange(withEventFields.SelectMany(field => declarations.FindEventProcedures(field)));
 
             var forms = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule
-                        && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
+                        && item.QualifiedName.QualifiedModuleName.Component.Type == ComponentType.UserForm)
                 .ToList();
 
             if (forms.Any())

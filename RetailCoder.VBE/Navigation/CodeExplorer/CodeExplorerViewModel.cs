@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Annotations;
@@ -13,6 +12,7 @@ using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 
@@ -361,9 +361,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             var projectDeclaration =
                 _state.AllUserDeclarations.FirstOrDefault(item =>
                         item.DeclarationType == DeclarationType.Project &&
-                        item.Project.VBComponents.Cast<VBComponent>().Contains(component));
+                        item.Project.VBComponents.Contains(component));
 
-            if (component.Type == vbext_ComponentType.vbext_ct_StdModule)
+            if (component.Type == ComponentType.StandardModule)
             {
                 return new ProceduralModuleDeclaration(
                         new QualifiedMemberName(new QualifiedModuleName(component), component.Name), projectDeclaration,

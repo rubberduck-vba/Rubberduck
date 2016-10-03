@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.SourceControl;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -35,7 +35,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            var panelViewModel = panel.ViewModel as SourceControlViewViewModel;
+            var panelViewModel = panel.ViewModel;
             if (panelViewModel == null)
             {
                 return false;
@@ -56,7 +56,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            var panelViewModel = panel.ViewModel as SourceControlViewViewModel;
+            var panelViewModel = panel.ViewModel;
             if (panelViewModel == null)
             {
                 return;
@@ -87,12 +87,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
 
-            var fileExtensions = new Dictionary<vbext_ComponentType, string>
+            var fileExtensions = new Dictionary<ComponentType, string>
             {
-                { vbext_ComponentType.vbext_ct_StdModule, ".bas" },
-                { vbext_ComponentType.vbext_ct_ClassModule, ".cls" },
-                { vbext_ComponentType.vbext_ct_Document, ".cls" },
-                { vbext_ComponentType.vbext_ct_MSForm, ".frm" }
+                { ComponentType.StandardModule, ".bas" },
+                { ComponentType.ClassModule, ".cls" },
+                { ComponentType.Document, ".cls" },
+                { ComponentType.UserForm, ".frm" }
             };
 
             string ext;

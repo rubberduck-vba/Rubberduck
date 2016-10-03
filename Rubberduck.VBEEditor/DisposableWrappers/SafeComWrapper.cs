@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public abstract class SafeComWrapper<T> : IDisposable
+    public abstract class SafeComWrapper<T> : IDisposable, IEquatable<SafeComWrapper<T>> 
         where T : class 
     {
         private readonly T _comObject;
@@ -79,6 +79,29 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
 
             _isDisposed = true;
+        }
+
+        public bool Equals(SafeComWrapper<T> other)
+        {
+            ThrowIfDisposed();
+            if (IsWrappingNullReference)
+            {
+                return other.IsWrappingNullReference;
+            }
+
+            return ReferenceEquals(_comObject, other._comObject);
+        }
+
+        public override bool Equals(object obj)
+        {
+            ThrowIfDisposed();
+            return obj is T && ReferenceEquals(_comObject, obj); // bug: COM object isn't reliable for reference equality
+        }
+
+        public override int GetHashCode()
+        {
+            ThrowIfDisposed();
+            return _comObject.GetHashCode(); // bug: COM object isn't reliable for a hashcode
         }
 
         ~SafeComWrapper()

@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.SourceControl
 {
