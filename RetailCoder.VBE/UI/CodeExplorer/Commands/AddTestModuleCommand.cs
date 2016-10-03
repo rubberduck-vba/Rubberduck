@@ -1,9 +1,9 @@
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -35,7 +35,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             _newUnitTestModuleCommand.Execute(parameter != null
                 ? GetDeclaration(parameter).Project
-                : _vbe.VBProjects.Item(1));
+                : _vbe.ActiveVBProject);
         }
 
         private Declaration GetDeclaration(object parameter)

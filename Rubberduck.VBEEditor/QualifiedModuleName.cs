@@ -1,7 +1,7 @@
 using System;
-using Microsoft.Vbe.Interop;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.VBEditor
 {
@@ -65,7 +65,7 @@ namespace Rubberduck.VBEditor
             var module = component.CodeModule;
             _contentHashCode = module.CountOfLines > 0
                 // ReSharper disable once UseIndexedProperty
-                ? module.get_Lines(1, module.CountOfLines).GetHashCode()
+                ? module.GetLines(1, module.CountOfLines).GetHashCode()
                 : 0;
             Marshal.ReleaseComObject(module);
         }

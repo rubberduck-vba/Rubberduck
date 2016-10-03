@@ -1,5 +1,4 @@
-using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.VBEditor.Extensions
 {
@@ -20,7 +19,7 @@ namespace Rubberduck.VBEditor.Extensions
                 return new string[] { };
             }
 
-            var code = module.get_Lines(1, lines).Replace("\r", string.Empty).Split('\n');
+            var code = module.GetLines(1, lines).Replace("\r", string.Empty).Split('\n');
 
             StripLineNumbers(code);
             return code;
@@ -77,7 +76,7 @@ namespace Rubberduck.VBEditor.Extensions
                 return string.Empty;
             }
 
-            return module.get_Lines(1, module.CountOfLines);
+            return module.GetLines(1, module.CountOfLines);
         }
 
         /// <summary>
@@ -96,7 +95,7 @@ namespace Rubberduck.VBEditor.Extensions
         /// <returns></returns>
         public static string GetLines(this CodeModule module, Selection selection)
         {
-            return module.Lines[selection.StartLine, selection.LineCount];
+            return module.GetLines(selection.StartLine, selection.LineCount);
         }
 
         /// <summary>
@@ -108,51 +107,13 @@ namespace Rubberduck.VBEditor.Extensions
         {
             module.DeleteLines(selection.StartLine, selection.LineCount);
         }
-        public static void DeleteLines(this ICodeModuleWrapper module, Selection selection)
-        {
-            module.CodeModule.DeleteLines(selection);
-        }
-
         public static QualifiedSelection? GetSelection(this CodeModule module)
         {
-            var selection = module.CodePane.GetSelection();
-            return selection.HasValue
-                ? new QualifiedSelection(new QualifiedModuleName(module.Parent), selection.Value)
-                : new QualifiedSelection?();
-        }
-
-        public static void SetSelection(this CodeModule module, Selection selection)
-        {
-            module.CodePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-        }
-        public static void SetSelection(this CodeModule module, QualifiedSelection selection)
-        {
-            module.SetSelection(selection.Selection);
-        }
-        public static void SetSelection(this ICodeModuleWrapper module, Selection selection)
-        {
-            module.CodeModule.SetSelection(selection);
-        }
-        public static void SetSelection(this ICodeModuleWrapper module, QualifiedSelection selection)
-        {
-            module.CodeModule.SetSelection(selection.Selection);
-        }
-
-
-
-        public static string GetSelectedProcedureScope(this CodeModule module, Selection selection)
-        {
-            var moduleName = module.Name;
-            var projectName = module.Parent.Collection.Parent.Name;
-            var parentScope = projectName + '.' + moduleName;
-
-            vbext_ProcKind kind;
-            var procStart = module.get_ProcOfLine(selection.StartLine, out kind);
-            var procEnd = module.get_ProcOfLine(selection.EndLine, out kind);
-
-            return procStart == procEnd
-                ? parentScope + '.' + procStart
-                : null;
+            using (var pane = module.CodePane)
+            {
+                if (pane.IsWrappingNullReference) { return null; }
+                return new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.GetSelection());
+            }
         }
     }
 }

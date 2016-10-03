@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.IO;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.VBEditor.Extensions
 {
@@ -23,10 +23,10 @@ namespace Rubberduck.VBEditor.Extensions
             var path = Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
             switch (component.Type)
             {
-                case vbext_ComponentType.vbext_ct_MSForm:
+                case ComponentType.UserForm:
                     ExportUserFormModule(component, path);
                     break;
-                case vbext_ComponentType.vbext_ct_Document:
+                case ComponentType.Document:
                     ExportDocumentModule(component, path);
                     break;
                 default:
@@ -71,7 +71,7 @@ namespace Rubberduck.VBEditor.Extensions
             var lineCount = component.CodeModule.CountOfLines;
             if (lineCount > 0)
             {
-                var text = component.CodeModule.Lines[1, lineCount];
+                var text = component.CodeModule.GetLines(1, lineCount);
                 File.WriteAllText(path, text);
             }
         }
@@ -90,20 +90,20 @@ namespace Rubberduck.VBEditor.Extensions
         /// However, because they cannot be removed and imported like other component types, we need to make a distinction.</remarks>
         /// <param name="componentType"></param>
         /// <returns>File extension that includes a preceeding "dot" (.) </returns>
-        public static string FileExtension(this vbext_ComponentType componentType)
+        public static string FileExtension(this ComponentType componentType)
         {
             switch (componentType)
             {
-                case vbext_ComponentType.vbext_ct_ClassModule:
+                case ComponentType.ClassModule:
                     return ClassExtension;
-                case vbext_ComponentType.vbext_ct_MSForm:
+                case ComponentType.UserForm:
                     return FormExtension;
-                case vbext_ComponentType.vbext_ct_StdModule:
+                case ComponentType.StandardModule:
                     return StandardExtension;
-                case vbext_ComponentType.vbext_ct_Document:
+                case ComponentType.Document:
                     // documents should technically be a ".cls", but we need to be able to tell them apart.
                     return DocClassExtension;
-                case vbext_ComponentType.vbext_ct_ActiveXDesigner:
+                case ComponentType.ActiveXDesigner:
                 default:
                     return string.Empty;
             }

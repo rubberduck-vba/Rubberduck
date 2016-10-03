@@ -1,8 +1,8 @@
 ﻿using System;
-using Microsoft.Vbe.Interop;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.VBEditor.Extensions
 {
@@ -42,7 +42,7 @@ namespace Rubberduck.VBEditor.Extensions
 
         public static IEnumerable<VBProject> UnprotectedProjects(this VBProjects projects)
         {
-            return projects.Cast<VBProject>().Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);
+            return projects.Cast<VBProject>().Where(project => project.Protection == ProjectProtection.Unprotected);
         }
 
         public static IEnumerable<string> ComponentNames(this VBProject project)

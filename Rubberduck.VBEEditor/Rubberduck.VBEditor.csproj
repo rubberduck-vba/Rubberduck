@@ -97,8 +97,16 @@
       <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
+    </Reference>
     <Reference Include="office">
       <HintPath>..\libs\Office.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
@@ -106,10 +114,43 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisposableWrappers\AddIn.cs" />
+    <Compile Include="DisposableWrappers\AddIns.cs" />
+    <Compile Include="DisposableWrappers\Application.cs" />
+    <Compile Include="DisposableWrappers\CodeModule.cs" />
+    <Compile Include="DisposableWrappers\CodePane.cs" />
+    <Compile Include="DisposableWrappers\CodePanes.cs" />
+    <Compile Include="DisposableWrappers\CodePaneView.cs" />
+    <Compile Include="DisposableWrappers\ComponentType.cs" />
+    <Compile Include="DisposableWrappers\Control.cs" />
+    <Compile Include="DisposableWrappers\Controls.cs" />
+    <Compile Include="DisposableWrappers\EnvironmentMode.cs" />
+    <Compile Include="DisposableWrappers\Properties.cs" />
+    <Compile Include="DisposableWrappers\Property.cs" />
+    <Compile Include="DisposableWrappers\ReferenceEventArgs.cs" />
+    <Compile Include="DisposableWrappers\LinkedWindows.cs" />
+    <Compile Include="DisposableWrappers\ProcKind.cs" />
+    <Compile Include="DisposableWrappers\ProjectProtection.cs" />
+    <Compile Include="DisposableWrappers\ProjectType.cs" />
+    <Compile Include="DisposableWrappers\Reference.cs" />
+    <Compile Include="DisposableWrappers\ReferenceKind.cs" />
+    <Compile Include="DisposableWrappers\References.cs" />
+    <Compile Include="DisposableWrappers\VBComponent.cs" />
+    <Compile Include="DisposableWrappers\VBComponents.cs" />
+    <Compile Include="DisposableWrappers\VBProject.cs" />
+    <Compile Include="DisposableWrappers\ComWrapperEnumerator.cs" />
+    <Compile Include="DisposableWrappers\VBProjects.cs" />
+    <Compile Include="DisposableWrappers\Window.cs" />
+    <Compile Include="DisposableWrappers\WindowKind.cs" />
+    <Compile Include="DisposableWrappers\Windows.cs" />
+    <Compile Include="DisposableWrappers\WindowState.cs" />
+    <Compile Include="DisposableWrappers\SafeComWrapper.cs" />
+    <Compile Include="DisposableWrappers\WrapperMethodException.cs" />
     <Compile Include="DocumentEventHandlerPrefixes.cs" />
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="CodeModuleSelection.cs" />
     <Compile Include="Extensions\CodePaneExtensions.cs" />
+    <Compile Include="DisposableWrappers\VBE.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="QualifiedMemberName.cs" />
     <Compile Include="QualifiedModuleName.cs" />
@@ -142,12 +183,6 @@
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\WindowExtensions.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodeModule\CodeModuleWrapper.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodeModule\ICodeModuleWrapper.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapper.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapperFactory.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapperFactory.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VBEEditorText.fr.resx" />

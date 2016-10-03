@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -12,6 +11,8 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using System.IO;
 using NLog;
+using Rubberduck.VBEditor.DisposableWrappers;
+
 // ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
