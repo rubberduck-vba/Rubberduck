@@ -25,12 +25,12 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         IEnumerator<Property> IEnumerable<Property>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<Properties,Property>(this);
+            return new ComWrapperEnumerator<Microsoft.Vbe.Interop.Properties, Property>(ComObject);
         }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return InvokeResult(() => ComObject.GetEnumerator());
+            return new ComWrapperEnumerator<Microsoft.Vbe.Interop.Properties, Property>(ComObject);
         }
     }
 }

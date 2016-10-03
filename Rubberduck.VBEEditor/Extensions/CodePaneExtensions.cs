@@ -7,7 +7,7 @@ public static class CodePaneExtensions
 {
     public static QualifiedSelection? GetQualifiedSelection(this CodePane pane)
     {
-        if (pane == null)
+        if (pane.IsWrappingNullReference)
         {
             return null;
         }

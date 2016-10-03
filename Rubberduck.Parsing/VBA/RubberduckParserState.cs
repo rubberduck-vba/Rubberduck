@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Antlr4.Runtime;
@@ -205,7 +206,7 @@ namespace Rubberduck.Parsing.VBA
             lock (_projects)
             {
                 _projects.Clear();
-                foreach (VBProject project in vbe.VBProjects)
+                foreach (var project in vbe.VBProjects)
                 {
                     if (project.Protection == ProjectProtection.Locked)
                     {
@@ -896,6 +897,11 @@ namespace Rubberduck.Parsing.VBA
 
         public Declaration FindSelectedDeclaration(CodePane activeCodePane, bool procedureLevelOnly = false)
         {
+            if (activeCodePane.IsWrappingNullReference)
+            {
+                return null;
+            }
+
             var selection = activeCodePane.GetQualifiedSelection();
             if (selection.Equals(_lastSelection))
             {

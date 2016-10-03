@@ -171,7 +171,7 @@ namespace Rubberduck
                 return;
             }
 
-            var connectionPointContainer = (IConnectionPointContainer)components;
+            var connectionPointContainer = (IConnectionPointContainer)components.ComObject;
             var interfaceId = typeof(Microsoft.Vbe.Interop._dispVBComponentsEvents).GUID;
 
             IConnectionPoint connectionPoint;

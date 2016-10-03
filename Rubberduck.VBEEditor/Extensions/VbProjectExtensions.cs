@@ -29,7 +29,7 @@ namespace Rubberduck.VBEditor.Extensions
         {
             var projectsWithId = 0;
 
-            foreach (VBProject project in vbe.VBProjects)
+            foreach (var project in vbe.VBProjects.Cast<VBProject>())
             {
                 if (project.HelpFile == id)
                 {

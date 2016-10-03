@@ -5,12 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Common.WinAPI;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using NLog;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Common
 {
@@ -30,7 +30,11 @@ namespace Rubberduck.Common
 
         public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<CommandBase> commands)
         {
-            _mainWindowHandle = (IntPtr)vbe.MainWindow.HWnd;
+            using (var mainWindow = vbe.MainWindow)
+            {
+                _mainWindowHandle = (IntPtr)mainWindow.HWnd;
+            }
+
             _oldWndProc = WindowProc;
             _newWndProc = WindowProc;
             _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);

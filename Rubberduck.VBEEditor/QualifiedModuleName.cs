@@ -62,12 +62,13 @@ namespace Rubberduck.VBEditor
                 return;
             }
 
-            var module = component.CodeModule;
-            _contentHashCode = module.CountOfLines > 0
-                // ReSharper disable once UseIndexedProperty
-                ? module.GetLines(1, module.CountOfLines).GetHashCode()
-                : 0;
-            Marshal.ReleaseComObject(module);
+            using (var module = component.CodeModule)
+            {
+                _contentHashCode = module.CountOfLines > 0
+                    // ReSharper disable once UseIndexedProperty
+                    ? module.GetLines(1, module.CountOfLines).GetHashCode()
+                    : 0;
+            }
         }
 
         /// <summary>
@@ -127,32 +128,28 @@ namespace Rubberduck.VBEditor
                     return _projectDisplayName;
                 }
 
-                var vbe = _project.VBE;
-                var activeProject = vbe.ActiveVBProject;
-                var mainWindow = vbe.MainWindow;
-                try
+                using (var vbe = _project.VBE)
+                using (var activeProject = vbe.ActiveVBProject)
+                using (var mainWindow = vbe.MainWindow)
                 {
-                    if (_project.HelpFile != activeProject.HelpFile)
+                    try
                     {
-                        vbe.ActiveVBProject = _project;
-                    }
+                        if (_project.HelpFile != activeProject.HelpFile)
+                        {
+                            vbe.ActiveVBProject = _project;
+                        }
 
-                    var windowCaptionElements = mainWindow.Caption.Split(' ').ToList();
-                    // without an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2"}
-                    // with an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2", "-", "[Thisworkbook", "(Code)]"}
-                    // so we need to index of the first "-" element; the display name is the element next to that.
-                    _projectDisplayName = windowCaptionElements[windowCaptionElements.IndexOf("-") + 1];
-                    return _projectDisplayName;
-                }
-                catch
-                {
-                    return string.Empty;
-                }
-                finally
-                {
-                    Marshal.ReleaseComObject(vbe);
-                    Marshal.ReleaseComObject(activeProject);
-                    Marshal.ReleaseComObject(mainWindow);
+                        var windowCaptionElements = mainWindow.Caption.Split(' ').ToList();
+                        // without an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2"}
+                        // with an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2", "-", "[Thisworkbook", "(Code)]"}
+                        // so we need to index of the first "-" element; the display name is the element next to that.
+                        _projectDisplayName = windowCaptionElements[windowCaptionElements.IndexOf("-") + 1];
+                        return _projectDisplayName;
+                    }
+                    catch
+                    {
+                        return string.Empty;
+                    }
                 }
             }
         }

@@ -55,7 +55,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             });
         }
 
-        public VBComponent Parent { get; private set; }
+        public VBComponent Parent { get { return new VBComponent(InvokeResult(() => ComObject.Parent)); } }
         public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
 
         public string Name

@@ -272,8 +272,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
         }
 
-        private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList,
-            IEnumerable<CodeExplorerItemViewModel> newList)
+        private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList, IEnumerable<CodeExplorerItemViewModel> newList)
         {
             foreach (var item in newList)
             {
@@ -317,43 +316,45 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var componentProject = e.Component.Collection.Parent;
-            var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
-                .FirstOrDefault(p => p.Declaration.Project == componentProject);
-
-            if (projectNode == null)
+            using (var components = e.Component.Collection)
+            using (var componentProject = components.Parent)
             {
-                return;
-            }
+                var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
+                    .FirstOrDefault(p => p.Declaration.Project.Equals(componentProject));
 
-            SetErrorState(projectNode, e.Component);
-
-            if (_errorStateSet) { return; }
-
-            // at this point, we know the node is newly added--we have to add a new node, not just change the icon of the old one.
-
-            var folderNode = projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == componentProject.Name);
-
-            UiDispatcher.Invoke(() =>
-            {
-                if (folderNode == null)
+                if (projectNode == null)
                 {
-                    folderNode = new CodeExplorerCustomFolderViewModel(projectNode, componentProject.Name,
-                        componentProject.Name);
-                    projectNode.AddChild(folderNode);
+                    return;
                 }
 
-                var declaration = CreateDeclaration(e.Component);
-                var newNode = new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
+                SetErrorState(projectNode, e.Component);
+
+                if (_errorStateSet) { return; }
+
+                // at this point, we know the node is newly added--we have to add a new node, not just change the icon of the old one.
+                var projectName = componentProject.Name;
+                var folderNode = projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == projectName);
+
+                UiDispatcher.Invoke(() =>
                 {
-                    IsErrorState = true
-                };
+                    if (folderNode == null)
+                    {
+                        folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName);
+                        projectNode.AddChild(folderNode);
+                    }
 
-                folderNode.AddChild(newNode);
+                    var declaration = CreateDeclaration(e.Component);
+                    var newNode = new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
+                    {
+                        IsErrorState = true
+                    };
 
-                // Force a refresh. OnPropertyChanged("Projects") didn't work.
-                Projects = Projects;
-            });
+                    folderNode.AddChild(newNode);
+
+                    // Force a refresh. OnPropertyChanged("Projects") didn't work.
+                    Projects = Projects;
+                });
+            }
         }
 
         private Declaration CreateDeclaration(VBComponent component)
@@ -403,7 +404,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 if (node is CodeExplorerComponentViewModel)
                 {
                     var componentNode = (CodeExplorerComponentViewModel)node;
-                    if (componentNode.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component == component)
+                    if (componentNode.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component.Equals(component))
                     {
                         componentNode.IsErrorState = true;
                         _errorStateSet = true;
@@ -505,7 +506,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ExecuteRemoveComand(object param)
         {
             var node = (CodeExplorerComponentViewModel)SelectedItem;
-            SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel)p).Declaration.Project == node.Declaration.Project);
+            SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel)p).Declaration.Project.Equals(node.Declaration.Project));
 
             _externalRemoveCommand.Execute(param);
         }

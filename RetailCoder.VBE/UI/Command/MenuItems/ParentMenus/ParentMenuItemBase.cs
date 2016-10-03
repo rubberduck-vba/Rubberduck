@@ -12,7 +12,7 @@ using NLog;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
-    public abstract class ParentMenuItemBase : IParentMenuItem
+    public abstract class ParentMenuItemBase : IParentMenuItem, IDisposable
     {
         private readonly string _key;
         private readonly int? _beforeIndex;
@@ -86,20 +86,15 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             foreach (var child in _items.Keys.Select(item => item as IParentMenuItem).Where(child => child != null))
             {
                 child.RemoveChildren();
-                Debug.Assert(_items[child] is CommandBarPopup);
-                (_items[child] as CommandBarPopup).Delete();
+                var item = _items[child];
+                Debug.Assert(item is CommandBarPopup);
+                (item as CommandBarPopup).Delete();
             }
             foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
             {
-                try
-                {
-                    child.Click -= child_Click;
-                    child.Delete();
-                }
-                catch (InvalidComObjectException)
-                {
-                    // oh well
-                }
+                child.Click -= child_Click;
+                child.Delete();
+                Marshal.ReleaseComObject(child);
             }
         }
 
@@ -259,6 +254,28 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 return GetPictureFromIPicture(pictureDisp);
             }
+        }
+
+        ~ParentMenuItemBase()
+        {
+            if (!_isDisposed)
+            {
+                Dispose();
+            }
+        }
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (Item != null)
+            {
+                Marshal.ReleaseComObject(Item);
+            }
+            if (Parent != null)
+            {
+                Marshal.ReleaseComObject(Parent);
+            }
+            _isDisposed = true;
         }
     }
 }

@@ -71,23 +71,32 @@ namespace Rubberduck.UI.Command
 
         protected override void ExecuteImpl(object parameter)
         {
-            if (_vbe.ActiveCodePane == null) { return; }
-
-            try
+            using (var pane = _vbe.ActiveCodePane)
+            using (var module = pane.CodeModule)
             {
+                if (pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+
                 var declaration = _state.GetTestModules().FirstOrDefault(f =>
-                            f.QualifiedName.QualifiedModuleName.Component.CodeModule == _vbe.ActiveCodePane.CodeModule);
+                {
+                    using (var codeModule = f.QualifiedName.QualifiedModuleName.Component.CodeModule)
+                    {
+                        return codeModule.Equals(module);
+                    }
+                });
 
                 if (declaration != null)
                 {
-                    var module = _vbe.ActiveCodePane.CodeModule;
-                    var name = GetNextTestMethodName(module.Parent);
-                    var body = TestMethodTemplate.Replace(NamePlaceholder, name);
-                    module.InsertLines(module.CountOfLines, body);
+                    using (var component = module.Parent)
+                    {
+                        var name = GetNextTestMethodName(component);
+                        var body = TestMethodTemplate.Replace(NamePlaceholder, name);
+                        module.InsertLines(module.CountOfLines, body);
+                    }
                 }
-            }
-            catch (COMException)
-            {
+
             }
 
             _state.OnParseRequested(this, _vbe.SelectedVBComponent);

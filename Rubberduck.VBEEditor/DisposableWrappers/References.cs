@@ -56,12 +56,12 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         IEnumerator<Reference> IEnumerable<Reference>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<References, Reference>(this);
+            return new ComWrapperEnumerator<Microsoft.Vbe.Interop.References, Reference>(ComObject);
         }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return InvokeResult(() => ComObject.GetEnumerator());
+            return new ComWrapperEnumerator<Microsoft.Vbe.Interop.References, Reference>(ComObject);
         }
     }
 }

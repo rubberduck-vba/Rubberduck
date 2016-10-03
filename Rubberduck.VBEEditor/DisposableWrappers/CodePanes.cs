@@ -26,12 +26,12 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         IEnumerator<CodePane> IEnumerable<CodePane>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<CodePanes,CodePane>(this);
+            return new ComWrapperEnumerator<Microsoft.Vbe.Interop.CodePanes, CodePane>(ComObject);
         }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return InvokeResult(() => ComObject.GetEnumerator());
+            return new ComWrapperEnumerator<Microsoft.Vbe.Interop.CodePanes, CodePane>(ComObject);
         }
     }
 }
