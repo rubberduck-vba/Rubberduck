@@ -62,5 +62,19 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public bool HasOpenDesigner { get { return InvokeResult(() => ComObject.HasOpenDesigner); } }
         public Properties Properties { get { return new Properties(InvokeResult(() => ComObject.Properties)); } }
         public string DesignerId { get { return InvokeResult(() => ComObject.DesignerID); } }
+
+        public bool HasDesigner
+        {
+            get
+            {
+                var designer = InvokeResult(() => ComObject.Designer);
+                var hasDesigner = designer != null;
+                if (hasDesigner)
+                {
+                    Marshal.ReleaseComObject(designer);
+                }
+                return hasDesigner;
+            }
+        }
     }
 }

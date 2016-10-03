@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Parsing
 {

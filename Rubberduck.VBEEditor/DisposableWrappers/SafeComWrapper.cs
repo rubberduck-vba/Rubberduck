@@ -14,7 +14,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             _comObject = comObject;
         }
 
-        protected internal T ComObject
+        public T ComObject
         {
             get
             {
@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        public bool IsNull
+        public bool IsWrappingNullReference
         {
             get
             {

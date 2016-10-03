@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 // todo: untangle this mess
 
@@ -20,13 +20,13 @@ namespace Rubberduck.VBEditor.Extensions
         {
             switch (component.Type)
             {
-                case vbext_ComponentType.vbext_ct_ClassModule:
-                case vbext_ComponentType.vbext_ct_StdModule:
-                case vbext_ComponentType.vbext_ct_MSForm:
+                case ComponentType.ClassModule:
+                case ComponentType.StandardModule:
+                case ComponentType.UserForm:
                     components.Remove(component);
                     break;
-                case vbext_ComponentType.vbext_ct_ActiveXDesigner:
-                case vbext_ComponentType.vbext_ct_Document:
+                case ComponentType.ActiveXDesigner:
+                case ComponentType.Document:
                     component.CodeModule.Clear();
                     break;
                 default:
@@ -60,7 +60,7 @@ namespace Rubberduck.VBEditor.Extensions
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    component = components.Add(vbext_ComponentType.vbext_ct_MSForm);
+                    component = components.Add(ComponentType.UserForm);
                     component.Properties.Item("Caption").Value = name;
                     component.Name = name;
                 }

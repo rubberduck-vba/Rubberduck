@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
@@ -85,7 +85,7 @@ namespace Rubberduck
 
             _sink = new VBProjectsEventsSink();
             var connectionPointContainer = (IConnectionPointContainer)vbe.VBProjects;
-            var interfaceId = typeof(_dispVBProjectsEvents).GUID;
+            var interfaceId = typeof(Microsoft.Vbe.Interop._dispVBProjectsEvents).GUID;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
             _projectsEventsConnectionPoint.Advise(_sink, out _projectsEventsCookie);
 
@@ -102,53 +102,61 @@ namespace Rubberduck
         public event EventHandler<IProjectEventArgs> ProjectRemoved;
         public event EventHandler<IProjectRenamedEventArgs> ProjectRenamed;
 
-        private void _sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
+        private void _sink_ProjectActivated(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBProject> e)
         {
             var projectId = e.Item.HelpFile;
             
             var handler = ProjectActivated;
             if (handler != null)
             {
-                handler(sender, new ProjectEventArgs(projectId, e.Item));
+                handler(sender, new ProjectEventArgs(projectId, new VBProject(e.Item)));
             }
         }
 
-        private void _sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
+        private void _sink_ProjectAdded(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBProject> e)
         {
-            e.Item.AssignProjectId();
-            var projectId = e.Item.HelpFile;
-
-            RegisterComponentsEventSink(e.Item.VBComponents, projectId);
-            
-            var handler = ProjectAdded;
-            if (handler != null)
+            using (var project = new VBProject(e.Item))
             {
-                handler(sender, new ProjectEventArgs(projectId, e.Item));
+                project.AssignProjectId();
+                var projectId = project.HelpFile;
+
+                RegisterComponentsEventSink(project.VBComponents, projectId);
+
+                var handler = ProjectAdded;
+                if (handler != null)
+                {
+                    handler(sender, new ProjectEventArgs(projectId, project));
+                }
             }
         }
 
-        private void _sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
+        private void _sink_ProjectRemoved(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBProject> e)
         {
-            UnregisterComponentsEventSink(e.Item.HelpFile);
-
-            var projectId = e.Item.HelpFile;
-            
-            var handler = ProjectRemoved;
-            if (handler != null)
+            using (var project = new VBProject(e.Item))
             {
-                handler(sender, new ProjectEventArgs(projectId, e.Item));
+                var projectId = project.HelpFile;
+                UnregisterComponentsEventSink(projectId);
+
+                var handler = ProjectRemoved;
+                if (handler != null)
+                {
+                    handler(sender, new ProjectEventArgs(projectId, project));
+                }
             }
         }
 
-        private void _sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
+        private void _sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<Microsoft.Vbe.Interop.VBProject> e)
         {
-            var projectId = e.Item.HelpFile;
-            var oldName = e.OldName;
-            
-            var handler = ProjectRenamed;
-            if (handler != null)
+            using (var project = new VBProject(e.Item))
             {
-                handler(sender, new ProjectRenamedEventArgs(projectId, e.Item, oldName));
+                var projectId = project.HelpFile;
+                var oldName = e.OldName;
+
+                var handler = ProjectRenamed;
+                if (handler != null)
+                {
+                    handler(sender, new ProjectRenamedEventArgs(projectId, project, oldName));
+                }
             }
         }
 
@@ -164,7 +172,7 @@ namespace Rubberduck
             }
 
             var connectionPointContainer = (IConnectionPointContainer)components;
-            var interfaceId = typeof(_dispVBComponentsEvents).GUID;
+            var interfaceId = typeof(Microsoft.Vbe.Interop._dispVBComponentsEvents).GUID;
 
             IConnectionPoint connectionPoint;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
@@ -209,81 +217,105 @@ namespace Rubberduck
         public event EventHandler<IComponentRenamedEventArgs> ComponentRenamed;
         public event EventHandler<IComponentEventArgs> ComponentSelected;
 
-        private void ComponentsSink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
+        private void ComponentsSink_ComponentActivated(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-
-            var projectId = e.Item.Collection.Parent.HelpFile;
-
-            var handler = ComponentActivated;
-            if (handler != null)
+            using (var component = new VBComponent(e.Item))
+            using (var components = component.Collection)
+            using (var project = components.Parent)
             {
-                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
+                var projectId = project.HelpFile;
+
+                var handler = ComponentActivated;
+                if (handler != null)
+                {
+                    handler(sender, new ComponentEventArgs(projectId, project, component));
+                }
             }
         }
 
-        private void ComponentsSink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
+        private void ComponentsSink_ComponentAdded(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-
-            var projectId = e.Item.Collection.Parent.HelpFile;
-
-            var handler = ComponentAdded;
-            if (handler != null)
+            using (var component = new VBComponent(e.Item))
+            using (var components = component.Collection)
+            using (var project = components.Parent)
             {
-                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
+                var projectId = project.HelpFile;
+
+                var handler = ComponentAdded;
+                if (handler != null)
+                {
+                    handler(sender, new ComponentEventArgs(projectId, project, component));
+                }
             }
         }
 
-        private void ComponentsSink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
+        private void ComponentsSink_ComponentReloaded(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-
-            var projectId = e.Item.Collection.Parent.HelpFile;
-
-            var handler = ComponentReloaded;
-            if (handler != null)
+            using (var component = new VBComponent(e.Item))
+            using (var components = component.Collection)
+            using (var project = components.Parent)
             {
-                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
+                var projectId = project.HelpFile;
+
+                var handler = ComponentReloaded;
+                if (handler != null)
+                {
+                    handler(sender, new ComponentEventArgs(projectId, project, component));
+                }
             }
         }
 
-        private void ComponentsSink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
+        private void ComponentsSink_ComponentRemoved(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-
-            var projectId = e.Item.Collection.Parent.HelpFile;
-
-            var handler = ComponentRemoved;
-            if (handler != null)
+            using (var component = new VBComponent(e.Item))
+            using (var components = component.Collection)
+            using (var project = components.Parent)
             {
-                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
+                var projectId = project.HelpFile;
+
+                var handler = ComponentRemoved;
+                if (handler != null)
+                {
+                    handler(sender, new ComponentEventArgs(projectId, project, component));
+                }
             }
         }
 
-        private void ComponentsSink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
+        private void ComponentsSink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-
-            var projectId = e.Item.Collection.Parent.HelpFile;
-
-            var handler = ComponentRenamed;
-            if (handler != null)
+            using (var component = new VBComponent(e.Item))
+            using (var components = component.Collection)
+            using (var project = components.Parent)
             {
-                handler(sender, new ComponentRenamedEventArgs(projectId, e.Item.Collection.Parent, e.Item, e.OldName));
+                var projectId = project.HelpFile;
+
+                var handler = ComponentRenamed;
+                if (handler != null)
+                {
+                    handler(sender, new ComponentRenamedEventArgs(projectId, project, component, e.OldName));
+                }
             }
         }
 
-        private void ComponentsSink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
+        private void ComponentsSink_ComponentSelected(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-
-            var projectId = e.Item.Collection.Parent.HelpFile;
-
-            var handler = ComponentSelected;
-            if (handler != null)
+            using (var component = new VBComponent(e.Item))
+            using (var components = component.Collection)
+            using (var project = components.Parent)
             {
-                handler(sender, new ComponentEventArgs(projectId, e.Item.Collection.Parent, e.Item));
+                var projectId = project.HelpFile;
+
+                var handler = ComponentSelected;
+                if (handler != null)
+                {
+                    handler(sender, new ComponentEventArgs(projectId, project, component));
+                }
             }
         }
         #endregion

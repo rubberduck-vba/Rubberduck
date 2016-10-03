@@ -1,36 +1,38 @@
-using System;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Microsoft.Office.Core;
+using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.VBEditor.Extensions
 {
     public static class VbeExtensions
     {
-        public static void SetSelection(this VBE vbe, VBProject vbProject, Selection selection, string name,
-            ICodePaneWrapperFactory wrapperFactory)
+        public static void SetSelection(this VBE vbe, VBProject vbProject, Selection selection, string name)
         {
             try
             {
-                var component = vbProject.VBComponents.Cast<VBComponent>().SingleOrDefault(c => c.Name == name);
-                if (component == null)
+                using (var component = vbProject.VBComponents.Cast<VBComponent>().SingleOrDefault(c => c.Name == name))
                 {
-                    return;
-                }
+                    if (component == null || component.IsWrappingNullReference)
+                    {
+                        return;
+                    }
 
-                var codePane = wrapperFactory.Create(component.CodeModule.CodePane);
-                codePane.Selection = selection;
+                    using (var module = component.CodeModule)
+                    using (var pane = module.CodePane)
+                    {
+                        pane.SetSelection(selection);
+                    }
+                }
             }
-            catch (Exception e)
+            catch (WrapperMethodException)
             {
             }
         }
 
         public static bool IsInDesignMode(this VBE vbe)
         {
-            return vbe.VBProjects.Cast<VBProject>().All(project => project.Mode == vbext_VBAMode.vbext_vm_Design);
+            return vbe.VBProjects.All(project => project.Mode == EnvironmentMode.Design);
         }
 
         public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, Selection selection)
@@ -49,17 +51,17 @@ namespace Rubberduck.VBEditor.Extensions
         {
             if (vbe.ActiveVBProject == null)
             {
-                const int ctl_view_host = 106;
+                const int ctlViewHost = 106;
 
-                var host_app_control = vbe.CommandBars.FindControl(MsoControlType.msoControlButton, ctl_view_host);
+                var hostAppControl = vbe.CommandBars.FindControl(MsoControlType.msoControlButton, ctlViewHost);
 
-                if (host_app_control == null)
+                if (hostAppControl == null)
                 {
                     return null;
                 }
                 else
                 {
-                    switch (host_app_control.Caption)
+                    switch (hostAppControl.Caption)
                     {
                         case "Microsoft Excel":
                             return new ExcelApp();
@@ -88,33 +90,36 @@ namespace Rubberduck.VBEditor.Extensions
                 return null;
             }
 
-            foreach (var reference in vbe.ActiveVBProject.References.Cast<Reference>()
-                .Where(reference => (reference.BuiltIn && reference.Name != "VBA") || (reference.Name == "AutoCAD")))
+            using (var project = vbe.ActiveVBProject)
+            using (var references = project.References)
             {
-                switch (reference.Name)
+                foreach (var reference in references.Where(reference => (reference.IsBuiltIn && reference.Name != "VBA") || (reference.Name == "AutoCAD")))
                 {
-                    case "Excel":
-                        return new ExcelApp(vbe);
-                    case "Access":
-                        return new AccessApp();
-                    case "Word":
-                        return new WordApp(vbe);
-                    case "PowerPoint":
-                        return new PowerPointApp();
-                    case "Outlook":
-                        return new OutlookApp();
-                    case "MSProject":
-                        return new ProjectApp();
-                    case "Publisher":
-                        return new PublisherApp();
-                    case "Visio":
-                        return new VisioApp();
-                    case "AutoCAD":
-                        return new AutoCADApp();
-                    case "CorelDRAW":
-                        return new CorelDRAWApp(vbe);
-                    case "SolidWorks":
-                        return new SolidWorksApp(vbe);
+                    switch (reference.Name)
+                    {
+                        case "Excel":
+                            return new ExcelApp(vbe);
+                        case "Access":
+                            return new AccessApp();
+                        case "Word":
+                            return new WordApp(vbe);
+                        case "PowerPoint":
+                            return new PowerPointApp();
+                        case "Outlook":
+                            return new OutlookApp();
+                        case "MSProject":
+                            return new ProjectApp();
+                        case "Publisher":
+                            return new PublisherApp();
+                        case "Visio":
+                            return new VisioApp();
+                        case "AutoCAD":
+                            return new AutoCADApp();
+                        case "CorelDRAW":
+                            return new CorelDRAWApp(vbe);
+                        case "SolidWorks":
+                            return new SolidWorksApp(vbe);
+                    }
                 }
             }
 
@@ -154,23 +159,26 @@ namespace Rubberduck.VBEditor.Extensions
                 }
             }
 
-            foreach (var reference in vbe.ActiveVBProject.References.Cast<Reference>()
-                .Where(reference => (reference.BuiltIn && reference.Name != "VBA") || (reference.Name == "AutoCAD")))
+            using (var project = vbe.ActiveVBProject)
             {
-                switch (reference.Name)
+                foreach (var reference in project.References
+                    .Where(reference => (reference.IsBuiltIn && reference.Name != "VBA") || (reference.Name == "AutoCAD")))
                 {
-                    case "Excel":
-                    case "Access":
-                    case "Word":
-                    case "PowerPoint":
-                    case "Outlook":
-                    case "MSProject":
-                    case "Publisher":
-                    case "Visio":
-                    case "AutoCAD":
-                    case "CorelDRAW":
-                    case "SolidWorks":
-                        return true;
+                    switch (reference.Name)
+                    {
+                        case "Excel":
+                        case "Access":
+                        case "Word":
+                        case "PowerPoint":
+                        case "Outlook":
+                        case "MSProject":
+                        case "Publisher":
+                        case "Visio":
+                        case "AutoCAD":
+                        case "CorelDRAW":
+                        case "SolidWorks":
+                            return true;
+                    }
                 }
             }
 

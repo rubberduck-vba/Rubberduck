@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Infralution.Localization.Wpf;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -12,6 +11,7 @@ using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck
 {

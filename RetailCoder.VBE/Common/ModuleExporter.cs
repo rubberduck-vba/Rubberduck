@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Reflection;
-using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Common
 {

@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
+using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.Extensions;
 
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -207,7 +207,7 @@ namespace Rubberduck.Parsing.VBA
                 _projects.Clear();
                 foreach (VBProject project in vbe.VBProjects)
                 {
-                    if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+                    if (project.Protection == ProjectProtection.Locked)
                     {
                         continue;
                     }

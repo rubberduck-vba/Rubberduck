@@ -1,6 +1,4 @@
 ﻿using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
-using Microsoft.Vbe.Interop.Forms;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
@@ -9,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -30,7 +29,7 @@ namespace Rubberduck.Parsing.Symbols
         public DeclarationSymbolsListener(
             RubberduckParserState state,
             QualifiedModuleName qualifiedName,
-            vbext_ComponentType type,
+            ComponentType type,
             IEnumerable<IAnnotation> annotations,
             IDictionary<Tuple<string, DeclarationType>, Attributes> attributes,
             Declaration projectDeclaration)
@@ -39,7 +38,7 @@ namespace Rubberduck.Parsing.Symbols
             _annotations = annotations;
             _attributes = attributes;
 
-            var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
+            var declarationType = type == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
 
@@ -60,10 +59,10 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                bool hasDefaultInstanceVariable = type != vbext_ComponentType.vbext_ct_ClassModule && type != vbext_ComponentType.vbext_ct_StdModule;
+                bool hasDefaultInstanceVariable = type != ComponentType.ClassModule && type != ComponentType.StandardModule;
 
                 Declaration superType = null;
-                if (type == vbext_ComponentType.vbext_ct_Document)
+                if (type == ComponentType.Document)
                 {
                     foreach (var coclass in state.CoClasses)
                     {
@@ -113,7 +112,7 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
             AddDeclaration(_moduleDeclaration);
             var component = _moduleDeclaration.QualifiedName.QualifiedModuleName.Component;
-            if (component.Type == vbext_ComponentType.vbext_ct_MSForm || component.Designer != null)
+            if (component.Type == ComponentType.UserForm || component.HasDesigner)
             {
                 DeclareControlsAsMembers(component);
             }
@@ -164,20 +163,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         private void DeclareControlsAsMembers(VBComponent form)
         {
-            var designer = form.Designer;
-            if (designer == null)
-            {
-                return;
-            }
-            if (!(designer is UserForm))
-            {
-                return;
-            }
-            // "using dynamic typing here, because not only MSForms could have a Controls collection (e.g. MS-Access forms are 'document' modules)."
-            // Note: Dynamic doesn't seem to support explicit interfaces that's why we cast it anyway, MS Access forms apparently have to be treated specially anyway.
-            var userForm = (UserForm)designer;
-            // Not all objects in the Controls collection are Control, some are Images.
-            foreach (dynamic control in userForm.Controls)
+            foreach (var control in form.Controls)
             {
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(
@@ -196,6 +182,7 @@ namespace Rubberduck.Parsing.Symbols
                     null,
                     false);
                 AddDeclaration(declaration);
+                control.Dispose();
             }
         }
 

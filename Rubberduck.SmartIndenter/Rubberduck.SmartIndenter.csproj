@@ -84,6 +84,10 @@
       <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
+      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

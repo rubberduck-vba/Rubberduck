@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.Parsing
 {

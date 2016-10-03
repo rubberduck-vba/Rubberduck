@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class References : SafeComWrapper<Microsoft.Vbe.Interop.References>, IEnumerable
+    public class References : SafeComWrapper<Microsoft.Vbe.Interop.References>, IEnumerable<Reference>
     {
         public References(Microsoft.Vbe.Interop.References comObject) 
             : base(comObject)
@@ -52,6 +53,11 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public VBProject Parent { get { return new VBProject(InvokeResult(() => ComObject.Parent)); } }
         public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
         public int Count { get { return InvokeResult(() => ComObject.Count); } }
+
+        IEnumerator<Reference> IEnumerable<Reference>.GetEnumerator()
+        {
+            return new ComWrapperEnumerator<References, Reference>(this);
+        }
 
         public IEnumerator GetEnumerator()
         {

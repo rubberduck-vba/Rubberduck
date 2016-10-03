@@ -1,9 +1,10 @@
 using System.Collections;
+using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class VBComponents : SafeComWrapper<Microsoft.Vbe.Interop.VBComponents>, IEnumerable
+    public class VBComponents : SafeComWrapper<Microsoft.Vbe.Interop.VBComponents>, IEnumerable<VBComponent>
     {
         public VBComponents(Microsoft.Vbe.Interop.VBComponents comObject) 
             : base(comObject)
@@ -42,6 +43,11 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public VBComponent Item(object index)
         {
             return new VBComponent(InvokeResult(() => ComObject.Item(index)));
+        }
+
+        IEnumerator<VBComponent> IEnumerable<VBComponent>.GetEnumerator()
+        {
+            return new ComWrapperEnumerator<VBComponents, VBComponent>(this);
         }
 
         public IEnumerator GetEnumerator()

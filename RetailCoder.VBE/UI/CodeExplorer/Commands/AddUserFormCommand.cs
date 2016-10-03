@@ -1,9 +1,9 @@
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.DisposableWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -33,11 +33,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             if (parameter != null)
             {
-                GetDeclaration(parameter).Project.VBComponents.Add(vbext_ComponentType.vbext_ct_MSForm);
+                using (var components = GetDeclaration(parameter).Project.VBComponents)
+                {
+                    components.Add(ComponentType.UserForm);
+                }
             }
             else
             {
-                _vbe.VBProjects.Item(1).VBComponents.Add(vbext_ComponentType.vbext_ct_MSForm);
+                using (var project = _vbe.ActiveVBProject)
+                using (var components = project.VBComponents)
+                {
+                    components.Add(ComponentType.UserForm);
+                }
             }
         }
 
