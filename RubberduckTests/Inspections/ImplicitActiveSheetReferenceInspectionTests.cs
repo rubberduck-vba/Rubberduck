@@ -48,7 +48,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
+            var inspection = new ImplicitActiveSheetReferenceInspection(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -85,7 +85,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
+            var inspection = new ImplicitActiveSheetReferenceInspection(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -126,12 +126,12 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
+            var inspection = new ImplicitActiveSheetReferenceInspection(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -145,7 +145,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, null);
+            var inspection = new ImplicitActiveSheetReferenceInspection(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
@@ -161,7 +161,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             const string inspectionName = "ImplicitActiveSheetReferenceInspection";
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, null);
+            var inspection = new ImplicitActiveSheetReferenceInspection(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
