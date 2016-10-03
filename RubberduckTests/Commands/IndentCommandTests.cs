@@ -24,17 +24,17 @@ namespace RubberduckTests.Commands
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
+            var module = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(component.CodeModule);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error)
             {
                 Assert.Inconclusive("Parser Error");
             }
             
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, parser.State);
+            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             noIndentAnnotationCommand.Execute(null);
 
-            Assert.AreEqual("'@NoIndent\r\n", component.CodeModule.Lines());
+            Assert.AreEqual("'@NoIndent\r\n", module.Lines());
         }
 
         [TestMethod]
@@ -68,10 +68,11 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, parser.State);
+            var module = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(component.CodeModule);
+            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             noIndentAnnotationCommand.Execute(null);
 
-            Assert.AreEqual(expected, component.CodeModule.Lines());
+            Assert.AreEqual(expected, module.Lines());
         }
 
         [TestMethod]
@@ -91,7 +92,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, parser.State);
+            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
         }
 
@@ -112,7 +113,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, parser.State);
+            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
             Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
         }
 
@@ -168,11 +169,14 @@ End Sub
                 Assert.Inconclusive("Parser Error");
             }
 
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object));
+            var indentCommand = new IndentCurrentModuleCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), CreateIndenter(vbe.Object));
             indentCommand.Execute(null);
 
-            Assert.AreEqual(input, project.Object.VBComponents.Item("Comp1").CodeModule.Lines());
-            Assert.AreEqual(expected, project.Object.VBComponents.Item("Comp2").CodeModule.Lines());
+            var module1 = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(project.Object.VBComponents.Item("Comp1").CodeModule);
+            var module2 = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(project.Object.VBComponents.Item("Comp2").CodeModule);
+
+            Assert.AreEqual(input, module1.Lines());
+            Assert.AreEqual(expected, module2.Lines());
         }
 
         [TestMethod]
@@ -193,7 +197,7 @@ End Sub
                 Assert.Inconclusive("Parser Error");
             }
 
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object));
+            var indentCommand = new IndentCurrentModuleCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), CreateIndenter(vbe.Object));
             Assert.IsFalse(indentCommand.CanExecute(null));
         }
 
@@ -213,7 +217,7 @@ End Sub
                 Assert.Inconclusive("Parser Error");
             }
 
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object));
+            var indentCommand = new IndentCurrentModuleCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), CreateIndenter(vbe.Object));
             Assert.IsTrue(indentCommand.CanExecute(null));
         }
 
@@ -237,7 +241,7 @@ End Sub
             settings.Setup(s => s.EndOfLineCommentColumnSpaceAlignment).Returns(50);
             settings.Setup(s => s.IndentSpaces).Returns(4);
 
-            return new Indenter(vbe, () => new IndenterSettings());
+            return new Indenter(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe), () => new IndenterSettings());
         }
     }
 }
