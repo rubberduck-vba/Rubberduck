@@ -43,7 +43,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllReferencesCommand(null, null, parser.State, new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), vm, null);
 
             command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -75,7 +75,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllReferencesCommand(null, null, parser.State, new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), vm, null);
 
             command.Execute(null);
 
@@ -106,7 +106,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllReferencesCommand(null, messageBox.Object, parser.State, vbe.Object, vm, null);
+            var command = new FindAllReferencesCommand(null, messageBox.Object, parser.State, new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), vm, null);
 
             command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -139,7 +139,7 @@ End Sub";
             var navigateCommand = new Mock<INavigateCommand>();
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllReferencesCommand(navigateCommand.Object, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllReferencesCommand(navigateCommand.Object, null, parser.State, new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), vm, null);
 
             command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -162,7 +162,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllReferencesCommand(null, null, parser.State, new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), vm, null);
 
             command.Execute(null);
 
@@ -197,7 +197,7 @@ End Sub";
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllReferencesCommand(null, null, parser.State, new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), vm, null);
 
             command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -220,7 +220,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllReferencesCommand(null, null, parser.State, new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), vm, null);
 
             Assert.IsFalse(command.CanExecute(null));
         }
@@ -253,7 +253,7 @@ End Sub";
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllReferencesCommand(null, null, parser.State, new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), vm, null);
 
             Assert.IsFalse(command.CanExecute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo")));
         }
@@ -274,7 +274,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllReferencesCommand(null, null, parser.State, new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), vm, null);
 
             Assert.IsFalse(command.CanExecute(null));
         }
