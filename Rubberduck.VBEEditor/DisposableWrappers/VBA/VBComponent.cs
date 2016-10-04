@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
@@ -68,10 +67,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             {
                 var designer = InvokeResult(() => ComObject.Designer);
                 var hasDesigner = designer != null;
-                if (hasDesigner)
-                {
-                    Marshal.ReleaseComObject(designer);
-                }
                 return hasDesigner;
             }
         }

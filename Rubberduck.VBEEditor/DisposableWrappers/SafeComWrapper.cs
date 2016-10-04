@@ -35,6 +35,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         protected TResult InvokeResult<TResult>(Func<TResult> member)
         {
             ThrowIfDisposed();
+            ThrowIfNull();
             try
             {
                 return member.Invoke();
@@ -48,6 +49,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         protected void Invoke(Action member)
         {
             ThrowIfDisposed();
+            ThrowIfNull();
             try
             {
                 member.Invoke();
@@ -58,11 +60,19 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
+        protected void ThrowIfNull()
+        {
+            if (IsWrappingNullReference)
+            {
+                throw new NullReferenceException();
+            }
+        }
+
         protected void ThrowIfDisposed()
         {
             if (_isDisposed)
             {
-                throw new ObjectDisposedException("Object has been disposed.");
+                throw new ObjectDisposedException("(unknown)");
             }
         }
 
