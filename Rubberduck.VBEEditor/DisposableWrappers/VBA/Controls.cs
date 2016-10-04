@@ -19,12 +19,12 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         IEnumerator<Control> IEnumerable<Control>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<Microsoft.Vbe.Interop.Forms.Controls, Control>(ComObject);
+            return new ComWrapperEnumerator<Control>(ComObject);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new ComWrapperEnumerator<Microsoft.Vbe.Interop.Forms.Controls, Control>(ComObject);
+            return ((IEnumerable<Control>)this).GetEnumerator();
         }
     }
 }

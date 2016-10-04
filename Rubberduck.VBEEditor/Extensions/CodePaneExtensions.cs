@@ -13,7 +13,7 @@ namespace Rubberduck.VBEditor.Extensions
             }
 
             var selection = pane.GetSelection();
-            VBComponent component = null;
+            VBComponent component = new VBComponent(null);
             if (selection.EndLine > selection.StartLine && selection.EndColumn == 1)
             {
                 var endLine = selection.EndLine - 1;

@@ -37,12 +37,12 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         IEnumerator<VBProject> IEnumerable<VBProject>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<Microsoft.Vbe.Interop.VBProjects, VBProject>(ComObject);
+            return new ComWrapperEnumerator<VBProject>(ComObject);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new ComWrapperEnumerator<Microsoft.Vbe.Interop.VBProjects, VBProject>(ComObject);
+            return ((IEnumerable<VBProject>)this).GetEnumerator();
         }
     }
 }

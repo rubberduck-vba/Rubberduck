@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class ComWrapperEnumerator<TComCollection, TWrapperItem> : IEnumerator<TWrapperItem>
-        where TComCollection : IEnumerable
+    public class ComWrapperEnumerator<TWrapperItem> : IEnumerator<TWrapperItem>
+        where TWrapperItem : class
     {
         private readonly IEnumerator _internal;
 
-        public ComWrapperEnumerator(TComCollection items)
+        public ComWrapperEnumerator(IEnumerable source)
         {
-            _internal = items.GetEnumerator();
+            _internal = source.GetEnumerator();
         }
 
         public void Dispose()
