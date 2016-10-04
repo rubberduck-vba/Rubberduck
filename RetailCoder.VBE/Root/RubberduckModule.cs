@@ -236,8 +236,7 @@ namespace Rubberduck.Root
         private void ConfigureRubberduckMenu()
         {
             const int windowMenuId = 30009;
-            using (var vbe = Kernel.Get<VBE>())
-            using (var commandBars = vbe.CommandBars)
+            using (var commandBars = _vbe.CommandBars)
             using (var menuBar = commandBars[MenuBar])
             using (var controls = menuBar.Controls)
             {
@@ -250,8 +249,7 @@ namespace Rubberduck.Root
         private void ConfigureCodePaneContextMenu()
         {
             const int listMembersMenuId = 2529;
-            using (var vbe = Kernel.Get<VBE>())
-            using (var commandBars = vbe.CommandBars)
+            using (var commandBars = _vbe.CommandBars)
             using (var menuBar = commandBars[CodeWindow])
             using (var controls = menuBar.Controls)
             {
@@ -265,8 +263,7 @@ namespace Rubberduck.Root
         private void ConfigureFormDesignerContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            using (var vbe = Kernel.Get<VBE>())
-            using (var commandBars = vbe.CommandBars)
+            using (var commandBars = _vbe.CommandBars)
             using (var menuBar = commandBars[MsForms])
             using (var controls = menuBar.Controls)
             {
@@ -280,8 +277,7 @@ namespace Rubberduck.Root
         private void ConfigureFormDesignerControlContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            using (var vbe = Kernel.Get<VBE>())
-            using (var commandBars = vbe.CommandBars)
+            using (var commandBars = _vbe.CommandBars)
             using (var menuBar = commandBars[MsFormsControl])
             using (var controls = menuBar.Controls)
             {
@@ -295,8 +291,7 @@ namespace Rubberduck.Root
         private void ConfigureProjectExplorerContextMenu()
         {
             const int projectPropertiesMenuId = 2578;
-            using (var vbe = Kernel.Get<VBE>())
-            using (var commandBars = vbe.CommandBars)
+            using (var commandBars = _vbe.CommandBars)
             using (var menuBar = commandBars[MenuBar])
             using (var controls = menuBar.Controls)
             {

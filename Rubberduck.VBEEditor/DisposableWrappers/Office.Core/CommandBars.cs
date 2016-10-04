@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
 
         IEnumerator<CommandBar> IEnumerable<CommandBar>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<CommandBar>(this);
+            return new ComWrapperEnumerator<CommandBar>(ComObject);
         }
 
         public IEnumerator GetEnumerator()

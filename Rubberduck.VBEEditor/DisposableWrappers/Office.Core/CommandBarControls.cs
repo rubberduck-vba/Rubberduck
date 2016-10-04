@@ -27,7 +27,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
 
         IEnumerator<CommandBarControl> IEnumerable<CommandBarControl>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<CommandBarControl>(this);
+            return new ComWrapperEnumerator<CommandBarControl>(ComObject);
         }
 
         public int Count { get { return InvokeResult(() => ComObject.Count); } }
