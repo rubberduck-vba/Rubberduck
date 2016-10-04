@@ -331,7 +331,7 @@ End Sub";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            var actual = module.Lines();
+            var actual = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines();
             Assert.AreEqual(expectedCode, actual);
         }
 
@@ -386,7 +386,7 @@ End Sub";
                 inspectionResult.QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
             }
 
-            var actual = module.Lines();
+            var actual = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines();
             Assert.AreEqual(expectedCode, actual);
         }
 
