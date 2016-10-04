@@ -658,7 +658,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -689,7 +689,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -720,7 +720,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -753,7 +753,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -786,7 +786,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -850,9 +850,9 @@ End Sub";
 
             inspectionResults.Single().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode1, module1.Lines());
-            Assert.AreEqual(expectedCode2, module2.Lines());
-            Assert.AreEqual(expectedCode3, module3.Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module1).Lines());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode3, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module3).Lines());
         }
 
         [TestMethod]
@@ -914,9 +914,9 @@ End Sub";
 
             inspectionResults.Single().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode1, module1.Lines());
-            Assert.AreEqual(expectedCode2, module2.Lines());
-            Assert.AreEqual(expectedCode3, module3.Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module1).Lines());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode3, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module3).Lines());
         }
 
         [TestMethod]
@@ -950,7 +950,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
