@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Office.Core;
 using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
@@ -33,6 +32,7 @@ using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer.Commands;
+using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Root
@@ -236,83 +236,75 @@ namespace Rubberduck.Root
         private void ConfigureRubberduckMenu()
         {
             const int windowMenuId = 30009;
-            var vbe = Kernel.Get<VBE>();
-            var commandBars = vbe.CommandBars;
-            var menuBar = commandBars[MenuBar];
-            var controls = menuBar.Controls;
-            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, windowMenuId);
-
-            var items = GetRubberduckMenuItems();
-            BindParentMenuItem<RubberduckParentMenu>(controls, beforeIndex, items);
-            Marshal.ReleaseComObject(commandBars);
-            Marshal.ReleaseComObject(menuBar);
+            using (var vbe = Kernel.Get<VBE>())
+            using (var commandBars = vbe.CommandBars)
+            using (var menuBar = commandBars[MenuBar])
+            using (var controls = menuBar.Controls)
+            {
+                var beforeIndex = FindRubberduckMenuInsertionIndex(controls, windowMenuId);
+                var items = GetRubberduckMenuItems();
+                BindParentMenuItem<RubberduckParentMenu>(controls, beforeIndex, items);
+            }
         }
 
         private void ConfigureCodePaneContextMenu()
         {
             const int listMembersMenuId = 2529;
-            var vbe = Kernel.Get<VBE>();
-            var commandBars = vbe.CommandBars;
-            var menuBar = commandBars[CodeWindow];
-            var controls = menuBar.Controls;
-            var beforeControl = controls.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == listMembersMenuId);
-            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
-
-            var items = GetCodePaneContextMenuItems();
-            BindParentMenuItem<CodePaneContextParentMenu>(controls, beforeIndex, items);
-            Marshal.ReleaseComObject(commandBars);
-            Marshal.ReleaseComObject(menuBar);
+            using (var vbe = Kernel.Get<VBE>())
+            using (var commandBars = vbe.CommandBars)
+            using (var menuBar = commandBars[CodeWindow])
+            using (var controls = menuBar.Controls)
+            {
+                var beforeControl = controls.FirstOrDefault(control => control.Id == listMembersMenuId);
+                var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+                var items = GetCodePaneContextMenuItems();
+                BindParentMenuItem<CodePaneContextParentMenu>(controls, beforeIndex, items);
+            }
         }
 
         private void ConfigureFormDesignerContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            var vbe = Kernel.Get<VBE>();
-            var commandBars = vbe.CommandBars;
-            var menuBar = commandBars[MsForms];
-            var controls = menuBar.Controls;
-
-            var beforeControl = controls.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == viewCodeMenuId);
-            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
-
-            var items = GetFormDesignerContextMenuItems();
-            BindParentMenuItem<FormDesignerContextParentMenu>(controls, beforeIndex, items);
-            Marshal.ReleaseComObject(commandBars);
-            Marshal.ReleaseComObject(menuBar);
+            using (var vbe = Kernel.Get<VBE>())
+            using (var commandBars = vbe.CommandBars)
+            using (var menuBar = commandBars[MsForms])
+            using (var controls = menuBar.Controls)
+            {
+                var beforeControl = controls.FirstOrDefault(control => control.Id == viewCodeMenuId);
+                var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+                var items = GetFormDesignerContextMenuItems();
+                BindParentMenuItem<FormDesignerContextParentMenu>(controls, beforeIndex, items);
+            }
         }
 
         private void ConfigureFormDesignerControlContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            var vbe = Kernel.Get<VBE>();
-            var commandBars = vbe.CommandBars;
-            var menuBar = commandBars[MsFormsControl];
-            var controls = menuBar.Controls;
-
-            var beforeControl = controls.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == viewCodeMenuId);
-            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
-
-            var items = GetFormDesignerContextMenuItems();
-            BindParentMenuItem<FormDesignerControlContextParentMenu>(controls, beforeIndex, items);
-            Marshal.ReleaseComObject(commandBars);
-            Marshal.ReleaseComObject(menuBar);
+            using (var vbe = Kernel.Get<VBE>())
+            using (var commandBars = vbe.CommandBars)
+            using (var menuBar = commandBars[MsFormsControl])
+            using (var controls = menuBar.Controls)
+            {
+                var beforeControl = controls.FirstOrDefault(control => control.Id == viewCodeMenuId);
+                var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+                var items = GetFormDesignerContextMenuItems();
+                BindParentMenuItem<FormDesignerControlContextParentMenu>(controls, beforeIndex, items);
+            }
         }
 
         private void ConfigureProjectExplorerContextMenu()
         {
             const int projectPropertiesMenuId = 2578;
-            var vbe = Kernel.Get<VBE>();
-            var commandBars = vbe.CommandBars;
-            var menuBar = commandBars[MenuBar];
-            var controls = menuBar.Controls;
-
-            var beforeControl = controls.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == projectPropertiesMenuId);
-            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
-
-            var items = GetProjectWindowContextMenuItems();
-            BindParentMenuItem<ProjectWindowContextParentMenu>(controls, beforeIndex, items);
-            Marshal.ReleaseComObject(commandBars);
-            Marshal.ReleaseComObject(menuBar);
+            using (var vbe = Kernel.Get<VBE>())
+            using (var commandBars = vbe.CommandBars)
+            using (var menuBar = commandBars[MenuBar])
+            using (var controls = menuBar.Controls)
+            {
+                var beforeControl = controls.FirstOrDefault(control => control.Id == projectPropertiesMenuId);
+                var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+                var items = GetProjectWindowContextMenuItems();
+                BindParentMenuItem<ProjectWindowContextParentMenu>(controls, beforeIndex, items);
+            }
         }
 
         private void BindParentMenuItem<TParentMenu>(CommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
@@ -329,7 +321,7 @@ namespace Rubberduck.Root
         {
             for (var i = 1; i <= controls.Count; i++)
             {
-                if (controls[i].BuiltIn && controls[i].Id == beforeId)
+                if (controls[i].IsBuiltIn && controls[i].Id == beforeId)
                 {
                     return i;
                 }

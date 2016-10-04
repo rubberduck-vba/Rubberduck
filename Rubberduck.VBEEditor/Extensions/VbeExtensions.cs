@@ -1,7 +1,6 @@
 using System.Linq;
-using System.Runtime.InteropServices;
-using Microsoft.Office.Core;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.VBEHost;
 
@@ -47,60 +46,60 @@ namespace Rubberduck.VBEditor.Extensions
                 {
                     const int ctlViewHost = 106;
 
-                    var commandBars = vbe.CommandBars;
-                    var hostAppControl = commandBars.FindControl(MsoControlType.msoControlButton, ctlViewHost);
+                    using (var commandBars = vbe.CommandBars)
+                    using (var hostAppControl = commandBars.FindControl(ControlType.Button, ctlViewHost))
+                    {
 
-                    IHostApplication result;
-                    if (hostAppControl == null)
-                    {
-                        result = null;
-                    }
-                    else
-                    {
-                        switch (hostAppControl.Caption)
+                        IHostApplication result;
+                        if (hostAppControl.IsWrappingNullReference)
                         {
-                            case "Microsoft Excel":
-                                result = new ExcelApp();
-                                break;
-                            case "Microsoft Access":
-                                result = new AccessApp();
-                                break;
-                            case "Microsoft Word":
-                                result = new WordApp();
-                                break;
-                            case "Microsoft PowerPoint":
-                                result = new PowerPointApp();
-                                break;
-                            case "Microsoft Outlook":
-                                result = new OutlookApp();
-                                break;
-                            case "Microsoft Project":
-                                result = new ProjectApp();
-                                break;
-                            case "Microsoft Publisher":
-                                result = new PublisherApp();
-                                break;
-                            case "Microsoft Visio":
-                                result = new VisioApp();
-                                break;
-                            case "AutoCAD":
-                                result = new AutoCADApp();
-                                break;
-                            case "CorelDRAW":
-                                result = new CorelDRAWApp();
-                                break;
-                            case "SolidWorks":
-                                result = new SolidWorksApp(vbe);
-                                break;
-                            default:
-                                result = null;
-                                break;
+                            result = null;
                         }
-                        Marshal.ReleaseComObject(hostAppControl);
-                    }
+                        else
+                        {
+                            switch (hostAppControl.Caption)
+                            {
+                                case "Microsoft Excel":
+                                    result = new ExcelApp();
+                                    break;
+                                case "Microsoft Access":
+                                    result = new AccessApp();
+                                    break;
+                                case "Microsoft Word":
+                                    result = new WordApp();
+                                    break;
+                                case "Microsoft PowerPoint":
+                                    result = new PowerPointApp();
+                                    break;
+                                case "Microsoft Outlook":
+                                    result = new OutlookApp();
+                                    break;
+                                case "Microsoft Project":
+                                    result = new ProjectApp();
+                                    break;
+                                case "Microsoft Publisher":
+                                    result = new PublisherApp();
+                                    break;
+                                case "Microsoft Visio":
+                                    result = new VisioApp();
+                                    break;
+                                case "AutoCAD":
+                                    result = new AutoCADApp();
+                                    break;
+                                case "CorelDRAW":
+                                    result = new CorelDRAWApp();
+                                    break;
+                                case "SolidWorks":
+                                    result = new SolidWorksApp(vbe);
+                                    break;
+                                default:
+                                    result = null;
+                                    break;
+                            }
+                        }
 
-                    Marshal.ReleaseComObject(commandBars);
-                    return result;
+                        return result;
+                    }
                 }
 
                 using (var references = project.References)
@@ -147,31 +146,31 @@ namespace Rubberduck.VBEditor.Extensions
                 if (project.IsWrappingNullReference)
                 {
                     const int ctlViewHost = 106;
-                    var commandBars = vbe.CommandBars;
-                    var hostAppControl = commandBars.FindControl(MsoControlType.msoControlButton, ctlViewHost);
-
-                    if (hostAppControl == null)
+                    using (var commandBars = vbe.CommandBars)
+                    using (var hostAppControl = commandBars.FindControl(ControlType.Button, ctlViewHost))
                     {
-                        Marshal.ReleaseComObject(commandBars);
-                        return false;
-                    }
-
-                    switch (hostAppControl.Caption)
-                    {
-                        case "Microsoft Excel":
-                        case "Microsoft Access":
-                        case "Microsoft Word":
-                        case "Microsoft PowerPoint":
-                        case "Microsoft Outlook":
-                        case "Microsoft Project":
-                        case "Microsoft Publisher":
-                        case "Microsoft Visio":
-                        case "AutoCAD":
-                        case "CorelDRAW":
-                        case "SolidWorks":
-                            return true;
-                        default:
+                        if (hostAppControl.IsWrappingNullReference)
+                        {
                             return false;
+                        }
+
+                        switch (hostAppControl.Caption)
+                        {
+                            case "Microsoft Excel":
+                            case "Microsoft Access":
+                            case "Microsoft Word":
+                            case "Microsoft PowerPoint":
+                            case "Microsoft Outlook":
+                            case "Microsoft Project":
+                            case "Microsoft Publisher":
+                            case "Microsoft Visio":
+                            case "AutoCAD":
+                            case "CorelDRAW":
+                            case "SolidWorks":
+                                return true;
+                            default:
+                                return false;
+                        }
                     }
                 }
 

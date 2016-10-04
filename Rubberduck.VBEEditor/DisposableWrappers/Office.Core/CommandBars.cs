@@ -15,9 +15,19 @@ namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
             return new CommandBar(InvokeResult(() => ComObject.Add(name, Temporary:true)));
         }
 
-        public CommandBar Add(string name, int position)
+        public CommandBar Add(string name, CommandBarPosition position)
         {
             return new CommandBar(InvokeResult(() => ComObject.Add(name, position, Temporary: true)));
+        }
+
+        public CommandBarControl FindControl(int id)
+        {
+            return new CommandBarControl(InvokeResult(() => ComObject.FindControl(Id:id)));
+        }
+
+        public CommandBarControl FindControl(ControlType type, int id)
+        {
+            return new CommandBarControl(InvokeResult(() => ComObject.FindControl(type, id)));
         }
 
         IEnumerator<CommandBar> IEnumerable<CommandBar>.GetEnumerator()

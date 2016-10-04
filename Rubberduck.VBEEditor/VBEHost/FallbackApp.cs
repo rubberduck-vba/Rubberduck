@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
-using Microsoft.Office.Core;
-using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 
@@ -19,7 +18,7 @@ namespace Rubberduck.VBEditor.VBEHost
         {
             _vbe = vbe;
             var mainCommandBar = _vbe.CommandBars[DebugCommandBarId];
-            _runButton = (CommandBarButton)mainCommandBar.FindControl(Id: RunMacroCommand);
+            _runButton = (CommandBarButton)mainCommandBar.FindControl(RunMacroCommand);
         }
 
         public void Run(QualifiedMemberName qualifiedMemberName)

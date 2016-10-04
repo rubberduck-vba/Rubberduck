@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Timers;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.AutoSave
@@ -53,7 +52,7 @@ namespace Rubberduck.AutoSave
                 }
 
                 var commandBars = _vbe.CommandBars;
-                var control = commandBars.FindControl(Id: VbeSaveCommandId);
+                var control = commandBars.FindControl(VbeSaveCommandId);
                 control.Execute();
                 Marshal.ReleaseComObject(control);
                 Marshal.ReleaseComObject(commandBars);

@@ -2,7 +2,6 @@ using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -39,7 +38,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             using (var projects = _vbe.VBProjects)
             {
                 var commandBars = _vbe.CommandBars;
-                var command = commandBars.FindControl(Id: openProjectPropertiesId);
+                var command = commandBars.FindControl(openProjectPropertiesId);
 
                 if (projects.Count == 1)
                 {

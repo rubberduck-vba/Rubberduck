@@ -7,6 +7,16 @@
         {
         }
 
+        public CommandBarControl FindControl(int id)
+        {
+            return new CommandBarControl(InvokeResult(() => ComObject.FindControl(Id: id)));
+        }
+
+        public CommandBarControl FindControl(ControlType type, int id)
+        {
+            return new CommandBarControl(InvokeResult(() => ComObject.FindControl(type, id)));
+        }
+        
         public void Delete()
         {
             Invoke(() => ComObject.Delete());
