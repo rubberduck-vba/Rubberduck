@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.VBEditor.DisposableWrappers.VBA
+﻿using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
+
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class VBE : SafeComWrapper<Microsoft.Vbe.Interop.VBE>
     {
@@ -25,10 +27,7 @@
 
         public CodePanes CodePanes { get { return new CodePanes(InvokeResult(() => ComObject.CodePanes)); } }
 
-        /// <summary>
-        /// Returns an unwrapped COM object; remember to call Marshal.ReleaseComObject on the returned object.
-        /// </summary>
-        public Microsoft.Office.Core.CommandBars CommandBars { get { return InvokeResult(() => ComObject.CommandBars); } }
+        public CommandBars CommandBars { get { return new CommandBars(InvokeResult(() => ComObject.CommandBars)); } }
 
         public Window MainWindow { get { return new Window(InvokeResult(() => ComObject.MainWindow)); } }
 
