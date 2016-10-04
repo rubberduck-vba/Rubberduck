@@ -101,7 +101,8 @@ namespace RubberduckTests.TodoExplorer
             vm.SelectedItem = vm.Items.Single();
             vm.RemoveCommand.Execute(null);
 
-            Assert.AreEqual(expected, project.Object.VBComponents.Item(0).CodeModule.Lines());
+            var module = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(project.Object.VBComponents.Item(0).CodeModule);
+            Assert.AreEqual(expected, module.Lines());
             Assert.IsFalse(vm.Items.Any());
         }
 
