@@ -191,7 +191,7 @@ Rem test";
 
             inspectionResults.First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -222,7 +222,7 @@ Rem test";
 
             inspectionResults.First().QuickFixes.ElementAt(1).Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -253,7 +253,7 @@ Rem test";
 
             inspectionResults.First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -284,7 +284,7 @@ Rem test";
 
             inspectionResults.First().QuickFixes.ElementAt(1).Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -316,7 +316,7 @@ Rem test1";
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
         }
 
         [TestMethod]
