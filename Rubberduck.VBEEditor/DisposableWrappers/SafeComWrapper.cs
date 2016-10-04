@@ -66,7 +66,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             }
         }
 
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
             if (_isDisposed)
             {
@@ -78,7 +78,16 @@ namespace Rubberduck.VBEditor.DisposableWrappers
                 Marshal.ReleaseComObject(_comObject);
             }
 
+            // 'disposing' parameter would be used to skip disposing managed resources when false.
+            // ...but we don't have any managed resources to deal with here, so it can be ignored.
+
             _isDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public bool Equals(SafeComWrapper<T> other)
@@ -106,7 +115,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         ~SafeComWrapper()
         {
-            Dispose();
+            Dispose(false);
         }
     }
 }

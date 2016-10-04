@@ -232,7 +232,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 object picture = control.Picture;
                 return true;
             }
-
             catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException exception)
             {
                 Logger.Debug("Button image cannot be set for button [" + button.Caption + "], because Host VBE CommandBars are too old.\n" + exception);

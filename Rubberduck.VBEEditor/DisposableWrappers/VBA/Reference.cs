@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
@@ -20,5 +21,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         public bool IsBroken { get { return InvokeResult(() => ComObject.IsBroken); } }
         public ReferenceKind Type { get { return (ReferenceKind)InvokeResult(() => ComObject.Type); } }
         public string Description { get { return InvokeResult(() => ComObject.Description); } }
+
+        public int Index { get { return Collection.ToList().IndexOf(this); } }
     }
 }

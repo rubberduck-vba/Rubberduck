@@ -111,9 +111,25 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisposableWrappers\Office.Core\AxHostConverter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DisposableWrappers\Office.Core\ButtonState.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\ButtonStyle.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\CommandBar.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\CommandBarButton.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\CommandBarButtonClickEventArgs.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\CommandBarControl.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\CommandBarControls.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\CommandBarPopup.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\CommandBarPosition.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\CommandBars.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\CommandBarType.cs" />
+    <Compile Include="DisposableWrappers\Office.Core\ControlType.cs" />
     <Compile Include="DisposableWrappers\VBA\AddIn.cs" />
     <Compile Include="DisposableWrappers\VBA\AddIns.cs" />
     <Compile Include="DisposableWrappers\VBA\Application.cs" />

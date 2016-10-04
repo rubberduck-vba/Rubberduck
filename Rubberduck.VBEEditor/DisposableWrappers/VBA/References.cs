@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
@@ -48,6 +49,20 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         public void Remove(Reference reference)
         {
             Invoke(() => ComObject.Remove(reference.ComObject));
+        }
+
+        /// <summary>
+        /// Moves specified reference to specified index.
+        /// </summary>
+        public void SetPriority(Reference reference, int index)
+        {
+            if (reference.IsWrappingNullReference)
+            {
+                throw new ArgumentException("Specified wrapper cannot wrap a null COM object.", "reference");
+            }
+
+            var originalIndex = reference.Index;
+            throw new NotImplementedException();
         }
 
         public VBProject Parent { get { return new VBProject(InvokeResult(() => ComObject.Parent)); } }
