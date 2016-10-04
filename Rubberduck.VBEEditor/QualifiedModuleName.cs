@@ -1,7 +1,5 @@
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.VBEditor
@@ -50,15 +48,25 @@ namespace Rubberduck.VBEditor
             _project = null; // field is only assigned when the instance refers to a VBProject.
 
             _component = component;
-            _componentName = component == null ? string.Empty : component.Name;
-            _project = component == null ? null : component.Collection.Parent;
+            _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
+
+            if (!_component.IsWrappingNullReference)
+            using (var components = component.Collection)
+            {
+                _project = components.Parent;
+                _projectName = _project == null ? string.Empty : _project.Name;
+                _projectPath = string.Empty;
+                _projectId = GetProjectId(_project);
+                _projectDisplayName = string.Empty;
+            }
+
             _projectName = _project == null ? string.Empty : _project.Name;
             _projectPath = string.Empty;
             _projectId = GetProjectId(_project);
             _projectDisplayName = string.Empty;
 
             _contentHashCode = 0;
-            if (component == null)
+            if (component.IsWrappingNullReference)
             {
                 return;
             }

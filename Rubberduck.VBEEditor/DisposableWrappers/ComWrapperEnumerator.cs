@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public class ComWrapperEnumerator<TCollection, TItem> : IEnumerator<TItem>
-        where TCollection : IEnumerable
+    public class ComWrapperEnumerator<TComCollection, TWrapperItem> : IEnumerator<TWrapperItem>
+        where TComCollection : IEnumerable
     {
         private readonly IEnumerator _internal;
 
-        public ComWrapperEnumerator(TCollection items)
+        public ComWrapperEnumerator(TComCollection items)
         {
             _internal = items.GetEnumerator();
         }
@@ -34,9 +34,9 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             _internal.Reset();
         }
 
-        public TItem Current
+        public TWrapperItem Current
         {
-            get { return (TItem)Activator.CreateInstance(typeof(TItem), _internal.Current); }
+            get { return (TWrapperItem)Activator.CreateInstance(typeof(TWrapperItem), _internal.Current); }
         }
 
         object IEnumerator.Current

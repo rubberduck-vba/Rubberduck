@@ -253,8 +253,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             var userDeclarations = _state.AllUserDeclarations
-                .GroupBy(declaration => declaration.Project)
-                .Where(grouping => grouping.Key != null)
+                .GroupBy(declaration => declaration.ProjectId)
                 .ToList();
 
             if (userDeclarations.Any(
