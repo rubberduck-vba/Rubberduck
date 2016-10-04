@@ -12,16 +12,16 @@ namespace Rubberduck.VBEditor.Extensions
         {
             try
             {
-                using (var components = vbProject.VBComponents)
-                using (var component = components.SingleOrDefault(c => c.Name == name))
+                var components = vbProject.VBComponents;
+                var component = components.SingleOrDefault(c => c.Name == name);
                 {
                     if (component == null || component.IsWrappingNullReference)
                     {
                         return;
                     }
 
-                    using (var module = component.CodeModule)
-                    using (var pane = module.CodePane)
+                    var module = component.CodeModule;
+                    var pane = module.CodePane;
                     {
                         pane.SetSelection(selection);
                     }
@@ -40,14 +40,14 @@ namespace Rubberduck.VBEditor.Extensions
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>
         public static IHostApplication HostApplication(this VBE vbe)
         {
-            using (var project = vbe.ActiveVBProject)
+            var project = vbe.ActiveVBProject;
             {
                 if (project.IsWrappingNullReference)
                 {
                     const int ctlViewHost = 106;
 
-                    using (var commandBars = vbe.CommandBars)
-                    using (var hostAppControl = commandBars.FindControl(ControlType.Button, ctlViewHost))
+                    var commandBars = vbe.CommandBars;
+                    var hostAppControl = commandBars.FindControl(ControlType.Button, ctlViewHost);
                     {
 
                         IHostApplication result;
@@ -102,7 +102,7 @@ namespace Rubberduck.VBEditor.Extensions
                     }
                 }
 
-                using (var references = project.References)
+                var references = project.References;
                 {
                     foreach (var reference in references.Where(reference => (reference.IsBuiltIn && reference.Name != "VBA") || (reference.Name == "AutoCAD")))
                     {
@@ -141,13 +141,13 @@ namespace Rubberduck.VBEditor.Extensions
         /// <summary> Returns whether the host supports unit tests.</summary>
         public static bool HostSupportsUnitTests(this VBE vbe)
         {
-            using (var project = vbe.ActiveVBProject)
+            var project = vbe.ActiveVBProject;
             {
                 if (project.IsWrappingNullReference)
                 {
                     const int ctlViewHost = 106;
-                    using (var commandBars = vbe.CommandBars)
-                    using (var hostAppControl = commandBars.FindControl(ControlType.Button, ctlViewHost))
+                    var commandBars = vbe.CommandBars;
+                    var hostAppControl = commandBars.FindControl(ControlType.Button, ctlViewHost);
                     {
                         if (hostAppControl.IsWrappingNullReference)
                         {
@@ -174,7 +174,7 @@ namespace Rubberduck.VBEditor.Extensions
                     }
                 }
 
-                using (var references = project.References)
+                var references = project.References;
                 {
                     foreach (var reference in references.Where(reference => (reference.IsBuiltIn && reference.Name != "VBA") || (reference.Name == "AutoCAD")))
                     {

@@ -92,8 +92,8 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             if (oldSelection.HasValue)
             {
-                using (var module = oldSelection.Value.QualifiedName.Component.CodeModule)
-                using (var pane = module.CodePane)
+                var module = oldSelection.Value.QualifiedName.Component.CodeModule;
+                var pane = module.CodePane;
                 {
                     pane.SetSelection(oldSelection.Value.Selection);
                 }
@@ -104,7 +104,7 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         private void AddField(Declaration target)
         {
-            using (var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule)
+            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 module.InsertLines(module.CountOfDeclarationLines + 1, GetFieldDefinition(target));
             }
@@ -129,8 +129,8 @@ namespace Rubberduck.Refactorings.IntroduceField
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 var oldLines = module.GetLines(selection);
                 var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)

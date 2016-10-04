@@ -109,8 +109,8 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private List<RegexSearchResult> SearchSelection(string searchPattern)
         {
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 var results = GetResultsFromModule(module, searchPattern);
                 return results.Where(r => pane.GetSelection().Contains(r.Selection)).ToList();
@@ -130,8 +130,8 @@ namespace Rubberduck.Navigation.RegexSearchReplace
                     };
 
             var state = _parser.State;
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 var results = GetResultsFromModule(module, searchPattern);
 
@@ -144,7 +144,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private List<RegexSearchResult> SearchCurrentFile(string searchPattern)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 return GetResultsFromModule(pane.CodeModule, searchPattern).ToList();
             }
@@ -153,9 +153,9 @@ namespace Rubberduck.Navigation.RegexSearchReplace
         private List<RegexSearchResult> SearchOpenFiles(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
-            using (var panes = _vbe.CodePanes)
+            var panes = _vbe.CodePanes;
             {
-                foreach (var codePane in panes.Cast<CodePane>())
+                foreach (var codePane in panes)
                 {
                     results.AddRange(GetResultsFromModule(codePane.CodeModule, searchPattern));
                 }
@@ -167,10 +167,10 @@ namespace Rubberduck.Navigation.RegexSearchReplace
         private List<RegexSearchResult> SearchCurrentProject(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
-            using (var project = _vbe.ActiveVBProject)
-            using (var components = project.VBComponents)
+            var project = _vbe.ActiveVBProject;
+            var components = project.VBComponents;
             {
-                foreach (var component in components.Cast<VBComponent>())
+                foreach (var component in components)
                 {
                     results.AddRange(GetResultsFromModule(component.CodeModule, searchPattern));
                 }
@@ -182,7 +182,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
         private List<RegexSearchResult> SearchOpenProjects(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
-            using (var projects = _vbe.VBProjects)
+            var projects = _vbe.VBProjects;
             {
                 var modules = projects
                     .Where(project => project.Protection == ProjectProtection.Unprotected)

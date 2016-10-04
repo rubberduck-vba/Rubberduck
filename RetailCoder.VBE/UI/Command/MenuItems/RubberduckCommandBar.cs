@@ -155,7 +155,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             _commandbar = _vbe.CommandBars.Add("Rubberduck", CommandBarPosition.Top);
 
-            _refreshButton = (CommandBarButton)_commandbar.Controls.Add(ControlType.Button);
+            _refreshButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
             _refreshButton.Picture = Resources.arrow_circle_double;
             _refreshButton.Mask = Resources.arrow_circle_double_mask;
             _refreshButton.Style = ButtonStyle.Icon;
@@ -164,17 +164,18 @@ namespace Rubberduck.UI.Command.MenuItems
             _refreshButton.Click += refreshButton_Click;
             _refreshButton.ApplyIcon();
 
-            _statusButton = (CommandBarButton)_commandbar.Controls.Add(ControlType.Button);
+            _statusButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
             _statusButton.Style = ButtonStyle.Caption;
             _statusButton.Tag = "Status";
             _statusButton.Click += _statusButton_Click;
 
-            _selectionButton = (CommandBarButton)_commandbar.Controls.Add(ControlType.Button);
+            _selectionButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
             _selectionButton.Style = ButtonStyle.Caption;
             _selectionButton.BeginsGroup = true;
             _selectionButton.IsEnabled = false;
 
             _commandbar.IsVisible = true;
+            _sinks.Start();
         }
 
         private void refreshButton_Click(object sender, CommandBarButtonClickEventArgs e)

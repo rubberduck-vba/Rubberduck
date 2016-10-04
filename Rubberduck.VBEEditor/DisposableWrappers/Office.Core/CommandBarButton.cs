@@ -13,6 +13,11 @@ namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
             comObject.Click += comObject_Click;
         }
 
+        public static CommandBarButton FromCommandBarControl(CommandBarControl control)
+        {
+            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.ComObject);
+        }
+
         private Microsoft.Office.Core.CommandBarButton Button { get {  return (Microsoft.Office.Core.CommandBarButton)ComObject; } }
 
         public event EventHandler<CommandBarButtonClickEventArgs> Click;

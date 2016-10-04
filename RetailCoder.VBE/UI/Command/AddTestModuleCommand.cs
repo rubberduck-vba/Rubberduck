@@ -92,7 +92,7 @@ namespace Rubberduck.UI.Command
                 return activeProject;
             }
 
-            using (var projects = _vbe.VBProjects)
+            var projects = _vbe.VBProjects;
             {
                 return projects.Count == 1 
                     ? projects.Item(1) 
@@ -122,9 +122,9 @@ namespace Rubberduck.UI.Command
                     project.EnsureReferenceToAddInLibrary();
                 }
 
-                using (var components = project.VBComponents)
-                using (var component = components.Add(ComponentType.StandardModule))
-                using (var module = component.CodeModule)
+                var components = project.VBComponents;
+                var component = components.Add(ComponentType.StandardModule);
+                var module = component.CodeModule;
                 {
                     component.Name = GetNextTestModuleName(project);
 

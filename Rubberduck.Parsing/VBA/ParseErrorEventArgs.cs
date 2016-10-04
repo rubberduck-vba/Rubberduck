@@ -1,7 +1,6 @@
 ﻿using System;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Parsing.VBA
@@ -24,8 +23,8 @@ namespace Rubberduck.Parsing.VBA
         public void Navigate()
         {
             var selection = new Selection(_exception.LineNumber, _exception.Position, _exception.LineNumber, _exception.Position + _exception.OffendingSymbol.Text.Length - 1);
-            using (var module = _component.CodeModule)
-            using (var pane = module.CodePane)
+            var module = _component.CodeModule;
+            var pane = module.CodePane;
             {
                 pane.SetSelection(selection);
             }

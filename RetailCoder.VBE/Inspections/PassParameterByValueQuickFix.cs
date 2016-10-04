@@ -75,7 +75,7 @@ namespace Rubberduck.Inspections
         {
             var selectionLength = context.BYREF() == null ? 0 : 6;
 
-            using (var module = qualifiedSelection.QualifiedName.Component.CodeModule)
+            var module = qualifiedSelection.QualifiedName.Component.CodeModule;
             {
                 var lines = module.GetLines(context.Start.Line, 1);
 

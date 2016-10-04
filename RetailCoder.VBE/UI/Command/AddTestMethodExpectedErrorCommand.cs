@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Command
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 if (_state.Status != ParserState.Ready || pane.IsWrappingNullReference)
                 {
@@ -65,12 +65,12 @@ namespace Rubberduck.UI.Command
                 try
                 {
                     // the code modules consistently match correctly, but the components don't
-                    using (var component = _vbe.SelectedVBComponent)
-                    using (var selectedModule = component.CodeModule)
+                    var component = _vbe.SelectedVBComponent;
+                    var selectedModule = component.CodeModule;
                     {
                         return testModules.Any(a =>
                         {
-                            using (var module = a.QualifiedName.QualifiedModuleName.Component.CodeModule)
+                            var module = a.QualifiedName.QualifiedModuleName.Component.CodeModule;
                             {
                                 return module.Equals(selectedModule);
                             }
@@ -86,7 +86,7 @@ namespace Rubberduck.UI.Command
 
         protected override void ExecuteImpl(object parameter)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -95,11 +95,11 @@ namespace Rubberduck.UI.Command
 
                 try
                 {
-                    using (var activeModule = pane.CodeModule)
+                    var activeModule = pane.CodeModule;
                     {
                         var declaration = _state.GetTestModules().FirstOrDefault(f =>
                         {
-                            using (var thisModule = f.QualifiedName.QualifiedModuleName.Component.CodeModule)
+                            var thisModule = f.QualifiedName.QualifiedModuleName.Component.CodeModule;
                             {
                                 return thisModule.Equals(activeModule);
                             }
@@ -107,7 +107,7 @@ namespace Rubberduck.UI.Command
 
                         if (declaration != null)
                         {
-                            using (var module = pane.CodeModule)
+                            var module = pane.CodeModule;
                             {
                                 var name = GetNextTestMethodName(module.Parent);
                                 var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);

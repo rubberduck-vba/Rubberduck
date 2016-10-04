@@ -72,7 +72,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public void Refactor(QualifiedSelection target)
         {
-            using (var pane = _codeModule.CodePane)
+            var pane = _codeModule.CodePane;
             {
                 pane.SetSelection(target.Selection);
                 Refactor();

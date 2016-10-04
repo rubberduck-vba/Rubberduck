@@ -41,8 +41,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void ExecuteImpl(object parameter)
         {
-            using (var pane = Vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = Vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 if (pane.IsWrappingNullReference)
                 {

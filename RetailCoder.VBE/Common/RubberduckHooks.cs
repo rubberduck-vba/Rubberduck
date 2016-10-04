@@ -31,7 +31,7 @@ namespace Rubberduck.Common
 
         public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<CommandBase> commands)
         {
-            using (var mainWindow = vbe.MainWindow)
+            var mainWindow = vbe.MainWindow;
             {
                 _mainWindowHandle = (IntPtr)mainWindow.HWnd;
             }

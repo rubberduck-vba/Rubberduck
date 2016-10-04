@@ -316,8 +316,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            using (var components = e.Component.Collection)
-            using (var componentProject = components.Parent)
+            var components = e.Component.Collection;
+            var componentProject = components.Parent;
             {
                 var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
                     .FirstOrDefault(p => p.Declaration.Project.Equals(componentProject));

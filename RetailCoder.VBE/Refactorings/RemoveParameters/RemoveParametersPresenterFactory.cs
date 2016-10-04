@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public RemoveParametersPresenter Create()
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 var selection = pane.GetQualifiedSelection();
 

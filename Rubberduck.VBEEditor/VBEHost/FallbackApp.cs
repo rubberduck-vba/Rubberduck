@@ -24,10 +24,10 @@ namespace Rubberduck.VBEditor.VBEHost
         public void Run(QualifiedMemberName qualifiedMemberName)
         {
             var component = qualifiedMemberName.QualifiedModuleName.Component;
-            using (var module = component.CodeModule)
+            var module = component.CodeModule;
             {
                 var line = module.GetProcBodyStartLine(qualifiedMemberName.MemberName, ProcKind.Procedure);
-                using (var pane = module.CodePane)
+                var pane = module.CodePane;
                 {
                     pane.SetSelection(line, 1, line, 1);
                     pane.ForceFocus();

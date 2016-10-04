@@ -43,11 +43,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return;
             }
 
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             if (!pane.IsWrappingNullReference)
             {
                 QualifiedSelection? oldSelection;
-                using (var module = pane.CodeModule)
+                var module = pane.CodeModule;
                 {
                     oldSelection = module.GetSelection();
                 }
@@ -67,7 +67,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 pane.SetSelection(target.Selection);
                 Refactor();
@@ -81,7 +81,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 pane.SetSelection(target.QualifiedSelection.Selection);
                 Refactor();
@@ -243,7 +243,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private void AdjustSignatures(Declaration declaration)
         {
             var proc = (dynamic)declaration.Context.Parent;
-            using (var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule)
+            var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 VBAParser.ArgListContext paramList;
 

@@ -17,7 +17,7 @@ namespace Rubberduck.UnitTesting
             var name = assembly.GetName().Name.Replace('.', '_');
             var referencePath = Path.ChangeExtension(assembly.Location, ".tlb");
 
-            using (var references = project.References)
+            var references = project.References;
             {
                 var reference = references.SingleOrDefault(r => r.Name == name);
                 if (reference != null)

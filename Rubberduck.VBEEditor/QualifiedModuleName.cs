@@ -50,8 +50,7 @@ namespace Rubberduck.VBEditor
             _component = component;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
-            if (!_component.IsWrappingNullReference)
-            using (var components = component.Collection)
+            var components = component.Collection;
             {
                 _project = components.Parent;
                 _projectName = _project == null ? string.Empty : _project.Name;
@@ -71,7 +70,7 @@ namespace Rubberduck.VBEditor
                 return;
             }
 
-            using (var module = component.CodeModule)
+            var module = component.CodeModule;
             {
                 _contentHashCode = module.CountOfLines > 0
                     // ReSharper disable once UseIndexedProperty
@@ -137,9 +136,9 @@ namespace Rubberduck.VBEditor
                     return _projectDisplayName;
                 }
 
-                using (var vbe = _project.VBE)
-                using (var activeProject = vbe.ActiveVBProject)
-                using (var mainWindow = vbe.MainWindow)
+                var vbe = _project.VBE;
+                var activeProject = vbe.ActiveVBProject;
+                var mainWindow = vbe.MainWindow;
                 {
                     try
                     {

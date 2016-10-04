@@ -46,8 +46,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (oldSelection.HasValue)
             {
-                using (var module = oldSelection.Value.QualifiedName.Component.CodeModule)
-                using (var pane = module.CodePane)
+                var module = oldSelection.Value.QualifiedName.Component.CodeModule;
+                var pane = module.CodePane;
                 {
                     pane.SetSelection(oldSelection.Value.Selection);
                 }
@@ -58,7 +58,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void Refactor(QualifiedSelection target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 pane.SetSelection(target.Selection);
             }
@@ -67,7 +67,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void Refactor(Declaration target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 pane.SetSelection(target.QualifiedSelection.Selection);
             }
@@ -88,7 +88,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             foreach (var reference in _model.TargetDeclaration.References)
             {
-                using (var module = reference.QualifiedModuleName.Component.CodeModule)
+                var module = reference.QualifiedModuleName.Component.CodeModule;
                 {
                     var oldLine = module.GetLines(reference.Selection.StartLine, 1);
                     oldLine = oldLine.Remove(reference.Selection.StartColumn - 1, reference.Selection.EndColumn - reference.Selection.StartColumn);
@@ -112,7 +112,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                            _model.TargetDeclaration.AsTypeName;
 
             module.InsertLines(module.CountOfDeclarationLines + 1, newField);
-            using (var pane = module.CodePane)
+            var pane = module.CodePane;
             {
                 pane.SetSelection(_model.TargetDeclaration.QualifiedSelection.Selection);
             }
@@ -145,8 +145,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 var oldLines = module.GetLines(selection);
 

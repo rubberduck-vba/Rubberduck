@@ -158,9 +158,9 @@ namespace Rubberduck.SourceControl
             {
                 return;
             }
-            using (var vbe = Project.VBE)
-            using (var components = Project.VBComponents)
-            using (var pane = vbe.ActiveCodePane)
+            var vbe = Project.VBE;
+            var components = Project.VBComponents;
+            var pane = vbe.ActiveCodePane;
             {
                 var item = components.SingleOrDefault(f => moduleName.Equals(f.Name, StringComparison.InvariantCultureIgnoreCase));
                 if (item == null)
@@ -169,8 +169,8 @@ namespace Rubberduck.SourceControl
                 }
                 if (!pane.IsWrappingNullReference)
                 {
-                    using (var module = pane.CodeModule)
-                    using (var component = module.Parent)
+                    var module = pane.CodeModule;
+                    var component = module.Parent;
                     {
                         var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection());
                         string name = null;
@@ -208,13 +208,13 @@ namespace Rubberduck.SourceControl
 
             HandleVbeSinkEvents = false;
 
-            using (var vbe = Project.VBE)
-            using (var pane = vbe.ActiveCodePane)
+            var vbe = Project.VBE;
+            var pane = vbe.ActiveCodePane;
             {
                 if (!pane.IsWrappingNullReference)
                 {
-                    using (var module = pane.CodeModule)
-                    using (var component = module.Parent)
+                    var module = pane.CodeModule;
+                    var component = module.Parent;
                     {
                         var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection());
                         string name = null;

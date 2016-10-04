@@ -11,12 +11,10 @@ using System.Windows.Media.Imaging;
 using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using resx = Rubberduck.UI.SourceControl.SourceControl;
 

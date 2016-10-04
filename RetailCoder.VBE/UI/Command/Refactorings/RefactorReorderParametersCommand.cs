@@ -37,7 +37,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            using (var pane = Vbe.ActiveCodePane)
+            var pane = Vbe.ActiveCodePane;
             {
                 if (pane.IsWrappingNullReference || _state.Status != ParserState.Ready)
                 {
@@ -62,8 +62,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void ExecuteImpl(object parameter)
         {
-            using (var pane = Vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = Vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 if (pane.IsWrappingNullReference)
                 {

@@ -40,8 +40,8 @@ namespace Rubberduck.Refactorings.Rename
             _model = presenter.Show();
 
             QualifiedSelection? oldSelection = null;
-            using (var pane = _vbe.ActiveCodePane)
-            using(var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 if (!pane.IsWrappingNullReference)
                 {
@@ -63,7 +63,7 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor(QualifiedSelection target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -80,7 +80,7 @@ namespace Rubberduck.Refactorings.Rename
             _model = presenter.Show(target);
 
             var oldSelection = Selection.Home;
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 if (!pane.IsWrappingNullReference)
                 {
@@ -265,8 +265,8 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                using (var component = _model.Target.QualifiedName.QualifiedModuleName.Component)
-                using (var module = component.CodeModule)
+                var component = _model.Target.QualifiedName.QualifiedModuleName.Component;
+                var module = component.CodeModule;
                 {
                     if (module.IsWrappingNullReference)
                     {
@@ -275,16 +275,16 @@ namespace Rubberduck.Refactorings.Rename
 
                     if (component.Type == ComponentType.Document)
                     {
-                        using (var properties = component.Properties)
-                        using (var property = properties.Item("_CodeName"))
+                        var properties = component.Properties;
+                        var property = properties.Item("_CodeName");
                         {
                             property.Value = _model.NewName;
                         }
                     }
                     else if (component.Type == ComponentType.UserForm)
                     {
-                        using (var properties = component.Properties)
-                        using (var property = properties.Item("Caption"))
+                        var properties = component.Properties;
+                        var property = properties.Item("Caption");
                         {
                             if ((string)property.Value == _model.Target.IdentifierName)
                             {
@@ -309,8 +309,8 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                using (var projects = _vbe.VBProjects)
-                using (var project = projects.SingleOrDefault(p => p.HelpFile == _model.Target.ProjectId))
+                var projects = _vbe.VBProjects;
+                var project = projects.SingleOrDefault(p => p.HelpFile == _model.Target.ProjectId);
                 {
                     if (project != null)
                     {
@@ -332,8 +332,8 @@ namespace Rubberduck.Refactorings.Rename
                 return;
             }
 
-            using (var component = target.QualifiedName.QualifiedModuleName.Component)
-            using (var module = component.CodeModule)
+            var component = target.QualifiedName.QualifiedModuleName.Component;
+            var module = component.CodeModule;
             {
                 var newContent = GetReplacementLine(module, target, newName);
 
@@ -369,9 +369,9 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                using (var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule)
-                using (var component = module.Parent)
-                using (var control = component.Controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName))
+                var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                var component = module.Parent;
+                var control = component.Controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName);
                 {
                     if (control == null)
                     {
@@ -381,10 +381,10 @@ namespace Rubberduck.Refactorings.Rename
                     foreach (var handler in _model.Declarations.FindEventHandlers(_model.Target).OrderByDescending(h => h.Selection.StartColumn))
                     {
                         var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _model.NewName + '_');
-                        using (var project = handler.Project)
-                        using (var components = project.VBComponents)
-                        using (var refComponent = components.Item(handler.ComponentName))
-                        using (var refModule = refComponent.CodeModule)
+                        var project = handler.Project;
+                        var components = project.VBComponents;
+                        var refComponent = components.Item(handler.ComponentName);
+                        var refModule = refComponent.CodeModule;
                         {
                             var content = refModule.GetLines(handler.Selection.StartLine, 1);
                             var newContent = GetReplacementLine(content, newMemberName, handler.Selection);
@@ -428,10 +428,10 @@ namespace Rubberduck.Refactorings.Rename
                     try
                     {
                         var newMemberName = target.ComponentName + '_' + _model.NewName;
-                        using (var project = member.Project)
-                        using (var components = project.VBComponents)
-                        using (var component = components.Item(member.ComponentName))
-                        using (var module = component.CodeModule)
+                        var project = member.Project;
+                        var components = project.VBComponents;
+                        var component = components.Item(member.ComponentName);
+                        var module = component.CodeModule;
                         {
                             var content = module.GetLines(member.Selection.StartLine, 1);
                             var newContent = GetReplacementLine(content, newMemberName, member.Selection);
@@ -451,7 +451,7 @@ namespace Rubberduck.Refactorings.Rename
             var modules = target.References.GroupBy(r => r.QualifiedModuleName);
             foreach (var grouping in modules)
             {
-                using (var module = grouping.Key.Component.CodeModule)
+                var module = grouping.Key.Component.CodeModule;
                 {
                     foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                     {

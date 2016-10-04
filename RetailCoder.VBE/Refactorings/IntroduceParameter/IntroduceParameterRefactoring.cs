@@ -42,8 +42,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         public void Refactor()
         {
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 var selection = module.GetSelection();
                 if (!selection.HasValue)
@@ -100,8 +100,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             QualifiedSelection? oldSelection = null;
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 if (_vbe.ActiveCodePane != null)
                 {
@@ -145,7 +145,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             var proc = (dynamic)functionDeclaration.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
-            using (var module = functionDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule)
+            var module = functionDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
 
@@ -185,7 +185,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             var proc = (dynamic)targetMethod.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
-            using (var module = targetMethod.QualifiedName.QualifiedModuleName.Component.CodeModule)
+            var module = targetMethod.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 AddParameter(targetMethod, targetVariable, paramList, module);
             }
@@ -313,8 +313,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 break;
             }
 
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 module.DeleteLines(selection);
                 module.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));

@@ -45,8 +45,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget()
         {
-            using (var project = _vbe.ActiveVBProject)
-            using (var component = _vbe.SelectedVBComponent)
+            var project = _vbe.ActiveVBProject;
+            var component = _vbe.SelectedVBComponent;
             {
                 if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.HasDesigner)
                 {

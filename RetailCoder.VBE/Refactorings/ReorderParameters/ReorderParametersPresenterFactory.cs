@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public IReorderParametersPresenter Create()
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 if (pane.IsWrappingNullReference)
                 {

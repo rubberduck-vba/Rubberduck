@@ -107,8 +107,8 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindModuleDeclaration(VBComponent component)
         {
-            using (var components = component.Collection)
-            using (var refProject = components.Parent)
+            var components = component.Collection;
+            var refProject = components.Parent;
             {
                 var projectId = refProject.HelpFile;
                 var project = _state.AllUserDeclarations.SingleOrDefault(item =>

@@ -25,7 +25,7 @@ namespace Rubberduck.UI.Command
         protected override bool CanExecuteImpl(object parameter)
         {
             var target = FindTarget(parameter);
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 return !pane.IsWrappingNullReference && target != null &&
                    target.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);

@@ -37,8 +37,8 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            using (var pane = Vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = Vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 var qualifiedSelection = pane.GetQualifiedSelection();
                 if (!qualifiedSelection.HasValue || module.IsWrappingNullReference)
@@ -77,9 +77,9 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            using (var pane = Vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
-            using (var component = module.Parent)
+            var pane = Vbe.ActiveCodePane;
+            var module = pane.CodeModule;
+            var component = module.Parent;
             {
                 Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = (qs, code) =>
                 {

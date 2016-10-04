@@ -17,7 +17,7 @@ namespace Rubberduck.VBEditor.Extensions
             if (selection.EndLine > selection.StartLine && selection.EndColumn == 1)
             {
                 var endLine = selection.EndLine - 1;
-                using (var module = pane.CodeModule)
+                var module = pane.CodeModule;
                 {
                     var endColumn = module.GetLines(endLine, 1).Length;
                     selection = new Selection(selection.StartLine, selection.StartColumn, selection.EndLine, endColumn);
@@ -40,7 +40,7 @@ namespace Rubberduck.VBEditor.Extensions
             if (selection.EndLine > selection.StartLine && selection.EndColumn == 1)
             {
                 var endLine = selection.EndLine - 1;
-                using (var module = pane.CodeModule)
+                var module = pane.CodeModule;
                 {
                     var endColumn = module.GetLines(endLine, 1).Length;
                     selection = new Selection(selection.StartLine, selection.StartColumn, selection.EndLine, endColumn);
@@ -56,8 +56,8 @@ namespace Rubberduck.VBEditor.Extensions
             IntPtr mainWindowHandle;
             string caption;
 
-            using (var vbe = pane.VBE)
-            using (var window = vbe.MainWindow)
+            var vbe = pane.VBE;
+            var window = vbe.MainWindow;
             {
                 mainWindowHandle = window.Handle();
                 caption = window.Caption;

@@ -21,7 +21,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public ExtractInterfacePresenter Create()
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 var selection = pane.GetQualifiedSelection();
                 if (selection == null)

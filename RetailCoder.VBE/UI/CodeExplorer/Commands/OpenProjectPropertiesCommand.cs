@@ -20,7 +20,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             try
             {
-                using (var projects = _vbe.VBProjects)
+                var projects = _vbe.VBProjects;
                 {
                     return parameter != null || projects.Count == 1;
                 }
@@ -35,7 +35,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             const int openProjectPropertiesId = 2578;
 
-            using (var projects = _vbe.VBProjects)
+            var projects = _vbe.VBProjects;
             {
                 var commandBars = _vbe.CommandBars;
                 var command = commandBars.FindControl(openProjectPropertiesId);
@@ -43,8 +43,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 if (projects.Count == 1)
                 {
                     command.Execute();
-                    Marshal.ReleaseComObject(command);
-                    Marshal.ReleaseComObject(commandBars);
                     return;
                 }
 
@@ -61,14 +59,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
                 catch (COMException)
                 {
-                    Marshal.ReleaseComObject(command);
-                    Marshal.ReleaseComObject(commandBars);
                     return; // the project was probably removed from the VBE, but not from the CE
                 }
 
                 command.Execute();
-                Marshal.ReleaseComObject(command);
-                Marshal.ReleaseComObject(commandBars);
             }
         }
     }

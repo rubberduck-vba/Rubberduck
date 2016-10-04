@@ -103,8 +103,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             QualifiedSelection? oldSelection = null;
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 if (!module.IsWrappingNullReference)
                 {
@@ -129,8 +129,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             if (e.State != ParserState.Ready) { return; }
 
             QualifiedSelection? oldSelection = null;
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 if (!module.IsWrappingNullReference)
                 {
@@ -162,7 +162,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         private void InsertDeclaration()
         {
-            using (var module = _target.References.First().QualifiedModuleName.Component.CodeModule)
+            var module = _target.References.First().QualifiedModuleName.Component.CodeModule;
             {
                 var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
                 var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(firstReference);
@@ -198,7 +198,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private Selection GetBeginningOfInstructionSelection(IdentifierReference reference)
         {
             var referenceSelection = reference.Selection;
-            using (var module = reference.QualifiedModuleName.Component.CodeModule)
+            var module = reference.QualifiedModuleName.Component.CodeModule;
             {
                 var currentLine = referenceSelection.StartLine;
 
@@ -241,7 +241,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            using (var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule)
+            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 var oldLines = module.GetLines(selection.StartLine, selection.LineCount);
                 var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
@@ -310,7 +310,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             foreach (var reference in references.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
             {
-                using (var module = reference.QualifiedModuleName.Component.CodeModule)
+                var module = reference.QualifiedModuleName.Component.CodeModule;
                 {
                     var parent = reference.Context.Parent;
                     while (!(parent is VBAParser.MemberAccessExprContext) && parent.Parent != null)

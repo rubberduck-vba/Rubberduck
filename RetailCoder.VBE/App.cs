@@ -11,7 +11,6 @@ using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck
@@ -80,7 +79,7 @@ namespace Rubberduck
 
         private void RefreshSelection()
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 Declaration selectedDeclaration = null;
                 if (!pane.IsWrappingNullReference)
@@ -150,10 +149,10 @@ namespace Rubberduck
             _appMenus.Localize();
             UpdateLoggingLevel();
 
-            if (_vbe.VBProjects.Count != 0)
-            {
-                _parser.State.OnParseRequested(this);
-            }
+            //if (_vbe.VBProjects.Count != 0)
+            //{
+            //    _parser.State.OnParseRequested(this);
+            //}
         }
 
         public void Shutdown()

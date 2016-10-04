@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections
 
             foreach (var context in ParseTreeResults.ObsoleteCallContexts.Where(o => !IsInspectionDisabled(o.ModuleName.Component, o.Context.Start.Line)))
             {
-                using (var module = context.ModuleName.Component.CodeModule)
+                var module = context.ModuleName.Component.CodeModule;
                 {
                     var lines = module.GetLines(context.Context.Start.Line, context.Context.Stop.Line - context.Context.Start.Line + 1);
 

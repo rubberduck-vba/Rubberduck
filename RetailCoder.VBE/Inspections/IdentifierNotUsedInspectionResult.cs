@@ -62,7 +62,7 @@ namespace Rubberduck.Inspections
             }
             else
             {
-                using (var module = Selection.QualifiedName.Component.CodeModule)
+                var module = Selection.QualifiedName.Component.CodeModule;
                 {
                     var selection = Selection.Selection;
                     var originalCodeLines = module.GetLines(selection.StartLine, selection.LineCount);
@@ -96,7 +96,7 @@ namespace Rubberduck.Inspections
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            using (var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule)
+            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 var oldLines = module.GetLines(selection);
 

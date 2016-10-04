@@ -33,7 +33,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void ExecuteImpl(object parameter)
         {
-            using (var designer = ((ICodeExplorerDeclarationViewModel) parameter).Declaration.QualifiedName.QualifiedModuleName.Component.DesignerWindow())
+            var designer = ((ICodeExplorerDeclarationViewModel) parameter).Declaration.QualifiedName.QualifiedModuleName.Component.DesignerWindow();
             {
                 if (!designer.IsWrappingNullReference)
                 {

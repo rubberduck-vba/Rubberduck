@@ -65,7 +65,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             // I know this will never be null because of the CanExecute
             var declaration = ((CodeExplorerComponentViewModel)parameter).Declaration;
 
-            using (var components = declaration.QualifiedName.QualifiedModuleName.Project.VBComponents)
+            var components = declaration.QualifiedName.QualifiedModuleName.Project.VBComponents;
             {
                 components.Remove(declaration.QualifiedName.QualifiedModuleName.Component);
             }

@@ -7,6 +7,11 @@
         {
         }
 
+        public static CommandBarPopup FromCommandBarControl(CommandBarControl control)
+        {
+            return new CommandBarPopup((Microsoft.Office.Core.CommandBarPopup)control.ComObject);
+        }
+
         private Microsoft.Office.Core.CommandBarPopup Popup { get { return (Microsoft.Office.Core.CommandBarPopup)ComObject; } }
 
         public CommandBar CommandBar { get { return new CommandBar(InvokeResult(() => Popup.CommandBar)); } }

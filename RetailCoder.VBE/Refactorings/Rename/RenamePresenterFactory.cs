@@ -23,7 +23,7 @@ namespace Rubberduck.Refactorings.Rename
 
         public RenamePresenter Create()
         {
-            using (var codePane = _vbe.ActiveCodePane)
+            var codePane = _vbe.ActiveCodePane;
             {
                 var selection = codePane.GetSelection();
                 var qualifiedSelection = codePane.IsWrappingNullReference

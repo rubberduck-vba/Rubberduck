@@ -43,8 +43,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             QualifiedSelection? oldSelection = null;
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 if (!module.IsWrappingNullReference)
                 {
@@ -64,7 +64,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -82,7 +82,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -115,7 +115,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
-                using (var module = reference.QualifiedModuleName.Component.CodeModule)
+                var module = reference.QualifiedModuleName.Component.CodeModule;
                 {
                     VBAParser.ArgumentListContext argumentList = null;
                     var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
@@ -282,7 +282,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             var proc = (dynamic)_model.TargetDeclaration.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
-            using (var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule)
+            var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 // if we are adjusting a property getter, check if we need to adjust the letter/setter too
                 if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
@@ -336,7 +336,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private void AdjustSignatures(Declaration declaration)
         {
             var proc = (dynamic)declaration.Context.Parent;
-            using (var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule)
+            var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 VBAParser.ArgListContext paramList;
 

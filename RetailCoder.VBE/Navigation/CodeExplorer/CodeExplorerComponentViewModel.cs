@@ -82,7 +82,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool ContainsBuiltinDocumentPropertiesProperty()
         {
-            using (var properties = _declaration.QualifiedName.QualifiedModuleName.Component.Properties)
+            var properties = _declaration.QualifiedName.QualifiedModuleName.Component.Properties;
             {
                 return properties.Any(item => item.Name == "BuiltinDocumentProperties");
             }

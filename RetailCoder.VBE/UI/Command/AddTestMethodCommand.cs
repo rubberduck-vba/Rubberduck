@@ -57,8 +57,8 @@ namespace Rubberduck.UI.Command
                 // the code modules consistently match correctly, but the components don't
                 return testModules.Any(a =>
                 {
-                    using (var module = a.QualifiedName.QualifiedModuleName.Component.CodeModule)
-                    using (var selected = _vbe.SelectedVBComponent.CodeModule)
+                    var module = a.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                    var selected = _vbe.SelectedVBComponent.CodeModule;
                     {
                         return module.Equals(selected);
                     }
@@ -72,8 +72,8 @@ namespace Rubberduck.UI.Command
 
         protected override void ExecuteImpl(object parameter)
         {
-            using (var pane = _vbe.ActiveCodePane)
-            using (var module = pane.CodeModule)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -82,7 +82,7 @@ namespace Rubberduck.UI.Command
 
                 var declaration = _state.GetTestModules().FirstOrDefault(f =>
                 {
-                    using (var codeModule = f.QualifiedName.QualifiedModuleName.Component.CodeModule)
+                    var codeModule = f.QualifiedName.QualifiedModuleName.Component.CodeModule;
                     {
                         return codeModule.Equals(module);
                     }
@@ -90,7 +90,7 @@ namespace Rubberduck.UI.Command
 
                 if (declaration != null)
                 {
-                    using (var component = module.Parent)
+                    var component = module.Parent;
                     {
                         var name = GetNextTestMethodName(component);
                         var body = TestMethodTemplate.Replace(NamePlaceholder, name);

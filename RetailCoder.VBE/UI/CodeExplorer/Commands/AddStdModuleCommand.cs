@@ -35,15 +35,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             if (parameter != null)
             {
-                using (var components = GetDeclaration(parameter).Project.VBComponents)
+                var components = GetDeclaration(parameter).Project.VBComponents;
                 {
                     components.Add(ComponentType.StandardModule);
                 }
             }
             else
             {
-                using (var project = _vbe.ActiveVBProject)
-                using (var components = project.VBComponents)
+                var project = _vbe.ActiveVBProject;
+                var components = project.VBComponents;
                 {
                     components.Add(ComponentType.StandardModule);
                 }

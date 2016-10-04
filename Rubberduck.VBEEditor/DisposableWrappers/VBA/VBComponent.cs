@@ -45,12 +45,11 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
                 }
 
                 var result = new List<Control>();
-                using (var controls = new Controls(designer.Controls))
+                var controls = new Controls(designer.Controls);
                 {
-                    result.AddRange(controls.Cast<Control>());
+                    result.AddRange(controls);
                 }
 
-                Marshal.ReleaseComObject(designer);
                 return result;
             }
         }

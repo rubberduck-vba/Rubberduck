@@ -3,7 +3,6 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Inspections
@@ -22,7 +21,7 @@ namespace Rubberduck.Inspections
         {
             if (!string.IsNullOrWhiteSpace(_declaration.TypeHint))
             {
-                using (var module = _declaration.QualifiedName.QualifiedModuleName.Component.CodeModule)
+                var module = _declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 {
                     FixTypeHintUsage(_declaration.TypeHint, module, _declaration.Selection, true);
                 }
@@ -33,7 +32,7 @@ namespace Rubberduck.Inspections
                 // or should we assume type hint is the same as declaration?
                 if (!string.IsNullOrWhiteSpace(_declaration.TypeHint))
                 {
-                    using (var module = reference.QualifiedModuleName.Component.CodeModule)
+                    var module = reference.QualifiedModuleName.Component.CodeModule;
                     {
                         FixTypeHintUsage(_declaration.TypeHint, module, reference.Selection);
                     }

@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            using (var module = Selection.QualifiedName.Component.CodeModule)
+            var module = Selection.QualifiedName.Component.CodeModule;
             {
                 if (module.IsWrappingNullReference)
                 {

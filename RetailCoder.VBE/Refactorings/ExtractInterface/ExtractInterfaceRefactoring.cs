@@ -45,11 +45,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
 
             QualifiedSelection? oldSelection = null;
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 if (!pane.IsWrappingNullReference)
                 {
-                    using (var module = pane.CodeModule)
+                    var module = pane.CodeModule;
                     {
                         oldSelection = module.GetSelection();
                     }
@@ -72,7 +72,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public void Refactor(QualifiedSelection target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -85,7 +85,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public void Refactor(Declaration target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -98,16 +98,16 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private void AddInterface()
         {
-            using (var components = _model.TargetDeclaration.Project.VBComponents)
-            using (var interfaceComponent = components.Add(ComponentType.ClassModule))
-            using (var interfaceModule = interfaceComponent.CodeModule)
+            var components = _model.TargetDeclaration.Project.VBComponents;
+            var interfaceComponent = components.Add(ComponentType.ClassModule);
+            var interfaceModule = interfaceComponent.CodeModule;
             {
                 interfaceComponent.Name = _model.InterfaceName;
 
                 interfaceModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
                 interfaceModule.InsertLines(3, GetInterfaceModuleBody());
 
-                using (var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule)
+                var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;
                 {
                     _insertionLine = module.CountOfDeclarationLines + 1;
                     module.InsertLines(_insertionLine, Tokens.Implements + ' ' + _model.InterfaceName + Environment.NewLine);
@@ -128,7 +128,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             _state.StateChanged -= _state_StateChanged;
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
-            using (var pane = _vbe.ActiveCodePane)
+            var pane = _vbe.ActiveCodePane;
             {
                 pane.SetSelection(qualifiedSelection.Selection);
             }

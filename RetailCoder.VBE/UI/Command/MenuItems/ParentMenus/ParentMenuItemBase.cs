@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using NLog;
 using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
@@ -66,8 +65,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             }
 
             Item = _beforeIndex.HasValue
-                ? (CommandBarPopup)Parent.Add(ControlType.Popup, _beforeIndex.Value)
-                : (CommandBarPopup)Parent.Add(ControlType.Popup);
+                ? CommandBarPopup.FromCommandBarControl(Parent.Add(ControlType.Popup, _beforeIndex.Value))
+                : CommandBarPopup.FromCommandBarControl(Parent.Add(ControlType.Popup));
             Item.Tag = _key;
 
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
@@ -133,7 +132,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return null;
             }
 
-            var child = (CommandBarButton)Item.Controls.Add(ControlType.Button);
+            var child = CommandBarButton.FromCommandBarControl(Item.Controls.Add(ControlType.Button));
             child.Picture = item.Image;
             child.Mask = item.Mask;
             child.ApplyIcon();
@@ -184,10 +183,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 Item.Dispose();
             }
-            if (Parent != null)
-            {
-                Parent.Dispose();
-            }
+
             _isDisposed = true;
             GC.SuppressFinalize(this);
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 
@@ -89,11 +88,22 @@ namespace Rubberduck
             var interfaceId = typeof(Microsoft.Vbe.Interop._dispVBProjectsEvents).GUID;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
             _projectsEventsConnectionPoint.Advise(_sink, out _projectsEventsCookie);
+        }
 
+        public void Start()
+        {
             _sink.ProjectActivated += _sink_ProjectActivated;
             _sink.ProjectAdded += _sink_ProjectAdded;
             _sink.ProjectRemoved += _sink_ProjectRemoved;
             _sink.ProjectRenamed += _sink_ProjectRenamed;
+        }
+
+        public void Stop()
+        {
+            _sink.ProjectActivated -= _sink_ProjectActivated;
+            _sink.ProjectAdded -= _sink_ProjectAdded;
+            _sink.ProjectRemoved -= _sink_ProjectRemoved;
+            _sink.ProjectRenamed -= _sink_ProjectRenamed;
         }
 
         #region ProjectEvents
@@ -116,7 +126,7 @@ namespace Rubberduck
 
         private void _sink_ProjectAdded(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBProject> e)
         {
-            using (var project = new VBProject(e.Item))
+            var project = new VBProject(e.Item);
             {
                 project.AssignProjectId();
                 var projectId = project.HelpFile;
@@ -133,7 +143,7 @@ namespace Rubberduck
 
         private void _sink_ProjectRemoved(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBProject> e)
         {
-            using (var project = new VBProject(e.Item))
+            var project = new VBProject(e.Item);
             {
                 var projectId = project.HelpFile;
                 UnregisterComponentsEventSink(projectId);
@@ -148,7 +158,7 @@ namespace Rubberduck
 
         private void _sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<Microsoft.Vbe.Interop.VBProject> e)
         {
-            using (var project = new VBProject(e.Item))
+            var project = new VBProject(e.Item);
             {
                 var projectId = project.HelpFile;
                 var oldName = e.OldName;
@@ -221,9 +231,9 @@ namespace Rubberduck
         private void ComponentsSink_ComponentActivated(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-            using (var component = new VBComponent(e.Item))
-            using (var components = component.Collection)
-            using (var project = components.Parent)
+            var component = new VBComponent(e.Item);
+            var components = component.Collection;
+            var project = components.Parent;
             {
                 var projectId = project.HelpFile;
 
@@ -238,9 +248,9 @@ namespace Rubberduck
         private void ComponentsSink_ComponentAdded(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-            using (var component = new VBComponent(e.Item))
-            using (var components = component.Collection)
-            using (var project = components.Parent)
+            var component = new VBComponent(e.Item);
+            var components = component.Collection;
+            var project = components.Parent;
             {
                 var projectId = project.HelpFile;
 
@@ -255,9 +265,9 @@ namespace Rubberduck
         private void ComponentsSink_ComponentReloaded(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-            using (var component = new VBComponent(e.Item))
-            using (var components = component.Collection)
-            using (var project = components.Parent)
+            var component = new VBComponent(e.Item);
+            var components = component.Collection;
+            var project = components.Parent;
             {
                 var projectId = project.HelpFile;
 
@@ -272,9 +282,9 @@ namespace Rubberduck
         private void ComponentsSink_ComponentRemoved(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-            using (var component = new VBComponent(e.Item))
-            using (var components = component.Collection)
-            using (var project = components.Parent)
+            var component = new VBComponent(e.Item);
+            var components = component.Collection;
+            var project = components.Parent;
             {
                 var projectId = project.HelpFile;
 
@@ -289,9 +299,9 @@ namespace Rubberduck
         private void ComponentsSink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-            using (var component = new VBComponent(e.Item))
-            using (var components = component.Collection)
-            using (var project = components.Parent)
+            var component = new VBComponent(e.Item);
+            var components = component.Collection;
+            var project = components.Parent;
             {
                 var projectId = project.HelpFile;
 
@@ -306,9 +316,9 @@ namespace Rubberduck
         private void ComponentsSink_ComponentSelected(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBComponent> e)
         {
             if (!ComponentSinksEnabled) { return; }
-            using (var component = new VBComponent(e.Item))
-            using (var components = component.Collection)
-            using (var project = components.Parent)
+            var component = new VBComponent(e.Item);
+            var components = component.Collection;
+            var project = components.Parent;
             {
                 var projectId = project.HelpFile;
 
@@ -325,10 +335,7 @@ namespace Rubberduck
         {
             if (_sink != null)
             {
-                _sink.ProjectAdded -= _sink_ProjectAdded;
-                _sink.ProjectRemoved -= _sink_ProjectRemoved;
-                _sink.ProjectActivated -= _sink_ProjectActivated;
-                _sink.ProjectRenamed -= _sink_ProjectRenamed;
+                Stop();
                 _sink = null;
             }
 

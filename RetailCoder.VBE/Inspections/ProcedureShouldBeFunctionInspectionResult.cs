@@ -146,7 +146,7 @@ namespace Rubberduck.Inspections
                     continue;
                 }
 
-                using (var module = reference.QualifiedModuleName.Component.CodeModule)
+                var module = reference.QualifiedModuleName.Component.CodeModule;
                 {
                     var argList = CallStatement.GetArgumentList(referenceParent);
                     var paramNames = new List<string>();

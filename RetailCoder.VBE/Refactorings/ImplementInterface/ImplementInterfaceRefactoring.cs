@@ -79,8 +79,8 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             if (oldSelection.HasValue)
             {
-                using (var module = oldSelection.Value.QualifiedName.Component.CodeModule)
-                using (var pane = module.CodePane)
+                var module = oldSelection.Value.QualifiedName.Component.CodeModule;
+                var pane = module.CodePane;
                 {
                     pane.SetSelection(oldSelection.Value.Selection);
                 }
@@ -105,7 +105,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private void AddItems(List<Declaration> members)
         {
-            using (var module = _targetClass.QualifiedSelection.QualifiedName.Component.CodeModule)
+            var module = _targetClass.QualifiedSelection.QualifiedName.Component.CodeModule;
             {
                 var missingMembersText = members.Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
                 module.InsertLines(module.CountOfDeclarationLines + 1, missingMembersText);
