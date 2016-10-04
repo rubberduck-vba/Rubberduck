@@ -17,11 +17,16 @@ namespace Rubberduck.VBEditor.DisposableWrappers
         public void Dispose()
         {
             var disposable = _internal as IDisposable;
-            if (disposable == null)
+            if (disposable != null)
             {
-                return;
+                // COM enumerator won't dispose
+                disposable.Dispose();
             }
-            disposable.Dispose();
+            else
+            {
+                // COM enumerator won't cast to __ComObject either
+                // Marshal.ReleaseComObject(_internal);
+            }
         }
 
         public bool MoveNext()
