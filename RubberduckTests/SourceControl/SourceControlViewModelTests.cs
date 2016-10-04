@@ -12,7 +12,6 @@ using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.SourceControl
@@ -76,11 +75,11 @@ namespace RubberduckTests.SourceControl
             _provider.Setup(git => git.CurrentRepository).Returns(GetDummyRepo());
 
             _providerFactory = new Mock<ISourceControlProviderFactory>();
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.DisposableWrappers.VBProject>()))
                 .Returns(_provider.Object);
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<ICodePaneWrapperFactory>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.DisposableWrappers.VBProject>(), It.IsAny<IRepository>()))
                 .Returns(_provider.Object);
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>(), It.IsAny<ICodePaneWrapperFactory>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.DisposableWrappers.VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()))
                 .Returns(_provider.Object);
 
             _changesVM = new ChangesViewViewModel();
@@ -118,8 +117,9 @@ namespace RubberduckTests.SourceControl
                 new SettingsView(_settingsVM)
             };
 
-            _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object), new Mock<ISinks>().Object, _providerFactory.Object, _folderBrowserFactory.Object,
-                _configService.Object, views, new CodePaneWrapperFactory(), new Mock<IMessageBox>().Object);
+            var vbe = new Rubberduck.VBEditor.DisposableWrappers.VBE(_vbe.Object);
+            _vm = new SourceControlViewViewModel(vbe, new RubberduckParserState(new Mock<ISinks>().Object), new Mock<ISinks>().Object, _providerFactory.Object, _folderBrowserFactory.Object,
+                _configService.Object, views, new Mock<IMessageBox>().Object);
         }
 
         [TestMethod]
@@ -499,7 +499,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
 
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<ICodePaneWrapperFactory>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.DisposableWrappers.VBProject>(), It.IsAny<IRepository>()))
                 .Throws(new SourceControlException(expectedTitle,
                     new LibGit2Sharp.LibGit2SharpException(expectedMessage))
                     );
@@ -608,7 +608,7 @@ namespace RubberduckTests.SourceControl
             _vm.CreateProviderWithCredentials(new SecureCredentials(username, password));
 
             //assert
-            _providerFactory.Verify(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>(), It.IsAny<ICodePaneWrapperFactory>()));
+            _providerFactory.Verify(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.DisposableWrappers.VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()));
         }
 
         [TestMethod]
@@ -928,7 +928,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
 
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<ICodePaneWrapperFactory>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.DisposableWrappers.VBProject>(), It.IsAny<IRepository>()))
                 .Throws(new SourceControlException(expectedTitle,
                     new LibGit2Sharp.LibGit2SharpException(expectedMessage))
                     );
