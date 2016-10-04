@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.UnitTesting
 {

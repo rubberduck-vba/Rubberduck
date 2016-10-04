@@ -9,6 +9,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
+using CodeModule = Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule;
 
 namespace RubberduckTests.Inspections
 {
@@ -166,7 +167,7 @@ Global var1 As Integer";
 
             inspectionResults.First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -198,7 +199,7 @@ Global var1 As Integer";
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
         }
 
         [TestMethod]

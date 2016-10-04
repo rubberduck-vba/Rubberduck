@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics;
 using Microsoft.Office.Core;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.VBEHost
 {

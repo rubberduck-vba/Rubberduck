@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Timers;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.AutoSave
 {

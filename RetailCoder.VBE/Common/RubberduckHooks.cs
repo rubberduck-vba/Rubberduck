@@ -11,6 +11,7 @@ using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using NLog;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Common
 {

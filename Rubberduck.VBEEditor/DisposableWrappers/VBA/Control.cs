@@ -1,4 +1,4 @@
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class Control : SafeComWrapper<Microsoft.Vbe.Interop.Forms.Control>
     {

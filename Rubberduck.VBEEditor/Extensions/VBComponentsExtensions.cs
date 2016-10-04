@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 // todo: untangle this mess
 

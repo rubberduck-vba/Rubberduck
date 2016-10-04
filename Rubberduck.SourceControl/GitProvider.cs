@@ -6,6 +6,7 @@ using System.Security;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.SourceControl
 {

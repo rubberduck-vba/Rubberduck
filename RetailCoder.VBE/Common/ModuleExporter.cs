@@ -3,6 +3,7 @@ using System.Reflection;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Common
 {

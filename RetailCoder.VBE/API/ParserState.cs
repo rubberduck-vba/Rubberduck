@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.API
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Parsing
 {

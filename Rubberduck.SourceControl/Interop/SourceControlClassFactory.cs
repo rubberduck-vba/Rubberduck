@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.SourceControl.Interop
 {

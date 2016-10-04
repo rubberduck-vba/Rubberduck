@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Rubberduck.Parsing;
 using Rubberduck.UI;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {

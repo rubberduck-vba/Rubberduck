@@ -33,13 +33,14 @@ using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer.Commands;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Root
 {
     public class RubberduckModule : NinjectModule
     {
-        private readonly VBEditor.DisposableWrappers.VBE _vbe;
-        private readonly VBEditor.DisposableWrappers.AddIn _addin;
+        private readonly VBE _vbe;
+        private readonly AddIn _addin;
 
         private const int MenuBar = 1;
         private const int CodeWindow = 9;
@@ -47,7 +48,7 @@ namespace Rubberduck.Root
         private const int MsForms = 17;
         private const int MsFormsControl = 18;
 
-        public RubberduckModule(VBEditor.DisposableWrappers.VBE vbe, VBEditor.DisposableWrappers.AddIn addin)
+        public RubberduckModule(VBE vbe, AddIn addin)
         {
             _vbe = vbe;
             _addin = addin;
@@ -56,8 +57,8 @@ namespace Rubberduck.Root
         public override void Load()
         {
             // bind VBE and AddIn dependencies to host-provided instances.
-            Bind<VBEditor.DisposableWrappers.VBE>().ToConstant(_vbe);
-            Bind<VBEditor.DisposableWrappers.AddIn>().ToConstant(_addin);
+            Bind<VBE>().ToConstant(_vbe);
+            Bind<AddIn>().ToConstant(_addin);
             Bind<Sinks>().ToSelf().InSingletonScope();
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
@@ -235,7 +236,7 @@ namespace Rubberduck.Root
         private void ConfigureRubberduckMenu()
         {
             const int windowMenuId = 30009;
-            var vbe = Kernel.Get<VBEditor.DisposableWrappers.VBE>();
+            var vbe = Kernel.Get<VBE>();
             var commandBars = vbe.CommandBars;
             var menuBar = commandBars[MenuBar];
             var controls = menuBar.Controls;
@@ -250,7 +251,7 @@ namespace Rubberduck.Root
         private void ConfigureCodePaneContextMenu()
         {
             const int listMembersMenuId = 2529;
-            var vbe = Kernel.Get<VBEditor.DisposableWrappers.VBE>();
+            var vbe = Kernel.Get<VBE>();
             var commandBars = vbe.CommandBars;
             var menuBar = commandBars[CodeWindow];
             var controls = menuBar.Controls;
@@ -266,7 +267,7 @@ namespace Rubberduck.Root
         private void ConfigureFormDesignerContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            var vbe = Kernel.Get<VBEditor.DisposableWrappers.VBE>();
+            var vbe = Kernel.Get<VBE>();
             var commandBars = vbe.CommandBars;
             var menuBar = commandBars[MsForms];
             var controls = menuBar.Controls;
@@ -283,7 +284,7 @@ namespace Rubberduck.Root
         private void ConfigureFormDesignerControlContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            var vbe = Kernel.Get<VBEditor.DisposableWrappers.VBE>();
+            var vbe = Kernel.Get<VBE>();
             var commandBars = vbe.CommandBars;
             var menuBar = commandBars[MsFormsControl];
             var controls = menuBar.Controls;
@@ -300,7 +301,7 @@ namespace Rubberduck.Root
         private void ConfigureProjectExplorerContextMenu()
         {
             const int projectPropertiesMenuId = 2578;
-            var vbe = Kernel.Get<VBEditor.DisposableWrappers.VBE>();
+            var vbe = Kernel.Get<VBE>();
             var commandBars = vbe.CommandBars;
             var menuBar = commandBars[MenuBar];
             var controls = menuBar.Controls;

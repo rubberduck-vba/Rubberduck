@@ -6,6 +6,7 @@ using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {

@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {

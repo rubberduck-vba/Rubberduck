@@ -9,6 +9,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
+using CodeModule = Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule;
 
 namespace RubberduckTests.Inspections
 {
@@ -180,7 +181,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -214,7 +215,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -247,7 +248,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(parser.State);
             inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -280,7 +281,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(parser.State);
             inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -314,7 +315,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
         }
 
         [TestMethod]

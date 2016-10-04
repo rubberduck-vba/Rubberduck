@@ -3,6 +3,7 @@ using Antlr4.Runtime.Atn;
 using NLog;
 using Rubberduck.Parsing.Symbols;
 using System;
+using Rubberduck.Parsing.Preprocessing;
 
 namespace Rubberduck.Parsing.VBA
 {

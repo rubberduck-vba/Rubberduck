@@ -62,7 +62,7 @@ namespace RubberduckTests.Preprocessing
             {
                 Assert.Inconclusive("Parser Error");
             }
-            var tree = state.GetParseTree(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component));
+            var tree = state.GetParseTree(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component));
             var parsed = tree.GetText();
             var withoutEOF = parsed.Substring(0, parsed.Length - 5);
             return withoutEOF;

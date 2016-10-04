@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class Controls : SafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls>, IEnumerable<Control>
     {

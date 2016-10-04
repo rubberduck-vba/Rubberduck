@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class AddIns : SafeComWrapper<Microsoft.Vbe.Interop.Addins>, IEnumerable
     {

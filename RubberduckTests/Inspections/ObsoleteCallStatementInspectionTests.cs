@@ -8,9 +8,10 @@ using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
-using Rubberduck.Inspections.Rubberduck.Inspections;
 using System.Threading;
+using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using CodeModule = Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule;
 
 namespace RubberduckTests.Inspections
 {
@@ -331,7 +332,7 @@ End Sub";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            var actual = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines();
+            var actual = new CodeModule(module).Lines();
             Assert.AreEqual(expectedCode, actual);
         }
 
@@ -386,7 +387,7 @@ End Sub";
                 inspectionResult.QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
             }
 
-            var actual = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines();
+            var actual = new CodeModule(module).Lines();
             Assert.AreEqual(expectedCode, actual);
         }
 

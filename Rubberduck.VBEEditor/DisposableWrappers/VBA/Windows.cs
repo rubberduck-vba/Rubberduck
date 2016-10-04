@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class Windows : SafeComWrapper<Microsoft.Vbe.Interop.Windows>, IEnumerable
     {

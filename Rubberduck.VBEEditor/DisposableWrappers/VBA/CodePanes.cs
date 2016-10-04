@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class CodePanes : SafeComWrapper<Microsoft.Vbe.Interop.CodePanes>, IEnumerable<CodePane>
     {

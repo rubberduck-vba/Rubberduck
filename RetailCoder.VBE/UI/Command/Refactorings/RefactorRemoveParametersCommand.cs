@@ -6,6 +6,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

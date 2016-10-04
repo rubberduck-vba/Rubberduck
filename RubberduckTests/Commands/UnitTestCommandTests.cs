@@ -10,6 +10,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
+using VBE = Rubberduck.VBEditor.DisposableWrappers.VBA.VBE;
 
 namespace RubberduckTests.Commands
 {
@@ -41,10 +42,10 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
 
             addTestMethodCommand.Execute(null);
-            var module = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(component.CodeModule);
+            var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(component.CodeModule);
 
             Assert.AreEqual(
                 string.Format(input,
@@ -78,10 +79,10 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
 
             addTestMethodCommand.Execute(null);
-            var module = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(component.CodeModule);
+            var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(component.CodeModule);
 
             Assert.AreEqual(input, module.Lines());
         }
@@ -103,7 +104,7 @@ Private Assert As Object
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
 
-            var addTestMethodCommand = new AddTestMethodCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -123,7 +124,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -152,7 +153,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
 
             Assert.IsTrue(addTestMethodCommand.CanExecute(null));
         }
@@ -179,10 +180,10 @@ Private Assert As Object
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
 
             addTestMethodCommand.Execute(null);
-            var module = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(component.CodeModule);
+            var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(component.CodeModule);
 
             Assert.AreEqual(
                 string.Format(input,
@@ -207,7 +208,7 @@ Private Assert As Object
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -227,7 +228,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -256,7 +257,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
             Assert.IsTrue(addTestMethodCommand.CanExecute(null));
         }
 
@@ -283,10 +284,10 @@ Private Assert As Object
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
             addTestMethodCommand.Execute(null);
 
-            var module = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(component.CodeModule);
+            var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(component.CodeModule);
             Assert.AreEqual(input, module.Lines());
         }
 
@@ -319,11 +320,11 @@ Private Assert As New Rubberduck.AssertClass
             var config = GetUnitTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-            var addTestModuleCommand = new AddTestModuleCommand(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), parser.State, settings.Object);
+            var addTestModuleCommand = new AddTestModuleCommand(new VBE(vbe.Object), parser.State, settings.Object);
             addTestModuleCommand.Execute(null);
 
             // mock suite auto-assigns "TestModule1" to the first component when we create the mock
-            var module = new Rubberduck.VBEditor.DisposableWrappers.CodeModule(vbe.Object.VBProjects.Item(0).VBComponents.Item("TestModule2").CodeModule);
+            var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(vbe.Object.VBProjects.Item(0).VBComponents.Item("TestModule2").CodeModule);
             Assert.AreEqual(expected, module.Lines());
         }
 

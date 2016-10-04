@@ -12,6 +12,7 @@ using System;
 using System.Globalization;
 using System.Windows.Forms;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck
 {

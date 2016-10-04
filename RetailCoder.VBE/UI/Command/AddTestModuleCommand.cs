@@ -6,6 +6,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command

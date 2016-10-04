@@ -5,6 +5,7 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

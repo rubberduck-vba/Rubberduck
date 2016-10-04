@@ -13,6 +13,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.Rename

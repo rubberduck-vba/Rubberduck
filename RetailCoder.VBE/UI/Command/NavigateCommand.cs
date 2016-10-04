@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Input;
 using NLog;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command
 {

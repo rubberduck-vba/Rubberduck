@@ -4,6 +4,7 @@ using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck

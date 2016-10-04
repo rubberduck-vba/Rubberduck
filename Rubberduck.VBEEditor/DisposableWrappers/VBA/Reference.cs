@@ -1,6 +1,6 @@
 using System;
 
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class Reference : SafeComWrapper<Microsoft.Vbe.Interop.Reference>
     {

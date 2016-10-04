@@ -15,6 +15,7 @@ using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 using MessageBox = Rubberduck.UI.MessageBox;
+using VBE = Rubberduck.VBEditor.DisposableWrappers.VBA.VBE;
 
 namespace RubberduckTests.Refactoring
 {
@@ -48,7 +49,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -58,11 +59,11 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -91,7 +92,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -101,11 +102,11 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -134,7 +135,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -144,11 +145,11 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -177,7 +178,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -187,11 +188,11 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -230,7 +231,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -240,11 +241,11 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -283,7 +284,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -293,11 +294,11 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -326,7 +327,7 @@ End Function";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -336,11 +337,11 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -369,7 +370,7 @@ End Function";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -379,11 +380,11 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -422,7 +423,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -432,11 +433,11 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -474,7 +475,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -486,11 +487,11 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -519,7 +520,7 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -529,11 +530,11 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -562,7 +563,7 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -571,11 +572,11 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.QuickFix(parser.State, qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -604,7 +605,7 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -614,11 +615,11 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -657,7 +658,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -667,11 +668,11 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -718,7 +719,7 @@ End Function";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -728,11 +729,11 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -771,7 +772,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -781,11 +782,11 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -836,7 +837,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -846,11 +847,11 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -873,7 +874,7 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
 
@@ -901,7 +902,7 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
 
@@ -941,7 +942,7 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -951,11 +952,11 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -990,7 +991,7 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -1000,11 +1001,11 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -1041,7 +1042,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -1051,11 +1052,11 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -1094,7 +1095,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -1104,11 +1105,11 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -1139,7 +1140,7 @@ End Sub";   // note: VBE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -1149,11 +1150,11 @@ End Sub";   // note: VBE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -1184,7 +1185,7 @@ End Sub";   // note: VBE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -1194,11 +1195,11 @@ End Sub";   // note: VBE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -1229,7 +1230,7 @@ End Sub";   // note: VBE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -1239,11 +1240,11 @@ End Sub";   // note: VBE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -1274,7 +1275,7 @@ End Sub";   // note: VBE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -1284,11 +1285,11 @@ End Sub";   // note: VBE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(model.TargetDeclaration);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -1333,7 +1334,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -1343,11 +1344,11 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -1391,7 +1392,7 @@ End Sub";   // note: IDE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
@@ -1404,12 +1405,12 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
         }
 
         [TestMethod]
@@ -1453,7 +1454,7 @@ End Sub";   // note: IDE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
@@ -1466,12 +1467,12 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
         }
 
         [TestMethod]
@@ -1526,7 +1527,7 @@ End Sub";   // note: IDE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
@@ -1540,13 +1541,13 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module2).Lines());
-            Assert.AreEqual(expectedCode3, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module3).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode3, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module3).Lines());
         }
 
         [TestMethod]
@@ -1590,7 +1591,7 @@ End Sub";   // note: IDE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
@@ -1603,12 +1604,12 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
         }
 
         [TestMethod]
@@ -1652,7 +1653,7 @@ End Sub";   // note: IDE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
@@ -1664,12 +1665,12 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
         }
 
         [TestMethod]
@@ -1713,7 +1714,7 @@ End Sub";   // note: IDE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
@@ -1726,12 +1727,12 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
         }
 
         [TestMethod]
@@ -1786,7 +1787,7 @@ End Sub";   // note: IDE removes excess spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
@@ -1800,13 +1801,13 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module2).Lines());
-            Assert.AreEqual(expectedCode3, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module3).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode3, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module3).Lines());
         }
 
         [TestMethod]
@@ -1851,7 +1852,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
@@ -1868,12 +1869,12 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
         }
 
         [TestMethod]
@@ -1907,7 +1908,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
@@ -1938,7 +1939,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //set up model
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -1946,7 +1947,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
 
             //assert
             try
@@ -1983,14 +1984,14 @@ End Sub";
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            var vbeWrapper = new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object);
+            var vbeWrapper = new VBE(vbe.Object);
             var factory = new RemoveParametersPresenterFactory(vbeWrapper, null, parser.State, null);
 
             //act
             var refactoring = new RemoveParametersRefactoring(vbeWrapper, factory);
             refactoring.Refactor();
 
-            Assert.AreEqual(inputCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(inputCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -2014,7 +2015,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
@@ -2023,11 +2024,11 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), factory.Object);
+            var refactoring = new RemoveParametersRefactoring(new VBE(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(inputCode, new Rubberduck.VBEditor.DisposableWrappers.CodeModule(module).Lines());
+            Assert.AreEqual(inputCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
         }
 
         [TestMethod]
@@ -2050,7 +2051,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
@@ -2059,7 +2060,7 @@ End Sub";
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new RemoveParametersPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), view.Object, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(new VBE(vbe.Object), view.Object, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -2086,7 +2087,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
@@ -2095,7 +2096,7 @@ End Sub";
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new RemoveParametersPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), view.Object, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(new VBE(vbe.Object), view.Object, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -2122,12 +2123,12 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
 
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[0].IsRemoved = true;
 
-            var factory = new RemoveParametersPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), null, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(new VBE(vbe.Object), null, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -2161,7 +2162,7 @@ End Sub";
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-            var factory = new RemoveParametersPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), null, parser.State, messageBox.Object);
+            var factory = new RemoveParametersPresenterFactory(new VBE(vbe.Object), null, parser.State, messageBox.Object);
             var presenter = factory.Create();
 
             Assert.AreEqual(null, presenter.Show());
@@ -2192,10 +2193,10 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var codePane = new Rubberduck.VBEditor.DisposableWrappers.CodePane(project.Object.VBComponents.Item(0).CodeModule.CodePane);
+            var codePane = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodePane(project.Object.VBComponents.Item(0).CodeModule.CodePane);
             codePane.SetSelection(selection);
 
-            var factory = new RemoveParametersPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), null, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(new VBE(vbe.Object), null, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -2227,7 +2228,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var factory = new RemoveParametersPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBE(vbe.Object), null, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(new VBE(vbe.Object), null, parser.State, null);
 
             Assert.AreEqual(null, factory.Create());
         }

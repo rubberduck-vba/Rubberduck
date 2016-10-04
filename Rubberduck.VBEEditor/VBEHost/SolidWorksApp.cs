@@ -1,5 +1,6 @@
 using Interop.SldWorks.Types;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.VBEditor.VBEHost
 {

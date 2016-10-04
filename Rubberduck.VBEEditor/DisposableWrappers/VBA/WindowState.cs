@@ -1,4 +1,4 @@
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     /// <summary>
     /// Values compatible with <see cref="Microsoft.Vbe.Interop.vbext_WindowState"/> enum values.

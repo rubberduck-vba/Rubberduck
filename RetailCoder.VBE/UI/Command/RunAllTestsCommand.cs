@@ -7,6 +7,7 @@ using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
 using System.Linq;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {

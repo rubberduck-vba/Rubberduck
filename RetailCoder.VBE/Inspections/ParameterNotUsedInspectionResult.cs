@@ -7,6 +7,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Inspections
 {

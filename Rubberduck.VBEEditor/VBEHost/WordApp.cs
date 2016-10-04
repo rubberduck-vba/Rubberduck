@@ -1,6 +1,7 @@
 using Microsoft.Office.Interop.Word;
 using System.Linq;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.VBEditor.VBEHost
 {

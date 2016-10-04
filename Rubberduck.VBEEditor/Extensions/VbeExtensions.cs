@@ -2,6 +2,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.VBEditor.Extensions

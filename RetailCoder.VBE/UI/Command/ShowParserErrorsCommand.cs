@@ -10,6 +10,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {

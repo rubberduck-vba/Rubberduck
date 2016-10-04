@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.SourceControl

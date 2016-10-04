@@ -1,5 +1,6 @@
 ﻿using Rubberduck.SourceControl;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.SourceControl
 {

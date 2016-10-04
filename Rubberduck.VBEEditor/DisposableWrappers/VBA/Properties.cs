@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class Properties : SafeComWrapper<Microsoft.Vbe.Interop.Properties>, IEnumerable<Property>
     {

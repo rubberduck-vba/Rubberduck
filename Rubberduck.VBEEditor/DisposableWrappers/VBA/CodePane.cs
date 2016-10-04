@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.Extensions;
 
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class CodePane : SafeComWrapper<Microsoft.Vbe.Interop.CodePane>
     {

@@ -5,6 +5,7 @@ using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

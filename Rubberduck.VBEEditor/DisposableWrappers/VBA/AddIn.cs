@@ -1,5 +1,5 @@
 ﻿
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class AddIn : SafeComWrapper<Microsoft.Vbe.Interop.AddIn>
     {

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
-using Rubberduck.UI;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {

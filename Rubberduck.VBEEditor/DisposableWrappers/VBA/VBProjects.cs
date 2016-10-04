@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
 
-namespace Rubberduck.VBEditor.DisposableWrappers
+namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
     public class VBProjects : SafeComWrapper<Microsoft.Vbe.Interop.VBProjects>, IEnumerable<VBProject>
     {
