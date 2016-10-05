@@ -80,17 +80,18 @@ namespace Rubberduck.Refactorings.Rename
 
             var oldSelection = Selection.Home;
             var pane = _vbe.ActiveCodePane;
+            if (!pane.IsWrappingNullReference)
             {
-                if (!pane.IsWrappingNullReference)
-                {
-                    oldSelection = pane.GetSelection();
-                }
+                oldSelection = pane.GetSelection();
+            }
 
-                if (_model != null && _model.Declarations != null)
-                {
-                    Rename();
-                }
+            if (_model != null && _model.Declarations != null)
+            {
+                Rename();
+            }
 
+            if (!pane.IsWrappingNullReference)
+            {
                 pane.SetSelection(oldSelection);
             }
         }
