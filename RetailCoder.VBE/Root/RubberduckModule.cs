@@ -283,7 +283,7 @@ namespace Rubberduck.Root
         {
             const int projectPropertiesMenuId = 2578;
             var commandBars = _vbe.CommandBars;
-            var menuBar = commandBars[MenuBar];
+            var menuBar = commandBars[ProjectWindow];
             var controls = menuBar.Controls;
             var beforeControl = controls.FirstOrDefault(control => control.Id == projectPropertiesMenuId);
             var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;

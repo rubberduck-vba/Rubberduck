@@ -75,8 +75,8 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
                 VBProjects.Release();
                 CodePanes.Release();
                 CommandBars.Release();
-                Windows.Release();
-                AddIns.Release();
+                //Windows.Release();
+                //AddIns.Release();
                 Marshal.ReleaseComObject(ComObject);
             }
         }
