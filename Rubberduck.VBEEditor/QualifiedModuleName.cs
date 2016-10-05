@@ -11,7 +11,7 @@ namespace Rubberduck.VBEditor
     {
         public static string GetProjectId(VBProject project)
         {
-            if (project == null)
+            if (project.IsWrappingNullReference)
             {
                 return string.Empty;
             }
