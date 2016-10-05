@@ -8,7 +8,7 @@ using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
-    public abstract class ParentMenuItemBase : IParentMenuItem, IDisposable
+    public abstract class ParentMenuItemBase : IParentMenuItem
     {
         private readonly string _key;
         private readonly int? _beforeIndex;
@@ -84,13 +84,11 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 var item = _items[child];
                 Debug.Assert(item is CommandBarPopup);
                 (item as CommandBarPopup).Delete();
-                item.Release();
             }
             foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
             {
                 child.Click -= child_Click;
                 child.Delete();
-                child.Release();
             }
         }
 
@@ -166,26 +164,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
             Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.GetHashCode());
             item.Command.Execute(null);
-        }
-
-        ~ParentMenuItemBase()
-        {
-            if (!_isDisposed)
-            {
-                Dispose();
-            }
-        }
-
-        private bool _isDisposed;
-        public void Dispose()
-        {
-            if (Item != null)
-            {
-                Item.Release();
-            }
-
-            _isDisposed = true;
-            GC.SuppressFinalize(this);
         }
     }
 }

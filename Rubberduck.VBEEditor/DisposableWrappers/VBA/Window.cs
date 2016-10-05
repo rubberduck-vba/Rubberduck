@@ -110,7 +110,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         {
             if (!IsWrappingNullReference)
             {
-                LinkedWindows.Release();
                 LinkedWindowFrame.Release();
                 Marshal.ReleaseComObject(ComObject);
             } 

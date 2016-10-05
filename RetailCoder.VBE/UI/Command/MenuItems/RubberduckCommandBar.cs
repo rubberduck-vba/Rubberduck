@@ -198,11 +198,10 @@ namespace Rubberduck.UI.Command.MenuItems
             _sinks.ComponentActivated -= ComponentActivated;
             _sinks.ComponentSelected -= ComponentSelected;
 
-            _refreshButton.Delete();
-            _selectionButton.Delete();
-            _statusButton.Delete();
-            _commandbar.Delete();
-            _commandbar.Release();
+            //_refreshButton.Delete();
+            //_selectionButton.Delete();
+            //_statusButton.Delete();
+            //_commandbar.Delete();
             _isDisposed = true;
         }
     }
