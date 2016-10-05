@@ -332,7 +332,7 @@ End Sub";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            var actual = new CodeModule(module).Lines();
+            var actual = new CodeModule(module).Content();
             Assert.AreEqual(expectedCode, actual);
         }
 
@@ -387,7 +387,7 @@ End Sub";
                 inspectionResult.QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
             }
 
-            var actual = new CodeModule(module).Lines();
+            var actual = new CodeModule(module).Content();
             Assert.AreEqual(expectedCode, actual);
         }
 

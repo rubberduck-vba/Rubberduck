@@ -34,7 +34,7 @@ namespace RubberduckTests.Commands
             var noIndentAnnotationCommand = new NoIndentAnnotationCommand(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State);
             noIndentAnnotationCommand.Execute(null);
 
-            Assert.AreEqual("'@NoIndent\r\n", module.Lines());
+            Assert.AreEqual("'@NoIndent\r\n", module.Content());
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ End Sub";
             var noIndentAnnotationCommand = new NoIndentAnnotationCommand(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State);
             noIndentAnnotationCommand.Execute(null);
 
-            Assert.AreEqual(expected, module.Lines());
+            Assert.AreEqual(expected, module.Content());
         }
 
         [TestMethod]
@@ -175,8 +175,8 @@ End Sub
             var module1 = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(project.Object.VBComponents.Item("Comp1").CodeModule);
             var module2 = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(project.Object.VBComponents.Item("Comp2").CodeModule);
 
-            Assert.AreEqual(input, module1.Lines());
-            Assert.AreEqual(expected, module2.Lines());
+            Assert.AreEqual(input, module1.Content());
+            Assert.AreEqual(expected, module2.Content());
         }
 
         [TestMethod]

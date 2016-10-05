@@ -58,6 +58,13 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
                     int endLine;
                     int endColumn;
                     ComObject.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+
+                    if (endLine > startLine && endColumn == 1)
+                    {
+                        endLine -= 1;
+                        endColumn = CodeModule.GetLines(endLine, 1).Length;
+                    }
+
                     return new Selection(startLine, startColumn, endLine, endColumn);
                 });
             }
@@ -67,15 +74,51 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             }
         }
 
+        public QualifiedSelection? GetQualifiedSelection()
+        {
+            if (IsWrappingNullReference)
+            {
+                return null;
+            }
+
+            var selection = GetSelection();
+            if (selection.IsEmpty())
+            {
+                return null;
+            }
+
+            var component = new VBComponent(CodeModule.Parent.ComObject);
+            var moduleName = new QualifiedModuleName(component);
+            return new QualifiedSelection(moduleName, selection);
+        }
+
         public void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
             Invoke(() => ComObject.SetSelection(startLine, startColumn, endLine, endColumn));
+            ForceFocus();
         }
 
         public void SetSelection(Selection selection)
         {
-            Invoke(() => ComObject.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn));
-            this.ForceFocus();
+            SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+        }
+
+        private void ForceFocus()
+        {
+            Show();
+
+            var window = VBE.MainWindow;
+            var mainWindowHandle = window.Handle();
+            var caption = window.Caption;
+            var childWindowFinder = new NativeMethods.ChildWindowFinder(caption);
+
+            NativeMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
+            var handle = childWindowFinder.ResultHandle;
+
+            if (handle != IntPtr.Zero)
+            {
+                NativeMethods.ActivateWindow(handle, mainWindowHandle);
+            }
         }
 
         public void Show()
@@ -87,7 +130,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         {
             if (!IsWrappingNullReference)
             {
-                Window.Release();
+                //Window.Release(); window is released by VBE.Windows
                 Marshal.ReleaseComObject(ComObject);
             }
         }

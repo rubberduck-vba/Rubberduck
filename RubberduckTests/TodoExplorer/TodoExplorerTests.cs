@@ -103,7 +103,7 @@ namespace RubberduckTests.TodoExplorer
             vm.RemoveCommand.Execute(null);
 
             var module = new CodeModule(project.Object.VBComponents.Item(0).CodeModule);
-            Assert.AreEqual(expected, module.Lines());
+            Assert.AreEqual(expected, module.Content());
             Assert.IsFalse(vm.Items.Any());
         }
 

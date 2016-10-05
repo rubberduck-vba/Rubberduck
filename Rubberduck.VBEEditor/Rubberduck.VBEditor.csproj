@@ -164,9 +164,7 @@
     <Compile Include="DisposableWrappers\SafeComWrapper.cs" />
     <Compile Include="DisposableWrappers\WrapperMethodException.cs" />
     <Compile Include="DocumentEventHandlerPrefixes.cs" />
-    <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="CodeModuleSelection.cs" />
-    <Compile Include="Extensions\CodePaneExtensions.cs" />
     <Compile Include="DisposableWrappers\VBA\VBE.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="QualifiedMemberName.cs" />

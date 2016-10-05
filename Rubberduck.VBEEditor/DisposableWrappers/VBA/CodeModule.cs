@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -7,6 +8,7 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
+    [SuppressMessage("ReSharper", "UseIndexedProperty")]
     public class CodeModule : SafeComWrapper<Microsoft.Vbe.Interop.CodeModule>, IEquatable<CodeModule>
     {
         public CodeModule(Microsoft.Vbe.Interop.CodeModule comObject) 
@@ -50,9 +52,101 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             return InvokeResult(() => ComObject.get_Lines(startLine, count));
         }
 
+        /// <summary>
+        /// Returns the lines containing the selection.
+        /// </summary>
+        /// <param name="selection"></param>
+        /// <returns></returns>
+        public string GetLines(Selection selection)
+        {
+            return GetLines(selection.StartLine, selection.LineCount);
+        }
+
+        /// <summary>
+        /// Deletes the lines containing the selection.
+        /// </summary>
+        /// <param name="selection"></param>
+        public void DeleteLines(Selection selection)
+        {
+            DeleteLines(selection.StartLine, selection.LineCount);
+        }
+
+        public QualifiedSelection? GetQualifiedSelection()
+        {
+            if (IsWrappingNullReference || CodePane.IsWrappingNullReference)
+            {
+                return null;
+            }
+            return CodePane.GetQualifiedSelection();
+        }
+
         public string Content()
         {
-            return GetLines(1, CountOfLines);
+            return InvokeResult(() => ComObject.CountOfLines == 0 ? string.Empty : GetLines(1, CountOfLines));
+        }
+
+        public void Clear()
+        {
+            Invoke(() => ComObject.DeleteLines(1, CountOfLines));
+        }
+
+        /// <summary>
+        /// Gets an array of strings where each element is a line of code in the Module,
+        /// with line numbers stripped and any other pre-processing that needs to be done.
+        /// </summary>
+        public string[] GetSanitizedCode()
+        {
+            var lines = CountOfLines;
+            if (lines == 0)
+            {
+                return new string[] { };
+            }
+
+            var code = GetLines(1, lines).Replace("\r", string.Empty).Split('\n');
+
+            StripLineNumbers(code);
+            return code;
+        }
+
+        private void StripLineNumbers(string[] lines)
+        {
+            var continuing = false;
+            for (var line = 0; line < lines.Length; line++)
+            {
+                var code = lines[line];
+                int? lineNumber;
+                if (!continuing && HasNumberedLine(code, out lineNumber))
+                {
+                    var lineNumberLength = lineNumber.ToString().Length;
+                    if (lines[line].Length > lineNumberLength)
+                    {
+                        // replace line number with as many spaces as characters taken, to avoid shifting the tokens
+                        lines[line] = new string(' ', lineNumberLength) + code.Substring(lineNumber.ToString().Length + 1);
+                    }
+                }
+
+                continuing = code.EndsWith("_");
+            }
+        }
+
+        private bool HasNumberedLine(string codeLine, out int? lineNumber)
+        {
+            lineNumber = null;
+
+            if (string.IsNullOrWhiteSpace(codeLine.Trim()))
+            {
+                return false;
+            }
+
+            int line;
+            var firstToken = codeLine.TrimStart().Split(' ')[0];
+            if (int.TryParse(firstToken, out line))
+            {
+                lineNumber = line;
+                return true;
+            }
+
+            return false;
         }
 
         private string _previousContentHash;

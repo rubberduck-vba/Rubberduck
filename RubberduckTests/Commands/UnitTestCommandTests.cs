@@ -50,7 +50,7 @@ Private Assert As Object
             Assert.AreEqual(
                 string.Format(input,
                     AddTestMethodCommand.TestMethodTemplate.Replace(AddTestMethodCommand.NamePlaceholder, "TestMethod1")) +
-                Environment.NewLine, module.Lines());
+                Environment.NewLine, module.Content());
         }
 
         [TestMethod]
@@ -84,7 +84,7 @@ Private Assert As Object
             addTestMethodCommand.Execute(null);
             var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(component.CodeModule);
 
-            Assert.AreEqual(input, module.Lines());
+            Assert.AreEqual(input, module.Content());
         }
 
         [TestMethod]
@@ -188,7 +188,7 @@ Private Assert As Object
             Assert.AreEqual(
                 string.Format(input,
                     AddTestMethodExpectedErrorCommand.TestMethodExpectedErrorTemplate.Replace(AddTestMethodExpectedErrorCommand.NamePlaceholder,
-                        "TestMethod1")) + Environment.NewLine, module.Lines());
+                        "TestMethod1")) + Environment.NewLine, module.Content());
         }
 
         [TestMethod]
@@ -288,7 +288,7 @@ Private Assert As Object
             addTestMethodCommand.Execute(null);
 
             var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(component.CodeModule);
-            Assert.AreEqual(input, module.Lines());
+            Assert.AreEqual(input, module.Content());
         }
 
         [TestMethod]
@@ -325,7 +325,7 @@ Private Assert As New Rubberduck.AssertClass
 
             // mock suite auto-assigns "TestModule1" to the first component when we create the mock
             var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(vbe.Object.VBProjects.Item(0).VBComponents.Item("TestModule2").CodeModule);
-            Assert.AreEqual(expected, module.Lines());
+            Assert.AreEqual(expected, module.Content());
         }
 
         private Configuration GetUnitTestConfig()

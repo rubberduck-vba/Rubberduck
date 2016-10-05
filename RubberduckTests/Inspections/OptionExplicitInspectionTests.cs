@@ -145,7 +145,7 @@ namespace RubberduckTests.Inspections
 
             inspectionResults.First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]

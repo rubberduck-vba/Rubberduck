@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.IO;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.VBEditor.Extensions
@@ -13,6 +12,32 @@ namespace Rubberduck.VBEditor.Extensions
         internal const string StandardExtension = ".bas";
         internal const string FormBinaryExtension = ".frx";
         internal const string DocClassExtension = ".doccls";
+
+        /// <summary>
+        /// Returns the proper file extension for the Component Type.
+        /// </summary>
+        /// <remarks>Document classes should properly have a ".cls" file extension.
+        /// However, because they cannot be removed and imported like other component types, we need to make a distinction.</remarks>
+        /// <param name="componentType"></param>
+        /// <returns>File extension that includes a preceeding "dot" (.) </returns>
+        public static string FileExtension(this ComponentType componentType)
+        {
+            switch (componentType)
+            {
+                case ComponentType.ClassModule:
+                    return ClassExtension;
+                case ComponentType.UserForm:
+                    return FormExtension;
+                case ComponentType.StandardModule:
+                    return StandardExtension;
+                case ComponentType.Document:
+                    // documents should technically be a ".cls", but we need to be able to tell them apart.
+                    return DocClassExtension;
+                case ComponentType.ActiveXDesigner:
+                default:
+                    return string.Empty;
+            }
+        }
 
         /// <summary>
         /// Exports the component to the directoryPath. The file is name matches the component name and file extension is based on the component's type.
@@ -44,7 +69,7 @@ namespace Rubberduck.VBEditor.Extensions
             // this issue causes forms to always be treated as "modified" in source control, which causes conflicts.
             // we need to remove the extra newline before the file gets written to its output location.
 
-            var visibleCode = component.CodeModule.Lines().Split(new []{Environment.NewLine}, StringSplitOptions.None);
+            var visibleCode = component.CodeModule.Content().Split(new []{Environment.NewLine}, StringSplitOptions.None);
             var legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
 
             var tempFile = component.ExportToTempFile();
@@ -82,32 +107,6 @@ namespace Rubberduck.VBEditor.Extensions
             var path = Path.Combine(Path.GetTempPath(), component.Name + component.Type.FileExtension());
             component.Export(path);
             return path;
-        }
-
-        /// <summary>
-        /// Returns the proper file extension for the Component Type.
-        /// </summary>
-        /// <remarks>Document classes should properly have a ".cls" file extension.
-        /// However, because they cannot be removed and imported like other component types, we need to make a distinction.</remarks>
-        /// <param name="componentType"></param>
-        /// <returns>File extension that includes a preceeding "dot" (.) </returns>
-        public static string FileExtension(this ComponentType componentType)
-        {
-            switch (componentType)
-            {
-                case ComponentType.ClassModule:
-                    return ClassExtension;
-                case ComponentType.UserForm:
-                    return FormExtension;
-                case ComponentType.StandardModule:
-                    return StandardExtension;
-                case ComponentType.Document:
-                    // documents should technically be a ".cls", but we need to be able to tell them apart.
-                    return DocClassExtension;
-                case ComponentType.ActiveXDesigner:
-                default:
-                    return string.Empty;
-            }
         }
     }
 }

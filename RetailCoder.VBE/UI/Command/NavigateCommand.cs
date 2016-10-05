@@ -29,7 +29,6 @@ namespace Rubberduck.UI.Command
                 var selection = param.Selection;
 
                 pane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-                pane.ForceFocus();
             }
             catch (COMException)
             {

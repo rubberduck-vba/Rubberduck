@@ -51,7 +51,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 {
                     var module = pane.CodeModule;
                     {
-                        oldSelection = module.GetSelection();
+                        oldSelection = module.GetQualifiedSelection();
                     }
                 }
                 else

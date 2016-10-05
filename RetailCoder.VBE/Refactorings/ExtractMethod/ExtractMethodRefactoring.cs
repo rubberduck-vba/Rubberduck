@@ -43,7 +43,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
 
             */
-            var qualifiedSelection = _codeModule.GetSelection();
+            var qualifiedSelection = _codeModule.GetQualifiedSelection();
             if (!qualifiedSelection.HasValue)
             {
                 return;

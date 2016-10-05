@@ -49,7 +49,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 QualifiedSelection? oldSelection;
                 var module = pane.CodeModule;
                 {
-                    oldSelection = module.GetSelection();
+                    oldSelection = module.GetQualifiedSelection();
                 }
 
                 AdjustReferences(_model.TargetDeclaration.References);
@@ -58,7 +58,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 if (oldSelection.HasValue)
                 {
                     pane.SetSelection(oldSelection.Value.Selection);
-                    pane.ForceFocus();
                 }
             }
 

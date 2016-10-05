@@ -45,7 +45,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 if (!pane.IsWrappingNullReference)
                 {
-                    oldSelection = module.GetSelection();
+                    oldSelection = module.GetQualifiedSelection();
                 }
 
                 if (_model != null && _model.Declarations != null)
@@ -56,7 +56,6 @@ namespace Rubberduck.Refactorings.Rename
                 if (oldSelection.HasValue)
                 {
                     pane.SetSelection(oldSelection.Value.Selection);
-                    pane.ForceFocus();
                 }
             }
         }
@@ -93,7 +92,6 @@ namespace Rubberduck.Refactorings.Rename
                 }
 
                 pane.SetSelection(oldSelection);
-                pane.ForceFocus();
             }
         }
 

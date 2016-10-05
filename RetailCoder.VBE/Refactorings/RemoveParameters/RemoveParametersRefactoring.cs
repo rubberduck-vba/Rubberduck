@@ -48,7 +48,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             {
                 if (!module.IsWrappingNullReference)
                 {
-                    oldSelection = module.GetSelection();
+                    oldSelection = module.GetQualifiedSelection();
                 }
 
                 RemoveParameters();

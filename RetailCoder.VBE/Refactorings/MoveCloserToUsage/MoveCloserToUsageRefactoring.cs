@@ -33,7 +33,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         public void Refactor()
         {
-            var qualifiedSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            var qualifiedSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
             if (qualifiedSelection != null)
             {
                 Refactor(_declarations.FindVariable(qualifiedSelection.Value));
@@ -108,7 +108,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             {
                 if (!module.IsWrappingNullReference)
                 {
-                    oldSelection = module.GetSelection();
+                    oldSelection = module.GetQualifiedSelection();
                 }
 
                 // it doesn't make sense to do it backwards, but we need to work from the bottom up so our selections are accurate
@@ -134,7 +134,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             {
                 if (!module.IsWrappingNullReference)
                 {
-                    oldSelection = module.GetSelection();
+                    oldSelection = module.GetQualifiedSelection();
                 }
 
                 var newTarget = _state.AllUserDeclarations.FirstOrDefault(

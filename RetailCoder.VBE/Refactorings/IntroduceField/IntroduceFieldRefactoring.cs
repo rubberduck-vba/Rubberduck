@@ -84,7 +84,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             QualifiedSelection? oldSelection = null;
             if (_vbe.ActiveCodePane != null)
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
             }
 
             RemoveVariable(target);

@@ -39,7 +39,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             QualifiedSelection? oldSelection = null;
             if (_vbe.ActiveCodePane != null)
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
             }
 
             AddProperty();

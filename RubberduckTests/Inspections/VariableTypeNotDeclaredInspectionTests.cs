@@ -276,7 +276,7 @@ End Sub";
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            var actual = new CodeModule(module).Lines();
+            var actual = new CodeModule(module).Content();
             Assert.AreEqual(expectedCode, actual);
         }
 
@@ -308,7 +308,7 @@ End Sub";
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            var actual = new CodeModule(module).Lines();
+            var actual = new CodeModule(module).Content();
             Assert.AreEqual(expectedCode, actual);
         }
 
@@ -342,7 +342,7 @@ End Sub";
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -373,7 +373,7 @@ End Sub";
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -404,7 +404,7 @@ End Sub";
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -436,7 +436,7 @@ End Sub";
             var inspection = new VariableTypeNotDeclaredInspection(parser.State);
             inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]

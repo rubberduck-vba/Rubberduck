@@ -1,7 +1,5 @@
 ﻿using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -20,7 +18,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public EncapsulateFieldPresenter Create()
         {
-            var selection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
             if (!selection.HasValue)
             {
                 return null;

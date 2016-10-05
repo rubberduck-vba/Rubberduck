@@ -371,7 +371,7 @@ End Function";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -405,7 +405,7 @@ End Function";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -439,7 +439,7 @@ End Function";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -473,7 +473,7 @@ End Function";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -507,7 +507,7 @@ End Function";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -541,7 +541,7 @@ End Function";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -579,7 +579,7 @@ End Function";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -617,7 +617,7 @@ End Property";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -655,7 +655,7 @@ End Sub";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -693,7 +693,7 @@ End Sub";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -732,7 +732,7 @@ End Function";
                 inspectionResult.QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
             }
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]

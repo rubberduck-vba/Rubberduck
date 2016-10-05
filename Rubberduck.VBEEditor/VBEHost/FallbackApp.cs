@@ -30,7 +30,6 @@ namespace Rubberduck.VBEditor.VBEHost
                 var pane = module.CodePane;
                 {
                     pane.SetSelection(line, 1, line, 1);
-                    pane.ForceFocus();
                 }
             }
 

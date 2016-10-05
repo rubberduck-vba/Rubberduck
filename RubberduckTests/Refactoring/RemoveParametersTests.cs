@@ -63,7 +63,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -106,7 +106,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -149,7 +149,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -192,7 +192,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -245,7 +245,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -298,7 +298,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -341,7 +341,7 @@ End Function";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -384,7 +384,7 @@ End Function";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -437,7 +437,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -491,7 +491,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -534,7 +534,7 @@ End Property";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -576,7 +576,7 @@ End Property";
             refactoring.QuickFix(parser.State, qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -619,7 +619,7 @@ End Property";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -672,7 +672,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -733,7 +733,7 @@ End Function";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -786,7 +786,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -851,7 +851,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -956,7 +956,7 @@ End Property";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -1005,7 +1005,7 @@ End Property";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -1056,7 +1056,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -1109,7 +1109,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -1154,7 +1154,7 @@ End Sub";   // note: VBE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -1199,7 +1199,7 @@ End Sub";   // note: VBE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -1244,7 +1244,7 @@ End Sub";   // note: VBE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -1289,7 +1289,7 @@ End Sub";   // note: VBE removes excess spaces
             refactoring.Refactor(model.TargetDeclaration);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -1348,7 +1348,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(expectedCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -1409,8 +1409,8 @@ End Sub";   // note: IDE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Content());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Content());
         }
 
         [TestMethod]
@@ -1471,8 +1471,8 @@ End Sub";   // note: IDE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Content());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Content());
         }
 
         [TestMethod]
@@ -1545,9 +1545,9 @@ End Sub";   // note: IDE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
-            Assert.AreEqual(expectedCode3, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module3).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Content());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Content());
+            Assert.AreEqual(expectedCode3, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module3).Content());
         }
 
         [TestMethod]
@@ -1608,8 +1608,8 @@ End Sub";   // note: IDE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Content());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Content());
         }
 
         [TestMethod]
@@ -1669,8 +1669,8 @@ End Sub";   // note: IDE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Content());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Content());
         }
 
         [TestMethod]
@@ -1731,8 +1731,8 @@ End Sub";   // note: IDE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Content());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Content());
         }
 
         [TestMethod]
@@ -1805,9 +1805,9 @@ End Sub";   // note: IDE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
-            Assert.AreEqual(expectedCode3, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module3).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Content());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Content());
+            Assert.AreEqual(expectedCode3, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module3).Content());
         }
 
         [TestMethod]
@@ -1873,8 +1873,8 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Lines());
-            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Lines());
+            Assert.AreEqual(expectedCode1, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module1).Content());
+            Assert.AreEqual(expectedCode2, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module2).Content());
         }
 
         [TestMethod]
@@ -1991,7 +1991,7 @@ End Sub";
             var refactoring = new RemoveParametersRefactoring(vbeWrapper, factory);
             refactoring.Refactor();
 
-            Assert.AreEqual(inputCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(inputCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -2028,7 +2028,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(inputCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Lines());
+            Assert.AreEqual(inputCode, new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -2169,41 +2169,6 @@ End Sub";
         }
 
         [TestMethod]
-        public void Presenter_NullTargetReturnsNullModel()
-        {
-            //Input
-            const string inputCode =
-@"
-Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = Selection.Home;
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
-            projectBuilder.AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode);
-            var project = projectBuilder.Build();
-            builder.AddProject(project);
-            var vbe = builder.Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var codePane = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodePane(project.Object.VBComponents.Item(0).CodeModule.CodePane);
-            codePane.SetSelection(selection);
-
-            var factory = new RemoveParametersPresenterFactory(new VBE(vbe.Object), null, parser.State, null);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual(null, presenter.Show());
-        }
-
-        [TestMethod]
         public void Factory_NullSelectionNullReturnsNullPresenter()
         {
             //Input
@@ -2230,7 +2195,7 @@ End Sub";
 
             var factory = new RemoveParametersPresenterFactory(new VBE(vbe.Object), null, parser.State, null);
 
-            Assert.AreEqual(null, factory.Create());
+            Assert.IsNull(factory.Create());
         }
 
         #region setup

@@ -45,7 +45,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var pane = _vbe.ActiveCodePane;
             var module = pane.CodeModule;
             {
-                var selection = module.GetSelection();
+                var selection = module.GetQualifiedSelection();
                 if (!selection.HasValue)
                 {
                     _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
@@ -105,7 +105,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             {
                 if (_vbe.ActiveCodePane != null)
                 {
-                    oldSelection = module.GetSelection();
+                    oldSelection = module.GetQualifiedSelection();
                 }
 
                 RemoveVariable(target);

@@ -581,7 +581,7 @@ End Sub";
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             vm.IndenterCommand.Execute(vm.SelectedItem);
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -661,8 +661,8 @@ End Sub";
             vm.SelectedItem = vm.Projects.First();
             vm.IndenterCommand.Execute(vm.SelectedItem);
 
-            Assert.AreEqual(expectedCode, module1.Lines());
-            Assert.AreEqual(expectedCode, module2.Lines());
+            Assert.AreEqual(expectedCode, module1.Content());
+            Assert.AreEqual(expectedCode, module2.Content());
         }
 
         [TestMethod]
@@ -716,8 +716,8 @@ End Sub";
             vm.SelectedItem = vm.Projects.First();
             vm.IndenterCommand.Execute(vm.SelectedItem);
 
-            Assert.AreEqual(expectedCode, module1.Lines());
-            Assert.AreEqual(inputCode2, module2.Lines());
+            Assert.AreEqual(expectedCode, module1.Content());
+            Assert.AreEqual(inputCode2, module2.Content());
         }
 
         [TestMethod]
@@ -804,8 +804,8 @@ End Sub";
             vm.SelectedItem = vm.Projects.First().Items.First();
             vm.IndenterCommand.Execute(vm.SelectedItem);
 
-            Assert.AreEqual(expectedCode, module1.Lines());
-            Assert.AreEqual(expectedCode, module2.Lines());
+            Assert.AreEqual(expectedCode, module1.Content());
+            Assert.AreEqual(expectedCode, module2.Content());
         }
 
         [TestMethod]
@@ -864,8 +864,8 @@ End Sub";
             vm.SelectedItem = vm.Projects.First().Items.First();
             vm.IndenterCommand.Execute(vm.SelectedItem);
 
-            Assert.AreEqual(expectedCode, module1.Lines());
-            Assert.AreEqual(inputCode2, module2.Lines());
+            Assert.AreEqual(expectedCode, module1.Content());
+            Assert.AreEqual(inputCode2, module2.Content());
         }
 
         [TestMethod]
@@ -955,7 +955,7 @@ End Sub";
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First().Items.OfType<CodeExplorerMemberViewModel>().Single(item => item.Declaration.IdentifierName == "Foo");
             vm.RenameCommand.Execute(vm.SelectedItem);
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
