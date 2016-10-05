@@ -1,41 +1,26 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
-    public abstract class SafeComWrapper<T> : IDisposable, IEquatable<SafeComWrapper<T>> 
+    public abstract class SafeComWrapper<T> : ISafeComWrapper, IEquatable<SafeComWrapper<T>> 
         where T : class 
     {
-        private readonly T _comObject;
-        private bool _isDisposed;
-
         protected SafeComWrapper(T comObject)
         {
             _comObject = comObject;
         }
 
-        public T ComObject
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return _comObject;
-            }
-        }
+        public abstract void Release();
 
-        public bool IsWrappingNullReference
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return _comObject == null;
-            }
-        }
+        private readonly T _comObject;
+        public T ComObject { get { return _comObject; } }
+        public bool IsWrappingNullReference { get { return _comObject == null; } }
 
         protected TResult InvokeResult<TResult>(Func<TResult> member)
         {
-            ThrowIfDisposed();
-            ThrowIfNull();
             try
             {
                 return member.Invoke();
@@ -44,12 +29,14 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             {
                 throw new WrapperMethodException(exception);
             }
+            catch (NullReferenceException exception)
+            {
+                throw new WrapperMethodException(exception);                
+            }
         }
 
         protected void Invoke(Action member)
         {
-            ThrowIfDisposed();
-            ThrowIfNull();
             try
             {
                 member.Invoke();
@@ -58,74 +45,44 @@ namespace Rubberduck.VBEditor.DisposableWrappers
             {
                 throw new WrapperMethodException(exception);
             }
-        }
-
-        protected void ThrowIfNull()
-        {
-            if (IsWrappingNullReference)
+            catch (NullReferenceException exception)
             {
-                throw new NullReferenceException();
+                throw new WrapperMethodException(exception);
             }
         }
 
-        protected void ThrowIfDisposed()
+        /// <summary>
+        /// <c>true</c> when wrapping a <c>null</c> reference and <see cref="other"/> is either <c>null</c> or wrapping a <c>null</c> reference.
+        /// </summary>
+        protected bool IsEqualIfNull(SafeComWrapper<T> other)
         {
-            if (_isDisposed)
-            {
-                throw new ObjectDisposedException("(unknown)");
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_isDisposed)
-            {
-                return;
-            }
-
-            if (_comObject != null)
-            {
-                Marshal.ReleaseComObject(_comObject);
-            }
-
-            // 'disposing' parameter would be used to skip disposing managed resources when false.
-            // ...but we don't have any managed resources to deal with here, so it can be ignored.
-
-            _isDisposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public bool Equals(SafeComWrapper<T> other)
-        {
-            ThrowIfDisposed();
-            if (IsWrappingNullReference)
-            {
-                return other.IsWrappingNullReference;
-            }
-
-            return ReferenceEquals(_comObject, other._comObject);
+            return (other == null || other.IsWrappingNullReference) && IsWrappingNullReference;
         }
 
         public override bool Equals(object obj)
         {
-            ThrowIfDisposed();
-            return obj is T && ReferenceEquals(_comObject, obj); // bug: COM object isn't reliable for reference equality
+            return Equals(obj as SafeComWrapper<T>);
         }
 
-        public override int GetHashCode()
-        {
-            ThrowIfDisposed();
-            return _comObject.GetHashCode(); // bug: COM object isn't reliable for a hashcode
-        }
+        public abstract bool Equals(SafeComWrapper<T> other);
+        public abstract override int GetHashCode();
 
-        ~SafeComWrapper()
+        [SuppressMessage("ReSharper", "RedundantCast")]
+        [SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+        [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
+        protected int ComputeHashCode(params object[] values)
         {
-            Dispose(false);
+            unchecked
+            {
+                const int initial = (int)2166136261;
+                const int multiplier = (int)16777619;
+                var hash = initial;
+                for (var i = 0; i < values.Length; i++)
+                {
+                    hash = hash * multiplier + values[i].GetHashCode();
+                }
+                return hash;
+            }
         }
-    }
+   }
 }

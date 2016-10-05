@@ -1,14 +1,36 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
-    public class VBComponents : SafeComWrapper<Microsoft.Vbe.Interop.VBComponents>, IEnumerable<VBComponent>
+    public class VBComponents : SafeComWrapper<Microsoft.Vbe.Interop.VBComponents>, IEnumerable<VBComponent>, IEquatable<VBComponents>
     {
         public VBComponents(Microsoft.Vbe.Interop.VBComponents comObject) 
             : base(comObject)
         {
+        }
+
+        public int Count
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+        }
+
+        public VBProject Parent
+        {
+            get { return new VBProject(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Parent)); }
+        }
+
+        public VBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }
+        }
+
+        public VBComponent Item(object index)
+        {
+            return new VBComponent(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Item(index)));
         }
 
         public void Remove(VBComponent item)
@@ -26,10 +48,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             return new VBComponent(InvokeResult(() => ComObject.Import(path)));
         }
 
-        public VBProject Parent { get { return new VBProject(InvokeResult(() => ComObject.Parent)); } }
-        public int Count { get { return InvokeResult(() => ComObject.Count); } }
-        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
-
         public VBComponent AddCustom(string progId)
         {
             return new VBComponent(InvokeResult(() => ComObject.AddCustom(progId)));
@@ -40,11 +58,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             return new VBComponent(InvokeResult(() => ComObject.AddMTDesigner(index)));
         }
 
-        public VBComponent Item(object index)
-        {
-            return new VBComponent(InvokeResult(() => ComObject.Item(index)));
-        }
-
         IEnumerator<VBComponent> IEnumerable<VBComponent>.GetEnumerator()
         {
             return new ComWrapperEnumerator<VBComponent>(ComObject);
@@ -53,6 +66,33 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable<VBComponent>)this).GetEnumerator();
+        }
+
+        public override void Release()
+        {
+            if (!IsWrappingNullReference)
+            {
+                for (var i = 1; i <= Count; i++)
+                {
+                    Item(i).Release();
+                }
+                Marshal.ReleaseComObject(ComObject);
+            }
+        }
+
+        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.VBComponents> other)
+        {
+            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject, ComObject);
+        }
+
+        public bool Equals(VBComponents other)
+        {
+            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBComponents>);
+        }
+
+        public override int GetHashCode()
+        {
+            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
         }
     }
 }

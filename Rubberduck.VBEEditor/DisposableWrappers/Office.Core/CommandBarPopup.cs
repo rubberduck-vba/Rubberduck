@@ -12,9 +12,28 @@
             return new CommandBarPopup((Microsoft.Office.Core.CommandBarPopup)control.ComObject);
         }
 
-        private Microsoft.Office.Core.CommandBarPopup Popup { get { return (Microsoft.Office.Core.CommandBarPopup)ComObject; } }
+        private Microsoft.Office.Core.CommandBarPopup Popup
+        {
+            get { return (Microsoft.Office.Core.CommandBarPopup)ComObject; }
+        }
 
-        public CommandBar CommandBar { get { return new CommandBar(InvokeResult(() => Popup.CommandBar)); } }
-        public CommandBarControls Controls { get { return new CommandBarControls(InvokeResult(() => Popup.Controls)); } }
+        public CommandBar CommandBar
+        {
+            get { return new CommandBar(IsWrappingNullReference ? null : InvokeResult(() => Popup.CommandBar)); }
+        }
+
+        public CommandBarControls Controls
+        {
+            get { return new CommandBarControls(IsWrappingNullReference ? null : InvokeResult(() => Popup.Controls)); }
+        }
+
+        public override void Release()
+        {
+            if (!IsWrappingNullReference)
+            {
+                Controls.Release();
+            }
+            base.Release();
+        }
     }
 }

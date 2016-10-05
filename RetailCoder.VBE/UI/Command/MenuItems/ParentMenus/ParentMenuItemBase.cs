@@ -84,13 +84,13 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 var item = _items[child];
                 Debug.Assert(item is CommandBarPopup);
                 (item as CommandBarPopup).Delete();
-                item.Dispose();
+                item.Release();
             }
             foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
             {
                 child.Click -= child_Click;
                 child.Delete();
-                child.Dispose();
+                child.Release();
             }
         }
 
@@ -181,7 +181,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         {
             if (Item != null)
             {
-                Item.Dispose();
+                Item.Release();
             }
 
             _isDisposed = true;

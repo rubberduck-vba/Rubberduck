@@ -1,15 +1,48 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
-    public class Property : SafeComWrapper<Microsoft.Vbe.Interop.Property>
+    public class Property : SafeComWrapper<Microsoft.Vbe.Interop.Property>, IEquatable<Property>
     {
         public Property(Microsoft.Vbe.Interop.Property comObject) 
             : base(comObject)
         {
         }
 
+        public string Name
+        {
+            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Name); }
+        }
+
+        public int IndexCount
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.NumIndices); }
+        }
+
+        public Properties Collection
+        {
+            get { return new Properties(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Collection)); }
+        }
+
+        public Properties Parent
+        {
+            get { return new Properties(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Parent)); }
+        }
+
+        public Application Application
+        {
+            get { return new Application(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Application)); }
+        }
+
+        public VBE VBE
+        {
+            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.VBE)); }
+        }
+
         public object Value
         {
-            get { return InvokeResult(() => ComObject.Value); }
+            get { return IsWrappingNullReference ? null : InvokeResult(() => ComObject.Value); }
             set { Invoke(() => ComObject.Value = value); }
         }
 
@@ -26,20 +59,37 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             Invoke(() => ComObject.set_IndexedValue(index1, index2, index3, index4, value));
         }
 
-        public int IndexCount { get { return InvokeResult(() => ComObject.NumIndices); } }
-        public Application Application { get { return new Application(InvokeResult(() => ComObject.Application)); } }
-        public Properties Parent { get { return new Properties(InvokeResult(() => ComObject.Parent)); } }
-        public string Name { get { return InvokeResult(() => ComObject.Name); } }
-        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
-        public Properties Collection { get { return new Properties(InvokeResult(() => ComObject.Collection)); } }
-
         /// <summary>
         /// Getter returns an unwrapped COM object; remember to call Marshal.ReleaseComObject on the returned object.
         /// </summary>
         public object Object
         {
-            get { return InvokeResult(() => ComObject.Object); }
+            get { return IsWrappingNullReference ? null : InvokeResult(() => ComObject.Object); }
             set { Invoke(() => ComObject.Object = value); }
+        }
+
+        public override void Release()
+        {
+            if (!IsWrappingNullReference)
+            {
+                Marshal.ReleaseComObject(ComObject);
+            } 
+        }
+
+        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Property> other)
+        {
+            return IsEqualIfNull(other) || 
+                (other.ComObject.Name == Name && ReferenceEquals(other.ComObject.Parent, ComObject.Parent));
+        }
+
+        public bool Equals(Property other)
+        {
+            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Property>);
+        }
+
+        public override int GetHashCode()
+        {
+            return ComputeHashCode(Name, IndexCount, Parent.ComObject);
         }
     }
 }

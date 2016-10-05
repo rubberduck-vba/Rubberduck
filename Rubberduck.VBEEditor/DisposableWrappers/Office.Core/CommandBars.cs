@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
 {
-    public class CommandBars : SafeComWrapper<Microsoft.Office.Core.CommandBars>, IEnumerable<CommandBar>
+    public class CommandBars : SafeComWrapper<Microsoft.Office.Core.CommandBars>, IEnumerable<CommandBar>, IEquatable<CommandBars>
     {
         public CommandBars(Microsoft.Office.Core.CommandBars comObject) 
             : base(comObject)
@@ -40,11 +43,42 @@ namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
             return ((IEnumerable<CommandBar>)this).GetEnumerator();
         }
 
-        public int Count { get { return InvokeResult(() => ComObject.Count); } }
+        public int Count
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+        }
 
         public CommandBar this[object index]
         {
             get { return new CommandBar(InvokeResult(() => ComObject[index])); }
+        }
+
+        public override void Release()
+        {
+            if (!IsWrappingNullReference)
+            {
+                var commandBars = this.ToArray();
+                foreach (var commandBar in commandBars)
+                {
+                    commandBar.Release();
+                }
+                Marshal.ReleaseComObject(ComObject);
+            }
+        }
+
+        public override bool Equals(SafeComWrapper<Microsoft.Office.Core.CommandBars> other)
+        {
+            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject, ComObject);
+        }
+
+        public bool Equals(CommandBars other)
+        {
+            return Equals(other as SafeComWrapper<Microsoft.Office.Core.CommandBars>);
+        }
+
+        public override int GetHashCode()
+        {
+            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
         }
     }
 }

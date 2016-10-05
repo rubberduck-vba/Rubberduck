@@ -1,18 +1,89 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
-    public class VBComponent : SafeComWrapper<Microsoft.Vbe.Interop.VBComponent>
+    public class VBComponent : SafeComWrapper<Microsoft.Vbe.Interop.VBComponent>, IEquatable<VBComponent>
     {
         public VBComponent(Microsoft.Vbe.Interop.VBComponent comObject) 
             : base(comObject)
         {
         }
 
+        public ComponentType Type
+        {
+            get { return IsWrappingNullReference ? 0 : (ComponentType)InvokeResult(() => ComObject.Type); }
+        }
+
+        public CodeModule CodeModule
+        {
+            get { return new CodeModule(IsWrappingNullReference ? null : InvokeResult(() => ComObject.CodeModule)); }
+        }
+
+        public VBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }
+        }
+
+        public VBComponents Collection
+        {
+            get { return new VBComponents(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Collection)); }
+        }
+
+        public Properties Properties
+        {
+            get { return new Properties(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Properties)); }
+        }
+
+        public bool HasOpenDesigner
+        {
+            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.HasOpenDesigner); }
+        }
+
+        public string DesignerId
+        {
+            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.DesignerID); }
+        }
+
+        public string Name
+        {
+            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Name); }
+            set { Invoke(() => ComObject.Name = value); }
+        }
+
+        // ReSharper disable once ReturnTypeCanBeEnumerable.Global
+        public Controls Controls
+        {
+            get
+            {
+                var designer = IsWrappingNullReference
+                    ? null
+                    : InvokeResult(() => ComObject.Designer) as Microsoft.Vbe.Interop.Forms.UserForm;
+
+                return designer == null 
+                    ? new Controls(null) 
+                    : new Controls(designer.Controls);
+            }
+        }
+
+        public bool HasDesigner
+        {
+            get
+            {
+                if (IsWrappingNullReference)
+                {
+                    return false;
+                }
+                var designer = InvokeResult(() => ComObject.Designer);
+                var hasDesigner = designer != null;
+                return hasDesigner;
+            }
+        }
+
         public Window DesignerWindow()
         {
-            return new Window(InvokeResult(() => ComObject.DesignerWindow()));
+            return new Window(IsWrappingNullReference ? null : InvokeResult(() => ComObject.DesignerWindow()));
         }
 
         public void Activate()
@@ -20,55 +91,37 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             Invoke(() => ComObject.Activate());
         }
 
-        public bool IsSaved { get { return InvokeResult(() => ComObject.Saved); } }
-
-        public string Name
-        {
-            get { return InvokeResult(() => ComObject.Name); }
-            set { Invoke(() => ComObject.Name = value); }
-        }
+        public bool IsSaved { get { return !IsWrappingNullReference && InvokeResult(() => ComObject.Saved); } }
 
         public void Export(string path)
         {
             Invoke(() => ComObject.Export(path));
         }
 
-        public IEnumerable<Control> Controls
+        public override void Release()
         {
-            get
+            if (!IsWrappingNullReference)
             {
-                var designer = InvokeResult(() => ComObject.Designer) as Microsoft.Vbe.Interop.Forms.UserForm;
-                if (designer == null)
-                {
-                    return Enumerable.Empty<Control>();
-                }
-
-                var result = new List<Control>();
-                var controls = new Controls(designer.Controls);
-                {
-                    result.AddRange(controls);
-                }
-
-                return result;
+                DesignerWindow().Release();
+                Controls.Release();
+                Properties.Release();
+                CodeModule.Release();
             }
         }
 
-        public CodeModule CodeModule { get { return new CodeModule(InvokeResult(() => ComObject.CodeModule)); } }
-        public ComponentType Type { get { return (ComponentType)InvokeResult(() => ComObject.Type); } }
-        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
-        public VBComponents Collection { get { return new VBComponents(InvokeResult(() => ComObject.Collection)); } }
-        public bool HasOpenDesigner { get { return InvokeResult(() => ComObject.HasOpenDesigner); } }
-        public Properties Properties { get { return new Properties(InvokeResult(() => ComObject.Properties)); } }
-        public string DesignerId { get { return InvokeResult(() => ComObject.DesignerID); } }
-
-        public bool HasDesigner
+        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.VBComponent> other)
         {
-            get
-            {
-                var designer = InvokeResult(() => ComObject.Designer);
-                var hasDesigner = designer != null;
-                return hasDesigner;
-            }
+            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject, ComObject);
+        }
+
+        public bool Equals(VBComponent other)
+        {
+            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBComponent>);
+        }
+
+        public override int GetHashCode()
+        {
+            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
         }
     }
 }

@@ -18,7 +18,10 @@ namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
             return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.ComObject);
         }
 
-        private Microsoft.Office.Core.CommandBarButton Button { get {  return (Microsoft.Office.Core.CommandBarButton)ComObject; } }
+        private Microsoft.Office.Core.CommandBarButton Button
+        {
+            get { return (Microsoft.Office.Core.CommandBarButton)ComObject; }
+        }
 
         public event EventHandler<CommandBarButtonClickEventArgs> Click;
         private void comObject_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
@@ -40,31 +43,31 @@ namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
 
         public bool IsBuiltInFace
         {
-            get { return InvokeResult(() => Button.BuiltInFace); }
+            get { return !IsWrappingNullReference && InvokeResult(() => Button.BuiltInFace); }
             set { Invoke(() => Button.BuiltInFace = value); }
         }
 
         public int FaceId 
         {
-            get { return InvokeResult(() => Button.FaceId); }
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => Button.FaceId); }
             set { Invoke(() => Button.FaceId = value); }
         }
 
         public string ShortcutText
         {
-            get { return InvokeResult(() => Button.ShortcutText); }
+            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => Button.ShortcutText); }
             set { Invoke(() => Button.ShortcutText = value); }
         }
 
         public ButtonState State
         {
-            get { return InvokeResult(() => (ButtonState)Button.State); }
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => (ButtonState)Button.State); }
             set { Invoke(() => Button.State = (Microsoft.Office.Core.MsoButtonState)value); }
         }
 
         public ButtonStyle Style
         {
-            get { return InvokeResult(() => (ButtonStyle)Button.Style); }
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => (ButtonStyle)Button.Style); }
             set { Invoke(() => Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value); }
         }
 
@@ -102,6 +105,11 @@ namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
         {
             get
             {
+                if (IsWrappingNullReference)
+                {
+                    return false;
+                }
+
                 if (_hasPictureProperty.HasValue)
                 {
                     return _hasPictureProperty.Value;
@@ -137,18 +145,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
                 g.DrawImage(image, 0, 0);
             }
             return output;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (Picture != null) { Picture.Dispose(); }
-                if (Mask != null) { Mask.Dispose(); }
-            }
-
-            Button.Click -= comObject_Click;
-            base.Dispose(disposing);
         }
     }
 }

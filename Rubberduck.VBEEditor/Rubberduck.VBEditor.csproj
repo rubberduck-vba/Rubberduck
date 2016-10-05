@@ -115,6 +115,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisposableWrappers\ISafeComWrapper.cs" />
     <Compile Include="DisposableWrappers\Office.Core\AxHostConverter.cs">
       <SubType>Component</SubType>
     </Compile>

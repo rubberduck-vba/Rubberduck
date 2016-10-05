@@ -176,8 +176,8 @@ namespace Rubberduck
                 _kernel = null;
             }
 
-            _addin.Dispose();
-            _ide.Dispose();
+            _addin.Release();
+            _ide.Release();
             _isInitialized = false;
         }
     }

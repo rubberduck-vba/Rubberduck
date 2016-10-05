@@ -1,14 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
-    public class VBProjects : SafeComWrapper<Microsoft.Vbe.Interop.VBProjects>, IEnumerable<VBProject>
+    public class VBProjects : SafeComWrapper<Microsoft.Vbe.Interop.VBProjects>, IEnumerable<VBProject>, IEquatable<VBProjects>
     {
         public VBProjects(Microsoft.Vbe.Interop.VBProjects comObject) 
             : base(comObject)
         {
+        }
+
+        public int Count
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+        }
+
+        public VBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }
+        }
+
+        public VBE Parent
+        {
+            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Parent)); }
         }
 
         public VBProject Add(ProjectType type)
@@ -31,10 +48,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             return new VBProject(InvokeResult(() => ComObject.Item(index)));
         }
 
-        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
-        public VBE Parent { get { return new VBE(InvokeResult(() => ComObject.Parent)); } }
-        public int Count { get { return InvokeResult(() => ComObject.Count); } }
-
         IEnumerator<VBProject> IEnumerable<VBProject>.GetEnumerator()
         {
             return new ComWrapperEnumerator<VBProject>(ComObject);
@@ -43,6 +56,33 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable<VBProject>)this).GetEnumerator();
+        }
+
+        public override void Release()
+        {
+            if (!IsWrappingNullReference)
+            {
+                for (var i = 1; i <= Count; i++)
+                {
+                    Item(i).Release();
+                }
+                Marshal.ReleaseComObject(ComObject);
+            }
+        }
+
+        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.VBProjects> other)
+        {
+            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject, ComObject);
+        }
+
+        public bool Equals(VBProjects other)
+        {
+            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBProjects>);
+        }
+
+        public override int GetHashCode()
+        {
+            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
         }
     }
 }

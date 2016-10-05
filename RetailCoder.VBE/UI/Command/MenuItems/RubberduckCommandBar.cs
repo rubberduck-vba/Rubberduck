@@ -202,12 +202,7 @@ namespace Rubberduck.UI.Command.MenuItems
             _selectionButton.Delete();
             _statusButton.Delete();
             _commandbar.Delete();
-
-            _refreshButton.Dispose();
-            _selectionButton.Dispose();
-            _statusButton.Dispose();
-            _commandbar.Dispose();
-
+            _commandbar.Release();
             _isDisposed = true;
         }
     }

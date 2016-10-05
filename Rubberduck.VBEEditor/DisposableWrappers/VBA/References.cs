@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
-    public class References : SafeComWrapper<Microsoft.Vbe.Interop.References>, IEnumerable<Reference>
+    public class References : SafeComWrapper<Microsoft.Vbe.Interop.References>, IEnumerable<Reference>, IEquatable<References>
     {
         public References(Microsoft.Vbe.Interop.References comObject) 
             : base(comObject)
@@ -15,7 +15,22 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         }
 
         public event EventHandler<ReferenceEventArgs> ItemAdded;
-        public event EventHandler<ReferenceEventArgs> ItemRemoved; 
+        public event EventHandler<ReferenceEventArgs> ItemRemoved;
+
+        public int Count
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+        }
+
+        public VBProject Parent
+        {
+            get { return new VBProject(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Parent)); }
+        }
+
+        public VBE VBE
+        {
+            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.VBE)); }
+        }
 
         private void comObject_ItemRemoved(Microsoft.Vbe.Interop.Reference reference)
         {
@@ -51,24 +66,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             Invoke(() => ComObject.Remove(reference.ComObject));
         }
 
-        /// <summary>
-        /// Moves specified reference to specified index.
-        /// </summary>
-        public void SetPriority(Reference reference, int index)
-        {
-            if (reference.IsWrappingNullReference)
-            {
-                throw new ArgumentException("Specified wrapper cannot wrap a null COM object.", "reference");
-            }
-
-            var originalIndex = reference.Index;
-            throw new NotImplementedException();
-        }
-
-        public VBProject Parent { get { return new VBProject(InvokeResult(() => ComObject.Parent)); } }
-        public VBE VBE { get { return new VBE(InvokeResult(() => ComObject.VBE)); } }
-        public int Count { get { return InvokeResult(() => ComObject.Count); } }
-
         IEnumerator<Reference> IEnumerable<Reference>.GetEnumerator()
         {
             return new ComWrapperEnumerator<Reference>(ComObject);
@@ -77,6 +74,33 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable<Reference>)this).GetEnumerator();
+        }
+
+        public override void Release()
+        {
+            if (!IsWrappingNullReference)
+            {
+                for (var i = 1; i <= Count; i++)
+                {
+                    Item(i).Release();
+                }
+                Marshal.ReleaseComObject(ComObject);
+            }
+        }
+
+        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.References> other)
+        {
+            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject.Parent, Parent.ComObject);
+        }
+
+        public bool Equals(References other)
+        {
+            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.References>);
+        }
+
+        public override int GetHashCode()
+        {
+            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
         }
     }
 }

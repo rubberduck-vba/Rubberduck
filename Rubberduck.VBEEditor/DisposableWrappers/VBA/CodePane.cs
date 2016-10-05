@@ -1,18 +1,54 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
-    public class CodePane : SafeComWrapper<Microsoft.Vbe.Interop.CodePane>
+    public class CodePane : SafeComWrapper<Microsoft.Vbe.Interop.CodePane>, IEquatable<CodePane>
     {
         public CodePane(Microsoft.Vbe.Interop.CodePane codePane)
             : base(codePane)
         {
         }
 
+        public CodePanes Collection
+        {
+            get { return new CodePanes(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Collection)); }
+        }
+
+        public VBE VBE
+        {
+            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.VBE)); }
+        }
+
+        public Window Window
+        {
+            get { return new Window(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Window)); }
+        }
+
+        public int TopLine
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.TopLine); }
+            set { Invoke(() => ComObject.TopLine = value); }
+        }
+
+        public int CountOfVisibleLines
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.CountOfVisibleLines); }
+        }
+
+        public CodeModule CodeModule
+        {
+            get { return new CodeModule(InvokeResult(() => IsWrappingNullReference ? null : ComObject.CodeModule)); }
+        }
+
+        public CodePaneView CodePaneView
+        {
+            get { return IsWrappingNullReference ? 0 : (CodePaneView)InvokeResult(() => ComObject.CodePaneView); }
+        }
+
         public Selection GetSelection()
         {
-            ThrowIfDisposed();
             try
             {
                 return InvokeResult(() =>
@@ -47,22 +83,28 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             Invoke(() => ComObject.Show());
         }
 
-        public CodePanes Collection { get { return new CodePanes(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Collection)); } }
-
-        public VBE VBE { get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); } }
-
-        public Window Window { get { return new Window(InvokeResult(() => ComObject.Window)); } }
-
-        public int TopLine 
-        { 
-            get { return InvokeResult(() => ComObject.TopLine); }
-            set { Invoke(() => ComObject.TopLine = value); }
+        public override void Release()
+        {
+            if (!IsWrappingNullReference)
+            {
+                Window.Release();
+                Marshal.ReleaseComObject(ComObject);
+            }
         }
 
-        public int CountOfVisibleLines { get { return InvokeResult(() => ComObject.CountOfVisibleLines); } }
+        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.CodePane> other)
+        {
+            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject, ComObject);
+        }
 
-        public CodeModule CodeModule { get { return new CodeModule(IsWrappingNullReference ? null : InvokeResult(() => ComObject.CodeModule)); } }
+        public bool Equals(CodePane other)
+        {
+            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.CodePane>);
+        }
 
-        public CodePaneView CodePaneView { get { return (CodePaneView)InvokeResult(() => ComObject.CodePaneView); } }
+        public override int GetHashCode()
+        {
+            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+        }
     }
 }

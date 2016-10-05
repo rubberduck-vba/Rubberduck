@@ -1,10 +1,125 @@
-﻿namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
+﻿using System;
+using System.Runtime.InteropServices;
+
+namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
 {
-    public class CommandBarControl : SafeComWrapper<Microsoft.Office.Core.CommandBarControl>
+    public class CommandBarControl : SafeComWrapper<Microsoft.Office.Core.CommandBarControl>, IEquatable<CommandBarControl>
     {
         public CommandBarControl(Microsoft.Office.Core.CommandBarControl comObject) 
             : base(comObject)
         {
+        }
+
+        public bool BeginsGroup
+        {
+            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.BeginGroup); }
+            set { Invoke(() => ComObject.BeginGroup = value); }
+        }
+
+        public bool IsBuiltIn
+        {
+            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.BuiltIn); }
+        }
+
+        public string Caption
+        {
+            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Caption); }
+            set { Invoke(() => ComObject.Caption = value); }
+        }
+
+        public string DescriptionText
+        {
+            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.DescriptionText); }
+            set { Invoke(() => ComObject.DescriptionText = value); }
+        }
+
+        public bool IsEnabled
+        {
+            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.Enabled); }
+            set { Invoke(() => ComObject.Enabled = value); }
+        }
+
+        public int Height
+        {
+            get { return InvokeResult(() => ComObject.Height); }
+            set { Invoke(() => ComObject.Height = value); }
+        }
+
+        public int Id
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Id); }
+        }
+
+        public int Index
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Index); }
+        }
+
+        public int Left
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Left); }
+        }
+
+        public string OnAction
+        {
+            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.OnAction); }
+            set { Invoke(() => ComObject.OnAction = value); }
+        }
+
+        public CommandBar Parent
+        {
+            get { return new CommandBar(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Parent)); }
+        }
+
+        public string Parameter
+        {
+            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Parameter); }
+            set { Invoke(() => ComObject.Parameter = value); }
+        }
+
+        public int Priority
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Priority); }
+            set { Invoke(() => ComObject.Priority = value); }
+        }
+
+        public string Tag 
+        {
+            get { return InvokeResult(() => ComObject.Tag); }
+            set { Invoke(() => ComObject.Tag = value); }
+        }
+
+        public string TooltipText
+        {
+            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.TooltipText); }
+            set { Invoke(() => ComObject.TooltipText = value); }
+        }
+
+        public int Top
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Top); }
+        }
+
+        public ControlType Type
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => (ControlType)ComObject.Type); }
+        }
+
+        public bool IsVisible
+        {
+            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.Visible); }
+            set { Invoke(() => ComObject.Visible = value); }
+        }
+
+        public int Width
+        {
+            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Width); }
+            set { Invoke(() => ComObject.Width = value); }
+        }
+
+        public bool IsPriorityDropped
+        {
+            get { return InvokeResult(() => ComObject.IsPriorityDropped); }
         }
 
         public void Delete()
@@ -17,85 +132,32 @@
             Invoke(() => ComObject.Execute());
         }
 
-        public bool BeginsGroup
+        public override void Release()
         {
-            get { return InvokeResult(() => ComObject.BeginGroup); }
-            set { Invoke(() => ComObject.BeginGroup = value); }
+            if (!IsWrappingNullReference)
+            {
+                Marshal.ReleaseComObject(ComObject);
+            }
         }
 
-        public bool IsBuiltIn { get { return InvokeResult(() => ComObject.BuiltIn); } }
-
-        public string Caption
+        public override bool Equals(SafeComWrapper<Microsoft.Office.Core.CommandBarControl> other)
         {
-            get { return InvokeResult(() => ComObject.Caption); }
-            set { Invoke(() => ComObject.Caption = value); }
+            return IsEqualIfNull(other) ||
+                ((int)other.ComObject.Type == (int)Type
+                && other.ComObject.Id == Id
+                && other.ComObject.Index == Index
+                && other.ComObject.BuiltIn == IsBuiltIn
+                && ReferenceEquals(other.ComObject.Parent, ComObject.Parent));
         }
 
-        public string DescriptionText
+        public bool Equals(CommandBarControl other)
         {
-            get { return InvokeResult(() => ComObject.DescriptionText); }
-            set { Invoke(() => ComObject.DescriptionText = value); }
+            return Equals(other as SafeComWrapper<Microsoft.Office.Core.CommandBarControl>);
         }
 
-        public bool IsEnabled
+        public override int GetHashCode()
         {
-            get { return InvokeResult(() => ComObject.Enabled); }
-            set { Invoke(() => ComObject.Enabled = value); }
+            return IsWrappingNullReference ? 0 : ComputeHashCode(Type, Id, Index, IsBuiltIn, ComObject.Parent);
         }
-
-        public int Height { get; set; }
-        public int Id { get { return InvokeResult(() => ComObject.Id); } }
-        public int Index { get { return InvokeResult(() => ComObject.Index); } }
-        public int Left { get { return InvokeResult(() => ComObject.Left); } }
-
-        public string OnAction
-        {
-            get { return InvokeResult(() => ComObject.OnAction); }
-            set { Invoke(() => ComObject.OnAction = value); }
-        }
-
-        public CommandBar Parent { get { return new CommandBar(InvokeResult(() => ComObject.Parent)); } }
-
-        public string Parameter
-        {
-            get { return InvokeResult(() => ComObject.Parameter); }
-            set { Invoke(() => ComObject.Parameter = value); }
-        }
-
-        public int Priority
-        {
-            get { return InvokeResult(() => ComObject.Priority); }
-            set { Invoke(() => ComObject.Priority = value); }
-        }
-
-        public string Tag 
-        {
-            get { return InvokeResult(() => ComObject.Tag); }
-            set { Invoke(() => ComObject.Tag = value); }
-        }
-
-        public string TooltipText
-        {
-            get { return InvokeResult(() => ComObject.TooltipText); }
-            set { Invoke(() => ComObject.TooltipText = value); }
-        }
-
-        public int Top { get { return InvokeResult(() => ComObject.Top); } }
-
-        public ControlType Type { get { return InvokeResult(() => (ControlType)ComObject.Type); } }
-
-        public bool IsVisible
-        {
-            get { return InvokeResult(() => ComObject.Visible); }
-            set { Invoke(() => ComObject.Visible = value); }
-        }
-
-        public int Width
-        {
-            get { return InvokeResult(() => ComObject.Width); }
-            set { Invoke(() => ComObject.Width = value); }
-        }
-
-        public bool IsPriorityDropped { get { return InvokeResult(() => ComObject.IsPriorityDropped); } }
     }
 }
