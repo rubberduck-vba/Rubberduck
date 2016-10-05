@@ -33,8 +33,8 @@ namespace Rubberduck
         private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
         private const string ProgId = "Rubberduck.Extension";
 
-        private VBEditor.DisposableWrappers.VBA.VBE _ide;
-        private VBEditor.DisposableWrappers.VBA.AddIn _addin;
+        private VBEditor.SafeComWrappers.VBA.VBE _ide;
+        private VBEditor.SafeComWrappers.VBA.AddIn _addin;
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
 
@@ -49,8 +49,8 @@ namespace Rubberduck
         {
             try
             {
-                _ide = new VBEditor.DisposableWrappers.VBA.VBE((VBE)Application);
-                _addin = new VBEditor.DisposableWrappers.VBA.AddIn((AddIn)AddInInst);
+                _ide = new VBEditor.SafeComWrappers.VBA.VBE((VBE)Application);
+                _addin = new VBEditor.SafeComWrappers.VBA.AddIn((AddIn)AddInInst);
                 _addin.Object = this;
 
                 switch (ConnectMode)

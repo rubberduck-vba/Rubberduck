@@ -1,4 +1,4 @@
-using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {

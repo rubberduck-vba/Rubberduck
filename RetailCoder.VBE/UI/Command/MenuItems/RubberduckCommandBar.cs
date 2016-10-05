@@ -4,8 +4,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -198,10 +198,6 @@ namespace Rubberduck.UI.Command.MenuItems
             _sinks.ComponentActivated -= ComponentActivated;
             _sinks.ComponentSelected -= ComponentSelected;
 
-            //_refreshButton.Delete();
-            //_selectionButton.Delete();
-            //_statusButton.Delete();
-            //_commandbar.Delete();
             _isDisposed = true;
         }
     }

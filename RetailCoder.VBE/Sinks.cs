@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck
 {
@@ -87,6 +87,7 @@ namespace Rubberduck
             var connectionPointContainer = (IConnectionPointContainer)vbe.VBProjects.ComObject;
             var interfaceId = typeof(Microsoft.Vbe.Interop._dispVBProjectsEvents).GUID;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
+            Marshal.ReleaseComObject(connectionPointContainer);
             _projectsEventsConnectionPoint.Advise(_sink, out _projectsEventsCookie);
         }
 
@@ -217,6 +218,7 @@ namespace Rubberduck
 
             var componentConnectionPoint = _componentsEventsConnectionPoints[projectId];
             componentConnectionPoint.Item1.Unadvise(componentConnectionPoint.Item2);
+            Marshal.ReleaseComObject(componentConnectionPoint.Item1);
 
             _componentsEventsConnectionPoints.Remove(projectId);
         }
@@ -342,6 +344,7 @@ namespace Rubberduck
             if (_projectsEventsConnectionPoint != null)
             {
                 _projectsEventsConnectionPoint.Unadvise(_projectsEventsCookie);
+                Marshal.ReleaseComObject(_projectsEventsConnectionPoint);
             }
 
             foreach (var item in _componentsEventsSinks)
@@ -357,6 +360,7 @@ namespace Rubberduck
             foreach (var item in _componentsEventsConnectionPoints)
             {
                 item.Value.Item1.Unadvise(item.Value.Item2);
+                Marshal.ReleaseComObject(item.Value.Item1);
             }
         }
     }

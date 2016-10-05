@@ -9,8 +9,8 @@ using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
-using VBComponent = Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent;
-using VBE = Rubberduck.VBEditor.DisposableWrappers.VBA.VBE;
+using VBComponent = Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent;
+using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.UnitTesting
 {
