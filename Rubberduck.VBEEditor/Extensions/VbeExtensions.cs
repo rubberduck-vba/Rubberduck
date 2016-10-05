@@ -1,5 +1,4 @@
 using System.Linq;
-using Rubberduck.VBEditor.DisposableWrappers;
 using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
 using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.VBEHost;
@@ -8,35 +7,6 @@ namespace Rubberduck.VBEditor.Extensions
 {
     public static class VbeExtensions
     {
-        public static void SetSelection(this VBE vbe, VBProject vbProject, Selection selection, string name)
-        {
-            try
-            {
-                var components = vbProject.VBComponents;
-                var component = components.SingleOrDefault(c => c.Name == name);
-                {
-                    if (component == null || component.IsWrappingNullReference)
-                    {
-                        return;
-                    }
-
-                    var module = component.CodeModule;
-                    var pane = module.CodePane;
-                    {
-                        pane.SetSelection(selection);
-                    }
-                }
-            }
-            catch (WrapperMethodException)
-            {
-            }
-        }
-
-        public static bool IsInDesignMode(this VBE vbe)
-        {
-            return vbe.VBProjects.All(project => project.Mode == EnvironmentMode.Design);
-        }
-
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>
         public static IHostApplication HostApplication(this VBE vbe)
         {

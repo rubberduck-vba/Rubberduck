@@ -104,7 +104,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
                 project = proj;
                 break;
             }
-            _vbe.SetSelection(project, item.Selection, item.Module.Name);
+            VBE.SetSelection(project, item.Selection, item.Module.Name);
         }
 
         private List<RegexSearchResult> SearchSelection(string searchPattern)

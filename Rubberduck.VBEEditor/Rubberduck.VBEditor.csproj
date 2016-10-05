@@ -173,8 +173,7 @@
     <Compile Include="Selection.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="SubClassingWindowEventArgs.cs" />
-    <Compile Include="Extensions\VBComponentExtensions.cs" />
-    <Compile Include="Extensions\VBComponentsExtensions.cs" />
+    <Compile Include="Extensions\ComponentTypeExtensions.cs" />
     <Compile Include="Extensions\VbeExtensions.cs" />
     <Compile Include="VBEEditorText.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -197,7 +196,6 @@
     <Compile Include="VBEHost\AutoCADApp.cs" />
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extensions\WindowExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VBEEditorText.fr.resx" />

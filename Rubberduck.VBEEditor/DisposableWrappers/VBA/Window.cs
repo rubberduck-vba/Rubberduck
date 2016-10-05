@@ -16,6 +16,11 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.HWnd); }
         }
 
+        public IntPtr Handle()
+        {
+            return (IntPtr)HWnd;
+        }
+
         public VBE VBE
         {
             get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }

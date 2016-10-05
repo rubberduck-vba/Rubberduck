@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
@@ -128,5 +130,44 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         {
             return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
         }
+
+        public IEnumerable<string> ComponentNames()
+        {
+            return VBComponents.Select(component => component.Name);
+        }
+
+        public void AssignProjectId()
+        {
+            //assign a hashcode if no helpfile is present
+            if (string.IsNullOrEmpty(HelpFile))
+            {
+                HelpFile = GetHashCode().ToString();
+            }
+
+            //loop until the helpfile is unique for this host session
+            while (!IsProjectIdUnique())
+            {
+                HelpFile = (GetHashCode() ^ HelpFile.GetHashCode()).ToString();
+            }
+        }
+
+        private bool IsProjectIdUnique()
+        {
+            return VBE.VBProjects.Count(project => project.HelpFile == HelpFile) == 1;
+        }
+
+
+        /// <summary>
+        /// Exports all code modules in the VbProject to a destination directory. Files are given the same name as their parent code Module name and file extensions are based on what type of code Module it is.
+        /// </summary>
+        /// <param name="folder">The destination directory path.</param>
+        public void ExportSourceFiles(string folder)
+        {
+            foreach (var component in VBComponents)
+            {
+                component.ExportAsSourceFile(folder);
+            }
+        }
+
     }
 }

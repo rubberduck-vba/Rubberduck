@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
@@ -97,6 +99,74 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             Invoke(() => ComObject.Export(path));
         }
 
+        /// <summary>
+        /// Exports the component to the folder. The file is name matches the component name and file extension is based on the component's type.
+        /// </summary>
+        /// <param name="folder">Destination folder for the resulting source file.</param>
+        public string ExportAsSourceFile(string folder)
+        {
+            var fullPath = Path.Combine(folder, Name + Type.FileExtension());
+            switch (Type)
+            {
+                case ComponentType.UserForm:
+                    ExportUserFormModule(fullPath);
+                    break;
+                case ComponentType.Document:
+                    ExportDocumentModule(fullPath);
+                    break;
+                default:
+                    Export(fullPath);
+                    break;
+            }
+
+            return fullPath;
+        }
+
+        private void ExportUserFormModule(string path)
+        {
+            // VBIDE API inserts an extra newline when exporting a UserForm module.
+            // this issue causes forms to always be treated as "modified" in source control, which causes conflicts.
+            // we need to remove the extra newline before the file gets written to its output location.
+
+            var visibleCode = CodeModule.Content().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
+
+            var tempFile = ExportToTempFile();
+            var contents = File.ReadAllLines(tempFile);
+            var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
+            var attributeLines = contents.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
+            var declarationsStartLine = nonAttributeLines + attributeLines + 1;
+
+            var emptyLineCount = contents.Skip(declarationsStartLine - 1)
+                                         .TakeWhile(string.IsNullOrWhiteSpace)
+                                         .Count();
+
+            var code = contents;
+            if (emptyLineCount > legitEmptyLineCount)
+            {
+                code = contents.Take(declarationsStartLine).Union(
+                       contents.Skip(declarationsStartLine + emptyLineCount - legitEmptyLineCount))
+                               .ToArray();
+            }
+            File.WriteAllLines(path, code);
+        }
+
+        private void ExportDocumentModule(string path)
+        {
+            var lineCount = CodeModule.CountOfLines;
+            if (lineCount > 0)
+            {
+                var text = CodeModule.GetLines(1, lineCount);
+                File.WriteAllText(path, text);
+            }
+        }
+
+        private string ExportToTempFile()
+        {
+            var path = Path.Combine(Path.GetTempPath(), Name + Type.FileExtension());
+            Export(path);
+            return path;
+        }
         public override void Release()
         {
             if (!IsWrappingNullReference)

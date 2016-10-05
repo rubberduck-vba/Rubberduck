@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
 
@@ -94,6 +95,25 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         public override int GetHashCode()
         {
             return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+        }
+
+        public bool IsInDesignMode()
+        {
+            return VBProjects.All(project => project.Mode == EnvironmentMode.Design);
+        }
+
+        public static void SetSelection(VBProject vbProject, Selection selection, string name)
+        {
+            var components = vbProject.VBComponents;
+            var component = components.SingleOrDefault(c => c.Name == name);
+            if (component == null || component.IsWrappingNullReference)
+            {
+                return;
+            }
+
+            var module = component.CodeModule;
+            var pane = module.CodePane;
+            pane.SetSelection(selection);
         }
     }
 }
