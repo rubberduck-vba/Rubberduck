@@ -2,8 +2,8 @@
 using System.Reflection;
 using System.IO;
 using System.Linq;
-using Rubberduck.VBEditor.DisposableWrappers;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UnitTesting
 {

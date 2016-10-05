@@ -9,9 +9,9 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
-using CodeModule = Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule;
-using VBComponent = Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent;
-using VBE = Rubberduck.VBEditor.DisposableWrappers.VBA.VBE;
+using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
+using VBComponent = Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent;
+using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.Refactoring
 {

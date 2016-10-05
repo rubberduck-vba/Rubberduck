@@ -4,8 +4,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.DisposableWrappers;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

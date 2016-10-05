@@ -1,5 +1,5 @@
 ﻿using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {

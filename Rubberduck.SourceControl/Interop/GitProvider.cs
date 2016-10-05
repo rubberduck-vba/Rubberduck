@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
-using Rubberduck.VBEditor.DisposableWrappers;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SourceControl.Interop
 {

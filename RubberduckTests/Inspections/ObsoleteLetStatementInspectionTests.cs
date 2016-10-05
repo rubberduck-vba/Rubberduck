@@ -11,7 +11,7 @@ using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using CodeModule = Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule;
+using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 
 namespace RubberduckTests.Inspections
 {

@@ -11,7 +11,7 @@ using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
-using CodeModule = Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule;
+using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 
 namespace RubberduckTests.TodoExplorer
 {

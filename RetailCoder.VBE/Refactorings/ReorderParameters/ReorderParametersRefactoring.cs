@@ -10,8 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.VBEditor.DisposableWrappers;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {

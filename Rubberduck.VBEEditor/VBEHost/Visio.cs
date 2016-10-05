@@ -1,6 +1,6 @@
 ﻿using Microsoft.Office.Interop.Visio;
-using Rubberduck.VBEditor.DisposableWrappers;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.VBEHost
 {

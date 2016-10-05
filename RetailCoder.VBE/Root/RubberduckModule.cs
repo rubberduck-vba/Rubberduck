@@ -31,8 +31,8 @@ using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Root
 {

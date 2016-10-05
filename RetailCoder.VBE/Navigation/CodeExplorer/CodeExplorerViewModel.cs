@@ -12,8 +12,8 @@ using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.DisposableWrappers;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 

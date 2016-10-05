@@ -10,7 +10,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
-using VBE = Rubberduck.VBEditor.DisposableWrappers.VBA.VBE;
+using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.Commands
 {
@@ -45,7 +45,7 @@ Private Assert As Object
             var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
 
             addTestMethodCommand.Execute(null);
-            var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(component.CodeModule);
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(component.CodeModule);
 
             Assert.AreEqual(
                 string.Format(input,
@@ -82,7 +82,7 @@ Private Assert As Object
             var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
 
             addTestMethodCommand.Execute(null);
-            var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(component.CodeModule);
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(component.CodeModule);
 
             Assert.AreEqual(input, module.Content());
         }
@@ -183,7 +183,7 @@ Private Assert As Object
             var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
 
             addTestMethodCommand.Execute(null);
-            var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(component.CodeModule);
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(component.CodeModule);
 
             Assert.AreEqual(
                 string.Format(input,
@@ -287,7 +287,7 @@ Private Assert As Object
             var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
             addTestMethodCommand.Execute(null);
 
-            var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(component.CodeModule);
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(component.CodeModule);
             Assert.AreEqual(input, module.Content());
         }
 
@@ -324,7 +324,7 @@ Private Assert As New Rubberduck.AssertClass
             addTestModuleCommand.Execute(null);
 
             // mock suite auto-assigns "TestModule1" to the first component when we create the mock
-            var module = new Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule(vbe.Object.VBProjects.Item(0).VBComponents.Item("TestModule2").CodeModule);
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(vbe.Object.VBProjects.Item(0).VBComponents.Item("TestModule2").CodeModule);
             Assert.AreEqual(expected, module.Content());
         }
 

@@ -13,8 +13,8 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
-using VBE = Rubberduck.VBEditor.DisposableWrappers.VBA.VBE;
-using VBProject = Rubberduck.VBEditor.DisposableWrappers.VBA.VBProject;
+using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
+using VBProject = Rubberduck.VBEditor.SafeComWrappers.VBA.VBProject;
 
 namespace RubberduckTests.Refactoring
 {
@@ -62,7 +62,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new ExtractInterfaceModel(parser.State, qualifiedSelection);
@@ -177,7 +177,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new ExtractInterfaceModel(parser.State, qualifiedSelection);
@@ -271,7 +271,7 @@ End Function
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new ExtractInterfaceModel(parser.State, qualifiedSelection);
@@ -315,7 +315,7 @@ End Function
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new ExtractInterfaceModel(parser.State, qualifiedSelection);
@@ -343,7 +343,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new ExtractInterfaceModel(parser.State, qualifiedSelection);
@@ -382,7 +382,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new ExtractInterfaceModel(parser.State, qualifiedSelection);
@@ -444,7 +444,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             //Specify Params to remove
             var model = new ExtractInterfaceModel(parser.State, qualifiedSelection);
@@ -482,7 +482,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new ExtractInterfaceModel(parser.State, qualifiedSelection);
             model.Members.ElementAt(0).IsSelected = true;
@@ -517,7 +517,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new ExtractInterfaceModel(parser.State, qualifiedSelection);
 
@@ -547,7 +547,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new ExtractInterfaceModel(parser.State, qualifiedSelection);
             model.Members.ElementAt(0).IsSelected = true;

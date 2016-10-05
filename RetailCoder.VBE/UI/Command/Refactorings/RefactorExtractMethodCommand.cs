@@ -6,8 +6,8 @@ using System;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor.DisposableWrappers;
-using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings

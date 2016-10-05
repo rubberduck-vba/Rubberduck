@@ -8,7 +8,7 @@ using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
-using VBE = Rubberduck.VBEditor.DisposableWrappers.VBA.VBE;
+using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.Commands
 {

@@ -13,9 +13,9 @@ using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor.DisposableWrappers;
-using CodeModule = Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule;
-using CodePane = Rubberduck.VBEditor.DisposableWrappers.VBA.CodePane;
+using Rubberduck.VBEditor.SafeComWrappers;
+using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
+using CodePane = Rubberduck.VBEditor.SafeComWrappers.VBA.CodePane;
 using Selection = Rubberduck.VBEditor.Selection;
 using VBComponent = Microsoft.Vbe.Interop.VBComponent;
 using VBE = Microsoft.Vbe.Interop.VBE;
@@ -59,7 +59,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -74,7 +74,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -118,7 +118,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -133,7 +133,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -174,7 +174,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -189,7 +189,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -226,7 +226,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -241,7 +241,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -295,7 +295,7 @@ End Function";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -310,7 +310,7 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -370,7 +370,7 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -385,7 +385,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -428,7 +428,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -443,7 +443,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -491,7 +491,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -506,7 +506,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -550,7 +550,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -565,7 +565,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -609,7 +609,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -624,7 +624,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -665,7 +665,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -680,7 +680,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -736,7 +736,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -751,7 +751,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -823,7 +823,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var module1 = new CodeModule(project.Object.VBComponents.Item(0).CodeModule);
             var module2 = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
@@ -841,7 +841,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             var actualCode1 = module1.Content();
@@ -886,7 +886,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             var model = new EncapsulateFieldModel(parser.State, qualifiedSelection)
             {
@@ -901,7 +901,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(parser.State.AllUserDeclarations.FindVariable(qualifiedSelection));
 
             //Assert
@@ -927,7 +927,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var vbeWrapper = new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object);
+            var vbeWrapper = new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object);
             var factory = new EncapsulateFieldPresenterFactory(vbeWrapper, parser.State, null);
 
             //act
@@ -957,13 +957,13 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
 
             //SetupFactory
             var factory = SetupFactory(null);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
+            var refactoring = new EncapsulateFieldRefactoring(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -992,7 +992,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, null);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, null);
 
             Assert.AreEqual(null, factory.Create());
         }
@@ -1021,7 +1021,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, null);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, null);
             var presenter = factory.Create();
 
             Assert.AreEqual(null, presenter.Show());
@@ -1055,7 +1055,7 @@ End Sub";
             var codePane = new CodePane(project.Object.VBComponents.Item(0).CodeModule.CodePane);
             codePane.SetSelection(selection);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, null);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, null);
 
             var presenter = factory.Create();
 
@@ -1085,7 +1085,7 @@ End Sub";
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.SetupProperty(v => v.ParameterName, "myVal");
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1115,7 +1115,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1145,7 +1145,7 @@ End Sub";
             view.Setup(v => v.NewPropertyName).Returns("MyProperty");
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1175,7 +1175,7 @@ End Sub";
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1205,7 +1205,7 @@ End Sub";
             view.SetupProperty(v => v.MustImplementLetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1235,7 +1235,7 @@ End Sub";
             view.SetupProperty(v => v.MustImplementSetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1264,7 +1264,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.CanImplementLetSetterType);
@@ -1292,7 +1292,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(false, view.Object.CanImplementSetSetterType);
@@ -1320,7 +1320,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.CanImplementSetSetterType);
@@ -1348,7 +1348,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(false, view.Object.CanImplementLetSetterType);
@@ -1376,7 +1376,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.CanImplementLetSetterType);
@@ -1404,7 +1404,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.CanImplementSetSetterType);
@@ -1435,7 +1435,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementLetSetterType, false);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.MustImplementLetSetterType);
@@ -1466,7 +1466,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementSetSetterType, false);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.MustImplementSetSetterType);
@@ -1497,7 +1497,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementLetSetterType, false);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.MustImplementLetSetterType);
@@ -1528,7 +1528,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementSetSetterType, false);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.MustImplementSetSetterType);
@@ -1556,7 +1556,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             var model = factory.Create().Show();
 
             Assert.AreEqual(false, model.ImplementLetSetterType);
@@ -1585,7 +1585,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             var model = factory.Create().Show();
 
             Assert.AreEqual(false, model.ImplementLetSetterType);
@@ -1614,7 +1614,7 @@ End Sub";
             var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe.Object), parser.State, view.Object);
             var model = factory.Create().Show();
 
             Assert.AreEqual(false, model.ImplementLetSetterType);
@@ -1652,7 +1652,7 @@ End Sub";
             settings.Setup(s => s.EndOfLineCommentColumnSpaceAlignment).Returns(50);
             settings.Setup(s => s.IndentSpaces).Returns(4);
 
-            return new Indenter(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBE(vbe), () => new IndenterSettings());
+            return new Indenter(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe), () => new IndenterSettings());
         }
         #endregion
     }
