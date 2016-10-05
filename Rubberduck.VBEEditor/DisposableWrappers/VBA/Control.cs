@@ -26,7 +26,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Forms.Control> other)
         {
-            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject, ComObject);
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
         public bool Equals(Control other)

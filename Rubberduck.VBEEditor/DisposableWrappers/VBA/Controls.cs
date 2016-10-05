@@ -19,7 +19,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         public Control Item(object index)
         {
-            return new Control(InvokeResult(() => (Microsoft.Vbe.Interop.Forms.Control)ComObject.Item(index)));
+            return new Control(InvokeResult(() => (Microsoft.Vbe.Interop.Forms.ControlClass)ComObject.Item(index)));
         }
 
         IEnumerator<Control> IEnumerable<Control>.GetEnumerator()
@@ -46,7 +46,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls> other)
         {
-            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject, ComObject);
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
         public bool Equals(Controls other)

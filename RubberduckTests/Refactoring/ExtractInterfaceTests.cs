@@ -357,7 +357,7 @@ End Sub";
             refactoring.Refactor();
 
             //Assert
-            Assert.AreEqual(1, project.VBComponents.Cast<VBComponent>().Count());   // somehow, the VBComponents Count mock isn't working
+            Assert.AreEqual(1, project.VBComponents.Count());
             Assert.AreEqual(inputCode, project.VBComponents.Item(0).CodeModule.Lines());
         }
 
@@ -399,7 +399,7 @@ End Sub";
             refactoring.Refactor();
 
             //Assert
-            Assert.AreEqual(1, project.VBComponents.Cast<VBComponent>().Count());   // somehow, the VBComponents Count mock isn't working
+            Assert.AreEqual(1, project.VBComponents.Count());
             Assert.AreEqual(inputCode, project.VBComponents.Item(0).CodeModule.Lines());
         }
 

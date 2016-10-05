@@ -55,7 +55,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Addins> other)
         {
-            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject.Parent, Parent);
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject.Parent, Parent));
         }
 
         public bool Equals(AddIns other)

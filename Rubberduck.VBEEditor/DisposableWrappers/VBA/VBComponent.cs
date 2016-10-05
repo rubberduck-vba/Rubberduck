@@ -52,7 +52,6 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
             set { Invoke(() => ComObject.Name = value); }
         }
 
-        // ReSharper disable once ReturnTypeCanBeEnumerable.Global
         public Controls Controls
         {
             get
@@ -111,7 +110,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.VBComponent> other)
         {
-            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject, ComObject);
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
         public bool Equals(VBComponent other)

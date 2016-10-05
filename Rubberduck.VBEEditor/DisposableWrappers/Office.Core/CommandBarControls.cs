@@ -61,7 +61,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.Office.Core
 
         public override bool Equals(SafeComWrapper<Microsoft.Office.Core.CommandBarControls> other)
         {
-            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject, ComObject);
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
         public bool Equals(CommandBarControls other)

@@ -62,7 +62,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.CodePanes> other)
         {
-            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject, ComObject);
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
         public bool Equals(CodePane other)

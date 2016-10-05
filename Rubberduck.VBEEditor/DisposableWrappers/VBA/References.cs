@@ -90,7 +90,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.References> other)
         {
-            return IsEqualIfNull(other) || ReferenceEquals(other.ComObject.Parent, Parent.ComObject);
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject.Parent, Parent.ComObject));
         }
 
         public bool Equals(References other)

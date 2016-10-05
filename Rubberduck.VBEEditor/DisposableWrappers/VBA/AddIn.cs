@@ -79,7 +79,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.AddIn> other)
         {
-            return IsEqualIfNull(other) || (other.ComObject.ProgId == ProgId && other.ComObject.Guid == Guid);
+            return IsEqualIfNull(other) || (other != null && other.ComObject.ProgId == ProgId && other.ComObject.Guid == Guid);
         }
 
         public bool Equals(AddIn other)

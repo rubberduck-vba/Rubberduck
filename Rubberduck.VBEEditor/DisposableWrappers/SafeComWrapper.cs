@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using Microsoft.Office.Interop.Access;
 
 namespace Rubberduck.VBEditor.DisposableWrappers
 {
@@ -65,6 +66,20 @@ namespace Rubberduck.VBEditor.DisposableWrappers
 
         public abstract bool Equals(SafeComWrapper<T> other);
         public abstract override int GetHashCode();
+
+        public static bool operator ==(SafeComWrapper<T> a, SafeComWrapper<T> b)
+        {
+            if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
+            {
+                return true;
+            }
+            return !ReferenceEquals(a, null) && a.Equals(b);
+        }
+
+        public static bool operator !=(SafeComWrapper<T> a, SafeComWrapper<T> b)
+        {
+            return !(a == b);
+        }
 
         [SuppressMessage("ReSharper", "RedundantCast")]
         [SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]

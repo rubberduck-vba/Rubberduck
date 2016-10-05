@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 {
+    [SuppressMessage("ReSharper", "UseIndexedProperty")]
     public class Property : SafeComWrapper<Microsoft.Vbe.Interop.Property>, IEquatable<Property>
     {
         public Property(Microsoft.Vbe.Interop.Property comObject) 
@@ -78,8 +80,8 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Property> other)
         {
-            return IsEqualIfNull(other) || 
-                (other.ComObject.Name == Name && ReferenceEquals(other.ComObject.Parent, ComObject.Parent));
+            return IsEqualIfNull(other) ||
+                (other != null && other.ComObject.Name == Name && ReferenceEquals(other.ComObject.Parent, ComObject.Parent));
         }
 
         public bool Equals(Property other)

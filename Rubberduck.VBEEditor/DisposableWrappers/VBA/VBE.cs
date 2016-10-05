@@ -83,7 +83,7 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
 
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.VBE> other)
         {
-            return IsEqualIfNull(other) || other.ComObject.Version == Version;
+            return IsEqualIfNull(other) || (other != null && other.ComObject.Version == Version);
         }
 
         public bool Equals(VBE other)

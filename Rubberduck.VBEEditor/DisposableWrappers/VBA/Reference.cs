@@ -73,7 +73,8 @@ namespace Rubberduck.VBEditor.DisposableWrappers.VBA
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Reference> other)
         {
             return IsEqualIfNull(other) ||
-                   ((int)other.ComObject.Type == (int)Type
+                   (other != null 
+                    && (int)other.ComObject.Type == (int)Type
                     && other.ComObject.Name == Name
                     && other.ComObject.Guid == Guid
                     && other.ComObject.FullPath == FullPath
