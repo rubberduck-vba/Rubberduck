@@ -42,35 +42,31 @@ namespace Rubberduck.Refactorings.Rename
             QualifiedSelection? oldSelection = null;
             var pane = _vbe.ActiveCodePane;
             var module = pane.CodeModule;
+            if (!pane.IsWrappingNullReference)
             {
-                if (!pane.IsWrappingNullReference)
-                {
-                    oldSelection = module.GetQualifiedSelection();
-                }
+                oldSelection = module.GetQualifiedSelection();
+            }
 
-                if (_model != null && _model.Declarations != null)
-                {
-                    Rename();
-                }
+            if (_model != null && _model.Declarations != null)
+            {
+                Rename();
+            }
 
-                if (oldSelection.HasValue)
-                {
-                    pane.SetSelection(oldSelection.Value.Selection);
-                }
+            if (oldSelection.HasValue)
+            {
+                pane.SetSelection(oldSelection.Value.Selection);
             }
         }
 
         public void Refactor(QualifiedSelection target)
         {
             var pane = _vbe.ActiveCodePane;
+            if (pane.IsWrappingNullReference)
             {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-                pane.SetSelection(target.Selection);
-                Refactor();
+                return;
             }
+            pane.SetSelection(target.Selection);
+            Refactor();
         }
 
         public void Refactor(Declaration target)
