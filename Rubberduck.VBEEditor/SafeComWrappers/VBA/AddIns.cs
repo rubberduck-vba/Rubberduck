@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class AddIns : SafeComWrapper<Microsoft.Vbe.Interop.Addins>, IEnumerable, IEquatable<AddIns>
+    public class AddIns : SafeComWrapper<Microsoft.Vbe.Interop.Addins>, IEnumerable<AddIn>, IEquatable<AddIns>
     {
         public AddIns(Microsoft.Vbe.Interop.Addins comObject) : 
             base(comObject)
@@ -36,11 +37,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Invoke(() => ComObject.Update());
         }
 
-        public IEnumerator GetEnumerator()
-        {
-            return InvokeResult(() => ComObject.GetEnumerator());
-        }
-
         public override void Release()
         {
             if (!IsWrappingNullReference)
@@ -66,6 +62,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public override int GetHashCode()
         {
             return IsWrappingNullReference ? 0 : ComputeHashCode(Parent);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return InvokeResult(() => ComObject.GetEnumerator());
+        }
+
+        IEnumerator<AddIn> IEnumerable<AddIn>.GetEnumerator()
+        {
+            return new ComWrapperEnumerator<AddIn>(ComObject);
         }
     }
 }

@@ -50,8 +50,7 @@ namespace Rubberduck
             try
             {
                 _ide = new VBEditor.SafeComWrappers.VBA.VBE((VBE)Application);
-                _addin = new VBEditor.SafeComWrappers.VBA.AddIn((AddIn)AddInInst);
-                _addin.Object = this;
+                _addin = new VBEditor.SafeComWrappers.VBA.AddIn((AddIn) AddInInst) {Object = this};
 
                 switch (ConnectMode)
                 {

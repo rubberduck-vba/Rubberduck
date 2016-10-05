@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
