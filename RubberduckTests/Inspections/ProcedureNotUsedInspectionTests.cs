@@ -227,6 +227,91 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ProcedureNotUsed_NoResultForCasedClassInitialize()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub class_initialize()
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var vbe = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
+                             .AddComponent("TestClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                             .MockVbeBuilder().Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureNotUsedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ProcedureNotUsed_NoResultForClassTerminate()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Class_Terminate()
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var vbe = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
+                             .AddComponent("TestClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                             .MockVbeBuilder().Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureNotUsedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ProcedureNotUsed_NoResultForCasedClassTerminate()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub class_terminate()
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var vbe = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
+                             .AddComponent("TestClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                             .MockVbeBuilder().Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureNotUsedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ProcedureNotUsed_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
