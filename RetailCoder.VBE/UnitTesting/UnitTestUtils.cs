@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UnitTesting
 {
@@ -19,10 +20,15 @@ namespace Rubberduck.UnitTesting
 
         public static IEnumerable<TestMethod> GetTests(this VBComponent component, VBE vbe, RubberduckParserState state)
         {
+            if (component == null || component.IsWrappingNullReference)
+            {
+                return Enumerable.Empty<TestMethod>();
+            }
+
             // apparently, sometimes it thinks the components are different but knows the modules are the same
             // if the modules are the same, then the component is the same as far as we are concerned
             return GetAllTests(vbe, state)
-                    .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.Component.CodeModule == component.CodeModule);
+                    .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.Equals(component.CodeModule));
         }
 
         public static bool IsTestMethod(RubberduckParserState state, Declaration item)

@@ -1,9 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.RegexAssistant;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace RegexAssistantTests
+namespace Rubberduck.RegexAssistant.Tests
 {
     [TestClass]
     public class CharacterClassTests

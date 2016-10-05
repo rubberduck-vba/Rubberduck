@@ -8,15 +8,14 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using resx = Rubberduck.UI.SourceControl.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
@@ -37,7 +36,6 @@ namespace Rubberduck.UI.SourceControl
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly IConfigProvider<SourceControlSettings> _configService;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IMessageBox _messageBox;
         private readonly FileSystemWatcher _fileSystemWatcher;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -53,7 +51,6 @@ namespace Rubberduck.UI.SourceControl
             IFolderBrowserFactory folderBrowserFactory,
             IConfigProvider<SourceControlSettings> configService,
             IEnumerable<IControlView> views,
-            ICodePaneWrapperFactory wrapperFactory,
             IMessageBox messageBox)
         {
             _vbe = vbe;
@@ -66,7 +63,6 @@ namespace Rubberduck.UI.SourceControl
 
             _configService = configService;
             _config = _configService.Create();
-            _wrapperFactory = wrapperFactory;
             _messageBox = messageBox;
 
             _initRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
@@ -605,8 +601,7 @@ namespace Rubberduck.UI.SourceControl
         {
             if (!_isCloning)
             {
-                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, Provider.CurrentRepository, credentials,
-                    _wrapperFactory);
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, Provider.CurrentRepository, credentials);
             }
             else
             {
@@ -629,7 +624,7 @@ namespace Rubberduck.UI.SourceControl
                 {
                     _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
                     var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
-                    Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
+                    Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo);
 
                     AddOrUpdateLocalPathConfig((Repository) repo);
                 }
@@ -710,7 +705,7 @@ namespace Rubberduck.UI.SourceControl
                 _sinks.ComponentSinksEnabled = false;
                 try
                 {
-                    Provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
+                    Provider = _providerFactory.CreateProvider(project, repo);
                 }
                 catch (SourceControlException ex)
                 {
@@ -752,7 +747,7 @@ namespace Rubberduck.UI.SourceControl
                     RemoteLocation = repo.RemoteLocation
                 });
 
-                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo);
             }
             catch (SourceControlException ex)
             {
@@ -864,7 +859,7 @@ namespace Rubberduck.UI.SourceControl
             {
                 _sinks.ComponentSinksEnabled = false;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile), _wrapperFactory);
+                    _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
                 Status = RubberduckUI.Online;
             }
             catch (SourceControlException ex)

@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
-using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {

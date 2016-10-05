@@ -15,7 +15,20 @@ namespace Rubberduck.VBEditor
         /// <summary>
         /// The first character of the first line.
         /// </summary>
-        public static Selection Home { get { return new Selection(1, 1, 1, 1); } }
+        public static Selection Home
+        {
+            get { return new Selection(1, 1, 1, 1); }
+        }
+
+        public static Selection Empty
+        {
+            get { return new Selection(); }
+        }
+
+        public bool IsEmpty()
+        {
+            return Equals(Empty);
+        }
 
         public bool ContainsFirstCharacter(Selection selection)
         {

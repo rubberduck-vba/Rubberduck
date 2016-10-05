@@ -1,24 +1,24 @@
 ﻿using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     public class RefactorMoveCloserToUsageCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
+        private readonly IMessageBox _msgbox;
 
-        public RefactorMoveCloserToUsageCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperWrapperFactory)
+        public RefactorMoveCloserToUsageCommand(VBE vbe, RubberduckParserState state, IMessageBox msgbox)
             :base(vbe)
         {
             _state = state;
-            _wrapperWrapperFactory = wrapperWrapperFactory;
+            _msgbox = msgbox;
         }
 
         public override RubberduckHotkey Hotkey
@@ -41,15 +41,19 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void ExecuteImpl(object parameter)
         {
-            if (Vbe.ActiveCodePane == null)
+            var pane = Vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
-                return;
-            }
-            var codePane = _wrapperWrapperFactory.Create(Vbe.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
+                if (pane.IsWrappingNullReference)
+                {
+                    return;
+                }
 
-            var refactoring = new MoveCloserToUsageRefactoring(Vbe, _state, new MessageBox());
-            refactoring.Refactor(selection);
+                var selection = new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.GetSelection());
+
+                var refactoring = new MoveCloserToUsageRefactoring(Vbe, _state, _msgbox);
+                refactoring.Refactor(selection);
+            }
         }
     }
 }

@@ -1,11 +1,12 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.FindSymbol;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {
@@ -35,7 +36,7 @@ namespace Rubberduck.UI.Command
         protected override void ExecuteImpl(object parameter)
         {
             var viewModel = new FindSymbolViewModel(_state.AllDeclarations.Where(item => !item.IsBuiltIn), _iconCache);
-            using (var view = new FindSymbolDialog(viewModel))
+            var view = new FindSymbolDialog(viewModel);
             {
                 viewModel.Navigate += (sender, e) => { view.Hide(); };
                 viewModel.Navigate += OnDialogNavigate;

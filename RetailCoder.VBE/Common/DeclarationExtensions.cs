@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Media.Imaging;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -12,6 +11,9 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
+
 // ReSharper disable LocalizableElement
 
 namespace Rubberduck.Common
@@ -353,7 +355,7 @@ namespace Rubberduck.Common
 
             var forms = items.Where(item => item.DeclarationType == DeclarationType.ClassModule
                 && item.QualifiedName.QualifiedModuleName.Component != null
-                && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
+                && item.QualifiedName.QualifiedModuleName.Component.Type == ComponentType.UserForm)
                 .ToList();
 
             var result = new List<Declaration>();

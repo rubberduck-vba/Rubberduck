@@ -1,6 +1,7 @@
-using Microsoft.Vbe.Interop;
 using Microsoft.Office.Interop.Word;
 using System.Linq;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
@@ -25,7 +26,7 @@ namespace Rubberduck.VBEditor.VBEHost
 
         protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
-            var moduleName = qualifiedMemberName.QualifiedModuleName.Component.Name;
+            var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;
             return string.Concat(moduleName, ".", qualifiedMemberName.MemberName);
         }
 
@@ -34,11 +35,12 @@ namespace Rubberduck.VBEditor.VBEHost
             // Word requires that the document be active for Application.Run to find the target Method in scope.
             // Check the project's document or a document referring to a project's template is active.
             var activeDoc = Application.ActiveDocument;
-            var template = activeDoc.get_AttachedTemplate();
+            //var template = activeDoc.get_AttachedTemplate();
             var targetDoc = Application.Documents.Cast<Document>()
                     .FirstOrDefault(doc => doc.Name == qualifiedMemberName.QualifiedModuleName.ProjectDisplayName
                                         || doc.get_AttachedTemplate().Name == qualifiedMemberName.QualifiedModuleName.ProjectDisplayName);
-            if (activeDoc != targetDoc) { 
+            if (activeDoc != targetDoc && targetDoc != null) 
+            { 
                 targetDoc.Activate();
             }
         }

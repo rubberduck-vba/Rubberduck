@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -14,12 +15,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     public class ExportCommand : CommandBase, IDisposable
     {
         private readonly ISaveFileDialog _saveFileDialog;
-        private readonly Dictionary<vbext_ComponentType, string> _exportableFileExtensions = new Dictionary<vbext_ComponentType, string>
+        private readonly Dictionary<ComponentType, string> _exportableFileExtensions = new Dictionary<ComponentType, string>
         {
-            { vbext_ComponentType.vbext_ct_StdModule, ".bas" },
-            { vbext_ComponentType.vbext_ct_ClassModule, ".cls" },
-            { vbext_ComponentType.vbext_ct_Document, ".cls" },
-            { vbext_ComponentType.vbext_ct_MSForm, ".frm" }
+            { ComponentType.StandardModule, ".bas" },
+            { ComponentType.ClassModule, ".cls" },
+            { ComponentType.Document, ".cls" },
+            { ComponentType.UserForm, ".frm" }
         };
 
         public ExportCommand(ISaveFileDialog saveFileDialog) : base(LogManager.GetCurrentClassLogger())

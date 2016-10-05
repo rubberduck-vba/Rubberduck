@@ -1,11 +1,11 @@
-﻿using Microsoft.Vbe.Interop;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.Settings;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

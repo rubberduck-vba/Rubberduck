@@ -1,6 +1,6 @@
 using System;
-using Microsoft.Vbe.Interop;
 using System.Linq;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.VBEditor
 {
@@ -11,7 +11,7 @@ namespace Rubberduck.VBEditor
     {
         public static string GetProjectId(VBProject project)
         {
-            if (project == null)
+            if (project.IsWrappingNullReference)
             {
                 return string.Empty;
             }
@@ -48,24 +48,34 @@ namespace Rubberduck.VBEditor
             _project = null; // field is only assigned when the instance refers to a VBProject.
 
             _component = component;
-            _componentName = component == null ? string.Empty : component.Name;
-            _project = component == null ? null : component.Collection.Parent;
+            _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
+
+            var components = component.Collection;
+            {
+                _project = components.Parent;
+                _projectName = _project == null ? string.Empty : _project.Name;
+                _projectPath = string.Empty;
+                _projectId = GetProjectId(_project);
+                _projectDisplayName = string.Empty;
+            }
+
             _projectName = _project == null ? string.Empty : _project.Name;
             _projectPath = string.Empty;
             _projectId = GetProjectId(_project);
             _projectDisplayName = string.Empty;
 
             _contentHashCode = 0;
-            if (component == null)
+            if (component.IsWrappingNullReference)
             {
                 return;
             }
 
             var module = component.CodeModule;
-            _contentHashCode = module.CountOfLines > 0
-                // ReSharper disable once UseIndexedProperty
-                ? module.get_Lines(1, module.CountOfLines).GetHashCode()
-                : 0;
+            {
+                _contentHashCode = module.CountOfLines > 0
+                    ? module.GetLines(1, module.CountOfLines).GetHashCode()
+                    : 0;
+            }
         }
 
         /// <summary>
@@ -125,19 +135,28 @@ namespace Rubberduck.VBEditor
                     return _projectDisplayName;
                 }
 
-                try
+                var vbe = _project.VBE;
+                var activeProject = vbe.ActiveVBProject;
+                var mainWindow = vbe.MainWindow;
                 {
-                    if (_project.HelpFile != _project.VBE.ActiveVBProject.HelpFile)
+                    try
                     {
-                        _project.VBE.ActiveVBProject = _project;
-                    }
+                        if (_project.HelpFile != activeProject.HelpFile)
+                        {
+                            vbe.ActiveVBProject = _project;
+                        }
 
-                    _projectDisplayName = _project.VBE.MainWindow.Caption.Split(' ').Last();
-                    return _projectDisplayName;
-                }
-                catch
-                {
-                    return string.Empty;
+                        var windowCaptionElements = mainWindow.Caption.Split(' ').ToList();
+                        // without an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2"}
+                        // with an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2", "-", "[Thisworkbook", "(Code)]"}
+                        // so we need to index of the first "-" element; the display name is the element next to that.
+                        _projectDisplayName = windowCaptionElements[windowCaptionElements.IndexOf("-") + 1];
+                        return _projectDisplayName;
+                    }
+                    catch
+                    {
+                        return string.Empty;
+                    }
                 }
             }
         }

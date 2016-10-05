@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Input;
 using Castle.Core.Internal;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public abstract class CommandMenuItemBase : ICommandMenuItem
+    public abstract class CommandMenuItemBase : ICommandMenuItem, IDisposable
     {
         protected CommandMenuItemBase(CommandBase command)
         {
@@ -43,5 +42,27 @@ namespace Rubberduck.UI.Command.MenuItems
         public virtual int DisplayOrder { get { return default(int); } }
         public virtual Image Image { get { return null; } }
         public virtual Image Mask { get { return null; } }
+
+        ~CommandMenuItemBase()
+        {
+            if (!_isDisposed)
+            {
+                Dispose();
+            }
+        }
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (Image != null)
+            {
+                Image.Dispose();
+            }
+            if (Mask != null)
+            {
+                Mask.Dispose();
+            }
+            _isDisposed = true;
+        }
     }
 }

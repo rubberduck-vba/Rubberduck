@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 
@@ -94,14 +94,14 @@ namespace Rubberduck.UnitTesting
                 var methodName = Declaration.IdentifierName;
                 var module = moduleName.Component.CodeModule;
 
-                var startLine = module.ProcStartLine[methodName, vbext_ProcKind.vbext_pk_Proc];
-                var endLine = startLine + module.ProcCountLines[methodName, vbext_ProcKind.vbext_pk_Proc];
-                var endLineColumns = module.Lines[endLine, 1].Length;
+                var startLine = module.GetProcBodyStartLine(methodName, ProcKind.Procedure);
+                var endLine = startLine + module.GetProcCountLines(methodName, ProcKind.Procedure);
+                var endLineColumns = module.GetLines(endLine, 1).Length;
 
                 var selection = new Selection(startLine, 1, endLine, endLineColumns == 0 ? 1 : endLineColumns);
                 return new NavigateCodeEventArgs(new QualifiedSelection(moduleName, selection));
             }
-            catch (COMException)
+            catch (WrapperMethodException)
             {
                 return null;
             }

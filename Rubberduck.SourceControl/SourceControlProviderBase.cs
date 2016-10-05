@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.SourceControl
 {
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
         protected readonly VBProject Project;
 
         protected SourceControlProviderBase(VBProject project)
@@ -19,11 +18,10 @@ namespace Rubberduck.SourceControl
             Project = project;
         }
 
-        protected SourceControlProviderBase(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory)
+        protected SourceControlProviderBase(VBProject project, IRepository repository)
             :this(project)
         {
             CurrentRepository = repository;
-            _wrapperFactory = wrapperFactory;
         }
 
         public IRepository CurrentRepository { get; private set; }
@@ -155,37 +153,49 @@ namespace Rubberduck.SourceControl
         public void ReloadComponent(string filePath)
         {
             HandleVbeSinkEvents = false;
-
-            var codePane = Project.VBE.ActiveCodePane;
-
-            if (codePane != null)
+            var moduleName = Path.GetFileNameWithoutExtension(filePath);
+            if (moduleName == null)
             {
-                var codePaneWrapper = _wrapperFactory.Create(codePane);
-                var selection = new QualifiedSelection(new QualifiedModuleName(codePaneWrapper.CodeModule.Parent),
-                    codePaneWrapper.Selection);
-                string name = null;
-                if (selection.QualifiedName.Component != null)
-                {
-                    name = selection.QualifiedName.Component.Name;
-                }
-
-                var component = Project.VBComponents.OfType<VBComponent>().FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
-                Project.VBComponents.RemoveSafely(component);
-
-                var directory = CurrentRepository.LocalLocation;
-                directory += directory.EndsWith("\\") ? string.Empty : "\\";
-                Project.VBComponents.Import(directory + filePath);
-
-                Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name, _wrapperFactory);
+                return;
             }
-            else
+            var vbe = Project.VBE;
+            var components = Project.VBComponents;
+            var pane = vbe.ActiveCodePane;
             {
-                var component = Project.VBComponents.OfType<VBComponent>().FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
-                Project.VBComponents.RemoveSafely(component);
+                var item = components.SingleOrDefault(f => moduleName.Equals(f.Name, StringComparison.InvariantCultureIgnoreCase));
+                if (item == null)
+                {
+                    return;
+                }
+                if (!pane.IsWrappingNullReference)
+                {
+                    var module = pane.CodeModule;
+                    var component = module.Parent;
+                    {
+                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection());
+                        string name = null;
+                        if (selection.QualifiedName.Component != null)
+                        {
+                            name = selection.QualifiedName.Component.Name;
+                        }
 
-                var directory = CurrentRepository.LocalLocation;
-                directory += directory.EndsWith("\\") ? string.Empty : "\\";
-                Project.VBComponents.Import(directory + filePath);
+                        components.RemoveSafely(item);
+
+                        var directory = CurrentRepository.LocalLocation;
+                        directory += directory.EndsWith("\\") ? string.Empty : "\\";
+                        components.Import(directory + filePath);
+
+                        VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
+                    }
+                }
+                else
+                {
+                    components.RemoveSafely(item);
+
+                    var directory = CurrentRepository.LocalLocation;
+                    directory += directory.EndsWith("\\") ? string.Empty : "\\";
+                    components.Import(directory + filePath);
+                }
             }
 
             HandleVbeSinkEvents = true;
@@ -198,41 +208,45 @@ namespace Rubberduck.SourceControl
 
             HandleVbeSinkEvents = false;
 
-            var codePane = Project.VBE.ActiveCodePane;
-
-            if (codePane != null)
+            var vbe = Project.VBE;
+            var pane = vbe.ActiveCodePane;
             {
-                var codePaneWrapper = _wrapperFactory.Create(codePane);
-                var selection = new QualifiedSelection(new QualifiedModuleName(codePaneWrapper.CodeModule.Parent),
-                    codePaneWrapper.Selection);
-                string name = null;
-                if (selection.QualifiedName.Component != null)
+                if (!pane.IsWrappingNullReference)
                 {
-                    name = selection.QualifiedName.Component.Name;
-                }
+                    var module = pane.CodeModule;
+                    var component = module.Parent;
+                    {
+                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection());
+                        string name = null;
+                        if (selection.QualifiedName.Component != null)
+                        {
+                            name = selection.QualifiedName.Component.Name;
+                        }
 
-                try
-                {
-                    Project.LoadAllComponents(CurrentRepository.LocalLocation);
-                }
-                catch (AggregateException ex)
-                {
-                    HandleVbeSinkEvents = true;
-                    throw new SourceControlException("Unknown exception.", ex);
-                }
+                        try
+                        {
+                            Project.LoadAllComponents(CurrentRepository.LocalLocation);
+                        }
+                        catch (AggregateException ex)
+                        {
+                            HandleVbeSinkEvents = true;
+                            throw new SourceControlException("Unknown exception.", ex);
+                        }
 
-                Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name, _wrapperFactory);
-            }
-            else
-            {
-                try
-                {
-                    Project.LoadAllComponents(CurrentRepository.LocalLocation);
+                        VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
+                    }
                 }
-                catch (AggregateException ex)
+                else
                 {
-                    HandleVbeSinkEvents = true;
-                    throw new SourceControlException("Unknown exception.", ex);
+                    try
+                    {
+                        Project.LoadAllComponents(CurrentRepository.LocalLocation);
+                    }
+                    catch (AggregateException ex)
+                    {
+                        HandleVbeSinkEvents = true;
+                        throw new SourceControlException("Unknown exception.", ex);
+                    }
                 }
             }
 

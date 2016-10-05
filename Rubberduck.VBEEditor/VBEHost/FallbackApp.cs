@@ -1,7 +1,8 @@
 using System;
 using System.Diagnostics;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
@@ -17,16 +18,20 @@ namespace Rubberduck.VBEditor.VBEHost
         {
             _vbe = vbe;
             var mainCommandBar = _vbe.CommandBars[DebugCommandBarId];
-            _runButton = (CommandBarButton)mainCommandBar.FindControl(Id: RunMacroCommand);
+            _runButton = (CommandBarButton)mainCommandBar.FindControl(RunMacroCommand);
         }
 
         public void Run(QualifiedMemberName qualifiedMemberName)
         {
             var component = qualifiedMemberName.QualifiedModuleName.Component;
-            var line = component.CodeModule.get_ProcBodyLine(qualifiedMemberName.MemberName, vbext_ProcKind.vbext_pk_Proc);
-
-            component.CodeModule.CodePane.SetSelection(line, 1, line, 1);
-            component.CodeModule.CodePane.ForceFocus();
+            var module = component.CodeModule;
+            {
+                var line = module.GetProcBodyStartLine(qualifiedMemberName.MemberName, ProcKind.Procedure);
+                var pane = module.CodePane;
+                {
+                    pane.SetSelection(line, 1, line, 1);
+                }
+            }
 
             _runButton.Execute();
             // note: this can't work... because the .Execute() call isn't blocking, so method returns before test method actually runs.

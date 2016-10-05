@@ -1,10 +1,11 @@
 ﻿using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
     public interface IExtractMethodExtraction
     {
-        void apply(ICodeModuleWrapper codeModule, IExtractMethodModel model, Selection selection);
+        void Apply(CodeModule codeModule, IExtractMethodModel model, Selection selection);
     }
 }

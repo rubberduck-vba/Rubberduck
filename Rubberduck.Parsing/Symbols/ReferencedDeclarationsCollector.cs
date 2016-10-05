@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
@@ -20,6 +19,8 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
 using System.Linq;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {

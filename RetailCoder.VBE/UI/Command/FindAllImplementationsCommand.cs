@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
@@ -11,6 +10,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {
@@ -147,7 +148,7 @@ namespace Rubberduck.UI.Command
                 new SearchResultItem(
                     declaration.ParentScopeDeclaration,
                     new NavigateCodeEventArgs(declaration.QualifiedName.QualifiedModuleName, declaration.Selection),
-                    declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.Lines[declaration.Selection.StartLine, 1].Trim()));
+                    declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.GetLines(declaration.Selection.StartLine, 1).Trim()));
 
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllImplementationsTabFormat, target.IdentifierName), target, results);

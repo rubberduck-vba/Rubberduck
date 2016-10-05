@@ -1,10 +1,10 @@
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

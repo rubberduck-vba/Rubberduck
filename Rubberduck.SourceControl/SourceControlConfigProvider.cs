@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.SourceControl

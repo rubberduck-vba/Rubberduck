@@ -1,7 +1,7 @@
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -23,11 +23,9 @@ namespace Rubberduck.Refactorings.Rename
         public RenamePresenter Create()
         {
             var codePane = _vbe.ActiveCodePane;
-            var selection = codePane.GetSelection();
-            
-            var qualifiedSelection = codePane == null || selection == null 
-                ? new QualifiedSelection() 
-                : new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection.Value);
+            var qualifiedSelection = codePane.IsWrappingNullReference
+                ? new QualifiedSelection()
+                : new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.GetSelection());
 
             return new RenamePresenter(_view, new RenameModel(_vbe, _state, qualifiedSelection, _messageBox));
         }

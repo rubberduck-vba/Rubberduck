@@ -63,17 +63,18 @@ namespace Rubberduck.Inspections
             else
             {
                 var module = Selection.QualifiedName.Component.CodeModule;
-                var selection = Selection.Selection;
-
-                var originalCodeLines = module.Lines[selection.StartLine, selection.LineCount];
-
-                var originalInstruction = Context.GetText();
-                module.DeleteLines(selection.StartLine, selection.LineCount);
-
-                var newCodeLines = originalCodeLines.Replace(originalInstruction, string.Empty);
-                if (!string.IsNullOrEmpty(newCodeLines))
                 {
-                    module.InsertLines(selection.StartLine, newCodeLines);
+                    var selection = Selection.Selection;
+                    var originalCodeLines = module.GetLines(selection.StartLine, selection.LineCount);
+
+                    var originalInstruction = Context.GetText();
+                    module.DeleteLines(selection.StartLine, selection.LineCount);
+
+                    var newCodeLines = originalCodeLines.Replace(originalInstruction, string.Empty);
+                    if (!string.IsNullOrEmpty(newCodeLines))
+                    {
+                        module.InsertLines(selection.StartLine, newCodeLines);
+                    }
                 }
             }
         }
@@ -95,48 +96,49 @@ namespace Rubberduck.Inspections
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            var codeModule = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            var oldLines = codeModule.GetLines(selection);
-
-            var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
-                .Remove(selection.StartColumn, declarationText.Length);
-
-            if (multipleDeclarations)
+            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
-                selection = GetStmtContextSelection(target);
-                newLines = RemoveExtraComma(codeModule.GetLines(selection).Replace(oldLines, newLines),
-                    target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
-            }
+                var oldLines = module.GetLines(selection);
 
-            var newLinesWithoutExcessSpaces = newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            for (var i = 0; i < newLinesWithoutExcessSpaces.Length; i++)
-            {
-                newLinesWithoutExcessSpaces[i] = newLinesWithoutExcessSpaces[i].RemoveExtraSpacesLeavingIndentation();
-            }
+                var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
+                                       .Remove(selection.StartColumn, declarationText.Length);
 
-            for (var i = newLinesWithoutExcessSpaces.Length - 1; i >= 0; i--)
-            {
-                if (newLinesWithoutExcessSpaces[i].Trim() == string.Empty)
+                if (multipleDeclarations)
                 {
-                    continue;
+                    selection = GetStmtContextSelection(target);
+                    newLines = RemoveExtraComma(module.GetLines(selection).Replace(oldLines, newLines),
+                        target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
                 }
 
-                if (newLinesWithoutExcessSpaces[i].EndsWith(" _"))
+                var newLinesWithoutExcessSpaces = newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                for (var i = 0; i < newLinesWithoutExcessSpaces.Length; i++)
                 {
-                    newLinesWithoutExcessSpaces[i] =
-                        newLinesWithoutExcessSpaces[i].Remove(newLinesWithoutExcessSpaces[i].Length - 2);
+                    newLinesWithoutExcessSpaces[i] = newLinesWithoutExcessSpaces[i].RemoveExtraSpacesLeavingIndentation();
                 }
-                break;
-            }
 
-            // remove all lines with only whitespace
-            newLinesWithoutExcessSpaces = newLinesWithoutExcessSpaces.Where(str => str.Any(c => !char.IsWhiteSpace(c))).ToArray();
+                for (var i = newLinesWithoutExcessSpaces.Length - 1; i >= 0; i--)
+                {
+                    if (newLinesWithoutExcessSpaces[i].Trim() == string.Empty)
+                    {
+                        continue;
+                    }
 
-            codeModule.DeleteLines(selection);
-            if (newLinesWithoutExcessSpaces.Any())
-            {
-                codeModule.InsertLines(selection.StartLine,
-                    string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
+                    if (newLinesWithoutExcessSpaces[i].EndsWith(" _"))
+                    {
+                        newLinesWithoutExcessSpaces[i] =
+                            newLinesWithoutExcessSpaces[i].Remove(newLinesWithoutExcessSpaces[i].Length - 2);
+                    }
+                    break;
+                }
+
+                // remove all lines with only whitespace
+                newLinesWithoutExcessSpaces = newLinesWithoutExcessSpaces.Where(str => str.Any(c => !char.IsWhiteSpace(c))).ToArray();
+
+                module.DeleteLines(selection);
+                if (newLinesWithoutExcessSpaces.Any())
+                {
+                    module.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Parsing
 {
@@ -29,6 +30,7 @@ namespace Rubberduck.Parsing
 
     public interface ISinks
     {
+        void Start();
         bool ComponentSinksEnabled { get; set; }
 
         event EventHandler<IProjectEventArgs> ProjectActivated;

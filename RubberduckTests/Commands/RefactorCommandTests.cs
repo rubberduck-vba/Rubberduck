@@ -8,6 +8,7 @@ using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
+using VBE = Rubberduck.VBEditor.DisposableWrappers.VBA.VBE;
 
 namespace RubberduckTests.Commands
 {
@@ -31,7 +32,7 @@ namespace RubberduckTests.Commands
                 Assert.Inconclusive("Parser Error");
             }
 
-            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
+            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
@@ -52,7 +53,7 @@ namespace RubberduckTests.Commands
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
+            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
@@ -77,7 +78,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
+            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
@@ -102,7 +103,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
+            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
@@ -127,7 +128,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, parser.State, null);
+            var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(encapsulateFieldCommand.CanExecute(null));
         }
 
@@ -148,7 +149,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -169,7 +170,7 @@ End Sub";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -189,7 +190,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -213,7 +214,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -233,7 +234,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -248,8 +249,12 @@ End Sub";
             var proj1 = builder.ProjectBuilder("TestProj1", vbext_ProjectProtection.vbext_pp_none).AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, input).Build();
             var proj2 = builder.ProjectBuilder("TestProj2", vbext_ProjectProtection.vbext_pp_none).AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, "").Build();
 
-            var vbe = builder.AddProject(proj1).AddProject(proj2).Build();
-            vbe.Setup(s => s.ActiveCodePane).Returns(proj2.Object.VBComponents.Item(0).CodeModule.CodePane);
+            var vbe = builder
+                .AddProject(proj1)
+                .AddProject(proj2)
+                .Build();
+
+            vbe.Setup(s => s.ActiveCodePane).Returns(proj1.Object.VBComponents.Item(0).CodeModule.CodePane);
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -260,8 +265,7 @@ End Sub";
             {
                 Assert.Inconclusive("Parser Error");
             }
-
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -273,10 +277,14 @@ End Sub";
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var proj1 = builder.ProjectBuilder("TestProj1", vbext_ProjectProtection.vbext_pp_none).AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, input).Build();
+            var proj1 = builder.ProjectBuilder("TestProj1", vbext_ProjectProtection.vbext_pp_none).AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, input, Selection.Home).Build();
             var proj2 = builder.ProjectBuilder("TestProj2", vbext_ProjectProtection.vbext_pp_none).AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, "").Build();
 
-            var vbe = builder.AddProject(proj1).AddProject(proj2).Build();
+            var vbe = builder
+                .AddProject(proj1)
+                .AddProject(proj2)
+                .Build();
+
             vbe.Setup(s => s.ActiveCodePane).Returns(proj1.Object.VBComponents.Item(0).CodeModule.CodePane);
 
             var mockHost = new Mock<IHostApplication>();
@@ -289,7 +297,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -302,7 +310,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, new Selection());
+            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -313,7 +321,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -326,7 +334,7 @@ End Function";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, new Selection());
+            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -337,7 +345,7 @@ End Function";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -350,7 +358,7 @@ End Property";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, new Selection());
+            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -361,7 +369,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -374,7 +382,7 @@ End Property";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, new Selection());
+            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -385,7 +393,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -398,7 +406,7 @@ End Property";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, new Selection());
+            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -409,7 +417,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
+            var extractInterfaceCommand = new RefactorExtractInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
@@ -430,7 +438,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, parser.State);
+            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
         }
 
@@ -451,7 +459,7 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, parser.State);
+            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
         }
 
@@ -471,7 +479,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, parser.State);
+            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
         }
 
@@ -495,7 +503,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, parser.State);
+            var implementInterfaceCommand = new RefactorImplementInterfaceCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(implementInterfaceCommand.CanExecute(null));
         }
 
@@ -516,7 +524,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
@@ -537,7 +545,7 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
@@ -557,7 +565,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
@@ -582,7 +590,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(new VBE(vbe.Object), parser.State);
             Assert.IsTrue(introduceFieldCommand.CanExecute(null));
         }
 
@@ -603,7 +611,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
@@ -624,7 +632,7 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
@@ -644,7 +652,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
@@ -669,7 +677,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(new VBE(vbe.Object), parser.State);
             Assert.IsTrue(introduceParameterCommand.CanExecute(null));
         }
 
@@ -690,7 +698,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -711,7 +719,7 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -731,7 +739,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -756,7 +764,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -776,7 +784,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -802,7 +810,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -828,7 +836,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -855,7 +863,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, parser.State, null);
+            var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
         }
 
@@ -876,7 +884,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -897,7 +905,7 @@ End Sub";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -920,7 +928,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -944,7 +952,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -968,7 +976,7 @@ End Function";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -992,7 +1000,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -1016,7 +1024,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -1040,7 +1048,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
@@ -1063,7 +1071,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1087,7 +1095,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1111,7 +1119,7 @@ End Function";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1135,7 +1143,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1159,7 +1167,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1183,7 +1191,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, parser.State);
+            var removeParametersCommand = new RefactorRemoveParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
@@ -1204,7 +1212,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1225,7 +1233,7 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1248,7 +1256,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1272,7 +1280,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1296,7 +1304,7 @@ End Function";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1320,7 +1328,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1344,7 +1352,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1368,7 +1376,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1391,7 +1399,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1415,7 +1423,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1439,7 +1447,7 @@ End Function";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1463,7 +1471,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1487,7 +1495,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
@@ -1511,7 +1519,7 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, parser.State, null);
+            var reorderParametersCommand = new RefactorReorderParametersCommand(new VBE(vbe.Object), parser.State, null);
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
     }

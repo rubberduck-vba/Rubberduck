@@ -1,8 +1,9 @@
 ﻿using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {

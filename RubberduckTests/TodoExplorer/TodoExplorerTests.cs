@@ -11,6 +11,7 @@ using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
+using CodeModule = Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule;
 
 namespace RubberduckTests.TodoExplorer
 {
@@ -101,7 +102,8 @@ namespace RubberduckTests.TodoExplorer
             vm.SelectedItem = vm.Items.Single();
             vm.RemoveCommand.Execute(null);
 
-            Assert.AreEqual(expected, project.Object.VBComponents.Item(0).CodeModule.Lines());
+            var module = new CodeModule(project.Object.VBComponents.Item(0).CodeModule);
+            Assert.AreEqual(expected, module.Content());
             Assert.IsFalse(vm.Items.Any());
         }
 

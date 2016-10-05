@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -12,6 +11,9 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using System.IO;
 using NLog;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
+
 // ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
@@ -364,50 +366,53 @@ namespace Rubberduck.Parsing.VBA
             foreach (var vbProject in projects)
             {
                 var projectId = QualifiedModuleName.GetProjectId(vbProject);
-                // use a 'for' loop to store the order of references as a 'priority'.
-                // reference resolver needs this to know which declaration to prioritize when a global identifier exists in multiple libraries.
-                for (var priority = 1; priority <= vbProject.References.Count; priority++)
+                var references = vbProject.References;
                 {
-                    var reference = vbProject.References.Item(priority);
-                    var referencedProjectId = GetReferenceProjectId(reference, projects);
-
-                    ReferencePriorityMap map = null;
-                    foreach (var item in _projectReferences)
+                    // use a 'for' loop to store the order of references as a 'priority'.
+                    // reference resolver needs this to know which declaration to prioritize when a global identifier exists in multiple libraries.
+                    for (var priority = 1; priority <= references.Count; priority++)
                     {
-                        if (item.ReferencedProjectId == referencedProjectId)
+                        var reference = references.Item(priority);
+                        var referencedProjectId = GetReferenceProjectId(reference, projects);
+
+                        ReferencePriorityMap map = null;
+                        foreach (var item in _projectReferences)
                         {
-                            map = map != null ? null : item;
-                        }
-                    }
-
-                    if (map == null)
-                    {
-                        map = new ReferencePriorityMap(referencedProjectId) { { projectId, priority } };
-                        _projectReferences.Add(map);
-                    }
-                    else
-                    {
-                        map[projectId] = priority;
-                    }
-
-                    if (!map.IsLoaded)
-                    {
-                        State.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
-
-                        var tightlyScopedCapture = reference;
-
-                        loadTasks.Add(
-                        Task.Run(() =>
-                        {
-                            var comReflector = new ReferencedDeclarationsCollector(State);
-                            var items = comReflector.GetDeclarationsForReference(tightlyScopedCapture);
-
-                            foreach (var declaration in items)
+                            if (item.ReferencedProjectId == referencedProjectId)
                             {
-                                State.AddDeclaration(declaration);
+                                map = map != null ? null : item;
                             }
-                        }));
-                        map.IsLoaded = true;
+                        }
+
+                        if (map == null)
+                        {
+                            map = new ReferencePriorityMap(referencedProjectId) {{projectId, priority}};
+                            _projectReferences.Add(map);
+                        }
+                        else
+                        {
+                            map[projectId] = priority;
+                        }
+
+                        if (!map.IsLoaded)
+                        {
+                            State.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
+
+                            var localReference = reference;
+
+                            loadTasks.Add(
+                                Task.Run(() =>
+                                {
+                                    var comReflector = new ReferencedDeclarationsCollector(State);
+                                    var items = comReflector.GetDeclarationsForReference(localReference);
+
+                                    foreach (var declaration in items)
+                                    {
+                                        State.AddDeclaration(declaration);
+                                    }
+                                }));
+                            map.IsLoaded = true;
+                        }
                     }
                 }
             }
@@ -421,11 +426,14 @@ namespace Rubberduck.Parsing.VBA
             var unmapped = new List<Reference>();
             foreach (var project in projects)
             {
-                foreach (Reference item in project.References)
+                var references = project.References;
                 {
-                    if (!mappedIds.Contains(GetReferenceProjectId(item, projects)))
+                    foreach (var item in references)
                     {
-                        unmapped.Add(item);
+                        if (!mappedIds.Contains(GetReferenceProjectId(item, projects)))
+                        {
+                            unmapped.Add(item);
+                        }
                     }
                 }
             }

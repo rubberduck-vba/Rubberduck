@@ -1,6 +1,6 @@
 ﻿using Rubberduck.RegexAssistant.i18n;
 
-namespace Rubberduck.RegexAssistant.Extensions
+namespace Rubberduck.RegexAssistant
 {
     static class QuantifierExtensions
     {

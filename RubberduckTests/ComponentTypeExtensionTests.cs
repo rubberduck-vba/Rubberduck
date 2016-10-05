@@ -1,5 +1,6 @@
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 
 namespace RubberduckTests
@@ -10,7 +11,7 @@ namespace RubberduckTests
         [TestMethod]
         public void ClassReturnsCls()
         {
-            var type = vbext_ComponentType.vbext_ct_ClassModule;
+            var type = ComponentType.ClassModule;
 
             Assert.AreEqual(".cls", type.FileExtension());
         }
@@ -18,14 +19,14 @@ namespace RubberduckTests
         [TestMethod]
         public void FormReturnsFrm()
         {
-            var type = vbext_ComponentType.vbext_ct_MSForm;
+            var type = ComponentType.UserForm;
             Assert.AreEqual(".frm", type.FileExtension());
         }
 
         [TestMethod]
         public void StandardReturnsBas()
         {
-            var type = vbext_ComponentType.vbext_ct_StdModule;
+            var type = ComponentType.StandardModule;
             Assert.AreEqual(".bas", type.FileExtension());
         }
     }

@@ -1,5 +1,4 @@
-﻿using Rubberduck.RegexAssistant.Extensions;
-using Rubberduck.RegexAssistant.i18n;
+﻿using Rubberduck.RegexAssistant.i18n;
 using System;
 using System.Collections.Generic;
 using System.Linq;

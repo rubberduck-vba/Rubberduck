@@ -7,8 +7,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
-using Rubberduck.Inspections.Rubberduck.Inspections;
 using System.Threading;
+using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
 
 namespace RubberduckTests.Inspections

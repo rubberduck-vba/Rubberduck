@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -86,10 +87,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                 var xComponent = x.QualifiedSelection.Value.QualifiedName.Component;
                 var yComponent = y.QualifiedSelection.Value.QualifiedName.Component;
 
-                if (xComponent.Type == vbext_ComponentType.vbext_ct_Document ^
-                    yComponent.Type == vbext_ComponentType.vbext_ct_Document)
+                if (xComponent.Type == ComponentType.Document ^ yComponent.Type == ComponentType.Document)
                 {
-                    return xComponent.Type == vbext_ComponentType.vbext_ct_Document ? -1 : 1;
+                    return xComponent.Type == ComponentType.Document ? -1 : 1;
                 }
             }
 

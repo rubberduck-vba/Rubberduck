@@ -48,10 +48,11 @@ namespace Rubberduck.Inspections
             var selection = Selection.Selection;
 
             var module = Selection.QualifiedName.Component.CodeModule;
-            var lines = module.get_Lines(selection.StartLine, selection.LineCount);
-
-            var result = lines.Replace(parameter, newContent);
-            module.ReplaceLine(selection.StartLine, result);
+            {
+                var lines = module.GetLines(selection.StartLine, selection.LineCount);
+                var result = lines.Replace(parameter, newContent);
+                module.ReplaceLine(selection.StartLine, result);
+            }
         }
     }
 }

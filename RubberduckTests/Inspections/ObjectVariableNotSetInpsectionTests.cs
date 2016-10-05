@@ -9,6 +9,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
+using CodeModule = Rubberduck.VBEditor.DisposableWrappers.VBA.CodeModule;
 
 namespace RubberduckTests.Inspections
 {
@@ -213,7 +214,7 @@ End Sub";
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -254,11 +255,11 @@ End Function";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
-            foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is SetObjectVariableQuickFix)))
+            foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is UseSetKeywordForObjectAssignmentQuickFix)))
             {
                 fix.Fix();
             }
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
@@ -293,11 +294,11 @@ End Property
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
-            foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is SetObjectVariableQuickFix)))
+            foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is UseSetKeywordForObjectAssignmentQuickFix)))
             {
                 fix.Fix();
             }
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Common
+namespace Rubberduck.Parsing
 {
     public sealed class StaTaskScheduler : TaskScheduler, IDisposable
     {

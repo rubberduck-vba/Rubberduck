@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Settings
+﻿namespace Rubberduck.SettingsProvider
 {
     public interface IConfigProvider<T>
     {

@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Input;
 using NLog;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command
 {
@@ -28,7 +29,6 @@ namespace Rubberduck.UI.Command
                 var selection = param.Selection;
 
                 pane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-                pane.ForceFocus();
             }
             catch (COMException)
             {

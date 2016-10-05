@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
@@ -13,6 +12,8 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.UnitTesting

@@ -38,7 +38,7 @@ namespace RubberduckTests
                 _ide.Object.ActiveVBProject = _ide.Object.VBProjects.Item(0);
                 _ide.Object.ActiveCodePane = _ide.Object.ActiveVBProject.VBComponents.Item(0).CodeModule.CodePane;
             }
-            return new QualifiedSelection(new QualifiedModuleName(_ide.Object.ActiveCodePane.CodeModule.Parent), selection);
+            return new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(_ide.Object.ActiveCodePane.CodeModule.Parent)), selection);
         }
 
         protected Mock<VBProject> SetupMockProject(string inputCode, string projectName = null, string moduleName = null, vbext_ComponentType? componentType = null)

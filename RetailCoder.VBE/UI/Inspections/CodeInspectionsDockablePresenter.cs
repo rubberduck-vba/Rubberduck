@@ -1,4 +1,5 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Inspections
 {

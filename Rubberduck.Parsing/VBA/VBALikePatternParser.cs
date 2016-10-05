@@ -1,9 +1,9 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using NLog;
-using Rubberduck.Parsing.Like;
 using Rubberduck.Parsing.Symbols;
 using System;
+using Rubberduck.Parsing.Preprocessing;
 
 namespace Rubberduck.Parsing.VBA
 {

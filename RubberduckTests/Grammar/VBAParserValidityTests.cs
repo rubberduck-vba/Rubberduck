@@ -51,7 +51,7 @@ namespace RubberduckTests.Grammar
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error: " + filename); }
-            var tree = state.GetParseTree(component);
+            var tree = state.GetParseTree(new Rubberduck.VBEditor.DisposableWrappers.VBA.VBComponent(component));
             var parsed = tree.GetText();
             var withoutEOF = parsed.Substring(0, parsed.Length - 5);
             return withoutEOF;

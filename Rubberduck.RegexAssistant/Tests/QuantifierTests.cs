@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.RegexAssistant;
 
-namespace RegexAssistantTests
+namespace Rubberduck.RegexAssistant.Tests
 {
     [TestClass]
     public class QuantifierTests

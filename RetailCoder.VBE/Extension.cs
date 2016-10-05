@@ -6,6 +6,7 @@ using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -19,6 +20,9 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck
 {
+    /// <remarks>
+    /// Special thanks to Carlos Quintero (MZ-Tools) for providing the general structure here.
+    /// </remarks>
     [ComVisible(true)]
     [Guid(ClassId)]
     [ProgId(ProgId)]
@@ -29,53 +33,39 @@ namespace Rubberduck
         private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
         private const string ProgId = "Rubberduck.Extension";
 
+        private VBEditor.DisposableWrappers.VBA.VBE _ide;
+        private VBEditor.DisposableWrappers.VBA.AddIn _addin;
+        private bool _isInitialized;
+        private bool _isBeginShutdownExecuted;
+
         private IKernel _kernel;
         private App _app;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public void OnAddInsUpdate(ref Array custom)
-        {
-        }
+        public void OnAddInsUpdate(ref Array custom) { }
 
-        public void OnBeginShutdown(ref Array custom)
-        {
-        }
-
-        // ReSharper disable InconsistentNaming
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
         {
-            _kernel = new StandardKernel(new NinjectSettings{LoadExtensions = true}, new FuncModule(), new DynamicProxyModule());
-
             try
             {
-                var currentDomain = AppDomain.CurrentDomain;
-                currentDomain.AssemblyResolve += LoadFromSameFolder;
+                _ide = new VBEditor.DisposableWrappers.VBA.VBE((VBE)Application);
+                _addin = new VBEditor.DisposableWrappers.VBA.AddIn((AddIn)AddInInst);
+                _addin.Object = this;
 
-                var config = new XmlPersistanceService<GeneralSettings>
+                switch (ConnectMode)
                 {
-                    FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck",
-                            "rubberduck.config")
-                };
-
-                var settings = config.Load(null);
-                if (settings != null)
-                {
-                    try
-                    {
-                        var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
-                        Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
-                    }
-                    catch (CultureNotFoundException) { }
+                    case ext_ConnectMode.ext_cm_Startup:
+                        // normal execution path - don't initialize just yet, wait for OnStartupComplete to be called by the host.
+                        break;
+                    case ext_ConnectMode.ext_cm_AfterStartup:
+                        InitializeAddIn();
+                        break;
                 }
-
-                _kernel.Load(new RubberduckModule((VBE)Application, (AddIn)AddInInst));
-                _app = _kernel.Get<App>();
-                _app.Startup();
             }
-            catch (Exception exception)
+            catch (Exception e)
             {
-                _logger.Fatal(exception);
-                System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine(e);
             }
         }
 
@@ -94,9 +84,85 @@ namespace Rubberduck
 
         public void OnStartupComplete(ref Array custom)
         {
+            InitializeAddIn();
         }
 
+        public void OnBeginShutdown(ref Array custom)
+        {
+            _isBeginShutdownExecuted = true;
+            ShutdownAddIn();
+        }
+
+        // ReSharper disable InconsistentNaming
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
+        {
+            switch (RemoveMode)
+            {
+                case ext_DisconnectMode.ext_dm_UserClosed:
+                    ShutdownAddIn();
+                    break;
+
+                case ext_DisconnectMode.ext_dm_HostShutdown:
+                    if (_isBeginShutdownExecuted)
+                    {
+                        // this is the normal case: nothing to do here, we already ran ShutdownAddIn.
+                    }
+                    else
+                    {
+                        // some hosts do not call OnBeginShutdown: this mitigates it.
+                        ShutdownAddIn();
+                    }
+                    break;
+            }
+        }
+
+        private void InitializeAddIn()
+        {
+            if (_isInitialized)
+            {
+                // The add-in is already initialized. See:
+                // The strange case of the add-in initialized twice
+                // http://msmvps.com/blogs/carlosq/archive/2013/02/14/the-strange-case-of-the-add-in-initialized-twice.aspx
+                return;
+            }
+
+            _kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new FuncModule(), new DynamicProxyModule());
+
+            try
+            {
+                var currentDomain = AppDomain.CurrentDomain;
+                currentDomain.AssemblyResolve += LoadFromSameFolder;
+
+                var config = new XmlPersistanceService<GeneralSettings>
+                {
+                    FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "rubberduck.config")
+                };
+
+                var settings = config.Load(null);
+                if (settings != null)
+                {
+                    try
+                    {
+                        var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
+                        Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
+                    }
+                    catch (CultureNotFoundException) { }
+                }
+
+                _kernel.Load(new RubberduckModule(_ide, _addin));
+
+                _app = _kernel.Get<App>();
+                _app.Startup();
+                _isInitialized = true;
+            }
+            catch (Exception exception)
+            {
+                _logger.Fatal(exception);
+                System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ShutdownAddIn()
         {
             if (_app != null)
             {
@@ -109,6 +175,9 @@ namespace Rubberduck
                 _kernel.Dispose();
                 _kernel = null;
             }
+
+            _ide.Release();
+            _isInitialized = false;
         }
     }
 }

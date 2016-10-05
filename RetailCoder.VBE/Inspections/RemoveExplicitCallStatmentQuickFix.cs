@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
             var module = Selection.QualifiedName.Component.CodeModule;
 
             var selection = Context.GetSelection();
-            var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount);
+            var originalCodeLines = module.GetLines(selection.StartLine, selection.LineCount);
             var originalInstruction = Context.GetText();
 
             var context = (VBAParser.CallStmtContext)Context;

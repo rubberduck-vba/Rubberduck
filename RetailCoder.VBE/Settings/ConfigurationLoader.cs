@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Settings

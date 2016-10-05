@@ -2,12 +2,13 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {
@@ -144,7 +145,7 @@ namespace Rubberduck.UI.Command
                 new SearchResultItem(
                     reference.ParentNonScoping,
                     new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection), 
-                    reference.QualifiedModuleName.Component.CodeModule.Lines[reference.Selection.StartLine, 1].Trim()));
+                    reference.QualifiedModuleName.Component.CodeModule.GetLines(reference.Selection.StartLine, 1).Trim()));
             
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), declaration, results);

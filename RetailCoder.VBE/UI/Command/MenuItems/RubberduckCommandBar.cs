@@ -1,12 +1,12 @@
 ﻿using System;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
-using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers.Office.Core;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -60,12 +60,13 @@ namespace Rubberduck.UI.Command.MenuItems
             SetSelectionText(selectedDeclaration);
         }
 
-        private void _statusButton_Click(CommandBarButton ctrl, ref bool cancelDefault)
+        private void _statusButton_Click(object sender, CommandBarButtonClickEventArgs e)
         {
             if (_state.Status == ParserState.Error)
             {
                 _command.Execute(null);
             }
+            e.Cancel = true;
         }
 
         public void SetStatusText(string value = null)
@@ -152,31 +153,35 @@ namespace Rubberduck.UI.Command.MenuItems
 
         private void Initialize()
         {
-            _commandbar = _vbe.CommandBars.Add("Rubberduck", MsoBarPosition.msoBarTop, false, true);
+            _commandbar = _vbe.CommandBars.Add("Rubberduck", CommandBarPosition.Top);
 
-            _refreshButton = (CommandBarButton)_commandbar.Controls.Add(MsoControlType.msoControlButton);
-            ParentMenuItemBase.SetButtonImage(_refreshButton, Resources.arrow_circle_double, Resources.arrow_circle_double_mask);
-            _refreshButton.Style = MsoButtonStyle.msoButtonIcon;
+            _refreshButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
+            _refreshButton.Picture = Resources.arrow_circle_double;
+            _refreshButton.Mask = Resources.arrow_circle_double_mask;
+            _refreshButton.Style = ButtonStyle.Icon;
             _refreshButton.Tag = "Refresh";
             _refreshButton.TooltipText = RubberduckUI.RubberduckCommandbarRefreshButtonTooltip;
             _refreshButton.Click += refreshButton_Click;
+            _refreshButton.ApplyIcon();
 
-            _statusButton = (CommandBarButton)_commandbar.Controls.Add(MsoControlType.msoControlButton);
-            _statusButton.Style = MsoButtonStyle.msoButtonCaption;
+            _statusButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
+            _statusButton.Style = ButtonStyle.Caption;
             _statusButton.Tag = "Status";
             _statusButton.Click += _statusButton_Click;
 
-            _selectionButton = (CommandBarButton)_commandbar.Controls.Add(MsoControlType.msoControlButton);
-            _selectionButton.Style = MsoButtonStyle.msoButtonCaption;
-            _selectionButton.BeginGroup = true;
-            _selectionButton.Enabled = false;
+            _selectionButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
+            _selectionButton.Style = ButtonStyle.Caption;
+            _selectionButton.BeginsGroup = true;
+            _selectionButton.IsEnabled = false;
 
-            _commandbar.Visible = true;
+            _commandbar.IsVisible = true;
+            _sinks.Start();
         }
 
-        private void refreshButton_Click(CommandBarButton ctrl, ref bool cancelDefault)
+        private void refreshButton_Click(object sender, CommandBarButtonClickEventArgs e)
         {
             OnRefresh();
+            e.Cancel = true;
         }
 
         private bool _isDisposed;
@@ -193,11 +198,10 @@ namespace Rubberduck.UI.Command.MenuItems
             _sinks.ComponentActivated -= ComponentActivated;
             _sinks.ComponentSelected -= ComponentSelected;
 
-            _refreshButton.Delete();
-            _selectionButton.Delete();
-            _statusButton.Delete();
-            _commandbar.Delete();
-
+            //_refreshButton.Delete();
+            //_selectionButton.Delete();
+            //_statusButton.Delete();
+            //_commandbar.Delete();
             _isDisposed = true;
         }
     }

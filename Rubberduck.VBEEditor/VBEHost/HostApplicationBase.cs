@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using System.Linq;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
@@ -32,10 +33,9 @@ namespace Rubberduck.VBEditor.VBEHost
             try
             {
                 var appProperty = vbe.VBProjects
-                    .Cast<VBProject>()
-                    .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                    .Where(project => project.Protection == ProjectProtection.Unprotected)
                     .SelectMany(project => project.VBComponents.Cast<VBComponent>())
-                    .Where(component => component.Type == vbext_ComponentType.vbext_ct_Document
+                    .Where(component => component.Type == ComponentType.Document
                     && component.Properties.Count > 1)
                     .SelectMany(component => component.Properties.OfType<Property>())
                     .FirstOrDefault(property => property.Name == "Application");

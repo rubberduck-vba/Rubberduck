@@ -1,6 +1,8 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
@@ -22,15 +24,22 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public IReorderParametersPresenter Create()
         {
-            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
-
-            if (!selection.HasValue)
+            var pane = _vbe.ActiveCodePane;
             {
-                return null;
-            }
+                if (pane.IsWrappingNullReference)
+                {
+                    return null;
+                }
 
-            var model = new ReorderParametersModel(_state, selection.Value, _messageBox);
-            return new ReorderParametersPresenter(_view, model, _messageBox);
+                var selection = pane.GetQualifiedSelection();
+                if (!selection.HasValue)
+                {
+                    return null;
+                }
+
+                var model = new ReorderParametersModel(_state, selection.Value, _messageBox);
+                return new ReorderParametersPresenter(_view, model, _messageBox);
+            }
         }
     }
 }

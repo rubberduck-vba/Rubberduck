@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.IdentifierReferences;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.ParserErrors
 {

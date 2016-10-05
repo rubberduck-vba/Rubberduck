@@ -1,11 +1,10 @@
-using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -13,13 +12,11 @@ namespace Rubberduck.UI.Command.Refactorings
     public class CodePaneRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public CodePaneRefactorRenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public CodePaneRefactorRenameCommand(VBE vbe, RubberduckParserState state) 
             : base (vbe)
         {
             _state = state;
-            _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
         public override RubberduckHotkey Hotkey

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.SourceControl.Interop
 {
@@ -12,7 +12,7 @@ namespace Rubberduck.SourceControl.Interop
     public interface _ISourceControlClassFactory
     {
         [DispId(1)]
-        ISourceControlProvider CreateGitProvider(VBProject project, ICodePaneWrapperFactory wrapperFactory, [Optional] IRepository repository, [Optional] ICredentials credentials);
+        ISourceControlProvider CreateGitProvider(VBProject project, [Optional] IRepository repository, [Optional] ICredentials credentials);
 
         [DispId(2)]
         IRepository CreateRepository(string name, string localDirectory, [Optional] string remotePathOrUrl);
@@ -28,7 +28,7 @@ namespace Rubberduck.SourceControl.Interop
     public class SourceControlClassFactory : _ISourceControlClassFactory
     {
         [Description("Returns a new GitProvider. IRepository must be supplied if also passing user credentials.")]
-        public ISourceControlProvider CreateGitProvider(VBProject project, ICodePaneWrapperFactory wrapperFactory, [Optional] IRepository repository, [Optional] ICredentials credentials)
+        public ISourceControlProvider CreateGitProvider(VBProject project, [Optional] IRepository repository, [Optional] ICredentials credentials)
         {
             if (credentials != null)
             {
@@ -37,12 +37,12 @@ namespace Rubberduck.SourceControl.Interop
                     throw new ArgumentNullException("Must supply an IRepository if supplying credentials.");
                 }
 
-                return new GitProvider(project, repository, credentials, wrapperFactory);
+                return new GitProvider(project, repository, credentials);
             }
 
             if (repository != null) 
             {
-                return new GitProvider(project, repository, wrapperFactory);
+                return new GitProvider(project, repository);
             }
 
             return new GitProvider(project);

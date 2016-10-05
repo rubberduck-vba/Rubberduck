@@ -1,11 +1,12 @@
 ﻿using System;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 using Selection = Rubberduck.VBEditor.Selection;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -38,15 +39,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             QualifiedSelection? oldSelection = null;
             if (_vbe.ActiveCodePane != null)
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
             }
 
             AddProperty();
 
             if (oldSelection.HasValue)
             {
-                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
-                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+                var module = oldSelection.Value.QualifiedName.Component.CodeModule;
+                var pane = module.CodePane;
+                {
+                    pane.SetSelection(oldSelection.Value.Selection);
+                }
             }
 
             _model.State.OnParseRequested(this);
@@ -54,13 +58,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void Refactor(QualifiedSelection target)
         {
-            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
+            var pane = _vbe.ActiveCodePane;
+            {
+                pane.SetSelection(target.Selection);
+            }
             Refactor();
         }
 
         public void Refactor(Declaration target)
         {
-            _vbe.ActiveCodePane.CodeModule.SetSelection(target.QualifiedSelection);
+            var pane = _vbe.ActiveCodePane;
+            {
+                pane.SetSelection(target.QualifiedSelection.Selection);
+            }
             Refactor();
         }
 
@@ -79,12 +89,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
             foreach (var reference in _model.TargetDeclaration.References)
             {
                 var module = reference.QualifiedModuleName.Component.CodeModule;
+                {
+                    var oldLine = module.GetLines(reference.Selection.StartLine, 1);
+                    oldLine = oldLine.Remove(reference.Selection.StartColumn - 1, reference.Selection.EndColumn - reference.Selection.StartColumn);
+                    var newLine = oldLine.Insert(reference.Selection.StartColumn - 1, _model.PropertyName);
 
-                var oldLine = module.Lines[reference.Selection.StartLine, 1];
-                oldLine = oldLine.Remove(reference.Selection.StartColumn - 1, reference.Selection.EndColumn - reference.Selection.StartColumn);
-                var newLine = oldLine.Insert(reference.Selection.StartColumn - 1, _model.PropertyName);
-
-                module.ReplaceLine(reference.Selection.StartLine, newLine);
+                    module.ReplaceLine(reference.Selection.StartLine, newLine);
+                }
             }
         }
 
@@ -101,13 +112,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
                            _model.TargetDeclaration.AsTypeName;
 
             module.InsertLines(module.CountOfDeclarationLines + 1, newField);
+            var pane = module.CodePane;
+            {
+                pane.SetSelection(_model.TargetDeclaration.QualifiedSelection.Selection);
+            }
 
-            _vbe.ActiveCodePane.CodeModule.SetSelection(_model.TargetDeclaration.QualifiedSelection);
             for (var index = 1; index <= module.CountOfDeclarationLines; index++)
             {
-                if (module.Lines[index, 1].Trim() == string.Empty)
+                if (module.GetLines(index, 1).Trim() == string.Empty)
                 {
-                    _vbe.ActiveCodePane.CodeModule.DeleteLines(new Selection(index, 0, index, 0));
+                    module.DeleteLines(new Selection(index, 0, index, 0));
                 }
             }
         }
@@ -131,25 +145,29 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            var oldLines = _vbe.ActiveCodePane.CodeModule.GetLines(selection);
-
-            var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
-                .Remove(selection.StartColumn, declarationText.Length);
-
-            if (multipleDeclarations)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
-                selection = target.GetVariableStmtContextSelection();
-                newLines = RemoveExtraComma(_vbe.ActiveCodePane.CodeModule.GetLines(selection).Replace(oldLines, newLines),
-                    target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
-            }
+                var oldLines = module.GetLines(selection);
 
-            newLines = newLines.Replace(" _" + Environment.NewLine, string.Empty);
+                var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
+                    .Remove(selection.StartColumn, declarationText.Length);
 
-            _vbe.ActiveCodePane.CodeModule.DeleteLines(selection);
+                if (multipleDeclarations)
+                {
+                    selection = target.GetVariableStmtContextSelection();
+                    newLines = RemoveExtraComma(module.GetLines(selection).Replace(oldLines, newLines),
+                        target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
+                }
 
-            if (newLines.Trim() != string.Empty)
-            {
-                _vbe.ActiveCodePane.CodeModule.InsertLines(selection.StartLine, newLines);
+                newLines = newLines.Replace(" _" + Environment.NewLine, string.Empty);
+
+                module.DeleteLines(selection);
+
+                if (newLines.Trim() != string.Empty)
+                {
+                    module.InsertLines(selection.StartLine, newLines);
+                }
             }
         }
 

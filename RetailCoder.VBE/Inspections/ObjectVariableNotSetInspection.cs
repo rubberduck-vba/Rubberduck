@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -19,7 +17,7 @@ namespace Rubberduck.Inspections
             _reference = reference;
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new SetObjectVariableQuickFix(_reference),
+                new UseSetKeywordForObjectAssignmentQuickFix(_reference),
                 new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
             };
         }
@@ -29,31 +27,6 @@ namespace Rubberduck.Inspections
         public override string Description
         {
             get { return string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, _reference.Declaration.IdentifierName); }
-        }
-    }
-
-    public sealed class SetObjectVariableQuickFix : CodeInspectionQuickFix
-    {
-        public SetObjectVariableQuickFix(IdentifierReference reference)
-            : base(context: reference.Context.Parent.Parent as ParserRuleContext, // ImplicitCallStmt_InStmtContext 
-                   selection: new QualifiedSelection(reference.QualifiedModuleName, reference.Selection),
-                   description: InspectionsUI.SetObjectVariableQuickFix)
-        {
-        }
-
-        public override bool CanFixInModule { get { return true; } }
-        public override bool CanFixInProject { get { return true; } }
-
-        public override void Fix()
-        {
-            var codeModule = Selection.QualifiedName.Component.CodeModule;
-            var codeLine = codeModule.Lines[Selection.Selection.StartLine, 1];
-
-            var letStatementLeftSide = Context.GetText();
-            var setStatementLeftSide = Tokens.Set + ' ' + letStatementLeftSide;
-
-            var correctLine = codeLine.Replace(letStatementLeftSide, setStatementLeftSide);
-            codeModule.ReplaceLine(Selection.Selection.StartLine, correctLine);
         }
     }
 

@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Infralution.Localization.Wpf;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -12,6 +11,7 @@ using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck
 {
@@ -79,17 +79,24 @@ namespace Rubberduck
 
         private void RefreshSelection()
         {
-            var selectedDeclaration = _parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane);
-            _stateBar.SetSelectionText(selectedDeclaration);
-
-            var currentStatus = _parser.State.Status;
-            if (ShouldEvaluateCanExecute(selectedDeclaration, currentStatus))
+            var pane = _vbe.ActiveCodePane;
             {
-                _appMenus.EvaluateCanExecute(_parser.State);
-            }
+                Declaration selectedDeclaration = null;
+                if (!pane.IsWrappingNullReference)
+                {
+                    selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
+                    _stateBar.SetSelectionText(selectedDeclaration);
+                }
 
-            _lastStatus = currentStatus;
-            _lastSelectedDeclaration = selectedDeclaration;
+                var currentStatus = _parser.State.Status;
+                if (ShouldEvaluateCanExecute(selectedDeclaration, currentStatus))
+                {
+                    _appMenus.EvaluateCanExecute(_parser.State);
+                }
+
+                _lastStatus = currentStatus;
+                _lastSelectedDeclaration = selectedDeclaration;
+            }
         }
 
         private bool ShouldEvaluateCanExecute(Declaration selectedDeclaration, ParserState currentStatus)
@@ -142,10 +149,10 @@ namespace Rubberduck
             _appMenus.Localize();
             UpdateLoggingLevel();
 
-            if (_vbe.VBProjects.Count != 0)
-            {
-                _parser.State.OnParseRequested(this);
-            }
+            //if (_vbe.VBProjects.Count != 0)
+            //{
+            //    _parser.State.OnParseRequested(this);
+            //}
         }
 
         public void Shutdown()

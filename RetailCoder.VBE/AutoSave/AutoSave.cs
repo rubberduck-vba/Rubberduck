@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Timers;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Settings;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.AutoSave
 {
@@ -37,11 +38,12 @@ namespace Rubberduck.AutoSave
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (_vbe.VBProjects.OfType<VBProject>().Any(p => !p.Saved))
+            var projects = _vbe.VBProjects;
+            if (projects.Any(p => !p.Saved))
             {
                 try
                 {
-                    var projects = _vbe.VBProjects.OfType<VBProject>().Select(p => p.FileName).ToList();
+                    var foo = projects.Select(p => p.FileName).ToList();
                 }
                 catch (IOException)
                 {
@@ -49,14 +51,17 @@ namespace Rubberduck.AutoSave
                     return;
                 }
 
-                _vbe.CommandBars.FindControl(Id: VbeSaveCommandId).Execute();
+                var commandBars = _vbe.CommandBars;
+                var control = commandBars.FindControl(VbeSaveCommandId);
+                control.Execute();
+                Marshal.ReleaseComObject(control);
+                Marshal.ReleaseComObject(commandBars);
             }
         }
 
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         private void Dispose(bool disposing)

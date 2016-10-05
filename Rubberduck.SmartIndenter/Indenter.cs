@@ -1,7 +1,9 @@
-﻿using Microsoft.Vbe.Interop;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.DisposableWrappers;
+using Rubberduck.VBEditor.DisposableWrappers.VBA;
 
 namespace Rubberduck.SmartIndenter
 {
@@ -39,17 +41,16 @@ namespace Rubberduck.SmartIndenter
             var module = pane.CodeModule;
             var selection = GetSelection(pane);
 
-            vbext_ProcKind procKind;
-            // ReSharper disable once UseIndexedProperty
-            var procName = module.get_ProcOfLine(selection.StartLine, out procKind);
+            var procName = module.GetProcOfLine(selection.StartLine);
+            var procKind = module.GetProcKindOfLine(selection.StartLine);
 
             if (string.IsNullOrEmpty(procName))
             {
                 return;
             }
 
-            var startLine = module.ProcStartLine[procName, procKind];
-            var endLine = startLine + module.ProcCountLines[procName, procKind];
+            var startLine = module.GetProcStartLine(procName, procKind);
+            var endLine = startLine + module.GetProcCountLines(procName, procKind);
 
             selection = new Selection(startLine, 1, endLine, 1);
             Indent(module.Parent, procName, selection);
@@ -67,12 +68,7 @@ namespace Rubberduck.SmartIndenter
 
         private static Selection GetSelection(CodePane codePane)
         {
-            int startLine;
-            int startColumn;
-            int endLine;
-            int endColumn;
-            codePane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
-            return new Selection(startLine, startColumn, endLine, endColumn);
+            return codePane.GetSelection();
         }
 
         public void Indent(VBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)
@@ -84,12 +80,12 @@ namespace Rubberduck.SmartIndenter
                 return;
             }
 
-            var codeLines = module.Lines[1, lineCount].Replace("\r", string.Empty).Split('\n');
+            var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
             var indented = Indent(codeLines, component.Name, reportProgress, linesAlreadyRebuilt).ToArray();
 
             for (var i = 0; i < lineCount; i++)
             {
-                if (module.Lines[i + 1, 1] != indented[i])
+                if (module.GetLines(i + 1, 1) != indented[i])
                 {
                     component.CodeModule.ReplaceLine(i + 1, indented[i]);
                 }
@@ -105,13 +101,13 @@ namespace Rubberduck.SmartIndenter
                 return;
             }
 
-            var codeLines = module.Lines[selection.StartLine, selection.LineCount].Replace("\r", string.Empty).Split('\n');
+            var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty).Split('\n');
 
             var indented = Indent(codeLines, procedureName, reportProgress, linesAlreadyRebuilt).ToArray();
 
             for (var i = 0; i < selection.EndLine - selection.StartLine; i++)
             {
-                if (module.Lines[selection.StartLine + i, 1] != indented[i])
+                if (module.GetLines(selection.StartLine + i, 1) != indented[i])
                 {
                     component.CodeModule.ReplaceLine(selection.StartLine + i, indented[i]);
                 }
