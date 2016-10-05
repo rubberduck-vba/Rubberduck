@@ -73,7 +73,6 @@ namespace Rubberduck.VBEditor
             var module = component.CodeModule;
             {
                 _contentHashCode = module.CountOfLines > 0
-                    // ReSharper disable once UseIndexedProperty
                     ? module.GetLines(1, module.CountOfLines).GetHashCode()
                     : 0;
             }
