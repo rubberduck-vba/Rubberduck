@@ -51,6 +51,8 @@ namespace Rubberduck.API
         private RubberduckParserState _state;
         private AttributeParser _attributeParser;
         private RubberduckParser _parser;
+        private Sinks _sinks;
+        private VBE _vbe;
 
         public ParserState()
         {
@@ -64,7 +66,9 @@ namespace Rubberduck.API
                 throw new InvalidOperationException("ParserState is already initialized.");
             }
 
-            _state = new RubberduckParserState(new Sinks(vbe));
+            _vbe = vbe;
+            _sinks = new Sinks(_vbe);
+            _state = new RubberduckParserState(_sinks);
             _state.StateChanged += _state_StateChanged;
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
@@ -152,6 +156,12 @@ namespace Rubberduck.API
                 _state.StateChanged -= _state_StateChanged;
             }
 
+            if (_sinks != null)
+            {
+                _sinks.Dispose();
+            }
+
+            _vbe.Release();            
             _disposed = true;
         }
     }
