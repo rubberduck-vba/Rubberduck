@@ -271,7 +271,7 @@ namespace Rubberduck.Refactorings.Rename
                     if (component.Type == ComponentType.Document)
                     {
                         var properties = component.Properties;
-                        var property = properties.Item("_CodeName");
+                        var property = properties["_CodeName"];
                         {
                             property.Value = _model.NewName;
                         }
@@ -279,7 +279,7 @@ namespace Rubberduck.Refactorings.Rename
                     else if (component.Type == ComponentType.UserForm)
                     {
                         var properties = component.Properties;
-                        var property = properties.Item("Caption");
+                        var property = properties["Caption"];
                         {
                             if ((string)property.Value == _model.Target.IdentifierName)
                             {

@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -6,7 +5,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     [SuppressMessage("ReSharper", "UseIndexedProperty")]
-    public class Property : SafeComWrapper<Microsoft.Vbe.Interop.Property>, IEquatable<Property>
+    public class Property : SafeComWrapper<Microsoft.Vbe.Interop.Property>, IProperty
     {
         public Property(Microsoft.Vbe.Interop.Property comObject) 
             : base(comObject)
@@ -23,12 +22,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? 0 : ComObject.NumIndices; }
         }
 
-        public Properties Collection
+        public IProperties Collection
         {
             get { return new Properties(IsWrappingNullReference ? null : ComObject.Collection); }
         }
 
-        public Properties Parent
+        public IProperties Parent
         {
             get { return new Properties(IsWrappingNullReference ? null : ComObject.Parent); }
         }
@@ -85,7 +84,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 (other != null && other.ComObject.Name == Name && ReferenceEquals(other.ComObject.Parent, ComObject.Parent));
         }
 
-        public bool Equals(Property other)
+        public bool Equals(IProperty other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Property>);
         }

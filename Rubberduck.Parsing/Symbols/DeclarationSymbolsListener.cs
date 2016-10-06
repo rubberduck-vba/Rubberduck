@@ -77,7 +77,7 @@ namespace Rubberduck.Parsing.Symbols
                             var allNamesMatch = true;
                             for (var i = 0; i < coclass.Key.Count; i++)
                             {
-                                if (coclass.Key[i] != _qualifiedName.Component.Properties.Item(i + 1).Name)
+                                if (coclass.Key[i] != _qualifiedName.Component.Properties[i + 1].Name)
                                 {
                                     allNamesMatch = false;
                                     break;

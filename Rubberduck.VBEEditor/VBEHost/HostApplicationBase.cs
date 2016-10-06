@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
@@ -35,10 +34,10 @@ namespace Rubberduck.VBEditor.VBEHost
             {
                 var appProperty = vbe.VBProjects
                     .Where(project => project.Protection == ProjectProtection.Unprotected)
-                    .SelectMany(project => project.VBComponents.Cast<VBComponent>())
+                    .SelectMany(project => project.VBComponents)
                     .Where(component => component.Type == ComponentType.Document
                     && component.Properties.Count > 1)
-                    .SelectMany(component => component.Properties.OfType<Property>())
+                    .SelectMany(component => component.Properties)
                     .FirstOrDefault(property => property.Name == "Application");
                 if (appProperty != null)
                 {

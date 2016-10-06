@@ -33,7 +33,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBComponents(IsWrappingNullReference ? null : ComObject.Collection); }
         }
 
-        public Properties Properties
+        public IProperties Properties
         {
             get { return new Properties(IsWrappingNullReference ? null : ComObject.Properties); }
         }

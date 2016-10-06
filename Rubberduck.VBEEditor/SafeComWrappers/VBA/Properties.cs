@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -6,7 +5,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Properties : SafeComWrapper<Microsoft.Vbe.Interop.Properties>, IEnumerable<Property>, IEquatable<Properties>
+    public class Properties : SafeComWrapper<Microsoft.Vbe.Interop.Properties>, IProperties
     {
         public Properties(Microsoft.Vbe.Interop.Properties comObject) 
             : base(comObject)
@@ -33,19 +32,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? null : ComObject.Parent; }
         }
 
-        public Property Item(object index)
+        public IProperty this[object index]
         {
-            return new Property(ComObject.Item(index));
+            get { return new Property(ComObject.Item(index)); }
         }
 
-        IEnumerator<Property> IEnumerable<Property>.GetEnumerator()
+        IEnumerator<IProperty> IEnumerable<IProperty>.GetEnumerator()
         {
             return new ComWrapperEnumerator<Property>(ComObject);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<Property>)this).GetEnumerator();
+            return ((IEnumerable<IProperty>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -54,7 +53,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 for (var i = 1; i <= Count; i++)
                 {
-                    Item(i).Release();
+                    this[i].Release();
                 }
                 Marshal.ReleaseComObject(ComObject);
             }
@@ -65,7 +64,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(Properties other)
+        public bool Equals(IProperties other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Properties>);
         }

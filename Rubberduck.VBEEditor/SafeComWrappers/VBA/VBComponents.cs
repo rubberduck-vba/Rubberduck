@@ -126,7 +126,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 catch (IndexOutOfRangeException)
                 {
                     component = Add(ComponentType.UserForm);
-                    component.Properties.Item("Caption").Value = name;
+                    component.Properties["Caption"].Value = name;
                     component.Name = name;
                 }
 
