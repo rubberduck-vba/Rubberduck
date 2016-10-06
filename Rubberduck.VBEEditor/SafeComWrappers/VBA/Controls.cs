@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -6,7 +5,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Controls : SafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls>, IEnumerable<Control>, IEquatable<Controls>
+    public class Controls : SafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls>, IControls
     {
         public Controls(Microsoft.Vbe.Interop.Forms.Controls comObject) 
             : base(comObject)
@@ -18,19 +17,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? 0 : ComObject.Count; }
         }
 
-        public Control Item(object index)
+        public IControl this[object index]
         {
-            return new Control((Microsoft.Vbe.Interop.Forms.Control)ComObject.Item(index));
+            get { return new Control((Microsoft.Vbe.Interop.Forms.Control) ComObject.Item(index)); }
         }
 
-        IEnumerator<Control> IEnumerable<Control>.GetEnumerator()
+        IEnumerator<IControl> IEnumerable<IControl>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<Control>(ComObject);
+            return new ComWrapperEnumerator<IControl>(ComObject);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<Control>)this).GetEnumerator();
+            return ((IEnumerable<IControl>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -39,7 +38,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 for (var i = 1; i <= Count; i++)
                 {
-                    Item(i).Release();
+                    this[i].Release();
                 }
                 Marshal.ReleaseComObject(ComObject);
             } 
@@ -50,7 +49,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(Controls other)
+        public bool Equals(IControls other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls>);
         }

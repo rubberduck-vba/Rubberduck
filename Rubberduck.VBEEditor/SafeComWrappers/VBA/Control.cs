@@ -1,10 +1,9 @@
-using System;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Control : SafeComWrapper<Microsoft.Vbe.Interop.Forms.Control>, IEquatable<Control>
+    public class Control : SafeComWrapper<Microsoft.Vbe.Interop.Forms.Control>, IControl
     {
         public Control(Microsoft.Vbe.Interop.Forms.Control comObject) 
             : base(comObject)
@@ -30,7 +29,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(Control other)
+        public bool Equals(IControl other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Forms.Control>);
         }

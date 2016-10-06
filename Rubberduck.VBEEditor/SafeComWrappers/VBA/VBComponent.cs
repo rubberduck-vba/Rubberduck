@@ -54,7 +54,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             set { ComObject.Name = value; }
         }
 
-        public Controls Controls
+        public IControls Controls
         {
             get
             {
