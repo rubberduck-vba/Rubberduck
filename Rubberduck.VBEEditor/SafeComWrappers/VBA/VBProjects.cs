@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -7,7 +6,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBProjects : SafeComWrapper<Microsoft.Vbe.Interop.VBProjects>, IEnumerable<VBProject>, IEquatable<VBProjects>
+    public class VBProjects : SafeComWrapper<Microsoft.Vbe.Interop.VBProjects>, IVBProjects
     {
         public VBProjects(Microsoft.Vbe.Interop.VBProjects comObject) 
             : base(comObject)
@@ -29,34 +28,34 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBE(IsWrappingNullReference ? null : ComObject.Parent); }
         }
 
-        public VBProject Add(ProjectType type)
+        public IVBProject Add(ProjectType type)
         {
             return new VBProject(ComObject.Add((vbext_ProjectType)type));
         }
 
-        public void Remove(VBProject project)
+        public void Remove(IVBProject project)
         {
-            ComObject.Remove(project.ComObject);
+            ComObject.Remove((Microsoft.Vbe.Interop.VBProject)project.ComObject);
         }
 
-        public VBProject Open(string path)
+        public IVBProject Open(string path)
         {
             return new VBProject(ComObject.Open(path));
         }
 
-        public VBProject this[object index]
+        public IVBProject this[object index]
         {
             get { return new VBProject(ComObject.Item(index)); }
         }
 
-        IEnumerator<VBProject> IEnumerable<VBProject>.GetEnumerator()
+        IEnumerator<IVBProject> IEnumerable<IVBProject>.GetEnumerator()
         {
             return new ComWrapperEnumerator<VBProject>(ComObject);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<VBProject>)this).GetEnumerator();
+            return ((IEnumerable<IVBProject>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -76,7 +75,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(VBProjects other)
+        public bool Equals(IVBProjects other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBProjects>);
         }

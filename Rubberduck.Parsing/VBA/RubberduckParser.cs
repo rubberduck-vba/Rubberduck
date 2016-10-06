@@ -12,7 +12,6 @@ using System.Diagnostics;
 using System.IO;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -334,9 +333,9 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
 
-        private string GetReferenceProjectId(IReference reference, IReadOnlyList<VBProject> projects)
+        private string GetReferenceProjectId(IReference reference, IReadOnlyList<IVBProject> projects)
         {
-            VBProject project = null;
+            IVBProject project = null;
             foreach (var item in projects)
             {
                 try
@@ -359,7 +358,7 @@ namespace Rubberduck.Parsing.VBA
             return QualifiedModuleName.GetProjectId(reference);
         }
 
-        private void SyncComReferences(IReadOnlyList<VBProject> projects)
+        private void SyncComReferences(IReadOnlyList<IVBProject> projects)
         {
             var loadTasks = new List<Task>();
 
@@ -446,7 +445,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void UnloadComReference(IReference reference, IReadOnlyList<VBProject> projects)
+        private void UnloadComReference(IReference reference, IReadOnlyList<IVBProject> projects)
         {
             var referencedProjectId = GetReferenceProjectId(reference, projects);
 
@@ -564,7 +563,7 @@ namespace Rubberduck.Parsing.VBA
             Logger.Debug("{0}ms to resolve declarations for component {1}", stopwatch.ElapsedMilliseconds, component.Name);
         }
 
-        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, VBProject project)
+        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, IVBProject project)
         {
             var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
             var projectId = qualifiedName.QualifiedModuleName.ProjectId;

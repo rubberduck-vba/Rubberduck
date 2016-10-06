@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.SourceControl
 {
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
-        protected readonly VBProject Project;
+        protected readonly IVBProject Project;
 
-        protected SourceControlProviderBase(VBProject project)
+        protected SourceControlProviderBase(IVBProject project)
         {
             Project = project;
         }
 
-        protected SourceControlProviderBase(VBProject project, IRepository repository)
+        protected SourceControlProviderBase(IVBProject project, IRepository repository)
             :this(project)
         {
             CurrentRepository = repository;
@@ -173,19 +172,13 @@ namespace Rubberduck.SourceControl
                     var component = module.Parent;
                     {
                         var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection());
-                        string name = null;
-                        if (selection.QualifiedName.Component != null)
-                        {
-                            name = selection.QualifiedName.Component.Name;
-                        }
-
                         components.RemoveSafely(item);
 
                         var directory = CurrentRepository.LocalLocation;
                         directory += directory.EndsWith("\\") ? string.Empty : "\\";
                         components.Import(directory + filePath);
 
-                        VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
+                        selection.QualifiedName.Component.CodeModule.CodePane.SetSelection(selection.Selection);
                     }
                 }
                 else
@@ -216,13 +209,7 @@ namespace Rubberduck.SourceControl
                     var module = pane.CodeModule;
                     var component = module.Parent;
                     {
-                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection());
-                        string name = null;
-                        if (selection.QualifiedName.Component != null)
-                        {
-                            name = selection.QualifiedName.Component.Name;
-                        }
-
+                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection()); 
                         try
                         {
                             Project.LoadAllComponents(CurrentRepository.LocalLocation);
@@ -233,7 +220,7 @@ namespace Rubberduck.SourceControl
                             throw new SourceControlException("Unknown exception.", ex);
                         }
 
-                        VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
+                        selection.QualifiedName.Component.CodeModule.CodePane.SetSelection(selection.Selection);
                     }
                 }
                 else

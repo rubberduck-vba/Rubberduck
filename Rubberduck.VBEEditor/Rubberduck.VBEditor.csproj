@@ -166,7 +166,9 @@
     <Compile Include="SafeComWrappers\Abstract\IReference.cs" />
     <Compile Include="SafeComWrappers\Abstract\IReferences.cs" />
     <Compile Include="SafeComWrappers\Abstract\IVBComponent.cs" />
-    <Compile Include="SafeComWrappers\VBA\IVBComponents.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBComponents.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBProject.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBProjects.cs" />
     <Compile Include="SafeComWrappers\VBA\Properties.cs" />
     <Compile Include="SafeComWrappers\VBA\Property.cs" />
     <Compile Include="SafeComWrappers\ReferenceEventArgs.cs" />

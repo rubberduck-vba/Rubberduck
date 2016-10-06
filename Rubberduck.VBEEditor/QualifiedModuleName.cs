@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor
 {
@@ -10,7 +9,7 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
-        public static string GetProjectId(VBProject project)
+        public static string GetProjectId(IVBProject project)
         {
             if (project.IsWrappingNullReference)
             {
@@ -32,7 +31,7 @@ namespace Rubberduck.VBEditor
             return new QualifiedModuleName(projectName, path, projectName).ProjectId;
         }
 
-        public QualifiedModuleName(VBProject project)
+        public QualifiedModuleName(IVBProject project)
         {
             _component = null;
             _componentName = null;
@@ -103,8 +102,8 @@ namespace Rubberduck.VBEditor
         private readonly IVBComponent _component;
         public IVBComponent Component { get { return _component; } }
 
-        private readonly VBProject _project;
-        public VBProject Project { get { return _project; } }
+        private readonly IVBProject _project;
+        public IVBProject Project { get { return _project; } }
 
         private readonly int _contentHashCode;
         public int ContentHashCode { get { return _contentHashCode; } }

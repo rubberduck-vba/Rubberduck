@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Extensions
 {
@@ -17,7 +17,7 @@ namespace Rubberduck.VBEditor.Extensions
         /// </remarks>
         /// <param name="project"></param>
         /// <param name="filePath">Directory path containing the source files.</param>
-        public static void ImportDocumentTypeSourceFiles(this VBProject project, string filePath)
+        public static void ImportDocumentTypeSourceFiles(this IVBProject project, string filePath)
         {
             var dirInfo = new DirectoryInfo(filePath);
 
@@ -33,7 +33,7 @@ namespace Rubberduck.VBEditor.Extensions
             }
         }
 
-        public static void LoadAllComponents(this VBProject project, string filePath)
+        public static void LoadAllComponents(this IVBProject project, string filePath)
         {
             var dirInfo = new DirectoryInfo(filePath);
 

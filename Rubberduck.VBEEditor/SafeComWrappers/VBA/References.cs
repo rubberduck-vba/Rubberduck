@@ -26,7 +26,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? 0 : ComObject.Count; }
         }
 
-        public VBProject Parent
+        public IVBProject Parent
         {
             get { return new VBProject(IsWrappingNullReference ? null : ComObject.Parent); }
         }

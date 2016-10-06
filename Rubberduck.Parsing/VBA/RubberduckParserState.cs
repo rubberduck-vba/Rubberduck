@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Antlr4.Runtime;
@@ -12,8 +11,6 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -47,7 +44,7 @@ namespace Rubberduck.Parsing.VBA
     public sealed class RubberduckParserState : IDisposable
     {
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
-        private readonly IDictionary<string, VBProject> _projects = new Dictionary<string, VBProject>();
+        private readonly IDictionary<string, IVBProject> _projects = new Dictionary<string, IVBProject>();
 
         private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates =
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
@@ -235,11 +232,11 @@ namespace Rubberduck.Parsing.VBA
             ClearStateCache(projectId, notifyStateChanged);
         }
 
-        public List<VBProject> Projects
+        public List<IVBProject> Projects
         {
             get
             {
-                return new List<VBProject>(_projects.Values);
+                return new List<IVBProject>(_projects.Values);
             }
         }
 
@@ -290,7 +287,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 var projectId = component.Collection.Parent.HelpFile;
 
-                VBProject project = null;
+                IVBProject project = null;
                 foreach (var item in _projects)
                 {
                     if (item.Value.HelpFile == projectId)
@@ -768,7 +765,7 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
         }
 
-        public IParseTree GetParseTree(VBComponent component)
+        public IParseTree GetParseTree(IVBComponent component)
         {
             return _moduleStates[new QualifiedModuleName(component)].ParseTree;
         }

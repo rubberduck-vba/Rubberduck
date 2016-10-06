@@ -76,7 +76,7 @@ namespace Rubberduck.Parsing
     /// Exposes objects, methods and properties to programming tools and other
     /// applications that support Automation.
     /// </summary>
-    [ComImport()]
+    [ComImport]
     [Guid("00020400-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     interface IDispatch

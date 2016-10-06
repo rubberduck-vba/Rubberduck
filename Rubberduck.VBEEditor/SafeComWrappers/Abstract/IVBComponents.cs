@@ -1,12 +1,11 @@
 using System;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
     public interface IVBComponents : ISafeComWrapper, IComCollection<IVBComponent>, IEquatable<IVBComponents>
     {
         IVBE VBE { get; }
-        VBProject Parent { get; }
+        IVBProject Parent { get; }
         void Remove(IVBComponent item);
         IVBComponent Add(ComponentType type);
         IVBComponent Import(string path);

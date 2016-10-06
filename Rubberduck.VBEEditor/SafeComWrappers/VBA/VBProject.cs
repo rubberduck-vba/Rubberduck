@@ -6,7 +6,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBProject : SafeComWrapper<Microsoft.Vbe.Interop.VBProject>, IEquatable<VBProject>
+    public class VBProject : SafeComWrapper<Microsoft.Vbe.Interop.VBProject>, IVBProject
     {
         public VBProject(Microsoft.Vbe.Interop.VBProject vbProject)
             :base(vbProject)
@@ -52,7 +52,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? 0 : (EnvironmentMode)ComObject.Mode; }
         }
 
-        public VBProjects Collection
+        public IVBProjects Collection
         {
             get { return new VBProjects(IsWrappingNullReference ? null : ComObject.Collection); }
         }
@@ -72,7 +72,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? 0 : (ProjectProtection)ComObject.Protection; }
         }
 
-        public bool Saved
+        public bool IsSaved
         {
             get { return !IsWrappingNullReference && ComObject.Saved; }
         }
@@ -122,7 +122,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && other.ComObject == ComObject);
         }
 
-        public bool Equals(VBProject other)
+        public bool Equals(IVBProject other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBProject>);
         }
@@ -132,9 +132,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
         }
 
-        public IEnumerable<string> ComponentNames()
+        public IReadOnlyList<string> ComponentNames()
         {
-            return VBComponents.Select(component => component.Name);
+            return VBComponents.Select(component => component.Name).ToArray();
         }
 
         public void AssignProjectId()
@@ -169,6 +169,5 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 component.ExportAsSourceFile(folder);
             }
         }
-
     }
 }
