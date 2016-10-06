@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -10,7 +9,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     [SuppressMessage("ReSharper", "UseIndexedProperty")]
-    public class CodeModule : SafeComWrapper<Microsoft.Vbe.Interop.CodeModule>, IEquatable<CodeModule>
+    public class CodeModule : SafeComWrapper<Microsoft.Vbe.Interop.CodeModule>, ICodeModule
     {
         public CodeModule(Microsoft.Vbe.Interop.CodeModule comObject) 
             : base(comObject)
@@ -162,9 +161,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public bool IsDirty { get { return _previousContentHash.Equals(ContentHash()); } }
 
-        public void AddFromString(string value)
+        public void AddFromString(string content)
         {
-            ComObject.AddFromString(value);
+            ComObject.AddFromString(content);
         }
 
         public void AddFromFile(string path)
@@ -185,11 +184,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public void ReplaceLine(int line, string content)
         {
             ComObject.ReplaceLine(line, content);
-        }
-
-        public int CreateEventProc(string eventName, string objectName)
-        {
-            return ComObject.CreateEventProc(eventName, objectName);
         }
 
         public Selection? Find(string target, bool wholeWord = false, bool matchCase = false, bool patternSearch = false)
@@ -246,7 +240,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(CodeModule other)
+        public bool Equals(ICodeModule other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.CodeModule>);
         }
