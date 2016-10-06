@@ -19,6 +19,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             get { return (Microsoft.Office.Core.CommandBarButton)ComObject; }
         }
 
+        public static ICommandBarButton FromCommandBarControl(ICommandBarControl control)
+        {
+            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.ComObject);
+        }
+
         public event EventHandler<CommandBarButtonClickEventArgs> Click;
         private void comObject_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
         {

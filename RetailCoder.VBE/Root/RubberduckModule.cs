@@ -155,7 +155,9 @@ namespace Rubberduck.Root
             Kernel.Bind(t => t.From(assemblies)
                 .SelectAllClasses()
                 // inspections & factories have their own binding rules
-                .Where(type => !type.Name.EndsWith("Factory") && !type.Name.EndsWith("ConfigProvider") && !type.GetInterfaces().Contains(typeof(IInspection)))
+                .Where(type => type.Namespace != null
+                            && !type.Namespace.StartsWith("Rubberduck.VBEditor.SafeComWrappers")
+                            && !type.Name.EndsWith("Factory") && !type.Name.EndsWith("ConfigProvider") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
                 .Configure(binding => binding.InCallScope())); // TransientScope wouldn't dispose disposables
         }

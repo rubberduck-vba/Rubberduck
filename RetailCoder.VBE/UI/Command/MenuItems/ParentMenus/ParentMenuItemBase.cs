@@ -15,9 +15,9 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         public static ICommandBarPopup Create<TParent>(TParent parent, int? beforeIndex = null)
             where TParent : ICommandBarControls
         {
-            return (beforeIndex.HasValue
+            return CommandBarPopup.FromCommandBarControl(beforeIndex.HasValue
                 ? parent.Add(ControlType.Popup, beforeIndex.Value)
-                : parent.Add(ControlType.Popup)) as ICommandBarPopup;
+                : parent.Add(ControlType.Popup));
         }
     }
 
@@ -26,9 +26,9 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         public static ICommandBarButton Create<TParent>(TParent parent, int? beforeIndex = null)
             where TParent : ICommandBarControls
         {
-            return (beforeIndex.HasValue
+            return CommandBarButton.FromCommandBarControl(beforeIndex.HasValue
                 ? parent.Add(ControlType.Button, beforeIndex.Value)
-                : parent.Add(ControlType.Button)) as ICommandBarButton;
+                : parent.Add(ControlType.Button));
         }
     }
 
