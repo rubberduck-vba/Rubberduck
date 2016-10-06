@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
 {
@@ -14,22 +15,22 @@ namespace RubberduckTests.Mocks
     /// <remarks>
     /// The <see cref="Window"/> passed into MockWindowCollection's ctor will be returned from <see cref="CreateToolWindow"/>.
     /// </remarks>
-    class MockWindowsCollection : Windows, ICollection<Window>
+    class MockWindowsCollection : IWindows, ICollection<IWindow>
     {
         internal MockWindowsCollection()
-            :this(new List<Window>{MockFactory.CreateWindowMock().Object})
+            :this(new List<IWindow>{MockFactory.CreateWindowMock().Object})
         { }
 
-        internal MockWindowsCollection(ICollection<Window> windows)
+        internal MockWindowsCollection(ICollection<IWindow> windows)
         {
             _windows = windows;
         }
 
-        private readonly ICollection<Window> _windows;
+        private readonly ICollection<IWindow> _windows;
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         [SuppressMessage("ReSharper", "RedundantAssignment")]
-        public Window CreateToolWindow(AddIn AddInInst, string ProgId, string Caption, string GuidPosition, ref object DocObj)
+        public IWindow CreateToolWindow(IAddIn AddInInst, string ProgId, string Caption, string GuidPosition, ref object DocObj)
         {
             DocObj = new _DockableWindowHost(); 
             var result = MockFactory.CreateWindowMock(Caption);
@@ -39,7 +40,7 @@ namespace RubberduckTests.Mocks
             return result.Object;
         }
 
-        public Window CreateWindow(string caption)
+        public IWindow CreateWindow(string caption)
         {
             var result = MockFactory.CreateWindowMock(caption);
             result.Setup(m => m.VBE).Returns(VBE);
@@ -48,12 +49,12 @@ namespace RubberduckTests.Mocks
             return result.Object;
         }
 
-        public void Add(Window window)
+        public void Add(IWindow window)
         {
             _windows.Add(window);
         }
 
-        public bool Remove(Window window)
+        public bool Remove(IWindow window)
         {
             return _windows.Remove(window);
         }
@@ -68,22 +69,27 @@ namespace RubberduckTests.Mocks
             get { return _windows.Count; }
         }
 
+        IWindow IComCollection<IWindow>.this[object index]
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public bool IsReadOnly
         {
             get { return _windows.IsReadOnly; }
         }
-
-        public bool Contains(Window window)
+        
+        public bool Contains(IWindow window)
         {
             return _windows.Contains(window);
         }
 
-        public void CopyTo(Window[] array, int arrayIndex)
+        public void CopyTo(IWindow[] array, int arrayIndex)
         {
             _windows.CopyTo(array, arrayIndex);
         }
 
-        IEnumerator<Window> IEnumerable<Window>.GetEnumerator()
+        IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()
         {
             return _windows.GetEnumerator();
         }
@@ -93,7 +99,7 @@ namespace RubberduckTests.Mocks
             return _windows.GetEnumerator();
         }
 
-        public Window Item(object index)
+        public IWindow Item(object index)
         {
             if (index is ValueType)
             {
@@ -103,11 +109,22 @@ namespace RubberduckTests.Mocks
             return _windows.FirstOrDefault(window => window.Caption == index.ToString());
         }
 
-        public Application Parent
+        public IApplication Parent
         {
-            get { return VBE; }
+            get { return VBE.Windows.Parent; }
         }
 
-        public VBE VBE { get; set; }
+        public IVBE VBE { get; set; }
+        public object ComObject { get; private set; }
+        public void Release()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsWrappingNullReference { get; private set; }
+        public bool Equals(IWindows other)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

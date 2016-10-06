@@ -11,6 +11,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 
@@ -19,9 +20,9 @@ namespace RubberduckTests.SourceControl
     [TestClass]
     public class SourceControlViewModelTests
     {
-        private Mock<VBE> _vbe;
+        private Mock<IVBE> _vbe;
         private MockWindowsCollection _windows;
-        private Mock<Window> _window;
+        private Mock<IWindow> _window;
 #pragma warning disable 169
         private object _toolWindow;
 #pragma warning restore 169
@@ -45,7 +46,7 @@ namespace RubberduckTests.SourceControl
         public void InitializeMocks()
         {
             _window = Mocks.MockFactory.CreateWindowMock();
-            _windows = new MockWindowsCollection(new List<Window> { _window.Object });
+            _windows = new MockWindowsCollection(new List<IWindow> { _window.Object });
             _vbe = Mocks.MockFactory.CreateVbeMock(_windows);
 
             var mockHost = new Mock<IHostApplication>();
@@ -90,7 +91,7 @@ namespace RubberduckTests.SourceControl
 
         private void SetupValidVbProject()
         {
-            var project = new Mock<VBProject>().SetupProperty(p => p.HelpFile, DummyRepoId);
+            var project = new Mock<IVBProject>().SetupProperty(p => p.HelpFile, DummyRepoId);
             _vbe.SetupProperty(vbe => vbe.ActiveVBProject, project.Object);
         }
 
@@ -117,7 +118,7 @@ namespace RubberduckTests.SourceControl
                 new SettingsView(_settingsVM)
             };
 
-            var vbe = new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(_vbe.Object);
+            var vbe = new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE((VBE)_vbe.Object.ComObject);
             _vm = new SourceControlViewViewModel(vbe, new RubberduckParserState(new Mock<ISinks>().Object), new Mock<ISinks>().Object, _providerFactory.Object, _folderBrowserFactory.Object,
                 _configService.Object, views, new Mock<IMessageBox>().Object);
         }
@@ -160,7 +161,7 @@ namespace RubberduckTests.SourceControl
             //arrange
             _configService.Setup(c => c.Create()).Returns(new SourceControlSettings());
 
-            var project = new Mock<VBProject>().SetupProperty(p => p.Name, "FooBar");
+            var project = new Mock<IVBProject>().SetupProperty(p => p.Name, "FooBar");
             _vbe.SetupProperty(vbe => vbe.ActiveVBProject, project.Object);
 
             SetupVM();
@@ -990,8 +991,8 @@ namespace RubberduckTests.SourceControl
             //arrange
             SetupValidVbProject();
             SetupVM();
-            _vbe.Setup(v => v.ActiveVBProject).Returns((VBProject)null);
-            _vbe.Setup(v => v.VBProjects).Returns(new Mock<VBProjects>().Object);
+            _vbe.Setup(v => v.ActiveVBProject).Returns((IVBProject)null);
+            _vbe.Setup(v => v.VBProjects).Returns(new Mock<IVBProjects>().Object);
 
             //act
             _vm.RefreshCommand.Execute(null);
