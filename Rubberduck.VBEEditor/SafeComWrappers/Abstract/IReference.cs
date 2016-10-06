@@ -9,6 +9,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         string Description { get; }
         int Major { get; }
         int Minor { get; }
+        string Version { get; }
         string FullPath { get; }
         bool IsBuiltIn { get; }
         bool IsBroken { get; }

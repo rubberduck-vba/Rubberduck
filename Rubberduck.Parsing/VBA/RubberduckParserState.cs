@@ -46,8 +46,8 @@ namespace Rubberduck.Parsing.VBA
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
         private readonly IDictionary<string, IVBProject> _projects = new Dictionary<string, IVBProject>();
 
-        private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates =
-            new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
+        private readonly ConcurrentDictionary<IVBComponent, ModuleState> _moduleStates =
+            new ConcurrentDictionary<IVBComponent, ModuleState>();
 
         public event EventHandler<EventArgs> ParseRequest;
         public event EventHandler<RubberduckStatusMessageEventArgs> StatusMessageUpdate;
@@ -252,7 +252,7 @@ namespace Rubberduck.Parsing.VBA
                         continue;
                     }
 
-                    exceptions.Add(Tuple.Create(kvp.Key.Component, kvp.Value.ModuleException));
+                    exceptions.Add(Tuple.Create(kvp.Key, kvp.Value.ModuleException));
                 }
 
                 return exceptions;
@@ -304,13 +304,11 @@ namespace Rubberduck.Parsing.VBA
                     return;
                 }
             }
-            var key = new QualifiedModuleName(component);
-
             var oldState = GetModuleState(component);
 
-            _moduleStates.AddOrUpdate(key, new ModuleState(state), (c, e) => e.SetState(state));
-            _moduleStates.AddOrUpdate(key, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
-            Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
+            _moduleStates.AddOrUpdate(component, new ModuleState(state), (c, e) => e.SetState(state));
+            _moduleStates.AddOrUpdate(component, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
+            Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", component.Name, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state, oldState);
             Status = EvaluateParserState();
         }
@@ -325,7 +323,7 @@ namespace Rubberduck.Parsing.VBA
             var moduleStates = new List<ParserState>();
             foreach (var moduleState in _moduleStates)
             {
-                if (moduleState.Key.Component == null || moduleState.Key.ComponentName == string.Empty)
+                if (moduleState.Key.Name == string.Empty)
                 {
                     continue;
                 }
@@ -436,26 +434,25 @@ namespace Rubberduck.Parsing.VBA
 
         public ParserState GetOrCreateModuleState(IVBComponent component)
         {
-            var key = new QualifiedModuleName(component);
-            var state = _moduleStates.GetOrAdd(key, new ModuleState(ParserState.Pending)).State;
+            var state = _moduleStates.GetOrAdd(component, new ModuleState(ParserState.Pending)).State;
 
             if (state == ParserState.Pending)
             {
                 return state;   // we are slated for a reparse already
             }
 
-            if (!IsNewOrModified(key))
+            if (!IsNewOrModified(component))
             {
                 return state;
             }
 
-            _moduleStates.AddOrUpdate(key, new ModuleState(ParserState.Pending), (c, s) => s.SetState(ParserState.Pending));
+            _moduleStates.AddOrUpdate(component, new ModuleState(ParserState.Pending), (c, s) => s.SetState(ParserState.Pending));
             return ParserState.Pending;
         }
 
         public ParserState GetModuleState(IVBComponent component)
         {
-            return _moduleStates.GetOrAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending)).State;
+            return _moduleStates.GetOrAdd(component, new ModuleState(ParserState.Pending)).State;
         }
 
         private ParserState _status;
@@ -486,7 +483,7 @@ namespace Rubberduck.Parsing.VBA
 
         internal void SetModuleAttributes(IVBComponent component, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
-            _moduleStates.AddOrUpdate(new QualifiedModuleName(component), new ModuleState(attributes), (c, s) => s.SetModuleAttributes(attributes));
+            _moduleStates.AddOrUpdate(component, new ModuleState(attributes), (c, s) => s.SetModuleAttributes(attributes));
         }
 
         public List<CommentNode> AllComments
@@ -506,7 +503,7 @@ namespace Rubberduck.Parsing.VBA
         public IEnumerable<CommentNode> GetModuleComments(IVBComponent component)
         {
             ModuleState state;
-            if (_moduleStates.TryGetValue(new QualifiedModuleName(component), out state))
+            if (_moduleStates.TryGetValue(component, out state))
             {
                 return state.Comments;
             }
@@ -516,7 +513,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleComments(IVBComponent component, IEnumerable<CommentNode> comments)
         {
-            _moduleStates[new QualifiedModuleName(component)].SetComments(new List<CommentNode>(comments));
+            _moduleStates[component].SetComments(new List<CommentNode>(comments));
         }
 
         public List<IAnnotation> AllAnnotations
@@ -536,7 +533,7 @@ namespace Rubberduck.Parsing.VBA
         public IEnumerable<IAnnotation> GetModuleAnnotations(IVBComponent component)
         {
             ModuleState result;
-            if (_moduleStates.TryGetValue(new QualifiedModuleName(component), out result))
+            if (_moduleStates.TryGetValue(component, out result))
             {
                 return result.Annotations;
             }
@@ -546,7 +543,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleAnnotations(IVBComponent component, IEnumerable<IAnnotation> annotations)
         {
-            _moduleStates[new QualifiedModuleName(component)].SetAnnotations(new List<IAnnotation>(annotations));
+            _moduleStates[component].SetAnnotations(new List<IAnnotation>(annotations));
         }
 
         /// <summary>
@@ -608,7 +605,7 @@ namespace Rubberduck.Parsing.VBA
 
         internal IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(IVBComponent vbComponent)
         {
-            return _moduleStates[new QualifiedModuleName(vbComponent)].ModuleAttributes;
+            return _moduleStates[vbComponent].ModuleAttributes;
         }
 
         /// <summary>
@@ -616,7 +613,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void AddDeclaration(Declaration declaration)
         {
-            var key = declaration.QualifiedName.QualifiedModuleName;
+            var key = declaration.QualifiedName.QualifiedModuleName.Component;
             var declarations = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>())).Declarations;
 
             if (declarations.ContainsKey(declaration))
@@ -639,14 +636,14 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var moduleState in _moduleStates)
                 {
-                    if (moduleState.Key.ProjectId == projectId && moduleState.Key.Component != null)
+                    if (moduleState.Key.Collection.Parent.HelpFile == projectId)
                     {
-                        while (!ClearStateCache(moduleState.Key.Component))
+                        while (!ClearStateCache(moduleState.Key))
                         {
                             // until Hell freezes over?
                         }
                     }
-                    else if (moduleState.Key.ProjectId == projectId && moduleState.Key.Component == null)
+                    else if (moduleState.Key.Collection.Parent.HelpFile == projectId)
                     {
                         // store project module name
                         var qualifiedModuleName = moduleState.Key;
@@ -689,12 +686,7 @@ namespace Rubberduck.Parsing.VBA
 
         public bool ClearStateCache(IVBComponent component, bool notifyStateChanged = false)
         {
-            return component != null && ClearStateCache(new QualifiedModuleName(component), notifyStateChanged);
-        }
-
-        public bool ClearStateCache(QualifiedModuleName component, bool notifyStateChanged = false)
-        {
-            var keys = new List<QualifiedModuleName> { component };
+            var keys = new List<IVBComponent> { component };
             foreach (var key in _moduleStates.Keys)
             {
                 if (key.Equals(component) && !keys.Contains(key))
@@ -716,10 +708,10 @@ namespace Rubberduck.Parsing.VBA
 
         private bool RemoveRenamedComponent(string projectId, string oldComponentName)
         {
-            var keys = new List<QualifiedModuleName>();
+            var keys = new List<IVBComponent>();
             foreach (var key in _moduleStates.Keys)
             {
-                if (key.ComponentName == oldComponentName && key.ProjectId == projectId)
+                if (key.Name == oldComponentName && key.Collection.Parent.HelpFile == projectId)
                 {
                     keys.Add(key);
                 }
@@ -736,7 +728,7 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
-        private bool RemoveKeysFromCollections(IEnumerable<QualifiedModuleName> keys)
+        private bool RemoveKeysFromCollections(IEnumerable<IVBComponent> keys)
         {
             var success = true;
             foreach (var key in keys)
@@ -755,32 +747,30 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddTokenStream(IVBComponent component, ITokenStream stream)
         {
-            _moduleStates[new QualifiedModuleName(component)].SetTokenStream(stream);
+            _moduleStates[component].SetTokenStream(stream);
         }
 
         public void AddParseTree(IVBComponent component, IParseTree parseTree)
         {
-            var key = new QualifiedModuleName(component);
-            _moduleStates[key].SetParseTree(parseTree);
-            _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
+            _moduleStates[component].SetParseTree(parseTree);
+            _moduleStates[component].SetModuleContentHash(component.CodeModule.ContentHash());
         }
 
         public IParseTree GetParseTree(IVBComponent component)
         {
-            return _moduleStates[new QualifiedModuleName(component)].ParseTree;
+            return _moduleStates[component].ParseTree;
         }
 
-        public List<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees
+        public List<KeyValuePair<IVBComponent, IParseTree>> ParseTrees
         {
             get
             {
-                var parseTrees = new List<KeyValuePair<QualifiedModuleName, IParseTree>>();
+                var parseTrees = new List<KeyValuePair<IVBComponent, IParseTree>>();
                 foreach (var state in _moduleStates)
                 {
                     if (state.Value.ParseTree != null)
                     {
-                        parseTrees.Add(new KeyValuePair<QualifiedModuleName, IParseTree>(state.Key,
-                            state.Value.ParseTree));
+                        parseTrees.Add(new KeyValuePair<IVBComponent, IParseTree>(state.Key, state.Value.ParseTree));
                     }
                 }
 
@@ -812,7 +802,7 @@ namespace Rubberduck.Parsing.VBA
 
         public TokenStreamRewriter GetRewriter(IVBComponent component)
         {
-            return new TokenStreamRewriter(_moduleStates[new QualifiedModuleName(component)].TokenStream);
+            return new TokenStreamRewriter(_moduleStates[component].TokenStream);
         }
 
         /// <summary>
@@ -822,10 +812,10 @@ namespace Rubberduck.Parsing.VBA
         /// <returns>Returns true when successful.</returns>
         public bool RemoveDeclaration(Declaration declaration)
         {
-            var key = declaration.QualifiedName.QualifiedModuleName;
+            var component = declaration.QualifiedName.QualifiedModuleName.Component;
 
             byte _;
-            return _moduleStates[key].Declarations.TryRemove(declaration, out _);
+            return _moduleStates[component].Declarations.TryRemove(declaration, out _);
         }
 
         /// <summary>
@@ -849,17 +839,11 @@ namespace Rubberduck.Parsing.VBA
 
         public bool IsNewOrModified(IVBComponent component)
         {
-            var key = new QualifiedModuleName(component);
-            return IsNewOrModified(key);
-        }
-
-        public bool IsNewOrModified(QualifiedModuleName key)
-        {
             ModuleState moduleState;
-            if (_moduleStates.TryGetValue(key, out moduleState))
+            if (_moduleStates.TryGetValue(component, out moduleState))
             {
                 // existing/modified
-                return moduleState.IsNew || key.ContentHashCode != moduleState.ModuleContentHashCode;
+                return moduleState.IsNew || component.CodeModule.ContentHash() != moduleState.ModuleContentHash;
             }
 
             // new

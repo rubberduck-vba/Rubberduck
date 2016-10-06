@@ -142,6 +142,8 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.FileName).Returns(() => filename);
             result.SetupGet(m => m.Protection).Returns(() => protection);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
+            result.SetupProperty(m => m.HelpFile);
+            result.Setup(m => m.AssignProjectId()).Callback(() => result.Object.HelpFile = Guid.NewGuid().ToString());
 
             return result;
         }

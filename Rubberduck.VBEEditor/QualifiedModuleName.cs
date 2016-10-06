@@ -18,7 +18,7 @@ namespace Rubberduck.VBEditor
 
             if (string.IsNullOrEmpty(project.HelpFile))
             {
-                project.HelpFile = project.GetHashCode().ToString();
+                project.AssignProjectId();
             }
 
             return project.HelpFile;
