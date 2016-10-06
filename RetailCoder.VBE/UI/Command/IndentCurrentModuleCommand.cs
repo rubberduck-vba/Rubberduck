@@ -25,7 +25,7 @@ namespace Rubberduck.UI.Command
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            return _vbe.ActiveCodePane != null;
+            return !_vbe.ActiveCodePane.IsWrappingNullReference;
         }
 
         protected override void ExecuteImpl(object parameter)
