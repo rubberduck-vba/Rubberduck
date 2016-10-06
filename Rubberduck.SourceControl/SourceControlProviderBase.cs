@@ -120,7 +120,7 @@ namespace Rubberduck.SourceControl
         {
             if (File.Exists(filePath))
             {
-                var component = Project.VBComponents.OfType<VBComponent>().FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
+                var component = Project.VBComponents.FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
 
                 HandleVbeSinkEvents = false;
                 Project.VBComponents.RemoveSafely(component);

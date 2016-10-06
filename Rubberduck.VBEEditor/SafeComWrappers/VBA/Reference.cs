@@ -1,10 +1,9 @@
-using System;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Reference : SafeComWrapper<Microsoft.Vbe.Interop.Reference>, IEquatable<Reference>
+    public class Reference : SafeComWrapper<Microsoft.Vbe.Interop.Reference>, IReference
     {
         public Reference(Microsoft.Vbe.Interop.Reference comObject) 
             : base(comObject)
@@ -56,7 +55,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? 0 : (ReferenceKind)ComObject.Type; }
         }
 
-        public References Collection
+        public IReferences Collection
         {
             get { return new References(IsWrappingNullReference ? null : ComObject.Collection); }
         }
@@ -83,7 +82,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     && other.ComObject.Minor == Minor);
         }
 
-        public bool Equals(Reference other)
+        public bool Equals(IReference other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Reference>);
         }

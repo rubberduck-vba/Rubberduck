@@ -1,4 +1,5 @@
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.VBA
@@ -12,6 +13,6 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         /// <param name="component">The module to export.</param>
         /// <returns>Returns a string containing the path and filename of the created file.</returns>
-        string Export(VBComponent component);
+        string Export(IVBComponent component);
     }
 }

@@ -1,17 +1,17 @@
 ﻿using System;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
 {
     public class ReferenceEventArgs : EventArgs
     {
-        private readonly Reference _reference;
+        private readonly IReference _reference;
 
-        public ReferenceEventArgs(Reference reference)
+        public ReferenceEventArgs(IReference reference)
         {
             _reference = reference;
         }
 
-        public Reference Reference { get { return _reference; } }
+        public IReference Reference { get { return _reference; } }
     }
 }

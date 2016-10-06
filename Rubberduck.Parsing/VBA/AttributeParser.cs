@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.VBA
         /// Exports the specified component to a temporary file, loads, and then parses the exported file.
         /// </summary>
         /// <param name="component"></param>
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(VBComponent component)
+        public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(IVBComponent component)
         {
             var path = _exporter.Export(component);
             if (!File.Exists(path))

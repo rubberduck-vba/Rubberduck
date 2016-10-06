@@ -9,7 +9,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
 using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 

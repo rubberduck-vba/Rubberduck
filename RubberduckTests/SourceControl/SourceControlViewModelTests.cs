@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SmartIndenter
 {
@@ -71,7 +70,7 @@ namespace Rubberduck.SmartIndenter
             return codePane.GetSelection();
         }
 
-        public void Indent(VBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(IVBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
             var module = component.CodeModule;
             var lineCount = module.CountOfLines;
@@ -92,7 +91,7 @@ namespace Rubberduck.SmartIndenter
             }
         }
 
-        public void Indent(VBComponent component, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(IVBComponent component, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
             var module = component.CodeModule;
             var lineCount = module.CountOfLines;

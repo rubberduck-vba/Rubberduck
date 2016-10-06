@@ -29,7 +29,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             set { ComObject.HelpFile = value; }
         }
 
-        public int HelpContextID
+        public int HelpContextId
         {
             get { return IsWrappingNullReference ? 0 : ComObject.HelpContextID; }
             set { ComObject.HelpContextID = value; }
@@ -57,12 +57,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBProjects(IsWrappingNullReference ? null : ComObject.Collection); }
         }
 
-        public References References
+        public IReferences References
         {
             get { return new References(IsWrappingNullReference ? null : ComObject.References); }
         }
 
-        public VBComponents VBComponents
+        public IVBComponents VBComponents
         {
             get { return new VBComponents(IsWrappingNullReference ? null : ComObject.VBComponents); }
         }

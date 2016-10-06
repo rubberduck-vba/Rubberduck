@@ -7,7 +7,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {
@@ -125,7 +124,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        private string GetNextTestMethodName(VBComponent component)
+        private string GetNextTestMethodName(IVBComponent component)
         {
             var names = component.GetTests(_vbe, _state).Select(test => test.Declaration.IdentifierName);
             var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;

@@ -6,7 +6,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBComponent : SafeComWrapper<Microsoft.Vbe.Interop.VBComponent>, IEquatable<VBComponent>
+    public class VBComponent : SafeComWrapper<Microsoft.Vbe.Interop.VBComponent>, IVBComponent
     {
         public VBComponent(Microsoft.Vbe.Interop.VBComponent comObject) 
             : base(comObject)
@@ -28,7 +28,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
-        public VBComponents Collection
+        public IVBComponents Collection
         {
             get { return new VBComponents(IsWrappingNullReference ? null : ComObject.Collection); }
         }
@@ -82,7 +82,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public Window DesignerWindow()
+        public IWindow DesignerWindow()
         {
             return new Window(IsWrappingNullReference ? null : ComObject.DesignerWindow());
         }
@@ -167,6 +167,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Export(path);
             return path;
         }
+
         public override void Release()
         {
             if (!IsWrappingNullReference)
@@ -183,7 +184,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(VBComponent other)
+        public bool Equals(IVBComponent other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBComponent>);
         }

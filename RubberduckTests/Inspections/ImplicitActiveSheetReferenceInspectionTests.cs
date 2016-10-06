@@ -11,7 +11,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
 using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
