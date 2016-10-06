@@ -1,9 +1,9 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
-    public class CommandBar : SafeComWrapper<Microsoft.Office.Core.CommandBar>, IEquatable<CommandBar>
+    public class CommandBar : SafeComWrapper<Microsoft.Office.Core.CommandBar>, ICommandBar
     {
         public CommandBar(Microsoft.Office.Core.CommandBar comObject) 
             : base(comObject)
@@ -12,89 +12,90 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public int Id
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Id); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Id; }
         }
 
         public bool IsBuiltIn
         {
-            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.BuiltIn); }
+            get { return !IsWrappingNullReference && ComObject.BuiltIn; }
         }
 
-        public CommandBarControls Controls
+        public ICommandBarControls Controls
         {
-            get { return new CommandBarControls(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Controls)); }
+            get { return new CommandBarControls(IsWrappingNullReference ? null : ComObject.Controls); }
         }
 
         public bool IsEnabled
         {
-            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.Enabled); }
+            get { return !IsWrappingNullReference && ComObject.Enabled; }
+            set { ComObject.Enabled = value; }
         }
 
         public int Height
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Height); }
-            set { Invoke(() => ComObject.Height = value); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Height; }
+            set { ComObject.Height = value; }
         }
 
         public int Index
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Index); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Index; }
         }
 
         public int Left
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Left); }
-            set { Invoke(() => ComObject.Left = value); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Left; }
+            set { ComObject.Left = value; }
         }
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Name); }
-            set { Invoke(() => ComObject.Name = value); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Name; }
+            set { ComObject.Name = value; }
         }
 
         public CommandBarPosition Position
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => (CommandBarPosition)ComObject.Position); }
-            set { Invoke(() => ComObject.Position = (Microsoft.Office.Core.MsoBarPosition)value); }
+            get { return IsWrappingNullReference ? 0 : (CommandBarPosition)ComObject.Position; }
+            set { ComObject.Position = (Microsoft.Office.Core.MsoBarPosition)value; }
         }
 
         public int Top
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Top); }
-            set { Invoke(() => ComObject.Top = value); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Top; }
+            set { ComObject.Top = value; }
         }
 
         public CommandBarType Type
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => (CommandBarType)ComObject.Type); }
+            get { return IsWrappingNullReference ? 0 : (CommandBarType)ComObject.Type; }
         }
 
         public bool IsVisible
         {
-            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.Visible); }
-            set { Invoke(() => ComObject.Visible = value); }
+            get { return !IsWrappingNullReference && ComObject.Visible; }
+            set { ComObject.Visible = value; }
         }
 
         public int Width
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Width); }
-            set { Invoke(() => ComObject.Width = value); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Width; }
+            set { ComObject.Width = value; }
         }
 
-        public CommandBarControl FindControl(int id)
+        public ICommandBarControl FindControl(int id)
         {
-            return new CommandBarControl(InvokeResult(() => ComObject.FindControl(Id: id)));
+            return new CommandBarControl(ComObject.FindControl(Id: id));
         }
 
-        public CommandBarControl FindControl(ControlType type, int id)
+        public ICommandBarControl FindControl(ControlType type, int id)
         {
-            return new CommandBarControl(InvokeResult(() => ComObject.FindControl(type, id)));
+            return new CommandBarControl(ComObject.FindControl(type, id));
         }
         
         public void Delete()
         {
-            Invoke(() => ComObject.Delete());
+            ComObject.Delete();
         }
 
         public override void Release()
@@ -117,7 +118,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                 && ReferenceEquals(other.ComObject.Parent, ComObject.Parent));
         }
 
-        public bool Equals(CommandBar other)
+        public bool Equals(ICommandBar other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Office.Core.CommandBar>);
         }

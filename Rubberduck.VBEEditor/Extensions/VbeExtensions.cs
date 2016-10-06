@@ -1,6 +1,6 @@
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.VBEditor.Extensions
@@ -8,7 +8,7 @@ namespace Rubberduck.VBEditor.Extensions
     public static class VbeExtensions
     {
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>
-        public static IHostApplication HostApplication(this VBE vbe)
+        public static IHostApplication HostApplication(this IVBE vbe)
         {
             var project = vbe.ActiveVBProject;
             {
@@ -109,7 +109,7 @@ namespace Rubberduck.VBEditor.Extensions
         }
 
         /// <summary> Returns whether the host supports unit tests.</summary>
-        public static bool HostSupportsUnitTests(this VBE vbe)
+        public static bool HostSupportsUnitTests(this IVBE vbe)
         {
             var project = vbe.ActiveVBProject;
             {

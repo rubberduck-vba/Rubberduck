@@ -1,9 +1,9 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class AddIn : SafeComWrapper<Microsoft.Vbe.Interop.AddIn>, IEquatable<AddIn>
+    public class AddIn : SafeComWrapper<Microsoft.Vbe.Interop.AddIn>, IAddIn
     {
         public AddIn(Microsoft.Vbe.Interop.AddIn comObject) 
             : base(comObject)
@@ -12,61 +12,40 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string ProgId
         {
-            get
-            {
-                return IsWrappingNullReference ? null : InvokeResult(() => ComObject.ProgId);
-            }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.ProgId; }
         }
 
         public string Guid
         {
-            get { return IsWrappingNullReference ? null : InvokeResult(() => ComObject.Guid); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Guid; }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
         public AddIns Collection
         {
-            get { return new AddIns(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Collection)); }
+            get { return new AddIns(IsWrappingNullReference ? null : ComObject.Collection); }
         }
 
         public string Description
         {
-            get
-            {
-                return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Description);
-            }
-            set
-            {
-                Invoke(() => ComObject.Description = value);
-            }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Description; } 
+            set { ComObject.Description = value; }
         }
 
         public bool Connect
         {
-            get
-            {
-                return !IsWrappingNullReference && InvokeResult(() => ComObject.Connect);
-            }
-            set
-            {
-                Invoke(() => ComObject.Connect = value);
-            }
+            get { return !IsWrappingNullReference && ComObject.Connect; }
+            set { ComObject.Connect = value; }
         }
 
         public object Object // definitely leaks a COM object
         {
-            get
-            {
-                return IsWrappingNullReference ? null : InvokeResult(() => ComObject.Object);
-            }
-            set
-            {
-                Invoke(() => ComObject.Object = value);
-            }
+            get { return IsWrappingNullReference ? null : ComObject.Object; }
+            set { ComObject.Object = value; }
         }
 
         public override void Release()
@@ -82,7 +61,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && other.ComObject.ProgId == ProgId && other.ComObject.Guid == Guid);
         }
 
-        public bool Equals(AddIn other)
+        public bool Equals(IAddIn other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.AddIn>);
         }

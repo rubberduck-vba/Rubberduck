@@ -6,6 +6,7 @@ using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Inspections
@@ -16,7 +17,7 @@ namespace Rubberduck.Inspections
 
         public ParameterNotUsedInspectionResult(IInspection inspection, Declaration target,
             ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
-            VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+            IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
             : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
             _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new CodeInspectionQuickFix[]
@@ -36,12 +37,12 @@ namespace Rubberduck.Inspections
 
     public class RemoveUnusedParameterQuickFix : CodeInspectionQuickFix
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
         public RemoveUnusedParameterQuickFix(ParserRuleContext context, QualifiedSelection selection, 
-            VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+            IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
             : base(context, selection, InspectionsUI.RemoveUnusedParameterQuickFix)
         {
             _vbe = vbe;

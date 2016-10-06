@@ -14,6 +14,7 @@ using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -79,7 +80,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectAdded(object sender, IProjectEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode) { return; }
 
             Logger.Debug("Project '{0}' was added.", e.ProjectId);
 
@@ -89,7 +90,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectRemoved(object sender, IProjectEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode) { return; }
             
             Debug.Assert(e.ProjectId != null);
 
@@ -99,7 +100,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectRenamed(object sender, IProjectRenamedEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode) { return; }
 
             if (AllDeclarations.Count == 0)
             {
@@ -116,7 +117,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ComponentAdded(object sender, IComponentEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode) { return; }
 
             if (AllDeclarations.Count == 0)
             {
@@ -129,7 +130,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ComponentRemoved(object sender, IComponentEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode) { return; }
 
             if (AllDeclarations.Count == 0)
             {
@@ -142,7 +143,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ComponentRenamed(object sender, IComponentRenamedEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode()) { return; }
+            if (!e.Project.VBE.IsInDesignMode) { return; }
 
             if (AllDeclarations.Count == 0)
             {
@@ -202,7 +203,7 @@ namespace Rubberduck.Parsing.VBA
         /// were projects with duplicate ID's to clear the old
         /// declarations referencing the project by the old ID.
         /// </summary>
-        public void RefreshProjects(VBE vbe)
+        public void RefreshProjects(IVBE vbe)
         {
             lock (_projects)
             {

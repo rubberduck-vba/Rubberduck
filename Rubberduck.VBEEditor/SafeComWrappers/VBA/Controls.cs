@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -14,12 +15,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
         }
 
         public Control Item(object index)
         {
-            return new Control(InvokeResult(() => (Microsoft.Vbe.Interop.Forms.ControlClass)ComObject.Item(index)));
+            return new Control((Microsoft.Vbe.Interop.Forms.Control)ComObject.Item(index));
         }
 
         IEnumerator<Control> IEnumerable<Control>.GetEnumerator()

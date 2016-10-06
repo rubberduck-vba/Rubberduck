@@ -2,20 +2,16 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
-    public class CommandBarButton : CommandBarControl
+    public class CommandBarButton : CommandBarControl, ICommandBarButton
     {
         public CommandBarButton(Microsoft.Office.Core.CommandBarButton comObject) 
             : base(comObject)
         {
             comObject.Click += comObject_Click;
-        }
-
-        public static CommandBarButton FromCommandBarControl(CommandBarControl control)
-        {
-            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.ComObject);
         }
 
         private Microsoft.Office.Core.CommandBarButton Button
@@ -43,32 +39,32 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public bool IsBuiltInFace
         {
-            get { return !IsWrappingNullReference && InvokeResult(() => Button.BuiltInFace); }
-            set { Invoke(() => Button.BuiltInFace = value); }
+            get { return !IsWrappingNullReference && Button.BuiltInFace; }
+            set { Button.BuiltInFace = value; }
         }
 
         public int FaceId 
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => Button.FaceId); }
-            set { Invoke(() => Button.FaceId = value); }
+            get { return IsWrappingNullReference ? 0 : Button.FaceId; }
+            set { Button.FaceId = value; }
         }
 
         public string ShortcutText
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => Button.ShortcutText); }
-            set { Invoke(() => Button.ShortcutText = value); }
+            get { return IsWrappingNullReference ? string.Empty : Button.ShortcutText; }
+            set { Button.ShortcutText = value; }
         }
 
         public ButtonState State
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => (ButtonState)Button.State); }
-            set { Invoke(() => Button.State = (Microsoft.Office.Core.MsoButtonState)value); }
+            get { return IsWrappingNullReference ? 0 : (ButtonState)Button.State; }
+            set { Button.State = (Microsoft.Office.Core.MsoButtonState)value; }
         }
 
         public ButtonStyle Style
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => (ButtonStyle)Button.Style); }
-            set { Invoke(() => Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value); }
+            get { return IsWrappingNullReference ? 0 : (ButtonStyle)Button.Style; }
+            set { Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value; }
         }
 
         public Image Picture { get; set; }
@@ -76,28 +72,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public void ApplyIcon()
         {
-            Invoke(() =>
+            Button.FaceId = 0;
+            if (Picture == null || Mask == null)
             {
-                Button.FaceId = 0;
-                if (Picture == null || Mask == null)
-                {
-                    return;
-                }
+                return;
+            }
 
-                if (!HasPictureProperty)
+            if (!HasPictureProperty)
+            {
+                using (var image = CreateTransparentImage(Picture, Mask))
                 {
-                    using (var image = CreateTransparentImage(Picture, Mask))
-                    {
-                        Clipboard.SetImage(image);
-                        Button.PasteFace();
-                        Clipboard.Clear();
-                    }
-                    return;
+                    Clipboard.SetImage(image);
+                    Button.PasteFace();
+                    Clipboard.Clear();
                 }
+                return;
+            }
 
-                Button.Picture = AxHostConverter.ImageToPictureDisp(Picture);
-                Button.Mask = AxHostConverter.ImageToPictureDisp(Mask);
-            });
+            Button.Picture = AxHostConverter.ImageToPictureDisp(Picture);
+            Button.Mask = AxHostConverter.ImageToPictureDisp(Mask);
         }
 
         private bool? _hasPictureProperty;

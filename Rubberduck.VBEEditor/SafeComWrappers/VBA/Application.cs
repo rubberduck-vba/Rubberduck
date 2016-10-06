@@ -1,16 +1,16 @@
-using System;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Application : SafeComWrapper<Microsoft.Vbe.Interop.Application>, IEquatable<Application>
+    public class Application : SafeComWrapper<Microsoft.Vbe.Interop.Application>, IApplication
     {
         public Application(Microsoft.Vbe.Interop.Application application)
             :base(application)
         {
         }
 
-        public string Version { get { return IsWrappingNullReference ? null : InvokeResult(() => ComObject.Version); } }
+        public string Version { get { return IsWrappingNullReference ? null : ComObject.Version; } }
         
         public override void Release()
         {
@@ -25,7 +25,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && other.ComObject.Version == Version);
         }
 
-        public bool Equals(Application other)
+        public bool Equals(IApplication other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Application>);
         }

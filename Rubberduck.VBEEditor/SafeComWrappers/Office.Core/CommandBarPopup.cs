@@ -1,15 +1,12 @@
-﻿namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+
+namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
-    public class CommandBarPopup : CommandBarControl
+    public class CommandBarPopup : CommandBarControl, ICommandBarPopup
     {
         public CommandBarPopup(Microsoft.Office.Core.CommandBarPopup comObject) 
             : base(comObject)
         {
-        }
-
-        public static CommandBarPopup FromCommandBarControl(CommandBarControl control)
-        {
-            return new CommandBarPopup((Microsoft.Office.Core.CommandBarPopup)control.ComObject);
         }
 
         private Microsoft.Office.Core.CommandBarPopup Popup
@@ -17,14 +14,14 @@
             get { return (Microsoft.Office.Core.CommandBarPopup)ComObject; }
         }
 
-        public CommandBar CommandBar
+        public ICommandBar CommandBar
         {
-            get { return new CommandBar(IsWrappingNullReference ? null : InvokeResult(() => Popup.CommandBar)); }
+            get { return new CommandBar(IsWrappingNullReference ? null : Popup.CommandBar); }
         }
 
-        public CommandBarControls Controls
+        public ICommandBarControls Controls
         {
-            get { return new CommandBarControls(IsWrappingNullReference ? null : InvokeResult(() => Popup.Controls)); }
+            get { return new CommandBarControls(IsWrappingNullReference ? null : Popup.Controls); }
         }
 
         public override void Release()

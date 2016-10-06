@@ -1,11 +1,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
 {
-    public abstract class SafeComWrapper<T> : ISafeComWrapper, IEquatable<SafeComWrapper<T>> 
-        where T : class 
+    public abstract class SafeComWrapper<T> : IEquatable<SafeComWrapper<T>>, ISafeComWrapper
+        where T : class
     {
         protected SafeComWrapper(T comObject)
         {
@@ -17,38 +17,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         private readonly T _comObject;
         public T ComObject { get { return _comObject; } }
         public bool IsWrappingNullReference { get { return _comObject == null; } }
-
-        protected TResult InvokeResult<TResult>(Func<TResult> member)
-        {
-            try
-            {
-                return member.Invoke();
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-            catch (NullReferenceException exception)
-            {
-                throw new WrapperMethodException(exception);                
-            }
-        }
-
-        protected void Invoke(Action member)
-        {
-            try
-            {
-                member.Invoke();
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-            catch (NullReferenceException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
-        }
+        object ISafeComWrapper.ComObject { get { return ComObject; } }
 
         /// <summary>
         /// <c>true</c> when wrapping a <c>null</c> reference and <see cref="other"/> is either <c>null</c> or wrapping a <c>null</c> reference.

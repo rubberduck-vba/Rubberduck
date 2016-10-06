@@ -4,10 +4,8 @@ using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.Extensions;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -16,12 +14,12 @@ namespace Rubberduck.UI.Command
     /// </summary>
     public class RunAllTestsCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly ITestEngine _engine;
         private readonly TestExplorerModel _model;
         private readonly RubberduckParserState _state;
         
-        public RunAllTestsCommand(VBE vbe, RubberduckParserState state, ITestEngine engine, TestExplorerModel model) 
+        public RunAllTestsCommand(IVBE vbe, RubberduckParserState state, ITestEngine engine, TestExplorerModel model) 
             : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
@@ -34,7 +32,7 @@ namespace Rubberduck.UI.Command
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            return _vbe.IsInDesignMode() && AllowedRunStates.Contains(_state.Status);
+            return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status);
         }
 
         protected override void ExecuteImpl(object parameter)

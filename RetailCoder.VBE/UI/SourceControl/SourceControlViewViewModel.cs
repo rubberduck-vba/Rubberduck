@@ -911,7 +911,7 @@ namespace Rubberduck.UI.SourceControl
                 return false;
             }
 
-            var project = _vbe.ActiveVBProject ?? (_vbe.VBProjects.Count == 1 ? _vbe.VBProjects.Item(1) : null);
+            var project = _vbe.ActiveVBProject ?? (_vbe.VBProjects.Count == 1 ? _vbe.VBProjects[1] : null);
 
             if (project != null)
             {

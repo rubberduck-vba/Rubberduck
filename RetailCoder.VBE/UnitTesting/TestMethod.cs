@@ -9,6 +9,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting
@@ -18,7 +19,7 @@ namespace Rubberduck.UnitTesting
         private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
         private readonly IHostApplication _hostApp;
 
-        public TestMethod(Declaration declaration, VBE vbe)
+        public TestMethod(Declaration declaration, IVBE vbe)
         {
             _declaration = declaration;
             _hostApp = vbe.HostApplication();

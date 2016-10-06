@@ -12,57 +12,57 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Name); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Name; }
         }
 
         public string Guid
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Guid); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Guid; }
         }
 
         public int Major
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Major); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Major; }
         }
 
         public int Minor
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Minor); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Minor; }
         }
 
         public string Description
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Description); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Description; }
         }
 
         public string FullPath
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.FullPath); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.FullPath; }
         }
 
         public bool IsBuiltIn
         {
-            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.BuiltIn); }
+            get { return !IsWrappingNullReference && ComObject.BuiltIn; }
         }
 
         public bool IsBroken
         {
-            get { return IsWrappingNullReference || InvokeResult(() => ComObject.IsBroken); }
+            get { return IsWrappingNullReference || ComObject.IsBroken; }
         }
 
         public ReferenceKind Type
         {
-            get { return IsWrappingNullReference ? 0 : (ReferenceKind)InvokeResult(() => ComObject.Type); }
+            get { return IsWrappingNullReference ? 0 : (ReferenceKind)ComObject.Type; }
         }
 
         public References Collection
         {
-            get { return new References(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Collection)); }
+            get { return new References(IsWrappingNullReference ? null : ComObject.Collection); }
         }
 
         public VBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
         public override void Release()

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
-    public class CommandBarControls : SafeComWrapper<Microsoft.Office.Core.CommandBarControls>, IEnumerable<CommandBarControl>, IEquatable<CommandBarControls>
+    public class CommandBarControls : SafeComWrapper<Microsoft.Office.Core.CommandBarControls>, ICommandBarControls
     {
         public CommandBarControls(Microsoft.Office.Core.CommandBarControls comObject) 
             : base(comObject)
@@ -14,37 +14,37 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
         }
 
-        public CommandBar Parent
+        public ICommandBar Parent
         {
-            get { return new CommandBar(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Parent)); }
+            get { return new CommandBar(IsWrappingNullReference ? null : ComObject.Parent); }
         }
 
-        public CommandBarControl this[object index]
+        public ICommandBarControl this[object index]
         {
-            get { return new CommandBarControl(InvokeResult(() => ComObject[index])); }
+            get { return new CommandBarControl(ComObject[index]); }
         }
 
-        public CommandBarControl Add(ControlType type)
+        public ICommandBarControl Add(ControlType type)
         {
-            return new CommandBarControl(InvokeResult(() => ComObject.Add(type, Temporary:true)));
+            return new CommandBarControl(ComObject.Add(type, Temporary:true));
         }
 
-        public CommandBarControl Add(ControlType type, int before)
+        public ICommandBarControl Add(ControlType type, int before)
         {
-            return new CommandBarControl(InvokeResult(() => ComObject.Add(type, Before:before, Temporary:true)));
+            return new CommandBarControl(ComObject.Add(type, Before:before, Temporary:true));
         }
 
-        IEnumerator<CommandBarControl> IEnumerable<CommandBarControl>.GetEnumerator()
+        IEnumerator<ICommandBarControl> IEnumerable<ICommandBarControl>.GetEnumerator()
         {
             return new ComWrapperEnumerator<CommandBarControl>(ComObject);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<CommandBarControl>)this).GetEnumerator();
+            return ((IEnumerable<ICommandBarControl>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -64,7 +64,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(CommandBarControls other)
+        public bool Equals(ICommandBarControls other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Office.Core.CommandBarControls>);
         }

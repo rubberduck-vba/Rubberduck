@@ -115,22 +115,29 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SafeComWrappers\ISafeComWrapper.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICommandBarButton.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ILinkedWindows.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\Office.Core\AxHostConverter.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SafeComWrappers\Office.Core\ButtonState.cs" />
-    <Compile Include="SafeComWrappers\Office.Core\ButtonStyle.cs" />
+    <Compile Include="SafeComWrappers\ButtonState.cs" />
+    <Compile Include="SafeComWrappers\ButtonStyle.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBar.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBarButton.cs" />
-    <Compile Include="SafeComWrappers\Office.Core\CommandBarButtonClickEventArgs.cs" />
+    <Compile Include="SafeComWrappers\CommandBarButtonClickEventArgs.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBarControl.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBarControls.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBarPopup.cs" />
-    <Compile Include="SafeComWrappers\Office.Core\CommandBarPosition.cs" />
+    <Compile Include="SafeComWrappers\CommandBarPosition.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBars.cs" />
-    <Compile Include="SafeComWrappers\Office.Core\CommandBarType.cs" />
-    <Compile Include="SafeComWrappers\Office.Core\ControlType.cs" />
+    <Compile Include="SafeComWrappers\CommandBarType.cs" />
+    <Compile Include="SafeComWrappers\ControlType.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICommandBar.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICommandBarControl.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICommandBarControls.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICommandBarPopup.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICommandBars.cs" />
     <Compile Include="SafeComWrappers\VBA\AddIn.cs" />
     <Compile Include="SafeComWrappers\VBA\AddIns.cs" />
     <Compile Include="SafeComWrappers\VBA\Application.cs" />
@@ -142,6 +149,13 @@
     <Compile Include="SafeComWrappers\VBA\Control.cs" />
     <Compile Include="SafeComWrappers\VBA\Controls.cs" />
     <Compile Include="SafeComWrappers\VBA\EnvironmentMode.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBE.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IAddIn.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IComCollection.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IAddIns.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IApplication.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IWindow.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IWindows.cs" />
     <Compile Include="SafeComWrappers\VBA\Properties.cs" />
     <Compile Include="SafeComWrappers\VBA\Property.cs" />
     <Compile Include="SafeComWrappers\VBA\ReferenceEventArgs.cs" />

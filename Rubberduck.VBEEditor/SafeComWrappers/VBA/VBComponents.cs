@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -18,47 +19,47 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
         }
 
         public VBProject Parent
         {
-            get { return new VBProject(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Parent)); }
+            get { return new VBProject(IsWrappingNullReference ? null : ComObject.Parent); }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
-        public VBComponent Item(object index)
+        public VBComponent this[object index]
         {
-            return new VBComponent(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Item(index)));
+            get { return new VBComponent(IsWrappingNullReference ? null : ComObject.Item(index)); }
         }
 
         public void Remove(VBComponent item)
         {
-            Invoke(() => ComObject.Remove(item.ComObject));
+            ComObject.Remove(item.ComObject);
         }
 
         public VBComponent Add(ComponentType type)
         {
-            return new VBComponent(InvokeResult(() => ComObject.Add((vbext_ComponentType)type)));
+            return new VBComponent(ComObject.Add((vbext_ComponentType)type));
         }
 
         public VBComponent Import(string path)
         {
-            return new VBComponent(InvokeResult(() => ComObject.Import(path)));
+            return new VBComponent(ComObject.Import(path));
         }
 
         public VBComponent AddCustom(string progId)
         {
-            return new VBComponent(InvokeResult(() => ComObject.AddCustom(progId)));
+            return new VBComponent(ComObject.AddCustom(progId));
         }
 
         public VBComponent AddMTDesigner(int index = 0)
         {
-            return new VBComponent(InvokeResult(() => ComObject.AddMTDesigner(index)));
+            return new VBComponent(ComObject.AddMTDesigner(index));
         }
 
         IEnumerator<VBComponent> IEnumerable<VBComponent>.GetEnumerator()
@@ -77,7 +78,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 for (var i = 1; i <= Count; i++)
                 {
-                    Item(i).Release();
+                    this[i].Release();
                 }
                 Marshal.ReleaseComObject(ComObject);
             }
@@ -111,7 +112,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             var codeLines = codeString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             if (ext == ComponentTypeExtensions.DocClassExtension)
             {
-                var component = Item(name);
+                var component = this[name];
                 component.CodeModule.Clear();
                 component.CodeModule.AddFromString(codeString);
             }
@@ -120,7 +121,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 VBComponent component;
                 try
                 {
-                    component = Item(name);
+                    component = this[name];
                 }
                 catch (IndexOutOfRangeException)
                 {

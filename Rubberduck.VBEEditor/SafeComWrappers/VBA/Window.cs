@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Window : SafeComWrapper<Microsoft.Vbe.Interop.Window>, IEquatable<Window>
+    public class Window : SafeComWrapper<Microsoft.Vbe.Interop.Window>, IWindow
     {
         public Window(Microsoft.Vbe.Interop.Window window)
             : base(window)
@@ -13,7 +14,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int HWnd
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.HWnd); }
+            get { return IsWrappingNullReference ? 0 : ComObject.HWnd; }
         }
 
         public IntPtr Handle()
@@ -21,94 +22,94 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return (IntPtr)HWnd;
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
-
-        public Windows Collection
+        
+        public IWindows Collection
         {
-            get { return new Windows(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Collection)); }
+            get { return new Windows(IsWrappingNullReference ? null : ComObject.Collection); }
         }
 
         public string Caption
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Caption); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Caption; }
         }
 
-        public bool Visible
+        public bool IsVisible
         {
-            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.Visible); }
-            set { Invoke(() => ComObject.Visible = value); }
+            get { return !IsWrappingNullReference && ComObject.Visible; }
+            set { ComObject.Visible = value; }
         }
 
         public int Left
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Left); }
-            set { Invoke(() => ComObject.Left = value); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Left; }
+            set { ComObject.Left = value; }
         }
 
         public int Top
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Top); }
-            set { Invoke(() => ComObject.Top = value); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Top; }
+            set { ComObject.Top = value; }
         }
 
         public int Width
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Width); }
-            set { Invoke(() => ComObject.Width = value); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Width; }
+            set { ComObject.Width = value; }
         }
 
         public int Height
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Height); }
-            set { Invoke(() => ComObject.Height = value); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Height; }
+            set { ComObject.Height = value; }
         }
 
         public WindowState WindowState
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => (WindowState)ComObject.WindowState); }
+            get { return IsWrappingNullReference ? 0 : (WindowState)ComObject.WindowState; }
         }
 
         public WindowKind Type
         {
-            get { return IsWrappingNullReference ? 0 : (WindowKind)InvokeResult(() => ComObject.Type); }
+            get { return IsWrappingNullReference ? 0 : (WindowKind)ComObject.Type; }
         }
 
         public LinkedWindows LinkedWindows
         {
-            get { return new LinkedWindows(IsWrappingNullReference ? null : InvokeResult(() => ComObject.LinkedWindows)); }
+            get { return new LinkedWindows(IsWrappingNullReference ? null : ComObject.LinkedWindows); }
         }
 
-        public Window LinkedWindowFrame
+        public IWindow LinkedWindowFrame
         {
-            get { return new Window(IsWrappingNullReference ? null : InvokeResult(() => ComObject.LinkedWindowFrame)); }
+            get { return new Window(IsWrappingNullReference ? null : ComObject.LinkedWindowFrame); }
         }
 
         public void Close()
         {
-            Invoke(() => ComObject.Close());
+            ComObject.Close();
         }
 
         public void SetFocus()
         {
-            Invoke(() => ComObject.SetFocus());
+            ComObject.SetFocus();
         }
 
         public void SetKind(WindowKind eKind)
         {
-            Invoke(() => ComObject.SetKind((vbext_WindowType)eKind));
+            ComObject.SetKind((vbext_WindowType)eKind);
         }
 
         public void Detach()
         {
-            Invoke(() => ComObject.Detach());
+            ComObject.Detach();
         }
 
         public void Attach(int lWindowHandle)
         {
-            Invoke(() => ComObject.Attach(lWindowHandle));
+            ComObject.Attach(lWindowHandle);
         }
         
         public override void Release()
@@ -128,7 +129,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 && other.ComObject.HWnd == HWnd);
         }
 
-        public bool Equals(Window other)
+        public bool Equals(IWindow other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Window>);
         }

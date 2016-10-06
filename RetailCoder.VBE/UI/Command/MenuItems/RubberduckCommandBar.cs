@@ -3,10 +3,11 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -17,10 +18,10 @@ namespace Rubberduck.UI.Command.MenuItems
         private readonly ISinks _sinks;
         private readonly IShowParserErrorsCommand _command;
 
-        private CommandBarButton _refreshButton;
-        private CommandBarButton _statusButton;
-        private CommandBarButton _selectionButton;
-        private CommandBar _commandbar;
+        private ICommandBarButton _refreshButton;
+        private ICommandBarButton _statusButton;
+        private ICommandBarButton _selectionButton;
+        private ICommandBar _commandbar;
 
         public RubberduckCommandBar(RubberduckParserState state, VBE vbe, ISinks sinks, IShowParserErrorsCommand command)
         {
@@ -155,21 +156,21 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             _commandbar = _vbe.CommandBars.Add("Rubberduck", CommandBarPosition.Top);
 
-            _refreshButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
-            _refreshButton.Picture = Resources.arrow_circle_double;
-            _refreshButton.Mask = Resources.arrow_circle_double_mask;
+            _refreshButton = CommandBarButtonFactory.Create(_commandbar.Controls);
             _refreshButton.Style = ButtonStyle.Icon;
             _refreshButton.Tag = "Refresh";
             _refreshButton.TooltipText = RubberduckUI.RubberduckCommandbarRefreshButtonTooltip;
             _refreshButton.Click += refreshButton_Click;
+            _refreshButton.Picture = Resources.arrow_circle_double;
+            _refreshButton.Mask = Resources.arrow_circle_double_mask;
             _refreshButton.ApplyIcon();
 
-            _statusButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
+            _statusButton = CommandBarButtonFactory.Create(_commandbar.Controls);
             _statusButton.Style = ButtonStyle.Caption;
             _statusButton.Tag = "Status";
             _statusButton.Click += _statusButton_Click;
 
-            _selectionButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
+            _selectionButton = CommandBarButtonFactory.Create(_commandbar.Controls);
             _selectionButton.Style = ButtonStyle.Caption;
             _selectionButton.BeginsGroup = true;
             _selectionButton.IsEnabled = false;

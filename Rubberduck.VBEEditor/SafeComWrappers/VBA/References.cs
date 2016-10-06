@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -19,17 +20,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
         }
 
         public VBProject Parent
         {
-            get { return new VBProject(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Parent)); }
+            get { return new VBProject(IsWrappingNullReference ? null : ComObject.Parent); }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
         private void comObject_ItemRemoved(Microsoft.Vbe.Interop.Reference reference)
@@ -46,24 +47,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             handler.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
         }
 
-        public Reference Item(object index)
+        public Reference this[object index]
         {
-            return new Reference(InvokeResult(() => ComObject.Item(index)));
+            get { return new Reference(ComObject.Item(index)); }
         }
 
         public Reference AddFromGuid(string guid, int major, int minor)
         {
-            return new Reference(InvokeResult(() => ComObject.AddFromGuid(guid, major, minor)));
+            return new Reference(ComObject.AddFromGuid(guid, major, minor));
         }
 
         public Reference AddFromFile(string path)
         {
-            return new Reference(InvokeResult(() => ComObject.AddFromFile(path)));
+            return new Reference(ComObject.AddFromFile(path));
         }
 
         public void Remove(Reference reference)
         {
-            Invoke(() => ComObject.Remove(reference.ComObject));
+            ComObject.Remove(reference.ComObject);
         }
 
         IEnumerator<Reference> IEnumerable<Reference>.GetEnumerator()
@@ -82,7 +83,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 for (var i = 1; i <= Count; i++)
                 {
-                    Item(i).Release();
+                    this[i].Release();
                 }
                 Marshal.ReleaseComObject(ComObject);
             }

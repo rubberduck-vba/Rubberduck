@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -14,28 +15,28 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
         }
 
-        public VBE Parent
+        public IVBE Parent
         {
-            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Parent)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.Parent); }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
         public CodePane Current 
         { 
-            get { return new CodePane(InvokeResult(() => ComObject.Current)); }
-            set { Invoke(() => ComObject.Current = value.ComObject);}
+            get { return new CodePane(IsWrappingNullReference ? null : ComObject.Current); }
+            set { ComObject.Current = value.ComObject;}
         }
 
         public CodePane Item(object index)
         {
-            return new CodePane(InvokeResult(() => ComObject.Item(index)));
+            return new CodePane(ComObject.Item(index));
         }
 
         IEnumerator<CodePane> IEnumerable<CodePane>.GetEnumerator()

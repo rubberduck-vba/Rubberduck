@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
+﻿namespace Rubberduck.VBEditor.SafeComWrappers
 {
     public enum ButtonState
     {

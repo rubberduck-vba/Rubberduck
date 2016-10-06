@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class ImplementationsListDockablePresenter : DockableToolwindowPresenter
     {
-        public ImplementationsListDockablePresenter(VBE vbe, AddIn addin, SimpleListControl control, IEnumerable<Declaration> implementations)
+        public ImplementationsListDockablePresenter(IVBE vbe, IAddIn addin, SimpleListControl control, IEnumerable<Declaration> implementations)
             : base(vbe, addin, control)
         {
             BindTarget(implementations);
@@ -24,9 +22,9 @@ namespace Rubberduck.UI.IdentifierReferences
             Control.Navigate += ControlNavigate;
         }
 
-        public static void OnNavigateImplementation(VBE vbe, Declaration implementation)
+        public static void OnNavigateImplementation(Declaration implementation)
         {
-            VBE.SetSelection(implementation.QualifiedName.QualifiedModuleName.Project, implementation.Selection, implementation.QualifiedName.QualifiedModuleName.Component.Name);
+            implementation.QualifiedName.QualifiedModuleName.Component.CodeModule.CodePane.SetSelection(implementation.Selection);
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)
@@ -34,7 +32,7 @@ namespace Rubberduck.UI.IdentifierReferences
             var implementation = e.SelectedItem as ImplementationListItem;
             if (implementation != null)
             {
-                OnNavigateImplementation(VBE, implementation.GetDeclaration());
+                OnNavigateImplementation(implementation.GetDeclaration());
             }
         }
 

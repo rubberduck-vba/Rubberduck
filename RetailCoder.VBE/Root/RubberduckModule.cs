@@ -31,7 +31,7 @@ using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Root
@@ -291,7 +291,7 @@ namespace Rubberduck.Root
             BindParentMenuItem<ProjectWindowContextParentMenu>(controls, beforeIndex, items);
         }
 
-        private void BindParentMenuItem<TParentMenu>(CommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
+        private void BindParentMenuItem<TParentMenu>(ICommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
         {
             Bind<IParentMenuItem>().To(typeof(TParentMenu))
                 .WhenInjectedInto<IAppMenu>()
@@ -301,11 +301,12 @@ namespace Rubberduck.Root
                 .WithPropertyValue("Parent", parent);
         }
 
-        private static int FindRubberduckMenuInsertionIndex(CommandBarControls controls, int beforeId)
+        private static int FindRubberduckMenuInsertionIndex(ICommandBarControls controls, int beforeId)
         {
             for (var i = 1; i <= controls.Count; i++)
             {
-                if (controls[i].IsBuiltIn && controls[i].Id == beforeId)
+                var item = controls[i];
+                if (item.IsBuiltIn && item.Id == beforeId)
                 {
                     return i;
                 }

@@ -1,13 +1,13 @@
-using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -17,11 +17,11 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AddTestModuleCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configLoader;
 
-        public AddTestModuleCommand(VBE vbe, RubberduckParserState state, IGeneralConfigService configLoader)
+        public AddTestModuleCommand(IVBE vbe, RubberduckParserState state, IGeneralConfigService configLoader)
             : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
@@ -95,7 +95,7 @@ namespace Rubberduck.UI.Command
             var projects = _vbe.VBProjects;
             {
                 return projects.Count == 1 
-                    ? projects.Item(1) 
+                    ? projects[1]
                     : new VBProject(null);
             }
         }

@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.VBEHost
@@ -26,7 +27,7 @@ namespace Rubberduck.VBEditor.VBEHost
             }
         }
 
-        protected HostApplicationBase(VBE vbe, string applicationName)
+        protected HostApplicationBase(IVBE vbe, string applicationName)
         {
             _applicationName = applicationName;
 

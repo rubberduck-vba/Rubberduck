@@ -1,4 +1,5 @@
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.VBEHost
@@ -6,7 +7,7 @@ namespace Rubberduck.VBEditor.VBEHost
     public class CorelDRAWApp : HostApplicationBase<Corel.GraphicsSuite.Interop.CorelDRAW.Application>
     {
         public CorelDRAWApp() : base("CorelDRAW") { }
-        public CorelDRAWApp(VBE vbe) : base(vbe, "CorelDRAW") { }
+        public CorelDRAWApp(IVBE vbe) : base(vbe, "CorelDRAW") { }
 
 		//Function RunMacro(ModuleName As String, MacroName As String, Parameter() As Variant) As Variant
 		//Where ModuleName appears to mean ProjectName, and MacroName has to be provided as "ModuleName.ProcName"

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -14,38 +15,38 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Name); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Name; }
         }
 
         public int IndexCount
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.NumIndices); }
+            get { return IsWrappingNullReference ? 0 : ComObject.NumIndices; }
         }
 
         public Properties Collection
         {
-            get { return new Properties(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Collection)); }
+            get { return new Properties(IsWrappingNullReference ? null : ComObject.Collection); }
         }
 
         public Properties Parent
         {
-            get { return new Properties(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Parent)); }
+            get { return new Properties(IsWrappingNullReference ? null : ComObject.Parent); }
         }
 
-        public Application Application
+        public IApplication Application
         {
-            get { return new Application(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Application)); }
+            get { return new Application(IsWrappingNullReference ? null : ComObject.Application); }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
         public object Value
         {
-            get { return IsWrappingNullReference ? null : InvokeResult(() => ComObject.Value); }
-            set { Invoke(() => ComObject.Value = value); }
+            get { return IsWrappingNullReference ? null : ComObject.Value; }
+            set { ComObject.Value = value; }
         }
 
         /// <summary>
@@ -53,12 +54,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// </summary>
         public object GetIndexedValue(object index1, object index2 = null, object index3 = null, object index4 = null)
         {
-            return InvokeResult(() => ComObject.get_IndexedValue(index1, index2, index3, index4));
+            return ComObject.get_IndexedValue(index1, index2, index3, index4);
         }
 
         public void SetIndexedValue(object value, object index1, object index2 = null, object index3 = null, object index4 = null)
         {
-            Invoke(() => ComObject.set_IndexedValue(index1, index2, index3, index4, value));
+            ComObject.set_IndexedValue(index1, index2, index3, index4, value);
         }
 
         /// <summary>
@@ -66,8 +67,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// </summary>
         public object Object
         {
-            get { return IsWrappingNullReference ? null : InvokeResult(() => ComObject.Object); }
-            set { Invoke(() => ComObject.Object = value); }
+            get { return IsWrappingNullReference ? null : ComObject.Object; }
+            set { ComObject.Object = value; }
         }
 
         public override void Release()

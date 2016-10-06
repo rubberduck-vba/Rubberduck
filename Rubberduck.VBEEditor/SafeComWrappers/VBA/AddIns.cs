@@ -1,11 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class AddIns : SafeComWrapper<Microsoft.Vbe.Interop.Addins>, IEnumerable<AddIn>, IEquatable<AddIns>
+    public class AddIns : SafeComWrapper<Microsoft.Vbe.Interop.Addins>, IAddIns
     {
         public AddIns(Microsoft.Vbe.Interop.Addins comObject) : 
             base(comObject)
@@ -14,27 +14,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
         }
 
         public object Parent // todo: verify if this could be 'public Application Parent' instead
         {
-            get { return IsWrappingNullReference ? null : InvokeResult(() => ComObject.Parent); }
+            get { return IsWrappingNullReference ? null : ComObject.Parent; }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return IsWrappingNullReference ? null : new VBE(InvokeResult(() => ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
-        public AddIn Item(object index)
+        public IAddIn this[object index]
         {
-            return new AddIn(InvokeResult(() => ComObject.Item(index)));
+            get { return new AddIn(IsWrappingNullReference ? null : ComObject.Item(index)); }
         }
 
         public void Update()
         {
-            Invoke(() => ComObject.Update());
+            ComObject.Update();
         }
 
         public override void Release()
@@ -43,7 +43,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 for (var i = 1; i <= Count; i++)
                 {
-                    Item(i).Release();
+                    this[i].Release();
                 }
                 Marshal.ReleaseComObject(ComObject);
             }
@@ -54,7 +54,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject.Parent, Parent));
         }
 
-        public bool Equals(AddIns other)
+        public bool Equals(IAddIns other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Addins>);
         }
@@ -66,12 +66,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return InvokeResult(() => ComObject.GetEnumerator());
+            return ComObject.GetEnumerator();
         }
 
-        IEnumerator<AddIn> IEnumerable<AddIn>.GetEnumerator()
+        IEnumerator<IAddIn> IEnumerable<IAddIn>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<AddIn>(ComObject);
+            return new ComWrapperEnumerator<IAddIn>(ComObject);
         }
     }
 }

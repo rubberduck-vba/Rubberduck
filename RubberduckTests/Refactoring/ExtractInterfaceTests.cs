@@ -79,8 +79,8 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedInterfaceCode, project.VBComponents.Item(1).CodeModule.Content());
-            Assert.AreEqual(expectedCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(expectedInterfaceCode, project.VBComponents[1].CodeModule.Content());
+            Assert.AreEqual(expectedCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -194,8 +194,8 @@ End Property
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedInterfaceCode, project.VBComponents.Item(1).CodeModule.Content());
-            Assert.AreEqual(expectedCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(expectedInterfaceCode, project.VBComponents[1].CodeModule.Content());
+            Assert.AreEqual(expectedCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -291,8 +291,8 @@ End Function
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedInterfaceCode, project.VBComponents.Item(1).CodeModule.Content());
-            Assert.AreEqual(expectedCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(expectedInterfaceCode, project.VBComponents[1].CodeModule.Content());
+            Assert.AreEqual(expectedCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -358,7 +358,7 @@ End Sub";
 
             //Assert
             Assert.AreEqual(1, project.VBComponents.Count());
-            Assert.AreEqual(inputCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(inputCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -400,7 +400,7 @@ End Sub";
 
             //Assert
             Assert.AreEqual(1, project.VBComponents.Count());
-            Assert.AreEqual(inputCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(inputCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -458,8 +458,8 @@ End Sub
             refactoring.Refactor(parser.State.AllUserDeclarations.Single(s => s.DeclarationType == DeclarationType.ClassModule));
 
             //Assert
-            Assert.AreEqual(expectedInterfaceCode, project.VBComponents.Item(1).CodeModule.Content());
-            Assert.AreEqual(expectedCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(expectedInterfaceCode, project.VBComponents[1].CodeModule.Content());
+            Assert.AreEqual(expectedCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]

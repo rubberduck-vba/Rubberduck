@@ -1,10 +1,11 @@
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class LinkedWindows : SafeComWrapper<Microsoft.Vbe.Interop.LinkedWindows>, IEnumerable, IEquatable<LinkedWindows>
+    public class LinkedWindows : SafeComWrapper<Microsoft.Vbe.Interop.LinkedWindows>, ILinkedWindows
     {
         public LinkedWindows(Microsoft.Vbe.Interop.LinkedWindows linkedWindows)
             : base(linkedWindows)
@@ -13,37 +14,42 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
-        public Window Parent
+        public IWindow Parent
         {
-            get { return new Window(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Parent)); }
+            get { return new Window(IsWrappingNullReference ? null : ComObject.Parent); }
         }
 
-        public Window Item(object index)
+        public IWindow this[object index]
         {
-            return new Window(InvokeResult(() => ComObject.Item(index)));
+            get { return new Window(ComObject.Item(index)); }
         }
 
-        public void Remove(Window window)
+        public void Remove(IWindow window)
         {
-            Invoke(() => ComObject.Remove(window.ComObject));
+            ComObject.Remove(((Window)window).ComObject);
         }
 
-        public void Add(Window window)
+        public void Add(IWindow window)
         {
-            Invoke(() => ComObject.Add(window.ComObject));
+            ComObject.Add(((Window)window).ComObject);
         }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return InvokeResult(() => ComObject.GetEnumerator());
+            return ComObject.GetEnumerator();
+        }
+
+        IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()
+        {
+            return new ComWrapperEnumerator<IWindow>(ComObject);
         }
 
         public override void Release()
@@ -52,18 +58,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 for (var i = 1; i <= Count; i++)
                 {
-                    Item(i).Release();
+                    this[i].Release();
                 }
                 Marshal.ReleaseComObject(ComObject);
             }
         }
-
+        
         public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.LinkedWindows> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(LinkedWindows other)
+        public bool Equals(ILinkedWindows other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.LinkedWindows>);
         }

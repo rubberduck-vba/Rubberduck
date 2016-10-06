@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -12,65 +13,55 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public CodePanes Collection
         {
-            get { return new CodePanes(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Collection)); }
+            get { return new CodePanes(IsWrappingNullReference ? null : ComObject.Collection); }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
         public Window Window
         {
-            get { return new Window(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Window)); }
+            get { return new Window(IsWrappingNullReference ? null : ComObject.Window); }
         }
 
         public int TopLine
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.TopLine); }
-            set { Invoke(() => ComObject.TopLine = value); }
+            get { return IsWrappingNullReference ? 0 : ComObject.TopLine; }
+            set { ComObject.TopLine = value; }
         }
 
         public int CountOfVisibleLines
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.CountOfVisibleLines); }
+            get { return IsWrappingNullReference ? 0 : ComObject.CountOfVisibleLines; }
         }
 
         public CodeModule CodeModule
         {
-            get { return new CodeModule(InvokeResult(() => IsWrappingNullReference ? null : ComObject.CodeModule)); }
+            get { return new CodeModule(IsWrappingNullReference ? null : ComObject.CodeModule); }
         }
 
         public CodePaneView CodePaneView
         {
-            get { return IsWrappingNullReference ? 0 : (CodePaneView)InvokeResult(() => ComObject.CodePaneView); }
+            get { return IsWrappingNullReference ? 0 : (CodePaneView)ComObject.CodePaneView; }
         }
 
         public Selection GetSelection()
         {
-            try
-            {
-                return InvokeResult(() =>
-                {
-                    int startLine;
-                    int startColumn;
-                    int endLine;
-                    int endColumn;
-                    ComObject.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+            int startLine;
+            int startColumn;
+            int endLine;
+            int endColumn;
+            ComObject.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
 
-                    if (endLine > startLine && endColumn == 1)
-                    {
-                        endLine -= 1;
-                        endColumn = CodeModule.GetLines(endLine, 1).Length;
-                    }
-
-                    return new Selection(startLine, startColumn, endLine, endColumn);
-                });
-            }
-            catch (COMException exception)
+            if (endLine > startLine && endColumn == 1)
             {
-                throw new WrapperMethodException(exception);
+                endLine -= 1;
+                endColumn = CodeModule.GetLines(endLine, 1).Length;
             }
+
+            return new Selection(startLine, startColumn, endLine, endColumn);
         }
 
         public QualifiedSelection? GetQualifiedSelection()
@@ -93,7 +84,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            Invoke(() => ComObject.SetSelection(startLine, startColumn, endLine, endColumn));
+            ComObject.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
         }
 
@@ -122,7 +113,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Show()
         {
-            Invoke(() => ComObject.Show());
+            ComObject.Show();
         }
 
         public override void Release()

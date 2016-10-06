@@ -1,14 +1,12 @@
-using Microsoft.Office.Interop.Word;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
     public class WordApp : HostApplicationBase<Microsoft.Office.Interop.Word.Application>
     {
         public WordApp() : base("Word") { }
-        public WordApp(VBE vbe) : base(vbe, "Word") { }
+        public WordApp(IVBE vbe) : base(vbe, "Word") { }
 
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
@@ -20,8 +18,10 @@ namespace Rubberduck.VBEditor.VBEHost
             {
                 Application.Run(call);
             }
-            //TODO - Let TestEngine know that the method failed
-            catch { };
+            catch 
+            { 
+                //TODO - Let TestEngine know that the method failed 
+            }
         }
 
         protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
@@ -36,7 +36,7 @@ namespace Rubberduck.VBEditor.VBEHost
             // Check the project's document or a document referring to a project's template is active.
             var activeDoc = Application.ActiveDocument;
             //var template = activeDoc.get_AttachedTemplate();
-            var targetDoc = Application.Documents.Cast<Document>()
+            var targetDoc = Application.Documents.Cast<Microsoft.Office.Interop.Word.Document>()
                     .FirstOrDefault(doc => doc.Name == qualifiedMemberName.QualifiedModuleName.ProjectDisplayName
                                         || doc.get_AttachedTemplate().Name == qualifiedMemberName.QualifiedModuleName.ProjectDisplayName);
             if (activeDoc != targetDoc && targetDoc != null) 

@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.Command
@@ -16,10 +17,10 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AddTestMethodExpectedErrorCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public AddTestMethodExpectedErrorCommand(VBE vbe, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
+        public AddTestMethodExpectedErrorCommand(IVBE vbe, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;

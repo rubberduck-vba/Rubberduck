@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -12,98 +13,98 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public Application Application
+        public IApplication Application
         {
-            get { return new Application(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Application)); }
+            get { return new Application(IsWrappingNullReference ? null : ComObject.Application); }
         }
 
-        public Application Parent
+        public IApplication Parent
         {
-            get { return new Application(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Parent)); }
+            get { return new Application(IsWrappingNullReference ? null : ComObject.Parent); }
         }
 
         public string HelpFile
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.HelpFile); }
-            set { Invoke(() => ComObject.HelpFile = value); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.HelpFile; }
+            set { ComObject.HelpFile = value; }
         }
 
         public int HelpContextID
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.HelpContextID); }
-            set  { Invoke(() => ComObject.HelpContextID = value); }
+            get { return IsWrappingNullReference ? 0 : ComObject.HelpContextID; }
+            set { ComObject.HelpContextID = value; }
         }
 
         public string Description 
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Description); }
-            set { Invoke(() => ComObject.Description = value); } 
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Description; }
+            set { ComObject.Description = value; } 
         }
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Name); }
-            set { Invoke(() => ComObject.Name = value); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Name; }
+            set { ComObject.Name = value; }
         }
 
         public EnvironmentMode Mode
         {
-            get { return IsWrappingNullReference ? 0 : (EnvironmentMode)InvokeResult(() => ComObject.Mode); }
+            get { return IsWrappingNullReference ? 0 : (EnvironmentMode)ComObject.Mode; }
         }
 
         public VBProjects Collection
         {
-            get { return new VBProjects(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Collection)); }
+            get { return new VBProjects(IsWrappingNullReference ? null : ComObject.Collection); }
         }
 
         public References References
         {
-            get { return new References(IsWrappingNullReference ? null : InvokeResult(() => ComObject.References)); }
+            get { return new References(IsWrappingNullReference ? null : ComObject.References); }
         }
 
         public VBComponents VBComponents
         {
-            get { return new VBComponents(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBComponents)); }
+            get { return new VBComponents(IsWrappingNullReference ? null : ComObject.VBComponents); }
         }
 
         public ProjectProtection Protection
         {
-            get { return IsWrappingNullReference ? 0 : (ProjectProtection)InvokeResult(() => ComObject.Protection); }
+            get { return IsWrappingNullReference ? 0 : (ProjectProtection)ComObject.Protection; }
         }
 
         public bool Saved
         {
-            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.Saved); }
+            get { return !IsWrappingNullReference && ComObject.Saved; }
         }
 
         public ProjectType Type
         {
-            get { return IsWrappingNullReference ? 0 : (ProjectType)InvokeResult(() => ComObject.Type); }
+            get { return IsWrappingNullReference ? 0 : (ProjectType)ComObject.Type; }
         }
 
         public string FileName
         {
-            get { return IsWrappingNullReference ? String.Empty : InvokeResult(() => ComObject.FileName); }
+            get { return IsWrappingNullReference ? String.Empty : ComObject.FileName; }
         }
 
         public string BuildFileName
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.BuildFileName); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.BuildFileName; }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
         public void SaveAs(string fileName)
         {
-            Invoke(() => ComObject.SaveAs(fileName));
+            ComObject.SaveAs(fileName);
         }
 
         public void MakeCompiledFile()
         {
-            Invoke(() => ComObject.MakeCompiledFile());
+            ComObject.MakeCompiledFile();
         }
 
         public override void Release()

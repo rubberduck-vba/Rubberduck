@@ -1,12 +1,11 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
     public class ExcelApp : HostApplicationBase<Microsoft.Office.Interop.Excel.Application>
     {
         public ExcelApp() : base("Excel") { }
-        public ExcelApp(VBE vbe) : base(vbe, "Excel") { }
+        public ExcelApp(IVBE vbe) : base(vbe, "Excel") { }
 
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {

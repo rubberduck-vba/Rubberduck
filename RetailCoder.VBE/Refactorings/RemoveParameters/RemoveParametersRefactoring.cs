@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -10,19 +9,18 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersRefactoring : IRefactoring
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
         private RemoveParametersModel _model;
 
-        public RemoveParametersRefactoring(VBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
+        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
         {
             _vbe = vbe;
             _factory = factory;

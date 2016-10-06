@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -12,8 +13,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Name
         {
-            get { return InvokeResult(() => IsWrappingNullReference ? string.Empty : ComObject.Name); }
-            set { Invoke(() => ComObject.Name = value); }
+            get { return IsWrappingNullReference ? string.Empty : ComObject.Name; }
+            set { ComObject.Name = value; }
         }
 
         public override void Release()

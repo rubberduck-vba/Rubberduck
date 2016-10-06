@@ -1,13 +1,12 @@
 using Interop.SldWorks.Types;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
     public class SolidWorksApp : HostApplicationBase<Interop.SldWorks.Extensibility.Application>
     {
         public SolidWorksApp() : base("SolidWorks") { }
-        public SolidWorksApp(VBE vbe) : base(vbe, "SolidWorks") { }
+        public SolidWorksApp(IVBE vbe) : base(vbe, "SolidWorks") { }
 		
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {

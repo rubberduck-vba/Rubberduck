@@ -11,7 +11,7 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using System.IO;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
 
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
@@ -38,7 +38,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly bool _isTestScope;
 
         public RubberduckParser(
-            VBE vbe,
+            IVBE vbe,
             RubberduckParserState state,
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
@@ -83,7 +83,7 @@ namespace Rubberduck.Parsing.VBA
             var components = new List<VBComponent>();
             foreach (var project in State.Projects)
             {
-                foreach (VBComponent component in project.VBComponents)
+                foreach (var component in project.VBComponents)
                 {
                     components.Add(component);
                 }
@@ -372,7 +372,7 @@ namespace Rubberduck.Parsing.VBA
                     // reference resolver needs this to know which declaration to prioritize when a global identifier exists in multiple libraries.
                     for (var priority = 1; priority <= references.Count; priority++)
                     {
-                        var reference = references.Item(priority);
+                        var reference = references[priority];
                         var referencedProjectId = GetReferenceProjectId(reference, projects);
 
                         ReferencePriorityMap map = null;

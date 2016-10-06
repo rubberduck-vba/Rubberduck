@@ -4,26 +4,50 @@ using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using NLog;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
+    internal static class CommandBarPopupFactory
+    {
+        public static ICommandBarPopup Create<TParent>(TParent parent, int? beforeIndex = null)
+            where TParent : ICommandBarControls
+        {
+            return (beforeIndex.HasValue
+                ? parent.Add(ControlType.Popup, beforeIndex.Value)
+                : parent.Add(ControlType.Popup)) as ICommandBarPopup;
+        }
+    }
+
+    internal static class CommandBarButtonFactory
+    {
+        public static ICommandBarButton Create<TParent>(TParent parent, int? beforeIndex = null)
+            where TParent : ICommandBarControls
+        {
+            return (beforeIndex.HasValue
+                ? parent.Add(ControlType.Button, beforeIndex.Value)
+                : parent.Add(ControlType.Button)) as ICommandBarButton;
+        }
+    }
+
     public abstract class ParentMenuItemBase : IParentMenuItem
     {
         private readonly string _key;
         private readonly int? _beforeIndex;
-        private readonly IDictionary<IMenuItem, CommandBarControl> _items;
+        private readonly IDictionary<IMenuItem, ICommandBarControl> _items;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         protected ParentMenuItemBase(string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
         {
             _key = key;
             _beforeIndex = beforeIndex;
-            _items = items.ToDictionary(item => item, item => null as CommandBarControl);
+            _items = items.ToDictionary(item => item, item => null as ICommandBarControl);
         }
 
-        public CommandBarControls Parent { get; set; }
-        public CommandBarPopup Item { get; private set; }
+        public ICommandBarControls Parent { get; set; }
+        public ICommandBarPopup Item { get; private set; }
 
         public string Key { get { return Item == null ? null : Item.Tag; } }
 
@@ -46,7 +70,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 var command = kvp.Key as CommandMenuItemBase;
                 if (command != null)
                 {
-                    ((CommandBarButton)kvp.Value).ShortcutText = command.Command.ShortcutText;
+                    ((ICommandBarButton)kvp.Value).ShortcutText = command.Command.ShortcutText;
                 }
 
                 var childMenu = kvp.Key as ParentMenuItemBase;
@@ -65,8 +89,9 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             }
 
             Item = _beforeIndex.HasValue
-                ? CommandBarPopup.FromCommandBarControl(Parent.Add(ControlType.Popup, _beforeIndex.Value))
-                : CommandBarPopup.FromCommandBarControl(Parent.Add(ControlType.Popup));
+                ? CommandBarPopupFactory.Create(Parent, _beforeIndex.Value)
+                : CommandBarPopupFactory.Create(Parent);
+
             Item.Tag = _key;
 
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
@@ -111,7 +136,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             }
         }
 
-        private CommandBarControl InitializeChildControl(IParentMenuItem item)
+        private ICommandBarControl InitializeChildControl(IParentMenuItem item)
         {
             if (item == null)
             {
@@ -123,14 +148,14 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             return item.Item;
         }
 
-        private CommandBarControl InitializeChildControl(ICommandMenuItem item)
+        private ICommandBarControl InitializeChildControl(ICommandMenuItem item)
         {
             if (item == null)
             {
                 return null;
             }
 
-            var child = CommandBarButton.FromCommandBarControl(Item.Controls.Add(ControlType.Button));
+            var child = CommandBarButtonFactory.Create(Item.Controls);
             child.Picture = item.Image;
             child.Mask = item.Mask;
             child.ApplyIcon();
@@ -138,7 +163,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             child.BeginsGroup = item.BeginGroup;
             child.Tag = item.GetType().FullName;
             child.Caption = item.Caption.Invoke();
-            var command = item.Command as CommandBase; // todo: add 'ShortcutText' to a new 'interface CommandBase : System.Windows.Input.CommandBase'
+            var command = item.Command; // todo: add 'ShortcutText' to a new 'interface CommandBase : System.Windows.Input.CommandBase'
             child.ShortcutText = command != null
                 ? command.ShortcutText
                 : string.Empty;

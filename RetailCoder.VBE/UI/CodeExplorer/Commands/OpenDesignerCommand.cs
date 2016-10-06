@@ -37,7 +37,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 if (!designer.IsWrappingNullReference)
                 {
-                    designer.Visible = true;
+                    designer.IsVisible = true;
                 }
             }
         }
