@@ -4,6 +4,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -14,13 +15,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
     /// </summary>
     public class ExtractMethodRefactoring : IRefactoring
     {
-        private readonly CodeModule _codeModule;
+        private readonly ICodeModule _codeModule;
         private Func<QualifiedSelection?, string, IExtractMethodModel> _createMethodModel;
         private IExtractMethodExtraction _extraction;
-        private Action<Object> _onParseRequest;
+        private Action<object> _onParseRequest;
         
         public ExtractMethodRefactoring(
-            CodeModule codeModule,
+            ICodeModule codeModule,
             Action<Object> onParseRequest,
             Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
             IExtractMethodExtraction extraction)

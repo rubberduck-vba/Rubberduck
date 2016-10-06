@@ -3,7 +3,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections
 {
@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections
 
         }
 
-        private void FixTypeHintUsage(string hint, CodeModule module, Selection selection, bool isDeclaration = false)
+        private void FixTypeHintUsage(string hint, ICodeModule module, Selection selection, bool isDeclaration = false)
         {
             var line = module.GetLines(selection.StartLine, 1);
 

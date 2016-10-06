@@ -18,7 +18,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? 0 : (ComponentType)ComObject.Type; }
         }
 
-        public CodeModule CodeModule
+        public ICodeModule CodeModule
         {
             get { return new CodeModule(IsWrappingNullReference ? null : ComObject.CodeModule); }
         }

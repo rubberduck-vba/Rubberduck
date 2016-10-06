@@ -21,7 +21,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
-        public Window Window
+        public IWindow Window
         {
             get { return new Window(IsWrappingNullReference ? null : ComObject.Window); }
         }
@@ -36,8 +36,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get { return IsWrappingNullReference ? 0 : ComObject.CountOfVisibleLines; }
         }
-
-        public CodeModule CodeModule
+        
+        public ICodeModule CodeModule
         {
             get { return new CodeModule(IsWrappingNullReference ? null : ComObject.CodeModule); }
         }

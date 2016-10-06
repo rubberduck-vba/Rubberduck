@@ -138,7 +138,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private void RemoveCallParameter(VBAParser.ArgumentListContext paramList, CodeModule module)
+        private void RemoveCallParameter(VBAParser.ArgumentListContext paramList, ICodeModule module)
         {
             var paramNames = new List<string>();
             if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
@@ -352,7 +352,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private void RemoveSignatureParameters(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
+        private void RemoveSignatureParameters(Declaration target, VBAParser.ArgListContext paramList, ICodeModule module)
         {
             // property set/let have one more parameter than is listed in the getter parameters
             var nonRemovedParamNames = paramList.arg().Where((a, s) => s >= _model.Parameters.Count || !_model.Parameters[s].IsRemoved).Select(s => s.GetText());

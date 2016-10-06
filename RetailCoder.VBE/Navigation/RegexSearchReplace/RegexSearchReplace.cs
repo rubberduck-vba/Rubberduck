@@ -9,6 +9,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {
@@ -78,7 +79,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
             }
         }
 
-        private IEnumerable<RegexSearchResult> GetResultsFromModule(CodeModule module, string searchPattern)
+        private IEnumerable<RegexSearchResult> GetResultsFromModule(ICodeModule module, string searchPattern)
         {
             var results = new List<RegexSearchResult>();
 

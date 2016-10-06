@@ -1,18 +1,17 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor
 {
     public class CodeModuleSelection
     {
-        public CodeModuleSelection(CodeModule codeModule, Selection selection)
+        public CodeModuleSelection(ICodeModule codeModule, Selection selection)
         {
             _codeModule = codeModule;
             _selection = selection;
         }
 
-        private readonly CodeModule _codeModule;
-        public CodeModule CodeModule {get { return _codeModule; } }
+        private readonly ICodeModule _codeModule;
+        public ICodeModule CodeModule {get { return _codeModule; } }
 
         private readonly Selection _selection;
         public Selection Selection { get { return _selection; } }

@@ -11,5 +11,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         object Object { get; set; }
 
         IVBE VBE { get; }
+        IAddIns Collection { get; }
     }
 }

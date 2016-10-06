@@ -77,7 +77,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? 0 : (WindowKind)ComObject.Type; }
         }
 
-        public LinkedWindows LinkedWindows
+        public ILinkedWindows LinkedWindows
         {
             get { return new LinkedWindows(IsWrappingNullReference ? null : ComObject.LinkedWindows); }
         }

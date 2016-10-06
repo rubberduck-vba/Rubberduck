@@ -156,7 +156,7 @@
     <Compile Include="SafeComWrappers\Abstract\IApplication.cs" />
     <Compile Include="SafeComWrappers\Abstract\IWindow.cs" />
     <Compile Include="SafeComWrappers\Abstract\IWindows.cs" />
-    <Compile Include="SafeComWrappers\VBA\ICodeModule.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICodeModule.cs" />
     <Compile Include="SafeComWrappers\VBA\Properties.cs" />
     <Compile Include="SafeComWrappers\VBA\Property.cs" />
     <Compile Include="SafeComWrappers\VBA\ReferenceEventArgs.cs" />

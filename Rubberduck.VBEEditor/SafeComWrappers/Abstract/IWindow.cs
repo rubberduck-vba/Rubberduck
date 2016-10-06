@@ -17,7 +17,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IVBE VBE { get; }
         IWindow LinkedWindowFrame { get; }
         IWindows Collection { get; }
-        LinkedWindows LinkedWindows { get; }
+        ILinkedWindows LinkedWindows { get; }
         IntPtr Handle();
         void Close();
         void SetFocus();

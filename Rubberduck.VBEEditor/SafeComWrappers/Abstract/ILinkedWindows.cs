@@ -7,5 +7,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IVBE VBE { get; }
         IWindow Parent { get; }
         void Remove(IWindow window);
+        void Add(IWindow window);
     }
 }

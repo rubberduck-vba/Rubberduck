@@ -98,7 +98,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        private void SetFieldToPrivate(CodeModule module)
+        private void SetFieldToPrivate(ICodeModule module)
         {
             if (_model.TargetDeclaration.Accessibility == Accessibility.Private)
             {

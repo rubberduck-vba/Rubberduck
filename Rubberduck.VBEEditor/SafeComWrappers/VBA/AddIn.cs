@@ -25,7 +25,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
-        public AddIns Collection
+        public IAddIns Collection
         {
             get { return new AddIns(IsWrappingNullReference ? null : ComObject.Collection); }
         }

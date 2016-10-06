@@ -496,7 +496,7 @@ namespace Rubberduck.Refactorings.Rename
             return contentWithoutOldName.Insert(selection.StartColumn - 1, newName);
         }
 
-        private string GetReplacementLine(CodeModule module, Declaration target, string newName)
+        private string GetReplacementLine(ICodeModule module, Declaration target, string newName)
         {
             var content = module.GetLines(target.Selection.StartLine, 1);
 
