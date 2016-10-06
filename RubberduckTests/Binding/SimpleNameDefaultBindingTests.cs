@@ -1,5 +1,4 @@
-﻿using Microsoft.Vbe.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -8,6 +7,8 @@ using System.Linq;
 using System.Threading;
 using Moq;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
@@ -28,8 +29,8 @@ Public Sub Test()
 End Sub", BINDING_TARGET_NAME);
 
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, testCode);
+            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, testCode);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -42,9 +43,9 @@ End Sub", BINDING_TARGET_NAME);
         public void EnclosingModuleComesBeforeEnclosingProject()
         {
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
+            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
             string code = CreateEnumType(BINDING_TARGET_NAME) + Environment.NewLine + CreateTestProcedure(BINDING_TARGET_NAME);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, code);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, code);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -57,9 +58,9 @@ End Sub", BINDING_TARGET_NAME);
         public void EnclosingProjectComesBeforeOtherModuleInEnclosingProject()
         {
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
-            enclosingProjectBuilder.AddComponent("AnyModule", vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
+            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
+            enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -74,15 +75,15 @@ End Sub", BINDING_TARGET_NAME);
             var builder = new MockVbeBuilder();
             const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
 
-            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, vbext_ProjectProtection.vbext_pp_none);
-            referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, vbext_ComponentType.vbext_ct_ClassModule, string.Empty);
+            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, ProjectProtection.Unprotected);
+            referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, ComponentType.ClassModule, string.Empty);
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
 
-            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", vbext_ProjectProtection.vbext_pp_none);
+            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
             enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
-            enclosingProjectBuilder.AddComponent("AnyModule", vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
+            enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
 
@@ -100,14 +101,14 @@ End Sub", BINDING_TARGET_NAME);
             var builder = new MockVbeBuilder();
             const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
 
-            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, vbext_ProjectProtection.vbext_pp_none);
-            referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
+            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, ProjectProtection.Unprotected);
+            referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
 
-            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", vbext_ProjectProtection.vbext_pp_none);
+            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
             enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
 
@@ -125,14 +126,14 @@ End Sub", BINDING_TARGET_NAME);
             var builder = new MockVbeBuilder();
             const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
 
-            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, vbext_ProjectProtection.vbext_pp_none);
-            referencedProjectBuilder.AddComponent("AnyName", vbext_ComponentType.vbext_ct_ClassModule, CreateEnumType(BINDING_TARGET_NAME));
+            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, ProjectProtection.Unprotected);
+            referencedProjectBuilder.AddComponent("AnyName", ComponentType.ClassModule, CreateEnumType(BINDING_TARGET_NAME));
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
 
-            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", vbext_ProjectProtection.vbext_pp_none);
+            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
             enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
 
@@ -144,7 +145,7 @@ End Sub", BINDING_TARGET_NAME);
             Assert.AreEqual(0, declaration.References.Count());
         }
 
-        private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
+        private static RubberduckParserState Parse(Mock<IVBE> vbe)
         {
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
             parser.Parse(new CancellationTokenSource());
