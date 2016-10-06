@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
@@ -10,10 +9,9 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
-using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
-using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.Inspections
 {
@@ -33,8 +31,8 @@ End Sub
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
                 .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -49,7 +47,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(new VBE(vbe.Object), parser.State);
+            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -70,8 +68,8 @@ End Sub
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
                 .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -86,7 +84,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(new VBE(vbe.Object), parser.State);
+            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -110,11 +108,11 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
                 .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
                 .Build();
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var module = project.Object.VBComponents[0].CodeModule;
             var vbe = builder.AddProject(project).Build();
 
             var mockHost = new Mock<IHostApplication>();
@@ -127,12 +125,12 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(new VBE(vbe.Object), parser.State);
+            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -140,13 +138,13 @@ End Sub";
         public void InspectionType()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, string.Empty)
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
                 .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(new VBE(vbe.Object), null);
+            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
@@ -155,14 +153,14 @@ End Sub";
         public void InspectionName()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, string.Empty)
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
                 .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
             const string inspectionName = "ImplicitActiveSheetReferenceInspection";
-            var inspection = new ImplicitActiveSheetReferenceInspection(new VBE(vbe.Object), null);
+            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

@@ -1,14 +1,14 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
-using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 
 namespace RubberduckTests.Inspections
 {
@@ -23,7 +23,7 @@ namespace RubberduckTests.Inspections
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -46,7 +46,7 @@ namespace RubberduckTests.Inspections
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -69,9 +69,9 @@ namespace RubberduckTests.Inspections
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -97,9 +97,9 @@ namespace RubberduckTests.Inspections
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -128,10 +128,10 @@ namespace RubberduckTests.Inspections
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = project.VBComponents.Item(0).CodeModule;
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -144,7 +144,7 @@ namespace RubberduckTests.Inspections
 
             inspectionResults.First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -153,8 +153,8 @@ namespace RubberduckTests.Inspections
         {
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, string.Empty)
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 

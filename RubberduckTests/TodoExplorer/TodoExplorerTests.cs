@@ -1,5 +1,4 @@
-﻿using Microsoft.Vbe.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Linq;
 using System.Threading;
@@ -10,7 +9,7 @@ using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
-using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.TodoExplorer
 {
@@ -27,8 +26,8 @@ namespace RubberduckTests.TodoExplorer
 ";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, content);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, content);
 
             var vbe = builder.AddProject(project.Build()).Build();
             var mockHost = new Mock<IHostApplication>();
@@ -56,8 +55,8 @@ namespace RubberduckTests.TodoExplorer
 ";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, content);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, content);
 
             var vbe = builder.AddProject(project.Build()).Build();
             var mockHost = new Mock<IHostApplication>();
@@ -84,8 +83,8 @@ namespace RubberduckTests.TodoExplorer
 @"Dim d As Variant  ";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, input)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, input)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
@@ -101,7 +100,7 @@ namespace RubberduckTests.TodoExplorer
             vm.SelectedItem = vm.Items.Single();
             vm.RemoveCommand.Execute(null);
 
-            var module = new CodeModule(project.Object.VBComponents.Item(0).CodeModule);
+            var module = project.Object.VBComponents[0].CodeModule;
             Assert.AreEqual(expected, module.Content());
             Assert.IsFalse(vm.Items.Any());
         }

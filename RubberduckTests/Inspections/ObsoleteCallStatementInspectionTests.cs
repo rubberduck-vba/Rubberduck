@@ -1,5 +1,4 @@
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
@@ -10,7 +9,7 @@ using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -32,7 +31,7 @@ End Sub";
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -64,7 +63,7 @@ End Sub";
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -96,7 +95,7 @@ End Sub";
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -128,7 +127,7 @@ End Sub";
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -160,7 +159,7 @@ End Sub";
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -196,7 +195,7 @@ End Sub";
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -232,7 +231,7 @@ End Sub";
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -265,7 +264,7 @@ End Sub";
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -310,10 +309,10 @@ End Sub";
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = project.VBComponents.Item(0).CodeModule;
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -331,7 +330,7 @@ End Sub";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            var actual = new CodeModule(module).Content();
+            var actual = module.Content();
             Assert.AreEqual(expectedCode, actual);
         }
 
@@ -365,10 +364,10 @@ End Sub";
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = project.VBComponents.Item(0).CodeModule;
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -386,7 +385,7 @@ End Sub";
                 inspectionResult.QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
             }
 
-            var actual = new CodeModule(module).Content();
+            var actual = module.Content();
             Assert.AreEqual(expectedCode, actual);
         }
 

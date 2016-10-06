@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Common;
@@ -12,10 +11,10 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceParameter;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
-using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
-using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.Refactoring
 {
@@ -40,10 +39,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -51,10 +50,10 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -81,10 +80,10 @@ End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -92,10 +91,10 @@ End Function";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -120,10 +119,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -131,10 +130,10 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -162,10 +161,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -173,10 +172,10 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -203,10 +202,10 @@ End Sub";   // note: the VBE removes extra spaces
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -214,10 +213,10 @@ End Sub";   // note: the VBE removes extra spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -248,10 +247,10 @@ End Sub";   // note: the VBE removes extra spaces
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -259,10 +258,10 @@ End Sub";   // note: the VBE removes extra spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -293,10 +292,10 @@ End Sub";   // note: the VBE removes extra spaces
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -304,10 +303,10 @@ End Sub";   // note: the VBE removes extra spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -338,10 +337,10 @@ End Sub";   // note: the VBE removes extra spaces
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -349,10 +348,10 @@ End Sub";   // note: the VBE removes extra spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -379,10 +378,10 @@ End Sub";   // note: the VBE removes extra spaces
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -390,10 +389,10 @@ End Sub";   // note: the VBE removes extra spaces
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -413,10 +412,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -424,7 +423,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m =>
@@ -432,7 +431,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -454,10 +453,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -465,7 +464,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m =>
@@ -473,7 +472,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -508,10 +507,10 @@ End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -519,10 +518,10 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -555,10 +554,10 @@ End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -566,10 +565,10 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -606,12 +605,12 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = project.Object.VBComponents[1];
             vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
 
             var mockHost = new Mock<IHostApplication>();
@@ -621,17 +620,17 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var module1 = new CodeModule(project.Object.VBComponents.Item(0).CodeModule);
-            var module2 = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
+            var module1 = project.Object.VBComponents[0].CodeModule;
+            var module2 = project.Object.VBComponents[1].CodeModule;
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -681,13 +680,13 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
-                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode3)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode3)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = project.Object.VBComponents[1];
             vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
 
             var mockHost = new Mock<IHostApplication>();
@@ -697,18 +696,18 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var module1 = new CodeModule(project.Object.VBComponents.Item(0).CodeModule);
-            var module2 = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
-            var module3 = new CodeModule(project.Object.VBComponents.Item(2).CodeModule);
+            var module1 = project.Object.VBComponents[0].CodeModule;
+            var module2 = project.Object.VBComponents[1].CodeModule;
+            var module3 = project.Object.VBComponents[2].CodeModule;
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -735,12 +734,12 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = project.Object.VBComponents[1];
             vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
 
             var mockHost = new Mock<IHostApplication>();
@@ -750,17 +749,17 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var module1 = new CodeModule(project.Object.VBComponents.Item(0).CodeModule);
-            var module2 = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
+            var module1 = project.Object.VBComponents[0].CodeModule;
+            var module2 = project.Object.VBComponents[1].CodeModule;
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.No);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -786,10 +785,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -797,10 +796,10 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, null);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(parser.State.AllUserDeclarations.FindVariable(qualifiedSelection));
 
             //Assert
@@ -818,10 +817,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = new CodeModule(project.VBComponents.Item(0).CodeModule);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -834,7 +833,7 @@ End Sub";
                       .Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new IntroduceParameterRefactoring(new VBE(vbe.Object), parser.State, messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(vbe.Object, parser.State, messageBox.Object);
 
             //Assert
             try

@@ -15,7 +15,7 @@ namespace RubberduckTests.SourceControl
     //        //arrange
     //        var component = new Mock<VBComponent>();
     //        component.Setup(c => c.Name).Returns("Module1");
-    //        component.Setup(c => c.Type).Returns(vbext_ComponentType.vbext_ct_StdModule);
+    //        component.Setup(c => c.Type).Returns(ComponentType.StandardModule);
     //        component.Setup(c => c.Export("foo")).Verifiable();
 
     //        var componentList = new List<VBComponent> { component.Object };
