@@ -1,5 +1,4 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -8,7 +7,7 @@ namespace Rubberduck.UI.ToDoItems
     /// </summary>
     public class ToDoExplorerDockablePresenter : DockableToolwindowPresenter
     {
-        public ToDoExplorerDockablePresenter(VBE vbe, AddIn addin, ToDoExplorerWindow window)
+        public ToDoExplorerDockablePresenter(IVBE vbe, IAddIn addin, ToDoExplorerWindow window)
             : base(vbe, addin, window)
         {
         }

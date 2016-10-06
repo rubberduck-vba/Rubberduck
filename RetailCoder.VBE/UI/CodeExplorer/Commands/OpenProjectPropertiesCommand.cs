@@ -2,16 +2,16 @@ using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
     public class OpenProjectPropertiesCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
 
-        public OpenProjectPropertiesCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public OpenProjectPropertiesCommand(IVBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }

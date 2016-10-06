@@ -17,6 +17,7 @@ using Ninject.Extensions.Interception;
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck
 {
@@ -33,8 +34,8 @@ namespace Rubberduck
         private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
         private const string ProgId = "Rubberduck.Extension";
 
-        private VBEditor.SafeComWrappers.VBA.VBE _ide;
-        private VBEditor.SafeComWrappers.VBA.AddIn _addin;
+        private IVBE _ide;
+        private IAddIn _addin;
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
 
@@ -49,6 +50,7 @@ namespace Rubberduck
         {
             try
             {
+                // todo: determine which type to use (SafeComWrappers.VBA || SafeComWrappers.VB6)
                 _ide = new VBEditor.SafeComWrappers.VBA.VBE((VBE)Application);
                 _addin = new VBEditor.SafeComWrappers.VBA.AddIn((AddIn) AddInInst) {Object = this};
 

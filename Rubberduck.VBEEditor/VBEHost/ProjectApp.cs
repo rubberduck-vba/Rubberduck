@@ -1,12 +1,11 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
     public class ProjectApp : HostApplicationBase<Microsoft.Office.Interop.MSProject.Application>
     {
         public ProjectApp() : base("MSProject") { }
-        public ProjectApp(VBE vbe) : base(vbe, "MSProject") { }
+        public ProjectApp(IVBE vbe) : base(vbe, "MSProject") { }
 
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {

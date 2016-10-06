@@ -11,13 +11,13 @@ using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck
 {
     public sealed class App : IDisposable
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IRubberduckParser _parser;
         private AutoSave.AutoSave _autoSave;
@@ -31,7 +31,7 @@ namespace Rubberduck
         
         private Configuration _config;
 
-        public App(VBE vbe, IMessageBox messageBox,
+        public App(IVBE vbe, IMessageBox messageBox,
             UI.Settings.Settings settings,
             IRubberduckParser parser,
             IGeneralConfigService configService,

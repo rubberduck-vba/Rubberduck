@@ -10,8 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -26,10 +25,10 @@ namespace Rubberduck.UI.Command
         private readonly RubberduckParserState _state;
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
 
         public FindAllImplementationsCommand(INavigateCommand navigateCommand, IMessageBox messageBox,
-            RubberduckParserState state, VBE vbe, ISearchResultsWindowViewModel viewModel,
+            RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel,
             SearchResultPresenterInstanceManager presenterService)
              : base(LogManager.GetCurrentClassLogger())
         {

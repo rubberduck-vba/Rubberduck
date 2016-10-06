@@ -1,11 +1,10 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Inspections
 {
     public class CodeInspectionsDockablePresenter : DockableToolwindowPresenter
     {
-        public CodeInspectionsDockablePresenter(VBE vbe, AddIn addin, CodeInspectionsWindow window)
+        public CodeInspectionsDockablePresenter(IVBE vbe, IAddIn addin, CodeInspectionsWindow window)
             :base(vbe, addin, window)
         {
         }

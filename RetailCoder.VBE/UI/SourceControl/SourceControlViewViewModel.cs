@@ -15,7 +15,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using resx = Rubberduck.UI.SourceControl.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
@@ -30,7 +30,7 @@ namespace Rubberduck.UI.SourceControl
 
     public sealed class SourceControlViewViewModel : ViewModelBase, IDisposable
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly ISinks _sinks;
         private readonly ISourceControlProviderFactory _providerFactory;
@@ -44,7 +44,7 @@ namespace Rubberduck.UI.SourceControl
         private SourceControlSettings _config;
 
         public SourceControlViewViewModel(
-            VBE vbe,
+            IVBE vbe,
             RubberduckParserState state,
             ISinks sinks,
             ISourceControlProviderFactory providerFactory,

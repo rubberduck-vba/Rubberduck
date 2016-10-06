@@ -38,16 +38,16 @@ namespace Rubberduck.Root
 {
     public class RubberduckModule : NinjectModule
     {
-        private readonly VBE _vbe;
-        private readonly AddIn _addin;
-
+        private readonly IVBE _vbe;
+        private readonly IAddIn _addin;
+        
         private const int MenuBar = 1;
         private const int CodeWindow = 9;
         private const int ProjectWindow = 14;
         private const int MsForms = 17;
         private const int MsFormsControl = 18;
 
-        public RubberduckModule(VBE vbe, AddIn addin)
+        public RubberduckModule(IVBE vbe, IAddIn addin)
         {
             _vbe = vbe;
             _addin = addin;
@@ -56,8 +56,8 @@ namespace Rubberduck.Root
         public override void Load()
         {
             // bind VBE and AddIn dependencies to host-provided instances.
-            Bind<VBE>().ToConstant(_vbe);
-            Bind<AddIn>().ToConstant(_addin);
+            Bind<IVBE>().ToConstant(_vbe);
+            Bind<IAddIn>().ToConstant(_addin);
             Bind<Sinks>().ToSelf().InSingletonScope();
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();

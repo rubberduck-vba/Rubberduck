@@ -4,19 +4,19 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Timers;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.AutoSave
 {
     public sealed class AutoSave : IDisposable
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IGeneralConfigService _configService;
         private Timer _timer = new Timer();
 
         private const int VbeSaveCommandId = 3;
 
-        public AutoSave(VBE vbe, IGeneralConfigService configService)
+        public AutoSave(IVBE vbe, IGeneralConfigService configService)
         {
             _vbe = vbe;
             _configService = configService;

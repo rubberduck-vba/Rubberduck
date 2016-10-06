@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SmartIndenter
 {
     public class Indenter : IIndenter
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly Func<IIndenterSettings> _settings;
 
-        public Indenter(VBE vbe, Func<IIndenterSettings> settings)
+        public Indenter(IVBE vbe, Func<IIndenterSettings> settings)
         {
             _vbe = vbe;
             _settings = settings;
@@ -66,7 +66,7 @@ namespace Rubberduck.SmartIndenter
             Indent(pane.CodeModule.Parent);
         }
 
-        private static Selection GetSelection(CodePane codePane)
+        private static Selection GetSelection(ICodePane codePane)
         {
             return codePane.GetSelection();
         }

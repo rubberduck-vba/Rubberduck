@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class CodePanes : SafeComWrapper<Microsoft.Vbe.Interop.CodePanes>, IEnumerable<CodePane>, IEquatable<CodePane>
+    public class CodePanes : SafeComWrapper<Microsoft.Vbe.Interop.CodePanes>, ICodePanes
     {
         public CodePanes(Microsoft.Vbe.Interop.CodePanes comObject) 
             : base(comObject)
@@ -28,18 +27,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
-        public CodePane Current 
+        public ICodePane Current 
         { 
             get { return new CodePane(IsWrappingNullReference ? null : ComObject.Current); }
-            set { ComObject.Current = value.ComObject;}
+            set { ComObject.Current = (Microsoft.Vbe.Interop.CodePane)value.ComObject;}
         }
 
-        public CodePane Item(object index)
+        public ICodePane this[object index]
         {
-            return new CodePane(ComObject.Item(index));
+            get { return new CodePane(ComObject.Item(index)); }
         }
 
-        IEnumerator<CodePane> IEnumerable<CodePane>.GetEnumerator()
+        IEnumerator<ICodePane> IEnumerable<ICodePane>.GetEnumerator()
         {
             return new ComWrapperEnumerator<CodePane>(ComObject);
         }
@@ -55,7 +54,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 for (var i = 1; i <= Count; i++)
                 {
-                    Item(i).Release();
+                    this[i].Release();
                 }
                 Marshal.ReleaseComObject(ComObject);
             }
@@ -66,9 +65,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(CodePane other)
+        public bool Equals(ICodePanes other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.CodePane>);
+            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.CodePanes>);
         }
 
         public override int GetHashCode()

@@ -17,10 +17,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? string.Empty : ComObject.Version; }
         }
 
-        public CodePane ActiveCodePane
+        public ICodePane ActiveCodePane
         {
             get { return new CodePane(IsWrappingNullReference ? null : ComObject.ActiveCodePane); }
-            set { ComObject.ActiveCodePane = value.ComObject; }
+            set { ComObject.ActiveCodePane = (Microsoft.Vbe.Interop.CodePane)value.ComObject; }
         }
 
         public VBProject ActiveVBProject
@@ -29,7 +29,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             set { ComObject.ActiveVBProject = value.ComObject; }
         }
 
-        public Window ActiveWindow
+        public IWindow ActiveWindow
         {
             get { return new Window(IsWrappingNullReference ? null : ComObject.ActiveWindow); }
         }
@@ -39,7 +39,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new AddIns(IsWrappingNullReference ? null : ComObject.Addins); }
         }
 
-        public CodePanes CodePanes
+        public ICodePanes CodePanes
         {
             get { return new CodePanes(IsWrappingNullReference ? null : ComObject.CodePanes); }
         }
@@ -49,7 +49,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new CommandBars(IsWrappingNullReference ? null : ComObject.CommandBars); }
         }
 
-        public Window MainWindow
+        public IWindow MainWindow
         {
             get { return new Window(IsWrappingNullReference ? null : ComObject.MainWindow); }
         }

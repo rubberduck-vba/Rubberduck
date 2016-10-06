@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck
@@ -79,7 +80,7 @@ namespace Rubberduck
 
         public bool ComponentSinksEnabled { get; set; }
 
-        public Sinks(VBE vbe)
+        public Sinks(IVBE vbe)
         {
             ComponentSinksEnabled = true;
 

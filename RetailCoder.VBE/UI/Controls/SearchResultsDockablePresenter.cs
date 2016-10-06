@@ -1,12 +1,10 @@
-
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Controls
 {
     public class SearchResultsDockablePresenter : DockableToolwindowPresenter
     {
-        public SearchResultsDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl view) 
+        public SearchResultsDockablePresenter(IVBE vbe, IAddIn addin, IDockableUserControl view) 
             : base(vbe, addin, view)
         {
         }

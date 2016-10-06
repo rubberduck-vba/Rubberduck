@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -60,7 +61,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new References(IsWrappingNullReference ? null : ComObject.Collection); }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
             get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }

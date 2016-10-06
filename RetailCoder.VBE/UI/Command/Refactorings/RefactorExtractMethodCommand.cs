@@ -6,9 +6,7 @@ using System;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -18,7 +16,7 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
 
-        public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IIndenter indenter)
+        public RefactorExtractMethodCommand(IVBE vbe, RubberduckParserState state, IIndenter indenter)
             : base (vbe)
         {
             _state = state;

@@ -115,6 +115,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SafeComWrappers\Abstract\ICodePanes.cs" />
     <Compile Include="SafeComWrappers\Abstract\ICommandBarButton.cs" />
     <Compile Include="SafeComWrappers\Abstract\ILinkedWindows.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="SafeComWrappers\Abstract\IWindow.cs" />
     <Compile Include="SafeComWrappers\Abstract\IWindows.cs" />
     <Compile Include="SafeComWrappers\Abstract\ICodeModule.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICodePane.cs" />
     <Compile Include="SafeComWrappers\VBA\Properties.cs" />
     <Compile Include="SafeComWrappers\VBA\Property.cs" />
     <Compile Include="SafeComWrappers\VBA\ReferenceEventArgs.cs" />

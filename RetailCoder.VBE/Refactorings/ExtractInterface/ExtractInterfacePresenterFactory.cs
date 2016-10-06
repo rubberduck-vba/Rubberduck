@@ -1,18 +1,16 @@
 ﻿using System.Linq;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfacePresenterFactory : IRefactoringPresenterFactory<ExtractInterfacePresenter>
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IExtractInterfaceDialog _view;
         private readonly RubberduckParserState _state;
 
-        public ExtractInterfacePresenterFactory(VBE vbe, RubberduckParserState state, IExtractInterfaceDialog view)
+        public ExtractInterfacePresenterFactory(IVBE vbe, RubberduckParserState state, IExtractInterfaceDialog view)
         {
             _vbe = vbe;
             _view = view;

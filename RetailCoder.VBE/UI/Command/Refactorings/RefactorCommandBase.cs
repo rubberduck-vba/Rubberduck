@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Windows.Forms;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     public abstract class RefactorCommandBase : CommandBase
     {
-        protected readonly VBE Vbe;
+        protected readonly IVBE Vbe;
 
-        protected RefactorCommandBase(VBE vbe)
+        protected RefactorCommandBase(IVBE vbe)
             : base (LogManager.GetCurrentClassLogger())
         {
             Vbe = vbe;

@@ -11,8 +11,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public References(Microsoft.Vbe.Interop.References comObject) 
             : base(comObject)
         {
-            comObject.ItemAdded += comObject_ItemAdded;
-            comObject.ItemRemoved += comObject_ItemRemoved;
+            if (!IsWrappingNullReference)
+            {
+                comObject.ItemAdded += comObject_ItemAdded;
+                comObject.ItemRemoved += comObject_ItemRemoved;
+            }
         }
 
         public event EventHandler<ReferenceEventArgs> ItemAdded;
@@ -85,6 +88,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     this[i].Release();
                 }
+                ComObject.ItemAdded -= comObject_ItemAdded;
+                ComObject.ItemRemoved -= comObject_ItemRemoved;
                 Marshal.ReleaseComObject(ComObject);
             }
         }

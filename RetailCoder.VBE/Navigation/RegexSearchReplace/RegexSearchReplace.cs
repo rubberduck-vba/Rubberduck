@@ -16,10 +16,10 @@ namespace Rubberduck.Navigation.RegexSearchReplace
     public class RegexSearchReplace : IRegexSearchReplace
     {
         private readonly RegexSearchReplaceModel _model;
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IRubberduckParser _parser;
 
-        public RegexSearchReplace(VBE vbe, IRubberduckParser parser)
+        public RegexSearchReplace(IVBE vbe, IRubberduckParser parser)
         {
             _vbe = vbe;
             _parser = parser;
@@ -98,14 +98,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private void SetSelection(RegexSearchResult item)
         {
-            var project = _vbe.ActiveVBProject;
-            foreach (var proj in _parser.State.Projects)
-            {
-                // wtf?
-                project = proj;
-                break;
-            }
-            VBE.SetSelection(project, item.Selection, item.Module.Name);
+            item.Module.CodePane.SetSelection(item.Selection);
         }
 
         private List<RegexSearchResult> SearchSelection(string searchPattern)

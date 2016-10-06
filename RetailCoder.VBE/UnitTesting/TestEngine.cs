@@ -6,9 +6,8 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting
@@ -16,13 +15,13 @@ namespace Rubberduck.UnitTesting
     public class TestEngine : ITestEngine
     {
         private readonly TestExplorerModel _model;
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
 
         // can't be assigned from constructor because ActiveVBProject is null at startup:
         private IHostApplication _hostApplication; 
 
-        public TestEngine(TestExplorerModel model, VBE vbe, RubberduckParserState state)
+        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state)
         {
             _model = model;
             _vbe = vbe;

@@ -1,23 +1,21 @@
 using System;
 using System.Diagnostics;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
     public sealed class FallbackApp : IHostApplication
     {
-        private readonly VBE _vbe;
-        private readonly CommandBarButton _runButton;
+        private readonly ICommandBarButton _runButton;
 
         private const int DebugCommandBarId = 4;
         private const int RunMacroCommand = 186;
 
-        public FallbackApp(VBE vbe)
+        public FallbackApp(IVBE vbe)
         {
-            _vbe = vbe;
-            var mainCommandBar = _vbe.CommandBars[DebugCommandBarId];
-            _runButton = (CommandBarButton)mainCommandBar.FindControl(RunMacroCommand);
+            var mainCommandBar = vbe.CommandBars[DebugCommandBarId];
+            _runButton = (ICommandBarButton)mainCommandBar.FindControl(RunMacroCommand);
         }
 
         public void Run(QualifiedMemberName qualifiedMemberName)

@@ -4,14 +4,14 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class CodePane : SafeComWrapper<Microsoft.Vbe.Interop.CodePane>, IEquatable<CodePane>
+    public class CodePane : SafeComWrapper<Microsoft.Vbe.Interop.CodePane>, ICodePane
     {
         public CodePane(Microsoft.Vbe.Interop.CodePane codePane)
             : base(codePane)
         {
         }
 
-        public CodePanes Collection
+        public ICodePanes Collection
         {
             get { return new CodePanes(IsWrappingNullReference ? null : ComObject.Collection); }
         }
@@ -130,7 +130,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(CodePane other)
+        public bool Equals(ICodePane other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.CodePane>);
         }

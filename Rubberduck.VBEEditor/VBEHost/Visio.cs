@@ -1,19 +1,17 @@
-﻿using Microsoft.Office.Interop.Visio;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
     public class VisioApp : HostApplicationBase<Microsoft.Office.Interop.Visio.Application>
     {
         public VisioApp() : base("Visio") { }
-        public VisioApp(VBE vbe) : base(vbe, "Visio") { }
+        public VisioApp(IVBE vbe) : base(vbe, "Visio") { }
 
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
             try
             {
-                Document doc = Application.Documents[qualifiedMemberName.QualifiedModuleName.ProjectDisplayName];
+                Microsoft.Office.Interop.Visio.Document doc = Application.Documents[qualifiedMemberName.QualifiedModuleName.ProjectDisplayName];
                 var call = GenerateMethodCall(qualifiedMemberName);
                 doc.ExecuteLine(call);
             }

@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Inspections
@@ -13,7 +12,7 @@ namespace Rubberduck.Inspections
     {
         private readonly IHostApplication _hostApp;
 
-        public ImplicitActiveWorkbookReferenceInspection(VBE vbe, RubberduckParserState state)
+        public ImplicitActiveWorkbookReferenceInspection(IVBE vbe, RubberduckParserState state)
             : base(state)
         {
             _hostApp = vbe.HostApplication();

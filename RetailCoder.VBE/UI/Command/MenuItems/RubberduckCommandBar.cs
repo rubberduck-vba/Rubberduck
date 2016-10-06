@@ -5,7 +5,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -14,7 +13,7 @@ namespace Rubberduck.UI.Command.MenuItems
     public class RubberduckCommandBar : IDisposable
     {
         private readonly RubberduckParserState _state;
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly ISinks _sinks;
         private readonly IShowParserErrorsCommand _command;
 
@@ -23,7 +22,7 @@ namespace Rubberduck.UI.Command.MenuItems
         private ICommandBarButton _selectionButton;
         private ICommandBar _commandbar;
 
-        public RubberduckCommandBar(RubberduckParserState state, VBE vbe, ISinks sinks, IShowParserErrorsCommand command)
+        public RubberduckCommandBar(RubberduckParserState state, IVBE vbe, ISinks sinks, IShowParserErrorsCommand command)
         {
             _state = state;
             _vbe = vbe;

@@ -7,14 +7,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
     public interface IVBE : ISafeComWrapper, IEquatable<IVBE>
     {
         string Version { get; }
-        Window ActiveWindow { get; }
-        CodePane ActiveCodePane { get; set; }
+        IWindow ActiveWindow { get; }
+        ICodePane ActiveCodePane { get; set; }
         VBProject ActiveVBProject { get; set; }
         VBComponent SelectedVBComponent { get; }
-        Window MainWindow { get; }
+        IWindow MainWindow { get; }
         IAddIns AddIns { get; }
         VBProjects VBProjects { get; }
-        CodePanes CodePanes { get; }
+        ICodePanes CodePanes { get; }
         ICommandBars CommandBars { get; }
         IWindows Windows { get; }
 
