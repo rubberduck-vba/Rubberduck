@@ -129,10 +129,11 @@ namespace Rubberduck.Parsing.VBA
 
                     if (State.Status == ParserState.Error) { return; }
 
-                    var component = components[index];
+                    var qualifiedName = new QualifiedModuleName(components[index]);
 
-                    State.SetModuleState(component, ParserState.ResolvingDeclarations);
-                    ResolveDeclarations(component, State.ParseTrees.Find(s => s.Key == component).Value);
+                    State.SetModuleState(components[index], ParserState.ResolvingDeclarations);
+                    ResolveDeclarations(qualifiedName.Component,
+                        State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
                 });
 
                 parseTasks[i].Start();
@@ -185,7 +186,7 @@ namespace Rubberduck.Parsing.VBA
                 if (!componentExists)
                 {
                     componentsRemoved = true;
-                    State.ClearStateCache(declaration.QualifiedName.QualifiedModuleName.Component);
+                    State.ClearStateCache(declaration.QualifiedName.QualifiedModuleName);
                 }
             }
 
@@ -249,9 +250,12 @@ namespace Rubberduck.Parsing.VBA
 
                     if (State.Status == ParserState.Error) { return; }
 
-                    var component = toParse[index];
+                    var qualifiedName = new QualifiedModuleName(toParse[index]);
+
                     State.SetModuleState(toParse[index], ParserState.ResolvingDeclarations);
-                    ResolveDeclarations(component, State.ParseTrees.Find(s => s.Key == component).Value);
+
+                    ResolveDeclarations(qualifiedName.Component,
+                        State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
                 });
 
                 parseTasks[i].Start();
@@ -282,7 +286,7 @@ namespace Rubberduck.Parsing.VBA
         {
             foreach (var kvp in State.ParseTrees)
             {
-                State.SetModuleState(kvp.Key, ParserState.ResolvingReferences);
+                State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
             }
 
             var finder = new DeclarationFinder(State.AllDeclarations, State.AllComments, State.AllAnnotations);
@@ -307,8 +311,9 @@ namespace Rubberduck.Parsing.VBA
 
                 tasks[index] = Task.Run(() =>
                 {
-                    State.SetModuleState(kvp.Key, ParserState.ResolvingReferences);
-                    ResolveReferences(finder, kvp.Key, kvp.Value);
+                    State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
+
+                    ResolveReferences(finder, kvp.Key.Component, kvp.Value);
                 }, token);
             }
 

@@ -2,33 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
-using Moq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class ReferencedVBProject : VBProject
-    {
-        public ReferencedVBProject(IReference reference) 
-            : base(MockProject(reference))
-        {
-        }
-
-        private static Microsoft.Vbe.Interop.VBProject MockProject(IReference reference)
-        {
-            var mock = new Mock<Microsoft.Vbe.Interop.VBProject>();
-            mock.SetupGet(m => m.Description).Returns(reference.Description + " " + reference.Version);
-            mock.SetupGet(m => m.Name).Returns(reference.Name);
-            mock.SetupGet(m => m.HelpFile).Returns(reference.IsBuiltIn ? reference.Guid : reference.FullPath);
-            mock.SetupGet(m => m.Type).Returns(vbext_ProjectType.vbext_pt_StandAlone);
-            mock.SetupGet(m => m.Saved).Returns(true);
-            mock.SetupGet(m => m.FileName).Returns(reference.FullPath);
-            mock.SetupGet(m => m.BuildFileName).Returns(reference.FullPath);
-            return mock.Object;
-        }
-    }
-
     public class VBProject : SafeComWrapper<Microsoft.Vbe.Interop.VBProject>, IVBProject
     {
         public VBProject(Microsoft.Vbe.Interop.VBProject vbProject)
@@ -136,10 +113,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 References.Release();
                 VBComponents.Release();
-                if (Marshal.IsComObject(ComObject))
-                {
-                    Marshal.ReleaseComObject(ComObject);
-                }
+                Marshal.ReleaseComObject(ComObject);
             }
         }
 

@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.VBA
         public ITokenStream TokenStream { get; private set; }
         public IParseTree ParseTree { get; private set; }
         public ParserState State { get; private set; }
-        public string ModuleContentHash { get; private set; }
+        public int ModuleContentHashCode { get; private set; }
         public List<CommentNode> Comments { get; private set; }
         public List<IAnnotation> Annotations { get; private set; }
         public SyntaxErrorException ModuleException { get; private set; }
@@ -38,7 +38,7 @@ namespace Rubberduck.Parsing.VBA
                 State = ParserState.Pending;
             }
 
-            ModuleContentHash = string.Empty;
+            ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
             ModuleException = null;
@@ -53,7 +53,7 @@ namespace Rubberduck.Parsing.VBA
             TokenStream = null;
             ParseTree = null;
             State = state;
-            ModuleContentHash = string.Empty;
+            ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
             ModuleException = null;
@@ -68,7 +68,7 @@ namespace Rubberduck.Parsing.VBA
             TokenStream = null;
             ParseTree = null;
             State = ParserState.Error;
-            ModuleContentHash = string.Empty;
+            ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
             ModuleException = moduleException;
@@ -83,7 +83,7 @@ namespace Rubberduck.Parsing.VBA
             TokenStream = null;
             ParseTree = null;
             State = ParserState.None;
-            ModuleContentHash = string.Empty;
+            ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
             ModuleException = null;
@@ -110,9 +110,9 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public ModuleState SetModuleContentHash(string moduleContentHash)
+        public ModuleState SetModuleContentHashCode(int moduleContentHashCode)
         {
-            ModuleContentHash = moduleContentHash;
+            ModuleContentHashCode = moduleContentHashCode;
             IsNew = false;
             return this;
         }

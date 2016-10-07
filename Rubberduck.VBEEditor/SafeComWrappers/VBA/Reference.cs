@@ -30,11 +30,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? 0 : ComObject.Minor; }
         }
 
-        public string Version
-        {
-            get { return string.Format("{0}.{1}", Major, Minor); }
-        }
-
         public string Description
         {
             get { return IsWrappingNullReference ? string.Empty : ComObject.Description; }
