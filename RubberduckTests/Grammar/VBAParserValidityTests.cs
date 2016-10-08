@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Vbe.Interop;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.VBEHost;
@@ -9,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Grammar
 {
@@ -43,7 +43,7 @@ namespace RubberduckTests.Grammar
         private static string Parse(string code, string filename)
         {
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(code, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -51,7 +51,7 @@ namespace RubberduckTests.Grammar
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error: " + filename); }
-            var tree = state.GetParseTree(component);
+            var tree = state.GetParseTree(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component));
             var parsed = tree.GetText();
             var withoutEOF = parsed.Substring(0, parsed.Length - 5);
             return withoutEOF;
