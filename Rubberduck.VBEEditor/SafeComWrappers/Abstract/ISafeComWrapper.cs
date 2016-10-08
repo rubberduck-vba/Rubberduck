@@ -1,9 +1,12 @@
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ISafeComWrapper
     {
         object ComObject { get; }
-        void Release();
         bool IsWrappingNullReference { get; }
+        void Release();
     }
 }

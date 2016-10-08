@@ -118,7 +118,13 @@
     <Compile Include="SafeComWrappers\Abstract\ICodePanes.cs" />
     <Compile Include="SafeComWrappers\Abstract\ICommandBarButton.cs" />
     <Compile Include="SafeComWrappers\Abstract\ILinkedWindows.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IReference.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IReferences.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBComponent.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBComponents.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBProject.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBProjects.cs" />
     <Compile Include="SafeComWrappers\Office.Core\AxHostConverter.cs">
       <SubType>Component</SubType>
     </Compile>
