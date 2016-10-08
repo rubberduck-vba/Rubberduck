@@ -8,8 +8,6 @@ using System.Linq;
 using System.Threading;
 using Moq;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
@@ -24,10 +22,10 @@ namespace RubberduckTests.Binding
         public void LExpressionIsVariablePropertyOrFunction()
         {
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder("Any Project", ProjectProtection.Unprotected);
+            var enclosingProjectBuilder = builder.ProjectBuilder("Any Project", vbext_ProjectProtection.vbext_pp_none);
             string code = string.Format("Public Sub Test() {0} Dim {1} As {2} {0} Call {1}.{3} {0}End Sub", Environment.NewLine, "AnyName", BINDING_TARGET_LEXPRESSION, BINDING_TARGET_UNRESTRICTEDNAME);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, code);
-            enclosingProjectBuilder.AddComponent(BINDING_TARGET_LEXPRESSION, ComponentType.ClassModule, CreateFunction(BINDING_TARGET_UNRESTRICTEDNAME));
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, code);
+            enclosingProjectBuilder.AddComponent(BINDING_TARGET_LEXPRESSION, vbext_ComponentType.vbext_ct_ClassModule, CreateFunction(BINDING_TARGET_UNRESTRICTEDNAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -43,10 +41,10 @@ namespace RubberduckTests.Binding
         {
             const string PROJECT_NAME = "AnyProject";
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(PROJECT_NAME, ProjectProtection.Unprotected);
+            var enclosingProjectBuilder = builder.ProjectBuilder(PROJECT_NAME, vbext_ProjectProtection.vbext_pp_none);
             string code = string.Format("Public Sub Test() {0} Call {1}.{2} {0}End Sub", Environment.NewLine, PROJECT_NAME, BINDING_TARGET_UNRESTRICTEDNAME);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, code);
-            enclosingProjectBuilder.AddComponent("Anymodulename", ComponentType.StandardModule, CreateFunction(BINDING_TARGET_UNRESTRICTEDNAME));
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, code);
+            enclosingProjectBuilder.AddComponent("Anymodulename", vbext_ComponentType.vbext_ct_StdModule, CreateFunction(BINDING_TARGET_UNRESTRICTEDNAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -62,10 +60,10 @@ namespace RubberduckTests.Binding
         {
             const string PROJECT_NAME = "AnyProject";
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(PROJECT_NAME, ProjectProtection.Unprotected);
+            var enclosingProjectBuilder = builder.ProjectBuilder(PROJECT_NAME, vbext_ProjectProtection.vbext_pp_none);
             string code = string.Format("Public Sub Test() {0} Call {1}.{2} {0}End Sub", Environment.NewLine, BINDING_TARGET_LEXPRESSION, BINDING_TARGET_UNRESTRICTEDNAME);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, code);
-            enclosingProjectBuilder.AddComponent(BINDING_TARGET_LEXPRESSION, ComponentType.StandardModule, CreateFunction(BINDING_TARGET_UNRESTRICTEDNAME));
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, code);
+            enclosingProjectBuilder.AddComponent(BINDING_TARGET_LEXPRESSION, vbext_ComponentType.vbext_ct_StdModule, CreateFunction(BINDING_TARGET_UNRESTRICTEDNAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -81,10 +79,10 @@ namespace RubberduckTests.Binding
         {
             const string PROJECT_NAME = "AnyProject";
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(PROJECT_NAME, ProjectProtection.Unprotected);
+            var enclosingProjectBuilder = builder.ProjectBuilder(PROJECT_NAME, vbext_ProjectProtection.vbext_pp_none);
             string code = string.Format("Public Sub Test() {0} a = {1}.{2} {0}End Sub", Environment.NewLine, BINDING_TARGET_LEXPRESSION, BINDING_TARGET_UNRESTRICTEDNAME);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, code);
-            enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_LEXPRESSION, BINDING_TARGET_UNRESTRICTEDNAME));
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, code);
+            enclosingProjectBuilder.AddComponent("AnyModule", vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_LEXPRESSION, BINDING_TARGET_UNRESTRICTEDNAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -95,7 +93,7 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
-        private static RubberduckParserState Parse(Mock<IVBE> vbe)
+        private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
         {
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
             parser.Parse(new CancellationTokenSource());
