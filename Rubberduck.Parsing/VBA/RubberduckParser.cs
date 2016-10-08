@@ -11,8 +11,8 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using System.IO;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 

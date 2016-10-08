@@ -1,6 +1,7 @@
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Forms;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.VBEditor.Extensions

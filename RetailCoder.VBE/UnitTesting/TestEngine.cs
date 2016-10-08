@@ -7,7 +7,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting

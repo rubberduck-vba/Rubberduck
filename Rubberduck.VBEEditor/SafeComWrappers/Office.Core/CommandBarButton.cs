@@ -2,7 +2,9 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Forms;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using ButtonState = Rubberduck.VBEditor.SafeComWrappers.Forms.ButtonState;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {

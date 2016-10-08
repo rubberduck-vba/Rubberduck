@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Forms;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {

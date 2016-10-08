@@ -9,7 +9,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting
@@ -89,23 +89,16 @@ namespace Rubberduck.UnitTesting
 
         public NavigateCodeEventArgs GetNavigationArgs()
         {
-            try
-            {
-                var moduleName = Declaration.QualifiedName.QualifiedModuleName;
-                var methodName = Declaration.IdentifierName;
-                var module = moduleName.Component.CodeModule;
+            var moduleName = Declaration.QualifiedName.QualifiedModuleName;
+            var methodName = Declaration.IdentifierName;
+            var module = moduleName.Component.CodeModule;
 
-                var startLine = module.GetProcBodyStartLine(methodName, ProcKind.Procedure);
-                var endLine = startLine + module.GetProcCountLines(methodName, ProcKind.Procedure);
-                var endLineColumns = module.GetLines(endLine, 1).Length;
+            var startLine = module.GetProcBodyStartLine(methodName, ProcKind.Procedure);
+            var endLine = startLine + module.GetProcCountLines(methodName, ProcKind.Procedure);
+            var endLineColumns = module.GetLines(endLine, 1).Length;
 
-                var selection = new Selection(startLine, 1, endLine, endLineColumns == 0 ? 1 : endLineColumns);
-                return new NavigateCodeEventArgs(new QualifiedSelection(moduleName, selection));
-            }
-            catch (WrapperMethodException)
-            {
-                return null;
-            }
+            var selection = new Selection(startLine, 1, endLine, endLineColumns == 0 ? 1 : endLineColumns);
+            return new NavigateCodeEventArgs(new QualifiedSelection(moduleName, selection));
         }
 
         public object[] ToArray()

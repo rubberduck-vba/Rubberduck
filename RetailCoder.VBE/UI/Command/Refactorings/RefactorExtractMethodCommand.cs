@@ -6,7 +6,7 @@ using System;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

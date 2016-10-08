@@ -6,7 +6,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

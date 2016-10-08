@@ -2,7 +2,7 @@
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Inspections

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Rubberduck.Parsing;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {

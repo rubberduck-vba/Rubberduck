@@ -15,7 +15,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 using resx = Rubberduck.UI.SourceControl.SourceControl;
 
 namespace Rubberduck.UI.SourceControl

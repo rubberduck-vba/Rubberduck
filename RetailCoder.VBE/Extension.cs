@@ -17,7 +17,7 @@ using Ninject.Extensions.Interception;
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck
 {

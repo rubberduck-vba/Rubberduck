@@ -7,7 +7,7 @@ using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -104,7 +104,7 @@ namespace Rubberduck.UI.Command
         {
             return !GetProject().IsWrappingNullReference && _vbe.HostSupportsUnitTests();
         }
-        
+
         protected override void ExecuteImpl(object parameter)
         {
             var project = parameter as VBProject ?? GetProject();
@@ -115,43 +115,34 @@ namespace Rubberduck.UI.Command
 
             var settings = _configLoader.LoadConfiguration().UserSettings.UnitTestSettings;
 
-            try
+            if (settings.BindingMode == BindingMode.EarlyBinding)
             {
-                if (settings.BindingMode == BindingMode.EarlyBinding)
-                {
-                    project.EnsureReferenceToAddInLibrary();
-                }
-
-                var components = project.VBComponents;
-                var component = components.Add(ComponentType.StandardModule);
-                var module = component.CodeModule;
-                {
-                    component.Name = GetNextTestModuleName(project);
-
-                    var hasOptionExplicit = false;
-                    if (module.CountOfLines > 0 && module.CountOfDeclarationLines > 0)
-                    {
-                        hasOptionExplicit = module.GetLines(1, module.CountOfDeclarationLines).Contains("Option Explicit");
-                    }
-
-                    var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n", "Option Private Module\r\n\r\n");
-
-                    var defaultTestMethod = string.Empty;
-                    if (settings.DefaultTestStubInNewModule)
-                    {
-                        defaultTestMethod = AddTestMethodCommand.TestMethodTemplate.Replace(
-                            AddTestMethodCommand.NamePlaceholder, "TestMethod1");
-                    }
-
-                    module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
-                    component.Activate();
-                    _state.OnParseRequested(this, component);
-                }
+                project.EnsureReferenceToAddInLibrary();
             }
-            catch (WrapperMethodException)
+
+            var component = project.VBComponents.Add(ComponentType.StandardModule);
+            var module = component.CodeModule;
+            component.Name = GetNextTestModuleName(project);
+
+            var hasOptionExplicit = false;
+            if (module.CountOfLines > 0 && module.CountOfDeclarationLines > 0)
             {
-                //how does this happen?
+                hasOptionExplicit = module.GetLines(1, module.CountOfDeclarationLines).Contains("Option Explicit");
             }
+
+            var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n",
+                "Option Private Module\r\n\r\n");
+
+            var defaultTestMethod = string.Empty;
+            if (settings.DefaultTestStubInNewModule)
+            {
+                defaultTestMethod = AddTestMethodCommand.TestMethodTemplate.Replace(
+                    AddTestMethodCommand.NamePlaceholder, "TestMethod1");
+            }
+
+            module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
+            component.Activate();
+            _state.OnParseRequested(this, component);
         }
 
         private string GetNextTestModuleName(VBProject project)

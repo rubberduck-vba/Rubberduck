@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

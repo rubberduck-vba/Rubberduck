@@ -2,7 +2,7 @@
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.UI.Command
 {

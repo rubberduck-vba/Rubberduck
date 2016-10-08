@@ -6,8 +6,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -88,41 +88,27 @@ namespace Rubberduck.UI.Command
         protected override void ExecuteImpl(object parameter)
         {
             var pane = _vbe.ActiveCodePane;
+            if (pane.IsWrappingNullReference)
             {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-
-                try
-                {
-                    var activeModule = pane.CodeModule;
-                    {
-                        var declaration = _state.GetTestModules().FirstOrDefault(f =>
-                        {
-                            var thisModule = f.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                            {
-                                return thisModule.Equals(activeModule);
-                            }
-                        });
-
-                        if (declaration != null)
-                        {
-                            var module = pane.CodeModule;
-                            {
-                                var name = GetNextTestMethodName(module.Parent);
-                                var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
-                                module.InsertLines(module.CountOfLines, body);
-                            }
-                        }
-                    }
-                }
-                catch (WrapperMethodException)
-                {
-                }
-
-                _state.OnParseRequested(this, _vbe.SelectedVBComponent);
+                return;
             }
+
+            var activeModule = pane.CodeModule;
+            var declaration = _state.GetTestModules().FirstOrDefault(f =>
+            {
+                var thisModule = f.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                return thisModule.Equals(activeModule);
+            });
+
+            if (declaration != null)
+            {
+                var module = pane.CodeModule;
+                var name = GetNextTestMethodName(module.Parent);
+                var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
+                module.InsertLines(module.CountOfLines, body);
+            }
+
+            _state.OnParseRequested(this, _vbe.SelectedVBComponent);
         }
 
         private string GetNextTestMethodName(VBComponent component)

@@ -1,5 +1,5 @@
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
