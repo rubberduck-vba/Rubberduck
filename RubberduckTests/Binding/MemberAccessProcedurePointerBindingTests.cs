@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Vbe.Interop;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -7,8 +8,6 @@ using System.Linq;
 using Moq;
 using Rubberduck.Parsing;
 using System.Threading;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
@@ -22,9 +21,9 @@ namespace RubberduckTests.Binding
             public void ProceduralModuleWithAccessibleMember()
             {
                 var builder = new MockVbeBuilder();
-                var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
+                var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
                 string code = CreateCaller(TEST_CLASS_NAME) + Environment.NewLine + CreateCallee();
-                enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.StandardModule, code);
+                enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_StdModule, code);
                 var enclosingProject = enclosingProjectBuilder.Build();
                 builder.AddProject(enclosingProject);
                 var vbe = builder.Build();
@@ -39,7 +38,7 @@ namespace RubberduckTests.Binding
                 Assert.AreEqual(1, declaration.References.Count(), "Function should have reference");
             }
 
-            private static RubberduckParserState Parse(Mock<IVBE> vbe)
+            private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
             {
                 var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
                 parser.Parse(new CancellationTokenSource());
