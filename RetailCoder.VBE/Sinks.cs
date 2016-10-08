@@ -6,7 +6,7 @@ using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-/* TODO: move to  VBComponents/VBProjects ISafeComWrapper implementation, expose regular .net events */
+
 namespace Rubberduck
 {
     public class ProjectEventArgs : EventArgs, IProjectEventArgs
@@ -37,7 +37,7 @@ namespace Rubberduck
 
     public class ComponentEventArgs : EventArgs, IComponentEventArgs
     {
-        public ComponentEventArgs(string projectId, VBProject project, IVBComponent component)
+        public ComponentEventArgs(string projectId, VBProject project, VBComponent component)
         {
             _projectId = projectId;
             _project = project;
@@ -50,14 +50,14 @@ namespace Rubberduck
         private readonly VBProject _project;
         public VBProject Project { get { return _project; } }
 
-        private readonly IVBComponent _component;
-        public IVBComponent Component { get { return _component; } }
+        private readonly VBComponent _component;
+        public VBComponent Component { get { return _component; } }
 
     }
 
     public class ComponentRenamedEventArgs : ComponentEventArgs, IComponentRenamedEventArgs
     {
-        public ComponentRenamedEventArgs(string projectId, VBProject project, IVBComponent component, string oldName)
+        public ComponentRenamedEventArgs(string projectId, VBProject project, VBComponent component, string oldName)
             : base(projectId, project, component)
         {
             _oldName = oldName;
@@ -176,7 +176,7 @@ namespace Rubberduck
         #endregion
 
         #region ComponentEvents
-        private void RegisterComponentsEventSink(IVBComponents components, string projectId)
+        private void RegisterComponentsEventSink(VBComponents components, string projectId)
         {
             if (_componentsEventsSinks.ContainsKey(projectId))
             {

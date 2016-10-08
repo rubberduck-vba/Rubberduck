@@ -103,7 +103,7 @@ namespace Rubberduck.UI.Command
             _state.OnParseRequested(this, _vbe.SelectedVBComponent);
         }
 
-        private string GetNextTestMethodName(IVBComponent component)
+        private string GetNextTestMethodName(VBComponent component)
         {
             var names = component.GetTests(_vbe, _state).Select(test => test.Declaration.IdentifierName);
             var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;

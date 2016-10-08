@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor
@@ -25,7 +24,7 @@ namespace Rubberduck.VBEditor
             return project.HelpFile;
         }
 
-        public static string GetProjectId(IReference reference)
+        public static string GetProjectId(Reference reference)
         {
             var projectName = reference.Name;
             var path = reference.FullPath;
@@ -44,7 +43,7 @@ namespace Rubberduck.VBEditor
             _contentHashCode = 0;
         }
 
-        public QualifiedModuleName(IVBComponent component)
+        public QualifiedModuleName(VBComponent component)
         {
             _project = null; // field is only assigned when the instance refers to a VBProject.
 
@@ -100,8 +99,8 @@ namespace Rubberduck.VBEditor
             return new QualifiedMemberName(this, member);
         }
 
-        private readonly IVBComponent _component;
-        public IVBComponent Component { get { return _component; } }
+        private readonly VBComponent _component;
+        public VBComponent Component { get { return _component; } }
 
         private readonly VBProject _project;
         public VBProject Project { get { return _project; } }

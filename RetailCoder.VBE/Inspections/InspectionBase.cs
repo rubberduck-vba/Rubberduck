@@ -4,7 +4,8 @@ using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Inspections
 {
@@ -91,7 +92,7 @@ namespace Rubberduck.Inspections
             get { return State.AllDeclarations.Where(declaration => declaration.IsBuiltIn); }
         }
 
-        protected bool IsInspectionDisabled(IVBComponent component, int line)
+        protected bool IsInspectionDisabled(VBComponent component, int line)
         {
             var annotations = State.GetModuleAnnotations(component).ToList();
 

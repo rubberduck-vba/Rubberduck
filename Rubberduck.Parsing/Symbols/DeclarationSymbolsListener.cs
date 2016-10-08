@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.Symbols
@@ -163,7 +162,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// These declarations are meant to be used to identify control event procedures.
         /// </remarks>
-        private void DeclareControlsAsMembers(IVBComponent form)
+        private void DeclareControlsAsMembers(VBComponent form)
         {
             foreach (var control in form.Controls)
             {

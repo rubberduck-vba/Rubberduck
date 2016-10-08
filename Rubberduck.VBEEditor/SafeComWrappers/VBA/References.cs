@@ -6,7 +6,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class References : SafeComWrapper<Microsoft.Vbe.Interop.References>, IReferences
+    public class References : SafeComWrapper<Microsoft.Vbe.Interop.References>, IEnumerable<Reference>, IEquatable<References>
     {
         public References(Microsoft.Vbe.Interop.References comObject) 
             : base(comObject)
@@ -50,34 +50,34 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             handler.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
         }
 
-        public IReference this[object index]
+        public Reference this[object index]
         {
             get { return new Reference(ComObject.Item(index)); }
         }
 
-        public IReference AddFromGuid(string guid, int major, int minor)
+        public Reference AddFromGuid(string guid, int major, int minor)
         {
             return new Reference(ComObject.AddFromGuid(guid, major, minor));
         }
 
-        public IReference AddFromFile(string path)
+        public Reference AddFromFile(string path)
         {
             return new Reference(ComObject.AddFromFile(path));
         }
 
-        public void Remove(IReference reference)
+        public void Remove(Reference reference)
         {
-            ComObject.Remove((Microsoft.Vbe.Interop.Reference)reference.ComObject);
+            ComObject.Remove(reference.ComObject);
         }
 
-        IEnumerator<IReference> IEnumerable<IReference>.GetEnumerator()
+        IEnumerator<Reference> IEnumerable<Reference>.GetEnumerator()
         {
             return new ComWrapperEnumerator<Reference>(ComObject);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<IReference>)this).GetEnumerator();
+            return ((IEnumerable<Reference>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -99,7 +99,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject.Parent, Parent.ComObject));
         }
 
-        public bool Equals(IReferences other)
+        public bool Equals(References other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.References>);
         }

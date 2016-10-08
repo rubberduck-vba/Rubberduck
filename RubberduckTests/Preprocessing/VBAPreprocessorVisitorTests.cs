@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using Rubberduck.Parsing;
 
 namespace RubberduckTests.Preprocessing
 {

@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Threading;
+using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
+using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.Commands
 {
@@ -28,7 +30,7 @@ Private Assert As Object
 {0}";
 
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(string.Format(input, string.Empty), out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -40,10 +42,10 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
 
             addTestMethodCommand.Execute(null);
-            var module = component.CodeModule;
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(component.CodeModule);
 
             Assert.AreEqual(
                 string.Format(input,
@@ -64,9 +66,9 @@ Private Assert As Object
 ";
 
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component);
-            vbe.Setup(s => s.ActiveCodePane).Returns((ICodePane)null);
+            vbe.Setup(s => s.ActiveCodePane).Returns((CodePane)null);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -77,10 +79,10 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
 
             addTestMethodCommand.Execute(null);
-            var module = component.CodeModule;
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(component.CodeModule);
 
             Assert.AreEqual(input, module.Content());
         }
@@ -89,7 +91,7 @@ Private Assert As Object
         public void AddTest_CanExecute_NonReadyState()
         {
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -102,7 +104,7 @@ Private Assert As Object
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
 
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -110,7 +112,7 @@ Private Assert As Object
         public void AddTest_CanExecute_NoTestModule()
         {
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -122,7 +124,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -139,7 +141,7 @@ Private Assert As Object
 ";
 
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -151,7 +153,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(new VBE(vbe.Object), parser.State);
 
             Assert.IsTrue(addTestMethodCommand.CanExecute(null));
         }
@@ -169,7 +171,7 @@ Private Assert As Object
 {0}";
 
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(string.Format(input, string.Empty), out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -178,10 +180,10 @@ Private Assert As Object
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
 
             addTestMethodCommand.Execute(null);
-            var module = component.CodeModule;
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(component.CodeModule);
 
             Assert.AreEqual(
                 string.Format(input,
@@ -193,7 +195,7 @@ Private Assert As Object
         public void AddExpectedErrorTest_CanExecute_NonReadyState()
         {
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -206,7 +208,7 @@ Private Assert As Object
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -214,7 +216,7 @@ Private Assert As Object
         public void AddExpectedErrorTest_CanExecute_NoTestModule()
         {
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -226,7 +228,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -243,7 +245,7 @@ Private Assert As Object
 ";
 
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -255,7 +257,7 @@ Private Assert As Object
                 Assert.Inconclusive("Parser Error");
             }
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
             Assert.IsTrue(addTestMethodCommand.CanExecute(null));
         }
 
@@ -272,9 +274,9 @@ Private Assert As Object
 ";
 
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component);
-            vbe.Setup(s => s.ActiveCodePane).Returns((ICodePane)null);
+            vbe.Setup(s => s.ActiveCodePane).Returns((CodePane)null);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -282,10 +284,10 @@ Private Assert As Object
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(new VBE(vbe.Object), parser.State);
             addTestMethodCommand.Execute(null);
 
-            var module = component.CodeModule;
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(component.CodeModule);
             Assert.AreEqual(input, module.Content());
         }
 
@@ -302,7 +304,7 @@ Private Assert As New Rubberduck.AssertClass
 ";
 
             var builder = new MockVbeBuilder();
-            IVBComponent component;
+            VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -318,11 +320,11 @@ Private Assert As New Rubberduck.AssertClass
             var config = GetUnitTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-            var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, parser.State, settings.Object);
+            var addTestModuleCommand = new AddTestModuleCommand(new VBE(vbe.Object), parser.State, settings.Object);
             addTestModuleCommand.Execute(null);
 
             // mock suite auto-assigns "TestModule1" to the first component when we create the mock
-            var module = vbe.Object.VBProjects[0].VBComponents["TestModule2"].CodeModule;
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(vbe.Object.VBProjects.Item(0).VBComponents.Item("TestModule2").CodeModule);
             Assert.AreEqual(expected, module.Content());
         }
 

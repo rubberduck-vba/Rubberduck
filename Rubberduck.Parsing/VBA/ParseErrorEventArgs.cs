@@ -1,13 +1,13 @@
 ﻿using System;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.VBA
 {
     public class ParseErrorEventArgs : EventArgs
     {
-        public ParseErrorEventArgs(SyntaxErrorException exception, IVBComponent component)
+        public ParseErrorEventArgs(SyntaxErrorException exception, VBComponent component)
         {
             _exception = exception;
             _component = component;
@@ -16,7 +16,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly SyntaxErrorException _exception;
         public SyntaxErrorException Exception { get { return _exception; } }
 
-        private readonly IVBComponent _component;
+        private readonly VBComponent _component;
         public string ComponentName { get { return _component.Name; } }
         public string ProjectName { get { return _component.Collection.Parent.Name; } }
 

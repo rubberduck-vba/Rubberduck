@@ -1,4 +1,13 @@
-﻿//namespace RubberduckTests.Refactoring.ExtractMethod
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.ExtractMethod;
+using Rubberduck.VBEditor;
+using RubberduckTests.Mocks;
+
+//namespace RubberduckTests.Refactoring.ExtractMethod
 //{
 //    [TestClass]
 //    public class ExtractMethodRefactoringTests

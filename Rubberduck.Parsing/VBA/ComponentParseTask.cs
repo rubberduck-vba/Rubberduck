@@ -7,19 +7,21 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.VBA
 {
     class ComponentParseTask
     {
-        private readonly IVBComponent _component;
+        private readonly VBComponent _component;
         private readonly QualifiedModuleName _qualifiedName;
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
@@ -30,7 +32,7 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParseFailureArgs> ParseFailure;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ComponentParseTask(IVBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(VBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
         {
             _attributeParser = attributeParser;
             _preprocessor = preprocessor;

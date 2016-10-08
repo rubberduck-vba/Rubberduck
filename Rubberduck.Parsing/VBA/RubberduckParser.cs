@@ -22,11 +22,11 @@ namespace Rubberduck.Parsing.VBA
     {
         public RubberduckParserState State { get { return _state; } }
         
-        private readonly ConcurrentDictionary<IVBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks =
-            new ConcurrentDictionary<IVBComponent, Tuple<Task, CancellationTokenSource>>();
+        private readonly ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks =
+            new ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>>();
 
-        private readonly IDictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
-            = new Dictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
+        private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
+            = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
 
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
@@ -80,7 +80,7 @@ namespace Rubberduck.Parsing.VBA
         {
             State.RefreshProjects(_vbe);
 
-            var components = new List<IVBComponent>();
+            var components = new List<VBComponent>();
             foreach (var project in State.Projects)
             {
                 foreach (var component in project.VBComponents)
@@ -156,10 +156,10 @@ namespace Rubberduck.Parsing.VBA
         {
             State.RefreshProjects(_vbe);
 
-            var components = new List<IVBComponent>();
+            var components = new List<VBComponent>();
             foreach (var project in State.Projects)
             {
-                foreach (var component in project.VBComponents)
+                foreach (VBComponent component in project.VBComponents)
                 {
                     components.Add(component);
                 }
@@ -191,7 +191,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var toParse = new List<IVBComponent>();
+            var toParse = new List<VBComponent>();
             foreach (var component in components)
             {
                 if (State.IsNewOrModified(component))
@@ -334,7 +334,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
 
-        private string GetReferenceProjectId(IReference reference, IReadOnlyList<VBProject> projects)
+        private string GetReferenceProjectId(Reference reference, IReadOnlyList<VBProject> projects)
         {
             VBProject project = null;
             foreach (var item in projects)
@@ -423,7 +423,7 @@ namespace Rubberduck.Parsing.VBA
                 mappedIds.Add(item.ReferencedProjectId);
             }
 
-            var unmapped = new List<IReference>();
+            var unmapped = new List<Reference>();
             foreach (var project in projects)
             {
                 var references = project.References;
@@ -446,7 +446,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void UnloadComReference(IReference reference, IReadOnlyList<VBProject> projects)
+        private void UnloadComReference(Reference reference, IReadOnlyList<VBProject> projects)
         {
             var referencedProjectId = GetReferenceProjectId(reference, projects);
 
@@ -473,7 +473,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private Task ParseAsync(IVBComponent component, CancellationTokenSource token, TokenStreamRewriter rewriter = null)
+        private Task ParseAsync(VBComponent component, CancellationTokenSource token, TokenStreamRewriter rewriter = null)
         {
             State.ClearStateCache(component);
 
@@ -499,7 +499,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ParseAsyncInternal(IVBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
+        private void ParseAsyncInternal(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
             var preprocessor = _preprocessorFactory();
             var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
@@ -528,7 +528,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private readonly ConcurrentDictionary<string, Declaration> _projectDeclarations = new ConcurrentDictionary<string, Declaration>();
-        private void ResolveDeclarations(IVBComponent component, IParseTree tree)
+        private void ResolveDeclarations(VBComponent component, IParseTree tree)
         {
             if (component == null) { return; }
 
@@ -587,7 +587,7 @@ namespace Rubberduck.Parsing.VBA
             return projectDeclaration;
         }
 
-        private void ResolveReferences(DeclarationFinder finder, IVBComponent component, IParseTree tree)
+        private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {
             Debug.Assert(State.GetModuleState(component) == ParserState.ResolvingReferences);
             

@@ -10,7 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBComponents : SafeComWrapper<Microsoft.Vbe.Interop.VBComponents>, IVBComponents
+    public class VBComponents : SafeComWrapper<Microsoft.Vbe.Interop.VBComponents>, IEnumerable<VBComponent>, IEquatable<VBComponents>
     {
         public VBComponents(Microsoft.Vbe.Interop.VBComponents comObject) 
             : base(comObject)
@@ -32,44 +32,44 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
-        public IVBComponent this[object index]
+        public VBComponent this[object index]
         {
             get { return new VBComponent(IsWrappingNullReference ? null : ComObject.Item(index)); }
         }
 
-        public void Remove(IVBComponent item)
+        public void Remove(VBComponent item)
         {
-            ComObject.Remove((Microsoft.Vbe.Interop.VBComponent)item.ComObject);
+            ComObject.Remove(item.ComObject);
         }
 
-        public IVBComponent Add(ComponentType type)
+        public VBComponent Add(ComponentType type)
         {
             return new VBComponent(ComObject.Add((vbext_ComponentType)type));
         }
 
-        public IVBComponent Import(string path)
+        public VBComponent Import(string path)
         {
             return new VBComponent(ComObject.Import(path));
         }
 
-        public IVBComponent AddCustom(string progId)
+        public VBComponent AddCustom(string progId)
         {
             return new VBComponent(ComObject.AddCustom(progId));
         }
 
-        public IVBComponent AddMTDesigner(int index = 0)
+        public VBComponent AddMTDesigner(int index = 0)
         {
             return new VBComponent(ComObject.AddMTDesigner(index));
         }
 
-        IEnumerator<IVBComponent> IEnumerable<IVBComponent>.GetEnumerator()
+        IEnumerator<VBComponent> IEnumerable<VBComponent>.GetEnumerator()
         {
             return new ComWrapperEnumerator<VBComponent>(ComObject);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<IVBComponent>)this).GetEnumerator();
+            return ((IEnumerable<VBComponent>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -89,7 +89,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
         }
 
-        public bool Equals(IVBComponents other)
+        public bool Equals(VBComponents other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBComponents>);
         }
@@ -118,7 +118,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
             {
-                IVBComponent component;
+                VBComponent component;
                 try
                 {
                     component = this[name];
@@ -151,7 +151,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// UserForms, Class modules, and Standard modules are completely removed from the project.
         /// Since Document type components can't be removed through the VBE, all code in its CodeModule are deleted instead.
         /// </remarks>
-        public void RemoveSafely(IVBComponent component)
+        public void RemoveSafely(VBComponent component)
         {
             switch (component.Type)
             {

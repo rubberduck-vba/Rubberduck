@@ -3,7 +3,6 @@ using System.Reflection;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Common
@@ -19,7 +18,7 @@ namespace Rubberduck.Common
             }
         }
 
-        public string Export(IVBComponent component)
+        public string Export(VBComponent component)
         {
             return component.ExportAsSourceFile(ExportPath);
         }
