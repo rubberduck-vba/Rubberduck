@@ -125,6 +125,7 @@
     <Compile Include="SafeComWrappers\Abstract\IVBComponents.cs" />
     <Compile Include="SafeComWrappers\Abstract\IVBProject.cs" />
     <Compile Include="SafeComWrappers\Abstract\IVBProjects.cs" />
+    <Compile Include="SafeComWrappers\HashCode.cs" />
     <Compile Include="SafeComWrappers\Office.Core\AxHostConverter.cs">
       <SubType>Component</SubType>
     </Compile>

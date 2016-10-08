@@ -3,7 +3,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class AddIn : SafeComWrapper<Microsoft.Vbe.Interop.AddIn>, IAddIn
+    public class AddIn : SafeComWrapper<Microsoft.Vbe.Interop.AddIn>, ISafeComWrapper, IAddIn
     {
         public AddIn(Microsoft.Vbe.Interop.AddIn comObject) 
             : base(comObject)
