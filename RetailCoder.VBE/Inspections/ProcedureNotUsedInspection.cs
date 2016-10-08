@@ -4,7 +4,6 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
@@ -20,6 +19,16 @@ namespace Rubberduck.Inspections
         public override string Meta { get { return InspectionsUI.ProcedureNotUsedInspectionMeta; } }
         public override string Description { get { return InspectionsUI.ProcedureNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+
+        private static readonly string[] DocumentEventHandlerPrefixes =
+        {
+            "Chart_",
+            "Worksheet_",
+            "Workbook_",
+            "Document_",
+            "Application_",
+            "Session_",
+        };
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
@@ -50,7 +59,7 @@ namespace Rubberduck.Inspections
                             && !IsInspectionDisabled(item, AnnotationName)).ToList();
             var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
-            issues = DocumentNames.DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));
+            issues = DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));
 
             return issues.ToList();
         }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -15,7 +16,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int HWnd
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.HWnd; }
+            get { return IsWrappingNullReference ? 0 : Target.HWnd; }
         }
 
         public IntPtr Handle()
@@ -25,92 +26,92 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
         
         public IWindows Collection
         {
-            get { return new Windows(IsWrappingNullReference ? null : ComObject.Collection); }
+            get { return new Windows(IsWrappingNullReference ? null : Target.Collection); }
         }
 
         public string Caption
         {
-            get { return IsWrappingNullReference ? string.Empty : ComObject.Caption; }
+            get { return IsWrappingNullReference ? string.Empty : Target.Caption; }
         }
 
         public bool IsVisible
         {
-            get { return !IsWrappingNullReference && ComObject.Visible; }
-            set { ComObject.Visible = value; }
+            get { return !IsWrappingNullReference && Target.Visible; }
+            set { Target.Visible = value; }
         }
 
         public int Left
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.Left; }
-            set { ComObject.Left = value; }
+            get { return IsWrappingNullReference ? 0 : Target.Left; }
+            set { Target.Left = value; }
         }
 
         public int Top
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.Top; }
-            set { ComObject.Top = value; }
+            get { return IsWrappingNullReference ? 0 : Target.Top; }
+            set { Target.Top = value; }
         }
 
         public int Width
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.Width; }
-            set { ComObject.Width = value; }
+            get { return IsWrappingNullReference ? 0 : Target.Width; }
+            set { Target.Width = value; }
         }
 
         public int Height
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.Height; }
-            set { ComObject.Height = value; }
+            get { return IsWrappingNullReference ? 0 : Target.Height; }
+            set { Target.Height = value; }
         }
 
         public WindowState WindowState
         {
-            get { return IsWrappingNullReference ? 0 : (WindowState)ComObject.WindowState; }
+            get { return IsWrappingNullReference ? 0 : (WindowState)Target.WindowState; }
         }
 
         public WindowKind Type
         {
-            get { return IsWrappingNullReference ? 0 : (WindowKind)ComObject.Type; }
+            get { return IsWrappingNullReference ? 0 : (WindowKind)Target.Type; }
         }
 
         public ILinkedWindows LinkedWindows
         {
-            get { return new LinkedWindows(IsWrappingNullReference ? null : ComObject.LinkedWindows); }
+            get { return new LinkedWindows(IsWrappingNullReference ? null : Target.LinkedWindows); }
         }
 
         public IWindow LinkedWindowFrame
         {
-            get { return new Window(IsWrappingNullReference ? null : ComObject.LinkedWindowFrame); }
+            get { return new Window(IsWrappingNullReference ? null : Target.LinkedWindowFrame); }
         }
 
         public void Close()
         {
-            ComObject.Close();
+            Target.Close();
         }
 
         public void SetFocus()
         {
-            ComObject.SetFocus();
+            Target.SetFocus();
         }
 
         public void SetKind(WindowKind eKind)
         {
-            ComObject.SetKind((vbext_WindowType)eKind);
+            Target.SetKind((vbext_WindowType)eKind);
         }
 
         public void Detach()
         {
-            ComObject.Detach();
+            Target.Detach();
         }
 
         public void Attach(int lWindowHandle)
         {
-            ComObject.Attach(lWindowHandle);
+            Target.Attach(lWindowHandle);
         }
         
         public override void Release()
@@ -118,16 +119,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (!IsWrappingNullReference)
             {
                 LinkedWindowFrame.Release();
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             } 
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Window> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.Window> other)
         {
             return IsEqualIfNull(other) || (
                 other != null 
-                && (int)other.ComObject.Type == (int)Type 
-                && other.ComObject.HWnd == HWnd);
+                && (int)other.Target.Type == (int)Type 
+                && other.Target.HWnd == HWnd);
         }
 
         public bool Equals(IWindow other)
@@ -137,7 +138,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComputeHashCode(HWnd, Type);
+            return IsWrappingNullReference ? 0 : HashCode.Compute(HWnd, Type);
         }
     }
 }

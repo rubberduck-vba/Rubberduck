@@ -2,32 +2,32 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
-using Rubberduck.VBEditor.SafeComWrappers.Forms;
+using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using ButtonState = Rubberduck.VBEditor.SafeComWrappers.Forms.ButtonState;
+using ButtonState = Rubberduck.VBEditor.SafeComWrappers.MSForms.ButtonState;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBarButton : CommandBarControl, ICommandBarButton
     {
-        public CommandBarButton(Microsoft.Office.Core.CommandBarButton comObject) 
-            : base(comObject)
+        public CommandBarButton(Microsoft.Office.Core.CommandBarButton target) 
+            : base(target)
         {
-            comObject.Click += comObject_Click;
+            target.Click += Target_Click;
         }
 
         private Microsoft.Office.Core.CommandBarButton Button
         {
-            get { return (Microsoft.Office.Core.CommandBarButton)ComObject; }
+            get { return (Microsoft.Office.Core.CommandBarButton)Target; }
         }
 
         public static ICommandBarButton FromCommandBarControl(ICommandBarControl control)
         {
-            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.ComObject);
+            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.Target);
         }
 
         public event EventHandler<CommandBarButtonClickEventArgs> Click;
-        private void comObject_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
+        private void Target_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
         {
             // todo: confirm whether this fixes the multicast glitch of ParentMenuItemBase.child_Click()
             // "without this hack, handler runs once for each menu item that's hooked up to the command.

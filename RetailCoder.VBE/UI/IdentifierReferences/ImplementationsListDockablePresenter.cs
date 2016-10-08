@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.IdentifierReferences
 {

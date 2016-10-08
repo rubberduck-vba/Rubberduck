@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.SourceControl
 {
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
-        protected readonly VBProject Project;
+        protected readonly IVBProject Project;
 
-        protected SourceControlProviderBase(VBProject project)
+        protected SourceControlProviderBase(IVBProject project)
         {
             Project = project;
         }
 
-        protected SourceControlProviderBase(VBProject project, IRepository repository)
+        protected SourceControlProviderBase(IVBProject project, IRepository repository)
             :this(project)
         {
             CurrentRepository = repository;

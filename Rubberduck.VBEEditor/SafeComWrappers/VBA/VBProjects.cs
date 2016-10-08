@@ -3,60 +3,60 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBProjects : SafeComWrapper<Microsoft.Vbe.Interop.VBProjects>, IEnumerable<VBProject>, IEquatable<VBProjects>
+    public class VBProjects : SafeComWrapper<Microsoft.Vbe.Interop.VBProjects>, IVBProjects
     {
-        public VBProjects(Microsoft.Vbe.Interop.VBProjects comObject) 
-            : base(comObject)
+        public VBProjects(Microsoft.Vbe.Interop.VBProjects target) 
+            : base(target)
         {
         }
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
+            get { return IsWrappingNullReference ? 0 : Target.Count; }
         }
 
         public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
         public IVBE Parent
         {
-            get { return new VBE(IsWrappingNullReference ? null : ComObject.Parent); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.Parent); }
         }
 
-        public VBProject Add(ProjectType type)
+        public IVBProject Add(ProjectType type)
         {
-            return new VBProject(ComObject.Add((vbext_ProjectType)type));
+            return new VBProject(Target.Add((vbext_ProjectType)type));
         }
 
-        public void Remove(VBProject project)
+        public void Remove(Microsoft.Vbe.Interop.VBProject project)
         {
-            ComObject.Remove(project.ComObject);
+            Target.Remove(project);
         }
 
-        public VBProject Open(string path)
+        public IVBProject Open(string path)
         {
-            return new VBProject(ComObject.Open(path));
+            return new VBProject(Target.Open(path));
         }
 
-        public VBProject this[object index]
+        public IVBProject this[object index]
         {
-            get { return new VBProject(ComObject.Item(index)); }
+            get { return new VBProject(Target.Item(index)); }
         }
 
-        IEnumerator<VBProject> IEnumerable<VBProject>.GetEnumerator()
+        IEnumerator<IVBProject> IEnumerable<IVBProject>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<VBProject>(ComObject);
+            return new ComWrapperEnumerator<VBProject>(Target);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<VBProject>)this).GetEnumerator();
+            return ((IEnumerable<IVBProject>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -67,23 +67,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     this[i].Release();
                 }
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.VBProjects> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.VBProjects> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(VBProjects other)
+        public bool Equals(IVBProjects other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBProjects>);
         }
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 
+                : HashCode.Compute(Target);
         }
     }
 }

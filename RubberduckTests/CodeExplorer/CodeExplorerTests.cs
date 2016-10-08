@@ -15,7 +15,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
 using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;

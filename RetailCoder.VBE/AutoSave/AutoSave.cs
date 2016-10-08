@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Timers;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.AutoSave
 {
@@ -39,7 +39,7 @@ namespace Rubberduck.AutoSave
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             var projects = _vbe.VBProjects;
-            if (projects.Any(p => !p.Saved))
+            if (projects.Any(p => !p.IsSaved))
             {
                 try
                 {

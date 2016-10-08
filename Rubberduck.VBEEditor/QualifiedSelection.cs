@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.VBEditor
+﻿using Rubberduck.VBEditor.SafeComWrappers;
+
+namespace Rubberduck.VBEditor
 {
     public struct QualifiedSelection
     {
@@ -21,13 +23,7 @@
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hash = 17;
-                hash = hash * 23 + _qualifiedName.GetHashCode();
-                hash = hash * 23 + _selection.GetHashCode();
-                return hash;
-            }
+            return HashCode.Compute(_qualifiedName, _selection);
         }
 
         public static bool operator ==(QualifiedSelection selection1, QualifiedSelection selection2)

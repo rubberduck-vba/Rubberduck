@@ -12,7 +12,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceParameter;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Application;
 using RubberduckTests.Mocks;
 using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;

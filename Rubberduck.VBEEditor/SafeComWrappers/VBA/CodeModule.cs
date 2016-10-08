@@ -4,52 +4,52 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     [SuppressMessage("ReSharper", "UseIndexedProperty")]
     public class CodeModule : SafeComWrapper<Microsoft.Vbe.Interop.CodeModule>, ICodeModule
     {
-        public CodeModule(Microsoft.Vbe.Interop.CodeModule comObject) 
-            : base(comObject)
+        public CodeModule(Microsoft.Vbe.Interop.CodeModule target) 
+            : base(target)
         {
         }
 
         public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
         public VBComponent Parent
         {
-            get { return new VBComponent(IsWrappingNullReference ? null : ComObject.Parent); }
+            get { return new VBComponent(IsWrappingNullReference ? null : Target.Parent); }
         }
 
         public CodePane CodePane
         {
-            get { return new CodePane(IsWrappingNullReference ? null : ComObject.CodePane); }
+            get { return new CodePane(IsWrappingNullReference ? null : Target.CodePane); }
         }
 
         public int CountOfDeclarationLines
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.CountOfDeclarationLines; }
+            get { return IsWrappingNullReference ? 0 : Target.CountOfDeclarationLines; }
         }
 
         public int CountOfLines
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.CountOfLines; }
+            get { return IsWrappingNullReference ? 0 : Target.CountOfLines; }
         }
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : ComObject.Name; }
-            set { ComObject.Name = value; }
+            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
+            set { Target.Name = value; }
         }
 
         public string GetLines(int startLine, int count)
         {
-            return ComObject.get_Lines(startLine, count);
+            return Target.get_Lines(startLine, count);
         }
 
         /// <summary>
@@ -82,12 +82,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Content()
         {
-            return ComObject.CountOfLines == 0 ? string.Empty : GetLines(1, CountOfLines);
+            return Target.CountOfLines == 0 ? string.Empty : GetLines(1, CountOfLines);
         }
 
         public void Clear()
         {
-            ComObject.DeleteLines(1, CountOfLines);
+            Target.DeleteLines(1, CountOfLines);
         }
 
         /// <summary>
@@ -163,27 +163,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void AddFromString(string content)
         {
-            ComObject.AddFromString(content);
+            Target.AddFromString(content);
         }
 
         public void AddFromFile(string path)
         {
-            ComObject.AddFromFile(path);
+            Target.AddFromFile(path);
         }
 
         public void InsertLines(int line, string content)
         {
-            ComObject.InsertLines(line, content);
+            Target.InsertLines(line, content);
         }
 
         public void DeleteLines(int startLine, int count = 1)
         {
-            ComObject.DeleteLines(startLine, count);
+            Target.DeleteLines(startLine, count);
         }
 
         public void ReplaceLine(int line, string content)
         {
-            ComObject.ReplaceLine(line, content);
+            Target.ReplaceLine(line, content);
         }
 
         public Selection? Find(string target, bool wholeWord = false, bool matchCase = false, bool patternSearch = false)
@@ -193,36 +193,36 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             var endLine = 0;
             var endColumn = 0;
 
-            return ComObject.Find(target, ref startLine, ref startColumn, ref endLine, ref endColumn, wholeWord, matchCase, patternSearch)
+            return Target.Find(target, ref startLine, ref startColumn, ref endLine, ref endColumn, wholeWord, matchCase, patternSearch)
                 ? new Selection(startLine, startColumn, endLine, endColumn)
                 : (Selection?)null;
         }
 
         public int GetProcStartLine(string procName, ProcKind procKind)
         {
-            return ComObject.get_ProcStartLine(procName, (vbext_ProcKind)procKind);
+            return Target.get_ProcStartLine(procName, (vbext_ProcKind)procKind);
         }
 
         public int GetProcBodyStartLine(string procName, ProcKind procKind)
         {
-            return ComObject.get_ProcBodyLine(procName, (vbext_ProcKind)procKind);
+            return Target.get_ProcBodyLine(procName, (vbext_ProcKind)procKind);
         }
 
         public int GetProcCountLines(string procName, ProcKind procKind)
         {
-            return ComObject.get_ProcCountLines(procName, (vbext_ProcKind)procKind);
+            return Target.get_ProcCountLines(procName, (vbext_ProcKind)procKind);
         }
 
         public string GetProcOfLine(int line)
         {
             vbext_ProcKind procKind;
-            return ComObject.get_ProcOfLine(line, out procKind);
+            return Target.get_ProcOfLine(line, out procKind);
         }
 
         public ProcKind GetProcKindOfLine(int line)
         {
             vbext_ProcKind procKind;
-            ComObject.get_ProcOfLine(line, out procKind);
+            Target.get_ProcOfLine(line, out procKind);
             return (ProcKind)procKind;
         }
 
@@ -231,13 +231,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (!IsWrappingNullReference)
             {
                 //CodePane.Release(); // VBE.CodePanes collection should release this CodePane
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.CodeModule> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.CodeModule> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
         public bool Equals(ICodeModule other)
@@ -247,7 +247,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
     }
 }

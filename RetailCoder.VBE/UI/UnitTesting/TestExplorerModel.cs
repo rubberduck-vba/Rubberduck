@@ -6,7 +6,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {

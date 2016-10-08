@@ -2,15 +2,14 @@
 using System.Reflection;
 using System.IO;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
     [ComVisible(false)]
     public static class ProjectTestExtensions
     {
-        public static void EnsureReferenceToAddInLibrary(this VBProject project)
+        public static void EnsureReferenceToAddInLibrary(this IVBProject project)
         {
             var assembly = Assembly.GetExecutingAssembly();
 

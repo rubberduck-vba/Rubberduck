@@ -4,8 +4,8 @@ using System.Windows.Forms;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -64,7 +64,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        private VBProject GetNodeProject(CodeExplorerItemViewModel parameter)
+        private IVBProject GetNodeProject(CodeExplorerItemViewModel parameter)
         {
             if (parameter is ICodeExplorerDeclarationViewModel)
             {

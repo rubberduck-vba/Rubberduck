@@ -4,8 +4,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
@@ -18,7 +17,7 @@ namespace Rubberduck.UnitTesting
                     .Select(item => new TestMethod(item, vbe));
         }
 
-        public static IEnumerable<TestMethod> GetTests(this VBComponent component, IVBE vbe, RubberduckParserState state)
+        public static IEnumerable<TestMethod> GetTests(this IVBComponent component, IVBE vbe, RubberduckParserState state)
         {
             if (component == null || component.IsWrappingNullReference)
             {

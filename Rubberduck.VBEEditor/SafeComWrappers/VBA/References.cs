@@ -2,19 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class References : SafeComWrapper<Microsoft.Vbe.Interop.References>, IEnumerable<Reference>, IEquatable<References>
+    public class References : SafeComWrapper<Microsoft.Vbe.Interop.References>, IReferences
     {
-        public References(Microsoft.Vbe.Interop.References comObject) 
-            : base(comObject)
+        public References(Microsoft.Vbe.Interop.References target) 
+            : base(target)
         {
             if (!IsWrappingNullReference)
             {
-                comObject.ItemAdded += comObject_ItemAdded;
-                comObject.ItemRemoved += comObject_ItemRemoved;
+                target.ItemAdded += Target_ItemAdded;
+                target.ItemRemoved += Target_ItemRemoved;
             }
         }
 
@@ -23,61 +23,61 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
+            get { return IsWrappingNullReference ? 0 : Target.Count; }
         }
 
-        public VBProject Parent
+        public IVBProject Parent
         {
-            get { return new VBProject(IsWrappingNullReference ? null : ComObject.Parent); }
+            get { return new VBProject(IsWrappingNullReference ? null : Target.Parent); }
         }
 
         public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
-        private void comObject_ItemRemoved(Microsoft.Vbe.Interop.Reference reference)
+        private void Target_ItemRemoved(Microsoft.Vbe.Interop.Reference reference)
         {
             var handler = ItemRemoved;
             if (handler == null) { return; }
             handler.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
         }
 
-        private void comObject_ItemAdded(Microsoft.Vbe.Interop.Reference reference)
+        private void Target_ItemAdded(Microsoft.Vbe.Interop.Reference reference)
         {
             var handler = ItemAdded;
             if (handler == null) { return; }
             handler.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
         }
 
-        public Reference this[object index]
+        public IReference this[object index]
         {
-            get { return new Reference(ComObject.Item(index)); }
+            get { return new Reference(Target.Item(index)); }
         }
 
-        public Reference AddFromGuid(string guid, int major, int minor)
+        public IReference AddFromGuid(string guid, int major, int minor)
         {
-            return new Reference(ComObject.AddFromGuid(guid, major, minor));
+            return new Reference(Target.AddFromGuid(guid, major, minor));
         }
 
-        public Reference AddFromFile(string path)
+        public IReference AddFromFile(string path)
         {
-            return new Reference(ComObject.AddFromFile(path));
+            return new Reference(Target.AddFromFile(path));
         }
 
-        public void Remove(Reference reference)
+        public void Remove(IReference reference)
         {
-            ComObject.Remove(reference.ComObject);
+            Target.Remove(((ISafeComWrapper<Microsoft.Vbe.Interop.Reference>)reference).Target);
         }
 
-        IEnumerator<Reference> IEnumerable<Reference>.GetEnumerator()
+        IEnumerator<IReference> IEnumerable<IReference>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<Reference>(ComObject);
+            return new ComWrapperEnumerator<Reference>(Target);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<Reference>)this).GetEnumerator();
+            return ((IEnumerable<IReference>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -88,25 +88,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     this[i].Release();
                 }
-                ComObject.ItemAdded -= comObject_ItemAdded;
-                ComObject.ItemRemoved -= comObject_ItemRemoved;
-                Marshal.ReleaseComObject(ComObject);
+                Target.ItemAdded -= Target_ItemAdded;
+                Target.ItemRemoved -= Target_ItemRemoved;
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.References> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.References> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject.Parent, Parent.ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target.Parent, Parent.Target));
         }
 
-        public bool Equals(References other)
+        public bool Equals(IReferences other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.References>);
         }
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections
 {

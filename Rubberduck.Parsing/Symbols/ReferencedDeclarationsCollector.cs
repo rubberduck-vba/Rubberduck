@@ -20,6 +20,7 @@ using Rubberduck.Parsing.Grammar;
 using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.Symbols
@@ -147,7 +148,7 @@ namespace Rubberduck.Parsing.Symbols
             return typeName.Equals("LONG_PTR") ? "LongPtr" : typeName;  //Quickfix for http://chat.stackexchange.com/transcript/message/30119269#30119269
         }
 
-        public List<Declaration> GetDeclarationsForReference(Reference reference)
+        public List<Declaration> GetDeclarationsForReference(IReference reference)
         {
             var output = new List<Declaration>();
             var projectName = reference.Name;

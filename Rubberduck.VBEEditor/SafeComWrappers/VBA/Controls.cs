@@ -1,30 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class Controls : SafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls>, IControls
     {
-        public Controls(Microsoft.Vbe.Interop.Forms.Controls comObject) 
-            : base(comObject)
+        public Controls(Microsoft.Vbe.Interop.Forms.Controls target) 
+            : base(target)
         {
         }
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
+            get { return IsWrappingNullReference ? 0 : Target.Count; }
         }
 
         public IControl this[object index]
         {
-            get { return new Control((Microsoft.Vbe.Interop.Forms.Control) ComObject.Item(index)); }
+            get { return new Control((Microsoft.Vbe.Interop.Forms.Control) Target.Item(index)); }
         }
 
         IEnumerator<IControl> IEnumerable<IControl>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IControl>(ComObject);
+            return new ComWrapperEnumerator<IControl>(Target);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -40,13 +41,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     this[i].Release();
                 }
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             } 
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
         public bool Equals(IControls other)
@@ -56,7 +57,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
     }
 }

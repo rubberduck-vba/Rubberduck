@@ -1,73 +1,73 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBE : SafeComWrapper<Microsoft.Vbe.Interop.VBE>, IVBE
     {
-        public VBE(Microsoft.Vbe.Interop.VBE comObject)
-            :base(comObject)
+        public VBE(Microsoft.Vbe.Interop.VBE target)
+            :base(target)
         {
         }
 
         public string Version
         {
-            get { return IsWrappingNullReference ? string.Empty : ComObject.Version; }
+            get { return IsWrappingNullReference ? string.Empty : Target.Version; }
         }
 
         public ICodePane ActiveCodePane
         {
-            get { return new CodePane(IsWrappingNullReference ? null : ComObject.ActiveCodePane); }
-            set { ComObject.ActiveCodePane = (Microsoft.Vbe.Interop.CodePane)value.ComObject; }
+            get { return new CodePane(IsWrappingNullReference ? null : Target.ActiveCodePane); }
+            set { Target.ActiveCodePane = (Microsoft.Vbe.Interop.CodePane)value.Target; }
         }
 
-        public VBProject ActiveVBProject
+        public IVBProject ActiveVBProject
         {
-            get { return new VBProject(IsWrappingNullReference ? null : ComObject.ActiveVBProject); }
-            set { ComObject.ActiveVBProject = value.ComObject; }
+            get { return new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject); }
+            set { Target.ActiveVBProject = (Microsoft.Vbe.Interop.VBProject) value.Target; }
         }
 
         public IWindow ActiveWindow
         {
-            get { return new Window(IsWrappingNullReference ? null : ComObject.ActiveWindow); }
+            get { return new Window(IsWrappingNullReference ? null : Target.ActiveWindow); }
         }
 
         public IAddIns AddIns
         {
-            get { return new AddIns(IsWrappingNullReference ? null : ComObject.Addins); }
+            get { return new AddIns(IsWrappingNullReference ? null : Target.Addins); }
         }
 
         public ICodePanes CodePanes
         {
-            get { return new CodePanes(IsWrappingNullReference ? null : ComObject.CodePanes); }
+            get { return new CodePanes(IsWrappingNullReference ? null : Target.CodePanes); }
         }
 
         public ICommandBars CommandBars
         {
-            get { return new CommandBars(IsWrappingNullReference ? null : ComObject.CommandBars); }
+            get { return new CommandBars(IsWrappingNullReference ? null : Target.CommandBars); }
         }
 
         public IWindow MainWindow
         {
-            get { return new Window(IsWrappingNullReference ? null : ComObject.MainWindow); }
+            get { return new Window(IsWrappingNullReference ? null : Target.MainWindow); }
         }
 
-        public VBComponent SelectedVBComponent
+        public IVBComponent SelectedVBComponent
         {
-            get { return new VBComponent(IsWrappingNullReference ? null : ComObject.SelectedVBComponent); }
+            get { return new VBComponent(IsWrappingNullReference ? null : Target.SelectedVBComponent); }
         }
 
-        public VBProjects VBProjects
+        public IVBProjects VBProjects
         {
-            get { return new VBProjects(IsWrappingNullReference ? null : ComObject.VBProjects); }
+            get { return new VBProjects(IsWrappingNullReference ? null : Target.VBProjects); }
         }
 
         public IWindows Windows
         {
-            get { return new Windows(IsWrappingNullReference ? null : ComObject.Windows); }
+            get { return new Windows(IsWrappingNullReference ? null : Target.Windows); }
         }
 
         public override void Release()
@@ -79,13 +79,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 CommandBars.Release();
                 Windows.Release();
                 AddIns.Release();
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.VBE> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.VBE> other)
         {
-            return IsEqualIfNull(other) || (other != null && other.ComObject.Version == Version);
+            return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);
         }
 
         public bool Equals(IVBE other)
@@ -95,7 +95,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
 
         public bool IsInDesignMode
@@ -103,7 +103,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return VBProjects.All(project => project.Mode == EnvironmentMode.Design); }
         }
 
-        public static void SetSelection(VBProject vbProject, Selection selection, string name)
+        public static void SetSelection(IVBProject vbProject, Selection selection, string name)
         {
             var components = vbProject.VBComponents;
             var component = components.SingleOrDefault(c => c.Name == name);

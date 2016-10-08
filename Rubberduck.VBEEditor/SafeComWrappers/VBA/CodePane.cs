@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -14,38 +14,38 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public ICodePanes Collection
         {
-            get { return new CodePanes(IsWrappingNullReference ? null : ComObject.Collection); }
+            get { return new CodePanes(IsWrappingNullReference ? null : Target.Collection); }
         }
 
         public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
         public IWindow Window
         {
-            get { return new Window(IsWrappingNullReference ? null : ComObject.Window); }
+            get { return new Window(IsWrappingNullReference ? null : Target.Window); }
         }
 
         public int TopLine
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.TopLine; }
-            set { ComObject.TopLine = value; }
+            get { return IsWrappingNullReference ? 0 : Target.TopLine; }
+            set { Target.TopLine = value; }
         }
 
         public int CountOfVisibleLines
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.CountOfVisibleLines; }
+            get { return IsWrappingNullReference ? 0 : Target.CountOfVisibleLines; }
         }
         
         public ICodeModule CodeModule
         {
-            get { return new CodeModule(IsWrappingNullReference ? null : ComObject.CodeModule); }
+            get { return new CodeModule(IsWrappingNullReference ? null : Target.CodeModule); }
         }
 
         public CodePaneView CodePaneView
         {
-            get { return IsWrappingNullReference ? 0 : (CodePaneView)ComObject.CodePaneView; }
+            get { return IsWrappingNullReference ? 0 : (CodePaneView)Target.CodePaneView; }
         }
 
         public Selection GetSelection()
@@ -54,7 +54,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             int startColumn;
             int endLine;
             int endColumn;
-            ComObject.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+            Target.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
 
             if (endLine > startLine && endColumn == 1)
             {
@@ -78,14 +78,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return null;
             }
 
-            var component = new VBComponent(CodeModule.Parent.ComObject);
+            var component = new VBComponent(CodeModule.Parent.Target);
             var moduleName = new QualifiedModuleName(component);
             return new QualifiedSelection(moduleName, selection);
         }
 
         public void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            ComObject.SetSelection(startLine, startColumn, endLine, endColumn);
+            Target.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
         }
 
@@ -114,7 +114,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Show()
         {
-            ComObject.Show();
+            Target.Show();
         }
 
         public override void Release()
@@ -122,13 +122,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (!IsWrappingNullReference)
             {
                 //Window.Release(); window is released by VBE.Windows
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.CodePane> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.CodePane> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
         public bool Equals(ICodePane other)
@@ -138,7 +138,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
     }
 }

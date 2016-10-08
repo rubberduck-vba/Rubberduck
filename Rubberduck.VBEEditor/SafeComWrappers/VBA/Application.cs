@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -10,19 +10,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public string Version { get { return IsWrappingNullReference ? null : ComObject.Version; } }
+        public string Version { get { return IsWrappingNullReference ? null : Target.Version; } }
         
         public override void Release()
         {
             if (!IsWrappingNullReference)
             {
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Application> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.Application> other)
         {
-            return IsEqualIfNull(other) || (other != null && other.ComObject.Version == Version);
+            return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);
         }
 
         public bool Equals(IApplication other)
@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : HashCode.Compute(Target);
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Security;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SourceControl
@@ -18,14 +19,14 @@ namespace Rubberduck.SourceControl
         private List<ICommit> _unsyncedLocalCommits;
         private List<ICommit> _unsyncedRemoteCommits;
 
-        public GitProvider(VBProject project)
+        public GitProvider(IVBProject project)
             : base(project)
         {
             _unsyncedLocalCommits = new List<ICommit>();
             _unsyncedRemoteCommits = new List<ICommit>();
         }
 
-        public GitProvider(VBProject project, IRepository repository)
+        public GitProvider(IVBProject project, IRepository repository)
             : base(project, repository) 
         {
             _unsyncedLocalCommits = new List<ICommit>();
@@ -53,7 +54,7 @@ namespace Rubberduck.SourceControl
             _credentialsHandler = (url, user, cred) => _credentials;
         }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials<SecureString> credentials)
+        public GitProvider(IVBProject project, IRepository repository, ICredentials<SecureString> credentials)
             : this(project, repository)
         {
             _credentials = new SecureUsernamePasswordCredentials()

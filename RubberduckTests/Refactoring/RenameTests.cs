@@ -11,7 +11,7 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Application;
 using RubberduckTests.Mocks;
 using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
@@ -1049,7 +1049,7 @@ End Sub";
             int startLine, startColumn, endLine, endColumn;
 
             var codePaneMock = new Mock<CodePane>();
-            codePaneMock.Setup(c => c.CodeModule).Returns(module.ComObject);
+            codePaneMock.Setup(c => c.CodeModule).Returns(module.Target);
             codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
@@ -1088,7 +1088,7 @@ End Sub";
             int startLine, startColumn, endLine, endColumn;
 
             var codePaneMock = new Mock<CodePane>();
-            codePaneMock.Setup(c => c.CodeModule).Returns(module.ComObject);
+            codePaneMock.Setup(c => c.CodeModule).Returns(module.Target);
             codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
@@ -1124,7 +1124,7 @@ End Sub";
             int startLine, startColumn, endLine, endColumn;
 
             var codePaneMock = new Mock<CodePane>();
-            codePaneMock.Setup(c => c.CodeModule).Returns(module.ComObject);
+            codePaneMock.Setup(c => c.CodeModule).Returns(module.Target);
             codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 

@@ -10,7 +10,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Application;
 using RubberduckTests.Mocks;
 using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 using VBProject = Rubberduck.VBEditor.SafeComWrappers.VBA.VBProject;

@@ -4,12 +4,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor.Application;
 
 namespace RubberduckTests.Inspections
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor
 {
@@ -136,15 +137,7 @@ namespace Rubberduck.VBEditor
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hash = 17;
-                hash = hash*23 + StartLine;
-                hash = hash*23 + EndLine;
-                hash = hash*23 + StartColumn;
-                hash = hash*23 + EndColumn;
-                return hash;
-            }
+            return HashCode.Compute(StartLine, EndLine, StartColumn, EndColumn);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.IdentifierReferences;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.ParserErrors
 {

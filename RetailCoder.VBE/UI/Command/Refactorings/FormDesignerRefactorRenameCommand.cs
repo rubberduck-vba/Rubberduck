@@ -4,7 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -49,7 +49,7 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.HasDesigner)
                 {
-                    var designer = (dynamic)component.ComObject.Designer;
+                    var designer = ((dynamic)component.Target).Designer;
 
                     foreach (var control in designer.Controls)
                     {

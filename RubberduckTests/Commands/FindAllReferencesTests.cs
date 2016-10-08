@@ -10,7 +10,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Application;
 using RubberduckTests.Mocks;
 using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 

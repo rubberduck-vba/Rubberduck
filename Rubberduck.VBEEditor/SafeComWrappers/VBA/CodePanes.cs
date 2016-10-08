@@ -1,46 +1,46 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class CodePanes : SafeComWrapper<Microsoft.Vbe.Interop.CodePanes>, ICodePanes
     {
-        public CodePanes(Microsoft.Vbe.Interop.CodePanes comObject) 
-            : base(comObject)
+        public CodePanes(Microsoft.Vbe.Interop.CodePanes target) 
+            : base(target)
         {
         }
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : ComObject.Count; }
+            get { return IsWrappingNullReference ? 0 : Target.Count; }
         }
 
         public IVBE Parent
         {
-            get { return new VBE(IsWrappingNullReference ? null : ComObject.Parent); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.Parent); }
         }
 
         public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
         public ICodePane Current 
         { 
-            get { return new CodePane(IsWrappingNullReference ? null : ComObject.Current); }
-            set { ComObject.Current = (Microsoft.Vbe.Interop.CodePane)value.ComObject;}
+            get { return new CodePane(IsWrappingNullReference ? null : Target.Current); }
+            set { Target.Current = (Microsoft.Vbe.Interop.CodePane)value.Target;}
         }
 
         public ICodePane this[object index]
         {
-            get { return new CodePane(ComObject.Item(index)); }
+            get { return new CodePane(Target.Item(index)); }
         }
 
         IEnumerator<ICodePane> IEnumerable<ICodePane>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<CodePane>(ComObject);
+            return new ComWrapperEnumerator<CodePane>(Target);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -56,13 +56,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     this[i].Release();
                 }
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.CodePanes> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.CodePanes> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
         public bool Equals(ICodePanes other)
@@ -72,7 +72,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
     }
 }

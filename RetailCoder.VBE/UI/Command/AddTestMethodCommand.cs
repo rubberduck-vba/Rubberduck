@@ -5,8 +5,8 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -103,7 +103,7 @@ namespace Rubberduck.UI.Command
             _state.OnParseRequested(this, _vbe.SelectedVBComponent);
         }
 
-        private string GetNextTestMethodName(VBComponent component)
+        private string GetNextTestMethodName(IVBComponent component)
         {
             var names = component.GetTests(_vbe, _state).Select(test => test.Declaration.IdentifierName);
             var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;

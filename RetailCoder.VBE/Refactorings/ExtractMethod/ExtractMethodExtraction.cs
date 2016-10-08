@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {

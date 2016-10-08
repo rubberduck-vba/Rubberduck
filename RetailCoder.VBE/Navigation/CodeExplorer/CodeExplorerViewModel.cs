@@ -13,6 +13,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
@@ -357,7 +358,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private Declaration CreateDeclaration(VBComponent component)
+        private Declaration CreateDeclaration(IVBComponent component)
         {
             var projectDeclaration =
                 _state.AllUserDeclarations.FirstOrDefault(item =>
@@ -385,7 +386,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         private bool _errorStateSet;
-        private void SetErrorState(CodeExplorerItemViewModel itemNode, VBComponent component)
+        private void SetErrorState(CodeExplorerItemViewModel itemNode, IVBComponent component)
         {
             _errorStateSet = false;
 

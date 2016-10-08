@@ -4,19 +4,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBarPopup : CommandBarControl, ICommandBarPopup
     {
-        public CommandBarPopup(Microsoft.Office.Core.CommandBarPopup comObject) 
-            : base(comObject)
+        public CommandBarPopup(Microsoft.Office.Core.CommandBarPopup target) 
+            : base(target)
         {
         }
 
         public static ICommandBarPopup FromCommandBarControl(ICommandBarControl control)
         {
-            return new CommandBarPopup((Microsoft.Office.Core.CommandBarPopup)control.ComObject);
+            return new CommandBarPopup((Microsoft.Office.Core.CommandBarPopup)control.Target);
         }
 
         private Microsoft.Office.Core.CommandBarPopup Popup
         {
-            get { return (Microsoft.Office.Core.CommandBarPopup)ComObject; }
+            get { return (Microsoft.Office.Core.CommandBarPopup)Target; }
         }
 
         public ICommandBar CommandBar

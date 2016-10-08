@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
@@ -15,37 +15,37 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count
         {
-            get { return ComObject.Count; }
+            get { return Target.Count; }
         }
 
         public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
         public IApplication Parent
         {
-            get { return new Application(IsWrappingNullReference ? null : ComObject.Parent); }
+            get { return new Application(IsWrappingNullReference ? null : Target.Parent); }
         }
 
         public IWindow this[object index]
         {
-            get { return new Window(ComObject.Item(index)); }
+            get { return new Window(Target.Item(index)); }
         }
 
         public IWindow CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition, ref object docObj)
         {
-            return new Window(ComObject.CreateToolWindow((Microsoft.Vbe.Interop.AddIn)addInInst.ComObject, progId, caption, guidPosition, ref docObj));
+            return new Window(Target.CreateToolWindow((Microsoft.Vbe.Interop.AddIn)addInInst.Target, progId, caption, guidPosition, ref docObj));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ComObject.GetEnumerator();
+            return Target.GetEnumerator();
         }
 
         IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IWindow>(ComObject);
+            return new ComWrapperEnumerator<IWindow>(Target);
         }
 
         public override void Release()
@@ -56,13 +56,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     this[i].Release();
                 }
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Windows> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.Windows> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
         public bool Equals(IWindows other)
@@ -72,7 +72,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
     }
 }

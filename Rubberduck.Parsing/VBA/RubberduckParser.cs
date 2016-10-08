@@ -11,8 +11,8 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using System.IO;
 using NLog;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.VBA.Abstract;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -22,11 +22,11 @@ namespace Rubberduck.Parsing.VBA
     {
         public RubberduckParserState State { get { return _state; } }
         
-        private readonly ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks =
-            new ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>>();
+        private readonly ConcurrentDictionary<IVBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks =
+            new ConcurrentDictionary<IVBComponent, Tuple<Task, CancellationTokenSource>>();
 
-        private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
-            = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
+        private readonly IDictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
+            = new Dictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
 
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
@@ -80,7 +80,7 @@ namespace Rubberduck.Parsing.VBA
         {
             State.RefreshProjects(_vbe);
 
-            var components = new List<VBComponent>();
+            var components = new List<IVBComponent>();
             foreach (var project in State.Projects)
             {
                 foreach (var component in project.VBComponents)
@@ -156,10 +156,10 @@ namespace Rubberduck.Parsing.VBA
         {
             State.RefreshProjects(_vbe);
 
-            var components = new List<VBComponent>();
+            var components = new List<IVBComponent>();
             foreach (var project in State.Projects)
             {
-                foreach (VBComponent component in project.VBComponents)
+                foreach (IVBComponent component in project.VBComponents)
                 {
                     components.Add(component);
                 }
@@ -191,7 +191,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var toParse = new List<VBComponent>();
+            var toParse = new List<IVBComponent>();
             foreach (var component in components)
             {
                 if (State.IsNewOrModified(component))
@@ -334,9 +334,9 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
 
-        private string GetReferenceProjectId(Reference reference, IReadOnlyList<VBProject> projects)
+        private string GetReferenceProjectId(IReference reference, IReadOnlyList<IVBProject> projects)
         {
-            VBProject project = null;
+            IVBProject project = null;
             foreach (var item in projects)
             {
                 try
@@ -354,12 +354,12 @@ namespace Rubberduck.Parsing.VBA
             
             if (project != null)
             {
-                return QualifiedModuleName.GetProjectId(project);
+                project.AssignProjectId();
             }
             return QualifiedModuleName.GetProjectId(reference);
         }
 
-        private void SyncComReferences(IReadOnlyList<VBProject> projects)
+        private void SyncComReferences(IReadOnlyList<IVBProject> projects)
         {
             var loadTasks = new List<Task>();
 
@@ -423,7 +423,7 @@ namespace Rubberduck.Parsing.VBA
                 mappedIds.Add(item.ReferencedProjectId);
             }
 
-            var unmapped = new List<Reference>();
+            var unmapped = new List<IReference>();
             foreach (var project in projects)
             {
                 var references = project.References;
@@ -446,7 +446,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void UnloadComReference(Reference reference, IReadOnlyList<VBProject> projects)
+        private void UnloadComReference(IReference reference, IReadOnlyList<IVBProject> projects)
         {
             var referencedProjectId = GetReferenceProjectId(reference, projects);
 
@@ -473,7 +473,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private Task ParseAsync(VBComponent component, CancellationTokenSource token, TokenStreamRewriter rewriter = null)
+        private Task ParseAsync(IVBComponent component, CancellationTokenSource token, TokenStreamRewriter rewriter = null)
         {
             State.ClearStateCache(component);
 
@@ -499,7 +499,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ParseAsyncInternal(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
+        private void ParseAsyncInternal(IVBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
             var preprocessor = _preprocessorFactory();
             var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
@@ -528,7 +528,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private readonly ConcurrentDictionary<string, Declaration> _projectDeclarations = new ConcurrentDictionary<string, Declaration>();
-        private void ResolveDeclarations(VBComponent component, IParseTree tree)
+        private void ResolveDeclarations(IVBComponent component, IParseTree tree)
         {
             if (component == null) { return; }
 
@@ -564,7 +564,7 @@ namespace Rubberduck.Parsing.VBA
             Logger.Debug("{0}ms to resolve declarations for component {1}", stopwatch.ElapsedMilliseconds, component.Name);
         }
 
-        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, VBProject project)
+        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, IVBProject project)
         {
             var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
             var projectId = qualifiedName.QualifiedModuleName.ProjectId;
@@ -587,7 +587,7 @@ namespace Rubberduck.Parsing.VBA
             return projectDeclaration;
         }
 
-        private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
+        private void ResolveReferences(DeclarationFinder finder, IVBComponent component, IParseTree tree)
         {
             Debug.Assert(State.GetModuleState(component) == ParserState.ResolvingReferences);
             
