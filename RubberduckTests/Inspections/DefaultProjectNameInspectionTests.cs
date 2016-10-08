@@ -1,11 +1,11 @@
 using System.Linq;
 using System.Threading;
+using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 
@@ -20,8 +20,8 @@ namespace RubberduckTests.Inspections
         {
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, string.Empty)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -44,8 +44,8 @@ namespace RubberduckTests.Inspections
         {
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
+            var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, string.Empty)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -68,8 +68,8 @@ namespace RubberduckTests.Inspections
         {
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, string.Empty)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
