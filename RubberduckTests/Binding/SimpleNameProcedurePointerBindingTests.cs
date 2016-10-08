@@ -8,8 +8,6 @@ using System.Linq;
 using System.Threading;
 using Moq;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
@@ -23,9 +21,9 @@ namespace RubberduckTests.Binding
         public void EnclosingModuleComesBeforeEnclosingProject()
         {
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
+            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
             string code = CreateCaller() + Environment.NewLine + CreateCallee();
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, code);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, code);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -40,9 +38,9 @@ namespace RubberduckTests.Binding
         public void EnclosingProjectComesBeforeOtherProceduralModule()
         {
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, CreateCaller());
-            enclosingProjectBuilder.AddComponent("AnyProceduralModule", ComponentType.StandardModule, CreateCallee());
+            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, CreateCaller());
+            enclosingProjectBuilder.AddComponent("AnyProceduralModule", vbext_ComponentType.vbext_ct_StdModule, CreateCallee());
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -57,9 +55,9 @@ namespace RubberduckTests.Binding
         public void OtherProceduralModule()
         {
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, CreateCaller());
-            enclosingProjectBuilder.AddComponent("AnyProceduralModule", ComponentType.StandardModule, CreateCallee());
+            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", vbext_ProjectProtection.vbext_pp_none);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, CreateCaller());
+            enclosingProjectBuilder.AddComponent("AnyProceduralModule", vbext_ComponentType.vbext_ct_StdModule, CreateCallee());
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -70,7 +68,7 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
-        private static RubberduckParserState Parse(Mock<IVBE> vbe)
+        private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
         {
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
             parser.Parse(new CancellationTokenSource());
