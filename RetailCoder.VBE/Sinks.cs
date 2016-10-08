@@ -11,7 +11,7 @@ namespace Rubberduck
 {
     public class ProjectEventArgs : EventArgs, IProjectEventArgs
     {
-        public ProjectEventArgs(string projectId, IVBProject project)
+        public ProjectEventArgs(string projectId, VBProject project)
         {
             _projectId = projectId;
             _project = project;
@@ -20,14 +20,13 @@ namespace Rubberduck
         private readonly string _projectId;
         public string ProjectId { get { return _projectId; } }
 
-        private readonly IVBProject _project;
-        public IVBProject Project { get { return _project; } }
+        private readonly VBProject _project;
+        public VBProject Project { get { return _project; } }
     }
 
     public class ProjectRenamedEventArgs : ProjectEventArgs, IProjectRenamedEventArgs
     {
-        public ProjectRenamedEventArgs(string projectId, IVBProject project, string oldName) 
-            : base(projectId, project)
+        public ProjectRenamedEventArgs(string projectId, VBProject project, string oldName) : base(projectId, project)
         {
             _oldName = oldName;
         }
@@ -38,7 +37,7 @@ namespace Rubberduck
 
     public class ComponentEventArgs : EventArgs, IComponentEventArgs
     {
-        public ComponentEventArgs(string projectId, IVBProject project, IVBComponent component)
+        public ComponentEventArgs(string projectId, VBProject project, IVBComponent component)
         {
             _projectId = projectId;
             _project = project;
@@ -48,8 +47,8 @@ namespace Rubberduck
         private readonly string _projectId;
         public string ProjectId { get { return _projectId; } }
 
-        private readonly IVBProject _project;
-        public IVBProject Project { get { return _project; } }
+        private readonly VBProject _project;
+        public VBProject Project { get { return _project; } }
 
         private readonly IVBComponent _component;
         public IVBComponent Component { get { return _component; } }
@@ -58,7 +57,7 @@ namespace Rubberduck
 
     public class ComponentRenamedEventArgs : ComponentEventArgs, IComponentRenamedEventArgs
     {
-        public ComponentRenamedEventArgs(string projectId, IVBProject project, IVBComponent component, string oldName)
+        public ComponentRenamedEventArgs(string projectId, VBProject project, IVBComponent component, string oldName)
             : base(projectId, project, component)
         {
             _oldName = oldName;

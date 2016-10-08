@@ -1,4 +1,5 @@
 using System;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -8,11 +9,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         string Version { get; }
         IWindow ActiveWindow { get; }
         ICodePane ActiveCodePane { get; set; }
-        IVBProject ActiveVBProject { get; set; }
-        IVBComponent SelectedVBComponent { get; }
+        VBProject ActiveVBProject { get; set; }
+        VBComponent SelectedVBComponent { get; }
         IWindow MainWindow { get; }
         IAddIns AddIns { get; }
-        IVBProjects VBProjects { get; }
+        VBProjects VBProjects { get; }
         ICodePanes CodePanes { get; }
         ICommandBars CommandBars { get; }
         IWindows Windows { get; }

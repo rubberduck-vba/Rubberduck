@@ -39,7 +39,7 @@ namespace Rubberduck.AutoSave
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             var projects = _vbe.VBProjects;
-            if (projects.Any(p => !p.IsSaved))
+            if (projects.Any(p => !p.Saved))
             {
                 try
                 {

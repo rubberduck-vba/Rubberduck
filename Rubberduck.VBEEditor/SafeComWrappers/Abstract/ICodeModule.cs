@@ -1,12 +1,13 @@
 using System;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
     public interface ICodeModule : ISafeComWrapper, IEquatable<ICodeModule>
     {
         IVBE VBE { get; }
-        IVBComponent Parent { get; }
-        ICodePane CodePane { get; }
+        VBComponent Parent { get; }
+        CodePane CodePane { get; }
         int CountOfDeclarationLines { get; }
         int CountOfLines { get; }
         string Name { get; set; }

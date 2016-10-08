@@ -21,12 +21,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBE(IsWrappingNullReference ? null : ComObject.VBE); }
         }
 
-        public IVBComponent Parent
+        public VBComponent Parent
         {
             get { return new VBComponent(IsWrappingNullReference ? null : ComObject.Parent); }
         }
 
-        public ICodePane CodePane
+        public CodePane CodePane
         {
             get { return new CodePane(IsWrappingNullReference ? null : ComObject.CodePane); }
         }

@@ -4,7 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SourceControl.Interop
 {
@@ -15,20 +16,20 @@ namespace Rubberduck.SourceControl.Interop
     [Description("VBA Editor integrated access to Git.")]
     class GitProvider : SourceControl.GitProvider, ISourceControlProvider
     {
-        public GitProvider(IVBProject project) 
+        public GitProvider(VBProject project) 
             : base(project)
         { }
 
-        public GitProvider(IVBProject project, IRepository repository)
+        public GitProvider(VBProject project, IRepository repository)
             : base(project, repository)
         { }
 
         [Obsolete]
-        public GitProvider(IVBProject project, IRepository repository, string userName, string passWord)
+        public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
             : base(project, repository, userName, passWord)
         { }
 
-        public GitProvider(IVBProject project, IRepository repository, ICredentials credentials)
+        public GitProvider(VBProject project, IRepository repository, ICredentials credentials)
             :base(project, repository, credentials.Username, credentials.Password)
         { }
 

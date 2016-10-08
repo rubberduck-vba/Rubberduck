@@ -64,7 +64,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        private IVBProject GetNodeProject(CodeExplorerItemViewModel parameter)
+        private VBProject GetNodeProject(CodeExplorerItemViewModel parameter)
         {
             if (parameter is ICodeExplorerDeclarationViewModel)
             {

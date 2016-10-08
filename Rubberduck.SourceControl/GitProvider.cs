@@ -5,7 +5,8 @@ using System.Runtime.InteropServices;
 using System.Security;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SourceControl
 {
@@ -17,14 +18,14 @@ namespace Rubberduck.SourceControl
         private List<ICommit> _unsyncedLocalCommits;
         private List<ICommit> _unsyncedRemoteCommits;
 
-        public GitProvider(IVBProject project)
+        public GitProvider(VBProject project)
             : base(project)
         {
             _unsyncedLocalCommits = new List<ICommit>();
             _unsyncedRemoteCommits = new List<ICommit>();
         }
 
-        public GitProvider(IVBProject project, IRepository repository)
+        public GitProvider(VBProject project, IRepository repository)
             : base(project, repository) 
         {
             _unsyncedLocalCommits = new List<ICommit>();
@@ -40,7 +41,7 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public GitProvider(IVBProject project, IRepository repository, string userName, string passWord)
+        public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
             : this(project, repository)
         {
             _credentials = new UsernamePasswordCredentials()
@@ -52,7 +53,7 @@ namespace Rubberduck.SourceControl
             _credentialsHandler = (url, user, cred) => _credentials;
         }
 
-        public GitProvider(IVBProject project, IRepository repository, ICredentials<SecureString> credentials)
+        public GitProvider(VBProject project, IRepository repository, ICredentials<SecureString> credentials)
             : this(project, repository)
         {
             _credentials = new SecureUsernamePasswordCredentials()

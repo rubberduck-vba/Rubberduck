@@ -77,7 +77,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return null;
             }
 
-            var component = CodeModule.Parent;
+            var component = new VBComponent(CodeModule.Parent.ComObject);
             var moduleName = new QualifiedModuleName(component);
             return new QualifiedSelection(moduleName, selection);
         }

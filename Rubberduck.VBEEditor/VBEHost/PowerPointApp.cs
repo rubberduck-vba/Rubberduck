@@ -24,7 +24,7 @@ namespace Rubberduck.VBEditor.VBEHost
 
             // todo: verify that the 'FileName.ppt!Module.Method' syntax is real.
             // if a saved presentation can run the above, then the below can just be removed.
-            if (!qualifiedMemberName.QualifiedModuleName.Project.IsSaved)
+            if (!qualifiedMemberName.QualifiedModuleName.Project.Saved)
             {
             }
 

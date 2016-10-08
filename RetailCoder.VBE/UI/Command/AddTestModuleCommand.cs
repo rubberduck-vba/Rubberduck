@@ -6,8 +6,8 @@ using Rubberduck.Settings;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -84,7 +84,7 @@ namespace Rubberduck.UI.Command
             return formattedModuleTemplate;
         }
 
-        private IVBProject GetProject()
+        private VBProject GetProject()
         {
             var activeProject = _vbe.ActiveVBProject;
             if (!activeProject.IsWrappingNullReference)
@@ -96,7 +96,7 @@ namespace Rubberduck.UI.Command
             {
                 return projects.Count == 1 
                     ? projects[1]
-                    : new VBProject(null); // todo: implement IVBProject abstract factory
+                    : new VBProject(null);
             }
         }
 
@@ -107,7 +107,7 @@ namespace Rubberduck.UI.Command
         
         protected override void ExecuteImpl(object parameter)
         {
-            var project = parameter as IVBProject ?? GetProject();
+            var project = parameter as VBProject ?? GetProject();
             if (project.IsWrappingNullReference)
             {
                 return;
@@ -154,7 +154,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        private string GetNextTestModuleName(IVBProject project)
+        private string GetNextTestModuleName(VBProject project)
         {
             var names = project.ComponentNames();
             var index = names.Count(n => n.StartsWith(TestModuleBaseName)) + 1;

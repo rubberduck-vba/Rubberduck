@@ -1,4 +1,5 @@
 using System;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -8,7 +9,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         event EventHandler<ReferenceEventArgs> ItemRemoved;
 
         IVBE VBE { get; }
-        IVBProject Parent { get; }
+        VBProject Parent { get; }
 
         IReference AddFromGuid(string guid, int major, int minor);
         IReference AddFromFile(string path);

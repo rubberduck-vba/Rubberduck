@@ -1,7 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SourceControl.Interop
 {
@@ -11,7 +12,7 @@ namespace Rubberduck.SourceControl.Interop
     public interface _ISourceControlClassFactory
     {
         [DispId(1)]
-        ISourceControlProvider CreateGitProvider(IVBProject project, [Optional] IRepository repository, [Optional] ICredentials credentials);
+        ISourceControlProvider CreateGitProvider(VBProject project, [Optional] IRepository repository, [Optional] ICredentials credentials);
 
         [DispId(2)]
         IRepository CreateRepository(string name, string localDirectory, [Optional] string remotePathOrUrl);
@@ -27,7 +28,7 @@ namespace Rubberduck.SourceControl.Interop
     public class SourceControlClassFactory : _ISourceControlClassFactory
     {
         [Description("Returns a new GitProvider. IRepository must be supplied if also passing user credentials.")]
-        public ISourceControlProvider CreateGitProvider(IVBProject project, [Optional] IRepository repository, [Optional] ICredentials credentials)
+        public ISourceControlProvider CreateGitProvider(VBProject project, [Optional] IRepository repository, [Optional] ICredentials credentials)
         {
             if (credentials != null)
             {

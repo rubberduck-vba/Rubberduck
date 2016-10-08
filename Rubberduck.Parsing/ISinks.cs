@@ -1,12 +1,13 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing
 {
     public interface IProjectEventArgs
     {
         string ProjectId { get; }
-        IVBProject Project { get; }
+        VBProject Project { get; }
     }
 
     public interface IProjectRenamedEventArgs : IProjectEventArgs
@@ -18,7 +19,7 @@ namespace Rubberduck.Parsing
     {
         string ProjectId { get; }
 
-        IVBProject Project { get; }
+        VBProject Project { get; }
         IVBComponent Component { get; }
     }
 

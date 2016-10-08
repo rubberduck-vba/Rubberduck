@@ -23,10 +23,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             set { ComObject.ActiveCodePane = (Microsoft.Vbe.Interop.CodePane)value.ComObject; }
         }
 
-        public IVBProject ActiveVBProject
+        public VBProject ActiveVBProject
         {
             get { return new VBProject(IsWrappingNullReference ? null : ComObject.ActiveVBProject); }
-            set { ComObject.ActiveVBProject = (Microsoft.Vbe.Interop.VBProject)value.ComObject; }
+            set { ComObject.ActiveVBProject = value.ComObject; }
         }
 
         public IWindow ActiveWindow
@@ -54,12 +54,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new Window(IsWrappingNullReference ? null : ComObject.MainWindow); }
         }
 
-        public IVBComponent SelectedVBComponent
+        public VBComponent SelectedVBComponent
         {
             get { return new VBComponent(IsWrappingNullReference ? null : ComObject.SelectedVBComponent); }
         }
 
-        public IVBProjects VBProjects
+        public VBProjects VBProjects
         {
             get { return new VBProjects(IsWrappingNullReference ? null : ComObject.VBProjects); }
         }
@@ -102,7 +102,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return VBProjects.All(project => project.Mode == EnvironmentMode.Design); }
         }
 
-        public static void SetSelection(IVBProject vbProject, Selection selection, string name)
+        public static void SetSelection(VBProject vbProject, Selection selection, string name)
         {
             var components = vbProject.VBComponents;
             var component = components.SingleOrDefault(c => c.Name == name);

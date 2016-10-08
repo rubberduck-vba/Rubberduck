@@ -49,7 +49,7 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.HasDesigner)
                 {
-                    var designer = ((dynamic)component.ComObject).Designer;
+                    var designer = (dynamic)component.ComObject.Designer;
 
                     foreach (var control in designer.Controls)
                     {
