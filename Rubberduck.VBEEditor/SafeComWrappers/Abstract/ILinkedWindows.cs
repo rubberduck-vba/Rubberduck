@@ -1,7 +1,6 @@
 using System;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract
+namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
     public interface ILinkedWindows : ISafeComWrapper, IComCollection<IWindow>, IEquatable<ILinkedWindows>
     {

@@ -158,7 +158,7 @@ End Sub";
         {
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule("", vbext_ComponentType.vbext_ct_ClassModule, out component, new Selection());
+            var vbe = builder.BuildFromSingleModule("", ComponentType.ClassModule, out component, new Selection());
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -179,7 +179,7 @@ End Sub";
         {
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule("Option Explicit", vbext_ComponentType.vbext_ct_ClassModule, out component, new Selection());
+            var vbe = builder.BuildFromSingleModule("Option Explicit", ComponentType.ClassModule, out component, new Selection());
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -223,7 +223,7 @@ End Sub";
         {
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule("Dim d As Boolean", vbext_ComponentType.vbext_ct_ClassModule, out component, new Selection());
+            var vbe = builder.BuildFromSingleModule("Dim d As Boolean", ComponentType.ClassModule, out component, new Selection());
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -246,8 +246,8 @@ End Sub";
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var proj1 = builder.ProjectBuilder("TestProj1", vbext_ProjectProtection.vbext_pp_none).AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, input).Build();
-            var proj2 = builder.ProjectBuilder("TestProj2", vbext_ProjectProtection.vbext_pp_none).AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, "").Build();
+            var proj1 = builder.ProjectBuilder("TestProj1", ProjectProtection.Unprotected).AddComponent("Comp1", ComponentType.ClassModule, input).Build();
+            var proj2 = builder.ProjectBuilder("TestProj2", ProjectProtection.Unprotected).AddComponent("Comp1", ComponentType.ClassModule, "").Build();
 
             var vbe = builder
                 .AddProject(proj1)
@@ -277,8 +277,8 @@ End Sub";
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var proj1 = builder.ProjectBuilder("TestProj1", vbext_ProjectProtection.vbext_pp_none).AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, input, Selection.Home).Build();
-            var proj2 = builder.ProjectBuilder("TestProj2", vbext_ProjectProtection.vbext_pp_none).AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, "").Build();
+            var proj1 = builder.ProjectBuilder("TestProj1", ProjectProtection.Unprotected).AddComponent("Comp1", ComponentType.ClassModule, input, Selection.Home).Build();
+            var proj2 = builder.ProjectBuilder("TestProj2", ProjectProtection.Unprotected).AddComponent("Comp1", ComponentType.ClassModule, "").Build();
 
             var vbe = builder
                 .AddProject(proj1)
@@ -310,7 +310,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, Selection.Home);
+            var vbe = builder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -334,7 +334,7 @@ End Function";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, Selection.Home);
+            var vbe = builder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -358,7 +358,7 @@ End Property";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, Selection.Home);
+            var vbe = builder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -382,7 +382,7 @@ End Property";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, Selection.Home);
+            var vbe = builder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -406,7 +406,7 @@ End Property";
 
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(input, vbext_ComponentType.vbext_ct_ClassModule, out component, Selection.Home);
+            var vbe = builder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -468,7 +468,7 @@ End Property";
         {
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule("", vbext_ComponentType.vbext_ct_ClassModule, out component, new Selection());
+            var vbe = builder.BuildFromSingleModule("", ComponentType.ClassModule, out component, new Selection());
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -487,9 +487,9 @@ End Property";
         public void ImplementInterface_CanExecute_ImplementsInterfaceSelected()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, "")
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, "Implements IClass1", Selection.Home)
+            var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, "")
+                .AddComponent("Class1", ComponentType.ClassModule, "Implements IClass1", Selection.Home)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();

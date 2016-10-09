@@ -34,8 +34,8 @@ End Sub
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
                 .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -71,8 +71,8 @@ End Sub
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
                 .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -111,8 +111,8 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
                 .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
                 .Build();
             var module = project.Object.VBComponents.Item(0).CodeModule;
@@ -141,8 +141,8 @@ End Sub";
         public void InspectionType()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, string.Empty)
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
                 .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -156,8 +156,8 @@ End Sub";
         public void InspectionName()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, string.Empty)
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
                 .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();

@@ -25,8 +25,8 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -46,8 +46,8 @@ End Sub";
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -68,8 +68,8 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetNormalModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -90,9 +90,9 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods)
-                .AddComponent("TestModule2", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -113,9 +113,9 @@ End Sub";
         public void Discovery_DiscoversAnnotatedTestInitInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput)
-                .AddComponent("TestModule2", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -139,9 +139,9 @@ End Sub";
         public void Discovery_DiscoversAnnotatedTestCleanupInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput)
-                .AddComponent("TestModule2", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -165,8 +165,8 @@ End Sub";
         public void Discovery_IgnoresNonAnnotatedTestInitInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput.Replace("'@TestInitialize", string.Empty));
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@TestInitialize", string.Empty));
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -187,8 +187,8 @@ End Sub";
         public void Discovery_IgnoresNonAnnotatedTestCleanupInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput.Replace("'@TestCleanup", string.Empty));
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@TestCleanup", string.Empty));
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -209,8 +209,8 @@ End Sub";
         public void Discovery_IgnoresNonAnnotatedTestInitInGivenNonTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetNormalModuleInput.Replace("'@TestInitialize", string.Empty));
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@TestInitialize", string.Empty));
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -231,8 +231,8 @@ End Sub";
         public void Discovery_IgnoresNonAnnotatedTestCleanupInGivenNonTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetNormalModuleInput.Replace("'@TestCleanup", string.Empty));
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@TestCleanup", string.Empty));
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -253,9 +253,9 @@ End Sub";
         public void Discovery_DiscoversAnnotatedModuleInitInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput)
-                .AddComponent("TestModule2", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -279,9 +279,9 @@ End Sub";
         public void Discovery_DiscoversAnnotatedModuleCleanupInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput)
-                .AddComponent("TestModule2", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -305,8 +305,8 @@ End Sub";
         public void Discovery_IgnoresNonAnnotatedModuleInitInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput.Replace("'@ModuleInitialize", string.Empty));
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@ModuleInitialize", string.Empty));
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -327,8 +327,8 @@ End Sub";
         public void Discovery_IgnoresNonAnnotatedModuleCleanupInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput.Replace("'@ModuleCleanup", string.Empty));
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@ModuleCleanup", string.Empty));
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -349,8 +349,8 @@ End Sub";
         public void Discovery_IgnoresNonAnnotatedModuleInitInGivenNonTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetNormalModuleInput.Replace("'@ModuleInitialize", string.Empty));
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@ModuleInitialize", string.Empty));
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -371,8 +371,8 @@ End Sub";
         public void Discovery_IgnoresNonAnnotatedModuleCleanupInGivenNonTestModule()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetNormalModuleInput.Replace("'@ModuleCleanup", string.Empty));
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@ModuleCleanup", string.Empty));
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();

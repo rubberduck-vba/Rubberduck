@@ -31,8 +31,8 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -64,8 +64,8 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -98,8 +98,8 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -137,8 +137,8 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -180,8 +180,8 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
                 .Build();
             var vbe = builder.AddProject(project).Build();

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using Moq;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Binding
 {
@@ -22,9 +23,9 @@ namespace RubberduckTests.Binding
         public void EnclosingModuleComesBeforeEnclosingProject()
         {
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
+            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
             string enclosingModuleCode = "Public WithEvents anything As " + BINDING_TARGET_NAME + Environment.NewLine + CreateEnumType(BINDING_TARGET_NAME);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, enclosingModuleCode);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, enclosingModuleCode);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -39,9 +40,9 @@ namespace RubberduckTests.Binding
         public void EnclosingProjectComesBeforeOtherModuleInEnclosingProject()
         {
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, "Public WithEvents anything As  " + BINDING_TARGET_NAME);
-            enclosingProjectBuilder.AddComponent("AnyModule", vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
+            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, "Public WithEvents anything As  " + BINDING_TARGET_NAME);
+            enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
@@ -58,15 +59,15 @@ namespace RubberduckTests.Binding
             var builder = new MockVbeBuilder();
             const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
 
-            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, vbext_ProjectProtection.vbext_pp_none);
-            referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, vbext_ComponentType.vbext_ct_ClassModule, string.Empty);
+            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, ProjectProtection.Unprotected);
+            referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, ComponentType.ClassModule, string.Empty);
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
 
-            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", vbext_ProjectProtection.vbext_pp_none);
+            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
             enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, "Public WithEvents anything As " + BINDING_TARGET_NAME);
-            enclosingProjectBuilder.AddComponent("AnyModule", vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, "Public WithEvents anything As " + BINDING_TARGET_NAME);
+            enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
 
@@ -84,14 +85,14 @@ namespace RubberduckTests.Binding
             var builder = new MockVbeBuilder();
             const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
 
-            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, vbext_ProjectProtection.vbext_pp_none);
-            referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
+            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, ProjectProtection.Unprotected);
+            referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
 
-            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", vbext_ProjectProtection.vbext_pp_none);
+            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
             enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, "Public WithEvents anything As " + BINDING_TARGET_NAME);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, "Public WithEvents anything As " + BINDING_TARGET_NAME);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
 
@@ -109,14 +110,14 @@ namespace RubberduckTests.Binding
             var builder = new MockVbeBuilder();
             const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
 
-            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, vbext_ProjectProtection.vbext_pp_none);
-            referencedProjectBuilder.AddComponent("AnyName", vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
+            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, ProjectProtection.Unprotected);
+            referencedProjectBuilder.AddComponent("AnyName", ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
 
-            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", vbext_ProjectProtection.vbext_pp_none);
+            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
             enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, "Public WithEvents anything As " + BINDING_TARGET_NAME);
+            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, "Public WithEvents anything As " + BINDING_TARGET_NAME);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
 

@@ -1,5 +1,4 @@
 using System;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor
 {
@@ -24,7 +23,7 @@ namespace Rubberduck.VBEditor
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(_qualifiedModuleName, _memberName);
+            return HashCode.Compute(_qualifiedModuleName.GetHashCode(), _memberName);
         }
 
         public override bool Equals(object obj)

@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA

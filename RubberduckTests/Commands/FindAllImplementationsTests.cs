@@ -34,10 +34,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputClass)
-                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputClass)
-                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputInterface)
+            var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputClass)
+                .AddComponent("Class2", ComponentType.ClassModule, inputClass)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputInterface)
                 .Build();
             
             var vbe = builder.AddProject(project).Build();
@@ -71,10 +71,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputClass)
-                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputClass)
-                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputInterface)
+            var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputClass)
+                .AddComponent("Class2", ComponentType.ClassModule, inputClass)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputInterface)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
@@ -112,10 +112,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputClass, new Selection(7, 5, 7, 5))
-                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputClass)
-                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputInterface)
+            var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputClass, new Selection(7, 5, 7, 5))
+                .AddComponent("Class2", ComponentType.ClassModule, inputClass)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputInterface)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
@@ -146,7 +146,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_ClassModule, out component, default(Selection));
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, default(Selection));
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -183,9 +183,9 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputClass)
-                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputInterface)
+            var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputClass)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputInterface)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();

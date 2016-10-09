@@ -25,8 +25,8 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -50,9 +50,9 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods)
-                .AddComponent("TestModule2", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -82,8 +82,8 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -109,8 +109,8 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -136,8 +136,8 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -175,8 +175,8 @@ Public Sub TestMethod4()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -217,8 +217,8 @@ Public Sub TestMethod3()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -253,8 +253,8 @@ Public Sub TestMethod2()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -283,8 +283,8 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -312,8 +312,8 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();
@@ -341,8 +341,8 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, GetTestModuleInput + testMethods);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
             var mockHost = new Mock<IHostApplication>();

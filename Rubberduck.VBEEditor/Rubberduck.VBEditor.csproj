@@ -123,7 +123,7 @@
     <Compile Include="SafeComWrappers\MSForms\ControlType.cs" />
     <Compile Include="SafeComWrappers\Abstract\ICodePanes.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarButton.cs" />
-    <Compile Include="SafeComWrappers\Office.Core\Abstract\ILinkedWindows.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ILinkedWindows.cs" />
     <Compile Include="SafeComWrappers\Abstract\IReference.cs" />
     <Compile Include="SafeComWrappers\Abstract\IReferences.cs" />
     <Compile Include="SafeComWrappers\Abstract\IVBComponent.cs" />
@@ -186,8 +186,8 @@
     <Compile Include="SafeComWrappers\Abstract\IComCollection.cs" />
     <Compile Include="SafeComWrappers\Abstract\IAddIns.cs" />
     <Compile Include="SafeComWrappers\Abstract\IApplication.cs" />
-    <Compile Include="SafeComWrappers\Office.Core\Abstract\IWindow.cs" />
-    <Compile Include="SafeComWrappers\Office.Core\Abstract\IWindows.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IWindow.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IWindows.cs" />
     <Compile Include="SafeComWrappers\Abstract\ICodeModule.cs" />
     <Compile Include="SafeComWrappers\Abstract\ICodePane.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\IControl.cs" />

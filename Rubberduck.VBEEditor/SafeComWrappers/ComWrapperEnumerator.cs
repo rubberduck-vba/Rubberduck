@@ -31,7 +31,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
         public TWrapperItem Current
         {
-            get { return (TWrapperItem)Activator.CreateInstance(typeof(TWrapperItem), _internal.Current); }
+            get
+            {
+                return (TWrapperItem)Activator.CreateInstance(typeof(TWrapperItem), _internal.Current);
+            }
         }
 
         object IEnumerator.Current

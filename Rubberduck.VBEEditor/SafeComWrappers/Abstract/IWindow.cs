@@ -1,8 +1,7 @@
 using System;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract
+namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
     public interface IWindow : ISafeComWrapper, IEquatable<IWindow>
     {
