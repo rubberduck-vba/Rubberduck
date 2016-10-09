@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Properties : SafeComWrapper<Microsoft.Vbe.Interop.Properties>, IProperties
+    public class Properties : SafeComWrapper<VB.Properties>, IProperties
     {
-        public Properties(Microsoft.Vbe.Interop.Properties target) 
+        public Properties(VB.Properties target) 
             : base(target)
         {
         }
@@ -59,14 +60,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.Properties> other)
+        public override bool Equals(ISafeComWrapper<VB.Properties> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
         public bool Equals(IProperties other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Properties>);
+            return Equals(other as SafeComWrapper<VB.Properties>);
         }
 
         public override int GetHashCode()

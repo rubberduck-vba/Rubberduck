@@ -1,4 +1,4 @@
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers
 {
     public enum CodePaneView
     {

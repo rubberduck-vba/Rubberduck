@@ -2,9 +2,9 @@
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class CodePane : SafeComWrapper<VB.CodePane>, ICodePane
     {
@@ -79,7 +79,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return null;
             }
 
-            var component = new VBComponent((VB.VBComponent)CodeModule.Parent.Target);
+            var component = CodeModule.Parent;
             var moduleName = new QualifiedModuleName(component);
             return new QualifiedSelection(moduleName, selection);
         }

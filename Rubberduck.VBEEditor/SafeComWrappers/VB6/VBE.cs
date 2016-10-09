@@ -1,11 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBE : SafeComWrapper<VB.VBE>, IVBE
     {
@@ -16,59 +16,59 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Version
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Version; }
+            get { return IsWrappingNullReference ? string.Empty : Target.get_Version(); }
         }
 
         public ICodePane ActiveCodePane
         {
-            get { return new CodePane(IsWrappingNullReference ? null : Target.ActiveCodePane); }
-            set { Target.ActiveCodePane = (VB.CodePane)value.Target; }
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
 
         public IVBProject ActiveVBProject
         {
-            get { return new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject); }
-            set { Target.ActiveVBProject = (VB.VBProject) value.Target; }
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
 
         public IWindow ActiveWindow
         {
-            get { return new Window(IsWrappingNullReference ? null : Target.ActiveWindow); }
+            get { throw new NotImplementedException(); }
         }
 
         public IAddIns AddIns
         {
-            get { return new AddIns(IsWrappingNullReference ? null : Target.Addins); }
+            get { throw new NotImplementedException(); }
         }
 
         public ICodePanes CodePanes
         {
-            get { return new CodePanes(IsWrappingNullReference ? null : Target.CodePanes); }
+            get { throw new NotImplementedException(); }
         }
 
         public ICommandBars CommandBars
         {
-            get { return new CommandBars(IsWrappingNullReference ? null : Target.CommandBars); }
+            get { throw new NotImplementedException(); }
         }
 
         public IWindow MainWindow
         {
-            get { return new Window(IsWrappingNullReference ? null : Target.MainWindow); }
+            get { throw new NotImplementedException(); }
         }
 
         public IVBComponent SelectedVBComponent
         {
-            get { return new VBComponent(IsWrappingNullReference ? null : Target.SelectedVBComponent); }
+            get { throw new NotImplementedException(); }
         }
 
         public IVBProjects VBProjects
         {
-            get { return new VBProjects(IsWrappingNullReference ? null : Target.VBProjects); }
+            get { return new VBProjects(IsWrappingNullReference ? null : Target.get_VBProjects()); }
         }
 
         public IWindows Windows
         {
-            get { return new Windows(IsWrappingNullReference ? null : Target.Windows); }
+            get { throw new NotImplementedException(); }
         }
 
         public override void Release()
@@ -86,7 +86,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override bool Equals(ISafeComWrapper<VB.VBE> other)
         {
-            return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);
+            return IsEqualIfNull(other) || (other != null && other.Target.get_Version() == Version);
         }
 
         public bool Equals(IVBE other)

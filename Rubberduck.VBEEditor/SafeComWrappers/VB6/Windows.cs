@@ -1,22 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
-    public class LinkedWindows : SafeComWrapper<VB.LinkedWindows>, ILinkedWindows
+    public class Windows : SafeComWrapper<VB.Windows>, IWindows
     {
-        public LinkedWindows(VB.LinkedWindows linkedWindows)
-            : base(linkedWindows)
+        public Windows(VB.Windows windows)
+            : base(windows)
         {
         }
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
+            get { return Target.Count; }
         }
 
         public IVBE VBE
@@ -24,9 +25,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
-        public IWindow Parent
+        public IApplication Parent
         {
-            get { return new Window(IsWrappingNullReference ? null : Target.Parent); }
+            get
+            {
+                throw new NotImplementedException();
+                 /*return new Application(IsWrappingNullReference ? null : Target.Parent);*/
+            }
         }
 
         public IWindow this[object index]
@@ -34,14 +39,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new Window(Target.Item(index)); }
         }
 
-        public void Remove(IWindow window)
+        public IWindow CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition, ref object docObj)
         {
-            Target.Remove(((Window)window).Target);
-        }
-
-        public void Add(IWindow window)
-        {
-            Target.Add(((Window)window).Target);
+            return new Window(Target.CreateToolWindow((VB.AddIn)addInInst.Target, progId, caption, guidPosition, ref docObj));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -65,15 +65,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 Marshal.ReleaseComObject(Target);
             }
         }
-        
-        public override bool Equals(ISafeComWrapper<VB.LinkedWindows> other)
+
+        public override bool Equals(ISafeComWrapper<VB.Windows> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(ILinkedWindows other)
+        public bool Equals(IWindows other)
         {
-            return Equals(other as SafeComWrapper<VB.LinkedWindows>);
+            return Equals(other as SafeComWrapper<VB.Windows>);
         }
 
         public override int GetHashCode()

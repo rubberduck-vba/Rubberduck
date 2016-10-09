@@ -1,5 +1,4 @@
 using System;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -9,6 +8,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IVBE Parent { get; }
         IVBProject Add(ProjectType type);
         IVBProject Open(string path);
-        void Remove(Microsoft.Vbe.Interop.VBProject project);
+        void Remove(IVBProject project);
     }
 }

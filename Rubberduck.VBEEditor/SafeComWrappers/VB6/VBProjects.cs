@@ -1,11 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBProjects : SafeComWrapper<VB.VBProjects>, IVBProjects
     {
@@ -31,17 +31,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IVBProject Add(ProjectType type)
         {
-            return new VBProject(Target.Add((vbext_ProjectType)type));
-        }
-
-        public void Remove(IVBProject project)
-        {
-            Target.Remove((VB.VBProject) project.Target);
+            return new VBProject(Target.Add((VB.vbext_ProjectType)type));
         }
 
         public IVBProject Open(string path)
         {
-            return new VBProject(Target.Open(path));
+            throw new NotImplementedException();
+        }
+
+        public void Remove(IVBProject project)
+        {
+            Target.Remove((VB.VBProject)project.Target);
         }
 
         public IVBProject this[object index]

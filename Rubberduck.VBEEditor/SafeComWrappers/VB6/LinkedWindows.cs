@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class LinkedWindows : SafeComWrapper<VB.LinkedWindows>, ILinkedWindows
     {
@@ -65,7 +65,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 Marshal.ReleaseComObject(Target);
             }
         }
-        
+
         public override bool Equals(ISafeComWrapper<VB.LinkedWindows> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));

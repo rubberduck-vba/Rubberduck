@@ -4,9 +4,9 @@ using System.Linq;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBComponent : SafeComWrapper<VB.VBComponent>, IVBComponent
     {
@@ -60,13 +60,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                var designer = IsWrappingNullReference
-                    ? null
-                    : Target.Designer as VB.Forms.UserForm;
+                throw new NotImplementedException();
+                //var designer = IsWrappingNullReference
+                //    ? null
+                //    : Target.Designer as VB.UserForm;
 
-                return designer == null 
-                    ? new Controls(null) 
-                    : new Controls(designer.Controls);
+                //return designer == null 
+                //    ? new Controls(null) 
+                //    : new Controls(designer.Controls);
             }
         }
 
@@ -94,11 +95,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Target.Activate();
         }
 
-        public bool IsSaved { get { return !IsWrappingNullReference && Target.Saved; } }
+        public bool IsSaved
+        {
+            get
+            {
+                throw new NotImplementedException();
+                /*return !IsWrappingNullReference && Target.Saved;*/
+            }
+        }
 
         public void Export(string path)
         {
-            Target.Export(path);
+            //Target.Export(path);
         }
 
         /// <summary>

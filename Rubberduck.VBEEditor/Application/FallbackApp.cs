@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;

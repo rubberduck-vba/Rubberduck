@@ -150,17 +150,37 @@
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarControls.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarPopup.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBars.cs" />
+    <Compile Include="SafeComWrappers\VB6\AddIn.cs" />
+    <Compile Include="SafeComWrappers\VB6\AddIns.cs" />
+    <Compile Include="SafeComWrappers\VB6\Application.cs" />
+    <Compile Include="SafeComWrappers\VB6\CodeModule.cs" />
+    <Compile Include="SafeComWrappers\VB6\CodePane.cs" />
+    <Compile Include="SafeComWrappers\VB6\CodePanes.cs" />
+    <Compile Include="SafeComWrappers\VB6\Control.cs" />
+    <Compile Include="SafeComWrappers\VB6\Controls.cs" />
+    <Compile Include="SafeComWrappers\VB6\LinkedWindows.cs" />
+    <Compile Include="SafeComWrappers\VB6\Properties.cs" />
+    <Compile Include="SafeComWrappers\VB6\Property.cs" />
+    <Compile Include="SafeComWrappers\VB6\Reference.cs" />
+    <Compile Include="SafeComWrappers\VB6\References.cs" />
+    <Compile Include="SafeComWrappers\VB6\VBComponent.cs" />
+    <Compile Include="SafeComWrappers\VB6\VBComponents.cs" />
+    <Compile Include="SafeComWrappers\VB6\VBE.cs" />
+    <Compile Include="SafeComWrappers\VB6\VBProject.cs" />
+    <Compile Include="SafeComWrappers\VB6\VBProjects.cs" />
+    <Compile Include="SafeComWrappers\VB6\Window.cs" />
+    <Compile Include="SafeComWrappers\VB6\Windows.cs" />
     <Compile Include="SafeComWrappers\VBA\AddIn.cs" />
     <Compile Include="SafeComWrappers\VBA\AddIns.cs" />
     <Compile Include="SafeComWrappers\VBA\Application.cs" />
     <Compile Include="SafeComWrappers\VBA\CodeModule.cs" />
     <Compile Include="SafeComWrappers\VBA\CodePane.cs" />
     <Compile Include="SafeComWrappers\VBA\CodePanes.cs" />
-    <Compile Include="SafeComWrappers\VBA\CodePaneView.cs" />
-    <Compile Include="SafeComWrappers\VBA\ComponentType.cs" />
+    <Compile Include="SafeComWrappers\CodePaneView.cs" />
+    <Compile Include="SafeComWrappers\ComponentType.cs" />
     <Compile Include="SafeComWrappers\VBA\Control.cs" />
     <Compile Include="SafeComWrappers\VBA\Controls.cs" />
-    <Compile Include="SafeComWrappers\VBA\EnvironmentMode.cs" />
+    <Compile Include="SafeComWrappers\EnvironmentMode.cs" />
     <Compile Include="SafeComWrappers\Abstract\IVBE.cs" />
     <Compile Include="SafeComWrappers\Abstract\IAddIn.cs" />
     <Compile Include="SafeComWrappers\Abstract\IComCollection.cs" />
@@ -176,13 +196,13 @@
     <Compile Include="SafeComWrappers\Abstract\IProperties.cs" />
     <Compile Include="SafeComWrappers\VBA\Properties.cs" />
     <Compile Include="SafeComWrappers\VBA\Property.cs" />
-    <Compile Include="SafeComWrappers\VBA\ReferenceEventArgs.cs" />
+    <Compile Include="SafeComWrappers\ReferenceEventArgs.cs" />
     <Compile Include="SafeComWrappers\VBA\LinkedWindows.cs" />
-    <Compile Include="SafeComWrappers\VBA\ProcKind.cs" />
-    <Compile Include="SafeComWrappers\VBA\ProjectProtection.cs" />
-    <Compile Include="SafeComWrappers\VBA\ProjectType.cs" />
+    <Compile Include="SafeComWrappers\ProcKind.cs" />
+    <Compile Include="SafeComWrappers\ProjectProtection.cs" />
+    <Compile Include="SafeComWrappers\ProjectType.cs" />
     <Compile Include="SafeComWrappers\VBA\Reference.cs" />
-    <Compile Include="SafeComWrappers\VBA\ReferenceKind.cs" />
+    <Compile Include="SafeComWrappers\ReferenceKind.cs" />
     <Compile Include="SafeComWrappers\VBA\References.cs" />
     <Compile Include="SafeComWrappers\VBA\VBComponent.cs" />
     <Compile Include="SafeComWrappers\VBA\VBComponents.cs" />
@@ -234,9 +254,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="VBEEditorText.sv.resx" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SafeComWrappers\VB6\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

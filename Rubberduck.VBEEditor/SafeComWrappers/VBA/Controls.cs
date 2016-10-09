@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Controls : SafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls>, IControls
+    public class Controls : SafeComWrapper<VB.Forms.Controls>, IControls
     {
-        public Controls(Microsoft.Vbe.Interop.Forms.Controls target) 
+        public Controls(VB.Forms.Controls target) 
             : base(target)
         {
         }
@@ -20,7 +21,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IControl this[object index]
         {
-            get { return new Control((Microsoft.Vbe.Interop.Forms.Control) Target.Item(index)); }
+            get { return new Control((VB.Forms.Control) Target.Item(index)); }
         }
 
         IEnumerator<IControl> IEnumerable<IControl>.GetEnumerator()
@@ -45,14 +46,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             } 
         }
 
-        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls> other)
+        public override bool Equals(ISafeComWrapper<VB.Forms.Controls> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
         public bool Equals(IControls other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Forms.Controls>);
+            return Equals(other as SafeComWrapper<VB.Forms.Controls>);
         }
 
         public override int GetHashCode()

@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class AddIns : SafeComWrapper<VB.Addins>, IAddIns
     {
-        public AddIns(Microsoft.Vbe.Interop.Addins target) : 
+        public AddIns(VB.Addins target) : 
             base(target)
         {
         }

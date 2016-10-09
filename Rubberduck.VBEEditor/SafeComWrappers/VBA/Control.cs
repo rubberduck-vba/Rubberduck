@@ -1,12 +1,13 @@
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Control : SafeComWrapper<Microsoft.Vbe.Interop.Forms.Control>, IControl
+    public class Control : SafeComWrapper<VB.Forms.Control>, IControl
     {
-        public Control(Microsoft.Vbe.Interop.Forms.Control target) 
+        public Control(VB.Forms.Control target) 
             : base(target)
         {
         }
@@ -25,14 +26,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.Forms.Control> other)
+        public override bool Equals(ISafeComWrapper<VB.Forms.Control> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
         public bool Equals(IControl other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Forms.Control>);
+            return Equals(other as SafeComWrapper<VB.Forms.Control>);
         }
 
         public override int GetHashCode()

@@ -1,9 +1,8 @@
 using System;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
-    public interface IVBComponents : ISafeComWrapper<IVBComponents>, IComCollection<IVBComponent>, IEquatable<IVBComponents>
+    public interface IVBComponents : ISafeComWrapper, IComCollection<IVBComponent>, IEquatable<IVBComponents>
     {
         IVBComponent this[object index] { get; }
 

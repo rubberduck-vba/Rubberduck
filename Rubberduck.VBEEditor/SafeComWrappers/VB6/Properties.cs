@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
-    public class LinkedWindows : SafeComWrapper<VB.LinkedWindows>, ILinkedWindows
+    public class Properties : SafeComWrapper<VB.Properties>, IProperties
     {
-        public LinkedWindows(VB.LinkedWindows linkedWindows)
-            : base(linkedWindows)
+        public Properties(VB.Properties target) 
+            : base(target)
         {
         }
 
@@ -24,34 +23,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
-        public IWindow Parent
+        public IApplication Application
         {
-            get { return new Window(IsWrappingNullReference ? null : Target.Parent); }
+            get { return new Application(IsWrappingNullReference ? null : Target.Application); }
         }
 
-        public IWindow this[object index]
+        public object Parent
         {
-            get { return new Window(Target.Item(index)); }
+            get { return IsWrappingNullReference ? null : Target.Parent; }
         }
 
-        public void Remove(IWindow window)
+        public IProperty this[object index]
         {
-            Target.Remove(((Window)window).Target);
+            get { return new Property(Target.Item(index)); }
         }
 
-        public void Add(IWindow window)
+        IEnumerator<IProperty> IEnumerable<IProperty>.GetEnumerator()
         {
-            Target.Add(((Window)window).Target);
+            return new ComWrapperEnumerator<Property>(Target);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return Target.GetEnumerator();
-        }
-
-        IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()
-        {
-            return new ComWrapperEnumerator<IWindow>(Target);
+            return ((IEnumerable<IProperty>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -65,15 +59,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 Marshal.ReleaseComObject(Target);
             }
         }
-        
-        public override bool Equals(ISafeComWrapper<VB.LinkedWindows> other)
+
+        public override bool Equals(ISafeComWrapper<VB.Properties> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(ILinkedWindows other)
+        public bool Equals(IProperties other)
         {
-            return Equals(other as SafeComWrapper<VB.LinkedWindows>);
+            return Equals(other as SafeComWrapper<VB.Properties>);
         }
 
         public override int GetHashCode()

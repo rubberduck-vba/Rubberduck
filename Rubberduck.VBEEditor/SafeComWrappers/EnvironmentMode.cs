@@ -1,4 +1,4 @@
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers
 {
     /// <summary>
     /// Values compatible with <see cref="Microsoft.Vbe.Interop.vbext_VBAMode"/> enum values.

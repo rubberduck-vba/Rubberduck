@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Windows : SafeComWrapper<Microsoft.Vbe.Interop.Windows>, IWindows
+    public class Windows : SafeComWrapper<VB.Windows>, IWindows
     {
-        public Windows(Microsoft.Vbe.Interop.Windows windows)
+        public Windows(VB.Windows windows)
             : base(windows)
         {
         }
@@ -35,7 +36,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IWindow CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition, ref object docObj)
         {
-            return new Window(Target.CreateToolWindow((Microsoft.Vbe.Interop.AddIn)addInInst.Target, progId, caption, guidPosition, ref docObj));
+            return new Window(Target.CreateToolWindow((VB.AddIn)addInInst.Target, progId, caption, guidPosition, ref docObj));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -60,14 +61,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public override bool Equals(ISafeComWrapper<Microsoft.Vbe.Interop.Windows> other)
+        public override bool Equals(ISafeComWrapper<VB.Windows> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
         public bool Equals(IWindows other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Windows>);
+            return Equals(other as SafeComWrapper<VB.Windows>);
         }
 
         public override int GetHashCode()

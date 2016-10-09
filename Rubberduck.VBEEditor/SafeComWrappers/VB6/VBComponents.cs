@@ -6,9 +6,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBComponents : SafeComWrapper<VB.VBComponents>, IVBComponents
     {
@@ -39,27 +39,30 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Remove(IVBComponent item)
         {
-            Target.Remove((VB.VBComponent) item.Target);
+            Target.Remove((VB.VBComponent)item.Target);
         }
 
         public IVBComponent Add(ComponentType type)
         {
-            return new VBComponent(Target.Add((VB.vbext_ComponentType) type));
+            return new VBComponent(Target.Add((VB.vbext_ComponentType)type));
         }
 
         public IVBComponent Import(string path)
         {
-            return new VBComponent(Target.Import(path));
+            throw new NotImplementedException();
+            //return new VBComponent((VB.VBComponent)Target.Import(path).Target);
         }
 
         public IVBComponent AddCustom(string progId)
         {
-            return new VBComponent(Target.AddCustom(progId));
+            throw new NotImplementedException();
+            //return new VBComponent((VB.VBComponent)Target.AddCustom(progId).Target);
         }
 
         public IVBComponent AddMTDesigner(int index = 0)
         {
-            return new VBComponent(Target.AddMTDesigner(index));
+            throw new NotImplementedException();
+            //return new VBComponent((VB.VBComponent)Target.AddMTDesigner(index).Target);
         }
 
         IEnumerator<IVBComponent> IEnumerable<IVBComponent>.GetEnumerator()

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBProject : SafeComWrapper<VB.VBProject>, IVBProject
     {
@@ -16,12 +16,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IApplication Application
         {
-            get { return new Application(IsWrappingNullReference ? null : Target.Application); }
+            get { throw new NotImplementedException(); }
         }
 
         public IApplication Parent
         {
-            get { return new Application(IsWrappingNullReference ? null : Target.Parent); }
+            get { throw new NotImplementedException(); }
         }
 
         public string HelpFile
@@ -44,7 +44,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public EnvironmentMode Mode
         {
-            get { return IsWrappingNullReference ? 0 : (EnvironmentMode)Target.Mode; }
+            get { throw new NotImplementedException(); }
         }
 
         public IVBProjects Collection
@@ -54,17 +54,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IReferences References
         {
-            get { return new References(IsWrappingNullReference ? null : Target.References); }
+            get { throw new NotImplementedException(); }
         }
 
         public IVBComponents VBComponents
         {
-            get { return new VBComponents(IsWrappingNullReference ? null : Target.VBComponents); }
+            get { throw new NotImplementedException(); }
         }
 
         public ProjectProtection Protection
         {
-            get { return IsWrappingNullReference ? 0 : (ProjectProtection)Target.Protection; }
+            get { throw new NotImplementedException(); }
         }
 
         public bool IsSaved
@@ -79,7 +79,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string FileName
         {
-            get { return IsWrappingNullReference ? String.Empty : Target.FileName; }
+            get { return IsWrappingNullReference ? string.Empty : Target.FileName; }
         }
 
         public string BuildFileName

@@ -2,12 +2,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Vbe.Interop;
+using Microsoft.VB6.Interop.VBIDE;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     [SuppressMessage("ReSharper", "UseIndexedProperty")]
     public class CodeModule : SafeComWrapper<VB.CodeModule>, ICodeModule
@@ -236,14 +236,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public override bool Equals(ISafeComWrapper<VB.CodeModule> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.VB6.Interop.VBIDE.CodeModule> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
         public bool Equals(ICodeModule other)
         {
-            return Equals(other as SafeComWrapper<VB.CodeModule>);
+            return Equals(other as SafeComWrapper<Microsoft.VB6.Interop.VBIDE.CodeModule>);
         }
 
         public override int GetHashCode()

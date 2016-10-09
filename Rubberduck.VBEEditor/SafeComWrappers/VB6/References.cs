@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using VB = Microsoft.Vbe.Interop;
+using VB = Microsoft.VB6.Interop.VBIDE;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.VBA
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class References : SafeComWrapper<VB.References>, IReferences
     {
@@ -37,14 +37,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
-        private void Target_ItemRemoved(Microsoft.Vbe.Interop.Reference reference)
+        private void Target_ItemRemoved(VB.Reference reference)
         {
             var handler = ItemRemoved;
             if (handler == null) { return; }
             handler.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
         }
 
-        private void Target_ItemAdded(Microsoft.Vbe.Interop.Reference reference)
+        private void Target_ItemAdded(VB.Reference reference)
         {
             var handler = ItemAdded;
             if (handler == null) { return; }
