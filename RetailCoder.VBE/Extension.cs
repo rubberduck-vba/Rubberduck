@@ -1,5 +1,4 @@
 ﻿using Extensibility;
-using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Factory;
 using Rubberduck.Root;
@@ -50,9 +49,23 @@ namespace Rubberduck
         {
             try
             {
-                // todo: determine which type to use (SafeComWrappers.VBA || SafeComWrappers.VB6)
-                _ide = new VBEditor.SafeComWrappers.VBA.VBE((VBE)Application);
-                _addin = new VBEditor.SafeComWrappers.VBA.AddIn((AddIn) AddInInst) {Object = this};
+                if (Application is Microsoft.Vbe.Interop.VBE)
+                {
+                    var vbe = (Microsoft.Vbe.Interop.VBE) Application;
+                    _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
+
+                    var addin = (Microsoft.Vbe.Interop.AddIn)AddInInst;
+                    _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
+                }
+                else if (Application is Microsoft.VB6.Interop.VBIDE.VBE)
+                {
+                    var vbe = Application as Microsoft.VB6.Interop.VBIDE.VBE;
+                    _ide = new VBEditor.SafeComWrappers.VB6.VBE(vbe);
+
+                    var addin = (Microsoft.VB6.Interop.VBIDE.AddIn) AddInInst;
+                    _addin = new VBEditor.SafeComWrappers.VB6.AddIn(addin);
+                }
+
 
                 switch (ConnectMode)
                 {

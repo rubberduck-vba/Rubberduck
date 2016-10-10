@@ -33,7 +33,6 @@ using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Root
 {

@@ -21,10 +21,10 @@ namespace Rubberduck
         private readonly IMessageBox _messageBox;
         private readonly IRubberduckParser _parser;
         //private AutoSave.AutoSave _autoSave;
-        private IGeneralConfigService _configService;
+        private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
-        private RubberduckCommandBar _stateBar;
-        private IRubberduckHooks _hooks;
+        private readonly RubberduckCommandBar _stateBar;
+        private readonly IRubberduckHooks _hooks;
         private readonly UI.Settings.Settings _settings;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -149,11 +149,6 @@ namespace Rubberduck
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
             UpdateLoggingLevel();
-
-            //if (_vbe.VBProjects.Count != 0)
-            //{
-            //    _parser.State.OnParseRequested(this);
-            //}
         }
 
         public void Shutdown()
