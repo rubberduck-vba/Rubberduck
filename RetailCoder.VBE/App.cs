@@ -20,7 +20,7 @@ namespace Rubberduck
         private readonly IVBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IRubberduckParser _parser;
-        //private AutoSave.AutoSave _autoSave;
+        private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
         private readonly RubberduckCommandBar _stateBar;
@@ -45,7 +45,7 @@ namespace Rubberduck
             _settings = settings;
             _parser = parser;
             _configService = configService;
-            //_autoSave = new AutoSave.AutoSave(_vbe, _configService);
+            _autoSave = new AutoSave.AutoSave(_vbe, _configService);
             _appMenus = appMenus;
             _stateBar = stateBar;
             _hooks = hooks;
@@ -146,7 +146,7 @@ namespace Rubberduck
             EnsureDirectoriesExist();
             LoadConfig();
             _appMenus.Initialize();
-            //_stateBar.Initialize();
+            _stateBar.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
             UpdateLoggingLevel();
@@ -180,8 +180,7 @@ namespace Rubberduck
         private void LoadConfig()
         {
             _config = _configService.LoadConfiguration();
-
-            //_autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
+            _autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
 
             var currentCulture = RubberduckUI.Culture;
             try
@@ -236,10 +235,10 @@ namespace Rubberduck
                 _stateBar.Dispose();
             }
 
-            //if (_autoSave != null)
-            //{
-            //    _autoSave.Dispose();
-            //}
+            if (_autoSave != null)
+            {
+                _autoSave.Dispose();
+            }
 
             UiDispatcher.Shutdown();
 

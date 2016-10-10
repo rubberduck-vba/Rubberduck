@@ -13,7 +13,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public CommandBarButton(Microsoft.Office.Core.CommandBarButton target) 
             : base(target)
         {
-            target.Click += Target_Click;
+        }
+
+        public void HandleEvents()
+        {
+            ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
         }
 
         private Microsoft.Office.Core.CommandBarButton Button
@@ -29,15 +33,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public event EventHandler<CommandBarButtonClickEventArgs> Click;
         private void Target_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
         {
-            // todo: confirm whether this fixes the multicast glitch of ParentMenuItemBase.child_Click()
-            // "without this hack, handler runs once for each menu item that's hooked up to the command.
-            //  hash code is different on every frakkin' click. go figure. I've had it, this is the fix."
-
             var handler = Click;
             if (handler == null)
             {
                 return;
             }
+            
+            //note: event is fired for every parent the command exists under. not sure why.
+            //System.Diagnostics.Debug.WriteLine("Target_Click: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.Name, Target.Caption, Tag, Target.GetHashCode());
 
             var args = new CommandBarButtonClickEventArgs(new CommandBarButton(ctrl));
             handler.Invoke(this, args);

@@ -28,7 +28,6 @@ namespace Rubberduck.UI.Command.MenuItems
             _state = state;
             _vbe = vbe;
             _command = command;
-            Initialize();
         }
 
         public void SetSelectionText()
@@ -156,6 +155,10 @@ namespace Rubberduck.UI.Command.MenuItems
             _commandbar.IsVisible = true;
 
             _refreshButton.Click += refreshButton_Click;
+
+            ((CommandBarButton)_refreshButton).HandleEvents();
+            ((CommandBarButton)_statusButton).HandleEvents();
+
             _state.StateChanged += State_StateChanged;
         }
 

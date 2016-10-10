@@ -190,7 +190,15 @@ namespace Rubberduck
                 _kernel = null;
             }
 
-            _ide.Release();
+            try
+            {
+                _ide.Release();
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
+
             _isInitialized = false;
         }
     }

@@ -169,6 +169,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 : string.Empty;
 
             child.Click += child_Click;
+            ((CommandBarButton)child).HandleEvents();
             return child;
         }
 
@@ -178,16 +179,16 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         private void child_Click(object sender, CommandBarButtonClickEventArgs e)
         {
             var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Control.Tag) as ICommandMenuItem;
-            if (item == null || e.Control.GetHashCode() == _lastHashCode)
+            if (item == null || e.Control.Target.GetHashCode() == _lastHashCode)
             {
                 return;
             }
 
             // without this hack, handler runs once for each menu item that's hooked up to the command.
             // hash code is different on every frakkin' click. go figure. I've had it, this is the fix.
-            _lastHashCode = e.Control.GetHashCode();
+            _lastHashCode = e.Control.Target.GetHashCode();
 
-            Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.GetHashCode());
+            Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
             item.Command.Execute(null);
         }
     }
