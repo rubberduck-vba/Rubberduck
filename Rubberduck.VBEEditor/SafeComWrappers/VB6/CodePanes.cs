@@ -41,12 +41,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<ICodePane> IEnumerable<ICodePane>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<CodePane>(Target);
+            return new ComWrapperEnumerator<ICodePane>(Target, o => new CodePane((VB.CodePane)o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<CodePane>)this).GetEnumerator();
+            return ((IEnumerable<ICodePane>)this).GetEnumerator();
         }
 
         public override void Release()

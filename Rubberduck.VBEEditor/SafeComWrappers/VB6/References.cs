@@ -73,7 +73,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<IReference> IEnumerable<IReference>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<Reference>(Target);
+            return new ComWrapperEnumerator<IReference>(Target, o => new Reference((VB.Reference)o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

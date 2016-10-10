@@ -40,7 +40,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IProperty> IEnumerable<IProperty>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<Property>(Target);
+            return new ComWrapperEnumerator<IProperty>(Target, o => new Property((VB.Property)o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

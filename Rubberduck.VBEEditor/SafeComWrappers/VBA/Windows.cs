@@ -45,7 +45,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IWindow>(Target);
+            return new ComWrapperEnumerator<IWindow>(Target, o => new Window((VB.Window)o));
         }
 
         public override void Release()

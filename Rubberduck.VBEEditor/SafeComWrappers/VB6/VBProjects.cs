@@ -51,7 +51,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<IVBProject> IEnumerable<IVBProject>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<VBProject>(Target);
+            return new ComWrapperEnumerator<IVBProject>(Target, o => new VBProject((VB.VBProject)o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -26,7 +26,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IControl> IEnumerable<IControl>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IControl>(Target);
+            return new ComWrapperEnumerator<IControl>(Target, o => new Control((VB.Forms.Control)o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

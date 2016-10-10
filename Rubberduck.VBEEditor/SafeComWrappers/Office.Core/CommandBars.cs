@@ -38,7 +38,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         IEnumerator<ICommandBar> IEnumerable<ICommandBar>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<CommandBar>(Target);
+            return new ComWrapperEnumerator<ICommandBar>(Target, o => new CommandBar((Microsoft.Office.Core.CommandBar)o));
         }
 
         public IEnumerator GetEnumerator()

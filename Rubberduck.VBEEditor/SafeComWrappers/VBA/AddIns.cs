@@ -72,7 +72,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IAddIn> IEnumerable<IAddIn>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IAddIn>(Target);
+            return new ComWrapperEnumerator<IAddIn>(Target, o => new AddIn((VB.AddIn)o));
         }
     }
 }

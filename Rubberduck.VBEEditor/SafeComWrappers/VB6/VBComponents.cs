@@ -67,7 +67,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<IVBComponent> IEnumerable<IVBComponent>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IVBComponent>(Target);
+            return new ComWrapperEnumerator<IVBComponent>(Target, o => new VBComponent((VB.VBComponent)o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
