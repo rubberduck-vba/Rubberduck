@@ -46,7 +46,7 @@ namespace Rubberduck.UI.SourceControl
         public SourceControlViewViewModel(
             IVBE vbe,
             RubberduckParserState state,
-            ISinks sinks,
+            //ISinks sinks,
             ISourceControlProviderFactory providerFactory,
             IFolderBrowserFactory folderBrowserFactory,
             IConfigProvider<SourceControlSettings> configService,
@@ -55,7 +55,7 @@ namespace Rubberduck.UI.SourceControl
         {
             _vbe = vbe;
             _state = state;
-            _sinks = sinks;
+            //_sinks = sinks;
             _providerFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
 
@@ -83,10 +83,10 @@ namespace Rubberduck.UI.SourceControl
 
             _openCommandPromptCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenCommandPrompt());
 
-            _sinks.ComponentAdded += ComponentAdded;
-            _sinks.ComponentRemoved += ComponentRemoved;
-            _sinks.ComponentRenamed += ComponentRenamed;
-            _sinks.ProjectRemoved += ProjectRemoved;
+            //_sinks.ComponentAdded += ComponentAdded;
+            //_sinks.ComponentRemoved += ComponentRemoved;
+            //_sinks.ComponentRenamed += ComponentRenamed;
+            //_sinks.ProjectRemoved += ProjectRemoved;
 
             TabItems = new ObservableCollection<IControlView>(views);
             SetTab(SourceControlTab.Changes);

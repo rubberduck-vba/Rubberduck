@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
@@ -114,6 +115,8 @@ namespace Rubberduck
         public event EventHandler<IProjectEventArgs> ProjectAdded;
         public event EventHandler<IProjectEventArgs> ProjectRemoved;
         public event EventHandler<IProjectRenamedEventArgs> ProjectRenamed;
+        public event EventHandler<ReferenceEventArgs> ReferenceAdded;
+        public event EventHandler<ReferenceEventArgs> ReferenceRemoved;
 
         private void _sink_ProjectActivated(object sender, DispatcherEventArgs<Microsoft.Vbe.Interop.VBProject> e)
         {

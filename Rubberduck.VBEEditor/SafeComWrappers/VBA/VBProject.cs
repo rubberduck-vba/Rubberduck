@@ -24,6 +24,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new Application(IsWrappingNullReference ? null : Target.Parent); }
         }
 
+        public string ProjectId { get { return HelpFile; } }
+
         public string HelpFile
         {
             get { return IsWrappingNullReference ? string.Empty : Target.HelpFile; }

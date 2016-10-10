@@ -5,7 +5,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
@@ -17,7 +16,7 @@ namespace Rubberduck.UI.Command.MenuItems
     {
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
-        private readonly ISinks _sinks;
+        //private readonly ISinks _sinks;
         private readonly IShowParserErrorsCommand _command;
 
         private ICommandBarButton _refreshButton;
@@ -25,18 +24,18 @@ namespace Rubberduck.UI.Command.MenuItems
         private ICommandBarButton _selectionButton;
         private ICommandBar _commandbar;
 
-        public RubberduckCommandBar(RubberduckParserState state, IVBE vbe, ISinks sinks, IShowParserErrorsCommand command)
+        public RubberduckCommandBar(RubberduckParserState state, IVBE vbe/*, ISinks sinks*/, IShowParserErrorsCommand command)
         {
             _state = state;
             _vbe = vbe;
-            _sinks = sinks;
+            //_sinks = sinks;
             _command = command;
             _state.StateChanged += State_StateChanged;
             Initialize();
 
-            _sinks.ProjectRemoved += ProjectRemoved;
-            _sinks.ComponentActivated += ComponentActivated;
-            _sinks.ComponentSelected += ComponentSelected;
+            //_sinks.ProjectRemoved += ProjectRemoved;
+            //_sinks.ComponentActivated += ComponentActivated;
+            //_sinks.ComponentSelected += ComponentSelected;
         }
 
         private void ProjectRemoved(object sender, IProjectEventArgs e)
@@ -178,7 +177,7 @@ namespace Rubberduck.UI.Command.MenuItems
             _selectionButton.IsEnabled = false;
 
             _commandbar.IsVisible = true;
-            _sinks.Start();
+            //_sinks.Start();
         }
 
         private void refreshButton_Click(object sender, CommandBarButtonClickEventArgs e)
@@ -197,9 +196,9 @@ namespace Rubberduck.UI.Command.MenuItems
 
             _state.StateChanged -= State_StateChanged;
 
-            _sinks.ProjectRemoved -= ProjectRemoved;
-            _sinks.ComponentActivated -= ComponentActivated;
-            _sinks.ComponentSelected -= ComponentSelected;
+            //_sinks.ProjectRemoved -= ProjectRemoved;
+            //_sinks.ComponentActivated -= ComponentActivated;
+            //_sinks.ComponentSelected -= ComponentSelected;
 
             _isDisposed = true;
         }

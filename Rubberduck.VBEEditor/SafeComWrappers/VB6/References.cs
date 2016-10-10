@@ -85,12 +85,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             if (!IsWrappingNullReference)
             {
+                Target.ItemAdded -= Target_ItemAdded;
+                Target.ItemRemoved -= Target_ItemRemoved;
                 for (var i = 1; i <= Count; i++)
                 {
                     this[i].Release();
                 }
-                Target.ItemAdded -= Target_ItemAdded;
-                Target.ItemRemoved -= Target_ItemRemoved;
                 Marshal.ReleaseComObject(Target);
             }
         }

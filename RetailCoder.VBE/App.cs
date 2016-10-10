@@ -20,36 +20,37 @@ namespace Rubberduck
         private readonly IVBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IRubberduckParser _parser;
-        private AutoSave.AutoSave _autoSave;
+        //private AutoSave.AutoSave _autoSave;
         private IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
         private RubberduckCommandBar _stateBar;
-        private IRubberduckHooks _hooks;
+        //private IRubberduckHooks _hooks;
         private readonly UI.Settings.Settings _settings;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
         private Configuration _config;
 
-        public App(IVBE vbe, IMessageBox messageBox,
+        public App(IVBE vbe, 
+            IMessageBox messageBox,
             UI.Settings.Settings settings,
             IRubberduckParser parser,
             IGeneralConfigService configService,
             IAppMenu appMenus,
-            RubberduckCommandBar stateBar,
-            IRubberduckHooks hooks)
+            RubberduckCommandBar stateBar//,
+            /*IRubberduckHooks hooks*/)
         {
             _vbe = vbe;
             _messageBox = messageBox;
             _settings = settings;
             _parser = parser;
             _configService = configService;
-            _autoSave = new AutoSave.AutoSave(_vbe, _configService);
+            //_autoSave = new AutoSave.AutoSave(_vbe, _configService);
             _appMenus = appMenus;
             _stateBar = stateBar;
-            _hooks = hooks;
+            //_hooks = hooks;
 
-            _hooks.MessageReceived += _hooks_MessageReceived;
+            //_hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
@@ -109,7 +110,7 @@ namespace Rubberduck
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
             _config = _configService.LoadConfiguration();
-            _hooks.HookHotkeys();
+            //_hooks.HookHotkeys();
             // also updates the ShortcutKey text
             _appMenus.Localize();
             UpdateLoggingLevel();
@@ -145,7 +146,7 @@ namespace Rubberduck
             EnsureDirectoriesExist();
             LoadConfig();
             _appMenus.Initialize();
-            _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
+            //_hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
             UpdateLoggingLevel();
 
@@ -159,7 +160,7 @@ namespace Rubberduck
         {
             try
             {
-                _hooks.Detach();
+                //_hooks.Detach();
             }
             catch
             {
@@ -183,7 +184,7 @@ namespace Rubberduck
         {
             _config = _configService.LoadConfiguration();
 
-            _autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
+            //_autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
 
             var currentCulture = RubberduckUI.Culture;
             try
@@ -214,15 +215,13 @@ namespace Rubberduck
                 _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
                 _parser.State.Dispose();
                 _parser.Dispose();
-                // I won't set this to null because other components may try to release things
             }
 
-            if (_hooks != null)
-            {
-                _hooks.MessageReceived -= _hooks_MessageReceived;
-                _hooks.Dispose();
-                _hooks = null;
-            }
+            //if (_hooks != null)
+            //{
+            //    _hooks.MessageReceived -= _hooks_MessageReceived;
+            //    _hooks.Dispose();
+            //}
 
             if (_settings != null)
             {
@@ -232,21 +231,18 @@ namespace Rubberduck
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
-                _configService = null;
             }
 
             if (_stateBar != null)
             {
                 _stateBar.Refresh -= _stateBar_Refresh;
                 _stateBar.Dispose();
-                _stateBar = null;
             }
 
-            if (_autoSave != null)
-            {
-                _autoSave.Dispose();
-                _autoSave = null;
-            }
+            //if (_autoSave != null)
+            //{
+            //    _autoSave.Dispose();
+            //}
 
             UiDispatcher.Shutdown();
 

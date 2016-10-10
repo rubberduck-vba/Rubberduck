@@ -12,6 +12,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IReferences References { get; }
         IVBComponents VBComponents { get; }
 
+        string ProjectId { get; }
         string Name { get; set; }
         string Description { get; set; }
         string HelpFile { get; set; }

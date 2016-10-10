@@ -24,6 +24,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             get { throw new NotImplementedException(); }
         }
 
+        public string ProjectId { get { return HelpFile; } }
+
         public string HelpFile
         {
             get { return IsWrappingNullReference ? string.Empty : Target.HelpFile; }

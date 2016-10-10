@@ -312,7 +312,6 @@
     <Compile Include="Common\DeclarationExtensions.cs" />
     <Compile Include="Common\Dispatch\DispatcherEventArgs.cs" />
     <Compile Include="Common\Dispatch\DispatcherRenamedEventArgs.cs" />
-    <Compile Include="Common\Dispatch\ReferencesEventsSink.cs" />
     <Compile Include="Common\Dispatch\VBComponentsEventsSink.cs" />
     <Compile Include="Common\Dispatch\VBProjectsEventsSink.cs" />
     <Compile Include="Common\Dispatch\VBProjectsEventsWrapper.cs" />
