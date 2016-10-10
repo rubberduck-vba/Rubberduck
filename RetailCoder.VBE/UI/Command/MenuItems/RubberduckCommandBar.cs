@@ -1,5 +1,4 @@
 ﻿using System;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
@@ -176,7 +175,22 @@ namespace Rubberduck.UI.Command.MenuItems
                 return;
             }
 
+            _refreshButton.Click -= refreshButton_Click;
+            ((CommandBarButton)_refreshButton).StopEvents();
+
             _state.StateChanged -= State_StateChanged;
+            ((CommandBarButton)_statusButton).StopEvents();
+
+            _refreshButton.Delete();
+            _statusButton.Delete();
+            _selectionButton.Delete();
+
+            _refreshButton.Release();
+            _statusButton.Release();
+            _selectionButton.Release();
+
+            _commandbar.Delete();
+
             _isDisposed = true;
         }
     }

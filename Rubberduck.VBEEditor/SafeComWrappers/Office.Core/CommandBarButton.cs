@@ -20,6 +20,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
         }
 
+        public void StopEvents()
+        {
+            ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
+        }
+
         private Microsoft.Office.Core.CommandBarButton Button
         {
             get { return (Microsoft.Office.Core.CommandBarButton)Target; }
