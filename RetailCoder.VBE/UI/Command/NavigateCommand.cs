@@ -28,7 +28,7 @@ namespace Rubberduck.UI.Command
                 var pane = param.QualifiedName.Component.CodeModule.CodePane;
                 var selection = param.Selection;
 
-                pane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+                pane.SetSelection(selection);
             }
             catch (COMException)
             {
