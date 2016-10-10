@@ -450,8 +450,14 @@ namespace Rubberduck.Refactorings.Rename
                 {
                     foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                     {
+                        var lastSelection = Selection.Empty;
                         foreach (var reference in line.OrderByDescending(l => l.Selection.StartColumn))
                         {
+                            if (reference.Selection == lastSelection)
+                            {
+                                continue;
+                            }
+
                             var content = module.GetLines(line.Key, 1);
                             string newContent;
 
@@ -465,6 +471,7 @@ namespace Rubberduck.Refactorings.Rename
                             }
 
                             module.ReplaceLine(line.Key, newContent);
+                            lastSelection = reference.Selection;
                         }
                     }
 
