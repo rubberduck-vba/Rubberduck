@@ -66,8 +66,8 @@ namespace Rubberduck.API
             }
 
             _vbe = vbe;
-            //_sinks = new Sinks(_vbe);
-            _state = new RubberduckParserState(/*_sinks*/);
+            _sinks = new Sinks(_vbe);
+            _state = new RubberduckParserState(_sinks);
             _state.StateChanged += _state_StateChanged;
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));

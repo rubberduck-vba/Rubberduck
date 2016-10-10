@@ -12,15 +12,40 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public References(VB.References target) 
             : base(target)
         {
-            if (!IsWrappingNullReference)
-            {
-                target.ItemAdded += Target_ItemAdded;
-                target.ItemRemoved += Target_ItemRemoved;
-            }
         }
 
         public event EventHandler<ReferenceEventArgs> ItemAdded;
         public event EventHandler<ReferenceEventArgs> ItemRemoved;
+
+        public void HandleEvents(EventHandler<ReferenceEventArgs> handleItemAdded, EventHandler<ReferenceEventArgs> handleItemRemoved)
+        {
+            var addedHandler = ItemAdded;
+            var removedHandler = ItemRemoved;
+            if (addedHandler != null || removedHandler != null)
+            {
+                return;
+            }
+
+            Target.ItemAdded += Target_ItemAdded;
+            Target.ItemRemoved += Target_ItemRemoved;
+            ItemAdded += handleItemAdded;
+            ItemRemoved += handleItemRemoved;
+        }
+
+        public void UnregisterEvents(EventHandler<ReferenceEventArgs> handleItemAdded, EventHandler<ReferenceEventArgs> handleItemRemoved)
+        {
+            var addedHandler = ItemAdded;
+            var removedHandler = ItemRemoved;
+            if (addedHandler == null || removedHandler == null)
+            {
+                return;
+            }
+
+            Target.ItemAdded -= Target_ItemAdded;
+            Target.ItemRemoved -= Target_ItemRemoved;
+            ItemAdded -= handleItemAdded;
+            ItemRemoved -= handleItemRemoved;
+        }
 
         public int Count
         {
@@ -81,17 +106,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return ((IEnumerable<IReference>)this).GetEnumerator();
         }
 
+        private bool _isReleased;
         public override void Release()
         {
-            if (!IsWrappingNullReference)
+            if (!IsWrappingNullReference && !_isReleased)
             {
                 for (var i = 1; i <= Count; i++)
                 {
                     this[i].Release();
                 }
-                Target.ItemAdded -= Target_ItemAdded;
-                Target.ItemRemoved -= Target_ItemRemoved;
+
                 Marshal.ReleaseComObject(Target);
+                _isReleased = true;
             }
         }
 

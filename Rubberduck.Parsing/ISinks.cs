@@ -1,5 +1,4 @@
 ﻿using System;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing
@@ -44,8 +43,5 @@ namespace Rubberduck.Parsing
         event EventHandler<IComponentEventArgs> ComponentRemoved;
         event EventHandler<IComponentRenamedEventArgs> ComponentRenamed;
         event EventHandler<IComponentEventArgs> ComponentSelected;
-
-        event EventHandler<ReferenceEventArgs> ReferenceAdded;
-        event EventHandler<ReferenceEventArgs> ReferenceRemoved;
     }
 }

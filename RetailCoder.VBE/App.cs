@@ -24,7 +24,7 @@ namespace Rubberduck
         private IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
         private RubberduckCommandBar _stateBar;
-        //private IRubberduckHooks _hooks;
+        private IRubberduckHooks _hooks;
         private readonly UI.Settings.Settings _settings;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -37,8 +37,8 @@ namespace Rubberduck
             IRubberduckParser parser,
             IGeneralConfigService configService,
             IAppMenu appMenus,
-            RubberduckCommandBar stateBar//,
-            /*IRubberduckHooks hooks*/)
+            RubberduckCommandBar stateBar,
+            IRubberduckHooks hooks)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -48,9 +48,9 @@ namespace Rubberduck
             //_autoSave = new AutoSave.AutoSave(_vbe, _configService);
             _appMenus = appMenus;
             _stateBar = stateBar;
-            //_hooks = hooks;
+            _hooks = hooks;
 
-            //_hooks.MessageReceived += _hooks_MessageReceived;
+            _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
@@ -110,7 +110,7 @@ namespace Rubberduck
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
             _config = _configService.LoadConfiguration();
-            //_hooks.HookHotkeys();
+            _hooks.HookHotkeys();
             // also updates the ShortcutKey text
             _appMenus.Localize();
             UpdateLoggingLevel();
@@ -146,7 +146,7 @@ namespace Rubberduck
             EnsureDirectoriesExist();
             LoadConfig();
             _appMenus.Initialize();
-            //_hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
+            _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
             UpdateLoggingLevel();
 
@@ -160,7 +160,7 @@ namespace Rubberduck
         {
             try
             {
-                //_hooks.Detach();
+                _hooks.Detach();
             }
             catch
             {
@@ -217,11 +217,11 @@ namespace Rubberduck
                 _parser.Dispose();
             }
 
-            //if (_hooks != null)
-            //{
-            //    _hooks.MessageReceived -= _hooks_MessageReceived;
-            //    _hooks.Dispose();
-            //}
+            if (_hooks != null)
+            {
+                _hooks.MessageReceived -= _hooks_MessageReceived;
+                _hooks.Dispose();
+            }
 
             if (_settings != null)
             {

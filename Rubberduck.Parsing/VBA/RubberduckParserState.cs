@@ -59,7 +59,7 @@ namespace Rubberduck.Parsing.VBA
 
         public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
-        public RubberduckParserState(/*ISinks sinks*/)
+        public RubberduckParserState(ISinks sinks)
         {
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
@@ -67,13 +67,13 @@ namespace Rubberduck.Parsing.VBA
                 States.Add((ParserState)value);
             }
 
-            //_sinks = sinks;
-            //_sinks.ProjectAdded += Sinks_ProjectAdded;
-            //_sinks.ProjectRemoved += Sinks_ProjectRemoved;
-            //_sinks.ProjectRenamed += Sinks_ProjectRenamed;          
-            //_sinks.ComponentAdded += Sinks_ComponentAdded;
-            //_sinks.ComponentRemoved += Sinks_ComponentRemoved;
-            //_sinks.ComponentRenamed += Sinks_ComponentRenamed;
+            _sinks = sinks;
+            _sinks.ProjectAdded += Sinks_ProjectAdded;
+            _sinks.ProjectRemoved += Sinks_ProjectRemoved;
+            _sinks.ProjectRenamed += Sinks_ProjectRenamed;
+            _sinks.ComponentAdded += Sinks_ComponentAdded;
+            _sinks.ComponentRemoved += Sinks_ComponentRemoved;
+            _sinks.ComponentRenamed += Sinks_ComponentRenamed;
         }
 
         private void Sinks_ProjectAdded(object sender, IProjectEventArgs e)
