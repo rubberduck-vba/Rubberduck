@@ -10,6 +10,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.Command
@@ -105,7 +106,7 @@ namespace Rubberduck.UI.Command
             return viewModel;
         }
 
-        private Declaration FindModuleDeclaration(VBComponent component)
+        private Declaration FindModuleDeclaration(IVBComponent component)
         {
             var components = component.Collection;
             var refProject = components.Parent;

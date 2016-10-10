@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -10,19 +9,18 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersRefactoring : IRefactoring
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
         private RemoveParametersModel _model;
 
-        public RemoveParametersRefactoring(VBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
+        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
         {
             _vbe = vbe;
             _factory = factory;
@@ -140,7 +138,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private void RemoveCallParameter(VBAParser.ArgumentListContext paramList, CodeModule module)
+        private void RemoveCallParameter(VBAParser.ArgumentListContext paramList, ICodeModule module)
         {
             var paramNames = new List<string>();
             if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
@@ -354,7 +352,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private void RemoveSignatureParameters(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
+        private void RemoveSignatureParameters(Declaration target, VBAParser.ArgListContext paramList, ICodeModule module)
         {
             // property set/let have one more parameter than is listed in the getter parameters
             var nonRemovedParamNames = paramList.arg().Where((a, s) => s >= _model.Parameters.Count || !_model.Parameters[s].IsRemoved).Select(s => s.GetText());

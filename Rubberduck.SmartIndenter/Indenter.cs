@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SmartIndenter
 {
     public class Indenter : IIndenter
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly Func<IIndenterSettings> _settings;
 
-        public Indenter(VBE vbe, Func<IIndenterSettings> settings)
+        public Indenter(IVBE vbe, Func<IIndenterSettings> settings)
         {
             _vbe = vbe;
             _settings = settings;
@@ -65,13 +65,13 @@ namespace Rubberduck.SmartIndenter
             }
             Indent(pane.CodeModule.Parent);
         }
-
-        private static Selection GetSelection(CodePane codePane)
+        
+        private static Selection GetSelection(ICodePane codePane)
         {
             return codePane.GetSelection();
         }
 
-        public void Indent(VBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(IVBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
             var module = component.CodeModule;
             var lineCount = module.CountOfLines;
@@ -92,7 +92,7 @@ namespace Rubberduck.SmartIndenter
             }
         }
 
-        public void Indent(VBComponent component, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(IVBComponent component, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
             var module = component.CodeModule;
             var lineCount = module.CountOfLines;

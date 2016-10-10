@@ -4,6 +4,8 @@ using System.Linq;
 using Microsoft.Vbe.Interop;
 using Moq;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
 {
@@ -14,13 +16,13 @@ namespace RubberduckTests.Mocks
     {
         public const string TEST_PROJECT_NAME = "TestProject1";
         public const string TEST_MODULE_NAME = "TestModule1";
-        private readonly Mock<VBE> _vbe;
+        private readonly Mock<IVBE> _vbe;
 
-        private Mock<VBProjects> _vbProjects;
-        private readonly ICollection<VBProject> _projects = new List<VBProject>();
+        private Mock<IVBProjects> _vbProjects;
+        private readonly ICollection<IVBProject> _projects = new List<IVBProject>();
         
-        private Mock<CodePanes> _vbCodePanes;
-        private readonly ICollection<CodePane> _codePanes = new List<CodePane>(); 
+        private Mock<ICodePanes> _vbCodePanes;
+        private readonly ICollection<ICodePane> _codePanes = new List<ICodePane>(); 
 
         public MockVbeBuilder()
         {
@@ -33,13 +35,13 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="project">A mock <see cref="VBProject"/>.</param>
         /// <returns>Returns the <see cref="MockVbeBuilder"/> instance.</returns>
-        public MockVbeBuilder AddProject(Mock<VBProject> project)
+        public MockVbeBuilder AddProject(Mock<IVBProject> project)
         {
             project.SetupGet(m => m.VBE).Returns(_vbe.Object);
 
             _projects.Add(project.Object);
 
-            foreach (var component in _projects.SelectMany(vbProject => vbProject.VBComponents.Cast<VBComponent>()))
+            foreach (var component in _projects.SelectMany(vbProject => vbProject.VBComponents))
             {
                 _codePanes.Add(component.CodeModule.CodePane);
             }
@@ -58,12 +60,12 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="name">The name of the project to build.</param>
         /// <param name="protection">A value that indicates whether the project is protected.</param>
-        public MockProjectBuilder ProjectBuilder(string name, vbext_ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, ProjectProtection protection)
         {
             return ProjectBuilder(name, string.Empty, protection);
         }
 
-        public MockProjectBuilder ProjectBuilder(string name, string filename, vbext_ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, string filename, ProjectProtection protection)
         {
             var result = new MockProjectBuilder(name, filename, protection, () => _vbe.Object, this);
             return result;
@@ -72,7 +74,7 @@ namespace RubberduckTests.Mocks
         /// <summary>
         /// Gets the mock <see cref="VBE"/> instance.
         /// </summary>
-        public Mock<VBE> Build()
+        public Mock<IVBE> Build()
         {
             return _vbe;
         }
@@ -86,23 +88,23 @@ namespace RubberduckTests.Mocks
         /// <param name="component">The created <see cref="VBComponent"/></param>
         /// <param name="selection"></param>
         /// <returns></returns>
-        public Mock<VBE> BuildFromSingleStandardModule(string content, out VBComponent component, Selection selection = new Selection())
+        public Mock<IVBE> BuildFromSingleStandardModule(string content, out IVBComponent component, Selection selection = new Selection())
         {
-            return BuildFromSingleModule(content, vbext_ComponentType.vbext_ct_StdModule, out component, selection);
+            return BuildFromSingleModule(content, ComponentType.StandardModule, out component, selection);
         }
 
-        public Mock<VBE> BuildFromSingleModule(string content, vbext_ComponentType type, out VBComponent component, Selection selection)
+        public Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, out IVBComponent component, Selection selection)
         {
-            var builder = ProjectBuilder(TEST_PROJECT_NAME, vbext_ProjectProtection.vbext_pp_none);
+            var builder = ProjectBuilder(TEST_PROJECT_NAME, ProjectProtection.Unprotected);
             builder.AddComponent(TEST_MODULE_NAME, type, content, selection);
             var project = builder.Build();
-            component = project.Object.VBComponents.Item(0);
+            component = project.Object.VBComponents[0];
             return AddProject(project).Build();
         }
 
-        private Mock<VBE> CreateVbeMock()
+        private Mock<IVBE> CreateVbeMock()
         {
-            var vbe = new Mock<VBE>();
+            var vbe = new Mock<IVBE>();
             var windows = new MockWindowsCollection {VBE = vbe.Object};
             vbe.Setup(m => m.Windows).Returns(() => windows);
             vbe.SetupProperty(m => m.ActiveCodePane);
@@ -111,7 +113,7 @@ namespace RubberduckTests.Mocks
             vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane.CodeModule.Parent);
             vbe.SetupGet(m => m.ActiveWindow).Returns(() => vbe.Object.ActiveCodePane.Window);
 
-            var mainWindow = new Mock<Window>();
+            var mainWindow = new Mock<IWindow>();
             mainWindow.Setup(m => m.HWnd).Returns(0);
 
             vbe.SetupGet(m => m.MainWindow).Returns(() => mainWindow.Object);
@@ -125,28 +127,28 @@ namespace RubberduckTests.Mocks
             return vbe;
         }
 
-        private Mock<VBProjects> CreateProjectsMock()
+        private Mock<IVBProjects> CreateProjectsMock()
         {
-            var result = new Mock<VBProjects>();
+            var result = new Mock<IVBProjects>();
 
             result.Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             
-            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(value => _projects.ElementAt(value));
+            result.Setup(m => m[It.IsAny<int>()]).Returns<int>(value => _projects.ElementAt(value));
             result.SetupGet(m => m.Count).Returns(() => _projects.Count);
 
 
             return result;
         }
 
-        private Mock<CodePanes> CreateCodePanesMock()
+        private Mock<ICodePanes> CreateCodePanesMock()
         {
-            var result = new Mock<CodePanes>();
+            var result = new Mock<ICodePanes>();
 
             result.Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
             
-            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(value => _codePanes.ElementAt(value));
+            result.Setup(m => m[It.IsAny<int>()]).Returns<int>(value => _codePanes.ElementAt(value));
             result.SetupGet(m => m.Count).Returns(() => _codePanes.Count);
 
             return result;

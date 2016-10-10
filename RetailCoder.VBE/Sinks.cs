@@ -4,13 +4,14 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck
 {
     public class ProjectEventArgs : EventArgs, IProjectEventArgs
     {
-        public ProjectEventArgs(string projectId, VBProject project)
+        public ProjectEventArgs(string projectId, IVBProject project)
         {
             _projectId = projectId;
             _project = project;
@@ -19,13 +20,13 @@ namespace Rubberduck
         private readonly string _projectId;
         public string ProjectId { get { return _projectId; } }
 
-        private readonly VBProject _project;
-        public VBProject Project { get { return _project; } }
+        private readonly IVBProject _project;
+        public IVBProject Project { get { return _project; } }
     }
 
     public class ProjectRenamedEventArgs : ProjectEventArgs, IProjectRenamedEventArgs
     {
-        public ProjectRenamedEventArgs(string projectId, VBProject project, string oldName) : base(projectId, project)
+        public ProjectRenamedEventArgs(string projectId, IVBProject project, string oldName) : base(projectId, project)
         {
             _oldName = oldName;
         }
@@ -36,7 +37,7 @@ namespace Rubberduck
 
     public class ComponentEventArgs : EventArgs, IComponentEventArgs
     {
-        public ComponentEventArgs(string projectId, VBProject project, VBComponent component)
+        public ComponentEventArgs(string projectId, IVBProject project, IVBComponent component)
         {
             _projectId = projectId;
             _project = project;
@@ -46,17 +47,17 @@ namespace Rubberduck
         private readonly string _projectId;
         public string ProjectId { get { return _projectId; } }
 
-        private readonly VBProject _project;
-        public VBProject Project { get { return _project; } }
+        private readonly IVBProject _project;
+        public IVBProject Project { get { return _project; } }
 
-        private readonly VBComponent _component;
-        public VBComponent Component { get { return _component; } }
+        private readonly IVBComponent _component;
+        public IVBComponent Component { get { return _component; } }
 
     }
 
     public class ComponentRenamedEventArgs : ComponentEventArgs, IComponentRenamedEventArgs
     {
-        public ComponentRenamedEventArgs(string projectId, VBProject project, VBComponent component, string oldName)
+        public ComponentRenamedEventArgs(string projectId, IVBProject project, IVBComponent component, string oldName)
             : base(projectId, project, component)
         {
             _oldName = oldName;
@@ -79,12 +80,12 @@ namespace Rubberduck
 
         public bool ComponentSinksEnabled { get; set; }
 
-        public Sinks(VBE vbe)
+        public Sinks(IVBE vbe)
         {
             ComponentSinksEnabled = true;
 
             _sink = new VBProjectsEventsSink();
-            var connectionPointContainer = (IConnectionPointContainer)vbe.VBProjects.ComObject;
+            var connectionPointContainer = (IConnectionPointContainer)vbe.VBProjects.Target;
             var interfaceId = typeof(Microsoft.Vbe.Interop._dispVBProjectsEvents).GUID;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
             Marshal.ReleaseComObject(connectionPointContainer);
@@ -175,7 +176,7 @@ namespace Rubberduck
         #endregion
 
         #region ComponentEvents
-        private void RegisterComponentsEventSink(VBComponents components, string projectId)
+        private void RegisterComponentsEventSink(IVBComponents components, string projectId)
         {
             if (_componentsEventsSinks.ContainsKey(projectId))
             {
@@ -183,7 +184,7 @@ namespace Rubberduck
                 return;
             }
 
-            var connectionPointContainer = (IConnectionPointContainer)components.ComObject;
+            var connectionPointContainer = (IConnectionPointContainer)components.Target;
             var interfaceId = typeof(Microsoft.Vbe.Interop._dispVBComponentsEvents).GUID;
 
             IConnectionPoint connectionPoint;

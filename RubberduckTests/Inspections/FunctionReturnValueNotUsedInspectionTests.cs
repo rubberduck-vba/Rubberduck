@@ -6,8 +6,7 @@ using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Application;
 using RubberduckTests.Mocks;
 using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 
@@ -409,10 +408,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
-            projectBuilder.AddComponent("IFoo", vbext_ComponentType.vbext_ct_ClassModule, interfaceCode);
-            projectBuilder.AddComponent("Bar", vbext_ComponentType.vbext_ct_ClassModule, implementationCode);
-            projectBuilder.AddComponent("TestModule", vbext_ComponentType.vbext_ct_StdModule, callSiteCode);
+            var projectBuilder = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected);
+            projectBuilder.AddComponent("IFoo", ComponentType.ClassModule, interfaceCode);
+            projectBuilder.AddComponent("Bar", ComponentType.ClassModule, implementationCode);
+            projectBuilder.AddComponent("TestModule", ComponentType.StandardModule, callSiteCode);
             var vbe = projectBuilder.MockVbeBuilder().Build();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -450,10 +449,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
-            projectBuilder.AddComponent("IFoo", vbext_ComponentType.vbext_ct_ClassModule, interfaceCode);
-            projectBuilder.AddComponent("Bar", vbext_ComponentType.vbext_ct_ClassModule, implementationCode);
-            projectBuilder.AddComponent("TestModule", vbext_ComponentType.vbext_ct_StdModule, callSiteCode);
+            var projectBuilder = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected);
+            projectBuilder.AddComponent("IFoo", ComponentType.ClassModule, interfaceCode);
+            projectBuilder.AddComponent("Bar", ComponentType.ClassModule, implementationCode);
+            projectBuilder.AddComponent("TestModule", ComponentType.StandardModule, callSiteCode);
             var vbe = projectBuilder.MockVbeBuilder().Build();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -589,11 +588,11 @@ End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
-            projectBuilder.AddComponent("IFoo", vbext_ComponentType.vbext_ct_ClassModule, inputInterfaceCode);
-            projectBuilder.AddComponent("Bar", vbext_ComponentType.vbext_ct_ClassModule, inputImplementationCode1);
-            projectBuilder.AddComponent("Bar2", vbext_ComponentType.vbext_ct_ClassModule, inputImplementationCode2);
-            projectBuilder.AddComponent("TestModule", vbext_ComponentType.vbext_ct_StdModule, callSiteCode);
+            var projectBuilder = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected);
+            projectBuilder.AddComponent("IFoo", ComponentType.ClassModule, inputInterfaceCode);
+            projectBuilder.AddComponent("Bar", ComponentType.ClassModule, inputImplementationCode1);
+            projectBuilder.AddComponent("Bar2", ComponentType.ClassModule, inputImplementationCode2);
+            projectBuilder.AddComponent("TestModule", ComponentType.StandardModule, callSiteCode);
             var vbe = projectBuilder.MockVbeBuilder().Build();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();

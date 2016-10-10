@@ -1,66 +1,68 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBComponent : SafeComWrapper<Microsoft.Vbe.Interop.VBComponent>, IEquatable<VBComponent>
+    public class VBComponent : SafeComWrapper<VB.VBComponent>, IVBComponent
     {
-        public VBComponent(Microsoft.Vbe.Interop.VBComponent comObject) 
-            : base(comObject)
+        public VBComponent(VB.VBComponent target) 
+            : base(target)
         {
         }
 
         public ComponentType Type
         {
-            get { return IsWrappingNullReference ? 0 : (ComponentType)InvokeResult(() => ComObject.Type); }
+            get { return IsWrappingNullReference ? 0 : (ComponentType)Target.Type; }
         }
 
-        public CodeModule CodeModule
+        public ICodeModule CodeModule
         {
-            get { return new CodeModule(IsWrappingNullReference ? null : InvokeResult(() => ComObject.CodeModule)); }
+            get { return new CodeModule(IsWrappingNullReference ? null : Target.CodeModule); }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
-        public VBComponents Collection
+        public IVBComponents Collection
         {
-            get { return new VBComponents(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Collection)); }
+            get { return new VBComponents(IsWrappingNullReference ? null : Target.Collection); }
         }
 
-        public Properties Properties
+        public IProperties Properties
         {
-            get { return new Properties(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Properties)); }
+            get { return new Properties(IsWrappingNullReference ? null : Target.Properties); }
         }
 
         public bool HasOpenDesigner
         {
-            get { return !IsWrappingNullReference && InvokeResult(() => ComObject.HasOpenDesigner); }
+            get { return !IsWrappingNullReference && Target.HasOpenDesigner; }
         }
 
         public string DesignerId
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.DesignerID); }
+            get { return IsWrappingNullReference ? string.Empty : Target.DesignerID; }
         }
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Name); }
-            set { Invoke(() => ComObject.Name = value); }
+            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
+            set { Target.Name = value; }
         }
 
-        public Controls Controls
+        public IControls Controls
         {
             get
             {
                 var designer = IsWrappingNullReference
                     ? null
-                    : InvokeResult(() => ComObject.Designer) as Microsoft.Vbe.Interop.Forms.UserForm;
+                    : Target.Designer as VB.Forms.UserForm;
 
                 return designer == null 
                     ? new Controls(null) 
@@ -76,27 +78,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     return false;
                 }
-                var designer = InvokeResult(() => ComObject.Designer);
+                var designer = Target.Designer;
                 var hasDesigner = designer != null;
                 return hasDesigner;
             }
         }
 
-        public Window DesignerWindow()
+        public IWindow DesignerWindow()
         {
-            return new Window(IsWrappingNullReference ? null : InvokeResult(() => ComObject.DesignerWindow()));
+            return new Window(IsWrappingNullReference ? null : Target.DesignerWindow());
         }
 
         public void Activate()
         {
-            Invoke(() => ComObject.Activate());
+            Target.Activate();
         }
 
-        public bool IsSaved { get { return !IsWrappingNullReference && InvokeResult(() => ComObject.Saved); } }
+        public bool IsSaved { get { return !IsWrappingNullReference && Target.Saved; } }
 
         public void Export(string path)
         {
-            Invoke(() => ComObject.Export(path));
+            Target.Export(path);
         }
 
         /// <summary>
@@ -178,19 +180,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.VBComponent> other)
+        public override bool Equals(ISafeComWrapper<VB.VBComponent> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(VBComponent other)
+        public bool Equals(IVBComponent other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBComponent>);
+            return Equals(other as SafeComWrapper<VB.VBComponent>);
         }
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
     }
 }

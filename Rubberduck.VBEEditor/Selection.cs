@@ -91,8 +91,8 @@ namespace Rubberduck.VBEditor
         public override string ToString()
         {
             return (_startLine == _endLine && _startColumn == _endColumn)
-                ? string.Format(Rubberduck.VBEditor.VBEEditorText.SelectionLocationPosition, _startLine, _startColumn)
-                : string.Format(Rubberduck.VBEditor.VBEEditorText.SelectionLocationRange, _startLine, _startColumn, _endLine, _endColumn);
+                ? string.Format(VBEEditorText.SelectionLocationPosition, _startLine, _startColumn)
+                : string.Format(VBEEditorText.SelectionLocationRange, _startLine, _startColumn, _endLine, _endColumn);
         }
 
         public static bool operator ==(Selection selection1, Selection selection2)
@@ -131,20 +131,12 @@ namespace Rubberduck.VBEditor
 
         public override bool Equals(object obj)
         {
-            return Equals((Selection) obj);
+            return obj != null && Equals((Selection)obj);
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hash = 17;
-                hash = hash*23 + StartLine;
-                hash = hash*23 + EndLine;
-                hash = hash*23 + StartColumn;
-                hash = hash*23 + EndColumn;
-                return hash;
-            }
+            return HashCode.Compute(StartLine, EndLine, StartColumn, EndColumn);
         }
     }
 }

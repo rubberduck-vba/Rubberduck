@@ -4,6 +4,7 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -11,9 +12,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     [CodeExplorerCommand]
     public class AddClassModuleCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
 
-        public AddClassModuleCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public AddClassModuleCommand(IVBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }

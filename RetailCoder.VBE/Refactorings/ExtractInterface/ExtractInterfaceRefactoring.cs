@@ -9,20 +9,21 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceRefactoring : IRefactoring
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory<IExtractInterfacePresenter> _factory;
         private ExtractInterfaceModel _model;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ExtractInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<IExtractInterfacePresenter> factory)
+        public ExtractInterfaceRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<IExtractInterfacePresenter> factory)
         {
             _vbe = vbe;
             _state = state;

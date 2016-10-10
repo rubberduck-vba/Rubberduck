@@ -4,7 +4,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public CodePaneRefactorRenameCommand(VBE vbe, RubberduckParserState state) 
+        public CodePaneRefactorRenameCommand(IVBE vbe, RubberduckParserState state) 
             : base (vbe)
         {
             _state = state;

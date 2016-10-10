@@ -1,50 +1,52 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.MSForms;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
-    public class CommandBarControls : SafeComWrapper<Microsoft.Office.Core.CommandBarControls>, IEnumerable<CommandBarControl>, IEquatable<CommandBarControls>
+    public class CommandBarControls : SafeComWrapper<Microsoft.Office.Core.CommandBarControls>, ICommandBarControls
     {
-        public CommandBarControls(Microsoft.Office.Core.CommandBarControls comObject) 
-            : base(comObject)
+        public CommandBarControls(Microsoft.Office.Core.CommandBarControls target) 
+            : base(target)
         {
         }
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+            get { return IsWrappingNullReference ? 0 : Target.Count; }
         }
 
-        public CommandBar Parent
+        public ICommandBar Parent
         {
-            get { return new CommandBar(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Parent)); }
+            get { return new CommandBar(IsWrappingNullReference ? null : Target.Parent); }
         }
 
-        public CommandBarControl this[object index]
+        public ICommandBarControl this[object index]
         {
-            get { return new CommandBarControl(InvokeResult(() => ComObject[index])); }
+            get { return new CommandBarControl(Target[index]); }
         }
 
-        public CommandBarControl Add(ControlType type)
+        public ICommandBarControl Add(ControlType type)
         {
-            return new CommandBarControl(InvokeResult(() => ComObject.Add(type, Temporary:true)));
+            return new CommandBarControl(Target.Add(type, Temporary:true));
         }
 
-        public CommandBarControl Add(ControlType type, int before)
+        public ICommandBarControl Add(ControlType type, int before)
         {
-            return new CommandBarControl(InvokeResult(() => ComObject.Add(type, Before:before, Temporary:true)));
+            return new CommandBarControl(Target.Add(type, Before:before, Temporary:true));
         }
 
-        IEnumerator<CommandBarControl> IEnumerable<CommandBarControl>.GetEnumerator()
+        IEnumerator<ICommandBarControl> IEnumerable<ICommandBarControl>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<CommandBarControl>(ComObject);
+            return new ComWrapperEnumerator<ICommandBarControl>(Target, o => new CommandBarControl((Microsoft.Office.Core.CommandBarControl)o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<CommandBarControl>)this).GetEnumerator();
+            return ((IEnumerable<ICommandBarControl>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -55,23 +57,23 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                 {
                     this[i].Release();
                 }
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Office.Core.CommandBarControls> other)
+        public override bool Equals(ISafeComWrapper<Microsoft.Office.Core.CommandBarControls> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(CommandBarControls other)
+        public bool Equals(ICommandBarControls other)
         {
             return Equals(other as SafeComWrapper<Microsoft.Office.Core.CommandBarControls>);
         }
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
     }
 }

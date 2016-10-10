@@ -5,7 +5,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.Command
@@ -16,10 +16,10 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AddTestMethodCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public AddTestMethodCommand(VBE vbe, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
+        public AddTestMethodCommand(IVBE vbe, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
@@ -103,7 +103,7 @@ namespace Rubberduck.UI.Command
             _state.OnParseRequested(this, _vbe.SelectedVBComponent);
         }
 
-        private string GetNextTestMethodName(VBComponent component)
+        private string GetNextTestMethodName(IVBComponent component)
         {
             var names = component.GetTests(_vbe, _state).Select(test => test.Declaration.IdentifierName);
             var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;

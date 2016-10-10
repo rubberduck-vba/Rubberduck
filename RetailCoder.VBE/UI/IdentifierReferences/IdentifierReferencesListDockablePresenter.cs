@@ -1,14 +1,12 @@
 ﻿using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class IdentifierReferencesListDockablePresenter : DockableToolwindowPresenter
     {
-        public IdentifierReferencesListDockablePresenter(VBE vbe, AddIn addin, SimpleListControl control, Declaration target)
+        public IdentifierReferencesListDockablePresenter(IVBE vbe, IAddIn addin, SimpleListControl control, Declaration target)
             : base(vbe, addin, control)
         {
             BindTarget(target);
@@ -23,9 +21,9 @@ namespace Rubberduck.UI.IdentifierReferences
             Control.Navigate += ControlNavigate;
         }
 
-        public static void OnNavigateIdentifierReference(VBE vbe, IdentifierReference reference)
+        public static void OnNavigateIdentifierReference(IdentifierReference reference)
         {
-            VBE.SetSelection(reference.QualifiedModuleName.Project, reference.Selection, reference.QualifiedModuleName.Component.Name);
+            reference.QualifiedModuleName.Component.CodeModule.CodePane.SetSelection(reference.Selection);
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)
@@ -33,7 +31,7 @@ namespace Rubberduck.UI.IdentifierReferences
             var reference = e.SelectedItem as IdentifierReferenceListItem;
             if (reference != null)
             {
-                OnNavigateIdentifierReference(VBE, reference.GetReferenceItem());
+                OnNavigateIdentifierReference(reference.GetReferenceItem());
             }
         }
 

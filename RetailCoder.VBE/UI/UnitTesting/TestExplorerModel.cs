@@ -6,18 +6,17 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
     public class TestExplorerModel : ViewModelBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly Dispatcher _dispatcher;
 
-        public TestExplorerModel(VBE vbe, RubberduckParserState state)
+        public TestExplorerModel(IVBE vbe, RubberduckParserState state)
         {
             _vbe = vbe;
             _state = state;

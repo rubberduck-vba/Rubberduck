@@ -24,30 +24,30 @@ using Rubberduck.UI.Controls;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
-using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.Root
 {
     public class RubberduckModule : NinjectModule
     {
-        private readonly VBE _vbe;
-        private readonly AddIn _addin;
-
+        private readonly IVBE _vbe;
+        private readonly IAddIn _addin;
+        
         private const int MenuBar = 1;
         private const int CodeWindow = 9;
         private const int ProjectWindow = 14;
         private const int MsForms = 17;
         private const int MsFormsControl = 18;
 
-        public RubberduckModule(VBE vbe, AddIn addin)
+        public RubberduckModule(IVBE vbe, IAddIn addin)
         {
             _vbe = vbe;
             _addin = addin;
@@ -56,8 +56,8 @@ namespace Rubberduck.Root
         public override void Load()
         {
             // bind VBE and AddIn dependencies to host-provided instances.
-            Bind<VBE>().ToConstant(_vbe);
-            Bind<AddIn>().ToConstant(_addin);
+            Bind<IVBE>().ToConstant(_vbe);
+            Bind<IAddIn>().ToConstant(_addin);
             Bind<Sinks>().ToSelf().InSingletonScope();
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
@@ -155,7 +155,9 @@ namespace Rubberduck.Root
             Kernel.Bind(t => t.From(assemblies)
                 .SelectAllClasses()
                 // inspections & factories have their own binding rules
-                .Where(type => !type.Name.EndsWith("Factory") && !type.Name.EndsWith("ConfigProvider") && !type.GetInterfaces().Contains(typeof(IInspection)))
+                .Where(type => type.Namespace != null
+                            && !type.Namespace.StartsWith("Rubberduck.VBEditor.SafeComWrappers")
+                            && !type.Name.EndsWith("Factory") && !type.Name.EndsWith("ConfigProvider") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
                 .Configure(binding => binding.InCallScope())); // TransientScope wouldn't dispose disposables
         }
@@ -291,7 +293,7 @@ namespace Rubberduck.Root
             BindParentMenuItem<ProjectWindowContextParentMenu>(controls, beforeIndex, items);
         }
 
-        private void BindParentMenuItem<TParentMenu>(CommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
+        private void BindParentMenuItem<TParentMenu>(ICommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
         {
             Bind<IParentMenuItem>().To(typeof(TParentMenu))
                 .WhenInjectedInto<IAppMenu>()
@@ -301,11 +303,12 @@ namespace Rubberduck.Root
                 .WithPropertyValue("Parent", parent);
         }
 
-        private static int FindRubberduckMenuInsertionIndex(CommandBarControls controls, int beforeId)
+        private static int FindRubberduckMenuInsertionIndex(ICommandBarControls controls, int beforeId)
         {
             for (var i = 1; i <= controls.Count; i++)
             {
-                if (controls[i].IsBuiltIn && controls[i].Id == beforeId)
+                var item = controls[i];
+                if (item.IsBuiltIn && item.Id == beforeId)
                 {
                     return i;
                 }

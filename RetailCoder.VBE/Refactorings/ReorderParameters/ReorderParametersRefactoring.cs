@@ -5,24 +5,22 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersRefactoring : IRefactoring
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersRefactoring(VBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox)
+        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox)
         {
             _vbe = vbe;
             _factory = factory;
@@ -137,7 +135,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
         }
 
-        private void RewriteCall(VBAParser.ArgumentListContext paramList, CodeModule module)
+        private void RewriteCall(VBAParser.ArgumentListContext paramList, ICodeModule module)
         {
             var argValues = new List<string>();
             if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
@@ -259,7 +257,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
         }
 
-        private void RewriteSignature(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
+        private void RewriteSignature(Declaration target, VBAParser.ArgListContext paramList, ICodeModule module)
         {
             var parameters = paramList.arg().Select((s, i) => new {Index = i, Text = s.GetText()}).ToList();
 

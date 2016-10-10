@@ -12,19 +12,21 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Refactorings.Rename
 {
     public class RenameRefactoring : IRefactoring
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private RenameModel _model;
 
-        public RenameRefactoring(VBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, RubberduckParserState state)
+        public RenameRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, RubberduckParserState state)
         {
             _vbe = vbe;
             _factory = factory;
@@ -269,7 +271,7 @@ namespace Rubberduck.Refactorings.Rename
                     if (component.Type == ComponentType.Document)
                     {
                         var properties = component.Properties;
-                        var property = properties.Item("_CodeName");
+                        var property = properties["_CodeName"];
                         {
                             property.Value = _model.NewName;
                         }
@@ -277,7 +279,7 @@ namespace Rubberduck.Refactorings.Rename
                     else if (component.Type == ComponentType.UserForm)
                     {
                         var properties = component.Properties;
-                        var property = properties.Item("Caption");
+                        var property = properties["Caption"];
                         {
                             if ((string)property.Value == _model.Target.IdentifierName)
                             {
@@ -376,7 +378,7 @@ namespace Rubberduck.Refactorings.Rename
                         var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _model.NewName + '_');
                         var project = handler.Project;
                         var components = project.VBComponents;
-                        var refComponent = components.Item(handler.ComponentName);
+                        var refComponent = components[handler.ComponentName];
                         var refModule = refComponent.CodeModule;
                         {
                             var content = refModule.GetLines(handler.Selection.StartLine, 1);
@@ -423,7 +425,7 @@ namespace Rubberduck.Refactorings.Rename
                         var newMemberName = target.ComponentName + '_' + _model.NewName;
                         var project = member.Project;
                         var components = project.VBComponents;
-                        var component = components.Item(member.ComponentName);
+                        var component = components[member.ComponentName];
                         var module = component.CodeModule;
                         {
                             var content = module.GetLines(member.Selection.StartLine, 1);
@@ -448,8 +450,14 @@ namespace Rubberduck.Refactorings.Rename
                 {
                     foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                     {
+                        var lastSelection = Selection.Empty;
                         foreach (var reference in line.OrderByDescending(l => l.Selection.StartColumn))
                         {
+                            if (reference.Selection == lastSelection)
+                            {
+                                continue;
+                            }
+
                             var content = module.GetLines(line.Key, 1);
                             string newContent;
 
@@ -463,6 +471,7 @@ namespace Rubberduck.Refactorings.Rename
                             }
 
                             module.ReplaceLine(line.Key, newContent);
+                            lastSelection = reference.Selection;
                         }
                     }
 
@@ -495,7 +504,7 @@ namespace Rubberduck.Refactorings.Rename
             return contentWithoutOldName.Insert(selection.StartColumn - 1, newName);
         }
 
-        private string GetReplacementLine(CodeModule module, Declaration target, string newName)
+        private string GetReplacementLine(ICodeModule module, Declaration target, string newName)
         {
             var content = module.GetLines(target.Selection.StartLine, 1);
 

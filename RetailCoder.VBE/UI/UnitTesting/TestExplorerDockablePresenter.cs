@@ -1,11 +1,10 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
     public class TestExplorerDockablePresenter : DockableToolwindowPresenter
     {
-        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, TestExplorerWindow view)
+        public TestExplorerDockablePresenter(IVBE vbe, IAddIn addin, TestExplorerWindow view)
             : base(vbe, addin, view)
         {
         }

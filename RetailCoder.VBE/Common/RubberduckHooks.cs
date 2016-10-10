@@ -10,8 +10,7 @@ using Rubberduck.Common.WinAPI;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Common
 {
@@ -29,7 +28,7 @@ namespace Rubberduck.Common
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<CommandBase> commands)
+        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, IEnumerable<CommandBase> commands)
         {
             var mainWindow = vbe.MainWindow;
             {

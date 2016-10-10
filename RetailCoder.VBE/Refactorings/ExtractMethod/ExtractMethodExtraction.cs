@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodExtraction : IExtractMethodExtraction
     {
 
-        public void Apply(CodeModule codeModule, IExtractMethodModel model, Selection selection)
+        public void Apply(ICodeModule codeModule, IExtractMethodModel model, Selection selection)
         {
             var newMethodCall = model.Method.NewMethodCall();
             var positionToInsertNewMethod = model.PositionForNewMethod;
@@ -25,7 +24,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             codeModule.InsertLines(selection.StartLine, newMethodCall);
         }
 
-        public virtual void RemoveSelection(CodeModule codeModule, IEnumerable<Selection> selection)
+        public virtual void RemoveSelection(ICodeModule codeModule, IEnumerable<Selection> selection)
         {
             foreach (var item in selection.OrderBy(x => -x.StartLine))
             {
@@ -36,7 +35,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
         }
 
-        public virtual string ConstructLinesOfProc(CodeModule codeModule, IExtractMethodModel model)
+        public virtual string ConstructLinesOfProc(ICodeModule codeModule, IExtractMethodModel model)
         {
 
             var newLine = Environment.NewLine;

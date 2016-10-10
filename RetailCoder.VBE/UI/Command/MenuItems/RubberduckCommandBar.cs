@@ -1,57 +1,35 @@
 ﻿using System;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
     public class RubberduckCommandBar : IDisposable
     {
         private readonly RubberduckParserState _state;
-        private readonly VBE _vbe;
-        private readonly ISinks _sinks;
+        private readonly IVBE _vbe;
         private readonly IShowParserErrorsCommand _command;
 
-        private CommandBarButton _refreshButton;
-        private CommandBarButton _statusButton;
-        private CommandBarButton _selectionButton;
-        private CommandBar _commandbar;
+        private ICommandBarButton _refreshButton;
+        private ICommandBarButton _statusButton;
+        private ICommandBarButton _selectionButton;
+        private ICommandBar _commandbar;
 
-        public RubberduckCommandBar(RubberduckParserState state, VBE vbe, ISinks sinks, IShowParserErrorsCommand command)
+        public RubberduckCommandBar(RubberduckParserState state, IVBE vbe, IShowParserErrorsCommand command)
         {
             _state = state;
             _vbe = vbe;
-            _sinks = sinks;
             _command = command;
-            _state.StateChanged += State_StateChanged;
-            Initialize();
-
-            _sinks.ProjectRemoved += ProjectRemoved;
-            _sinks.ComponentActivated += ComponentActivated;
-            _sinks.ComponentSelected += ComponentSelected;
         }
 
-        private void ProjectRemoved(object sender, IProjectEventArgs e)
-        {
-            SetSelectionText();
-        }
-
-        private void ComponentActivated(object sender, IComponentEventArgs e)
-        {
-            SetSelectionText();
-        }
-
-        private void ComponentSelected(object sender, IComponentEventArgs e)
-        {
-            SetSelectionText();
-        }
-
-        private void SetSelectionText()
+        public void SetSelectionText()
         {
             var selectedDeclaration = _vbe.ActiveCodePane != null
                             ? _state.FindSelectedDeclaration(_vbe.ActiveCodePane)
@@ -151,31 +129,36 @@ namespace Rubberduck.UI.Command.MenuItems
             }
         }
 
-        private void Initialize()
+        public void Initialize()
         {
             _commandbar = _vbe.CommandBars.Add("Rubberduck", CommandBarPosition.Top);
 
-            _refreshButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
-            _refreshButton.Picture = Resources.arrow_circle_double;
-            _refreshButton.Mask = Resources.arrow_circle_double_mask;
+            _refreshButton = CommandBarButtonFactory.Create(_commandbar.Controls);
             _refreshButton.Style = ButtonStyle.Icon;
             _refreshButton.Tag = "Refresh";
             _refreshButton.TooltipText = RubberduckUI.RubberduckCommandbarRefreshButtonTooltip;
-            _refreshButton.Click += refreshButton_Click;
+            _refreshButton.Picture = Resources.arrow_circle_double;
+            _refreshButton.Mask = Resources.arrow_circle_double_mask;
             _refreshButton.ApplyIcon();
 
-            _statusButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
+            _statusButton = CommandBarButtonFactory.Create(_commandbar.Controls);
             _statusButton.Style = ButtonStyle.Caption;
             _statusButton.Tag = "Status";
             _statusButton.Click += _statusButton_Click;
 
-            _selectionButton = CommandBarButton.FromCommandBarControl(_commandbar.Controls.Add(ControlType.Button));
+            _selectionButton = CommandBarButtonFactory.Create(_commandbar.Controls);
             _selectionButton.Style = ButtonStyle.Caption;
             _selectionButton.BeginsGroup = true;
             _selectionButton.IsEnabled = false;
 
             _commandbar.IsVisible = true;
-            _sinks.Start();
+
+            _refreshButton.Click += refreshButton_Click;
+
+            ((CommandBarButton)_refreshButton).HandleEvents();
+            ((CommandBarButton)_statusButton).HandleEvents();
+
+            _state.StateChanged += State_StateChanged;
         }
 
         private void refreshButton_Click(object sender, CommandBarButtonClickEventArgs e)
@@ -192,11 +175,21 @@ namespace Rubberduck.UI.Command.MenuItems
                 return;
             }
 
-            _state.StateChanged -= State_StateChanged;
+            _refreshButton.Click -= refreshButton_Click;
+            ((CommandBarButton)_refreshButton).StopEvents();
 
-            _sinks.ProjectRemoved -= ProjectRemoved;
-            _sinks.ComponentActivated -= ComponentActivated;
-            _sinks.ComponentSelected -= ComponentSelected;
+            _state.StateChanged -= State_StateChanged;
+            ((CommandBarButton)_statusButton).StopEvents();
+
+            _refreshButton.Delete();
+            _statusButton.Delete();
+            _selectionButton.Delete();
+
+            _refreshButton.Release();
+            _statusButton.Release();
+            _selectionButton.Release();
+
+            _commandbar.Delete();
 
             _isDisposed = true;
         }

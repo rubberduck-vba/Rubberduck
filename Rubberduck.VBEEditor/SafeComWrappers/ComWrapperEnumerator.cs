@@ -7,10 +7,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers
     public class ComWrapperEnumerator<TWrapperItem> : IEnumerator<TWrapperItem>
         where TWrapperItem : class
     {
+        private readonly Func<object, TWrapperItem> _itemWrapper;
         private readonly IEnumerator _internal;
 
-        public ComWrapperEnumerator(IEnumerable source)
+        public ComWrapperEnumerator(IEnumerable source, Func<object, TWrapperItem> itemWrapper)
         {
+            _itemWrapper = itemWrapper;
             _internal = source.GetEnumerator();
         }
 
@@ -31,7 +33,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
         public TWrapperItem Current
         {
-            get { return (TWrapperItem)Activator.CreateInstance(typeof(TWrapperItem), _internal.Current); }
+            get
+            {
+                return _itemWrapper.Invoke(_internal.Current);
+            }
         }
 
         object IEnumerator.Current

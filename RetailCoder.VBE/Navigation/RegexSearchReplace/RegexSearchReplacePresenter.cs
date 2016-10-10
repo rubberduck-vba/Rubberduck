@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using Rubberduck.Parsing;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {
     public class RegexSearchReplacePresenter : IPresenter
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IRegexSearchReplaceDialog _view;
         private readonly IRubberduckParser _parser;
 
-        public RegexSearchReplacePresenter(VBE vbe, IRubberduckParser parser/*, IRegexSearchReplaceDialog view*/)
+        public RegexSearchReplacePresenter(IVBE vbe, IRubberduckParser parser/*, IRegexSearchReplaceDialog view*/)
         {
             _vbe = vbe;
             //_view = view;

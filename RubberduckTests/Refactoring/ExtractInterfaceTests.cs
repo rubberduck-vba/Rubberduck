@@ -10,8 +10,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Application;
 using RubberduckTests.Mocks;
 using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 using VBProject = Rubberduck.VBEditor.SafeComWrappers.VBA.VBProject;
@@ -53,7 +52,7 @@ End Sub
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_ClassModule, out component, selection);
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
             var project = new VBProject(vbe.Object.VBProjects.Item(0));
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -79,8 +78,8 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedInterfaceCode, project.VBComponents.Item(1).CodeModule.Content());
-            Assert.AreEqual(expectedCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(expectedInterfaceCode, project.VBComponents[1].CodeModule.Content());
+            Assert.AreEqual(expectedCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -168,7 +167,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_ClassModule, out component, selection);
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
             var project = new VBProject(vbe.Object.VBProjects.Item(0));
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -194,8 +193,8 @@ End Property
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedInterfaceCode, project.VBComponents.Item(1).CodeModule.Content());
-            Assert.AreEqual(expectedCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(expectedInterfaceCode, project.VBComponents[1].CodeModule.Content());
+            Assert.AreEqual(expectedCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -262,7 +261,7 @@ End Function
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_ClassModule, out component, selection);
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
             var project = new VBProject(vbe.Object.VBProjects.Item(0));
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -291,8 +290,8 @@ End Function
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedInterfaceCode, project.VBComponents.Item(1).CodeModule.Content());
-            Assert.AreEqual(expectedCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(expectedInterfaceCode, project.VBComponents[1].CodeModule.Content());
+            Assert.AreEqual(expectedCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -307,7 +306,7 @@ End Function
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_ClassModule, out component, selection);
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -334,7 +333,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_ClassModule, out component, selection);
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
             var project = new VBProject(vbe.Object.VBProjects.Item(0));
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -358,7 +357,7 @@ End Sub";
 
             //Assert
             Assert.AreEqual(1, project.VBComponents.Count());
-            Assert.AreEqual(inputCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(inputCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -373,7 +372,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_ClassModule, out component, selection);
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
             var project = new VBProject(vbe.Object.VBProjects.Item(0));
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -400,7 +399,7 @@ End Sub";
 
             //Assert
             Assert.AreEqual(1, project.VBComponents.Count());
-            Assert.AreEqual(inputCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(inputCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -435,7 +434,7 @@ End Sub
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_ClassModule, out component, selection);
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
             var project = new VBProject(vbe.Object.VBProjects.Item(0));
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -458,8 +457,8 @@ End Sub
             refactoring.Refactor(parser.State.AllUserDeclarations.Single(s => s.DeclarationType == DeclarationType.ClassModule));
 
             //Assert
-            Assert.AreEqual(expectedInterfaceCode, project.VBComponents.Item(1).CodeModule.Content());
-            Assert.AreEqual(expectedCode, project.VBComponents.Item(0).CodeModule.Content());
+            Assert.AreEqual(expectedInterfaceCode, project.VBComponents[1].CodeModule.Content());
+            Assert.AreEqual(expectedCode, project.VBComponents[0].CodeModule.Content());
         }
 
         [TestMethod]
@@ -474,7 +473,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_ClassModule, out component, selection);
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -539,7 +538,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, vbext_ComponentType.vbext_ct_ClassModule, out component, selection);
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -573,8 +572,8 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
-            projectBuilder.AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode, selection);
+            var projectBuilder = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
+            projectBuilder.AddComponent("Module1", ComponentType.StandardModule, inputCode, selection);
             var project = projectBuilder.Build();
             builder.AddProject(project);
             var vbe = builder.Build();
@@ -601,8 +600,8 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
-            projectBuilder.AddComponent("Module1", vbext_ComponentType.vbext_ct_ClassModule, inputCode);
+            var projectBuilder = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
+            projectBuilder.AddComponent("Module1", ComponentType.ClassModule, inputCode);
             var project = projectBuilder.Build();
             builder.AddProject(project);
             var vbe = builder.Build();

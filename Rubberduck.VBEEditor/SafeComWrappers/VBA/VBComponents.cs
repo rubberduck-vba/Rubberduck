@@ -4,71 +4,72 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBComponents : SafeComWrapper<Microsoft.Vbe.Interop.VBComponents>, IEnumerable<VBComponent>, IEquatable<VBComponents>
+    public class VBComponents : SafeComWrapper<VB.VBComponents>, IVBComponents
     {
-        public VBComponents(Microsoft.Vbe.Interop.VBComponents comObject) 
-            : base(comObject)
+        public VBComponents(VB.VBComponents target) 
+            : base(target)
         {
         }
 
         public int Count
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.Count); }
+            get { return IsWrappingNullReference ? 0 : Target.Count; }
         }
 
-        public VBProject Parent
+        public IVBProject Parent
         {
-            get { return new VBProject(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Parent)); }
+            get { return new VBProject(IsWrappingNullReference ? null : Target.Parent); }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
-        public VBComponent Item(object index)
+        public IVBComponent this[object index]
         {
-            return new VBComponent(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Item(index)));
+            get { return new VBComponent(IsWrappingNullReference ? null : Target.Item(index)); }
         }
 
-        public void Remove(VBComponent item)
+        public void Remove(IVBComponent item)
         {
-            Invoke(() => ComObject.Remove(item.ComObject));
+            Target.Remove((VB.VBComponent) item.Target);
         }
 
-        public VBComponent Add(ComponentType type)
+        public IVBComponent Add(ComponentType type)
         {
-            return new VBComponent(InvokeResult(() => ComObject.Add((vbext_ComponentType)type)));
+            return new VBComponent(Target.Add((VB.vbext_ComponentType) type));
         }
 
-        public VBComponent Import(string path)
+        public IVBComponent Import(string path)
         {
-            return new VBComponent(InvokeResult(() => ComObject.Import(path)));
+            return new VBComponent(Target.Import(path));
         }
 
-        public VBComponent AddCustom(string progId)
+        public IVBComponent AddCustom(string progId)
         {
-            return new VBComponent(InvokeResult(() => ComObject.AddCustom(progId)));
+            return new VBComponent(Target.AddCustom(progId));
         }
 
-        public VBComponent AddMTDesigner(int index = 0)
+        public IVBComponent AddMTDesigner(int index = 0)
         {
-            return new VBComponent(InvokeResult(() => ComObject.AddMTDesigner(index)));
+            return new VBComponent(Target.AddMTDesigner(index));
         }
 
-        IEnumerator<VBComponent> IEnumerable<VBComponent>.GetEnumerator()
+        IEnumerator<IVBComponent> IEnumerable<IVBComponent>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<VBComponent>(ComObject);
+            return new ComWrapperEnumerator<IVBComponent>(Target, o => new VBComponent((VB.VBComponent)o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<VBComponent>)this).GetEnumerator();
+            return ((IEnumerable<IVBComponent>)this).GetEnumerator();
         }
 
         public override void Release()
@@ -77,25 +78,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 for (var i = 1; i <= Count; i++)
                 {
-                    Item(i).Release();
+                    this[i].Release();
                 }
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.VBComponents> other)
+        public override bool Equals(ISafeComWrapper<VB.VBComponents> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(VBComponents other)
+        public bool Equals(IVBComponents other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBComponents>);
+            return Equals(other as SafeComWrapper<VB.VBComponents>);
         }
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : HashCode.Compute(Target);
         }
 
         public void ImportSourceFile(string path)
@@ -111,21 +112,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             var codeLines = codeString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             if (ext == ComponentTypeExtensions.DocClassExtension)
             {
-                var component = Item(name);
+                var component = this[name];
                 component.CodeModule.Clear();
                 component.CodeModule.AddFromString(codeString);
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
             {
-                VBComponent component;
+                IVBComponent component;
                 try
                 {
-                    component = Item(name);
+                    component = this[name];
                 }
-                catch (IndexOutOfRangeException)
+                catch
                 {
                     component = Add(ComponentType.UserForm);
-                    component.Properties.Item("Caption").Value = name;
+                    component.Properties["Caption"].Value = name;
                     component.Name = name;
                 }
 
@@ -150,7 +151,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// UserForms, Class modules, and Standard modules are completely removed from the project.
         /// Since Document type components can't be removed through the VBE, all code in its CodeModule are deleted instead.
         /// </remarks>
-        public void RemoveSafely(VBComponent component)
+        public void RemoveSafely(IVBComponent component)
         {
             switch (component.Type)
             {

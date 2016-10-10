@@ -56,7 +56,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 try
                 {
-                    var parenthesizedName = component.Properties.Item("Name").Value.ToString();
+                    var parenthesizedName = component.Properties["Name"].Value.ToString();
 
                     if (ContainsBuiltinDocumentPropertiesProperty())
                     {

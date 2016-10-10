@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.Symbols
@@ -77,7 +78,7 @@ namespace Rubberduck.Parsing.Symbols
                             var allNamesMatch = true;
                             for (var i = 0; i < coclass.Key.Count; i++)
                             {
-                                if (coclass.Key[i] != _qualifiedName.Component.Properties.Item(i + 1).Name)
+                                if (coclass.Key[i] != _qualifiedName.Component.Properties[i + 1].Name)
                                 {
                                     allNamesMatch = false;
                                     break;
@@ -162,7 +163,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// These declarations are meant to be used to identify control event procedures.
         /// </remarks>
-        private void DeclareControlsAsMembers(VBComponent form)
+        private void DeclareControlsAsMembers(IVBComponent form)
         {
             foreach (var control in form.Controls)
             {

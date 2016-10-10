@@ -8,6 +8,7 @@ using System.Linq;
 using Moq;
 using Rubberduck.Parsing;
 using System.Threading;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Binding
 {
@@ -21,9 +22,9 @@ namespace RubberduckTests.Binding
             public void ProceduralModuleWithAccessibleMember()
             {
                 var builder = new MockVbeBuilder();
-                var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, vbext_ProjectProtection.vbext_pp_none);
+                var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
                 string code = CreateCaller(TEST_CLASS_NAME) + Environment.NewLine + CreateCallee();
-                enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_StdModule, code);
+                enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.StandardModule, code);
                 var enclosingProject = enclosingProjectBuilder.Build();
                 builder.AddProject(enclosingProject);
                 var vbe = builder.Build();

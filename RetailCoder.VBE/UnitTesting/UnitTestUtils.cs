@@ -4,21 +4,20 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
     public static class UnitTestUtils
     {
-        public static IEnumerable<TestMethod> GetAllTests(VBE vbe, RubberduckParserState state)
+        public static IEnumerable<TestMethod> GetAllTests(IVBE vbe, RubberduckParserState state)
         {
             return GetTestModuleProcedures(state)
                     .Where(item => IsTestMethod(state, item))
                     .Select(item => new TestMethod(item, vbe));
         }
 
-        public static IEnumerable<TestMethod> GetTests(this VBComponent component, VBE vbe, RubberduckParserState state)
+        public static IEnumerable<TestMethod> GetTests(this IVBComponent component, IVBE vbe, RubberduckParserState state)
         {
             if (component == null || component.IsWrappingNullReference)
             {

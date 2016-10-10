@@ -1,76 +1,69 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class CodePane : SafeComWrapper<Microsoft.Vbe.Interop.CodePane>, IEquatable<CodePane>
+    public class CodePane : SafeComWrapper<VB.CodePane>, ICodePane
     {
-        public CodePane(Microsoft.Vbe.Interop.CodePane codePane)
+        public CodePane(VB.CodePane codePane)
             : base(codePane)
         {
         }
 
-        public CodePanes Collection
+        public ICodePanes Collection
         {
-            get { return new CodePanes(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Collection)); }
+            get { return new CodePanes(IsWrappingNullReference ? null : Target.Collection); }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(InvokeResult(() => IsWrappingNullReference ? null : ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
-        public Window Window
+        public IWindow Window
         {
-            get { return new Window(InvokeResult(() => IsWrappingNullReference ? null : ComObject.Window)); }
+            get { return new Window(IsWrappingNullReference ? null : Target.Window); }
         }
 
         public int TopLine
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.TopLine); }
-            set { Invoke(() => ComObject.TopLine = value); }
+            get { return IsWrappingNullReference ? 0 : Target.TopLine; }
+            set { Target.TopLine = value; }
         }
 
         public int CountOfVisibleLines
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => ComObject.CountOfVisibleLines); }
+            get { return IsWrappingNullReference ? 0 : Target.CountOfVisibleLines; }
         }
-
-        public CodeModule CodeModule
+        
+        public ICodeModule CodeModule
         {
-            get { return new CodeModule(InvokeResult(() => IsWrappingNullReference ? null : ComObject.CodeModule)); }
+            get { return new CodeModule(IsWrappingNullReference ? null : Target.CodeModule); }
         }
 
         public CodePaneView CodePaneView
         {
-            get { return IsWrappingNullReference ? 0 : (CodePaneView)InvokeResult(() => ComObject.CodePaneView); }
+            get { return IsWrappingNullReference ? 0 : (CodePaneView)Target.CodePaneView; }
         }
 
         public Selection GetSelection()
         {
-            try
-            {
-                return InvokeResult(() =>
-                {
-                    int startLine;
-                    int startColumn;
-                    int endLine;
-                    int endColumn;
-                    ComObject.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+            int startLine;
+            int startColumn;
+            int endLine;
+            int endColumn;
+            Target.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
 
-                    if (endLine > startLine && endColumn == 1)
-                    {
-                        endLine -= 1;
-                        endColumn = CodeModule.GetLines(endLine, 1).Length;
-                    }
-
-                    return new Selection(startLine, startColumn, endLine, endColumn);
-                });
-            }
-            catch (COMException exception)
+            if (endLine > startLine && endColumn == 1)
             {
-                throw new WrapperMethodException(exception);
+                endLine -= 1;
+                endColumn = CodeModule.GetLines(endLine, 1).Length;
             }
+
+            return new Selection(startLine, startColumn, endLine, endColumn);
         }
 
         public QualifiedSelection? GetQualifiedSelection()
@@ -86,14 +79,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return null;
             }
 
-            var component = new VBComponent(CodeModule.Parent.ComObject);
+            var component = new VBComponent((VB.VBComponent)CodeModule.Parent.Target);
             var moduleName = new QualifiedModuleName(component);
             return new QualifiedSelection(moduleName, selection);
         }
 
         public void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            Invoke(() => ComObject.SetSelection(startLine, startColumn, endLine, endColumn));
+            Target.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
         }
 
@@ -122,7 +115,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Show()
         {
-            Invoke(() => ComObject.Show());
+            Target.Show();
         }
 
         public override void Release()
@@ -130,23 +123,23 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (!IsWrappingNullReference)
             {
                 //Window.Release(); window is released by VBE.Windows
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.CodePane> other)
+        public override bool Equals(ISafeComWrapper<VB.CodePane> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(CodePane other)
+        public bool Equals(ICodePane other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.CodePane>);
+            return Equals(other as SafeComWrapper<VB.CodePane>);
         }
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
     }
 }

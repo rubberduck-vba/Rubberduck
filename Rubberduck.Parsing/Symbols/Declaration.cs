@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.Symbols
@@ -378,7 +379,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public VBProject Project { get { return _qualifiedName.QualifiedModuleName.Project; } }
+        public IVBProject Project { get { return _qualifiedName.QualifiedModuleName.Project; } }
 
         private readonly string _projectId;
         /// <summary>

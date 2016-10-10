@@ -17,9 +17,8 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -27,12 +26,12 @@ namespace Rubberduck.UI.Inspections
     {
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
         private readonly IOperatingSystem _operatingSystem;
 
-        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
+        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, IVBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
                                           IGeneralConfigService configService, IOperatingSystem operatingSystem)
         {
             _state = state;

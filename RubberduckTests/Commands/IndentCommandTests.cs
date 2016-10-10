@@ -6,8 +6,8 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Commands
@@ -151,9 +151,9 @@ End Sub
 ";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("Proj1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Comp1", vbext_ComponentType.vbext_ct_ClassModule, input)
-                .AddComponent("Comp2", vbext_ComponentType.vbext_ct_ClassModule, input)
+            var project = builder.ProjectBuilder("Proj1", ProjectProtection.Unprotected)
+                .AddComponent("Comp1", ComponentType.ClassModule, input)
+                .AddComponent("Comp2", ComponentType.ClassModule, input)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();

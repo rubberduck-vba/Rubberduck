@@ -2,39 +2,50 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
+using Rubberduck.VBEditor.SafeComWrappers.MSForms;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using ButtonState = Rubberduck.VBEditor.SafeComWrappers.MSForms.ButtonState;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
-    public class CommandBarButton : CommandBarControl
+    public class CommandBarButton : CommandBarControl, ICommandBarButton
     {
-        public CommandBarButton(Microsoft.Office.Core.CommandBarButton comObject) 
-            : base(comObject)
+        public CommandBarButton(Microsoft.Office.Core.CommandBarButton target) 
+            : base(target)
         {
-            comObject.Click += comObject_Click;
         }
 
-        public static CommandBarButton FromCommandBarControl(CommandBarControl control)
+        public void HandleEvents()
         {
-            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.ComObject);
+            ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
+        }
+
+        public void StopEvents()
+        {
+            ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
         }
 
         private Microsoft.Office.Core.CommandBarButton Button
         {
-            get { return (Microsoft.Office.Core.CommandBarButton)ComObject; }
+            get { return (Microsoft.Office.Core.CommandBarButton)Target; }
+        }
+
+        public static ICommandBarButton FromCommandBarControl(ICommandBarControl control)
+        {
+            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.Target);
         }
 
         public event EventHandler<CommandBarButtonClickEventArgs> Click;
-        private void comObject_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
+        private void Target_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
         {
-            // todo: confirm whether this fixes the multicast glitch of ParentMenuItemBase.child_Click()
-            // "without this hack, handler runs once for each menu item that's hooked up to the command.
-            //  hash code is different on every frakkin' click. go figure. I've had it, this is the fix."
-
             var handler = Click;
             if (handler == null)
             {
                 return;
             }
+            
+            //note: event is fired for every parent the command exists under. not sure why.
+            //System.Diagnostics.Debug.WriteLine("Target_Click: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.Name, Target.Caption, Tag, Target.GetHashCode());
 
             var args = new CommandBarButtonClickEventArgs(new CommandBarButton(ctrl));
             handler.Invoke(this, args);
@@ -43,32 +54,32 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public bool IsBuiltInFace
         {
-            get { return !IsWrappingNullReference && InvokeResult(() => Button.BuiltInFace); }
-            set { Invoke(() => Button.BuiltInFace = value); }
+            get { return !IsWrappingNullReference && Button.BuiltInFace; }
+            set { Button.BuiltInFace = value; }
         }
 
         public int FaceId 
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => Button.FaceId); }
-            set { Invoke(() => Button.FaceId = value); }
+            get { return IsWrappingNullReference ? 0 : Button.FaceId; }
+            set { Button.FaceId = value; }
         }
 
         public string ShortcutText
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => Button.ShortcutText); }
-            set { Invoke(() => Button.ShortcutText = value); }
+            get { return IsWrappingNullReference ? string.Empty : Button.ShortcutText; }
+            set { Button.ShortcutText = value; }
         }
 
         public ButtonState State
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => (ButtonState)Button.State); }
-            set { Invoke(() => Button.State = (Microsoft.Office.Core.MsoButtonState)value); }
+            get { return IsWrappingNullReference ? 0 : (ButtonState)Button.State; }
+            set { Button.State = (Microsoft.Office.Core.MsoButtonState)value; }
         }
 
         public ButtonStyle Style
         {
-            get { return IsWrappingNullReference ? 0 : InvokeResult(() => (ButtonStyle)Button.Style); }
-            set { Invoke(() => Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value); }
+            get { return IsWrappingNullReference ? 0 : (ButtonStyle)Button.Style; }
+            set { Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value; }
         }
 
         public Image Picture { get; set; }
@@ -76,28 +87,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public void ApplyIcon()
         {
-            Invoke(() =>
+            Button.FaceId = 0;
+            if (Picture == null || Mask == null)
             {
-                Button.FaceId = 0;
-                if (Picture == null || Mask == null)
-                {
-                    return;
-                }
+                return;
+            }
 
-                if (!HasPictureProperty)
+            if (!HasPictureProperty)
+            {
+                using (var image = CreateTransparentImage(Picture, Mask))
                 {
-                    using (var image = CreateTransparentImage(Picture, Mask))
-                    {
-                        Clipboard.SetImage(image);
-                        Button.PasteFace();
-                        Clipboard.Clear();
-                    }
-                    return;
+                    Clipboard.SetImage(image);
+                    Button.PasteFace();
+                    Clipboard.Clear();
                 }
+                return;
+            }
 
-                Button.Picture = AxHostConverter.ImageToPictureDisp(Picture);
-                Button.Mask = AxHostConverter.ImageToPictureDisp(Mask);
-            });
+            Button.Picture = AxHostConverter.ImageToPictureDisp(Picture);
+            Button.Mask = AxHostConverter.ImageToPictureDisp(Mask);
         }
 
         private bool? _hasPictureProperty;

@@ -1,38 +1,39 @@
-using System;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Application : SafeComWrapper<Microsoft.Vbe.Interop.Application>, IEquatable<Application>
+    public class Application : SafeComWrapper<VB.Application>, IApplication
     {
-        public Application(Microsoft.Vbe.Interop.Application application)
+        public Application(VB.Application application)
             :base(application)
         {
         }
 
-        public string Version { get { return IsWrappingNullReference ? null : InvokeResult(() => ComObject.Version); } }
+        public string Version { get { return IsWrappingNullReference ? null : Target.Version; } }
         
         public override void Release()
         {
             if (!IsWrappingNullReference)
             {
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Application> other)
+        public override bool Equals(ISafeComWrapper<VB.Application> other)
         {
-            return IsEqualIfNull(other) || (other != null && other.ComObject.Version == Version);
+            return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);
         }
 
-        public bool Equals(Application other)
+        public bool Equals(IApplication other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Application>);
+            return Equals(other as SafeComWrapper<VB.Application>);
         }
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : HashCode.Compute(Target);
         }
     }
 }

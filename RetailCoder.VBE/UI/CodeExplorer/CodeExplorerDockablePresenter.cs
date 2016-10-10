@@ -1,6 +1,4 @@
-﻿
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -8,7 +6,7 @@ namespace Rubberduck.UI.CodeExplorer
     {
         private CodeExplorerWindow Control { get { return UserControl as CodeExplorerWindow; } }
 
-        public CodeExplorerDockablePresenter(VBE vbe, AddIn addIn, CodeExplorerWindow view)
+        public CodeExplorerDockablePresenter(IVBE vbe, IAddIn addIn, CodeExplorerWindow view)
             : base(vbe, addIn, view)
         {
         }

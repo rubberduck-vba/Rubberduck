@@ -1,72 +1,74 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBE : SafeComWrapper<Microsoft.Vbe.Interop.VBE>, IEquatable<VBE>
+    public class VBE : SafeComWrapper<VB.VBE>, IVBE
     {
-        public VBE(Microsoft.Vbe.Interop.VBE comObject)
-            :base(comObject)
+        public VBE(VB.VBE target)
+            :base(target)
         {
-        }
-
-        public CodePane ActiveCodePane
-        {
-            get { return new CodePane(IsWrappingNullReference ? null : InvokeResult(() => ComObject.ActiveCodePane)); }
-            set { Invoke(() => ComObject.ActiveCodePane = value.ComObject); }
-        }
-
-        public VBProject ActiveVBProject
-        {
-            get { return new VBProject(IsWrappingNullReference ? null : InvokeResult(() => ComObject.ActiveVBProject)); }
-            set { Invoke(() => ComObject.ActiveVBProject = value.ComObject); }
-        }
-
-        public Window ActiveWindow
-        {
-            get { return new Window(IsWrappingNullReference ? null : InvokeResult(() => ComObject.ActiveWindow)); }
-        }
-
-        public AddIns AddIns
-        {
-            get { return new AddIns(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Addins)); }
-        }
-
-        public CodePanes CodePanes
-        {
-            get { return new CodePanes(IsWrappingNullReference ? null : InvokeResult(() => ComObject.CodePanes)); }
-        }
-
-        public CommandBars CommandBars
-        {
-            get { return new CommandBars(IsWrappingNullReference ? null : InvokeResult(() => ComObject.CommandBars)); }
-        }
-
-        public Window MainWindow
-        {
-            get { return new Window(IsWrappingNullReference ? null : InvokeResult(() => ComObject.MainWindow)); }
-        }
-
-        public VBComponent SelectedVBComponent
-        {
-            get { return new VBComponent(IsWrappingNullReference ? null : InvokeResult(() => ComObject.SelectedVBComponent)); }
-        }
-
-        public VBProjects VBProjects
-        {
-            get { return new VBProjects(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBProjects)); }
         }
 
         public string Version
         {
-            get { return IsWrappingNullReference ? string.Empty : InvokeResult(() => ComObject.Version); }
+            get { return IsWrappingNullReference ? string.Empty : Target.Version; }
         }
 
-        public Windows Windows
+        public ICodePane ActiveCodePane
         {
-            get { return new Windows(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Windows)); }
+            get { return new CodePane(IsWrappingNullReference ? null : Target.ActiveCodePane); }
+            set { Target.ActiveCodePane = (VB.CodePane)value.Target; }
+        }
+
+        public IVBProject ActiveVBProject
+        {
+            get { return new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject); }
+            set { Target.ActiveVBProject = (VB.VBProject) value.Target; }
+        }
+
+        public IWindow ActiveWindow
+        {
+            get { return new Window(IsWrappingNullReference ? null : Target.ActiveWindow); }
+        }
+
+        public IAddIns AddIns
+        {
+            get { return new AddIns(IsWrappingNullReference ? null : Target.Addins); }
+        }
+
+        public ICodePanes CodePanes
+        {
+            get { return new CodePanes(IsWrappingNullReference ? null : Target.CodePanes); }
+        }
+
+        public ICommandBars CommandBars
+        {
+            get { return new CommandBars(IsWrappingNullReference ? null : Target.CommandBars); }
+        }
+
+        public IWindow MainWindow
+        {
+            get { return new Window(IsWrappingNullReference ? null : Target.MainWindow); }
+        }
+
+        public IVBComponent SelectedVBComponent
+        {
+            get { return new VBComponent(IsWrappingNullReference ? null : Target.SelectedVBComponent); }
+        }
+
+        public IVBProjects VBProjects
+        {
+            get { return new VBProjects(IsWrappingNullReference ? null : Target.VBProjects); }
+        }
+
+        public IWindows Windows
+        {
+            get { return new Windows(IsWrappingNullReference ? null : Target.Windows); }
         }
 
         public override void Release()
@@ -78,31 +80,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 CommandBars.Release();
                 Windows.Release();
                 AddIns.Release();
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.VBE> other)
+        public override bool Equals(ISafeComWrapper<VB.VBE> other)
         {
-            return IsEqualIfNull(other) || (other != null && other.ComObject.Version == Version);
+            return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);
         }
 
-        public bool Equals(VBE other)
+        public bool Equals(IVBE other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.VBE>);
+            return Equals(other as SafeComWrapper<VB.VBE>);
         }
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
 
-        public bool IsInDesignMode()
+        public bool IsInDesignMode
         {
-            return VBProjects.All(project => project.Mode == EnvironmentMode.Design);
+            get { return VBProjects.All(project => project.Mode == EnvironmentMode.Design); }
         }
 
-        public static void SetSelection(VBProject vbProject, Selection selection, string name)
+        public static void SetSelection(IVBProject vbProject, Selection selection, string name)
         {
             var components = vbProject.VBComponents;
             var component = components.SingleOrDefault(c => c.Name == name);

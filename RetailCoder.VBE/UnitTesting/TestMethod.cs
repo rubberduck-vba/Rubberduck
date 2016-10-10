@@ -6,10 +6,11 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
@@ -18,7 +19,7 @@ namespace Rubberduck.UnitTesting
         private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
         private readonly IHostApplication _hostApp;
 
-        public TestMethod(Declaration declaration, VBE vbe)
+        public TestMethod(Declaration declaration, IVBE vbe)
         {
             _declaration = declaration;
             _hostApp = vbe.HostApplication();
@@ -88,23 +89,16 @@ namespace Rubberduck.UnitTesting
 
         public NavigateCodeEventArgs GetNavigationArgs()
         {
-            try
-            {
-                var moduleName = Declaration.QualifiedName.QualifiedModuleName;
-                var methodName = Declaration.IdentifierName;
-                var module = moduleName.Component.CodeModule;
+            var moduleName = Declaration.QualifiedName.QualifiedModuleName;
+            var methodName = Declaration.IdentifierName;
+            var module = moduleName.Component.CodeModule;
 
-                var startLine = module.GetProcBodyStartLine(methodName, ProcKind.Procedure);
-                var endLine = startLine + module.GetProcCountLines(methodName, ProcKind.Procedure);
-                var endLineColumns = module.GetLines(endLine, 1).Length;
+            var startLine = module.GetProcBodyStartLine(methodName, ProcKind.Procedure);
+            var endLine = startLine + module.GetProcCountLines(methodName, ProcKind.Procedure);
+            var endLineColumns = module.GetLines(endLine, 1).Length;
 
-                var selection = new Selection(startLine, 1, endLine, endLineColumns == 0 ? 1 : endLineColumns);
-                return new NavigateCodeEventArgs(new QualifiedSelection(moduleName, selection));
-            }
-            catch (WrapperMethodException)
-            {
-                return null;
-            }
+            var selection = new Selection(startLine, 1, endLine, endLineColumns == 0 ? 1 : endLineColumns);
+            return new NavigateCodeEventArgs(new QualifiedSelection(moduleName, selection));
         }
 
         public object[] ToArray()

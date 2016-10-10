@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Grammar
 {
@@ -38,10 +39,10 @@ namespace RubberduckTests.Grammar
         private RubberduckParserState Resolve(params string[] classes)
         {
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            var projectBuilder = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             for (var i = 0; i < classes.Length; i++)
             {
-                projectBuilder.AddComponent("Class" + (i + 1), vbext_ComponentType.vbext_ct_ClassModule, classes[i]);
+                projectBuilder.AddComponent("Class" + (i + 1), ComponentType.ClassModule, classes[i]);
             }
 
             var project = projectBuilder.Build();
@@ -66,7 +67,7 @@ namespace RubberduckTests.Grammar
         private RubberduckParserState Resolve(params Tuple<string, vbext_ComponentType>[] components)
         {
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
+            var projectBuilder = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected);
             for (var i = 0; i < components.Length; i++)
             {
                 projectBuilder.AddComponent("Component" + (i + 1), components[i].Item2, components[i].Item1);
@@ -380,8 +381,8 @@ End Sub
 Option Explicit
 Public foo As Integer
 ";
-            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
-            var class2 = Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_ClassModule);
+            var class1 = Tuple.Create(code_class1, ComponentType.ClassModule);
+            var class2 = Tuple.Create(code_class2, ComponentType.ClassModule);
 
             // act
             var state = Resolve(class1, class2);
@@ -408,8 +409,8 @@ Public foo As Integer
 ";
             // act
             var state = Resolve(
-                Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule),
-                Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_StdModule));
+                Tuple.Create(code_class1, ComponentType.ClassModule),
+                Tuple.Create(code_class2, ComponentType.StandardModule));
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -433,8 +434,8 @@ End Sub
 Option Explicit
 Public foo As Integer
 ";
-            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
-            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
+            var class1 = Tuple.Create(code_class1, ComponentType.ClassModule);
+            var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
 
             // act
             var state = Resolve(class1, module1);
@@ -459,7 +460,7 @@ End Type
 Private this As TFoo
 ";
             // act
-            var state = Resolve(code, vbext_ComponentType.vbext_ct_ClassModule);
+            var state = Resolve(code, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -567,7 +568,7 @@ Public Property Get Bar() As Integer
 End Property
 ";
             // act
-            var state = Resolve(code, vbext_ComponentType.vbext_ct_ClassModule);
+            var state = Resolve(code, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -593,7 +594,7 @@ Public Property Get Bar() As Integer
 End Property
 ";
             // act
-            var state = Resolve(code, vbext_ComponentType.vbext_ct_ClassModule);
+            var state = Resolve(code, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -1660,8 +1661,8 @@ Sub DoSomething()
     Component1.Something.Bar = 42
 End Sub";
 
-            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
-            var module2 = Tuple.Create(code_module2, vbext_ComponentType.vbext_ct_StdModule);
+            var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
+            var module2 = Tuple.Create(code_module2, ComponentType.StandardModule);
             var state = Resolve(module1, module2);
 
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -1693,8 +1694,8 @@ Sub DoSomething()
 End Sub
 ";
 
-            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
-            var module2 = Tuple.Create(code_module2, vbext_ComponentType.vbext_ct_StdModule);
+            var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
+            var module2 = Tuple.Create(code_module2, ComponentType.StandardModule);
             var state = Resolve(module1, module2);
 
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -2132,7 +2133,7 @@ Public Sub DoSomething()
 End Sub
 ";
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
             project.AddComponent(form);
             builder.AddProject(project.Build());

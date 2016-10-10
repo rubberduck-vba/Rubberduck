@@ -1,51 +1,51 @@
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class Windows : SafeComWrapper<Microsoft.Vbe.Interop.Windows>, IEnumerable, IEquatable<Windows>
+    public class Windows : SafeComWrapper<VB.Windows>, IWindows
     {
-        public Windows(Microsoft.Vbe.Interop.Windows windows)
+        public Windows(VB.Windows windows)
             : base(windows)
         {
         }
 
         public int Count
         {
-            get { return InvokeResult(() => ComObject.Count); }
+            get { return Target.Count; }
         }
 
-        public VBE VBE
+        public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : InvokeResult(() => ComObject.VBE)); }
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
         }
 
-        public Application Parent
+        public IApplication Parent
         {
-            get { return new Application(IsWrappingNullReference ? null : InvokeResult(() => ComObject.Parent)); }
+            get { return new Application(IsWrappingNullReference ? null : Target.Parent); }
         }
 
-        public Window Item(object index)
+        public IWindow this[object index]
         {
-            return new Window(InvokeResult(() => ComObject.Item(index)));
+            get { return new Window(Target.Item(index)); }
         }
 
-        public Window CreateToolWindow(AddIn addInInst, string progId, string caption, string guidPosition, ref object docObj)
+        public IWindow CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition, ref object docObj)
         {
-            try
-            {
-                return new Window(ComObject.CreateToolWindow(addInInst.ComObject, progId, caption, guidPosition, ref docObj));
-            }
-            catch (COMException exception)
-            {
-                throw new WrapperMethodException(exception);
-            }
+            return new Window(Target.CreateToolWindow((VB.AddIn)addInInst.Target, progId, caption, guidPosition, ref docObj));
         }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return InvokeResult(() => ComObject.GetEnumerator());
+            return Target.GetEnumerator();
+        }
+
+        IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()
+        {
+            return new ComWrapperEnumerator<IWindow>(Target, o => new Window((VB.Window)o));
         }
 
         public override void Release()
@@ -54,25 +54,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 for (var i = 1; i <= Count; i++)
                 {
-                    Item(i).Release();
+                    this[i].Release();
                 }
-                Marshal.ReleaseComObject(ComObject);
+                Marshal.ReleaseComObject(Target);
             }
         }
 
-        public override bool Equals(SafeComWrapper<Microsoft.Vbe.Interop.Windows> other)
+        public override bool Equals(ISafeComWrapper<VB.Windows> other)
         {
-            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.ComObject, ComObject));
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(Windows other)
+        public bool Equals(IWindows other)
         {
-            return Equals(other as SafeComWrapper<Microsoft.Vbe.Interop.Windows>);
+            return Equals(other as SafeComWrapper<VB.Windows>);
         }
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : ComObject.GetHashCode();
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
     }
 }

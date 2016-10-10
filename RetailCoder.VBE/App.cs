@@ -11,27 +11,28 @@ using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck
 {
     public sealed class App : IDisposable
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IRubberduckParser _parser;
-        private AutoSave.AutoSave _autoSave;
-        private IGeneralConfigService _configService;
+        private readonly AutoSave.AutoSave _autoSave;
+        private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
-        private RubberduckCommandBar _stateBar;
-        private IRubberduckHooks _hooks;
+        private readonly RubberduckCommandBar _stateBar;
+        private readonly IRubberduckHooks _hooks;
         private readonly UI.Settings.Settings _settings;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
         private Configuration _config;
 
-        public App(VBE vbe, IMessageBox messageBox,
+        public App(IVBE vbe, 
+            IMessageBox messageBox,
             UI.Settings.Settings settings,
             IRubberduckParser parser,
             IGeneralConfigService configService,
@@ -145,14 +146,10 @@ namespace Rubberduck
             EnsureDirectoriesExist();
             LoadConfig();
             _appMenus.Initialize();
+            _stateBar.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
             UpdateLoggingLevel();
-
-            //if (_vbe.VBProjects.Count != 0)
-            //{
-            //    _parser.State.OnParseRequested(this);
-            //}
         }
 
         public void Shutdown()
@@ -177,12 +174,12 @@ namespace Rubberduck
         {
             Logger.Debug("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
+            _stateBar.SetSelectionText();
         }
 
         private void LoadConfig()
         {
             _config = _configService.LoadConfiguration();
-
             _autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
 
             var currentCulture = RubberduckUI.Culture;
@@ -214,14 +211,12 @@ namespace Rubberduck
                 _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
                 _parser.State.Dispose();
                 _parser.Dispose();
-                // I won't set this to null because other components may try to release things
             }
 
             if (_hooks != null)
             {
                 _hooks.MessageReceived -= _hooks_MessageReceived;
                 _hooks.Dispose();
-                _hooks = null;
             }
 
             if (_settings != null)
@@ -232,20 +227,17 @@ namespace Rubberduck
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
-                _configService = null;
             }
 
             if (_stateBar != null)
             {
                 _stateBar.Refresh -= _stateBar_Refresh;
                 _stateBar.Dispose();
-                _stateBar = null;
             }
 
             if (_autoSave != null)
             {
                 _autoSave.Dispose();
-                _autoSave = null;
             }
 
             UiDispatcher.Shutdown();

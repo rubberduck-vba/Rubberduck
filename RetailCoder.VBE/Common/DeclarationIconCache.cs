@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Common
@@ -27,31 +26,6 @@ namespace Rubberduck.Common
                 var key = Tuple.Create(declaration.DeclarationType, declaration.Accessibility);
                 return Images[key];
             }
-        }
-
-        public static BitmapImage ComponentIcon(vbext_ComponentType componentType)
-        {
-            Tuple<DeclarationType, Accessibility> key;
-            switch (componentType)
-            {
-                case vbext_ComponentType.vbext_ct_StdModule:
-                    key = Tuple.Create(DeclarationType.ProceduralModule, Accessibility.Public);
-                    break;
-                case vbext_ComponentType.vbext_ct_ClassModule:
-                    key = Tuple.Create(DeclarationType.ClassModule, Accessibility.Public);
-                    break;
-                case vbext_ComponentType.vbext_ct_Document:
-                    key = Tuple.Create(DeclarationType.Document, Accessibility.Public);
-                    break;
-                case vbext_ComponentType.vbext_ct_MSForm:
-                    key = Tuple.Create(DeclarationType.UserForm, Accessibility.Public);
-                    break;
-                default:
-                    key = Tuple.Create(DeclarationType.Project, Accessibility.Public);
-                    break;
-            }
-
-            return Images[key];
         }
 
         private static Uri GetIconUri(DeclarationType declarationType, Accessibility accessibility)

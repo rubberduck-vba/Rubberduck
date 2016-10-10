@@ -5,9 +5,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -17,7 +15,7 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly IMessageBox _msgbox;
         private readonly RubberduckParserState _state;
 
-        public RefactorRemoveParametersCommand(VBE vbe, RubberduckParserState state, IMessageBox msgbox) 
+        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgbox) 
             : base (vbe)
         {
             _msgbox = msgbox;

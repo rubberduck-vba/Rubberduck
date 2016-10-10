@@ -1,13 +1,13 @@
-using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {
@@ -17,11 +17,11 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AddTestModuleCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configLoader;
 
-        public AddTestModuleCommand(VBE vbe, RubberduckParserState state, IGeneralConfigService configLoader)
+        public AddTestModuleCommand(IVBE vbe, RubberduckParserState state, IGeneralConfigService configLoader)
             : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
@@ -84,7 +84,7 @@ namespace Rubberduck.UI.Command
             return formattedModuleTemplate;
         }
 
-        private VBProject GetProject()
+        private IVBProject GetProject()
         {
             var activeProject = _vbe.ActiveVBProject;
             if (!activeProject.IsWrappingNullReference)
@@ -95,7 +95,7 @@ namespace Rubberduck.UI.Command
             var projects = _vbe.VBProjects;
             {
                 return projects.Count == 1 
-                    ? projects.Item(1) 
+                    ? projects[1]
                     : new VBProject(null);
             }
         }
@@ -104,10 +104,10 @@ namespace Rubberduck.UI.Command
         {
             return !GetProject().IsWrappingNullReference && _vbe.HostSupportsUnitTests();
         }
-        
+
         protected override void ExecuteImpl(object parameter)
         {
-            var project = parameter as VBProject ?? GetProject();
+            var project = parameter as IVBProject ?? GetProject();
             if (project.IsWrappingNullReference)
             {
                 return;
@@ -115,46 +115,37 @@ namespace Rubberduck.UI.Command
 
             var settings = _configLoader.LoadConfiguration().UserSettings.UnitTestSettings;
 
-            try
+            if (settings.BindingMode == BindingMode.EarlyBinding)
             {
-                if (settings.BindingMode == BindingMode.EarlyBinding)
-                {
-                    project.EnsureReferenceToAddInLibrary();
-                }
-
-                var components = project.VBComponents;
-                var component = components.Add(ComponentType.StandardModule);
-                var module = component.CodeModule;
-                {
-                    component.Name = GetNextTestModuleName(project);
-
-                    var hasOptionExplicit = false;
-                    if (module.CountOfLines > 0 && module.CountOfDeclarationLines > 0)
-                    {
-                        hasOptionExplicit = module.GetLines(1, module.CountOfDeclarationLines).Contains("Option Explicit");
-                    }
-
-                    var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n", "Option Private Module\r\n\r\n");
-
-                    var defaultTestMethod = string.Empty;
-                    if (settings.DefaultTestStubInNewModule)
-                    {
-                        defaultTestMethod = AddTestMethodCommand.TestMethodTemplate.Replace(
-                            AddTestMethodCommand.NamePlaceholder, "TestMethod1");
-                    }
-
-                    module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
-                    component.Activate();
-                    _state.OnParseRequested(this, component);
-                }
+                project.EnsureReferenceToAddInLibrary();
             }
-            catch (WrapperMethodException)
+
+            var component = project.VBComponents.Add(ComponentType.StandardModule);
+            var module = component.CodeModule;
+            component.Name = GetNextTestModuleName(project);
+
+            var hasOptionExplicit = false;
+            if (module.CountOfLines > 0 && module.CountOfDeclarationLines > 0)
             {
-                //how does this happen?
+                hasOptionExplicit = module.GetLines(1, module.CountOfDeclarationLines).Contains("Option Explicit");
             }
+
+            var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n",
+                "Option Private Module\r\n\r\n");
+
+            var defaultTestMethod = string.Empty;
+            if (settings.DefaultTestStubInNewModule)
+            {
+                defaultTestMethod = AddTestMethodCommand.TestMethodTemplate.Replace(
+                    AddTestMethodCommand.NamePlaceholder, "TestMethod1");
+            }
+
+            module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
+            component.Activate();
+            _state.OnParseRequested(this, component);
         }
 
-        private string GetNextTestModuleName(VBProject project)
+        private string GetNextTestModuleName(IVBProject project)
         {
             var names = project.ComponentNames();
             var index = names.Count(n => n.StartsWith(TestModuleBaseName)) + 1;

@@ -4,18 +4,17 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
     public class FormDesignerRefactorRenameCommand : RefactorCommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public FormDesignerRefactorRenameCommand(VBE vbe, RubberduckParserState state) 
+        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state) 
             : base (vbe)
         {
             _vbe = vbe;
@@ -50,7 +49,7 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.HasDesigner)
                 {
-                    var designer = (dynamic)component.ComObject.Designer;
+                    var designer = ((dynamic)component.Target).Designer;
 
                     foreach (var control in designer.Controls)
                     {

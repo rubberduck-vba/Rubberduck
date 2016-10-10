@@ -1,5 +1,4 @@
 ﻿using Extensibility;
-using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Factory;
 using Rubberduck.Root;
@@ -17,6 +16,7 @@ using Ninject.Extensions.Interception;
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck
 {
@@ -33,8 +33,8 @@ namespace Rubberduck
         private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
         private const string ProgId = "Rubberduck.Extension";
 
-        private VBEditor.SafeComWrappers.VBA.VBE _ide;
-        private VBEditor.SafeComWrappers.VBA.AddIn _addin;
+        private IVBE _ide;
+        private IAddIn _addin;
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
 
@@ -49,8 +49,23 @@ namespace Rubberduck
         {
             try
             {
-                _ide = new VBEditor.SafeComWrappers.VBA.VBE((VBE)Application);
-                _addin = new VBEditor.SafeComWrappers.VBA.AddIn((AddIn) AddInInst) {Object = this};
+                if (Application is Microsoft.Vbe.Interop.VBE)
+                {
+                    var vbe = (Microsoft.Vbe.Interop.VBE) Application;
+                    _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
+
+                    var addin = (Microsoft.Vbe.Interop.AddIn)AddInInst;
+                    _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
+                }
+                else if (Application is Microsoft.VB6.Interop.VBIDE.VBE)
+                {
+                    var vbe = Application as Microsoft.VB6.Interop.VBIDE.VBE;
+                    _ide = new VBEditor.SafeComWrappers.VB6.VBE(vbe);
+
+                    var addin = (Microsoft.VB6.Interop.VBIDE.AddIn) AddInInst;
+                    _addin = new VBEditor.SafeComWrappers.VB6.AddIn(addin);
+                }
+
 
                 switch (ConnectMode)
                 {
@@ -175,7 +190,15 @@ namespace Rubberduck
                 _kernel = null;
             }
 
-            _ide.Release();
+            try
+            {
+                _ide.Release();
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
+
             _isInitialized = false;
         }
     }

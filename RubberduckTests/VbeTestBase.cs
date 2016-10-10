@@ -45,16 +45,16 @@ namespace RubberduckTests
         {
             if (componentType == null)
             {
-                componentType = vbext_ComponentType.vbext_ct_StdModule;
+                componentType = ComponentType.StandardModule;
             }
 
             if (moduleName == null)
             {
-                moduleName = componentType == vbext_ComponentType.vbext_ct_StdModule 
+                moduleName = componentType == ComponentType.StandardModule 
                     ? "Module1" 
-                    : componentType == vbext_ComponentType.vbext_ct_ClassModule
+                    : componentType == ComponentType.ClassModule
                         ? "Class1"
-                        : componentType == vbext_ComponentType.vbext_ct_MSForm
+                        : componentType == ComponentType.UserForm
                             ? "Form1"
                             : "Document1";
             }
@@ -67,7 +67,7 @@ namespace RubberduckTests
             var component = CreateMockComponent(inputCode, moduleName, componentType.Value);
             var components = new List<Mock<VBComponent>> {component};
 
-            var project = CreateMockProject(projectName, vbext_ProjectProtection.vbext_pp_none, components);
+            var project = CreateMockProject(projectName, ProjectProtection.Unprotected, components);
             return project;
         }
 

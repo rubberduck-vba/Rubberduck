@@ -6,15 +6,14 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.Rename
 {
     public class RenameModel
     {
-        private readonly VBE _vbe;
-        public VBE VBE { get { return _vbe; } }
+        private readonly IVBE _vbe;
+        public IVBE VBE { get { return _vbe; } }
         
         private readonly IList<Declaration> _declarations;
         public IEnumerable<Declaration> Declarations { get { return _declarations; } }
@@ -36,7 +35,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private readonly IMessageBox _messageBox;
 
-        public RenameModel(VBE vbe, RubberduckParserState state, QualifiedSelection selection, IMessageBox messageBox)
+        public RenameModel(IVBE vbe, RubberduckParserState state, QualifiedSelection selection, IMessageBox messageBox)
         {
             _vbe = vbe;
             _state = state;
