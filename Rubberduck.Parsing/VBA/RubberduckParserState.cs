@@ -795,7 +795,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 try
                 {
-                    foreach (VBComponent component in project.VBComponents)
+                    foreach (var component in project.VBComponents)
                     {
                         if (IsNewOrModified(component))
                         {

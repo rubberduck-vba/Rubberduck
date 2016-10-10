@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Microsoft.VB6.Interop.VBIDE;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
@@ -102,7 +100,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public void SetKind(WindowKind eKind)
         {
-            Target.SetKind((vbext_WindowType)eKind);
+            Target.SetKind((VB.vbext_WindowType)eKind);
         }
 
         public void Detach()

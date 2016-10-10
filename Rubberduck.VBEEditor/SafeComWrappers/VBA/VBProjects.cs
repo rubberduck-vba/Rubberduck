@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
@@ -31,7 +30,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IVBProject Add(ProjectType type)
         {
-            return new VBProject(Target.Add((vbext_ProjectType)type));
+            return new VBProject(Target.Add((VB.vbext_ProjectType)type));
         }
 
         public void Remove(IVBProject project)
