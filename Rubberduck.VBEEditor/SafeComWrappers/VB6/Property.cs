@@ -35,7 +35,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public IApplication Application
         {
-            get { return new Application(IsWrappingNullReference ? null : Target.Application); }
+            get { return new Application((VB.Application) (IsWrappingNullReference ? null : Target.Application)); }
         }
 
         public IVBE VBE

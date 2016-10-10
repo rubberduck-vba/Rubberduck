@@ -146,6 +146,7 @@ namespace Rubberduck
             EnsureDirectoriesExist();
             LoadConfig();
             _appMenus.Initialize();
+            //_stateBar.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
             UpdateLoggingLevel();
@@ -173,6 +174,7 @@ namespace Rubberduck
         {
             Logger.Debug("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
+            _stateBar.SetSelectionText();
         }
 
         private void LoadConfig()

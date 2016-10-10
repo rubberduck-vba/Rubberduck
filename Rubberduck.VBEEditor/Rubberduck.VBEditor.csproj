@@ -93,7 +93,7 @@
     </Reference>
     <Reference Include="Microsoft.VB6.Interop.VBIDE">
       <HintPath>..\libs\Microsoft.VB6.Interop.VBIDE.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>

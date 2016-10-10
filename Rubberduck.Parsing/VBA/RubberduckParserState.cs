@@ -924,7 +924,8 @@ namespace Rubberduck.Parsing.VBA
                     foreach (var item in _declarationSelections)
                     {
                         if (item.Item3.Equals(selection.Value.QualifiedName) &&
-                            item.Item2.ContainsFirstCharacter(selection.Value.Selection))
+                            item.Item2.ContainsFirstCharacter(selection.Value.Selection) &&
+                            item.Item1.DeclarationType != DeclarationType.ModuleOption)
                         {
                             matches.Add(item);
                         }

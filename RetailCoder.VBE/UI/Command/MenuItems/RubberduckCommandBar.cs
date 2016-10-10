@@ -16,7 +16,6 @@ namespace Rubberduck.UI.Command.MenuItems
     {
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
-        //private readonly ISinks _sinks;
         private readonly IShowParserErrorsCommand _command;
 
         private ICommandBarButton _refreshButton;
@@ -24,36 +23,15 @@ namespace Rubberduck.UI.Command.MenuItems
         private ICommandBarButton _selectionButton;
         private ICommandBar _commandbar;
 
-        public RubberduckCommandBar(RubberduckParserState state, IVBE vbe/*, ISinks sinks*/, IShowParserErrorsCommand command)
+        public RubberduckCommandBar(RubberduckParserState state, IVBE vbe, IShowParserErrorsCommand command)
         {
             _state = state;
             _vbe = vbe;
-            //_sinks = sinks;
             _command = command;
-            _state.StateChanged += State_StateChanged;
             Initialize();
-
-            //_sinks.ProjectRemoved += ProjectRemoved;
-            //_sinks.ComponentActivated += ComponentActivated;
-            //_sinks.ComponentSelected += ComponentSelected;
         }
 
-        private void ProjectRemoved(object sender, IProjectEventArgs e)
-        {
-            SetSelectionText();
-        }
-
-        private void ComponentActivated(object sender, IComponentEventArgs e)
-        {
-            SetSelectionText();
-        }
-
-        private void ComponentSelected(object sender, IComponentEventArgs e)
-        {
-            SetSelectionText();
-        }
-
-        private void SetSelectionText()
+        public void SetSelectionText()
         {
             var selectedDeclaration = _vbe.ActiveCodePane != null
                             ? _state.FindSelectedDeclaration(_vbe.ActiveCodePane)
@@ -153,7 +131,7 @@ namespace Rubberduck.UI.Command.MenuItems
             }
         }
 
-        private void Initialize()
+        public void Initialize()
         {
             _commandbar = _vbe.CommandBars.Add("Rubberduck", CommandBarPosition.Top);
 
@@ -161,7 +139,6 @@ namespace Rubberduck.UI.Command.MenuItems
             _refreshButton.Style = ButtonStyle.Icon;
             _refreshButton.Tag = "Refresh";
             _refreshButton.TooltipText = RubberduckUI.RubberduckCommandbarRefreshButtonTooltip;
-            _refreshButton.Click += refreshButton_Click;
             _refreshButton.Picture = Resources.arrow_circle_double;
             _refreshButton.Mask = Resources.arrow_circle_double_mask;
             _refreshButton.ApplyIcon();
@@ -177,7 +154,9 @@ namespace Rubberduck.UI.Command.MenuItems
             _selectionButton.IsEnabled = false;
 
             _commandbar.IsVisible = true;
-            //_sinks.Start();
+
+            _refreshButton.Click += refreshButton_Click;
+            _state.StateChanged += State_StateChanged;
         }
 
         private void refreshButton_Click(object sender, CommandBarButtonClickEventArgs e)
@@ -195,11 +174,6 @@ namespace Rubberduck.UI.Command.MenuItems
             }
 
             _state.StateChanged -= State_StateChanged;
-
-            //_sinks.ProjectRemoved -= ProjectRemoved;
-            //_sinks.ComponentActivated -= ComponentActivated;
-            //_sinks.ComponentSelected -= ComponentSelected;
-
             _isDisposed = true;
         }
     }

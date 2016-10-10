@@ -9,13 +9,14 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Grammar
 {
     [TestClass]
     public class ResolverTests
     {
-        private RubberduckParserState Resolve(string code, vbext_ComponentType moduleType = ComponentType.StandardModule)
+        private RubberduckParserState Resolve(string code, vbext_ComponentType moduleType = vbext_ComponentType.vbext_ct_StdModule)
         {
             var builder = new MockVbeBuilder();
             VBComponent component;
