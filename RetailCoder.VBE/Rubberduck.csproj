@@ -892,6 +892,12 @@
       <DependentUpon>UnsyncedCommitsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\UnsyncedCommitsViewViewModel.cs" />
+    <Compile Include="UI\Splash.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Splash.Designer.cs">
+      <DependentUpon>Splash.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="Settings\ConfigurationLoader.cs" />
@@ -1078,6 +1084,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Splash.resx">
+      <DependentUpon>Splash.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
@@ -1299,6 +1308,7 @@
     <Content Include="Resources\Custom\mit_license.txt" />
     <Resource Include="Resources\folder-open.png" />
     <Resource Include="Resources\folder.png" />
+    <None Include="Resources\RD-300x250-base.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />

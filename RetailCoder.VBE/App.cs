@@ -25,7 +25,6 @@ namespace Rubberduck
         private readonly IAppMenu _appMenus;
         private readonly RubberduckCommandBar _stateBar;
         private readonly IRubberduckHooks _hooks;
-        private readonly UI.Settings.Settings _settings;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
@@ -33,7 +32,6 @@ namespace Rubberduck
 
         public App(IVBE vbe, 
             IMessageBox messageBox,
-            UI.Settings.Settings settings,
             IRubberduckParser parser,
             IGeneralConfigService configService,
             IAppMenu appMenus,
@@ -42,7 +40,6 @@ namespace Rubberduck
         {
             _vbe = vbe;
             _messageBox = messageBox;
-            _settings = settings;
             _parser = parser;
             _configService = configService;
             _autoSave = new AutoSave.AutoSave(_vbe, _configService);
@@ -57,7 +54,7 @@ namespace Rubberduck
             _stateBar.Refresh += _stateBar_Refresh;
             UiDispatcher.Initialize();
 
-            _parser.State.StartEventSinks();
+            //_parser.State.StartEventSinks();
         }
 
         private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
@@ -211,19 +208,11 @@ namespace Rubberduck
             {
                 _parser.State.StateChanged -= Parser_StateChanged;
                 _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
-                _parser.State.Dispose();
-                _parser.Dispose();
             }
 
             if (_hooks != null)
             {
                 _hooks.MessageReceived -= _hooks_MessageReceived;
-                _hooks.Dispose();
-            }
-
-            if (_settings != null)
-            {
-                _settings.Dispose();
             }
 
             if (_configService != null)
@@ -234,7 +223,6 @@ namespace Rubberduck
             if (_stateBar != null)
             {
                 _stateBar.Refresh -= _stateBar_Refresh;
-                _stateBar.Dispose();
             }
 
             if (_autoSave != null)
