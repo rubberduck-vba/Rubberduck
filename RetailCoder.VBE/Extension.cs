@@ -146,8 +146,6 @@ namespace Rubberduck
                 splash.Show();
                 splash.Refresh();
 
-                _kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new FuncModule(), new DynamicProxyModule());
-
                 try
                 {
                     var currentDomain = AppDomain.CurrentDomain;
@@ -173,6 +171,7 @@ namespace Rubberduck
                         }
                     }
 
+                    _kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new FuncModule(), new DynamicProxyModule());
                     _kernel.Load(new RubberduckModule(_ide, _addin));
 
                     _app = _kernel.Get<App>();

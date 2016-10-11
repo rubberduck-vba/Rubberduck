@@ -76,7 +76,6 @@
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.TopMost = true;
             this.UseWaitCursor = true;
             this.ResumeLayout(false);
             this.PerformLayout();
