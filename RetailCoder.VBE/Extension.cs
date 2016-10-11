@@ -142,7 +142,7 @@ namespace Rubberduck
 
             using (var splash = new Splash())
             {
-                splash.Version = string.Format("version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                splash.Version = string.Format("version {0}", Assembly.GetExecutingAssembly().GetName().Version);
                 splash.Show();
                 splash.Refresh();
 
