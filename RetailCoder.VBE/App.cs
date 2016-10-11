@@ -57,7 +57,7 @@ namespace Rubberduck
             _stateBar.Refresh += _stateBar_Refresh;
             UiDispatcher.Initialize();
 
-            _parser.State.StartEventSinks();
+            //_parser.State.StartEventSinks();
         }
 
         private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)

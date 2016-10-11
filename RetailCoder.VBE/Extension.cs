@@ -140,39 +140,55 @@ namespace Rubberduck
                 return;
             }
 
-            _kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new FuncModule(), new DynamicProxyModule());
-
-            try
+            using (var splash = new Splash())
             {
-                var currentDomain = AppDomain.CurrentDomain;
-                currentDomain.AssemblyResolve += LoadFromSameFolder;
+                splash.Version = string.Format("version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                splash.Show();
+                splash.Refresh();
 
-                var config = new XmlPersistanceService<GeneralSettings>
-                {
-                    FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "rubberduck.config")
-                };
+                _kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new FuncModule(), new DynamicProxyModule());
 
-                var settings = config.Load(null);
-                if (settings != null)
+                try
                 {
-                    try
+                    var currentDomain = AppDomain.CurrentDomain;
+                    currentDomain.AssemblyResolve += LoadFromSameFolder;
+
+                    var config = new XmlPersistanceService<GeneralSettings>
                     {
-                        var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
-                        Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
+                        FilePath =
+                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                                "Rubberduck", "rubberduck.config")
+                    };
+
+                    var settings = config.Load(null);
+                    if (settings != null)
+                    {
+                        try
+                        {
+                            var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
+                            Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
+                        }
+                        catch (CultureNotFoundException)
+                        {
+                        }
                     }
-                    catch (CultureNotFoundException) { }
+
+                    _kernel.Load(new RubberduckModule(_ide, _addin));
+
+                    _app = _kernel.Get<App>();
+                    _app.Startup();
+                    _isInitialized = true;
                 }
-
-                _kernel.Load(new RubberduckModule(_ide, _addin));
-
-                _app = _kernel.Get<App>();
-                _app.Startup();
-                _isInitialized = true;
-            }
-            catch (Exception exception)
-            {
-                _logger.Fatal(exception);
-                System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                catch (Exception exception)
+                {
+                    _logger.Fatal(exception);
+                    System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure,
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    splash.Hide();
+                }
             }
         }
 
