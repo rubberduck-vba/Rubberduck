@@ -18,6 +18,9 @@ namespace Rubberduck.Common
     {
         private readonly IntPtr _mainWindowHandle;
         private readonly IntPtr _oldWndProc;
+        // This can't be local - otherwise RawInput can't call it in the subclassing chain.
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly User32.WndProc _newWndProc;
         private RawInput _rawinput;
         private IRawDevice _kb;
         private IRawDevice _mouse;
@@ -33,8 +36,8 @@ namespace Rubberduck.Common
                 _mainWindowHandle = (IntPtr)mainWindow.HWnd;
             }
 
-            User32.WndProc newWndProc = WindowProc;
-            _oldWndProc = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(newWndProc));
+            _newWndProc = WindowProc;
+            _oldWndProc = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
 
             _commands = commands;
             _config = config;
