@@ -64,9 +64,9 @@ namespace Rubberduck.Inspections
                         !item.IsSelfAssigned &&
                         !item.IsArray &&
                         !ValueTypes.Contains(item.AsTypeName) &&
-                        (item.AsTypeDeclaration == null ||
+                        (item.AsTypeDeclaration == null || (
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration &&
-                        item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType) &&
+                        item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)) &&
                         (item.DeclarationType == DeclarationType.Variable ||
                          item.DeclarationType == DeclarationType.Parameter));
 
@@ -75,14 +75,15 @@ namespace Rubberduck.Inspections
                     (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
                     && !item.IsArray
                     && item.IsTypeSpecified
-                    && !ValueTypes.Contains(item.AsTypeName));
+                    && !ValueTypes.Contains(item.AsTypeName)
+                    && (item.AsTypeDeclaration != null && (
+                        item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration
+                        && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)));
 
             var interestingReferences = interestingDeclarations
                     .Union(interestingMembers.SelectMany(item =>
-                        item.References.Where(reference =>
-                            reference.ParentScoping == item && reference.IsAssignment
-                        ).Select(reference => reference.Declaration))
-                    )
+                        item.References.Where(reference => reference.ParentScoping.Equals(item) && reference.IsAssignment)
+                    .Select(reference => reference.Declaration)))
                     .SelectMany(declaration =>
                         declaration.References.Where(reference =>
                         {
