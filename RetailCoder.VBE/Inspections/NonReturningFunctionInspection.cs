@@ -89,7 +89,7 @@ namespace Rubberduck.Inspections
             public override bool VisitLetStmt(VBAParser.LetStmtContext context)
             {
                 var leftmost = context.lExpression().GetChild(0).GetText();
-                _result = leftmost == _name;
+                _result = _result || leftmost == _name;
                 return _result;
             }
         }
