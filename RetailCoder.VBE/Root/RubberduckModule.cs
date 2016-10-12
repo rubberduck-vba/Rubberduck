@@ -26,6 +26,7 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
+using Ninject.Activation;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Parsing.Symbols;
@@ -85,12 +86,12 @@ namespace Rubberduck.Root
             Rebind<ISinks>().To<Sinks>().InSingletonScope();
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
-            Bind<Func<IIndenterSettings>>().ToMethod(t => () => Kernel.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
+            Bind<Func<IIndenterSettings>>().ToMethod(t => () => KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
 
             BindCustomDeclarationLoadersToParser();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
             Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)));
-
+            
             Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();
             Bind<SearchResultPresenterInstanceManager>().ToSelf().InSingletonScope();
 
@@ -380,9 +381,9 @@ namespace Rubberduck.Root
         {
             return new[]
             {
-                Kernel.Get<AboutCommandMenuItem>(),
-                Kernel.Get<SettingsCommandMenuItem>(),
-                Kernel.Get<InspectionResultsCommandMenuItem>(),
+                KernelInstance.Get<AboutCommandMenuItem>(),
+                KernelInstance.Get<SettingsCommandMenuItem>(),
+                KernelInstance.Get<InspectionResultsCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
                 GetSmartIndenterParentMenu(),
                 GetToolsParentMenu(),
@@ -395,11 +396,11 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                Kernel.Get<RunAllTestsCommandMenuItem>(),
-                Kernel.Get<TestExplorerCommandMenuItem>(),
-                Kernel.Get<AddTestModuleCommandMenuItem>(),
-                Kernel.Get<AddTestMethodCommandMenuItem>(),
-                Kernel.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
+                KernelInstance.Get<RunAllTestsCommandMenuItem>(),
+                KernelInstance.Get<TestExplorerCommandMenuItem>(),
+                KernelInstance.Get<AddTestModuleCommandMenuItem>(),
+                KernelInstance.Get<AddTestMethodCommandMenuItem>(),
+                KernelInstance.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
             };
             return new UnitTestingParentMenu(items);
         }
@@ -408,16 +409,16 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                Kernel.Get<CodePaneRefactorRenameCommandMenuItem>(),
-                Kernel.Get<RefactorExtractMethodCommandMenuItem>(),
-                Kernel.Get<RefactorReorderParametersCommandMenuItem>(),
-                Kernel.Get<RefactorRemoveParametersCommandMenuItem>(),
-                Kernel.Get<RefactorIntroduceParameterCommandMenuItem>(),
-                Kernel.Get<RefactorIntroduceFieldCommandMenuItem>(),
-                Kernel.Get<RefactorEncapsulateFieldCommandMenuItem>(),
-                Kernel.Get<RefactorMoveCloserToUsageCommandMenuItem>(),
-                Kernel.Get<RefactorExtractInterfaceCommandMenuItem>(),
-                Kernel.Get<RefactorImplementInterfaceCommandMenuItem>()
+                KernelInstance.Get<CodePaneRefactorRenameCommandMenuItem>(),
+                KernelInstance.Get<RefactorExtractMethodCommandMenuItem>(),
+                KernelInstance.Get<RefactorReorderParametersCommandMenuItem>(),
+                KernelInstance.Get<RefactorRemoveParametersCommandMenuItem>(),
+                KernelInstance.Get<RefactorIntroduceParameterCommandMenuItem>(),
+                KernelInstance.Get<RefactorIntroduceFieldCommandMenuItem>(),
+                KernelInstance.Get<RefactorEncapsulateFieldCommandMenuItem>(),
+                KernelInstance.Get<RefactorMoveCloserToUsageCommandMenuItem>(),
+                KernelInstance.Get<RefactorExtractInterfaceCommandMenuItem>(),
+                KernelInstance.Get<RefactorImplementInterfaceCommandMenuItem>()
             };
             return new RefactoringsParentMenu(items);
         }
@@ -426,11 +427,11 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                Kernel.Get<CodeExplorerCommandMenuItem>(),
-                //Kernel.Get<RegexSearchReplaceCommandMenuItem>(),
-                Kernel.Get<FindSymbolCommandMenuItem>(),
-                Kernel.Get<FindAllReferencesCommandMenuItem>(),
-                Kernel.Get<FindAllImplementationsCommandMenuItem>(),
+                KernelInstance.Get<CodeExplorerCommandMenuItem>(),
+                //KernelInstance.Get<RegexSearchReplaceCommandMenuItem>(),
+                KernelInstance.Get<FindSymbolCommandMenuItem>(),
+                KernelInstance.Get<FindAllReferencesCommandMenuItem>(),
+                KernelInstance.Get<FindAllImplementationsCommandMenuItem>(),
             };
             return new NavigateParentMenu(items);
         }
@@ -439,9 +440,9 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                Kernel.Get<IndentCurrentProcedureCommandMenuItem>(),
-                Kernel.Get<IndentCurrentModuleCommandMenuItem>(),
-                Kernel.Get<NoIndentAnnotationCommandMenuItem>()
+                KernelInstance.Get<IndentCurrentProcedureCommandMenuItem>(),
+                KernelInstance.Get<IndentCurrentModuleCommandMenuItem>(),
+                KernelInstance.Get<NoIndentAnnotationCommandMenuItem>()
             };
 
             return new SmartIndenterParentMenu(items);
@@ -453,9 +454,9 @@ namespace Rubberduck.Root
             {
                 GetRefactoringsParentMenu(),
                 GetSmartIndenterParentMenu(),
-                Kernel.Get<FindSymbolCommandMenuItem>(),
-                Kernel.Get<FindAllReferencesCommandMenuItem>(),
-                Kernel.Get<FindAllImplementationsCommandMenuItem>(),
+                KernelInstance.Get<FindSymbolCommandMenuItem>(),
+                KernelInstance.Get<FindAllReferencesCommandMenuItem>(),
+                KernelInstance.Get<FindAllImplementationsCommandMenuItem>(),
             };
         }
 
@@ -463,9 +464,9 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                Kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
-                Kernel.Get<RegexAssistantCommandMenuItem>(),
-                Kernel.Get<ToDoExplorerCommandMenuItem>(),
+                KernelInstance.Get<ShowSourceControlPanelCommandMenuItem>(),
+                KernelInstance.Get<RegexAssistantCommandMenuItem>(),
+                KernelInstance.Get<ToDoExplorerCommandMenuItem>(),
             };
 
             return new ToolsParentMenu(items);
@@ -475,7 +476,7 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                Kernel.Get<FormDesignerRefactorRenameCommandMenuItem>(),
+                KernelInstance.Get<FormDesignerRefactorRenameCommandMenuItem>(),
             };
         }
 
@@ -483,10 +484,10 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                Kernel.Get<ProjectExplorerRefactorRenameCommandMenuItem>(),
-                Kernel.Get<FindSymbolCommandMenuItem>(),
-                Kernel.Get<FindAllReferencesCommandMenuItem>(),
-                Kernel.Get<FindAllImplementationsCommandMenuItem>(),
+                KernelInstance.Get<ProjectExplorerRefactorRenameCommandMenuItem>(),
+                KernelInstance.Get<FindSymbolCommandMenuItem>(),
+                KernelInstance.Get<FindAllReferencesCommandMenuItem>(),
+                KernelInstance.Get<FindAllImplementationsCommandMenuItem>(),
             };
         }
     }
