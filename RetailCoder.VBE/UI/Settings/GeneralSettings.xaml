@@ -72,11 +72,11 @@
             <Grid>
                 <StackPanel Grid.Row="0" Margin="5,5,5,0">
                     <Label DockPanel.Dock="Top"
-                   Background="DarkGray"
-                   Foreground="White"
-                   FontWeight="SemiBold"
-                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_GeneralSettings}"
-                   Margin="0,0,0,3">
+                           Background="DarkGray"
+                           Foreground="White"
+                           FontWeight="SemiBold"
+                           Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_GeneralSettings}"
+                           Margin="0,0,0,3">
                         <Label.Style>
                             <Style>
                                 <Style.Resources>
@@ -87,8 +87,8 @@
                             </Style>
                         </Label.Style>
                     </Label>
-                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_LanguageLabel}"
-                   FontWeight="SemiBold" />
+                    
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_LanguageLabel}" FontWeight="SemiBold" />
                     <ComboBox Width="210"
                       HorizontalAlignment="Left"
                       Margin="5"
@@ -96,8 +96,10 @@
                       ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}"
                       DisplayMemberPath="Name" />
 
-                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveLabel}"
-                   FontWeight="SemiBold" />
+                    <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ShowSplash}"
+                              IsChecked="{Binding ShowSplashAtStartup}" />
+
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveLabel}" FontWeight="SemiBold" />
                     <StackPanel Orientation="Horizontal">
                         <CheckBox Name="AutoSaveButton"
                           Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveEnabled}"
@@ -111,8 +113,7 @@
                                        HorizontalAlignment="Left" />
                     </StackPanel>
 
-                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_FolderDelimiterLabel}"
-                   FontWeight="SemiBold" />
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_FolderDelimiterLabel}" FontWeight="SemiBold" />
                     <ComboBox Width="210"
                       HorizontalAlignment="Left"
                       Margin="5"
@@ -120,8 +121,7 @@
                       ItemsSource="{Binding Source={StaticResource Delimiters}, Converter={StaticResource DelimiterToText}, UpdateSourceTrigger=PropertyChanged}"
                       SelectedItem="{Binding Delimiter, Mode=TwoWay, Converter={StaticResource DelimiterValueToText}}" />
 
-                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_MinimumLogLevelLabel}"
-                        FontWeight="SemiBold" />
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_MinimumLogLevelLabel}" FontWeight="SemiBold" />
                     <StackPanel Orientation="Horizontal">
                         <ComboBox Width="210"
                       HorizontalAlignment="Left"
@@ -136,8 +136,7 @@
                     </StackPanel>
 
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
-
-                <DataGrid ItemsSource="{Binding Hotkeys}"
+                    <DataGrid ItemsSource="{Binding Hotkeys}"
                       HorizontalAlignment="Stretch"
                       AutoGenerateColumns="False"
                       CanUserDeleteRows="False"
@@ -206,8 +205,6 @@
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <CheckBox Margin="5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ShowSplash}"
-                              IsChecked="{Binding ShowSplashAtStartup}" />
                 </StackPanel>
             </Grid>
         </ScrollViewer>

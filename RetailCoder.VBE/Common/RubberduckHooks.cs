@@ -22,8 +22,8 @@ namespace Rubberduck.Common
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly User32.WndProc _newWndProc;
         private RawInput _rawinput;
-        private IRawDevice _kb;
-        private IRawDevice _mouse;
+        private RawKeyboard _kb;
+        private RawMouse _mouse;
         private readonly IGeneralConfigService _config;
         private readonly IEnumerable<CommandBase> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
@@ -186,6 +186,8 @@ namespace Rubberduck.Common
         {
             Detach();
             User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _oldWndProc);
+            _mouse.RawMouseInputReceived -= Mouse_RawMouseInputReceived;
+            _kb.RawKeyInputReceived -= Keyboard_RawKeyboardInputReceived;
         }
 
         private IntPtr WindowProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam)

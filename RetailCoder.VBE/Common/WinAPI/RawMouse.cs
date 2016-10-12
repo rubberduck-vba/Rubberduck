@@ -35,5 +35,15 @@ namespace Rubberduck.Common.WinAPI
                 RawMouseInputReceived(this, args);
             }
         }
+
+        ~RawMouse()
+        {
+            var rid = new RawInputDevice[1];
+            rid[0].UsagePage = HidUsagePage.GENERIC;
+            rid[0].Usage = HidUsage.Mouse;
+            rid[0].Flags = (RawInputDeviceFlags.REMOVE);
+            rid[0].Target = IntPtr.Zero;
+            User32.RegisterRawInputDevices(rid, (uint) rid.Length, (uint) Marshal.SizeOf(rid[0]));
+        }
     }
 }
