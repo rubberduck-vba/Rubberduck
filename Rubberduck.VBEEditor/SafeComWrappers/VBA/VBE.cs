@@ -53,7 +53,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IWindow MainWindow
         {
-            get { return new Window(IsWrappingNullReference ? null : Target.MainWindow); }
+            get
+            {
+                try
+                {
+                    return new Window(IsWrappingNullReference ? null : Target.MainWindow);
+                }
+                catch (InvalidComObjectException ex)
+                {
+                    return null;
+                }
+            }
         }
 
         public IVBComponent SelectedVBComponent
