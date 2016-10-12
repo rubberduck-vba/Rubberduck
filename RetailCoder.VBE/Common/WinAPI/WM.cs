@@ -926,6 +926,10 @@ namespace Rubberduck.Common.WinAPI
         /// Private message to signal focus set/lost for a DockableWindowHost. Set wParam to the DockableWindowHost hWnd, lParam to zero for lost focus, non-zero for gained focus.
         /// </summary>
         RUBBERDUCK_CHILD_FOCUS = USER + 0x0F00,
+        /// <summary>
+        /// Private message to signal focus RD shutdown. No parameters.
+        /// </summary>        
+        RUBBERDUCK_SINKING = USER + 0x0D1E,
 
         /// <summary>
         /// The accessibility state has changed.

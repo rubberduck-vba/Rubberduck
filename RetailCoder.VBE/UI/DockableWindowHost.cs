@@ -133,6 +133,7 @@ namespace Rubberduck.UI
 
             protected override void WndProc(ref Message msg)
             {
+                var closing = false;
                 switch ((uint)msg.Msg)
                 {
                     case (uint)WM.SIZE:
@@ -145,14 +146,18 @@ namespace Rubberduck.UI
                     case (uint)WM.KILLFOCUS:
                         User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Handle, IntPtr.Zero);
                         break;
+                    case (uint)WM.RUBBERDUCK_SINKING:
+                        closing = true;
+                        break;
                 }
                 base.WndProc(ref msg);
+                if (closing) ReleaseHandle();
             }
 
-            ~SubClassingWindow()
-            {
-                ReleaseHandle();
-            }
+            //~SubClassingWindow()
+            //{
+            //    ReleaseHandle();
+            //}
         }
     }
 }

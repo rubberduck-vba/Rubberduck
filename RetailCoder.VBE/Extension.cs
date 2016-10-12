@@ -1,6 +1,8 @@
-﻿using Extensibility;
+﻿using System.Text;
+using Extensibility;
 using Ninject;
 using Ninject.Extensions.Factory;
+using Rubberduck.Common.WinAPI;
 using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
@@ -54,7 +56,7 @@ namespace Rubberduck
                 {
                     var vbe = (Microsoft.Vbe.Interop.VBE) Application;
                     _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
-
+                    
                     var addin = (Microsoft.Vbe.Interop.AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
                 }
@@ -105,12 +107,13 @@ namespace Rubberduck
         public void OnBeginShutdown(ref Array custom)
         {
             _isBeginShutdownExecuted = true;
+            User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
             ShutdownAddIn();
         }
 
         // ReSharper disable InconsistentNaming
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
-        {
+        {            
             switch (RemoveMode)
             {
                 case ext_DisconnectMode.ext_dm_UserClosed:
@@ -230,8 +233,14 @@ namespace Rubberduck
             {
                 _logger.Error(e);
             }
-
+            GC.WaitForPendingFinalizers();
             _isInitialized = false;
+        }
+
+        private static int EnumCallback(IntPtr hwnd, IntPtr lparam)
+        {
+            User32.SendMessage(hwnd, WM.RUBBERDUCK_SINKING, IntPtr.Zero, IntPtr.Zero);
+            return 1;
         }
     }
 }
