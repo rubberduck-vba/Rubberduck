@@ -1498,6 +1498,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show splash screen at startup.
+        /// </summary>
+        public static string GeneralSettings_ShowSplash {
+            get {
+                return ResourceManager.GetString("GeneralSettings_ShowSplash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Slash (/).
         /// </summary>
         public static string GeneralSettings_SlashDelimiter {

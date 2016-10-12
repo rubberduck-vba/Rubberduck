@@ -1577,4 +1577,7 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
     <value>Exécuter les inspections automatiquement</value>
   </data>
+  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
+    <value>Afficher l'écran d'initialisation</value>
+  </data>
 </root>

@@ -5,6 +5,7 @@ using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -140,55 +141,71 @@ namespace Rubberduck
                 return;
             }
 
-            using (var splash = new Splash())
+            var config = new XmlPersistanceService<GeneralSettings>
             {
-                splash.Version = string.Format("version {0}", Assembly.GetExecutingAssembly().GetName().Version);
-                splash.Show();
-                splash.Refresh();
+                FilePath =
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        "Rubberduck", "rubberduck.config")
+            };
 
+            var settings = config.Load(null);
+            if (settings != null)
+            {
                 try
                 {
-                    var currentDomain = AppDomain.CurrentDomain;
-                    currentDomain.AssemblyResolve += LoadFromSameFolder;
-
-                    var config = new XmlPersistanceService<GeneralSettings>
-                    {
-                        FilePath =
-                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                                "Rubberduck", "rubberduck.config")
-                    };
-
-                    var settings = config.Load(null);
-                    if (settings != null)
-                    {
-                        try
-                        {
-                            var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
-                            Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
-                        }
-                        catch (CultureNotFoundException)
-                        {
-                        }
-                    }
-
-                    _kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new FuncModule(), new DynamicProxyModule());
-                    _kernel.Load(new RubberduckModule(_ide, _addin));
-
-                    _app = _kernel.Get<App>();
-                    _app.Startup();
-                    _isInitialized = true;
+                    var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
+                    Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
                 }
-                catch (Exception exception)
+                catch (CultureNotFoundException)
                 {
-                    _logger.Fatal(exception);
-                    System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure,
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                finally
-                {
-                    splash.Hide();
                 }
             }
+            else
+            {
+                Debug.Assert(false, "Settings could not be initialized.");
+            }
+
+            Splash splash = null;
+            if (settings.ShowSplash)
+            {
+                splash = new Splash
+                {
+                    Version = string.Format("version {0}", Assembly.GetExecutingAssembly().GetName().Version)
+                };
+                splash.Show();
+                splash.Refresh();
+            }
+
+            try
+            {
+                Startup();
+            }
+            catch (Exception exception)
+            {
+                _logger.Fatal(exception);
+                System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (splash != null)
+                {
+                    splash.Dispose();
+                }
+            }
+        }
+
+        private void Startup()
+        {
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve += LoadFromSameFolder;
+
+            _kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new FuncModule(), new DynamicProxyModule());
+            _kernel.Load(new RubberduckModule(_ide, _addin));
+
+            _app = _kernel.Get<App>();
+            _app.Startup();
+            _isInitialized = true;
         }
 
         private void ShutdownAddIn()

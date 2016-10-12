@@ -30,6 +30,7 @@ namespace Rubberduck.UI.Settings
 
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
             Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.HotkeySettings.Settings);
+            ShowSplashAtStartup = config.UserSettings.GeneralSettings.ShowSplash;
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
             Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;
@@ -78,6 +79,20 @@ namespace Rubberduck.UI.Settings
                 if (_autoSaveEnabled != value)
                 {
                     _autoSaveEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _showSplashAtStartup;
+        public bool ShowSplashAtStartup
+        {
+            get { return _showSplashAtStartup; }
+            set
+            {
+                if (_showSplashAtStartup != value)
+                {
+                    _showSplashAtStartup = value;
                     OnPropertyChanged();
                 }
             }
@@ -141,6 +156,7 @@ namespace Rubberduck.UI.Settings
         {
             config.UserSettings.GeneralSettings.Language = SelectedLanguage;
             config.UserSettings.HotkeySettings.Settings = Hotkeys.ToArray();
+            config.UserSettings.GeneralSettings.ShowSplash = ShowSplashAtStartup;
             config.UserSettings.GeneralSettings.AutoSaveEnabled = AutoSaveEnabled;
             config.UserSettings.GeneralSettings.AutoSavePeriod = AutoSavePeriod;
             config.UserSettings.GeneralSettings.Delimiter = (char)Delimiter;
@@ -151,6 +167,7 @@ namespace Rubberduck.UI.Settings
         {
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
             Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.HotkeySettings.Settings);
+            ShowSplashAtStartup = config.UserSettings.GeneralSettings.ShowSplash;
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
             Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;

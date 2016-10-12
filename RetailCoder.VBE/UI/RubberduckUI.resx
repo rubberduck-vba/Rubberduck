@@ -1781,4 +1781,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
     <value>Run inspections automatically on successful parse</value>
   </data>
+  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
+    <value>Show splash screen at startup</value>
+  </data>
 </root>
