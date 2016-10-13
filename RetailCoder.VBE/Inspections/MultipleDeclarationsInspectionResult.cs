@@ -101,7 +101,8 @@ namespace Rubberduck.Inspections
             }
 
             var module = Selection.QualifiedName.Component.CodeModule;
-            module.ReplaceLine(selection.StartLine, newContent.ToString());
+            module.DeleteLines(selection);
+            module.InsertLines(selection.StartLine, newContent.ToString());
         }
     }
 }
