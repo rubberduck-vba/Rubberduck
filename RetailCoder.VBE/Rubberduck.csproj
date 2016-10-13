@@ -366,6 +366,7 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
+    <Compile Include="Inspections\ChangeDimToPrivateQuickFix.cs" />
     <Compile Include="Inspections\DeclareAsExplicitVariantQuickFix.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspectionResult.cs" />
     <Compile Include="Inspections\ChangeParameterByRefByValQuickFix.cs" />
@@ -382,6 +383,8 @@
     <Compile Include="Inspections\IParseTreeInspection.cs" />
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\MalformedAnnotationInspection.cs" />
+    <Compile Include="Inspections\ModuleScopeDimKeywordInspection.cs" />
+    <Compile Include="Inspections\ModuleScopeDimKeywordInspectionResult.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\PassParameterByValueQuickFix.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />

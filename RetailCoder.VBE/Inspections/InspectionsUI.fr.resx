@@ -554,4 +554,16 @@
   <data name="UntypedFunctionUsageInspectionMeta" xml:space="preserve">
     <value />
   </data>
+  <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
+    <value>Remplacer 'Dim' par 'Private'</value>
+  </data>
+  <data name="ModuleScopeDimKeywordInspectionMeta" xml:space="preserve">
+    <value>Le mot-clé 'Public' peut seulement être utilisé au niveau module; son contraire 'Private' est également seulement permis au niveau module. Toutefois, 'Dim' peut être utilisé autant pour déclarer une variable locale qu'une variable module. Pour fins de constance, il est donc préférable de réserver le mot-clé 'Dim' pour les variables locales, et d'utiliser 'Private' au lieu de 'Dim' au niveau module.</value>
+  </data>
+  <data name="ModuleScopeDimKeywordInspectionName" xml:space="preserve">
+    <value>Utilisation du mot-clé 'Dim' au niveau module</value>
+  </data>
+  <data name="ModuleScopeDimKeywordInspectionResultFormat" xml:space="preserve">
+    <value>La variable module '{0}' est déclarée avec le mot-clé 'Dim'</value>
+  </data>
 </root>
