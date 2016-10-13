@@ -88,6 +88,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Replace &apos;Dim&apos; with &apos;Private&apos;.
+        /// </summary>
+        public static string ChangeDimToPrivateQuickFix {
+            get {
+                return ResourceManager.GetString("ChangeDimToPrivateQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code quality issues.
         /// </summary>
         public static string CodeQualityIssues {
@@ -534,6 +543,33 @@ namespace Rubberduck.Inspections {
         public static string MalformedAnnotationInspectionResultFormat {
             get {
                 return ResourceManager.GetString("MalformedAnnotationInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Public&apos; keyword can only be used at module level; its counterpart &apos;Private&apos; can also only be used at module level. &apos;Dim&apos; however, can be used to declare both procedure and module scope variables. For consistency, it would be preferable to reserve &apos;Dim&apos; for locals, and thus to use &apos;Private&apos; instead of &apos;Dim&apos; at module level..
+        /// </summary>
+        public static string ModuleScopeDimKeywordInspectionMeta {
+            get {
+                return ResourceManager.GetString("ModuleScopeDimKeywordInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of &apos;Dim&apos; keyword at module level.
+        /// </summary>
+        public static string ModuleScopeDimKeywordInspectionName {
+            get {
+                return ResourceManager.GetString("ModuleScopeDimKeywordInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module-level variable &apos;{0}&apos; is declared with the &apos;Dim&apos; keyword..
+        /// </summary>
+        public static string ModuleScopeDimKeywordInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ModuleScopeDimKeywordInspectionResultFormat", resourceCulture);
             }
         }
         
