@@ -336,8 +336,10 @@ namespace Rubberduck.Refactorings.Rename
                     var argList = (VBAParser.ArgListContext)target.Context.Parent;
                     var lineNum = argList.GetSelection().LineCount;
 
-                    module.ReplaceLine(argList.Start.Line, newContent);
+                    // delete excess lines to prevent removing our own changes
                     module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
+                    module.ReplaceLine(argList.Start.Line, newContent);
+                    
                 }
                 else if (!target.DeclarationType.HasFlag(DeclarationType.Property))
                 {
