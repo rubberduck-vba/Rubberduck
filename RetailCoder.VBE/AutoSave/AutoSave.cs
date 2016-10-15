@@ -54,8 +54,10 @@ namespace Rubberduck.AutoSave
                 var commandBars = _vbe.CommandBars;
                 var control = commandBars.FindControl(VbeSaveCommandId);
                 control.Execute();
-                Marshal.ReleaseComObject(control);
-                Marshal.ReleaseComObject(commandBars);
+                control.Release();
+                commandBars.Release();
+                //Marshal.ReleaseComObject(control);
+                //Marshal.ReleaseComObject(commandBars);
             }
         }
 

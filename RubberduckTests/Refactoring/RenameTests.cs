@@ -165,6 +165,55 @@ End Sub";
         }
 
         [TestMethod]
+        public void RenameRefactoring_RenameMulitlinedParameter()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As String, _
+        ByVal arg3 As String)
+End Sub";
+            var selection = new Selection(2, 15, 2, 15);
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ByVal arg1 As String, _
+        ByVal arg2 As String)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = new Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule(project.VBComponents.Item(0).CodeModule);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component)), selection);
+
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var vbeWrapper = new VBE(vbe.Object);
+            var model = new RenameModel(vbeWrapper, parser.State, qualifiedSelection, msgbox.Object) { NewName = "arg2" };
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, parser.State);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Content());
+        }
+
+        [TestMethod]
         public void RenameRefactoring_RenameSub_UpdatesReferences()
         {
             //Input
