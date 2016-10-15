@@ -13,7 +13,7 @@ using System.IO;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-
+using System.Runtime.InteropServices;
 // ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
@@ -349,6 +349,10 @@ namespace Rubberduck.Parsing.VBA
                 catch (IOException)
                 {
                     // Filename throws exception if unsaved.
+                }
+                catch (COMException e)
+                {
+                    Logger.Warn(e);
                 }
             }
             
