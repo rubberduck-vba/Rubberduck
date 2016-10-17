@@ -60,7 +60,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private static readonly IDictionary<VarEnum, string> TypeNames = new Dictionary<VarEnum, string>
         {
-            {VarEnum.VT_DISPATCH, "DISPATCH"},
+            {VarEnum.VT_DISPATCH, "Object"},
             {VarEnum.VT_VOID, string.Empty},
             {VarEnum.VT_VARIANT, "Variant"},
             {VarEnum.VT_BLOB_OBJECT, "Object"},

@@ -37,14 +37,14 @@ namespace Rubberduck.Inspections
         {
             if (_hostApp == null || _hostApp.ApplicationName != "Excel")
             {
-                return new InspectionResultBase[] { };
+                return Enumerable.Empty<InspectionResultBase>();
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
             var issues = BuiltInDeclarations.Where(item => ParentScopes.Contains(item.ParentScope)
                                             && Targets.Contains(item.IdentifierName)
                                             && item.References.Any())
-                .SelectMany(declaration => declaration.References);
+                .SelectMany(declaration => declaration.References.Distinct());
 
             return issues.Select(issue =>
                 new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
