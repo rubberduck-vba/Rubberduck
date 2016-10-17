@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections
                         item.AsTypeName == "Range").ToList();
 
             var issues = matches.Where(item => item.References.Any())
-                .SelectMany(declaration => declaration.References);
+                .SelectMany(declaration => declaration.References.Distinct());
 
             return issues.Select(issue => 
                 new ImplicitActiveSheetReferenceInspectionResult(this, issue));

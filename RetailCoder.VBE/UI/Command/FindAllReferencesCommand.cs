@@ -140,7 +140,7 @@ namespace Rubberduck.UI.Command
 
         private SearchResultsViewModel CreateViewModel(Declaration declaration)
         {
-            var results = declaration.References.Select(reference =>
+            var results = declaration.References.Distinct().Select(reference =>
                 new SearchResultItem(
                     reference.ParentNonScoping,
                     new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection), 
