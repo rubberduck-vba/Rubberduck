@@ -146,6 +146,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
                 Task.WaitAll(ResolveReferencesAsync(token.Token));
+                State.RebuildSelectionCache();
             }
         }
 
@@ -279,7 +280,8 @@ namespace Rubberduck.Parsing.VBA
             if (State.Status < ParserState.Error)
             {
                 State.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations);
-                ResolveReferencesAsync(token.Token);
+                Task.WaitAll(ResolveReferencesAsync(token.Token));
+                State.RebuildSelectionCache();
             }
         }
 
@@ -315,6 +317,13 @@ namespace Rubberduck.Parsing.VBA
                     State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
 
                     ResolveReferences(finder, kvp.Key.Component, kvp.Value);
+                }, token)
+                .ContinueWith(t =>
+                {
+                    foreach (var declaration in finder.Undeclared)
+                    {
+                        State.AddDeclaration(declaration);
+                    }
                 }, token);
             }
 
@@ -612,7 +621,6 @@ namespace Rubberduck.Parsing.VBA
                     Logger.Debug("Binding Resolution done for component '{0}' in {1}ms (thread {2})", component.Name,
                         watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
 
-                    State.RebuildSelectionCache();
                     State.SetModuleState(component, ParserState.Ready);
                 }
                 catch (Exception exception)

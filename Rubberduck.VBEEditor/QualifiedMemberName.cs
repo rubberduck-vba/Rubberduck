@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(_qualifiedModuleName.GetHashCode(), _memberName);
+            return HashCode.Compute(_qualifiedModuleName, _memberName);
         }
 
         public override bool Equals(object obj)

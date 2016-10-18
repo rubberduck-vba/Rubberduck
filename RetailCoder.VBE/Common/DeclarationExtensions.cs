@@ -45,7 +45,7 @@ namespace Rubberduck.Common
                 throw new ArgumentException("Target DeclarationType is not Variable.", "target");
             }
 
-            var statement = GetVariableStmtContext(target);
+            var statement = GetVariableStmtContext(target) ?? target.Context; // undeclared variables don't have a VariableStmtContext
 
             return new Selection(statement.Start.Line, statement.Start.Column,
                     statement.Stop.Line, statement.Stop.Column);
@@ -84,7 +84,7 @@ namespace Rubberduck.Common
             }
 
             var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
-            if (statement == null)
+            if (statement == null && !target.IsUndeclared)
             {
                 throw new MissingMemberException("Statement not found");
             }
