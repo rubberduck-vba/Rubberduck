@@ -392,6 +392,7 @@
     <Compile Include="Inspections\RemoveTypeHintsQuickFix.cs" />
     <Compile Include="Inspections\RemoveUnassignedVariableUsageQuickFix.cs" />
     <Compile Include="Inspections\ReplaceObsoleteCommentMarkerQuickFix.cs" />
+    <Compile Include="Inspections\UndeclaredVariableInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageQuickFix.cs" />
     <Compile Include="Inspections\UseSetKeywordForObjectAssignmentQuickFix.cs" />
     <Compile Include="Inspections\SpecifyExplicitPublicModifierQuickFix.cs" />

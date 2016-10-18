@@ -67,6 +67,9 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
+
+            var undeclaredLocal = _declarationFinder.OnUndeclaredVariable(_parent, _name, _context);
+            return new SimpleNameExpression(undeclaredLocal, ExpressionClassification.Variable, _context);
             return new ResolutionFailedExpression();
         }
 
@@ -95,6 +98,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(constant, ExpressionClassification.Value, _context);
             }
+
             return null;
         }
 
