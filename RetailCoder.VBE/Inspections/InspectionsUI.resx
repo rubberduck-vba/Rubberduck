@@ -580,4 +580,17 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ModuleScopeDimKeywordInspectionResultFormat" xml:space="preserve">
     <value>Module-level variable '{0}' is declared with the 'Dim' keyword.</value>
   </data>
+  <data name="UndeclaredVariableInspectionMeta" xml:space="preserve">
+    <value>Code that uses undeclared variables does not compile when Option Explicit is specified. Undeclared variables are always Variant, a data type that incurs unnecessary overhead and storage.</value>
+  </data>
+  <data name="UndeclaredVariableInspectionName" xml:space="preserve">
+    <value>Undeclared variable</value>
+  </data>
+  <data name="UndeclaredVariableInspectionResultFormat" xml:space="preserve">
+    <value>Local variable '{0}' is not declared</value>
+    <comment>{0} variable name</comment>
+  </data>
+  <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
+    <value>Introduce local variable</value>
+  </data>
 </root>

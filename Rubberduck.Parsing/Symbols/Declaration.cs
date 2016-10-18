@@ -64,7 +64,8 @@ namespace Rubberduck.Parsing.Symbols
             VBAParser.AsTypeClauseContext asTypeContext,
             bool isBuiltIn = true,
             IEnumerable<IAnnotation> annotations = null,
-            Attributes attributes = null)
+            Attributes attributes = null,
+            bool undeclared = false)
             : this(
                 qualifiedName,
                 parentDeclaration,
@@ -84,6 +85,7 @@ namespace Rubberduck.Parsing.Symbols
                 attributes)
         {
             _parentScopeDeclaration = parentScope;
+            _undeclared = undeclared;
         }
 
         public Declaration(
@@ -119,7 +121,6 @@ namespace Rubberduck.Parsing.Symbols
                   annotations,
                   attributes)
         {
-
         }
 
         public Declaration(
@@ -565,6 +566,12 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         private readonly string _customFolder;
+        private readonly bool _undeclared;
+        /// <summary>
+        /// Indicates whether the declaration is an ad-hoc declaration created by the resolver.
+        /// </summary>
+        public bool IsUndeclared { get { return _undeclared; } }
+
         public string CustomFolder
         {
             get

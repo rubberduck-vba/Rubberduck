@@ -566,4 +566,17 @@
   <data name="ModuleScopeDimKeywordInspectionResultFormat" xml:space="preserve">
     <value>La variable module '{0}' est déclarée avec le mot-clé 'Dim'</value>
   </data>
+  <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
+    <value>Introduire une variable locale</value>
+  </data>
+  <data name="UndeclaredVariableInspectionMeta" xml:space="preserve">
+    <value>Un module utilisant des variables non déclarées ne peut pas être compilé si Option Explicit est présent. Les variables non déclarées sont toujours Variant, un type qui occupe plus d'espace et requiert plus de traitement que nécessaire.</value>
+  </data>
+  <data name="UndeclaredVariableInspectionName" xml:space="preserve">
+    <value>Variable non déclarée</value>
+  </data>
+  <data name="UndeclaredVariableInspectionResultFormat" xml:space="preserve">
+    <value>La variable locale '{0}' n'est pas déclarée</value>
+    <comment>{0} variable name</comment>
+  </data>
 </root>
