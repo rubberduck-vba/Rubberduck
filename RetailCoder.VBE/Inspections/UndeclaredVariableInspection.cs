@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections
     public sealed class UndeclaredVariableInspection : InspectionBase
     {
         public UndeclaredVariableInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Error)
         {
         }
 
