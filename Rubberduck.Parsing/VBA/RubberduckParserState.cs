@@ -76,9 +76,14 @@ namespace Rubberduck.Parsing.VBA
             _sinks.ComponentRenamed += Sinks_ComponentRenamed;
         }
 
+        private bool _started;
         public void StartEventSinks()
         {
-            _sinks.Start();
+            if (!_started)
+            {
+                _sinks.Start();
+                _started = true;
+            }
         }
 
         private void Sinks_ProjectAdded(object sender, IProjectEventArgs e)
