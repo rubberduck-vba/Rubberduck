@@ -11,14 +11,13 @@ namespace Rubberduck.VBEditor.Application
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
             var projectFileName = qualifiedMemberName.QualifiedModuleName.Project.FileName;
+            if (Application == null || string.IsNullOrEmpty(projectFileName)) { return; }
+
             var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;
             var memberName = qualifiedMemberName.MemberName;
 
-            if (Application != null && !string.IsNullOrEmpty(projectFileName))
-            {
-                var runner = (SldWorks)Application.SldWorks;
-                runner.RunMacro(projectFileName, moduleName, memberName);
-            }
+            var runner = (SldWorks)Application.SldWorks;
+            runner.RunMacro(projectFileName, moduleName, memberName);
         }
     }
 }
