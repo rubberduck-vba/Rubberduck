@@ -107,7 +107,6 @@ namespace Rubberduck
         public void OnBeginShutdown(ref Array custom)
         {
             _isBeginShutdownExecuted = true;
-            User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
             ShutdownAddIn();
         }
 
@@ -213,6 +212,8 @@ namespace Rubberduck
 
         private void ShutdownAddIn()
         {
+            User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
+
             if (_app != null)
             {
                 _app.Shutdown();
