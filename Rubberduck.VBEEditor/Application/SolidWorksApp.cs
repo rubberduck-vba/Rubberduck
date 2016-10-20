@@ -14,7 +14,7 @@ namespace Rubberduck.VBEditor.Application
             var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;
             var memberName = qualifiedMemberName.MemberName;
 
-            if (Application != null)
+            if (Application != null && !string.IsNullOrEmpty(projectFileName))
             {
                 var runner = (SldWorks)Application.SldWorks;
                 runner.RunMacro(projectFileName, moduleName, memberName);
