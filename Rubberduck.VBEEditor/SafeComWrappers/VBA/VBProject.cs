@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -81,7 +80,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string FileName
         {
-            get { return IsWrappingNullReference ? String.Empty : Target.FileName; }
+            get
+            {
+                try
+                {
+                    return IsWrappingNullReference ? string.Empty : Target.FileName;
+                }
+                catch (System.IO.IOException)
+                {
+                    // thrown by the VBIDE API when wrapped VBProject has no filename yet.
+                    return string.Empty;
+                }
+            }
         }
 
         public string BuildFileName
