@@ -99,6 +99,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 _items[item] = InitializeChildControl(item as ICommandMenuItem)
                             ?? InitializeChildControl(item as IParentMenuItem);
             }
+
+            EvaluateCanExecute(null);
         }
 
         public void RemoveChildren()
