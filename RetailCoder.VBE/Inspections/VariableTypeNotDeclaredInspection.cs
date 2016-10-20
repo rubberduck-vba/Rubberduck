@@ -23,6 +23,7 @@ namespace Rubberduck.Inspections
                             || item.DeclarationType == DeclarationType.Constant
                             || (item.DeclarationType == DeclarationType.Parameter && !item.IsArray))
                          && !item.IsTypeSpecified
+                         && !item.IsUndeclared
                          select new VariableTypeNotDeclaredInspectionResult(this, item);
 
             return issues;

@@ -151,7 +151,10 @@ namespace Rubberduck.UI
                         break;
                 }
                 base.WndProc(ref msg);
-                if (closing) ReleaseHandle();
+                if (closing)
+                {
+                    DestroyHandle();
+                }
             }
 
             //~SubClassingWindow()

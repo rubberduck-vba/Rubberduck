@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Timers;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -38,27 +36,19 @@ namespace Rubberduck.AutoSave
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var projects = _vbe.VBProjects;
-            if (projects.Any(p => !p.IsSaved))
-            {
-                try
-                {
-                    var foo = projects.Select(p => p.FileName).ToList();
-                }
-                catch (IOException)
-                {
-                    // note: VBProject.FileName getter throws IOException if unsaved
-                    return;
-                }
+            var saveCommand = _vbe.CommandBars.FindControl(VbeSaveCommandId);
+            var activeProject = _vbe.ActiveVBProject;
+            var unsaved = _vbe
+                .VBProjects
+                .Where(project => !project.IsSaved && !string.IsNullOrEmpty(project.FileName));
 
-                var commandBars = _vbe.CommandBars;
-                var control = commandBars.FindControl(VbeSaveCommandId);
-                control.Execute();
-                control.Release();
-                commandBars.Release();
-                //Marshal.ReleaseComObject(control);
-                //Marshal.ReleaseComObject(commandBars);
+            foreach (var project in unsaved)
+            {
+                _vbe.ActiveVBProject = project;
+                saveCommand.Execute();
             }
+
+            _vbe.ActiveVBProject = activeProject;
         }
 
         public void Dispose()

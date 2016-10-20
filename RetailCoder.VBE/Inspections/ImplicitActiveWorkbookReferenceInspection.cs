@@ -24,13 +24,15 @@ namespace Rubberduck.Inspections
 
         private static readonly string[] Targets =
         {
-            "Worksheets", "Sheets", "Names",
+            "Worksheets", "Sheets", "Names", "_Default"
         };
 
         private static readonly string[] ParentScopes =
         {
             "EXCEL.EXE;Excel._Global",
-            "EXCEL.EXE;Excel._Application"
+            "EXCEL.EXE;Excel._Application",
+            "EXCEL.EXE;Excel.Sheets",
+            //"EXCEL.EXE;Excel.Worksheets",
         };
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
@@ -41,10 +43,12 @@ namespace Rubberduck.Inspections
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
-            var issues = BuiltInDeclarations.Where(item => ParentScopes.Contains(item.ParentScope)
-                                            && Targets.Contains(item.IdentifierName)
-                                            && item.References.Any())
-                .SelectMany(declaration => declaration.References.Distinct());
+            var issues = BuiltInDeclarations
+                .Where(item => ParentScopes.Contains(item.ParentScope) 
+                    && item.References.Any(r => Targets.Contains(r.IdentifierName)))
+                .SelectMany(declaration => declaration.References.Distinct())
+                .Where(item => Targets.Contains(item.IdentifierName))
+                .ToList();
 
             return issues.Select(issue =>
                 new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
@@ -70,7 +74,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(Inspection.Description, _reference.Declaration.IdentifierName); }
+            get { return string.Format(Inspection.Description, Context.GetText() /*_reference.Declaration.IdentifierName*/); }
         }
     }
 }

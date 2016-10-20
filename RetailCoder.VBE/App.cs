@@ -52,9 +52,8 @@ namespace Rubberduck
             _parser.State.StateChanged += Parser_StateChanged;
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
             _stateBar.Refresh += _stateBar_Refresh;
-            UiDispatcher.Initialize();
 
-            //_parser.State.StartEventSinks();
+            UiDispatcher.Initialize();
         }
 
         private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
@@ -148,6 +147,7 @@ namespace Rubberduck
             _stateBar.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
+            _stateBar.SetStatusText(RubberduckUI.ParserState_Pending);
             UpdateLoggingLevel();
         }
 
@@ -167,6 +167,7 @@ namespace Rubberduck
         {
             // handles "refresh" button click on "Rubberduck" command bar
             _parser.State.OnParseRequested(sender);
+            _parser.State.StartEventSinks(); // no-op if already started
         }
 
         private void Parser_StateChanged(object sender, EventArgs e)
