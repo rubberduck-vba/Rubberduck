@@ -153,7 +153,7 @@ namespace Rubberduck.UI
                 base.WndProc(ref msg);
                 if (closing)
                 {
-                    ReleaseHandle();
+                    DestroyHandle();
                 }
             }
 

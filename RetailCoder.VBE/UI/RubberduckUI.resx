@@ -1784,4 +1784,10 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Show splash screen at startup</value>
   </data>
+  <data name="RubberduckReloadFailure_Message" xml:space="preserve">
+    <value>Toolwindows were not correctly destroyed and/or could not be recreated; the VBE may not be in a stable state. Rubberduck will load normally next time the VBE is initialized.</value>
+  </data>
+  <data name="RubberduckReloadFailure_Title" xml:space="preserve">
+    <value>Rubberduck will not reload</value>
+  </data>
 </root>

@@ -3035,6 +3035,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Toolwindows were not correctly destroyed and/or could not be recreated; the VBE may not be in a stable state. Rubberduck will load normally next time the VBE is initialized..
+        /// </summary>
+        public static string RubberduckReloadFailure_Message {
+            get {
+                return ResourceManager.GetString("RubberduckReloadFailure_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck will not reload.
+        /// </summary>
+        public static string RubberduckReloadFailure_Title {
+            get {
+                return ResourceManager.GetString("RubberduckReloadFailure_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string Run {
