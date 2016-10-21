@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
 
@@ -104,13 +103,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             Target.MakeCompiledFile();
         }
 
-        public override void Release()
+        public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
                 References.Release();
                 VBComponents.Release();
-                Marshal.ReleaseComObject(Target);
+                base.Release(final);
             }
         }
 

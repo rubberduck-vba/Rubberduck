@@ -169,7 +169,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Export(path);
             return path;
         }
-        public override void Release()
+        public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
@@ -177,6 +177,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 Controls.Release();
                 Properties.Release();
                 CodeModule.Release();
+                base.Release(final);
             }
         }
 

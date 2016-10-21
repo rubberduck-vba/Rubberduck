@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Vbe.Interop;
@@ -225,15 +224,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             vbext_ProcKind procKind;
             Target.get_ProcOfLine(line, out procKind);
             return (ProcKind)procKind;
-        }
-
-        public override void Release()
-        {
-            if (!IsWrappingNullReference)
-            {
-                //CodePane.Release(); // VBE.CodePanes collection should release this CodePane
-                Marshal.ReleaseComObject(Target);
-            }
         }
 
         public override bool Equals(ISafeComWrapper<VB.CodeModule> other)

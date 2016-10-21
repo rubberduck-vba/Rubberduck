@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
@@ -10,7 +11,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             _target = target;
         }
 
-        public abstract void Release();
+        public virtual void Release(bool final = false)
+        {
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
+            if (final)
+            {
+                Marshal.FinalReleaseComObject(Target);
+            }
+            else
+            {
+                Marshal.ReleaseComObject(Target);
+            }
+        }
 
         private readonly T _target;
         public bool IsWrappingNullReference { get { return _target == null; } }
@@ -31,6 +47,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         }
 
         public abstract bool Equals(ISafeComWrapper<T> other);
+        public abstract override int GetHashCode();
 
         public static bool operator ==(SafeComWrapper<T> a, SafeComWrapper<T> b)
         {

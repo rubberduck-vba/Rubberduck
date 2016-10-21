@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
@@ -132,14 +131,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public void Execute()
         {
             Target.Execute();
-        }
-
-        public override void Release()
-        {
-            if (!IsWrappingNullReference)
-            {
-                Marshal.ReleaseComObject(Target);
-            }
         }
 
         public override bool Equals(ISafeComWrapper<Microsoft.Office.Core.CommandBarControl> other)

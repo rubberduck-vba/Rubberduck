@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
@@ -114,12 +113,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Target.Attach(lWindowHandle);
         }
         
-        public override void Release()
+        public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
                 LinkedWindowFrame.Release();
-                Marshal.ReleaseComObject(Target);
+                base.Release(final);
             } 
         }
 

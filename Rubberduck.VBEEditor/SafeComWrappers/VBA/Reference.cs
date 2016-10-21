@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
@@ -69,11 +68,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBE VBE
         {
             get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
-
-        public override void Release()
-        {
-            Marshal.ReleaseComObject(Target);
         }
 
         public override bool Equals(ISafeComWrapper<VB.Reference> other)

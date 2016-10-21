@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
 
@@ -12,14 +11,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         }
 
         public string Version { get { return IsWrappingNullReference ? null : Target.Version; } }
-        
-        public override void Release()
-        {
-            if (!IsWrappingNullReference)
-            {
-                Marshal.ReleaseComObject(Target);
-            }
-        }
 
         public override bool Equals(ISafeComWrapper<VB.Application> other)
         {
