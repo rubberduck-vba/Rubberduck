@@ -11,9 +11,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             _target = target;
         }
 
+        private bool _isReleased;
         public virtual void Release(bool final = false)
         {
-            if (IsWrappingNullReference)
+            if (IsWrappingNullReference || _isReleased)
             {
                 return;
             }
@@ -26,9 +27,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             {
                 Marshal.ReleaseComObject(Target);
             }
+
+            _target = null;
+            _isReleased = true;
         }
 
-        private readonly T _target;
+        private T _target;
         public bool IsWrappingNullReference { get { return _target == null; } }
         object INullObjectWrapper.Target { get { return _target; } }
         public T Target { get { return _target; } }

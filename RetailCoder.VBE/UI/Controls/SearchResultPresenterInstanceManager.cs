@@ -43,12 +43,12 @@ namespace Rubberduck.UI.Controls
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
+        private bool _disposed;
         private void Dispose(bool disposing)
         {
-            if (disposing) { return; }
+            if (!disposing || _disposed) { return; }
 
             if (_view.ViewModel != null)
             {
@@ -60,6 +60,8 @@ namespace Rubberduck.UI.Controls
                 _presenter.Dispose();
                 _presenter = null;
             }
+
+            _disposed = true;
         }
     }
 }

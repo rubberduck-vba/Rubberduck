@@ -43,11 +43,11 @@ namespace Rubberduck.UI
             }
             catch (COMException exception)
             {
-                var logEvent = new LogEventInfo(LogLevel.Error, Logger.Name, "Error Creating Control");
-                logEvent.Exception = exception;
-                logEvent.Properties.Add("EventID", 1);
+                //var logEvent = new LogEventInfo(LogLevel.Error, Logger.Name, "Error Creating Control");
+                //logEvent.Exception = exception;
+                //logEvent.Properties.Add("EventID", 1);
 
-                Logger.Error(logEvent);
+                Logger.Error(exception);
                 return null; //throw;
             }
             catch (NullReferenceException exception)
@@ -102,13 +102,31 @@ namespace Rubberduck.UI
         public void Dispose()
         {
             Dispose(true);
-            _disposed = true;
+            GC.SuppressFinalize(this);
+        }
+
+        ~DockableToolwindowPresenter()
+        {
+            Dispose(false);
         }
 
         public bool IsDisposed { get { return _disposed; } }
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposing || _disposed) { return; }
+            if (_disposed)
+            {
+                return;
+            }
+            if (disposing && _window != null)
+            {
+                // cleanup unmanaged resource wrappers
+                _window.Close();
+                _window.Release(true);
+            }
+            if (!disposing)
+            {
+                return;
+            }
 
             if (_userControlObject != null)
             {
@@ -121,11 +139,7 @@ namespace Rubberduck.UI
                 UserControl.Dispose();
             }
 
-            if (_window != null)
-            {
-                _window.Close();
-                Marshal.FinalReleaseComObject(_window.Target);
-            }
+            _disposed = true;
         }
     }
 }

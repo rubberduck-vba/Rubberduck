@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Settings;
-using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.UI.Command
 {
@@ -13,7 +12,7 @@ namespace Rubberduck.UI.Command
     {
         private readonly IPresenter _presenter;
 
-        public ShowSourceControlPanelCommand(SourceControlDockablePresenter presenter) : base(LogManager.GetCurrentClassLogger())
+        public ShowSourceControlPanelCommand(IPresenter presenter) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }
