@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
@@ -115,15 +114,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public void Show()
         {
             Target.Show();
-        }
-
-        public override void Release()
-        {
-            if (!IsWrappingNullReference)
-            {
-                //Window.Release(); window is released by VBE.Windows
-                Marshal.ReleaseComObject(Target);
-            }
         }
 
         public override bool Equals(ISafeComWrapper<VB.CodePane> other)

@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
@@ -100,12 +99,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             Target.Delete();
         }
 
-        public override void Release()
+        public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
                 Controls.Release();
-                Marshal.ReleaseComObject(Target);
+                base.Release(final);
             }
         }
 

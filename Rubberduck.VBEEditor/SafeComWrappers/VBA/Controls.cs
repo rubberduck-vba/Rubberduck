@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using VB = Microsoft.Vbe.Interop;
@@ -34,7 +33,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return ((IEnumerable<IControl>)this).GetEnumerator();
         }
 
-        public override void Release()
+        public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
@@ -42,7 +41,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     this[i].Release();
                 }
-                Marshal.ReleaseComObject(Target);
+                base.Release(final);
             } 
         }
 

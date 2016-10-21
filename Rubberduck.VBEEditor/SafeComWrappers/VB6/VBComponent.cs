@@ -177,7 +177,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             Export(path);
             return path;
         }
-        public override void Release()
+        public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
@@ -185,6 +185,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 Controls.Release();
                 Properties.Release();
                 CodeModule.Release();
+                base.Release(final);
             }
         }
 

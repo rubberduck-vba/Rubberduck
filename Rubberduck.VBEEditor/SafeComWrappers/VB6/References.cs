@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
 
@@ -81,7 +80,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             return ((IEnumerable<IReference>)this).GetEnumerator();
         }
 
-        public override void Release()
+        public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
@@ -91,7 +90,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 {
                     this[i].Release();
                 }
-                Marshal.ReleaseComObject(Target);
+                base.Release(final);
             }
         }
 

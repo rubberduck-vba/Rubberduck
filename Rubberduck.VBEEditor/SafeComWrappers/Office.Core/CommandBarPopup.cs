@@ -29,13 +29,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             get { return new CommandBarControls(IsWrappingNullReference ? null : Popup.Controls); }
         }
 
-        public override void Release()
+        public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
                 Controls.Release();
             }
-            base.Release();
+            base.Release(final);
         }
     }
 }

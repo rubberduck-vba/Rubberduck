@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
@@ -71,7 +70,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             get { throw new NotImplementedException(); }
         }
 
-        public override void Release()
+        public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
@@ -80,7 +79,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 CommandBars.Release();
                 Windows.Release();
                 AddIns.Release();
-                Marshal.ReleaseComObject(Target);
+                base.Release(final);
             }
         }
 

@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using VB = Microsoft.Vbe.Interop;
@@ -16,14 +15,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Name; }
             set { Target.Name = value; }
-        }
-
-        public override void Release()
-        {
-            if (!IsWrappingNullReference)
-            {
-                Marshal.ReleaseComObject(Target);
-            }
         }
 
         public override bool Equals(ISafeComWrapper<VB.Forms.Control> other)

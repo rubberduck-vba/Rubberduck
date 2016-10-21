@@ -81,7 +81,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new Windows(IsWrappingNullReference ? null : Target.Windows); }
         }
 
-        public override void Release()
+        public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
@@ -90,7 +90,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 CommandBars.Release();
                 Windows.Release();
                 AddIns.Release();
-                Marshal.ReleaseComObject(Target);
+                base.Release(final);
             }
         }
 
