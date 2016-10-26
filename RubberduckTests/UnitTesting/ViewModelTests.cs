@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Windows.Media;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing;
@@ -9,8 +8,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
-using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.UnitTesting
 {
@@ -24,16 +23,16 @@ namespace RubberduckTests.UnitTesting
 Public Sub TestMethod1()
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
+            var builder = new MockVbeBuilder()
+                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .MockVbeBuilder();
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
-
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
             var model = new TestExplorerModel(vbe, parser.State);
 
             parser.Parse(new CancellationTokenSource());
@@ -53,11 +52,12 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput + testMethods);
+            builder.AddProject(project.Build());
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -82,13 +82,14 @@ Public Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+            var project = builder
+                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -112,10 +113,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -139,10 +140,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -178,10 +179,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -220,10 +221,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -256,10 +257,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -286,10 +287,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -315,10 +316,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -344,10 +345,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             var model = new TestExplorerModel(vbe, parser.State);
 

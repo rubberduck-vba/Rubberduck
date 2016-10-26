@@ -1,5 +1,4 @@
-﻿using Microsoft.Vbe.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -8,6 +7,7 @@ using System.Threading;
 using Moq;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
@@ -143,7 +143,7 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count(), "Type reference expected");
         }
 
-        private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
+        private static RubberduckParserState Parse(Mock<IVBE> vbe)
         {
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
             parser.Parse(new CancellationTokenSource());

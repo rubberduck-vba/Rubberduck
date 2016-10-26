@@ -1,5 +1,4 @@
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
@@ -10,6 +9,8 @@ using System.Threading;
 using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -29,7 +30,7 @@ namespace RubberduckTests.Inspections
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -59,7 +60,7 @@ namespace RubberduckTests.Inspections
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -89,7 +90,7 @@ namespace RubberduckTests.Inspections
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -119,7 +120,7 @@ namespace RubberduckTests.Inspections
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -150,7 +151,7 @@ namespace RubberduckTests.Inspections
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();

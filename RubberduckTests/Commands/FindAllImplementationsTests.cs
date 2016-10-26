@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing;
@@ -11,8 +10,9 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
-using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.Commands
 {
@@ -49,7 +49,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, new VBE(vbe.Object), vm, null);
+            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
 
             command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -86,7 +86,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, new VBE(vbe.Object), vm, null);
+            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
 
             command.Execute(parser.State.AllUserDeclarations.First(s => s.IdentifierName == "IClass1_Foo"));
 
@@ -119,7 +119,7 @@ End Sub";
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
-            vbe.Setup(v => v.ActiveCodePane).Returns(project.Object.VBComponents.Item("Class1").CodeModule.CodePane);
+            vbe.Setup(v => v.ActiveCodePane).Returns(project.Object.VBComponents["Class1"].CodeModule.CodePane);
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -129,7 +129,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, new VBE(vbe.Object), vm, null);
+            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
 
             command.Execute(null);
 
@@ -145,7 +145,7 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, default(Selection));
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -160,7 +160,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, messageBox.Object, parser.State, new VBE(vbe.Object), vm, null);
+            var command = new FindAllImplementationsCommand(null, messageBox.Object, parser.State, vbe.Object, vm, null);
 
             command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -199,7 +199,7 @@ End Sub";
             var navigateCommand = new Mock<INavigateCommand>();
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(navigateCommand.Object, null, parser.State, new VBE(vbe.Object), vm, null);
+            var command = new FindAllImplementationsCommand(navigateCommand.Object, null, parser.State, vbe.Object, vm, null);
 
             command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -211,7 +211,7 @@ End Sub";
         {
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(string.Empty, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
             var mockHost = new Mock<IHostApplication>();
@@ -222,7 +222,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, new VBE(vbe.Object), vm, null);
+            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
 
             command.Execute(null);
 
@@ -244,7 +244,7 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
             var mockHost = new Mock<IHostApplication>();
@@ -257,7 +257,7 @@ End Sub";
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, new VBE(vbe.Object), vm, null);
+            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
 
             command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -269,7 +269,7 @@ End Sub";
         {
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(string.Empty, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
             var mockHost = new Mock<IHostApplication>();
@@ -280,7 +280,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, new VBE(vbe.Object), vm, null);
+            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
 
             Assert.IsFalse(command.CanExecute(null));
         }
@@ -300,7 +300,7 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
             var mockHost = new Mock<IHostApplication>();
@@ -313,7 +313,7 @@ End Sub";
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, new VBE(vbe.Object), vm, null);
+            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
 
             Assert.IsFalse(command.CanExecute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo")));
         }
@@ -323,7 +323,7 @@ End Sub";
         {
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(string.Empty, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
             var mockHost = new Mock<IHostApplication>();
@@ -334,7 +334,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, new VBE(vbe.Object), vm, null);
+            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
 
             Assert.IsFalse(command.CanExecute(null));
         }

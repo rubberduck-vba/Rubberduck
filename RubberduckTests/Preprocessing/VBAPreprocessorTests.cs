@@ -1,5 +1,4 @@
-﻿using Microsoft.Vbe.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -10,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Preprocessing
 {
@@ -51,7 +51,7 @@ namespace RubberduckTests.Preprocessing
         private string Parse(string code)
         {
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(code, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -62,7 +62,7 @@ namespace RubberduckTests.Preprocessing
             {
                 Assert.Inconclusive("Parser Error");
             }
-            var tree = state.GetParseTree(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component));
+            var tree = state.GetParseTree(component);
             var parsed = tree.GetText();
             var withoutEOF = parsed.Substring(0, parsed.Length - 5);
             return withoutEOF;
