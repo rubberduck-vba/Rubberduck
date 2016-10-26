@@ -1,17 +1,15 @@
-﻿using Microsoft.Vbe.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Linq;
 using System.Threading;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.ToDoItems;
-using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor.Application;
-using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.TodoExplorer
 {
@@ -102,7 +100,7 @@ namespace RubberduckTests.TodoExplorer
             vm.SelectedItem = vm.Items.Single();
             vm.RemoveCommand.Execute(null);
 
-            var module = new CodeModule(project.Object.VBComponents.Item(0).CodeModule);
+            var module = project.Object.VBComponents[0].CodeModule;
             Assert.AreEqual(expected, module.Content());
             Assert.IsFalse(vm.Items.Any());
         }

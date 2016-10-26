@@ -156,8 +156,8 @@ namespace RubberduckTests.Mocks
             result.Setup(c => c.GetEnumerator()).Returns(() => Components.GetEnumerator());
             result.As<IEnumerable>().Setup(c => c.GetEnumerator()).Returns(() => Components.GetEnumerator());
 
-            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => Components.ElementAt(index));
-            result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => Components.Single(item => item.Name == name));
+            result.Setup(m => m[It.IsAny<int>()]).Returns<int>(index => Components.ElementAt(index));
+            result.Setup(m => m[It.IsAny<string>()]).Returns<string>(name => Components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(Components.Count);
 
             result.Setup(m => m.Add(It.IsAny<ComponentType>()))
@@ -268,13 +268,13 @@ namespace RubberduckTests.Mocks
         {
             var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
-            var codeModule = new Mock<CodeModule>();
+            var codeModule = new Mock<ICodeModule>();
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
                 lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).Count());
 
             // ReSharper disable once UseIndexedProperty
-            codeModule.Setup(m => m.get_Lines(It.IsAny<int>(), It.IsAny<int>()))
+            codeModule.Setup(m => m.GetLines(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns<int, int>((start, count) => string.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
 
             codeModule.Setup(m => m.ReplaceLine(It.IsAny<int>(), It.IsAny<string>()))

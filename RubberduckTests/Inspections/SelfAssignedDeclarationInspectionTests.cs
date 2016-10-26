@@ -1,15 +1,13 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
-using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 
 namespace RubberduckTests.Inspections
 {
@@ -124,7 +122,7 @@ End Sub";
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var module = project.Object.VBComponents[0].CodeModule;
             var vbe = builder.AddProject(project).Build();
 
             var mockHost = new Mock<IHostApplication>();
@@ -139,7 +137,7 @@ End Sub";
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]

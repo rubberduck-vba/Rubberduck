@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing;
@@ -8,9 +7,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
-using VBComponent = Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent;
-using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.UnitTesting
 {
@@ -28,10 +26,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -49,10 +47,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -71,10 +69,10 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -94,16 +92,15 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var tests = new VBComponent(
-                project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object).GetTests(vbe, parser.State).ToList();
+            var tests = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object.GetTests(vbe, parser.State).ToList();
 
             Assert.AreEqual(1, tests.Count);
             Assert.AreEqual("TestModule1", tests.ElementAt(0).Declaration.ComponentName);
@@ -117,16 +114,16 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindTestInitializeMethods(parser.State).ToList();
 
@@ -143,16 +140,16 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindTestCleanupMethods(parser.State).ToList();
 
@@ -168,16 +165,16 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@TestInitialize", string.Empty));
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindTestInitializeMethods(parser.State);
             Assert.IsFalse(initMethods.Any());
@@ -190,16 +187,16 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@TestCleanup", string.Empty));
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindTestCleanupMethods(parser.State);
             Assert.IsFalse(initMethods.Any());
@@ -212,16 +209,16 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@TestInitialize", string.Empty));
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindTestInitializeMethods(parser.State);
             Assert.IsFalse(initMethods.Any());
@@ -234,16 +231,16 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@TestCleanup", string.Empty));
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindTestCleanupMethods(parser.State);
             Assert.IsFalse(initMethods.Any());
@@ -257,16 +254,16 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindModuleInitializeMethods(parser.State).ToList();
 
@@ -283,16 +280,16 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindModuleCleanupMethods(parser.State).ToList();
 
@@ -308,16 +305,16 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@ModuleInitialize", string.Empty));
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindModuleInitializeMethods(parser.State);
             Assert.IsFalse(initMethods.Any());
@@ -330,16 +327,16 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@ModuleCleanup", string.Empty));
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindModuleCleanupMethods(parser.State);
             Assert.IsFalse(initMethods.Any());
@@ -352,16 +349,16 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@ModuleInitialize", string.Empty));
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindModuleInitializeMethods(parser.State);
             Assert.IsFalse(initMethods.Any());
@@ -374,16 +371,16 @@ End Sub";
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@ModuleCleanup", string.Empty));
 
-            var vbe = new VBE(builder.AddProject(project.Build()).Build().Object);
+            var vbe = builder.AddProject(project.Build()).Build().Object;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Target, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(new VBComponent(component));
+            var qualifiedModuleName = new QualifiedModuleName(component);
 
             var initMethods = qualifiedModuleName.FindModuleCleanupMethods(parser.State);
             Assert.IsFalse(initMethods.Any());
