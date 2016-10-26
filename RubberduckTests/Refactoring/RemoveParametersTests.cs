@@ -2052,7 +2052,7 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
             model.Parameters[1].IsRemoved = true;
 
             var view = new Mock<IRemoveParametersDialog>();
@@ -2088,7 +2088,7 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
             model.Parameters[1].IsRemoved = true;
 
             var view = new Mock<IRemoveParametersDialog>();
@@ -2124,7 +2124,7 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
             model.Parameters[0].IsRemoved = true;
 
             var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);

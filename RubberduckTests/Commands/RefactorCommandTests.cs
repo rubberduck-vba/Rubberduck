@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
@@ -524,7 +525,8 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var msgbox = new Mock<IMessageBox>();
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State, msgbox.Object);
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
@@ -545,7 +547,8 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var msgbox = new Mock<IMessageBox>();
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State, msgbox.Object);
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
@@ -565,7 +568,8 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var msgbox = new Mock<IMessageBox>();
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State, msgbox.Object);
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
@@ -590,7 +594,8 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State);
+            var msgbox = new Mock<IMessageBox>();
+            var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, parser.State, msgbox.Object);
             Assert.IsTrue(introduceFieldCommand.CanExecute(null));
         }
 
@@ -611,7 +616,8 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var msgbox = new Mock<IMessageBox>();
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State, msgbox.Object);
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
@@ -632,7 +638,8 @@ End Property";
             }
             parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var msgbox = new Mock<IMessageBox>();
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State, msgbox.Object);
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
@@ -652,7 +659,8 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var msgbox = new Mock<IMessageBox>();
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State, msgbox.Object);
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
@@ -677,7 +685,8 @@ End Property";
                 Assert.Inconclusive("Parser Error");
             }
 
-            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State);
+            var msgbox = new Mock<IMessageBox>();
+            var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, parser.State, msgbox.Object);
             Assert.IsTrue(introduceParameterCommand.CanExecute(null));
         }
 

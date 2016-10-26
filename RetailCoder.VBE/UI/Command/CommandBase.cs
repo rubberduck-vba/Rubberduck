@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using System.Windows.Input;
 using NLog;
 using Rubberduck.Settings;
@@ -42,11 +41,6 @@ namespace Rubberduck.UI.Command
                 if (!ExceptionTargetSites.Contains(exception.TargetSite))
                 {
                     ExceptionTargetSites.Add(exception.TargetSite);
-
-                    var messageBox = new MessageBox();
-                    messageBox.Show(
-                        RubberduckUI.RubberduckFatalError, RubberduckUI.Rubberduck,
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
                 return false;
@@ -66,11 +60,6 @@ namespace Rubberduck.UI.Command
                 if (!ExceptionTargetSites.Contains(exception.TargetSite))
                 {
                     ExceptionTargetSites.Add(exception.TargetSite);
-
-                    var messageBox = new MessageBox();
-                    messageBox.Show(
-                        RubberduckUI.RubberduckFatalError, RubberduckUI.Rubberduck,
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

@@ -1921,7 +1921,7 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new ReorderParametersModel(parser.State, qualifiedSelection, new MessageBox());
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
             model.Parameters.Reverse();
 
             var view = new Mock<IReorderParametersDialog>();
@@ -1957,7 +1957,7 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new ReorderParametersModel(parser.State, qualifiedSelection, new MessageBox());
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
 
             var view = new Mock<IReorderParametersDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);

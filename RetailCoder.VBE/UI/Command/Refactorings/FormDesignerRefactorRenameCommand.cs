@@ -13,12 +13,14 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
 
-        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state) 
+        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox) 
             : base (vbe)
         {
             _vbe = vbe;
             _state = state;
+            _messageBox = messageBox;
         }
 
         protected override bool CanExecuteImpl(object parameter)
@@ -30,8 +32,8 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox());
-                var refactoring = new RenameRefactoring(Vbe, factory, new MessageBox(), _state);
+                var factory = new RenamePresenterFactory(Vbe, view, _state, _messageBox);
+                var refactoring = new RenameRefactoring(Vbe, factory, _messageBox, _state);
 
                 var target = GetTarget();
 

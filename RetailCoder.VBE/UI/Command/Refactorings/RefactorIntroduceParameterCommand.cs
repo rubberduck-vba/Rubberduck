@@ -9,11 +9,13 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorIntroduceParameterCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
 
-        public RefactorIntroduceParameterCommand (IVBE vbe, RubberduckParserState state)
+        public RefactorIntroduceParameterCommand (IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
             :base(vbe)
         {
             _state = state;
+            _messageBox = messageBox;
         }
 
         protected override bool CanExecuteImpl(object parameter)
@@ -52,7 +54,7 @@ namespace Rubberduck.UI.Command.Refactorings
                     return;
                 }
 
-                var refactoring = new IntroduceParameterRefactoring(Vbe, _state, new MessageBox());
+                var refactoring = new IntroduceParameterRefactoring(Vbe, _state, _messageBox);
                 refactoring.Refactor(selection.Value);
             }
         }
