@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Annotations;
@@ -14,6 +12,9 @@ using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 
@@ -33,37 +34,39 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => _state.OnParseRequested(this),
                 param => !IsBusy && _state.IsDirty());
+            
+            _navigateCommand = commands.OfType<UI.CodeExplorer.Commands.NavigateCommand>().SingleOrDefault();
 
-            _refreshComponentCommand = commands.OfType<CodeExplorer_RefreshComponentCommand>().FirstOrDefault();
-            _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().FirstOrDefault();
+            _addTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
+            _addStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
+            _addClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
+            _addUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
 
-            _addTestModuleCommand = commands.OfType<CodeExplorer_AddTestModuleCommand>().FirstOrDefault();
-            _addStdModuleCommand = commands.OfType<CodeExplorer_AddStdModuleCommand>().FirstOrDefault();
-            _addClassModuleCommand = commands.OfType<CodeExplorer_AddClassModuleCommand>().FirstOrDefault();
-            _addUserFormCommand = commands.OfType<CodeExplorer_AddUserFormCommand>().FirstOrDefault();
+            _openDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
+            _openProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().SingleOrDefault();
+            _renameCommand = commands.OfType<RenameCommand>().SingleOrDefault();
+            _indenterCommand = commands.OfType<IndentCommand>().SingleOrDefault();
 
-            _openDesignerCommand = commands.OfType<CodeExplorer_OpenDesignerCommand>().FirstOrDefault();
-            _openProjectPropertiesCommand = commands.OfType<CodeExplorer_OpenProjectPropertiesCommand>().FirstOrDefault();
-            _renameCommand = commands.OfType<CodeExplorer_RenameCommand>().FirstOrDefault();
-            _indenterCommand = commands.OfType<CodeExplorer_IndentCommand>().FirstOrDefault();
+            _findAllReferencesCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllReferencesCommand>().SingleOrDefault();
+            _findAllImplementationsCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllImplementationsCommand>().SingleOrDefault();
 
-            _findAllReferencesCommand = commands.OfType<CodeExplorer_FindAllReferencesCommand>().FirstOrDefault();
-            _findAllImplementationsCommand = commands.OfType<CodeExplorer_FindAllImplementationsCommand>().FirstOrDefault();
+            _collapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes);
+            _expandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes);
 
-            _importCommand = commands.OfType<CodeExplorer_ImportCommand>().FirstOrDefault();
-            _exportCommand = commands.OfType<CodeExplorer_ExportCommand>().FirstOrDefault();
-            _externalRemoveCommand = commands.OfType<CodeExplorer_RemoveCommand>().FirstOrDefault();
+            _importCommand = commands.OfType<ImportCommand>().SingleOrDefault();
+            _exportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
+            _externalRemoveCommand = commands.OfType<RemoveCommand>().SingleOrDefault();
             if (_externalRemoveCommand != null)
             {
                 _removeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
             }
 
-            _printCommand = commands.OfType<CodeExplorer_PrintCommand>().FirstOrDefault();
+            _printCommand = commands.OfType<PrintCommand>().SingleOrDefault();
 
-            _commitCommand = commands.OfType<CodeExplorer_CommitCommand>().FirstOrDefault();
-            _undoCommand = commands.OfType<CodeExplorer_UndoCommand>().FirstOrDefault();
+            _commitCommand = commands.OfType<CommitCommand>().SingleOrDefault();
+            _undoCommand = commands.OfType<UndoCommand>().SingleOrDefault();
 
-            _copyResultsCommand = commands.OfType<CodeExplorer_CopyResultsCommand>().FirstOrDefault();
+            _copyResultsCommand = commands.OfType<CopyResultsCommand>().SingleOrDefault();
 
             _setNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
@@ -86,17 +89,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _selectedItem = value;
                 OnPropertyChanged();
-
-                if (_selectedItem is CodeExplorerProjectViewModel)
-                {
-                    var vbe = _selectedItem.GetSelectedDeclaration().Project.VBE;
-                    var project = vbe.VBProjects.Cast<VBProject>().FirstOrDefault(f => f.HelpFile == _selectedItem.GetSelectedDeclaration().Project.HelpFile);
-
-                    if (project != null)
-                    {
-                        vbe.ActiveVBProject = project;
-                    }
-                }
 
                 // ReSharper disable ExplicitCallerInfoArgument
                 OnPropertyChanged("CanExecuteIndenterCommand");
@@ -189,25 +181,27 @@ namespace Rubberduck.Navigation.CodeExplorer
                     return string.Empty;
                 }
 
-                if (SelectedItem is CodeExplorerProjectViewModel)
+                if (!(SelectedItem is ICodeExplorerDeclarationViewModel))
                 {
-                    var node = (CodeExplorerProjectViewModel)SelectedItem;
-                    return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
+                    return SelectedItem.Name;
                 }
 
-                if (SelectedItem is CodeExplorerComponentViewModel)
+                var declaration = SelectedItem.GetSelectedDeclaration();
+                
+                var nameWithDeclarationType  = declaration.IdentifierName +
+                           string.Format(" - ({0})", RubberduckUI.ResourceManager.GetString(
+                               "DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture));
+
+                if (string.IsNullOrEmpty(declaration.AsTypeName))
                 {
-                    var node = (CodeExplorerComponentViewModel)SelectedItem;
-                    return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
+                    return nameWithDeclarationType;
                 }
 
-                if (SelectedItem is CodeExplorerMemberViewModel)
-                {
-                    var node = (CodeExplorerMemberViewModel)SelectedItem;
-                    return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
-                }
+                var typeName = declaration.HasTypeHint
+                    ? Declaration.TypeHintToTypeName[declaration.TypeHint]
+                    : declaration.AsTypeName;
 
-                return SelectedItem.Name;
+                return nameWithDeclarationType + ": " + typeName;
             }
         }
 
@@ -239,9 +233,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             get { return _projects; }
             set
             {
+                ReorderChildNodes(value);
                 _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
-
-                ReorderChildNodes(_projects);
+                
                 OnPropertyChanged();
             }
         }
@@ -260,8 +254,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             var userDeclarations = _state.AllUserDeclarations
-                .GroupBy(declaration => declaration.Project)
-                .Where(grouping => grouping.Key != null)
+                .GroupBy(declaration => declaration.ProjectId)
                 .ToList();
 
             if (userDeclarations.Any(
@@ -280,8 +273,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
         }
 
-        private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList,
-            IEnumerable<CodeExplorerItemViewModel> newList)
+        private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList, IEnumerable<CodeExplorerItemViewModel> newList)
         {
             foreach (var item in newList)
             {
@@ -325,53 +317,55 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var componentProject = e.Component.Collection.Parent;
-            var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
-                .FirstOrDefault(p => p.Declaration.Project == componentProject);
-
-            if (projectNode == null)
+            var components = e.Component.Collection;
+            var componentProject = components.Parent;
             {
-                return;
-            }
+                var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
+                    .FirstOrDefault(p => p.Declaration.Project.Equals(componentProject));
 
-            SetErrorState(projectNode, e.Component);
-
-            if (_errorStateSet) { return; }
-
-            // at this point, we know the node is newly added--we have to add a new node, not just change the icon of the old one.
-
-            var folderNode = projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == componentProject.Name);
-
-            UiDispatcher.Invoke(() =>
-            {
-                if (folderNode == null)
+                if (projectNode == null)
                 {
-                    folderNode = new CodeExplorerCustomFolderViewModel(projectNode, componentProject.Name,
-                        componentProject.Name);
-                    projectNode.AddChild(folderNode);
+                    return;
                 }
 
-                var declaration = CreateDeclaration(e.Component);
-                var newNode = new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
+                SetErrorState(projectNode, e.Component);
+
+                if (_errorStateSet) { return; }
+
+                // at this point, we know the node is newly added--we have to add a new node, not just change the icon of the old one.
+                var projectName = componentProject.Name;
+                var folderNode = projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == projectName);
+
+                UiDispatcher.Invoke(() =>
                 {
-                    IsErrorState = true
-                };
+                    if (folderNode == null)
+                    {
+                        folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName);
+                        projectNode.AddChild(folderNode);
+                    }
 
-                folderNode.AddChild(newNode);
+                    var declaration = CreateDeclaration(e.Component);
+                    var newNode = new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
+                    {
+                        IsErrorState = true
+                    };
 
-                // Force a refresh. OnPropertyChanged("Projects") didn't work.
-                Projects = Projects;
-            });
+                    folderNode.AddChild(newNode);
+
+                    // Force a refresh. OnPropertyChanged("Projects") didn't work.
+                    Projects = Projects;
+                });
+            }
         }
 
-        private Declaration CreateDeclaration(VBComponent component)
+        private Declaration CreateDeclaration(IVBComponent component)
         {
             var projectDeclaration =
                 _state.AllUserDeclarations.FirstOrDefault(item =>
                         item.DeclarationType == DeclarationType.Project &&
-                        item.Project.VBComponents.Cast<VBComponent>().Contains(component));
+                        item.Project.VBComponents.Contains(component));
 
-            if (component.Type == vbext_ComponentType.vbext_ct_StdModule)
+            if (component.Type == ComponentType.StandardModule)
             {
                 return new ProceduralModuleDeclaration(
                         new QualifiedMemberName(new QualifiedModuleName(component), component.Name), projectDeclaration,
@@ -392,7 +386,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         private bool _errorStateSet;
-        private void SetErrorState(CodeExplorerItemViewModel itemNode, VBComponent component)
+        private void SetErrorState(CodeExplorerItemViewModel itemNode, IVBComponent component)
         {
             _errorStateSet = false;
 
@@ -411,7 +405,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 if (node is CodeExplorerComponentViewModel)
                 {
                     var componentNode = (CodeExplorerComponentViewModel)node;
-                    if (componentNode.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component == component)
+                    if (componentNode.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component.Equals(component))
                     {
                         componentNode.IsErrorState = true;
                         _errorStateSet = true;
@@ -420,11 +414,35 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private void ExecuteCollapseNodes(object parameter)
+        {
+            var node = parameter as CodeExplorerItemViewModel;
+            if (node == null) { return; }
+
+            SwitchNodeState(node, false);
+        }
+
+        private void ExecuteExpandNodes(object parameter)
+        {
+            var node = parameter as CodeExplorerItemViewModel;
+            if (node == null) { return; }
+
+            SwitchNodeState(node, true);
+        }
+
+        private void SwitchNodeState(CodeExplorerItemViewModel node, bool expandedState)
+        {
+            node.IsExpanded = expandedState;
+
+            foreach (var item in node.Items)
+            {
+                item.IsExpanded = expandedState;
+                SwitchNodeState(item, expandedState);
+            }
+        }
+
         private readonly CommandBase _refreshCommand;
         public CommandBase RefreshCommand { get { return _refreshCommand; } }
-
-        private readonly CommandBase _refreshComponentCommand;
-        public CommandBase RefreshComponentCommand { get { return _refreshComponentCommand; } }
 
         private readonly CommandBase _navigateCommand;
         public CommandBase NavigateCommand { get { return _navigateCommand; } }
@@ -459,6 +477,12 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly CommandBase _findAllImplementationsCommand;
         public CommandBase FindAllImplementationsCommand { get { return _findAllImplementationsCommand; } }
 
+        private readonly CommandBase _collapseAllSubnodesCommand;
+        public CommandBase CollapseAllSubnodesCommand { get { return _collapseAllSubnodesCommand; } }
+
+        private readonly CommandBase _expandAllSubnodesCommand;
+        public CommandBase ExpandAllSubnodesCommand { get { return _expandAllSubnodesCommand; } }
+
         private readonly CommandBase _importCommand;
         public CommandBase ImportCommand { get { return _importCommand; } }
 
@@ -483,7 +507,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ExecuteRemoveComand(object param)
         {
             var node = (CodeExplorerComponentViewModel)SelectedItem;
-            SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel)p).Declaration.Project == node.Declaration.Project);
+            SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel)p).Declaration.Project.Equals(node.Declaration.Project));
 
             _externalRemoveCommand.Execute(param);
         }

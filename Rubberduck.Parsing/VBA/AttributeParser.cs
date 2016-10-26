@@ -1,6 +1,5 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
@@ -8,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -26,7 +28,7 @@ namespace Rubberduck.Parsing.VBA
         /// Exports the specified component to a temporary file, loads, and then parses the exported file.
         /// </summary>
         /// <param name="component"></param>
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(VBComponent component)
+        public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(IVBComponent component)
         {
             var path = _exporter.Export(component);
             if (!File.Exists(path))
@@ -36,7 +38,7 @@ namespace Rubberduck.Parsing.VBA
             }
             var code = File.ReadAllText(path);
             File.Delete(path);
-            var type = component.Type == vbext_ComponentType.vbext_ct_StdModule
+            var type = component.Type == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
             var preprocessor = _preprocessorFactory();

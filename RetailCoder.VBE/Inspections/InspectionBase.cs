@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Inspections
 {
@@ -73,12 +77,7 @@ namespace Rubberduck.Inspections
         /// </summary>
         protected virtual IEnumerable<Declaration> Declarations
         {
-            get { return State.AllDeclarations.Where(declaration => !declaration.IsInspectionDisabled(AnnotationName)); }
-        }
-
-        protected virtual IEnumerable<Declaration> BuiltInDeclarations
-        {
-            get { return State.AllDeclarations.Where(declaration => declaration.IsBuiltIn); }
+            get { return State.AllDeclarations.Where(declaration => !IsInspectionDisabled(declaration, AnnotationName)); }
         }
 
         /// <summary>
@@ -86,7 +85,53 @@ namespace Rubberduck.Inspections
         /// </summary>
         protected virtual IEnumerable<Declaration> UserDeclarations
         {
-            get { return State.AllUserDeclarations.Where(declaration => !declaration.IsInspectionDisabled(AnnotationName)); }
+            get { return State.AllUserDeclarations.Where(declaration => !IsInspectionDisabled(declaration, AnnotationName)); }
+        }
+
+        protected virtual IEnumerable<Declaration> BuiltInDeclarations
+        {
+            get { return State.AllDeclarations.Where(declaration => declaration.IsBuiltIn); }
+        }
+
+        protected bool IsInspectionDisabled(IVBComponent component, int line)
+        {
+            var annotations = State.GetModuleAnnotations(component).ToList();
+
+            if (State.GetModuleAnnotations(component) == null)
+            {
+                return false;
+            }
+
+            // VBE 1-based indexing
+            for (var i = line - 1; i >= 1; i--)
+            {
+                var annotation = annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i) as IgnoreAnnotation;
+                if (annotation != null && annotation.InspectionNames.Contains(AnnotationName))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        protected bool IsInspectionDisabled(VBComponent component, int line)
+        {
+            return IsInspectionDisabled(component, line);
+        }
+
+        protected bool IsInspectionDisabled(Declaration declaration, string inspectionName)
+        {
+            if (declaration.DeclarationType == DeclarationType.Parameter)
+            {
+                return declaration.ParentDeclaration.Annotations.Any(annotation =>
+                    annotation.AnnotationType == AnnotationType.Ignore
+                    && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
+            }
+
+            return declaration.Annotations.Any(annotation =>
+                annotation.AnnotationType == AnnotationType.Ignore
+                && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
         public int CompareTo(IInspection other)

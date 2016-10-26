@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Like;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
 using System.Text;
 using System.Text.RegularExpressions;
 

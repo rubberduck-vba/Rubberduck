@@ -57,7 +57,7 @@
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 364);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(11, 10, 0, 10);
             this.flowLayoutPanel2.Size = new System.Drawing.Size(572, 53);
@@ -68,10 +68,10 @@
             this.CancelDialogButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.CancelDialogButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelDialogButton.Location = new System.Drawing.Point(457, 14);
-            this.CancelDialogButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CancelDialogButton.Margin = new System.Windows.Forms.Padding(4);
             this.CancelDialogButton.Name = "CancelDialogButton";
             this.CancelDialogButton.Size = new System.Drawing.Size(100, 28);
-            this.CancelDialogButton.TabIndex = 0;
+            this.CancelDialogButton.TabIndex = 5;
             this.CancelDialogButton.Text = "Cancel";
             this.CancelDialogButton.UseVisualStyleBackColor = false;
             // 
@@ -80,10 +80,10 @@
             this.OkButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.OkButton.Location = new System.Drawing.Point(349, 14);
-            this.OkButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.OkButton.Margin = new System.Windows.Forms.Padding(4);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(100, 28);
-            this.OkButton.TabIndex = 1;
+            this.OkButton.TabIndex = 4;
             this.OkButton.Text = "Ok";
             this.OkButton.UseVisualStyleBackColor = false;
             // 
@@ -91,7 +91,7 @@
             // 
             this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
             this.InvalidNameValidationIcon.Location = new System.Drawing.Point(549, 102);
-            this.InvalidNameValidationIcon.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.InvalidNameValidationIcon.Margin = new System.Windows.Forms.Padding(4);
             this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
             this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
             this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -101,10 +101,10 @@
             // InterfaceNameBox
             // 
             this.InterfaceNameBox.Location = new System.Drawing.Point(16, 112);
-            this.InterfaceNameBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.InterfaceNameBox.Margin = new System.Windows.Forms.Padding(4);
             this.InterfaceNameBox.Name = "InterfaceNameBox";
             this.InterfaceNameBox.Size = new System.Drawing.Size(541, 22);
-            this.InterfaceNameBox.TabIndex = 30;
+            this.InterfaceNameBox.TabIndex = 0;
             // 
             // NameLabel
             // 
@@ -132,7 +132,7 @@
             // 
             this.InstructionsLabel.Location = new System.Drawing.Point(20, 30);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
             this.InstructionsLabel.Size = new System.Drawing.Size(549, 34);
             this.InstructionsLabel.TabIndex = 3;
             this.InstructionsLabel.Text = "Please specify interface name and members.";
@@ -144,7 +144,7 @@
             this.DescriptionPanel.Controls.Add(this.InstructionsLabel);
             this.DescriptionPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.DescriptionPanel.Location = new System.Drawing.Point(0, 0);
-            this.DescriptionPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.DescriptionPanel.Margin = new System.Windows.Forms.Padding(4);
             this.DescriptionPanel.Name = "DescriptionPanel";
             this.DescriptionPanel.Size = new System.Drawing.Size(572, 84);
             this.DescriptionPanel.TabIndex = 33;
@@ -162,7 +162,7 @@
             this.MembersGroupBox.Name = "MembersGroupBox";
             this.MembersGroupBox.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MembersGroupBox.Size = new System.Drawing.Size(541, 214);
-            this.MembersGroupBox.TabIndex = 34;
+            this.MembersGroupBox.TabIndex = 1;
             this.MembersGroupBox.TabStop = false;
             this.MembersGroupBox.Text = "Members";
             // 
@@ -185,7 +185,7 @@
             this.InterfaceMembersGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.InterfaceMembersGridView.ShowEditingIcon = false;
             this.InterfaceMembersGridView.Size = new System.Drawing.Size(427, 174);
-            this.InterfaceMembersGridView.TabIndex = 3;
+            this.InterfaceMembersGridView.TabIndex = 1;
             // 
             // DeselectAllButton
             // 
@@ -193,7 +193,7 @@
             this.DeselectAllButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DeselectAllButton.Name = "DeselectAllButton";
             this.DeselectAllButton.Size = new System.Drawing.Size(93, 32);
-            this.DeselectAllButton.TabIndex = 1;
+            this.DeselectAllButton.TabIndex = 3;
             this.DeselectAllButton.Text = "Deselect All";
             this.DeselectAllButton.UseVisualStyleBackColor = true;
             // 
@@ -203,7 +203,7 @@
             this.SelectAllButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.SelectAllButton.Name = "SelectAllButton";
             this.SelectAllButton.Size = new System.Drawing.Size(93, 32);
-            this.SelectAllButton.TabIndex = 0;
+            this.SelectAllButton.TabIndex = 2;
             this.SelectAllButton.Text = "Select All";
             this.SelectAllButton.UseVisualStyleBackColor = true;
             // 

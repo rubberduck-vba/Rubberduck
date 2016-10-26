@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -18,19 +20,42 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var usages = UserDeclarations.Where(declaration => 
+            var declarations = UserDeclarations.Where(declaration => 
                 declaration.DeclarationType == DeclarationType.Variable
                 && !UserDeclarations.Any(d => d.DeclarationType == DeclarationType.UserDefinedType
                     && d.IdentifierName == declaration.AsTypeName)
                 && !declaration.IsSelfAssigned
-                && !declaration.References.Any(reference => reference.IsAssignment))
-                .SelectMany(declaration => declaration.References)
-                .Where(usage => !usage.IsInspectionDisabled(AnnotationName));
+                && !declaration.References.Any(reference => reference.IsAssignment));
 
-            foreach (var issue in usages)
+            var lenFunction = BuiltInDeclarations.SingleOrDefault(s => s.Scope == "VBE7.DLL;VBA.Strings.Len");
+            var lenbFunction = BuiltInDeclarations.SingleOrDefault(s => s.Scope == "VBE7.DLL;VBA.Strings.LenB");
+
+            return from issue in declarations 
+                   where !DeclarationReferencesContainsReference(lenFunction, issue) 
+                      && !DeclarationReferencesContainsReference(lenbFunction, issue) 
+                   select new UnassignedVariableUsageInspectionResult(this, issue.Context, issue.QualifiedName.QualifiedModuleName, issue);
+        }
+
+        private bool DeclarationReferencesContainsReference(Declaration parentDeclaration, Declaration target)
+        {
+            if (parentDeclaration == null)
             {
-                yield return new UnassignedVariableUsageInspectionResult(this, issue.Context, issue.QualifiedModuleName, issue.Declaration);
+                return false;
             }
+            
+            foreach (var targetReference in target.References)
+            {
+                foreach (var reference in parentDeclaration.References)
+                {
+                    var context = (ParserRuleContext) reference.Context.Parent;
+                    if (context.GetSelection().Contains(targetReference.Selection))
+                    {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
         }
     }
 }

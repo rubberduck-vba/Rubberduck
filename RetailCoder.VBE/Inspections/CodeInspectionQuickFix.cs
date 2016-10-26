@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System.Windows.Threading;
+using Antlr4.Runtime;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -11,6 +12,9 @@ namespace Rubberduck.Inspections
 
         public CodeInspectionQuickFix(ParserRuleContext context, QualifiedSelection selection, string description)
         {
+            Dispatcher.CurrentDispatcher.Thread.CurrentCulture = UI.Settings.Settings.Culture;
+            Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = UI.Settings.Settings.Culture;
+
             _context = context;
             _selection = selection;
             _description = description;

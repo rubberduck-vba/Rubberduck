@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Infralution.Localization.Wpf;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -12,27 +11,27 @@ using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck
 {
     public sealed class App : IDisposable
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IRubberduckParser _parser;
-        private AutoSave.AutoSave _autoSave;
-        private IGeneralConfigService _configService;
+        private readonly AutoSave.AutoSave _autoSave;
+        private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
-        private RubberduckCommandBar _stateBar;
-        private IRubberduckHooks _hooks;
-        private readonly UI.Settings.Settings _settings;
+        private readonly RubberduckCommandBar _stateBar;
+        private readonly IRubberduckHooks _hooks;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
         private Configuration _config;
 
-        public App(VBE vbe, IMessageBox messageBox,
-            UI.Settings.Settings settings,
+        public App(IVBE vbe, 
+            IMessageBox messageBox,
             IRubberduckParser parser,
             IGeneralConfigService configService,
             IAppMenu appMenus,
@@ -41,7 +40,6 @@ namespace Rubberduck
         {
             _vbe = vbe;
             _messageBox = messageBox;
-            _settings = settings;
             _parser = parser;
             _configService = configService;
             _autoSave = new AutoSave.AutoSave(_vbe, _configService);
@@ -54,6 +52,7 @@ namespace Rubberduck
             _parser.State.StateChanged += Parser_StateChanged;
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
             _stateBar.Refresh += _stateBar_Refresh;
+
             UiDispatcher.Initialize();
         }
 
@@ -79,17 +78,24 @@ namespace Rubberduck
 
         private void RefreshSelection()
         {
-            var selectedDeclaration = _parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane);
-            _stateBar.SetSelectionText(selectedDeclaration);
-
-            var currentStatus = _parser.State.Status;
-            if (ShouldEvaluateCanExecute(selectedDeclaration, currentStatus))
+            var pane = _vbe.ActiveCodePane;
             {
-                _appMenus.EvaluateCanExecute(_parser.State);
-            }
+                Declaration selectedDeclaration = null;
+                if (!pane.IsWrappingNullReference)
+                {
+                    selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
+                    _stateBar.SetSelectionText(selectedDeclaration);
+                }
 
-            _lastStatus = currentStatus;
-            _lastSelectedDeclaration = selectedDeclaration;
+                var currentStatus = _parser.State.Status;
+                if (ShouldEvaluateCanExecute(selectedDeclaration, currentStatus))
+                {
+                    _appMenus.EvaluateCanExecute(_parser.State);
+                }
+
+                _lastStatus = currentStatus;
+                _lastSelectedDeclaration = selectedDeclaration;
+            }
         }
 
         private bool ShouldEvaluateCanExecute(Declaration selectedDeclaration, ParserState currentStatus)
@@ -138,14 +144,11 @@ namespace Rubberduck
             EnsureDirectoriesExist();
             LoadConfig();
             _appMenus.Initialize();
+            _stateBar.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
+            _stateBar.SetStatusText(RubberduckUI.ParserState_Pending);
             UpdateLoggingLevel();
-
-            if (_vbe.VBProjects.Count != 0)
-            {
-                _parser.State.OnParseRequested(this);
-            }
         }
 
         public void Shutdown()
@@ -164,18 +167,19 @@ namespace Rubberduck
         {
             // handles "refresh" button click on "Rubberduck" command bar
             _parser.State.OnParseRequested(sender);
+            _parser.State.StartEventSinks(); // no-op if already started
         }
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
             Logger.Debug("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
+            _stateBar.SetSelectionText();
         }
 
         private void LoadConfig()
         {
             _config = _configService.LoadConfiguration();
-
             _autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
 
             var currentCulture = RubberduckUI.Culture;
@@ -205,39 +209,26 @@ namespace Rubberduck
             {
                 _parser.State.StateChanged -= Parser_StateChanged;
                 _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
-                _parser.Dispose();
-                // I won't set this to null because other components may try to release things
             }
 
             if (_hooks != null)
             {
                 _hooks.MessageReceived -= _hooks_MessageReceived;
-                _hooks.Dispose();
-                _hooks = null;
-            }
-
-            if (_settings != null)
-            {
-                _settings.Dispose();
             }
 
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
-                _configService = null;
             }
 
             if (_stateBar != null)
             {
                 _stateBar.Refresh -= _stateBar_Refresh;
-                _stateBar.Dispose();
-                _stateBar = null;
             }
 
             if (_autoSave != null)
             {
                 _autoSave.Dispose();
-                _autoSave = null;
             }
 
             UiDispatcher.Shutdown();

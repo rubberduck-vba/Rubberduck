@@ -42,7 +42,6 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             if (_targetDeclaration == null)
             {
-                //throw new InvalidOperationException();
                 return;
             }
 

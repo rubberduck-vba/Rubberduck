@@ -1,16 +1,18 @@
-﻿using Microsoft.Vbe.Interop;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SmartIndenter
 {
     public class Indenter : IIndenter
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly Func<IIndenterSettings> _settings;
 
-        public Indenter(VBE vbe, Func<IIndenterSettings> settings)
+        public Indenter(IVBE vbe, Func<IIndenterSettings> settings)
         {
             _vbe = vbe;
             _settings = settings;
@@ -39,17 +41,16 @@ namespace Rubberduck.SmartIndenter
             var module = pane.CodeModule;
             var selection = GetSelection(pane);
 
-            vbext_ProcKind procKind;
-            // ReSharper disable once UseIndexedProperty
-            var procName = module.get_ProcOfLine(selection.StartLine, out procKind);
+            var procName = module.GetProcOfLine(selection.StartLine);
+            var procKind = module.GetProcKindOfLine(selection.StartLine);
 
             if (string.IsNullOrEmpty(procName))
             {
                 return;
             }
 
-            var startLine = module.ProcStartLine[procName, procKind];
-            var endLine = startLine + module.ProcCountLines[procName, procKind];
+            var startLine = module.GetProcStartLine(procName, procKind);
+            var endLine = startLine + module.GetProcCountLines(procName, procKind);
 
             selection = new Selection(startLine, 1, endLine, 1);
             Indent(module.Parent, procName, selection);
@@ -64,18 +65,13 @@ namespace Rubberduck.SmartIndenter
             }
             Indent(pane.CodeModule.Parent);
         }
-
-        private static Selection GetSelection(CodePane codePane)
+        
+        private static Selection GetSelection(ICodePane codePane)
         {
-            int startLine;
-            int startColumn;
-            int endLine;
-            int endColumn;
-            codePane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
-            return new Selection(startLine, startColumn, endLine, endColumn);
+            return codePane.GetSelection();
         }
 
-        public void Indent(VBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(IVBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
             var module = component.CodeModule;
             var lineCount = module.CountOfLines;
@@ -84,19 +80,19 @@ namespace Rubberduck.SmartIndenter
                 return;
             }
 
-            var codeLines = module.Lines[1, lineCount].Replace("\r", string.Empty).Split('\n');
+            var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
             var indented = Indent(codeLines, component.Name, reportProgress, linesAlreadyRebuilt).ToArray();
 
             for (var i = 0; i < lineCount; i++)
             {
-                if (module.Lines[i + 1, 1] != indented[i])
+                if (module.GetLines(i + 1, 1) != indented[i])
                 {
                     component.CodeModule.ReplaceLine(i + 1, indented[i]);
                 }
             }
         }
 
-        public void Indent(VBComponent component, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(IVBComponent component, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
             var module = component.CodeModule;
             var lineCount = module.CountOfLines;
@@ -105,13 +101,13 @@ namespace Rubberduck.SmartIndenter
                 return;
             }
 
-            var codeLines = module.Lines[selection.StartLine, selection.LineCount].Replace("\r", string.Empty).Split('\n');
+            var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty).Split('\n');
 
             var indented = Indent(codeLines, procedureName, reportProgress, linesAlreadyRebuilt).ToArray();
 
             for (var i = 0; i < selection.EndLine - selection.StartLine; i++)
             {
-                if (module.Lines[selection.StartLine + i, 1] != indented[i])
+                if (module.GetLines(selection.StartLine + i, 1) != indented[i])
                 {
                     component.CodeModule.ReplaceLine(selection.StartLine + i, indented[i]);
                 }

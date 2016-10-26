@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Rubberduck.Common.WinAPI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI
@@ -40,10 +41,10 @@ namespace Rubberduck.UI
         private IntPtr _parentHandle;
         private SubClassingWindow _subClassingWindow;
 
-        internal void AddUserControl(UserControl control)
+        internal void AddUserControl(UserControl control, IntPtr vbeHwnd)
         {
             _parentHandle = GetParent(Handle);
-            _subClassingWindow = new SubClassingWindow(_parentHandle);
+            _subClassingWindow = new SubClassingWindow(_parentHandle, vbeHwnd);
             _subClassingWindow.CallBackEvent += OnCallBackEvent;
 
             if (control != null)
@@ -116,34 +117,50 @@ namespace Rubberduck.UI
             public event SubClassingWindowEventHandler CallBackEvent;
             public delegate void SubClassingWindowEventHandler(object sender, SubClassingWindowEventArgs e);
 
+            private readonly IntPtr _vbeHwnd;
+
             private void OnCallBackEvent(SubClassingWindowEventArgs e)
             {
                 Debug.Assert(CallBackEvent != null, "CallBackEvent != null");
                 CallBackEvent(this, e);
             }
             
-            public SubClassingWindow(IntPtr handle)
+            public SubClassingWindow(IntPtr handle, IntPtr vbeHwnd)
             {
+                _vbeHwnd = vbeHwnd;
                 AssignHandle(handle);
             }
 
             protected override void WndProc(ref Message msg)
             {
-                const int wmSize = 0x5;
-
-                if (msg.Msg == wmSize)
+                var closing = false;
+                switch ((uint)msg.Msg)
                 {
-                    var args = new SubClassingWindowEventArgs(msg);
-                    OnCallBackEvent(args);
+                    case (uint)WM.SIZE:
+                        var args = new SubClassingWindowEventArgs(msg);
+                        OnCallBackEvent(args);
+                        break;
+                    case (uint)WM.SETFOCUS:
+                        User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Handle, Handle);
+                        break;
+                    case (uint)WM.KILLFOCUS:
+                        User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Handle, IntPtr.Zero);
+                        break;
+                    case (uint)WM.RUBBERDUCK_SINKING:
+                        closing = true;
+                        break;
                 }
-
                 base.WndProc(ref msg);
+                if (closing)
+                {
+                    DestroyHandle();
+                }
             }
 
-            ~SubClassingWindow()
-            {
-                ReleaseHandle();
-            }
+            //~SubClassingWindow()
+            //{
+            //    ReleaseHandle();
+            //}
         }
     }
 }

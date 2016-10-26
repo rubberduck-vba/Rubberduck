@@ -23,13 +23,8 @@ namespace Rubberduck.UI.FindSymbol
         {
             _declarations = declarations;
             _cache = cache;
-            var initialResults = _declarations
-                .Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType))
-                .OrderBy(declaration => declaration.IdentifierName.ToLowerInvariant())
-                .Select(declaration => new SearchResult(declaration, cache[declaration]))
-                .ToList();
-
-            MatchResults = new ObservableCollection<SearchResult>(initialResults);
+            
+            Search(string.Empty);
         }
 
         public event EventHandler<NavigateCodeEventArgs> Navigate;
@@ -59,47 +54,76 @@ namespace Rubberduck.UI.FindSymbol
 
         private void Search(string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                MatchResults = new ObservableCollection<SearchResult>();
+                return;
+            }
+
             var lower = value.ToLowerInvariant();
             var results = _declarations
                 .Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType)
-                                        && (string.IsNullOrEmpty(value) || declaration.IdentifierName.ToLowerInvariant().Contains(lower)))
+                                      && (string.IsNullOrEmpty(value) || declaration.IdentifierName.ToLowerInvariant().Contains(lower)))
                 .OrderBy(declaration => declaration.IdentifierName.ToLowerInvariant())
-                .Select(declaration => new SearchResult(declaration, _cache[declaration]))
-                .ToList();
+                .Select(declaration => new SearchResult(declaration, _cache[declaration]));
 
             MatchResults = new ObservableCollection<SearchResult>(results);
         }
 
         private string _searchString;
-
         public string SearchString
         {
             get { return _searchString; }
             set
             {
-                _searchString = value; 
-                Search(value);
+                if (_searchString != value)
+                {
+                    _searchString = value;
+                    Search(value);
+                }
             }
         }
 
         private SearchResult _selectedItem;
-
         public SearchResult SelectedItem
         {
             get { return _selectedItem; }
             set 
-            { 
-                _selectedItem = value; 
-                OnPropertyChanged();
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
         private ObservableCollection<SearchResult> _matchResults;
-
         public ObservableCollection<SearchResult> MatchResults
         {
             get { return _matchResults; }
-            set { _matchResults = value; OnPropertyChanged(); }
+            set
+            {
+                var oldSelectedItem = SelectedItem;
+
+                _matchResults = value;
+
+                // save the selection when the user clicks on one of the drop-down items and the search results are updated
+                if (oldSelectedItem != null)
+                {
+                    var newSelectedItem = value.FirstOrDefault(s => s.Declaration == oldSelectedItem.Declaration);
+
+                    if (newSelectedItem != null)
+                    {
+                        _selectedItem = newSelectedItem;
+                        _searchString = newSelectedItem.IdentifierName;
+                        
+                        OnPropertyChanged("SelectedItem");
+                    }
+                }
+
+                OnPropertyChanged();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

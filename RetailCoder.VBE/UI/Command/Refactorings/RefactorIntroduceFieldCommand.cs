@@ -1,8 +1,8 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Common;
+﻿using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceField;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorIntroduceFieldCommand (VBE vbe, RubberduckParserState state)
+        public RefactorIntroduceFieldCommand (IVBE vbe, RubberduckParserState state)
             :base(vbe)
         {
             _state = state;
@@ -18,34 +18,43 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            var pane = Vbe.ActiveCodePane;
             {
-                return false;
+                if (_state.Status != ParserState.Ready || pane.IsWrappingNullReference)
+                {
+                    return false;
+                }
+
+                var selection = pane.GetQualifiedSelection();
+                if (!selection.HasValue)
+                {
+                    return false;
+                }
+
+                var target = _state.AllUserDeclarations.FindVariable(selection.Value);
+
+                return target != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
             }
-
-            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
-            if (!selection.HasValue)
-            {
-                return false;
-            }
-
-            var target = _state.AllUserDeclarations.FindVariable(selection.Value);
-
-            var canExecute = target != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
-
-            return canExecute;
         }
 
         protected override void ExecuteImpl(object parameter)
         {
-            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
-            if (!selection.HasValue)
+            var pane = Vbe.ActiveCodePane;
             {
-                return;
-            }
+                if (pane.IsWrappingNullReference)
+                {
+                    return;
+                }
 
-            var refactoring = new IntroduceFieldRefactoring(Vbe, _state, new MessageBox());
-            refactoring.Refactor(selection.Value);
+                var selection = pane.GetQualifiedSelection();
+                if (!selection.HasValue)
+                {
+                    return;
+                }
+
+                var refactoring = new IntroduceFieldRefactoring(Vbe, _state, new MessageBox());
+                refactoring.Refactor(selection.Value);
+            }
         }
     }
 }

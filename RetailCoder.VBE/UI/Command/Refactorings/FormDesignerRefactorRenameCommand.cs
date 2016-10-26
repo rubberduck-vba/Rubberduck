@@ -1,20 +1,20 @@
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
     public class FormDesignerRefactorRenameCommand : RefactorCommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public FormDesignerRefactorRenameCommand(VBE vbe, RubberduckParserState state) 
+        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state) 
             : base (vbe)
         {
             _vbe = vbe;
@@ -44,22 +44,30 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget()
         {
-            if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.Designer != null)
+            var project = _vbe.ActiveVBProject;
+            var component = _vbe.SelectedVBComponent;
             {
-                var designer = (dynamic)Vbe.SelectedVBComponent.Designer;
-
-                foreach (var control in designer.Controls)
+                if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.HasDesigner)
                 {
-                    if (!control.InSelection)
-                    {
-                        continue;
-                    }
+                    var designer = ((dynamic)component.Target).Designer;
 
-                    return _state.AllUserDeclarations
-                        .FirstOrDefault(item => item.DeclarationType == DeclarationType.Control
-                            && Vbe.ActiveVBProject.HelpFile == item.ProjectId
-                            && item.ComponentName == Vbe.SelectedVBComponent.Name
-                            && item.IdentifierName == control.Name);
+                    foreach (var control in designer.Controls)
+                    {
+                        if (!control.InSelection)
+                        {
+                            Marshal.ReleaseComObject(control);
+                            continue;
+                        }
+
+                        var result = _state.AllUserDeclarations
+                            .FirstOrDefault(item => item.DeclarationType == DeclarationType.Control
+                                                    && project.HelpFile == item.ProjectId
+                                                    && item.ComponentName == component.Name
+                                                    && item.IdentifierName == control.Name);
+                        Marshal.ReleaseComObject(control);
+                        Marshal.ReleaseComObject(designer);
+                        return result;
+                    }
                 }
             }
 

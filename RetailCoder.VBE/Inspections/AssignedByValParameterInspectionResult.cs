@@ -13,9 +13,10 @@ namespace Rubberduck.Inspections
         public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target)
             : base(inspection, target)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new PassParameterByReferenceQuickFix(target.Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, inspection.AnnotationName)
             };
         }
 
@@ -47,10 +48,11 @@ namespace Rubberduck.Inspections
             var selection = Selection.Selection;
 
             var module = Selection.QualifiedName.Component.CodeModule;
-            var lines = module.get_Lines(selection.StartLine, selection.LineCount);
-
-            var result = lines.Replace(parameter, newContent);
-            module.ReplaceLine(selection.StartLine, result);
+            {
+                var lines = module.GetLines(selection.StartLine, selection.LineCount);
+                var result = lines.Replace(parameter, newContent);
+                module.ReplaceLine(selection.StartLine, result);
+            }
         }
     }
 }

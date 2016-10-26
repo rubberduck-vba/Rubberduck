@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -15,12 +14,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
     class ComponentParseTask
     {
-        private readonly VBComponent _component;
+        private readonly IVBComponent _component;
         private readonly QualifiedModuleName _qualifiedName;
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParseFailureArgs> ParseFailure;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ComponentParseTask(VBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(IVBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
         {
             _attributeParser = attributeParser;
             _preprocessor = preprocessor;

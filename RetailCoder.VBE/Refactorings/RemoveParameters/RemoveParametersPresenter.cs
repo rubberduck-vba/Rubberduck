@@ -23,7 +23,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public RemoveParametersModel Show()
         {
-            if (_model.TargetDeclaration == null) { return null; }
+            if (_model.TargetDeclaration == null)
+            {
+                return null;
+            }
 
             if (_model.Parameters.Count == 0)
             {

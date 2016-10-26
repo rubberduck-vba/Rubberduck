@@ -4,20 +4,21 @@ namespace Rubberduck.UI.UnitTesting
 {
     public partial class TestExplorerWindow : UserControl, IDockableUserControl
     {
-        public TestExplorerWindow()
+        private TestExplorerWindow()
         {
             InitializeComponent();
         }
 
-        private TestExplorerViewModel _viewModel;
+        public TestExplorerWindow(TestExplorerViewModel viewModel) : this()
+        {
+            _viewModel = viewModel;
+            wpfTestExplorerControl.DataContext = _viewModel;
+        }
+
+        private readonly TestExplorerViewModel _viewModel;
         public TestExplorerViewModel ViewModel
         {
             get { return _viewModel; }
-            set
-            {
-                _viewModel = value;
-                wpfTestExplorerControl.DataContext = _viewModel;
-            }
         }
 
         public string ClassId

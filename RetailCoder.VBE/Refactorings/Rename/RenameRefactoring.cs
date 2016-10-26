@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -13,19 +12,20 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.Rename
 {
     public class RenameRefactoring : IRefactoring
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private RenameModel _model;
 
-        public RenameRefactoring(VBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, RubberduckParserState state)
+        public RenameRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, RubberduckParserState state)
         {
             _vbe = vbe;
             _factory = factory;
@@ -38,15 +38,33 @@ namespace Rubberduck.Refactorings.Rename
             var presenter = _factory.Create();
             _model = presenter.Show();
 
+            QualifiedSelection? oldSelection = null;
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
+            if (!pane.IsWrappingNullReference)
+            {
+                oldSelection = module.GetQualifiedSelection();
+            }
+
             if (_model != null && _model.Declarations != null)
             {
                 Rename();
+            }
+
+            if (oldSelection.HasValue)
+            {
+                pane.SetSelection(oldSelection.Value.Selection);
             }
         }
 
         public void Refactor(QualifiedSelection target)
         {
-            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
+            var pane = _vbe.ActiveCodePane;
+            if (pane.IsWrappingNullReference)
+            {
+                return;
+            }
+            pane.SetSelection(target.Selection);
             Refactor();
         }
 
@@ -55,9 +73,21 @@ namespace Rubberduck.Refactorings.Rename
             var presenter = _factory.Create();
             _model = presenter.Show(target);
 
+            var oldSelection = Selection.Home;
+            var pane = _vbe.ActiveCodePane;
+            if (!pane.IsWrappingNullReference)
+            {
+                oldSelection = pane.GetSelection();
+            }
+
             if (_model != null && _model.Declarations != null)
             {
                 Rename();
+            }
+
+            if (!pane.IsWrappingNullReference)
+            {
+                pane.SetSelection(oldSelection);
             }
         }
 
@@ -229,21 +259,33 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                if (module != null)
+                var component = _model.Target.QualifiedName.QualifiedModuleName.Component;
+                var module = component.CodeModule;
                 {
-                    if (module.Parent.Type == vbext_ComponentType.vbext_ct_Document)
+                    if (module.IsWrappingNullReference)
                     {
-                        module.Parent.Properties.Item("_CodeName").Value = _model.NewName;
+                        return;
                     }
-                    else if (module.Parent.Type == vbext_ComponentType.vbext_ct_MSForm)
+
+                    if (component.Type == ComponentType.Document)
                     {
-                        if ((string) module.Parent.Properties.Item("Caption").Value == _model.Target.IdentifierName)
+                        var properties = component.Properties;
+                        var property = properties["_CodeName"];
                         {
-                            module.Parent.Properties.Item("Caption").Value = _model.NewName;
+                            property.Value = _model.NewName;
                         }
-                        var codeModule = (CodeModuleClass)module;
-                        codeModule.Parent.Name = _model.NewName;
+                    }
+                    else if (component.Type == ComponentType.UserForm)
+                    {
+                        var properties = component.Properties;
+                        var property = properties["Caption"];
+                        {
+                            if ((string)property.Value == _model.Target.IdentifierName)
+                            {
+                                property.Value = _model.NewName;
+                            }
+                            component.Name = _model.NewName;
+                        }
                     }
                     else
                     {
@@ -261,10 +303,13 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                var project = _state.Projects.SingleOrDefault(p => p.HelpFile == _model.Target.ProjectId);
-                if (project != null)
+                var projects = _vbe.VBProjects;
+                var project = projects.SingleOrDefault(p => p.HelpFile == _model.Target.ProjectId);
                 {
-                    project.Name = _model.NewName;
+                    if (project != null)
+                    {
+                        project.Name = _model.NewName;
+                    }
                 }
             }
             catch (COMException)
@@ -281,32 +326,37 @@ namespace Rubberduck.Refactorings.Rename
                 return;
             }
 
-            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            var newContent = GetReplacementLine(module, target, newName);
-
-            if (target.DeclarationType == DeclarationType.Parameter)
+            var component = target.QualifiedName.QualifiedModuleName.Component;
+            var module = component.CodeModule;
             {
-                var argList = (VBAParser.ArgListContext)target.Context.Parent;
-                var lineNum = argList.GetSelection().LineCount;
+                var newContent = GetReplacementLine(module, target, newName);
 
-                module.ReplaceLine(argList.Start.Line, newContent);
-                module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
-            }
-            else if (!target.DeclarationType.HasFlag(DeclarationType.Property))
-            {
-                module.ReplaceLine(target.Selection.StartLine, newContent);
-            }
-            else
-            {
-                var members = _model.Declarations.Named(target.IdentifierName)
-                    .Where(item => item.ProjectId == target.ProjectId
-                        && item.ComponentName == target.ComponentName
-                        && item.DeclarationType.HasFlag(DeclarationType.Property));
-
-                foreach (var member in members)
+                if (target.DeclarationType == DeclarationType.Parameter)
                 {
-                    newContent = GetReplacementLine(module, member, newName);
-                    module.ReplaceLine(member.Selection.StartLine, newContent);
+                    var argList = (VBAParser.ArgListContext)target.Context.Parent;
+                    var lineNum = argList.GetSelection().LineCount;
+
+                    // delete excess lines to prevent removing our own changes
+                    module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
+                    module.ReplaceLine(argList.Start.Line, newContent);
+                    
+                }
+                else if (!target.DeclarationType.HasFlag(DeclarationType.Property))
+                {
+                    module.ReplaceLine(target.Selection.StartLine, newContent);
+                }
+                else
+                {
+                    var members = _model.Declarations.Named(target.IdentifierName)
+                        .Where(item => item.ProjectId == target.ProjectId
+                            && item.ComponentName == target.ComponentName
+                            && item.DeclarationType.HasFlag(DeclarationType.Property));
+
+                    foreach (var member in members)
+                    {
+                        newContent = GetReplacementLine(module, member, newName);
+                        module.ReplaceLine(member.Selection.StartLine, newContent);
+                    }
                 }
             }
         }
@@ -315,20 +365,31 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                var form = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                var control = ((dynamic)form.Parent.Designer).Controls(_model.Target.IdentifierName);
-
-                foreach (var handler in _model.Declarations.FindEventHandlers(_model.Target).OrderByDescending(h => h.Selection.StartColumn))
+                var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                var component = module.Parent;
+                var control = component.Controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName);
                 {
-                    var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _model.NewName + '_');
-                    var module = handler.Project.VBComponents.Item(handler.ComponentName).CodeModule;
+                    if (control == null)
+                    {
+                        return;
+                    }
 
-                    var content = module.Lines[handler.Selection.StartLine, 1];
-                    var newContent = GetReplacementLine(content, newMemberName, handler.Selection);
-                    module.ReplaceLine(handler.Selection.StartLine, newContent);
+                    foreach (var handler in _model.Declarations.FindEventHandlers(_model.Target).OrderByDescending(h => h.Selection.StartColumn))
+                    {
+                        var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _model.NewName + '_');
+                        var project = handler.Project;
+                        var components = project.VBComponents;
+                        var refComponent = components[handler.ComponentName];
+                        var refModule = refComponent.CodeModule;
+                        {
+                            var content = refModule.GetLines(handler.Selection.StartLine, 1);
+                            var newContent = GetReplacementLine(content, newMemberName, handler.Selection);
+                            refModule.ReplaceLine(handler.Selection.StartLine, newContent);
+                        }
+                    }
+
+                    control.Name = _model.NewName;
                 }
-
-                control.Name = _model.NewName;
             }
             catch (RuntimeBinderException)
             {
@@ -363,12 +424,16 @@ namespace Rubberduck.Refactorings.Rename
                     try
                     {
                         var newMemberName = target.ComponentName + '_' + _model.NewName;
-                        var module = member.Project.VBComponents.Item(member.ComponentName).CodeModule;
-
-                        var content = module.Lines[member.Selection.StartLine, 1];
-                        var newContent = GetReplacementLine(content, newMemberName, member.Selection);
-                        module.ReplaceLine(member.Selection.StartLine, newContent);
-                        RenameUsages(member, target.ComponentName);
+                        var project = member.Project;
+                        var components = project.VBComponents;
+                        var component = components[member.ComponentName];
+                        var module = component.CodeModule;
+                        {
+                            var content = module.GetLines(member.Selection.StartLine, 1);
+                            var newContent = GetReplacementLine(content, newMemberName, member.Selection);
+                            module.ReplaceLine(member.Selection.StartLine, newContent);
+                            RenameUsages(member, target.ComponentName);
+                        }
                     }
                     catch (COMException)
                     {
@@ -383,46 +448,52 @@ namespace Rubberduck.Refactorings.Rename
             foreach (var grouping in modules)
             {
                 var module = grouping.Key.Component.CodeModule;
-                foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                 {
-                    foreach (var reference in line.OrderByDescending(l => l.Selection.StartColumn))
+                    foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                     {
-                        var content = module.Lines[line.Key, 1];
-                        string newContent;
-
-                        if (interfaceName == null)
+                        var lastSelection = Selection.Empty;
+                        foreach (var reference in line.OrderByDescending(l => l.Selection.StartColumn))
                         {
-                            newContent = GetReplacementLine(content, _model.NewName,
-                                reference.Selection);
-                        }
-                        else
-                        {
-                            newContent = GetReplacementLine(content,
-                                interfaceName + "_" + _model.NewName,
-                                reference.Selection);
-                        }
+                            if (reference.Selection == lastSelection)
+                            {
+                                continue;
+                            }
 
-                        module.ReplaceLine(line.Key, newContent);
+                            var content = module.GetLines(line.Key, 1);
+                            string newContent;
+
+                            if (interfaceName == null)
+                            {
+                                newContent = GetReplacementLine(content, _model.NewName, reference.Selection);
+                            }
+                            else
+                            {
+                                newContent = GetReplacementLine(content, interfaceName + "_" + _model.NewName, reference.Selection);
+                            }
+
+                            module.ReplaceLine(line.Key, newContent);
+                            lastSelection = reference.Selection;
+                        }
                     }
-                }
 
-                // renaming interface
-                if (grouping.Any(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
-                {
-                    var members = _model.Declarations.InScope(target).OrderByDescending(m => m.Selection.StartColumn);
-                    foreach (var member in members)
+                    // renaming interface
+                    if (grouping.Any(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
                     {
-                        var oldMemberName = target.IdentifierName + '_' + member.IdentifierName;
-                        var newMemberName = _model.NewName + '_' + member.IdentifierName;
-                        var method = _model.Declarations.Named(oldMemberName).SingleOrDefault(m => m.QualifiedName.QualifiedModuleName == grouping.Key);
-                        if (method == null)
+                        var members = _model.Declarations.InScope(target).OrderByDescending(m => m.Selection.StartColumn);
+                        foreach (var member in members)
                         {
-                            continue;
-                        }
+                            var oldMemberName = target.IdentifierName + '_' + member.IdentifierName;
+                            var newMemberName = _model.NewName + '_' + member.IdentifierName;
+                            var method = _model.Declarations.Named(oldMemberName).SingleOrDefault(m => m.QualifiedName.QualifiedModuleName == grouping.Key);
+                            if (method == null)
+                            {
+                                continue;
+                            }
 
-                        var content = module.Lines[method.Selection.StartLine, 1];
-                        var newContent = GetReplacementLine(content, newMemberName, member.Selection);
-                        module.ReplaceLine(method.Selection.StartLine, newContent);
+                            var content = module.GetLines(method.Selection.StartLine, 1);
+                            var newContent = GetReplacementLine(content, newMemberName, member.Selection);
+                            module.ReplaceLine(method.Selection.StartLine, newContent);
+                        }
                     }
                 }
             }
@@ -434,9 +505,9 @@ namespace Rubberduck.Refactorings.Rename
             return contentWithoutOldName.Insert(selection.StartColumn - 1, newName);
         }
 
-        private string GetReplacementLine(CodeModule module, Declaration target, string newName)
+        private string GetReplacementLine(ICodeModule module, Declaration target, string newName)
         {
-            var content = module.Lines[target.Selection.StartLine, 1];
+            var content = module.GetLines(target.Selection.StartLine, 1);
 
             if (target.DeclarationType == DeclarationType.Parameter)
             {

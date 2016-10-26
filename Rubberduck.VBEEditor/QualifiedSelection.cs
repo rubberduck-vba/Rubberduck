@@ -21,13 +21,7 @@
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hash = 17;
-                hash = hash * 23 + _qualifiedName.GetHashCode();
-                hash = hash * 23 + _selection.GetHashCode();
-                return hash;
-            }
+            return HashCode.Compute(_qualifiedName.GetHashCode(), _selection.GetHashCode());
         }
 
         public static bool operator ==(QualifiedSelection selection1, QualifiedSelection selection2)

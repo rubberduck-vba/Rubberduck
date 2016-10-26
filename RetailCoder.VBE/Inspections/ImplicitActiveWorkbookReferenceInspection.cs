@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections
 {
@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
     {
         private readonly IHostApplication _hostApp;
 
-        public ImplicitActiveWorkbookReferenceInspection(VBE vbe, RubberduckParserState state)
+        public ImplicitActiveWorkbookReferenceInspection(IVBE vbe, RubberduckParserState state)
             : base(state)
         {
             _hostApp = vbe.HostApplication();
@@ -24,27 +24,31 @@ namespace Rubberduck.Inspections
 
         private static readonly string[] Targets =
         {
-            "Worksheets", "Sheets", "Names",
+            "Worksheets", "Sheets", "Names", "_Default"
         };
 
         private static readonly string[] ParentScopes =
         {
             "EXCEL.EXE;Excel._Global",
-            "EXCEL.EXE;Excel._Application"
+            "EXCEL.EXE;Excel._Application",
+            "EXCEL.EXE;Excel.Sheets",
+            //"EXCEL.EXE;Excel.Worksheets",
         };
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             if (_hostApp == null || _hostApp.ApplicationName != "Excel")
             {
-                return new InspectionResultBase[] { };
+                return Enumerable.Empty<InspectionResultBase>();
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
-            var issues = BuiltInDeclarations.Where(item => ParentScopes.Contains(item.ParentScope)
-                                            && Targets.Contains(item.IdentifierName)
-                                            && item.References.Any())
-                .SelectMany(declaration => declaration.References);
+            var issues = BuiltInDeclarations
+                .Where(item => ParentScopes.Contains(item.ParentScope) 
+                    && item.References.Any(r => Targets.Contains(r.IdentifierName)))
+                .SelectMany(declaration => declaration.References.Distinct())
+                .Where(item => Targets.Contains(item.IdentifierName))
+                .ToList();
 
             return issues.Select(issue =>
                 new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
@@ -70,7 +74,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(Inspection.Description, _reference.Declaration.IdentifierName); }
+            get { return string.Format(Inspection.Description, Context.GetText() /*_reference.Declaration.IdentifierName*/); }
         }
     }
 }

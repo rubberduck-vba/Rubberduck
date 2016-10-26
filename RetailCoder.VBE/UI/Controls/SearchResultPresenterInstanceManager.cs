@@ -1,5 +1,5 @@
 using System;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Controls
 {
@@ -8,11 +8,11 @@ namespace Rubberduck.UI.Controls
     /// </summary>
     public sealed class SearchResultPresenterInstanceManager : IDisposable
     {
-        private readonly VBE _vbe;
-        private readonly AddIn _addin;
+        private readonly IVBE _vbe;
+        private readonly IAddIn _addin;
         private SearchResultWindow _view;
 
-        public SearchResultPresenterInstanceManager(VBE vbe, AddIn addin)
+        public SearchResultPresenterInstanceManager(IVBE vbe, IAddIn addin)
         {
             _vbe = vbe;
             _addin = addin;
@@ -43,12 +43,12 @@ namespace Rubberduck.UI.Controls
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
+        private bool _disposed;
         private void Dispose(bool disposing)
         {
-            if (disposing) { return; }
+            if (!disposing || _disposed) { return; }
 
             if (_view.ViewModel != null)
             {
@@ -60,6 +60,8 @@ namespace Rubberduck.UI.Controls
                 _presenter.Dispose();
                 _presenter = null;
             }
+
+            _disposed = true;
         }
     }
 }

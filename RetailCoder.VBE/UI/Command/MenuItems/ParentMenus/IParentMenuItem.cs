@@ -1,12 +1,11 @@
-using System;
-using Microsoft.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public interface IParentMenuItem : IMenuItem, IAppMenu
     {
-        CommandBarControls Parent { get; set; }
-        CommandBarPopup Item { get; }
+        ICommandBarControls Parent { get; set; }
+        ICommandBarPopup Item { get; }
         void RemoveChildren();
     }
 }

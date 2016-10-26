@@ -16,9 +16,8 @@ namespace Rubberduck.Inspections
             IInspection inspection,
             ParserRuleContext context,
             QualifiedMemberName qualifiedName,
-            IEnumerable<string> returnStatements,
             Declaration target)
-            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>(), target)
+            : this(inspection, context, qualifiedName, new List<Tuple<ParserRuleContext, QualifiedSelection, Declaration>>(), target)
         {
         }
 
@@ -26,17 +25,17 @@ namespace Rubberduck.Inspections
             IInspection inspection,
             ParserRuleContext context,
             QualifiedMemberName qualifiedName,
-            IEnumerable<string> returnStatements,
-            IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children,
+            IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, Declaration>> children,
             Declaration target)
             : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
-            var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements);
+            var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, target);
             var compositeFix = new CompositeCodeInspectionFix(root);
             children.ToList().ForEach(child => compositeFix.AddChild(new ConvertToProcedureQuickFix(child.Item1, child.Item2, child.Item3)));
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                compositeFix
+                compositeFix,
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
             };
         }
 

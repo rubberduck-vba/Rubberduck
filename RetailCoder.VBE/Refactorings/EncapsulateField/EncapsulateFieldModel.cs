@@ -18,6 +18,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string ParameterName { get; set; }
         public bool ImplementLetSetterType { get; set; }
         public bool ImplementSetSetterType { get; set; }
+        public bool CanImplementLet { get; set; }
 
         public EncapsulateFieldModel(RubberduckParserState state, QualifiedSelection selection)
         {

@@ -244,7 +244,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <DockPanel Margin="5,5,5,0">
+        <StackPanel Margin="5,5,5,0">
             <Label DockPanel.Dock="Top"
                    Background="DarkGray"
                    Foreground="White"
@@ -261,13 +261,12 @@
                     </Style>
                 </Label.Style>
             </Label>
-            <ToolBarTray DockPanel.Dock="Top"
-                         IsLocked="True"
+            <ToolBarTray IsLocked="True"
                          Background="Transparent">
                 <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
                          Background="Transparent">
                     <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}"
-                            Command="{Binding AddTodoCommand}"
+                            Click="AddNewTodoMarker"
                             BorderThickness="0"
                             Background="Transparent">
                         <StackPanel Orientation="Horizontal">
@@ -323,6 +322,6 @@
                                         Binding="{Binding Text}" />
                 </DataGrid.Columns>
             </DataGrid>
-        </DockPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.IdentifierReferences;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.ParserErrors
 {
@@ -15,7 +15,7 @@ namespace Rubberduck.UI.ParserErrors
 
     public class ParserErrorsPresenter : DockableToolwindowPresenter, IParserErrorsPresenter
     {
-        public ParserErrorsPresenter(VBE vbe, AddIn addin) 
+        public ParserErrorsPresenter(IVBE vbe, IAddIn addin) 
             : base(vbe, addin, new SimpleListControl(RubberduckUI.ParseErrors_Caption))
         {
             _source = new BindingList<ParseErrorListItem>();

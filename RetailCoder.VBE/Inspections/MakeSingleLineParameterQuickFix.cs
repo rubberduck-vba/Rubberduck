@@ -16,10 +16,10 @@ namespace Rubberduck.Inspections
             var module = Selection.QualifiedName.Component.CodeModule;
             var selection = Selection.Selection;
 
-            var lines = module.Lines[selection.StartLine, selection.EndLine - selection.StartLine + 1];
+            var lines = module.GetLines(selection.StartLine, selection.EndLine - selection.StartLine + 1);
 
-            var startLine = module.Lines[selection.StartLine, 1];
-            var endLine = module.Lines[selection.EndLine, 1];
+            var startLine = module.GetLines(selection.StartLine, 1);
+            var endLine = module.GetLines(selection.EndLine, 1);
 
             var adjustedStartColumn = selection.StartColumn - 1;
             var adjustedEndColumn = lines.Length - (endLine.Length - (selection.EndColumn > endLine.Length ? endLine.Length : selection.EndColumn - 1));

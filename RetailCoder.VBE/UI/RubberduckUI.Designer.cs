@@ -245,6 +245,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collapse node and all child nodes.
+        /// </summary>
+        public static string CodeExplorer_CollapseSubnodesToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_CollapseSubnodesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commit....
         /// </summary>
         public static string CodeExplorer_Commit {
@@ -286,6 +295,15 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_DisplaySignaturesText {
             get {
                 return ResourceManager.GetString("CodeExplorer_DisplaySignaturesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand node and all child nodes.
+        /// </summary>
+        public static string CodeExplorer_ExpandSubnodesToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ExpandSubnodesToolTip", resourceCulture);
             }
         }
         
@@ -385,15 +403,6 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_Refresh {
             get {
                 return ResourceManager.GetString("CodeExplorer_Refresh", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refresh component.
-        /// </summary>
-        public static string CodeExplorer_RefreshComponent {
-            get {
-                return ResourceManager.GetString("CodeExplorer_RefreshComponent", resourceCulture);
             }
         }
         
@@ -670,6 +679,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inspection Severities.
+        /// </summary>
+        public static string CodeInspectionSettings_InspectionSeveritySettingsLabel {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_InspectionSeveritySettingsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language Opportunities.
         /// </summary>
         public static string CodeInspectionSettings_LanguageOpportunities {
@@ -684,6 +702,42 @@ namespace Rubberduck.UI {
         public static string CodeInspectionSettings_MaintainabilityAndReadabilityIssues {
             get {
                 return ResourceManager.GetString("CodeInspectionSettings_MaintainabilityAndReadabilityIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Miscellaneous.
+        /// </summary>
+        public static string CodeInspectionSettings_Misc {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_Misc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run inspections automatically on successful parse.
+        /// </summary>
+        public static string CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection.
+        /// </summary>
+        public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whitelisted Identifiers.
+        /// </summary>
+        public static string CodeInspectionSettings_WhitelistedIdentifiersLabel {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersLabel", resourceCulture);
             }
         }
         
@@ -1417,7 +1471,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimum Log Level.
+        ///   Looks up a localized string similar to Minimum Log Level:.
         /// </summary>
         public static string GeneralSettings_MinimumLogLevelLabel {
             get {
@@ -1449,6 +1503,15 @@ namespace Rubberduck.UI {
         public static string GeneralSettings_ShowLogFolder {
             get {
                 return ResourceManager.GetString("GeneralSettings_ShowLogFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show splash screen at startup.
+        /// </summary>
+        public static string GeneralSettings_ShowSplash {
+            get {
+                return ResourceManager.GetString("GeneralSettings_ShowSplash", resourceCulture);
             }
         }
         
@@ -1606,6 +1669,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refactor / Encapsulate Field.
+        /// </summary>
+        public static string HotkeyDescription_RefactorEncapsulateField {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_RefactorEncapsulateField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refactor / Extract Method.
         /// </summary>
         public static string HotkeyDescription_RefactorExtractMethod {
@@ -1615,7 +1687,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move declaration closer to usage.
+        ///   Looks up a localized string similar to Refactor / Move declaration closer to usage.
         /// </summary>
         public static string HotkeyDescription_RefactorMoveCloserToUsage {
             get {
@@ -1629,6 +1701,15 @@ namespace Rubberduck.UI {
         public static string HotkeyDescription_RefactorRename {
             get {
                 return ResourceManager.GetString("HotkeyDescription_RefactorRename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source Control.
+        /// </summary>
+        public static string HotkeyDescription_SourceControl {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_SourceControl", resourceCulture);
             }
         }
         
@@ -1917,24 +1998,6 @@ namespace Rubberduck.UI {
         public static string Language_FR {
             get {
                 return ResourceManager.GetString("Language_FR", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Japanese.
-        /// </summary>
-        public static string Language_JA {
-            get {
-                return ResourceManager.GetString("Language_JA", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Swedish.
-        /// </summary>
-        public static string Language_SV {
-            get {
-                return ResourceManager.GetString("Language_SV", resourceCulture);
             }
         }
         
@@ -2503,6 +2566,78 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Regex Analyzer.
+        /// </summary>
+        public static string RegexAssistant_Caption {
+            get {
+                return ResourceManager.GetString("RegexAssistant_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string RegexAssistant_DescriptionResultsLabel {
+            get {
+                return ResourceManager.GetString("RegexAssistant_DescriptionResultsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Global.
+        /// </summary>
+        public static string RegexAssistant_GlobalFlag {
+            get {
+                return ResourceManager.GetString("RegexAssistant_GlobalFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore case.
+        /// </summary>
+        public static string RegexAssistant_IgnoreCaseFlag {
+            get {
+                return ResourceManager.GetString("RegexAssistant_IgnoreCaseFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a regular expression to analyze in the box below..
+        /// </summary>
+        public static string RegexAssistant_Instructions {
+            get {
+                return ResourceManager.GetString("RegexAssistant_Instructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (no pattern).
+        /// </summary>
+        public static string RegexAssistant_NoPatternError {
+            get {
+                return ResourceManager.GetString("RegexAssistant_NoPatternError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pattern.
+        /// </summary>
+        public static string RegexAssistant_RegexPatternLabel {
+            get {
+                return ResourceManager.GetString("RegexAssistant_RegexPatternLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regular Expression Analyzer.
+        /// </summary>
+        public static string RegexAssistant_Title {
+            get {
+                return ResourceManager.GetString("RegexAssistant_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Regex Search &amp; Replace.
         /// </summary>
         public static string RegexSearchReplace_Caption {
@@ -2873,7 +3008,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file to our GitHub page..
+        ///   Looks up a localized string similar to Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file located at &quot;C:\Users\{username}\AppData\Roaming\Rubberduck\Logs\RubberduckLog.txt&quot; to a GitHub issue at &quot;https://github.com/rubberduck-vba/Rubberduck/issues/new&quot;..
         /// </summary>
         public static string RubberduckFatalError {
             get {
@@ -2963,29 +3098,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Source Control.
-        /// </summary>
-        public static string RubberduckMenu_SourceControl {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_SourceControl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To&amp;Do Items.
-        /// </summary>
-        public static string RubberduckMenu_TodoItems {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_TodoItems", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unit &amp;Tests.
         /// </summary>
         public static string RubberduckMenu_UnitTests {
             get {
                 return ResourceManager.GetString("RubberduckMenu_UnitTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toolwindows were not correctly destroyed and/or could not be recreated; the VBE may not be in a stable state. Rubberduck will load normally next time the VBE is initialized..
+        /// </summary>
+        public static string RubberduckReloadFailure_Message {
+            get {
+                return ResourceManager.GetString("RubberduckReloadFailure_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck will not reload.
+        /// </summary>
+        public static string RubberduckReloadFailure_Title {
+            get {
+                return ResourceManager.GetString("RubberduckReloadFailure_Title", resourceCulture);
             }
         }
         
@@ -4678,6 +4813,42 @@ namespace Rubberduck.UI {
         public static string TodoSettings_TokenListLabel {
             get {
                 return ResourceManager.GetString("TodoSettings_TokenListLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to T&amp;ools.
+        /// </summary>
+        public static string ToolsMenu {
+            get {
+                return ResourceManager.GetString("ToolsMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regex &amp;Assistant.
+        /// </summary>
+        public static string ToolsMenu_RegexAssistant {
+            get {
+                return ResourceManager.GetString("ToolsMenu_RegexAssistant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Source Control.
+        /// </summary>
+        public static string ToolsMenu_SourceControl {
+            get {
+                return ResourceManager.GetString("ToolsMenu_SourceControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To&amp;Do Items.
+        /// </summary>
+        public static string ToolsMenu_TodoItems {
+            get {
+                return ResourceManager.GetString("ToolsMenu_TodoItems", resourceCulture);
             }
         }
         

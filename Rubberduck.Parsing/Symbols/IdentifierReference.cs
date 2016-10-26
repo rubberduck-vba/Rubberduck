@@ -5,11 +5,12 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System;
 
 namespace Rubberduck.Parsing.Symbols
 {
     [DebuggerDisplay("({IdentifierName}) IsAss:{IsAssignment} | {Selection} ")]
-    public class IdentifierReference
+    public class IdentifierReference : IEquatable<IdentifierReference>
     {
         public IdentifierReference(
             QualifiedModuleName qualifiedName, 
@@ -123,6 +124,24 @@ namespace Rubberduck.Parsing.Symbols
         {
             return QualifiedModuleName == selection.QualifiedName &&
                    Selection.ContainsFirstCharacter(selection.Selection);
+        }
+
+        public bool Equals(IdentifierReference other)
+        {
+            return other != null
+                && other.QualifiedModuleName.Equals(QualifiedModuleName)
+                && other.Selection.Equals(Selection)
+                && other.Declaration.Equals(Declaration);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as IdentifierReference);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Compute(QualifiedModuleName, Selection, Declaration);
         }
     }
 }

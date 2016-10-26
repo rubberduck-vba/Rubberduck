@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IReadOnlyList<IParseTreeListener> _listeners;
         public CombinedParseTreeListener(IEnumerable<IParseTreeListener> listeners)
         {
-            _listeners = listeners.ToList();
+            _listeners = listeners.Where(listener => listener != null).ToList();
         }
 
         public void EnterEveryRule(ParserRuleContext ctx)

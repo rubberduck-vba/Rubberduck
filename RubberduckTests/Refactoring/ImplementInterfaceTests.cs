@@ -6,9 +6,12 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
+using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
+using VBComponent = Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent;
+using VBE = Rubberduck.VBEditor.SafeComWrappers.VBA.VBE;
 
 namespace RubberduckTests.Refactoring
 {
@@ -39,29 +42,82 @@ End Sub
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(new VBComponent(component)), selection);
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
+
+            //Act
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Content());
+        }
+
+        [TestMethod]
+        public void ImplementInterface_Procedure_ClassHasOtherProcedure()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub Foo()
+End Sub";
+
+            const string inputCode2 =
+@"Implements Class1
+Public Sub Bar()
+End Sub";
+
+            var selection = new Selection(1, 1, 1, 1);
+
+            //Expectation
+            const string expectedCode =
+@"Implements Class1
+
+Private Sub Class1_Foo()
+    Err.Raise 5 'TODO implement interface member
+End Sub
+
+Public Sub Bar()
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                 .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -88,29 +144,29 @@ End Sub
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -137,29 +193,29 @@ End Function
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -186,29 +242,29 @@ End Function
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -235,29 +291,29 @@ End Function
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -284,29 +340,29 @@ End Property
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -333,29 +389,29 @@ End Property
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -382,29 +438,29 @@ End Property
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -431,29 +487,29 @@ End Property
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -480,29 +536,29 @@ End Property
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -529,29 +585,29 @@ End Property
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -578,29 +634,29 @@ End Property
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -648,29 +704,106 @@ End Property
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.Item(1);
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            var module = project.Object.VBComponents.Item(1).CodeModule;
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, module.Content());
+        }
+
+        [TestMethod]
+        public void ImplementInterface_AllTypes()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Public Function Fizz(b)
+End Function
+
+Public Property Get Buzz() As Variant
+End Property
+
+Public Property Let Buzz(value)
+End Property
+
+Public Property Set Buzz(value)
+End Property";
+
+            const string inputCode2 =
+@"Implements Class1";
+
+            var selection = new Selection(1, 1, 1, 1);
+
+            //Expectation
+            const string expectedCode =
+@"Implements Class1
+
+Private Sub Class1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+
+Private Function Class1_Fizz(ByRef b As Variant) As Variant
+    Err.Raise 5 'TODO implement interface member
+End Function
+
+Private Property Get Class1_Buzz() As Variant
+    Err.Raise 5 'TODO implement interface member
+End Property
+
+Private Property Let Class1_Buzz(ByRef value As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Property
+
+Private Property Set Class1_Buzz(ByRef value As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Property
+";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                 .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = new VBComponent(project.Object.VBComponents.Item(1));
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module = new CodeModule(project.Object.VBComponents.Item(1).CodeModule);
+
+            //Act
+            var refactoring = new ImplementInterfaceRefactoring(new VBE(vbe.Object), parser.State, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Content());
         }
     }
 }

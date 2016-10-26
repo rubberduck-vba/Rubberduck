@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Rubberduck.UI.FindSymbol"
              mc:Ignorable="d" 
-             d:DesignHeight="24" d:DesignWidth="270">
+             d:DesignHeight="24" d:DesignWidth="270"
+             d:DataContext="{d:DesignInstance {x:Type local:FindSymbolViewModel}, IsDesignTimeCreatable=False}">
 
     <UserControl.CommandBindings>
         <CommandBinding Command="local:FindSymbolControl.GoCommand" 
@@ -19,22 +20,16 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="32" />
         </Grid.ColumnDefinitions>
-        
+
         <ComboBox IsEditable="True"
                   ItemsSource="{Binding MatchResults}"
-                  SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   IsTextSearchCaseSensitive="False"
                   IsTextSearchEnabled="True"
-                  TextSearch.Text="{Binding SearchString, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                  Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   TextSearch.TextPath="IdentifierName"
                   PreviewKeyDown="UIElement_OnPreviewKeyDown">
-            
-            <!--<ComboBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel />
-                </ItemsPanelTemplate>
-            </ComboBox.ItemsPanel>-->
-    
+
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="local:SearchResult">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -46,8 +41,7 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         
-        <Button Grid.Column="1"
-                Command="local:FindSymbolControl.GoCommand">
+        <Button Grid.Column="1" Command="local:FindSymbolControl.GoCommand">
             <Image Height="16" Source="pack://application:,,,/Rubberduck;component/Resources/arrow.png" />
         </Button>
         

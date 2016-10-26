@@ -48,7 +48,16 @@ namespace Rubberduck.Inspections
             get { return string.Format(InspectionsUI.WriteOnlyPropertyInspectionResultFormat, Target.IdentifierName); }
         }
 
-        // todo: override quickfixes
-        //public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get; private set; }
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes
+        {
+            get
+            {
+                return new CodeInspectionQuickFix[]
+                {
+                    new WriteOnlyPropertyQuickFix(Context, Target),
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                };
+            }
+        }
     }
 }

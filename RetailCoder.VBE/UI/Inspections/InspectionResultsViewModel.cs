@@ -8,8 +8,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
@@ -20,6 +18,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -27,12 +26,12 @@ namespace Rubberduck.UI.Inspections
     {
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
         private readonly IOperatingSystem _operatingSystem;
 
-        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
+        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, IVBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
                                           IGeneralConfigService configService, IOperatingSystem operatingSystem)
         {
             _state = state;
@@ -45,12 +44,15 @@ namespace Rubberduck.UI.Inspections
             _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), async param => await Task.Run(() => ExecuteRefreshCommandAsync()), CanExecuteRefreshCommand);
             _disableInspectionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteDisableInspectionCommand);
             _quickFixCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
-            _quickFixInModuleCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInModuleCommand);
-            _quickFixInProjectCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProjectCommand);
+            _quickFixInModuleCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInModuleCommand, _ => _state.Status == ParserState.Ready);
+            _quickFixInProjectCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProjectCommand, _ => _state.Status == ParserState.Ready);
             _copyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             _openSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
             _configService.SettingsChanged += _configService_SettingsChanged;
+            
+            // todo: remove I/O work in constructor
+            _runInspectionsOnReparse = _configService.LoadConfiguration().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
             _setInspectionTypeGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
@@ -68,11 +70,12 @@ namespace Rubberduck.UI.Inspections
         }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
-        {
+        {            
             if (e.InspectionSettingsChanged)
             {
                 RefreshInspections();
             }
+            _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
 
         private ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
@@ -224,14 +227,22 @@ namespace Rubberduck.UI.Inspections
         }
 
         private bool _canQuickFix;
-        public bool CanQuickFix { get { return _canQuickFix; } set { _canQuickFix = value; OnPropertyChanged(); } }
+                public bool CanQuickFix
+        {
+            get { return _canQuickFix; }
+            set
+            {
+                _canQuickFix = value;
+                OnPropertyChanged();
+            }
+        }
 
         private bool _isBusy;
         public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); } }
 
         private async void ExecuteRefreshCommandAsync()
         {
-            CanRefresh = _vbe.HostApplication() != null && _state.IsDirty();
+            CanRefresh = _vbe.HostApplication() != null;
             if (!CanRefresh)
             {
                 return;
@@ -239,24 +250,27 @@ namespace Rubberduck.UI.Inspections
             await Task.Yield();
 
             IsBusy = true;
-            
+
             _state.OnParseRequested(this);
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
         {
-            return !IsBusy && _state.IsDirty();
+            return !IsBusy;
         }
 
+        private bool _runInspectionsOnReparse;
         private void _state_StateChanged(object sender, EventArgs e)
         {
             if (_state.Status != ParserState.Ready)
             {
-                IsBusy = false;
                 return;
             }
 
-            RefreshInspections();
+            if (sender == this || _runInspectionsOnReparse)
+            {
+                RefreshInspections();
+            }
         }
 
         private async void RefreshInspections()
@@ -335,7 +349,7 @@ namespace Rubberduck.UI.Inspections
         private bool CanExecuteQuickFixCommand(object parameter)
         {
             var quickFix = parameter as CodeInspectionQuickFix;
-            return !IsBusy && quickFix != null;
+            return !IsBusy && quickFix != null && _state.Status == ParserState.Ready;
         }
 
         private bool _canExecuteQuickFixInModule;
@@ -461,6 +475,11 @@ namespace Rubberduck.UI.Inspections
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
+            }
+
+            if (_inspector != null)
+            {
+                _inspector.Dispose();
             }
         }
     }

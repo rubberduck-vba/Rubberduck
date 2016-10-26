@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using NLog;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI
 {
@@ -14,12 +14,12 @@ namespace Rubberduck.UI
 
     public abstract class DockableToolwindowPresenter : IPresenter, IDisposable
     {
-        private readonly AddIn _addin;
+        private readonly IAddIn _addin;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly Window _window;
+        private readonly IWindow _window;
         protected readonly UserControl UserControl;
 
-        protected DockableToolwindowPresenter(VBE vbe, AddIn addin, IDockableUserControl view)
+        protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view)
         {
             _vbe = vbe;
             _addin = addin;
@@ -28,25 +28,26 @@ namespace Rubberduck.UI
             _window = CreateToolWindow(view);
         }
 
-        private readonly VBE _vbe;
-        protected VBE VBE { get { return _vbe; } }
+        private readonly IVBE _vbe;
+        protected IVBE VBE { get { return _vbe; } }
 
-        private Window CreateToolWindow(IDockableUserControl control)
+        private object _userControlObject;
+
+        private IWindow CreateToolWindow(IDockableUserControl control)
         {
-            object userControlObject = null;
-            Window toolWindow;
+            IWindow toolWindow;
             try
             {
                 toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId,
-                    control.Caption, control.ClassId, ref userControlObject);
+                    control.Caption, control.ClassId, ref _userControlObject);
             }
             catch (COMException exception)
             {
-                var logEvent = new LogEventInfo(LogLevel.Error, Logger.Name, "Error Creating Control");
-                logEvent.Exception = exception;
-                logEvent.Properties.Add("EventID", 1);
+                //var logEvent = new LogEventInfo(LogLevel.Error, Logger.Name, "Error Creating Control");
+                //logEvent.Exception = exception;
+                //logEvent.Properties.Add("EventID", 1);
 
-                Logger.Error(logEvent);
+                Logger.Error(exception);
                 return null; //throw;
             }
             catch (NullReferenceException exception)
@@ -55,23 +56,23 @@ namespace Rubberduck.UI
                 return null; //throw;
             }
 
-            var userControlHost = (_DockableWindowHost)userControlObject;
-            toolWindow.Visible = true; //window resizing doesn't work without this
+            var userControlHost = (_DockableWindowHost)_userControlObject;
+            toolWindow.IsVisible = true; //window resizing doesn't work without this
 
             EnsureMinimumWindowSize(toolWindow);
 
-            toolWindow.Visible = false; //hide it again
+            toolWindow.IsVisible = false; //hide it again
 
-            userControlHost.AddUserControl(control as UserControl);
+            userControlHost.AddUserControl(control as UserControl, new IntPtr(_vbe.MainWindow.HWnd));
             return toolWindow;
         }
 
-        private void EnsureMinimumWindowSize(Window window)
+        private void EnsureMinimumWindowSize(IWindow window)
         {
             const int defaultWidth = 350;
             const int defaultHeight = 200;
 
-            if (!window.Visible || window.LinkedWindows != null)
+            if (!window.IsVisible || window.LinkedWindows != null)
             {
                 return;
             }
@@ -89,37 +90,56 @@ namespace Rubberduck.UI
 
         public virtual void Show()
         {
-            _window.Visible = true;
+            _window.IsVisible = true;
         }
 
         public void Hide()
         {
-            _window.Visible = false;
+            _window.IsVisible = false;
         }
 
         private bool _disposed;
         public void Dispose()
         {
-            Dispose(_disposed);
-            _disposed = true;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~DockableToolwindowPresenter()
+        {
+            Dispose(false);
         }
 
         public bool IsDisposed { get { return _disposed; } }
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposing) { return; }
-            
+            if (_disposed)
+            {
+                return;
+            }
+            if (disposing && _window != null)
+            {
+                // cleanup unmanaged resource wrappers
+                _window.Close();
+                _window.Release(true);
+            }
+            if (!disposing)
+            {
+                return;
+            }
+
+            if (_userControlObject != null)
+            {
+                ((_DockableWindowHost)_userControlObject).Dispose();
+            }
+            _userControlObject = null;
+
             if (UserControl != null)
             {
                 UserControl.Dispose();
-                GC.SuppressFinalize(UserControl);
             }
 
-            if (_window != null)
-            {
-                _window.Close();
-                Marshal.FinalReleaseComObject(_window);
-            }
+            _disposed = true;
         }
     }
 }

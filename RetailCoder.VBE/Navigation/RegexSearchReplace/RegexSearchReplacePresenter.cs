@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {
     public class RegexSearchReplacePresenter : IPresenter
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IRegexSearchReplaceDialog _view;
         private readonly IRubberduckParser _parser;
 
-        public RegexSearchReplacePresenter(VBE vbe, IRubberduckParser parser/*, IRegexSearchReplaceDialog view*/)
+        public RegexSearchReplacePresenter(IVBE vbe, IRubberduckParser parser/*, IRegexSearchReplaceDialog view*/)
         {
             _vbe = vbe;
             //_view = view;
@@ -47,19 +46,19 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private void _view_FindButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser, new CodePaneWrapperFactory());
+            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser);
             OnFindButtonResults(regexSearchReplace.Search(_view.SearchPattern, _view.Scope));
         }
 
         private void _view_ReplaceButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser, new CodePaneWrapperFactory());
+            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser);
             regexSearchReplace.Replace(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 
         private void _view_ReplaceAllButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser, new CodePaneWrapperFactory());
+            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser);
             regexSearchReplace.ReplaceAll(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 

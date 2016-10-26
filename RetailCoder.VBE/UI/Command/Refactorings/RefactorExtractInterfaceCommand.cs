@@ -1,10 +1,10 @@
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -14,29 +14,16 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public RefactorExtractInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
             :base(vbe)
         {
             _state = state;
             _messageBox = messageBox;
         }
 
-        private static readonly vbext_ComponentType[] ModuleTypes =
-        {
-            vbext_ComponentType.vbext_ct_ClassModule, 
-            vbext_ComponentType.vbext_ct_Document, 
-            vbext_ComponentType.vbext_ct_MSForm, 
-        };
-
         protected override bool CanExecuteImpl(object parameter)
         {
-            var activePane = Vbe.ActiveCodePane;
-            if (activePane == null)
-            {
-                return false;
-            }
-
-            var selection = activePane.GetQualifiedSelection();
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
             if (!selection.HasValue)
             {
                 return false;
@@ -49,9 +36,7 @@ namespace Rubberduck.UI.Command.Refactorings
             var hasMembers = _state.AllUserDeclarations.Any(item => item.DeclarationType.HasFlag(DeclarationType.Member) && item.ParentDeclaration != null && item.ParentDeclaration.Equals(target));
 
             // true if active code pane is for a class/document/form module
-            var canExecute = ModuleTypes.Contains(Vbe.ActiveCodePane.CodeModule.Parent.Type) && target != null && hasMembers;
-
-            return canExecute;
+            return target != null && hasMembers;
         }
 
         protected override void ExecuteImpl(object parameter)

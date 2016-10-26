@@ -31,6 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.SldWorks.Extensibility">
+      <HintPath>..\libs\Interop.SldWorks.Extensibility.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.SldWorks.Types">
+      <HintPath>..\libs\Interop.SldWorks.Types.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Access, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
@@ -83,25 +91,130 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Office.Interop.Word.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VB6.Interop.VBIDE">
+      <HintPath>..\libs\Microsoft.VB6.Interop.VBIDE.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
+    </Reference>
     <Reference Include="office">
       <HintPath>..\libs\Office.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DocumentEventHandlerPrefixes.cs" />
-    <Compile Include="Extensions\CodeModuleExtensions.cs" />
-    <Compile Include="CodeModuleSelection.cs" />
-    <Compile Include="Extensions\CodePaneExtensions.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
+    <Compile Include="SafeComWrappers\MSForms\ControlType.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICodePanes.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarButton.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ILinkedWindows.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IReference.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IReferences.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBComponent.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBComponents.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBProject.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBProjects.cs" />
+    <Compile Include="HashCode.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\AxHostConverter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SafeComWrappers\MSForms\ButtonState.cs" />
+    <Compile Include="SafeComWrappers\MSForms\ButtonStyle.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\CommandBar.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\CommandBarButton.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\CommandBarButtonClickEventArgs.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\CommandBarControl.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\CommandBarControls.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\CommandBarPopup.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\CommandBarPosition.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\CommandBars.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\CommandBarType.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBar.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarControl.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarControls.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarPopup.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBars.cs" />
+    <Compile Include="SafeComWrappers\VB6\AddIn.cs" />
+    <Compile Include="SafeComWrappers\VB6\AddIns.cs" />
+    <Compile Include="SafeComWrappers\VB6\Application.cs" />
+    <Compile Include="SafeComWrappers\VB6\CodeModule.cs" />
+    <Compile Include="SafeComWrappers\VB6\CodePane.cs" />
+    <Compile Include="SafeComWrappers\VB6\CodePanes.cs" />
+    <Compile Include="SafeComWrappers\VB6\Control.cs" />
+    <Compile Include="SafeComWrappers\VB6\Controls.cs" />
+    <Compile Include="SafeComWrappers\VB6\LinkedWindows.cs" />
+    <Compile Include="SafeComWrappers\VB6\Properties.cs" />
+    <Compile Include="SafeComWrappers\VB6\Property.cs" />
+    <Compile Include="SafeComWrappers\VB6\Reference.cs" />
+    <Compile Include="SafeComWrappers\VB6\References.cs" />
+    <Compile Include="SafeComWrappers\VB6\VBComponent.cs" />
+    <Compile Include="SafeComWrappers\VB6\VBComponents.cs" />
+    <Compile Include="SafeComWrappers\VB6\VBE.cs" />
+    <Compile Include="SafeComWrappers\VB6\VBProject.cs" />
+    <Compile Include="SafeComWrappers\VB6\VBProjects.cs" />
+    <Compile Include="SafeComWrappers\VB6\Window.cs" />
+    <Compile Include="SafeComWrappers\VB6\Windows.cs" />
+    <Compile Include="SafeComWrappers\VBA\AddIn.cs" />
+    <Compile Include="SafeComWrappers\VBA\AddIns.cs" />
+    <Compile Include="SafeComWrappers\VBA\Application.cs" />
+    <Compile Include="SafeComWrappers\VBA\CodeModule.cs" />
+    <Compile Include="SafeComWrappers\VBA\CodePane.cs" />
+    <Compile Include="SafeComWrappers\VBA\CodePanes.cs" />
+    <Compile Include="SafeComWrappers\CodePaneView.cs" />
+    <Compile Include="SafeComWrappers\ComponentType.cs" />
+    <Compile Include="SafeComWrappers\VBA\Control.cs" />
+    <Compile Include="SafeComWrappers\VBA\Controls.cs" />
+    <Compile Include="SafeComWrappers\EnvironmentMode.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IVBE.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IAddIn.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IComCollection.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IAddIns.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IApplication.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IWindow.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IWindows.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICodeModule.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ICodePane.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\Abstract\IControl.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\Abstract\IControls.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IProperty.cs" />
+    <Compile Include="SafeComWrappers\Abstract\IProperties.cs" />
+    <Compile Include="SafeComWrappers\VBA\Properties.cs" />
+    <Compile Include="SafeComWrappers\VBA\Property.cs" />
+    <Compile Include="SafeComWrappers\ReferenceEventArgs.cs" />
+    <Compile Include="SafeComWrappers\VBA\LinkedWindows.cs" />
+    <Compile Include="SafeComWrappers\ProcKind.cs" />
+    <Compile Include="SafeComWrappers\ProjectProtection.cs" />
+    <Compile Include="SafeComWrappers\ProjectType.cs" />
+    <Compile Include="SafeComWrappers\VBA\Reference.cs" />
+    <Compile Include="SafeComWrappers\ReferenceKind.cs" />
+    <Compile Include="SafeComWrappers\VBA\References.cs" />
+    <Compile Include="SafeComWrappers\VBA\VBComponent.cs" />
+    <Compile Include="SafeComWrappers\VBA\VBComponents.cs" />
+    <Compile Include="SafeComWrappers\VBA\VBProject.cs" />
+    <Compile Include="SafeComWrappers\ComWrapperEnumerator.cs" />
+    <Compile Include="SafeComWrappers\VBA\VBProjects.cs" />
+    <Compile Include="SafeComWrappers\VBA\Window.cs" />
+    <Compile Include="SafeComWrappers\MSForms\WindowKind.cs" />
+    <Compile Include="SafeComWrappers\VBA\Windows.cs" />
+    <Compile Include="SafeComWrappers\MSForms\WindowState.cs" />
+    <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
+    <Compile Include="SafeComWrappers\VBA\VBE.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="QualifiedMemberName.cs" />
     <Compile Include="QualifiedModuleName.cs" />
@@ -109,47 +222,39 @@
     <Compile Include="Selection.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="SubClassingWindowEventArgs.cs" />
-    <Compile Include="Extensions\VBComponentExtensions.cs" />
-    <Compile Include="Extensions\VBComponentsExtensions.cs" />
-    <Compile Include="Extensions\VbeExtensions.cs" />
+    <Compile Include="Extensions\ComponentTypeExtensions.cs" />
+    <Compile Include="Extensions\IDEExtensions.cs" />
     <Compile Include="VBEEditorText.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>VBEEditorText.resx</DependentUpon>
     </Compile>
-    <Compile Include="VBEHost\AccessApp.cs" />
-    <Compile Include="VBEHost\CorelDRAWApp.cs" />
-    <Compile Include="VBEHost\ProjectApp.cs" />
-    <Compile Include="VBEHost\ExcelApp.cs" />
-    <Compile Include="VBEHost\FallbackApp.cs" />
-    <Compile Include="VBEHost\HostApplicationBase.cs" />
-    <Compile Include="VBEHost\IHostApplication.cs" />
-    <Compile Include="VBEHost\OutlookApp.cs" />
-    <Compile Include="VBEHost\PowerPointApp.cs" />
-    <Compile Include="VBEHost\PublisherApp.cs" />
-    <Compile Include="VBEHost\Visio.cs" />
-    <Compile Include="VBEHost\WordApp.cs" />
-    <Compile Include="VBEHost\AutoCADApp.cs" />
-    <Compile Include="Extensions\VbProjectExtensions.cs" />
+    <Compile Include="Application\AccessApp.cs" />
+    <Compile Include="Application\CorelDRAWApp.cs" />
+    <Compile Include="Application\ProjectApp.cs" />
+    <Compile Include="Application\ExcelApp.cs" />
+    <Compile Include="Application\FallbackApp.cs" />
+    <Compile Include="Application\HostApplicationBase.cs" />
+    <Compile Include="Application\IHostApplication.cs" />
+    <Compile Include="Application\OutlookApp.cs" />
+    <Compile Include="Application\PowerPointApp.cs" />
+    <Compile Include="Application\PublisherApp.cs" />
+    <Compile Include="Application\SolidWorksApp.cs" />
+    <Compile Include="Application\Visio.cs" />
+    <Compile Include="Application\WordApp.cs" />
+    <Compile Include="Application\AutoCADApp.cs" />
+    <Compile Include="Extensions\VBProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extensions\WindowExtensions.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodeModule\CodeModuleWrapper.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodeModule\ICodeModuleWrapper.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapper.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapperFactory.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapperFactory.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="VBEEditorText.de.resx" />
     <EmbeddedResource Include="VBEEditorText.fr.resx" />
-    <EmbeddedResource Include="VBEEditorText.ja.resx" />
     <EmbeddedResource Include="VBEEditorText.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>VBEEditorText.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="VBEEditorText.sv.resx" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

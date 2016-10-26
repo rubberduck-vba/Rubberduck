@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
@@ -13,6 +15,7 @@ namespace Rubberduck.Parsing.Symbols
             string asTypeName,
             VBAParser.AsTypeClauseContext asTypeContext,
             string typeHint,
+            IEnumerable<IAnnotation> annotations,
             Accessibility accessibility, 
             DeclarationType declarationType, 
             string value)
@@ -23,6 +26,7 @@ namespace Rubberduck.Parsing.Symbols
                   asTypeName,
                   asTypeContext,
                   typeHint,
+                  annotations,
                   accessibility, 
                   declarationType, 
                   value, 
@@ -39,6 +43,7 @@ namespace Rubberduck.Parsing.Symbols
             string asTypeName,
             VBAParser.AsTypeClauseContext asTypeContext,
             string typeHint,
+            IEnumerable<IAnnotation> annotations,
             Accessibility accessibility, 
             DeclarationType declarationType,
             string value,
@@ -59,7 +64,8 @@ namespace Rubberduck.Parsing.Symbols
                  selection,
                  false,
                  asTypeContext,
-                 isBuiltIn)
+                 isBuiltIn,
+                 annotations)
         {
             _expression = value;
         }

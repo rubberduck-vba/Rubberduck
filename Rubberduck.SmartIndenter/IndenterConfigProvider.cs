@@ -2,15 +2,7 @@
 
 namespace Rubberduck.SmartIndenter
 {
-    public interface IIndenterConfigProvider
-    {
-        IndenterSettings Create();
-        IndenterSettings CreateDefaults();
-
-        void Save(IndenterSettings settings);
-    }
-
-    public class IndenterConfigProvider : IIndenterConfigProvider
+    public class IndenterConfigProvider : IConfigProvider<IndenterSettings>
     {
         private readonly IPersistanceService<IndenterSettings> _persister;
 

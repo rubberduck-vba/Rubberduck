@@ -4,19 +4,19 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
     public class TestExplorerModel : ViewModelBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly Dispatcher _dispatcher;
 
-        public TestExplorerModel(VBE vbe, RubberduckParserState state)
+        public TestExplorerModel(IVBE vbe, RubberduckParserState state)
         {
             _vbe = vbe;
             _state = state;
@@ -31,7 +31,7 @@ namespace Rubberduck.UI.UnitTesting
 
             _dispatcher.Invoke(() =>
             {
-                var tests = UnitTestHelpers.GetAllTests(_vbe, _state).ToList();
+                var tests = UnitTestUtils.GetAllTests(_vbe, _state).ToList();
 
                 var removedTests = Tests.Where(test =>
                              !tests.Any(t =>

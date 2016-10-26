@@ -22,10 +22,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public ExtractInterfaceModel Show()
         {
-            if (_model.TargetDeclaration == null) { return null; }
+            if (_model.TargetDeclaration == null)
+            {
+                return null;
+            }
 
             _view.ComponentNames =
-                _model.TargetDeclaration.Project.VBComponents.Cast<VBComponent>().Select(c => c.Name).ToList();
+                _model.TargetDeclaration.Project.VBComponents.Select(c => c.Name).ToList();
             _view.InterfaceName = _model.InterfaceName;
             _view.Members = _model.Members;
 

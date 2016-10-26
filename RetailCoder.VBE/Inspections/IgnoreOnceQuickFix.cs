@@ -22,22 +22,24 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            var codeModule = Selection.QualifiedName.Component.CodeModule;
-            var insertLine = Selection.Selection.StartLine;
-
-            var codeLine = insertLine == 1 ? string.Empty : codeModule.get_Lines(insertLine - 1, 1);
-            var annotationText = _annotationText;
-            var ignoreAnnotation = "'" + Parsing.Grammar.Annotations.AnnotationMarker + Parsing.Grammar.Annotations.IgnoreInspection;
-
-            int commentStart;
-            if (codeLine.HasComment(out commentStart) && codeLine.Substring(commentStart).StartsWith(ignoreAnnotation))
+            var module = Selection.QualifiedName.Component.CodeModule;
             {
-                annotationText = codeLine + ", " + _inspectionName;
-                codeModule.ReplaceLine(insertLine - 1, annotationText);
-            }
-            else
-            {
-                codeModule.InsertLines(insertLine, annotationText);
+                var insertLine = Selection.Selection.StartLine;
+
+                var codeLine = insertLine == 1 ? string.Empty : module.GetLines(insertLine - 1, 1);
+                var annotationText = _annotationText;
+                var ignoreAnnotation = "'" + Parsing.Grammar.Annotations.AnnotationMarker + Parsing.Grammar.Annotations.IgnoreInspection;
+
+                int commentStart;
+                if (codeLine.HasComment(out commentStart) && codeLine.Substring(commentStart).StartsWith(ignoreAnnotation))
+                {
+                    annotationText = codeLine + ", " + _inspectionName;
+                    module.ReplaceLine(insertLine - 1, annotationText);
+                }
+                else
+                {
+                    module.InsertLines(insertLine, annotationText);
+                }
             }
         }
     }

@@ -5,14 +5,14 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
-using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using Rubberduck.VBEditor.Application;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.SourceControl
@@ -34,7 +34,7 @@ namespace RubberduckTests.SourceControl
         private UnsyncedCommitsViewViewModel _unsyncedVM;
         private SettingsViewViewModel _settingsVM;
 
-        private Mock<ISourceControlConfigProvider> _configService;
+        private Mock<IConfigProvider<SourceControlSettings>> _configService;
 
         private Mock<IFolderBrowserFactory> _folderBrowserFactory;
         private Mock<IFolderBrowser> _folderBrowser;
@@ -52,7 +52,7 @@ namespace RubberduckTests.SourceControl
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            _configService = new Mock<ISourceControlConfigProvider>();
+            _configService = new Mock<IConfigProvider<SourceControlSettings>>();
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             _folderBrowser = new Mock<IFolderBrowser>();
@@ -76,11 +76,11 @@ namespace RubberduckTests.SourceControl
             _provider.Setup(git => git.CurrentRepository).Returns(GetDummyRepo());
 
             _providerFactory = new Mock<ISourceControlProviderFactory>();
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.SafeComWrappers.VBA.VBProject>()))
                 .Returns(_provider.Object);
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<ICodePaneWrapperFactory>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.SafeComWrappers.VBA.VBProject>(), It.IsAny<IRepository>()))
                 .Returns(_provider.Object);
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>(), It.IsAny<ICodePaneWrapperFactory>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.SafeComWrappers.VBA.VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()))
                 .Returns(_provider.Object);
 
             _changesVM = new ChangesViewViewModel();
@@ -110,9 +110,17 @@ namespace RubberduckTests.SourceControl
 
         private void SetupVM()
         {
-            _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(_vbe.Object, new Mock<ISinks>().Object), new Mock<ISinks>().Object, _providerFactory.Object, _folderBrowserFactory.Object,
-                _configService.Object, new ChangesView(_changesVM), new BranchesView(_branchesVM),
-                new UnsyncedCommitsView(_unsyncedVM), new SettingsView(_settingsVM), new CodePaneWrapperFactory(), new Mock<IMessageBox>().Object);
+            var views = new List<IControlView>
+            {
+                new ChangesView(_changesVM),
+                new BranchesView(_branchesVM),
+                new UnsyncedCommitsView(_unsyncedVM),
+                new SettingsView(_settingsVM)
+            };
+
+            var vbe = new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(_vbe.Object);
+            _vm = new SourceControlViewViewModel(vbe, new RubberduckParserState(new Mock<ISinks>().Object), new Mock<ISinks>().Object, _providerFactory.Object, _folderBrowserFactory.Object,
+                _configService.Object, views, new Mock<IMessageBox>().Object);
         }
 
         [TestMethod]
@@ -492,7 +500,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
 
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<ICodePaneWrapperFactory>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.SafeComWrappers.VBA.VBProject>(), It.IsAny<IRepository>()))
                 .Throws(new SourceControlException(expectedTitle,
                     new LibGit2Sharp.LibGit2SharpException(expectedMessage))
                     );
@@ -601,7 +609,7 @@ namespace RubberduckTests.SourceControl
             _vm.CreateProviderWithCredentials(new SecureCredentials(username, password));
 
             //assert
-            _providerFactory.Verify(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>(), It.IsAny<ICodePaneWrapperFactory>()));
+            _providerFactory.Verify(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.SafeComWrappers.VBA.VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()));
         }
 
         [TestMethod]
@@ -921,7 +929,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
 
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<ICodePaneWrapperFactory>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<Rubberduck.VBEditor.SafeComWrappers.VBA.VBProject>(), It.IsAny<IRepository>()))
                 .Throws(new SourceControlException(expectedTitle,
                     new LibGit2Sharp.LibGit2SharpException(expectedMessage))
                     );

@@ -338,10 +338,10 @@
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Refactor</value>
   </data>
-  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
+  <data name="ToolsMenu_SourceControl" xml:space="preserve">
     <value>&amp;Source Control</value>
   </data>
-  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
+  <data name="ToolsMenu_TodoItems" xml:space="preserve">
     <value>To&amp;Do Items</value>
   </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
@@ -493,9 +493,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="Language_FR" xml:space="preserve">
     <value>French</value>
-  </data>
-  <data name="Language_JA" xml:space="preserve">
-    <value>Japanese</value>
   </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Remove Parameters</value>
@@ -715,9 +712,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Rename {0}</value>
-  </data>
-  <data name="Language_SV" xml:space="preserve">
-    <value>Swedish</value>
   </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
@@ -1485,7 +1479,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Find symbol</value>
   </data>
   <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
-    <value>Move declaration closer to usage</value>
+    <value>Refactor / Move declaration closer to usage</value>
   </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rege&amp;x Search/Replace</value>
@@ -1565,9 +1559,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SortStyle_ByCodeOrder" xml:space="preserve">
     <value>By code order</value>
   </data>
-  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
-    <value>Refresh component</value>
-  </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignored</value>
   </data>
@@ -1578,7 +1569,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Parser Errors</value>
   </data>
   <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimum Log Level</value>
+    <value>Minimum Log Level:</value>
   </data>
   <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
     <value>Debug</value>
@@ -1719,7 +1710,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Publish Existing Repository</value>
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
-    <value>Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file to our GitHub page.</value>
+    <value>Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file located at "C:\Users\{username}\AppData\Roaming\Rubberduck\Logs\RubberduckLog.txt" to a GitHub issue at "https://github.com/rubberduck-vba/Rubberduck/issues/new".</value>
   </data>
   <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
     <value>Test Method (&amp;Expected Error)</value>
@@ -1756,5 +1747,71 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="ReferenceBrowser_VBA" xml:space="preserve">
     <value>VBA</value>
+  </data>
+  <data name="HotkeyDescription_SourceControl" xml:space="preserve">
+    <value>Source Control</value>
+  </data>
+  <data name="RegexAssistant_Caption" xml:space="preserve">
+    <value>Rubberduck - Regex Analyzer</value>
+  </data>
+  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
+    <value>Global</value>
+  </data>
+  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
+    <value>Ignore case</value>
+  </data>
+  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
+    <value>Pattern</value>
+  </data>
+  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
+    <value>Regex &amp;Assistant</value>
+  </data>
+  <data name="ToolsMenu" xml:space="preserve">
+    <value>T&amp;ools</value>
+  </data>
+  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
+    <value>(no pattern)</value>
+  </data>
+  <data name="RegexAssistant_Instructions" xml:space="preserve">
+    <value>Enter a regular expression to analyze in the box below.</value>
+  </data>
+  <data name="RegexAssistant_Title" xml:space="preserve">
+    <value>Regular Expression Analyzer</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Whitelisted Identifiers</value>
+  </data>
+  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Inspection Severities</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>These identifiers will be ignored by the 'Use meaningful names' inspection</value>
+  </data>
+  <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
+    <value>Refactor / Encapsulate Field</value>
+  </data>
+  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
+    <value>Collapse node and all child nodes</value>
+  </data>
+  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
+    <value>Expand node and all child nodes</value>
+  </data>
+  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
+    <value>Miscellaneous</value>
+  </data>
+  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
+    <value>Run inspections automatically on successful parse</value>
+  </data>
+  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
+    <value>Show splash screen at startup</value>
+  </data>
+  <data name="RubberduckReloadFailure_Message" xml:space="preserve">
+    <value>Toolwindows were not correctly destroyed and/or could not be recreated; the VBE may not be in a stable state. Rubberduck will load normally next time the VBE is initialized.</value>
+  </data>
+  <data name="RubberduckReloadFailure_Title" xml:space="preserve">
+    <value>Rubberduck will not reload</value>
   </data>
 </root>

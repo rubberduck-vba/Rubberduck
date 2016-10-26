@@ -1503,6 +1503,19 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//udtMember", matches => matches.Count == 13);
         }
 
+        [TestMethod]
+        public void TestNestedParensForByValArgument()
+        {
+            Assert.Inconclusive("See issue #");
+            const string code = @"
+Sub Test()
+    DoSomething (foo), (bar)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);

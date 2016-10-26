@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -10,12 +10,13 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ParameterCanBeByValInspectionResult(IInspection inspection, Declaration target, ParserRuleContext context, QualifiedMemberName qualifiedName)
+        public ParameterCanBeByValInspectionResult(IInspection inspection, RubberduckParserState state, Declaration target, ParserRuleContext context, QualifiedMemberName qualifiedName)
             : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                new PassParameterByValueQuickFix(Context, QualifiedSelection), 
+                new PassParameterByValueQuickFix(state, Target, Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, inspection.AnnotationName)
             };
         }
 
@@ -24,27 +25,6 @@ namespace Rubberduck.Inspections
         public override string Description
         {
             get { return string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, Target.IdentifierName); }
-        }
-    }
-
-    public class PassParameterByValueQuickFix : CodeInspectionQuickFix
-    {
-        public PassParameterByValueQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.PassParameterByValueQuickFix)
-        {
-        }
-
-        public override void Fix()
-        {
-            var parameter = Context.Parent.GetText();
-            var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
-            var selection = Selection.Selection;
-
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var lines = module.Lines[selection.StartLine, selection.LineCount];
-
-            var result = lines.Replace(parameter, newContent);
-            module.ReplaceLine(selection.StartLine, result);
         }
     }
 }

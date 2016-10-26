@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
-using Rubberduck.VBEditor.Extensions;
 using System.IO;
 using NLog;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using System.Runtime.InteropServices;
 // ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
@@ -21,31 +22,35 @@ namespace Rubberduck.Parsing.VBA
     {
         public RubberduckParserState State { get { return _state; } }
         
-        private readonly ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks =
-            new ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>>();
+        private readonly ConcurrentDictionary<IVBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks =
+            new ConcurrentDictionary<IVBComponent, Tuple<Task, CancellationTokenSource>>();
 
-        private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
-            = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
+        private readonly IDictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
+            = new Dictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
 
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
         private readonly IEnumerable<ICustomDeclarationLoader> _customDeclarationLoaders;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        private readonly bool _isTestScope;
+
         public RubberduckParser(
-            VBE vbe,
+            IVBE vbe,
             RubberduckParserState state,
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
-            IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders)
+            IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders,
+            bool isTestScope = false)
         {
             _vbe = vbe;
             _state = state;
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
+            _isTestScope = isTestScope;
 
             state.ParseRequest += ReparseRequested;
         }
@@ -55,49 +60,16 @@ namespace Rubberduck.Parsing.VBA
         // but the cancelees need to use their own token.
         private readonly List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource> {new CancellationTokenSource()};
 
-        private void ReparseRequested(object sender, ParseRequestEventArgs e)
+        private void ReparseRequested(object sender, EventArgs e)
         {
-            if (e.IsFullReparseRequest)
+            if (!_isTestScope)
             {
                 Cancel();
-                Task.Run(() => ParseAll(_cancellationTokens[0]));
+                Task.Run(() => ParseAll(sender, _cancellationTokens[0]));
             }
             else
             {
-                Cancel(e.Component);
-                Task.Run(() =>
-                {
-                    State.SetModuleState(e.Component, ParserState.Pending);
-
-                    SyncComReferences(State.Projects);
-                    AddBuiltInDeclarations();
-
-                    if (_cancellationTokens[0].IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    ParseAsync(e.Component, _cancellationTokens[0]).Wait();
-
-                    if (_cancellationTokens[0].IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    if (State.Status == ParserState.Error) { return; }
-
-                    var qualifiedName = new QualifiedModuleName(e.Component);
-
-                    State.SetModuleState(e.Component, ParserState.ResolvingDeclarations);
-                    ResolveDeclarations(qualifiedName.Component,
-                        State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
-                    
-                    if (State.Status < ParserState.Error)
-                    {
-                        State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
-                        ResolveReferencesAsync(_cancellationTokens[0].Token);
-                    }
-                });
+                Parse(_cancellationTokens[0]);
             }
         }
 
@@ -106,18 +78,12 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void Parse(CancellationTokenSource token)
         {
-            if (State.Projects.Count == 0)
-            {
-                foreach (var project in _vbe.VBProjects.UnprotectedProjects())
-                {
-                    State.AddProject(project.HelpFile);
-                }
-            }
+            State.RefreshProjects(_vbe);
 
-            var components = new List<VBComponent>();
+            var components = new List<IVBComponent>();
             foreach (var project in State.Projects)
             {
-                foreach (VBComponent component in project.VBComponents)
+                foreach (var component in project.VBComponents)
                 {
                     components.Add(component);
                 }
@@ -178,28 +144,23 @@ namespace Rubberduck.Parsing.VBA
 
             if (State.Status < ParserState.Error)
             {
-                State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+                State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
                 Task.WaitAll(ResolveReferencesAsync(token.Token));
+                State.RebuildSelectionCache();
             }
         }
 
         /// <summary>
         /// Starts parsing all components of all unprotected VBProjects associated with the VBE-Instance passed to the constructor of this parser instance.
         /// </summary>
-        private void ParseAll(CancellationTokenSource token)
+        private void ParseAll(object requestor, CancellationTokenSource token)
         {
-            if (State.Projects.Count == 0)
-            {
-                foreach (var project in _vbe.VBProjects.UnprotectedProjects())
-                {
-                    State.AddProject(project.HelpFile);
-                }
-            }
+            State.RefreshProjects(_vbe);
 
-            var components = new List<VBComponent>();
+            var components = new List<IVBComponent>();
             foreach (var project in State.Projects)
             {
-                foreach (VBComponent component in project.VBComponents)
+                foreach (IVBComponent component in project.VBComponents)
                 {
                     components.Add(component);
                 }
@@ -231,8 +192,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var toParse = new List<VBComponent>();
-
+            var toParse = new List<IVBComponent>();
             foreach (var component in components)
             {
                 if (State.IsNewOrModified(component))
@@ -245,10 +205,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (componentsRemoved)  // trigger UI updates
                 {
-                    State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
+                    State.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations);
                 }
 
-                State.SetStatusAndFireStateChanged(State.Status);
+                State.SetStatusAndFireStateChanged(requestor, State.Status);
                 return;
             }
             
@@ -310,10 +270,18 @@ namespace Rubberduck.Parsing.VBA
 
             Task.WaitAll(parseTasks);
 
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+            
+            Debug.Assert(State.ParseTrees.Count == components.Count);
+
             if (State.Status < ParserState.Error)
             {
-                State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
-                ResolveReferencesAsync(token.Token);
+                State.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations);
+                Task.WaitAll(ResolveReferencesAsync(token.Token));
+                State.RebuildSelectionCache();
             }
         }
 
@@ -349,6 +317,13 @@ namespace Rubberduck.Parsing.VBA
                     State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
 
                     ResolveReferences(finder, kvp.Key.Component, kvp.Value);
+                }, token)
+                .ContinueWith(t =>
+                {
+                    foreach (var declaration in finder.Undeclared)
+                    {
+                        State.AddDeclaration(declaration);
+                    }
                 }, token);
             }
 
@@ -368,9 +343,9 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
 
-        private string GetReferenceProjectId(Reference reference, IReadOnlyList<VBProject> projects)
+        private string GetReferenceProjectId(IReference reference, IReadOnlyList<IVBProject> projects)
         {
-            VBProject project = null;
+            IVBProject project = null;
             foreach (var item in projects)
             {
                 try
@@ -384,66 +359,73 @@ namespace Rubberduck.Parsing.VBA
                 {
                     // Filename throws exception if unsaved.
                 }
+                catch (COMException e)
+                {
+                    Logger.Warn(e);
+                }
             }
             
             if (project != null)
             {
-                return QualifiedModuleName.GetProjectId(project);
+                project.AssignProjectId();
             }
             return QualifiedModuleName.GetProjectId(reference);
         }
 
-        private void SyncComReferences(IReadOnlyList<VBProject> projects)
+        private void SyncComReferences(IReadOnlyList<IVBProject> projects)
         {
             var loadTasks = new List<Task>();
 
             foreach (var vbProject in projects)
             {
                 var projectId = QualifiedModuleName.GetProjectId(vbProject);
-                // use a 'for' loop to store the order of references as a 'priority'.
-                // reference resolver needs this to know which declaration to prioritize when a global identifier exists in multiple libraries.
-                for (var priority = 1; priority <= vbProject.References.Count; priority++)
+                var references = vbProject.References;
                 {
-                    var reference = vbProject.References.Item(priority);
-                    var referencedProjectId = GetReferenceProjectId(reference, projects);
-
-                    ReferencePriorityMap map = null;
-                    foreach (var item in _projectReferences)
+                    // use a 'for' loop to store the order of references as a 'priority'.
+                    // reference resolver needs this to know which declaration to prioritize when a global identifier exists in multiple libraries.
+                    for (var priority = 1; priority <= references.Count; priority++)
                     {
-                        if (item.ReferencedProjectId == referencedProjectId)
+                        var reference = references[priority];
+                        var referencedProjectId = GetReferenceProjectId(reference, projects);
+
+                        ReferencePriorityMap map = null;
+                        foreach (var item in _projectReferences)
                         {
-                            map = map != null ? null : item;
-                        }
-                    }
-
-                    if (map == null)
-                    {
-                        map = new ReferencePriorityMap(referencedProjectId) { { projectId, priority } };
-                        _projectReferences.Add(map);
-                    }
-                    else
-                    {
-                        map[projectId] = priority;
-                    }
-
-                    if (!map.IsLoaded)
-                    {
-                        State.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
-
-                        var tightlyScopedCapture = reference;
-
-                        loadTasks.Add(
-                        Task.Run(() =>
-                        {
-                            var comReflector = new ReferencedDeclarationsCollector(State);
-                            var items = comReflector.GetDeclarationsForReference(tightlyScopedCapture);
-
-                            foreach (var declaration in items)
+                            if (item.ReferencedProjectId == referencedProjectId)
                             {
-                                State.AddDeclaration(declaration);
+                                map = map != null ? null : item;
                             }
-                        }));
-                        map.IsLoaded = true;
+                        }
+
+                        if (map == null)
+                        {
+                            map = new ReferencePriorityMap(referencedProjectId) {{projectId, priority}};
+                            _projectReferences.Add(map);
+                        }
+                        else
+                        {
+                            map[projectId] = priority;
+                        }
+
+                        if (!map.IsLoaded)
+                        {
+                            State.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
+
+                            var localReference = reference;
+
+                            loadTasks.Add(
+                                Task.Run(() =>
+                                {
+                                    var comReflector = new ReferencedDeclarationsCollector(State);
+                                    var items = comReflector.GetDeclarationsForReference(localReference);
+
+                                    foreach (var declaration in items)
+                                    {
+                                        State.AddDeclaration(declaration);
+                                    }
+                                }));
+                            map.IsLoaded = true;
+                        }
                     }
                 }
             }
@@ -454,14 +436,17 @@ namespace Rubberduck.Parsing.VBA
                 mappedIds.Add(item.ReferencedProjectId);
             }
 
-            var unmapped = new List<Reference>();
+            var unmapped = new List<IReference>();
             foreach (var project in projects)
             {
-                foreach (Reference item in project.References)
+                var references = project.References;
                 {
-                    if (!mappedIds.Contains(GetReferenceProjectId(item, projects)))
+                    foreach (var item in references)
                     {
-                        unmapped.Add(item);
+                        if (!mappedIds.Contains(GetReferenceProjectId(item, projects)))
+                        {
+                            unmapped.Add(item);
+                        }
                     }
                 }
             }
@@ -474,7 +459,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void UnloadComReference(Reference reference, IReadOnlyList<VBProject> projects)
+        private void UnloadComReference(IReference reference, IReadOnlyList<IVBProject> projects)
         {
             var referencedProjectId = GetReferenceProjectId(reference, projects);
 
@@ -501,7 +486,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private Task ParseAsync(VBComponent component, CancellationTokenSource token, TokenStreamRewriter rewriter = null)
+        private Task ParseAsync(IVBComponent component, CancellationTokenSource token, TokenStreamRewriter rewriter = null)
         {
             State.ClearStateCache(component);
 
@@ -515,33 +500,19 @@ namespace Rubberduck.Parsing.VBA
             return task;
         }
 
-        public void Cancel(VBComponent component = null)
+        private void Cancel()
         {
             lock (_cancellationTokens[0])
             {
-                if (component == null)
-                {
-                    _cancellationTokens[0].Cancel();
+                _cancellationTokens[0].Cancel();
 
-                    _cancellationTokens[0].Dispose();
-                    _cancellationTokens.Add(new CancellationTokenSource());
-                    _cancellationTokens.RemoveAt(0);
-                }
-                else
-                {
-                    _cancellationTokens[0].Cancel();
-                    
-                    Tuple<Task, CancellationTokenSource> result;
-                    if (_currentTasks.TryGetValue(component, out result))
-                    {
-                        result.Item2.Cancel();
-                        result.Item2.Dispose();
-                    }
-                }
+                _cancellationTokens[0].Dispose();
+                _cancellationTokens.Add(new CancellationTokenSource());
+                _cancellationTokens.RemoveAt(0);
             }
         }
 
-        private void ParseAsyncInternal(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
+        private void ParseAsyncInternal(IVBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
             var preprocessor = _preprocessorFactory();
             var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
@@ -570,7 +541,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private readonly ConcurrentDictionary<string, Declaration> _projectDeclarations = new ConcurrentDictionary<string, Declaration>();
-        private void ResolveDeclarations(VBComponent component, IParseTree tree)
+        private void ResolveDeclarations(IVBComponent component, IParseTree tree)
         {
             if (component == null) { return; }
 
@@ -606,7 +577,7 @@ namespace Rubberduck.Parsing.VBA
             Logger.Debug("{0}ms to resolve declarations for component {1}", stopwatch.ElapsedMilliseconds, component.Name);
         }
 
-        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, VBProject project)
+        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, IVBProject project)
         {
             var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
             var projectId = qualifiedName.QualifiedModuleName.ProjectId;
@@ -629,7 +600,7 @@ namespace Rubberduck.Parsing.VBA
             return projectDeclaration;
         }
 
-        private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
+        private void ResolveReferences(DeclarationFinder finder, IVBComponent component, IParseTree tree)
         {
             Debug.Assert(State.GetModuleState(component) == ParserState.ResolvingReferences);
             
@@ -650,7 +621,6 @@ namespace Rubberduck.Parsing.VBA
                     Logger.Debug("Binding Resolution done for component '{0}' in {1}ms (thread {2})", component.Name,
                         watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
 
-                    State.RebuildSelectionCache();
                     State.SetModuleState(component, ParserState.Ready);
                 }
                 catch (Exception exception)

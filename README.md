@@ -85,7 +85,7 @@ Which basically means it's a reimplementation of Git in C. It also [happens to b
 
 This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
 
-> Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx).
+> Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx) with the [author's permission](http://www.codeproject.com/Messages/5272045/Re-License.aspx) to re-release under the GPLv3.
 
 ###[Using Raw Input from C# to handle multiple keyboards](http://www.codeproject.com/Articles/17123/Using-Raw-Input-from-C-to-handle-multiple-keyboard)
 

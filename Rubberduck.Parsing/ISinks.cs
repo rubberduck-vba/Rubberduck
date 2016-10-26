@@ -1,11 +1,12 @@
 ﻿using System;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing
 {
     public interface IProjectEventArgs
     {
         string ProjectId { get; }
+        IVBProject Project { get; }
     }
 
     public interface IProjectRenamedEventArgs : IProjectEventArgs
@@ -16,8 +17,9 @@ namespace Rubberduck.Parsing
     public interface IComponentEventArgs
     {
         string ProjectId { get; }
-        string ComponentName { get; }
-        vbext_ComponentType Type { get; }
+
+        IVBProject Project { get; }
+        IVBComponent Component { get; }
     }
 
     public interface IComponentRenamedEventArgs : IComponentEventArgs
@@ -27,7 +29,8 @@ namespace Rubberduck.Parsing
 
     public interface ISinks
     {
-        bool IsEnabled { get; set; }
+        void Start();
+        bool ComponentSinksEnabled { get; set; }
 
         event EventHandler<IProjectEventArgs> ProjectActivated;
         event EventHandler<IProjectEventArgs> ProjectAdded;
@@ -40,8 +43,5 @@ namespace Rubberduck.Parsing
         event EventHandler<IComponentEventArgs> ComponentRemoved;
         event EventHandler<IComponentRenamedEventArgs> ComponentRenamed;
         event EventHandler<IComponentEventArgs> ComponentSelected;
-
-        //event EventHandler<IDispatcherEventArgs<Reference>> ReferenceAdded;
-        //event EventHandler<IDispatcherEventArgs<Reference>> ReferenceRemoved;
     }
 }

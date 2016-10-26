@@ -38,23 +38,23 @@ namespace RubberduckTests
                 _ide.Object.ActiveVBProject = _ide.Object.VBProjects.Item(0);
                 _ide.Object.ActiveCodePane = _ide.Object.ActiveVBProject.VBComponents.Item(0).CodeModule.CodePane;
             }
-            return new QualifiedSelection(new QualifiedModuleName(_ide.Object.ActiveCodePane.CodeModule.Parent), selection);
+            return new QualifiedSelection(new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(_ide.Object.ActiveCodePane.CodeModule.Parent)), selection);
         }
 
         protected Mock<VBProject> SetupMockProject(string inputCode, string projectName = null, string moduleName = null, vbext_ComponentType? componentType = null)
         {
             if (componentType == null)
             {
-                componentType = vbext_ComponentType.vbext_ct_StdModule;
+                componentType = ComponentType.StandardModule;
             }
 
             if (moduleName == null)
             {
-                moduleName = componentType == vbext_ComponentType.vbext_ct_StdModule 
+                moduleName = componentType == ComponentType.StandardModule 
                     ? "Module1" 
-                    : componentType == vbext_ComponentType.vbext_ct_ClassModule
+                    : componentType == ComponentType.ClassModule
                         ? "Class1"
-                        : componentType == vbext_ComponentType.vbext_ct_MSForm
+                        : componentType == ComponentType.UserForm
                             ? "Form1"
                             : "Document1";
             }
@@ -67,7 +67,7 @@ namespace RubberduckTests
             var component = CreateMockComponent(inputCode, moduleName, componentType.Value);
             var components = new List<Mock<VBComponent>> {component};
 
-            var project = CreateMockProject(projectName, vbext_ProjectProtection.vbext_pp_none, components);
+            var project = CreateMockProject(projectName, ProjectProtection.Unprotected, components);
             return project;
         }
 

@@ -21,37 +21,85 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
+            var issues = new List<ParameterCanBeByValInspectionResult>();
 
-            IEnumerable<Declaration> interfaceMembers = null;
-            interfaceMembers = declarations.FindInterfaceMembers()
-                .Concat(declarations.FindInterfaceImplementationMembers())
-                .ToList();
+            var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToList();
+            var interfaceScopes = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope);
 
-            var formEventHandlerScopes = State.FindFormEventHandlers()
-                .Select(handler => handler.Scope);
+            issues.AddRange(GetResults(declarations, interfaceDeclarationMembers));
 
-            var eventScopes = declarations.Where(item =>
-                !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event)
-                .Select(e => e.Scope).Concat(State.AllDeclarations.FindBuiltInEventHandlers().Select(e => e.Scope));
+            var eventMembers = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event).ToList();
+            var formEventHandlerScopes = State.FindFormEventHandlers().Select(handler => handler.Scope);
+            var eventHandlerScopes = State.AllDeclarations.FindBuiltInEventHandlers().Concat(declarations.FindUserEventHandlers()).Select(e => e.Scope);
+            var eventScopes = eventMembers.Select(s => s.Scope)
+                .Concat(formEventHandlerScopes)
+                .Concat(eventHandlerScopes);
+
+            issues.AddRange(GetResults(declarations, eventMembers));
 
             var declareScopes = declarations.Where(item =>
                     item.DeclarationType == DeclarationType.LibraryFunction
                     || item.DeclarationType == DeclarationType.LibraryProcedure)
                 .Select(e => e.Scope);
-
-            var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
-
-            var issues = declarations.Where(declaration =>
+            
+            issues.AddRange(declarations.Where(declaration =>
                 !declaration.IsArray
-                && !ignoredScopes.Contains(declaration.ParentScope)
+                && (declaration.AsTypeDeclaration == null || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
+                && !declareScopes.Contains(declaration.ParentScope)
+                && !eventScopes.Contains(declaration.ParentScope)
+                && !interfaceScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
-                && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
                 && ((VBAParser.ArgContext)declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, ((dynamic)issue.Context).unrestrictedIdentifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, State, issue, issue.Context, issue.QualifiedName)));
 
             return issues;
+        }
+
+        private IEnumerable<ParameterCanBeByValInspectionResult> GetResults(List<Declaration> declarations, List<Declaration> declarationMembers)
+        {
+            foreach (var declaration in declarationMembers)
+            {
+                var declarationParameters =
+                    declarations.Where(d => d.DeclarationType == DeclarationType.Parameter &&
+                                                      d.ParentDeclaration == declaration)
+                                .OrderBy(o => o.Selection.StartLine)
+                                .ThenBy(t => t.Selection.StartColumn)
+                                .ToList();
+
+                var parametersAreByRef = declarationParameters.Select(s => true).ToList();
+
+                var members = declarationMembers.Any(a => a.DeclarationType == DeclarationType.Event)
+                    ? declarations.FindHandlersForEvent(declaration).Select(s => s.Item2).ToList()
+                    : declarations.FindInterfaceImplementationMembers(declaration).ToList();
+
+                foreach (var member in members)
+                {
+                    var parameters =
+                        declarations.Where(d => d.DeclarationType == DeclarationType.Parameter &&
+                                                          d.ParentDeclaration == member)
+                                    .OrderBy(o => o.Selection.StartLine)
+                                    .ThenBy(t => t.Selection.StartColumn)
+                                    .ToList();
+
+                    for (var i = 0; i < parameters.Count; i++)
+                    {
+                        parametersAreByRef[i] = parametersAreByRef[i] && !IsUsedAsByRefParam(declarations, parameters[i]) &&
+                            ((VBAParser.ArgContext)parameters[i].Context).BYVAL() == null &&
+                            !parameters[i].References.Any(reference => reference.IsAssignment);
+                    }
+                }
+
+                for (var i = 0; i < declarationParameters.Count; i++)
+                {
+                    if (parametersAreByRef[i])
+                    {
+                        yield return new ParameterCanBeByValInspectionResult(this, State, declarationParameters[i],
+                            declarationParameters[i].Context, declarationParameters[i].QualifiedName);
+                    }
+                }
+            }
         }
 
         private static bool IsUsedAsByRefParam(IEnumerable<Declaration> declarations, Declaration parameter)
@@ -74,28 +122,16 @@ namespace Rubberduck.Inspections
                     .ThenBy(arg => arg.Selection.StartColumn)
                     .ToArray();
 
-                for (var i = 0; i < calledProcedureArgs.Count(); i++)
+                foreach (var declaration in calledProcedureArgs)
                 {
-                    if (((VBAParser.ArgContext)calledProcedureArgs[i].Context).BYVAL() != null)
+                    if (((VBAParser.ArgContext)declaration.Context).BYVAL() != null)
                     {
                         continue;
                     }
 
-                    foreach (var reference in item)
+                    if (declaration.References.Any(reference => reference.IsAssignment))
                     {
-                        if (!(reference.Context is VBAParser.ArgContext))
-                        {
-                            continue;
-                        }
-                        var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgContext;
-                        if (context == null)
-                        {
-                            continue;
-                        }
-                        if (parameter.IdentifierName == context.GetText())
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }

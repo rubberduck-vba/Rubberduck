@@ -56,7 +56,7 @@ namespace Rubberduck.Parsing.Symbols
                     item => item.IdentifierName == "Interaction" && item.Scope == "VBE7.DLL;VBA.Interaction");
 
             var stringsModule = _state.AllDeclarations.SingleOrDefault(
-                    item => item.IdentifierName == "Interaction" && item.Scope == "VBE7.DLL;VBA.Interaction");
+                    item => item.IdentifierName == "Strings" && item.Scope == "VBE7.DLL;VBA.Strings");
 
             // all these modules are all part of the same project--only need to check one
             if (conversionModule == null)

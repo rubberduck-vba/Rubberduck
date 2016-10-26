@@ -107,7 +107,7 @@ namespace Rubberduck.UI.ToDoItems
 
         private void _state_StateChanged(object sender, EventArgs e)
         {
-            if (_state.Status != ParserState.Ready)
+            if (_state.Status != ParserState.ResolvedDeclarations)
             {
                 return;
             }
@@ -141,14 +141,16 @@ namespace Rubberduck.UI.ToDoItems
                     {
                         return;
                     }
+
                     var module = _selectedItem.Selection.QualifiedName.Component.CodeModule;
+                    {
+                        var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
+                        var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
 
-                    var oldContent = module.Lines[_selectedItem.Selection.Selection.StartLine, 1];
-                    var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
+                        module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
 
-                    module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
-
-                    RefreshCommand.Execute(null);
+                        RefreshCommand.Execute(null);
+                    }
                 });
             }
         }

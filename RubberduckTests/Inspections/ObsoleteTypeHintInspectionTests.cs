@@ -6,9 +6,9 @@ using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Application;
 using RubberduckTests.Mocks;
+using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 
 namespace RubberduckTests.Inspections
 {
@@ -17,7 +17,7 @@ namespace RubberduckTests.Inspections
     {
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_FieldWithLongTypeHintReturnsResult()
+        public void ObsoleteTypeHint_FieldWithLongTypeHintReturnsResult()
         {
             const string inputCode =
 @"Public Foo&";
@@ -28,7 +28,7 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -41,7 +41,7 @@ namespace RubberduckTests.Inspections
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_FieldWithIntegerTypeHintReturnsResult()
+        public void ObsoleteTypeHint_FieldWithIntegerTypeHintReturnsResult()
         {
             const string inputCode =
 @"Public Foo%";
@@ -52,7 +52,7 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -65,7 +65,7 @@ namespace RubberduckTests.Inspections
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_FieldWithDoubleTypeHintReturnsResult()
+        public void ObsoleteTypeHint_FieldWithDoubleTypeHintReturnsResult()
         {
             const string inputCode =
 @"Public Foo#";
@@ -76,7 +76,7 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -89,7 +89,7 @@ namespace RubberduckTests.Inspections
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_FieldWithSingleTypeHintReturnsResult()
+        public void ObsoleteTypeHint_FieldWithSingleTypeHintReturnsResult()
         {
             const string inputCode =
 @"Public Foo!";
@@ -100,7 +100,7 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -113,7 +113,7 @@ namespace RubberduckTests.Inspections
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_FieldWithDecimalTypeHintReturnsResult()
+        public void ObsoleteTypeHint_FieldWithDecimalTypeHintReturnsResult()
         {
             const string inputCode =
 @"Public Foo@";
@@ -124,7 +124,7 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -137,7 +137,7 @@ namespace RubberduckTests.Inspections
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_FieldWithStringTypeHintReturnsResult()
+        public void ObsoleteTypeHint_FieldWithStringTypeHintReturnsResult()
         {
             const string inputCode =
 @"Public Foo$";
@@ -148,7 +148,7 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -161,7 +161,7 @@ namespace RubberduckTests.Inspections
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_FunctionReturnsResult()
+        public void ObsoleteTypeHint_FunctionReturnsResult()
         {
             const string inputCode =
 @"Public Function Foo$(ByVal bar As Boolean)
@@ -173,7 +173,7 @@ End Function";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -186,7 +186,7 @@ End Function";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_PropertyGetReturnsResult()
+        public void ObsoleteTypeHint_PropertyGetReturnsResult()
         {
             const string inputCode =
 @"Public Property Get Foo$(ByVal bar As Boolean)
@@ -198,7 +198,7 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -211,7 +211,7 @@ End Property";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_ParameterReturnsResult()
+        public void ObsoleteTypeHint_ParameterReturnsResult()
         {
             const string inputCode =
 @"Public Function Foo(ByVal bar$) As Boolean
@@ -223,7 +223,7 @@ End Function";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -236,7 +236,7 @@ End Function";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_VariableReturnsResult()
+        public void ObsoleteTypeHint_VariableReturnsResult()
         {
             const string inputCode =
 @"Public Function Foo() As Boolean
@@ -250,7 +250,7 @@ End Function";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -263,7 +263,7 @@ End Function";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_StringValueDoesNotReturnsResult()
+        public void ObsoleteTypeHint_StringValueDoesNotReturnsResult()
         {
             const string inputCode =
 @"Public Sub Foo()
@@ -277,7 +277,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -290,7 +290,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_FieldsReturnMultipleResults()
+        public void ObsoleteTypeHint_FieldsReturnMultipleResults()
         {
             const string inputCode =
 @"Public Foo$
@@ -302,7 +302,7 @@ Public Bar$";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -315,7 +315,33 @@ Public Bar$";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_QuickFixWorks_Field_LongTypeHint()
+        public void ObsoleteTypeHint_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"'@Ignore ObsoleteTypeHint
+Public Function Foo$(ByVal bar As Boolean)
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ObsoleteTypeHintInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObsoleteTypeHint_QuickFixWorks_Field_LongTypeHint()
         {
             const string inputCode =
 @"Public Foo&";
@@ -331,7 +357,7 @@ Public Bar$";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -344,12 +370,12 @@ Public Bar$";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_QuickFixWorks_Field_IntegerTypeHint()
+        public void ObsoleteTypeHint_QuickFixWorks_Field_IntegerTypeHint()
         {
             const string inputCode =
 @"Public Foo%";
@@ -365,7 +391,7 @@ Public Bar$";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -378,12 +404,12 @@ Public Bar$";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_QuickFixWorks_Field_DoubleTypeHint()
+        public void ObsoleteTypeHint_QuickFixWorks_Field_DoubleTypeHint()
         {
             const string inputCode =
 @"Public Foo#";
@@ -399,7 +425,7 @@ Public Bar$";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -412,12 +438,12 @@ Public Bar$";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_QuickFixWorks_Field_SingleTypeHint()
+        public void ObsoleteTypeHint_QuickFixWorks_Field_SingleTypeHint()
         {
             const string inputCode =
 @"Public Foo!";
@@ -433,7 +459,7 @@ Public Bar$";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -446,12 +472,12 @@ Public Bar$";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_QuickFixWorks_Field_DecimalTypeHint()
+        public void ObsoleteTypeHint_QuickFixWorks_Field_DecimalTypeHint()
         {
             const string inputCode =
 @"Public Foo@";
@@ -467,7 +493,7 @@ Public Bar$";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -480,12 +506,12 @@ Public Bar$";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_QuickFixWorks_Field_StringTypeHint()
+        public void ObsoleteTypeHint_QuickFixWorks_Field_StringTypeHint()
         {
             const string inputCode =
 @"Public Foo$";
@@ -501,7 +527,7 @@ Public Bar$";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -514,12 +540,12 @@ Public Bar$";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_QuickFixWorks_Function_StringTypeHint()
+        public void ObsoleteTypeHint_QuickFixWorks_Function_StringTypeHint()
         {
             const string inputCode =
 @"Public Function Foo$(ByVal fizz As Integer)
@@ -539,7 +565,7 @@ End Function";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -552,12 +578,12 @@ End Function";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_QuickFixWorks_PropertyGet_StringTypeHint()
+        public void ObsoleteTypeHint_QuickFixWorks_PropertyGet_StringTypeHint()
         {
             const string inputCode =
 @"Public Property Get Foo$(ByVal fizz As Integer)
@@ -577,7 +603,7 @@ End Property";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -590,12 +616,12 @@ End Property";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_QuickFixWorks_Parameter_StringTypeHint()
+        public void ObsoleteTypeHint_QuickFixWorks_Parameter_StringTypeHint()
         {
             const string inputCode =
 @"Public Sub Foo(ByVal fizz$)
@@ -615,7 +641,7 @@ End Sub";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -628,12 +654,12 @@ End Sub";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteCallStatement_QuickFixWorks_Variable_StringTypeHint()
+        public void ObsoleteTypeHint_QuickFixWorks_Variable_StringTypeHint()
         {
             const string inputCode =
 @"Public Sub Foo()
@@ -653,7 +679,7 @@ End Sub";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -666,7 +692,46 @@ End Sub";
                 inspectionResult.QuickFixes.First().Fix();
             }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObsoleteTypeHint_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Function Foo$(ByVal fizz As Integer)
+    Foo = ""test""
+End Function";
+
+            const string expectedCode =
+@"'@Ignore ObsoleteTypeHint
+Public Function Foo$(ByVal fizz As Integer)
+    Foo = ""test""
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ObsoleteTypeHintInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            foreach (var inspectionResult in inspectionResults)
+            {
+                inspectionResult.QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            }
+
+            Assert.AreEqual(expectedCode, new CodeModule(module).Content());
         }
 
         [TestMethod]

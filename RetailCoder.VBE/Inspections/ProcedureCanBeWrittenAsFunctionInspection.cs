@@ -73,7 +73,8 @@ namespace Rubberduck.Inspections
             return ParseTreeResults.ArgListsWithOneByRefParam
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext &&
                                   subStmtsNotImplementingInterfaces.Contains(context.Context.Parent) &&
-                                  subStmtsNotImplementingEvents.Contains(context.Context.Parent))
+                                  subStmtsNotImplementingEvents.Contains(context.Context.Parent)
+                        && !IsInspectionDisabled(context.ModuleName.Component, context.Context.Start.Line))
                 .Select(context => new ProcedureShouldBeFunctionInspectionResult(this,
                     State,
                     new QualifiedContext<VBAParser.ArgListContext>(context.ModuleName,
@@ -89,7 +90,8 @@ namespace Rubberduck.Inspections
 
             public override void ExitArgList(VBAParser.ArgListContext context)
             {
-                if (context.arg() != null && context.arg().Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)
+                var args = context.arg();
+                if (args != null && args.All(a => a.PARAMARRAY() == null && a.LPAREN() == null) && args.Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)
                 {
                     _contexts.Add(context);
                 }

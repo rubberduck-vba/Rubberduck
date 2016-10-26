@@ -2,14 +2,7 @@
 
 namespace Rubberduck.Settings
 {
-    public interface IHotkeyConfigProvider
-    {
-        HotkeySettings Create();
-        HotkeySettings CreateDefaults();
-        void Save(HotkeySettings settings);
-    }
-
-    public class HotkeyConfigProvider : IHotkeyConfigProvider
+    public class HotkeyConfigProvider : IConfigProvider<HotkeySettings>
     {
         private readonly IPersistanceService<HotkeySettings> _persister;
 
@@ -19,7 +12,7 @@ namespace Rubberduck.Settings
         }
 
         public HotkeySettings Create()
-        {          
+        {
             var prototype = new HotkeySettings();
             return _persister.Load(prototype) ?? prototype;
         }

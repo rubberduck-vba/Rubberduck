@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
@@ -20,6 +19,9 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
 using System.Linq;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -58,7 +60,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private static readonly IDictionary<VarEnum, string> TypeNames = new Dictionary<VarEnum, string>
         {
-            {VarEnum.VT_DISPATCH, "DISPATCH"},
+            {VarEnum.VT_DISPATCH, "Object"},
             {VarEnum.VT_VOID, string.Empty},
             {VarEnum.VT_VARIANT, "Variant"},
             {VarEnum.VT_BLOB_OBJECT, "Object"},
@@ -146,7 +148,7 @@ namespace Rubberduck.Parsing.Symbols
             return typeName.Equals("LONG_PTR") ? "LongPtr" : typeName;  //Quickfix for http://chat.stackexchange.com/transcript/message/30119269#30119269
         }
 
-        public List<Declaration> GetDeclarationsForReference(Reference reference)
+        public List<Declaration> GetDeclarationsForReference(IReference reference)
         {
             var output = new List<Declaration>();
             var projectName = reference.Name;
@@ -220,7 +222,7 @@ namespace Rubberduck.Parsing.Symbols
                         break;
                     case DeclarationType.ClassModule:
                         var module = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
-                        var implements = GetImplementedInterfaceNames(typeAttributes, info);
+                        var implements = GetImplementedInterfaceNames(typeAttributes, info, module);
                         foreach (var supertypeName in implements)
                         {
                             module.AddSupertype(supertypeName);
@@ -575,7 +577,7 @@ namespace Rubberduck.Parsing.Symbols
             return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, paramInfo.Name, null, null, isOptional, paramInfo.IsByRef, paramInfo.IsArray);
         }
 
-        private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info)
+        private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info, Declaration module)
         {
             var output = new List<string>();
             for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
@@ -616,7 +618,7 @@ namespace Rubberduck.Parsing.Symbols
                     else
                     {
                         _comInformation.Add(typeAttributes.guid,
-                            new ComInformation(typeAttributes, flags, implTypeInfo, implTypeName, new QualifiedModuleName(), null, 0));
+                            new ComInformation(typeAttributes, flags, implTypeInfo, implTypeName, module.QualifiedName.QualifiedModuleName, module, 0));
                     }
                 }
 

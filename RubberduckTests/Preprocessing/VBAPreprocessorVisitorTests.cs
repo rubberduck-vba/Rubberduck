@@ -376,7 +376,7 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(string.Empty, result.Item1.Get("b").AsString);
             Assert.AreEqual("True", result.Item1.Get("c").AsString);
             Assert.AreEqual("False", result.Item1.Get("d").AsString);
-            Assert.AreEqual(345.23.ToString(), result.Item1.Get("e").AsString);
+            Assert.AreEqual(345.23.ToString(CultureInfo.InvariantCulture), result.Item1.Get("e").AsString);
             Assert.AreEqual(new DateTime(1899, 12, 30, 2, 1, 0).ToLongTimeString(), result.Item1.Get("f").AsString);
             Assert.AreEqual(new DateTime(2016, 1, 31).ToShortDateString(), result.Item1.Get("g").AsString);
         }

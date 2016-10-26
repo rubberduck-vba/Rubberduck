@@ -1,11 +1,11 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.FindSymbol;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -15,12 +15,12 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class FindSymbolCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly DeclarationIconCache _iconCache;
         private readonly NavigateCommand _navigateCommand = new NavigateCommand();
 
-        public FindSymbolCommand(VBE vbe, RubberduckParserState state, DeclarationIconCache iconCache) : base(LogManager.GetCurrentClassLogger())
+        public FindSymbolCommand(IVBE vbe, RubberduckParserState state, DeclarationIconCache iconCache) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
@@ -35,11 +35,19 @@ namespace Rubberduck.UI.Command
         protected override void ExecuteImpl(object parameter)
         {
             var viewModel = new FindSymbolViewModel(_state.AllDeclarations.Where(item => !item.IsBuiltIn), _iconCache);
-            using (var view = new FindSymbolDialog(viewModel))
+            var view = new FindSymbolDialog(viewModel);
             {
-                viewModel.Navigate += (sender, e) => { _navigateCommand.Execute(e); view.Hide(); };
+                viewModel.Navigate += (sender, e) => { view.Hide(); };
+                viewModel.Navigate += OnDialogNavigate;
                 view.ShowDialog();
+                _navigateCommand.Execute(_selected);
             }
+        }
+
+        private NavigateCodeEventArgs _selected;
+        private void OnDialogNavigate(object sender, NavigateCodeEventArgs e)
+        {
+            _selected = e;
         }
     }
 }

@@ -13,9 +13,10 @@ namespace Rubberduck.Inspections
         public EmptyStringLiteralInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                new RepaceEmptyStringLiteralStatementQuickFix(Context, QualifiedSelection), 
+                new RepaceEmptyStringLiteralStatementQuickFix(Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
             };
         }
 
@@ -43,7 +44,7 @@ namespace Rubberduck.Inspections
             }
 
             var literal = (VBAParser.LiteralExpressionContext)Context;
-            var newCodeLines = module.Lines[literal.Start.Line, 1].Replace("\"\"", "vbNullString");
+            var newCodeLines = module.GetLines(literal.Start.Line, 1).Replace("\"\"", "vbNullString");
 
             module.ReplaceLine(literal.Start.Line, newCodeLines);
         }

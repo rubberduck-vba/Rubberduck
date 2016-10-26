@@ -4,6 +4,8 @@ using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -74,15 +76,21 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return xNode.Declaration.DeclarationType < yNode.Declaration.DeclarationType ? -1 : 1;
             }
 
-            // keep types with different icons and the same declaration type (document/class module) separate
-            // documents come first
+            if (xNode.Declaration.Accessibility != yNode.Declaration.Accessibility)
+            {
+                return xNode.Declaration.Accessibility < yNode.Declaration.Accessibility ? -1 : 1;
+            }
+            
             if (x.ExpandedIcon != y.ExpandedIcon)
             {
-                // ReSharper disable once PossibleInvalidOperationException - this will have a component
-                return x.QualifiedSelection.Value.QualifiedName.Component.Type ==
-                       Microsoft.Vbe.Interop.vbext_ComponentType.vbext_ct_Document
-                    ? -1
-                    : 1;
+                // ReSharper disable PossibleInvalidOperationException - this will have a component
+                var xComponent = x.QualifiedSelection.Value.QualifiedName.Component;
+                var yComponent = y.QualifiedSelection.Value.QualifiedName.Component;
+
+                if (xComponent.Type == ComponentType.Document ^ yComponent.Type == ComponentType.Document)
+                {
+                    return xComponent.Type == ComponentType.Document ? -1 : 1;
+                }
             }
 
             return 0;
@@ -163,7 +171,17 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public bool IsExpanded { get; set; }
+        private bool _isExpanded;
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set
+            {
+                _isExpanded = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsSelected { get; set; }
 
         public abstract string Name { get; }

@@ -1,5 +1,4 @@
 ﻿using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
@@ -9,6 +8,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -62,7 +64,8 @@ namespace Rubberduck.Parsing.Symbols
             VBAParser.AsTypeClauseContext asTypeContext,
             bool isBuiltIn = true,
             IEnumerable<IAnnotation> annotations = null,
-            Attributes attributes = null)
+            Attributes attributes = null,
+            bool undeclared = false)
             : this(
                 qualifiedName,
                 parentDeclaration,
@@ -82,6 +85,7 @@ namespace Rubberduck.Parsing.Symbols
                 attributes)
         {
             _parentScopeDeclaration = parentScope;
+            _undeclared = undeclared;
         }
 
         public Declaration(
@@ -117,7 +121,6 @@ namespace Rubberduck.Parsing.Symbols
                   annotations,
                   attributes)
         {
-
         }
 
         public Declaration(
@@ -306,13 +309,6 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public bool IsInspectionDisabled(string inspectionName)
-        {
-            return Annotations.Any(annotation =>
-                annotation.AnnotationType == AnnotationType.Ignore
-                && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
-        }
-
         public void AddReference(
             QualifiedModuleName module,
             Declaration scope,
@@ -384,7 +380,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public VBProject Project { get { return _qualifiedName.QualifiedModuleName.Project; } }
+        public IVBProject Project { get { return _qualifiedName.QualifiedModuleName.Project; } }
 
         private readonly string _projectId;
         /// <summary>
@@ -570,6 +566,12 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         private readonly string _customFolder;
+        private readonly bool _undeclared;
+        /// <summary>
+        /// Indicates whether the declaration is an ad-hoc declaration created by the resolver.
+        /// </summary>
+        public bool IsUndeclared { get { return _undeclared; } }
+
         public string CustomFolder
         {
             get

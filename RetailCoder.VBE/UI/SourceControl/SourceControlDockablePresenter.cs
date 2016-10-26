@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -8,7 +8,7 @@ namespace Rubberduck.UI.SourceControl
     /// </summary>
     public class SourceControlDockablePresenter : DockableToolwindowPresenter
     {
-        public SourceControlDockablePresenter(VBE vbe, AddIn addin, SourceControlPanel window)
+        public SourceControlDockablePresenter(IVBE vbe, IAddIn addin, SourceControlPanel window)
             : base(vbe, addin, window)
         {
         }

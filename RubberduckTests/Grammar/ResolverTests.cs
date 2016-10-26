@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Grammar
 {
@@ -20,7 +21,7 @@ namespace RubberduckTests.Grammar
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleModule(code, moduleType, out component, new Rubberduck.VBEditor.Selection());
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -38,17 +39,17 @@ namespace RubberduckTests.Grammar
         private RubberduckParserState Resolve(params string[] classes)
         {
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            var projectBuilder = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             for (var i = 0; i < classes.Length; i++)
             {
-                projectBuilder.AddComponent("Class" + (i + 1), vbext_ComponentType.vbext_ct_ClassModule, classes[i]);
+                projectBuilder.AddComponent("Class" + (i + 1), ComponentType.ClassModule, classes[i]);
             }
 
             var project = projectBuilder.Build();
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -66,7 +67,7 @@ namespace RubberduckTests.Grammar
         private RubberduckParserState Resolve(params Tuple<string, vbext_ComponentType>[] components)
         {
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
+            var projectBuilder = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected);
             for (var i = 0; i < components.Length; i++)
             {
                 projectBuilder.AddComponent("Component" + (i + 1), components[i].Item2, components[i].Item1);
@@ -76,7 +77,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -380,8 +381,8 @@ End Sub
 Option Explicit
 Public foo As Integer
 ";
-            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
-            var class2 = Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_ClassModule);
+            var class1 = Tuple.Create(code_class1, ComponentType.ClassModule);
+            var class2 = Tuple.Create(code_class2, ComponentType.ClassModule);
 
             // act
             var state = Resolve(class1, class2);
@@ -408,8 +409,8 @@ Public foo As Integer
 ";
             // act
             var state = Resolve(
-                Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule),
-                Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_StdModule));
+                Tuple.Create(code_class1, ComponentType.ClassModule),
+                Tuple.Create(code_class2, ComponentType.StandardModule));
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -433,8 +434,8 @@ End Sub
 Option Explicit
 Public foo As Integer
 ";
-            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
-            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
+            var class1 = Tuple.Create(code_class1, ComponentType.ClassModule);
+            var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
 
             // act
             var state = Resolve(class1, module1);
@@ -459,7 +460,7 @@ End Type
 Private this As TFoo
 ";
             // act
-            var state = Resolve(code, vbext_ComponentType.vbext_ct_ClassModule);
+            var state = Resolve(code, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -567,7 +568,7 @@ Public Property Get Bar() As Integer
 End Property
 ";
             // act
-            var state = Resolve(code, vbext_ComponentType.vbext_ct_ClassModule);
+            var state = Resolve(code, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -593,7 +594,7 @@ Public Property Get Bar() As Integer
 End Property
 ";
             // act
-            var state = Resolve(code, vbext_ComponentType.vbext_ct_ClassModule);
+            var state = Resolve(code, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -1660,8 +1661,8 @@ Sub DoSomething()
     Component1.Something.Bar = 42
 End Sub";
 
-            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
-            var module2 = Tuple.Create(code_module2, vbext_ComponentType.vbext_ct_StdModule);
+            var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
+            var module2 = Tuple.Create(code_module2, ComponentType.StandardModule);
             var state = Resolve(module1, module2);
 
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -1693,8 +1694,8 @@ Sub DoSomething()
 End Sub
 ";
 
-            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
-            var module2 = Tuple.Create(code_module2, vbext_ComponentType.vbext_ct_StdModule);
+            var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
+            var module2 = Tuple.Create(code_module2, ComponentType.StandardModule);
             var state = Resolve(module1, module2);
 
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -1849,6 +1850,26 @@ End Sub
         }
 
         [TestMethod]
+        public void LineInputStmt_ReferenceIsAssignment()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim file As Integer, content
+    Line Input #file, content
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "content");
+
+            Assert.IsTrue(declaration.References.Single().IsAssignment);
+        }
+
+        [TestMethod]
         public void WidthStmt_IsReferenceToLocalVariable()
         {
             // arrange
@@ -1929,6 +1950,39 @@ End Sub
         }
 
         [TestMethod]
+        public void InputStmt_ReferenceIsAssignment()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim str As String
+    Dim xCoord, yCoord, zCoord As Double
+    Input #1, str, xCoord, yCoord, zCoord
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var strDeclaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "str");
+
+            var xCoordDeclaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "xCoord");
+
+            var yCoordDeclaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "yCoord");
+
+            var zCoordDeclaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "zCoord");
+
+            Assert.IsTrue(strDeclaration.References.Single().IsAssignment);
+            Assert.IsTrue(xCoordDeclaration.References.Single().IsAssignment);
+            Assert.IsTrue(yCoordDeclaration.References.Single().IsAssignment);
+            Assert.IsTrue(zCoordDeclaration.References.Single().IsAssignment);
+        }
+
+        [TestMethod]
         public void PutStmt_IsReferenceToLocalVariable()
         {
             // arrange
@@ -1955,7 +2009,7 @@ End Sub
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
-    Get referenced,referenced,referenced
+    Get #referenced,referenced,referenced
 End Sub
 ";
             // act
@@ -1966,6 +2020,26 @@ End Sub
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
             Assert.AreEqual(3, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void GetStmt_ReferenceIsAssignment()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim fileNumber As Integer, recordNumber, variable
+    Get #fileNumber, recordNumber, variable
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var variableDeclaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "variable");
+
+            Assert.IsTrue(variableDeclaration.References.Single().IsAssignment);
         }
 
         [TestMethod]
@@ -2059,13 +2133,13 @@ Public Sub DoSomething()
 End Sub
 ";
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
             project.AddComponent(form);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)

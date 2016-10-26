@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -163,7 +164,7 @@ namespace Rubberduck.Parsing.Symbols
                        "Default Context: Failed to resolve {0}. Binding as much as we can.",
                        expression.GetText()));
             }
-            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget, false);
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget, hasExplicitLetStatement);
         }
 
         private void ResolveType(ParserRuleContext expression)
@@ -444,7 +445,7 @@ namespace Rubberduck.Parsing.Symbols
         public void Resolve(VBAParser.LineInputStmtContext context)
         {
             ResolveDefault(context.markedFileNumber().expression());
-            ResolveDefault(context.variableName().expression());
+            ResolveDefault(context.variableName().expression(), isAssignmentTarget: true);
         }
 
         public void Resolve(VBAParser.WidthStmtContext context)
@@ -496,7 +497,7 @@ namespace Rubberduck.Parsing.Symbols
             ResolveDefault(context.markedFileNumber().expression());
             foreach (var inputVariable in context.inputList().inputVariable())
             {
-                ResolveDefault(inputVariable.expression());
+                ResolveDefault(inputVariable.expression(), isAssignmentTarget: true);
             }
         }
 
@@ -522,7 +523,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             if (context.variable() != null)
             {
-                ResolveDefault(context.variable().expression());
+                ResolveDefault(context.variable().expression(), isAssignmentTarget: true);
             }
         }
 

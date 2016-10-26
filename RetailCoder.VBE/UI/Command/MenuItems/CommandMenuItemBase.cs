@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Input;
 using Castle.Core.Internal;
 using Rubberduck.Parsing.VBA;
 
@@ -36,7 +35,7 @@ namespace Rubberduck.UI.Command.MenuItems
         /// <remarks>Returns <c>true</c> if not overridden.</remarks>
         public virtual bool EvaluateCanExecute(RubberduckParserState state)
         {
-            return _command.CanExecute(state);
+            return state != null && _command.CanExecute(state);
         }
 
         public virtual bool BeginGroup { get { return false; } }

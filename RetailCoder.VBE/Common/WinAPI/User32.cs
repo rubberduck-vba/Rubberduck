@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Rubberduck.Common.WinAPI
 {
@@ -44,10 +45,10 @@ namespace Rubberduck.Common.WinAPI
         public static extern bool UnregisterHotKey(IntPtr hWnd, IntPtr id);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, WndProc dwNewLong);
+        public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr CallWindowProc(WndProc lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
         public delegate IntPtr WndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace Rubberduck.Common.WinAPI
         /// <returns>If the function succeeds, the return value is the number of characters copied to the buffer, not including the terminating null character. 
         /// If the function fails, the return value is zero. To get extended error information, call GetLastError.</returns>
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern int GetClassName(IntPtr hWnd, string lpClassName, int nMaxCount);
+        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
         /// <summary>
         /// Retrieves the identifier of the thread that created the specified window and, optionally, 
@@ -180,6 +181,16 @@ namespace Rubberduck.Common.WinAPI
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool UnregisterDeviceNotification(IntPtr handle);
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        internal static extern IntPtr SendMessage(IntPtr hWnd, WM msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
+
+        public delegate int WindowEnumProc(IntPtr hwnd, IntPtr lparam);
+        [DllImport("user32.dll")]
+        public static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc func, IntPtr lParam);
+
         /// <summary>
         /// A helper function that returns <c>true</c> when the specified handle is that of the foreground window.
         /// </summary>
@@ -194,6 +205,21 @@ namespace Rubberduck.Common.WinAPI
             GetWindowThreadProcessId(GetForegroundWindow(), out hThread);
 
             return (IntPtr)hThread == (IntPtr)vbeThread;
+        }
+
+        public enum WindowType
+        {
+            Indeterminate,
+            VbaWindow,
+            DesignerWindow
+        }
+
+        public static WindowType ToWindowType(this IntPtr hwnd)
+        {
+            var name = new StringBuilder(128);
+            GetClassName(hwnd, name, name.Capacity);
+            WindowType id;
+            return Enum.TryParse(name.ToString(), out id) ? id : WindowType.Indeterminate;
         }
     }
 }

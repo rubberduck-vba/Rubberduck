@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {
@@ -17,11 +18,13 @@ namespace Rubberduck.Inspections
             ObsoleteLetContexts = Enumerable.Empty<QualifiedContext>();
             ArgListsWithOneByRefParam = Enumerable.Empty<QualifiedContext>();
             EmptyStringLiterals = Enumerable.Empty<QualifiedContext>();
+            MalformedAnnotations = Enumerable.Empty<QualifiedContext<VBAParser.AnnotationContext>>();
         }
 
         public IEnumerable<QualifiedContext> ObsoleteCallContexts;
         public IEnumerable<QualifiedContext> ObsoleteLetContexts;
         public IEnumerable<QualifiedContext> ArgListsWithOneByRefParam;
         public IEnumerable<QualifiedContext> EmptyStringLiterals;
+        public IEnumerable<QualifiedContext> MalformedAnnotations;
     }
 }

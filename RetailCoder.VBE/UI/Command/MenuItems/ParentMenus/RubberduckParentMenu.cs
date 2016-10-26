@@ -15,10 +15,10 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         UnitTesting,
         Refactorings,
         Navigate,
+        Tools,
         CodeInspections,
-        SourceControl,
         ReferenceBrowser,
         Settings,
-        About
+        About,
     }
 }

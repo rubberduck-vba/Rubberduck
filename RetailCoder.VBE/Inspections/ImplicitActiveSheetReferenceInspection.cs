@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections
 {
@@ -12,7 +11,7 @@ namespace Rubberduck.Inspections
     {
         private readonly IHostApplication _hostApp;
 
-        public ImplicitActiveSheetReferenceInspection(VBE vbe, RubberduckParserState state)
+        public ImplicitActiveSheetReferenceInspection(IVBE vbe, RubberduckParserState state)
             : base(state)
         {
             _hostApp = vbe.HostApplication();
@@ -31,7 +30,7 @@ namespace Rubberduck.Inspections
         {
             if (_hostApp == null || _hostApp.ApplicationName != "Excel")
             {
-                return new InspectionResultBase[] {};
+                return Enumerable.Empty<InspectionResultBase>();
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
@@ -41,33 +40,10 @@ namespace Rubberduck.Inspections
                         item.AsTypeName == "Range").ToList();
 
             var issues = matches.Where(item => item.References.Any())
-                .SelectMany(declaration => declaration.References);
+                .SelectMany(declaration => declaration.References.Distinct());
 
             return issues.Select(issue => 
                 new ImplicitActiveSheetReferenceInspectionResult(this, issue));
-        }
-    }
-
-    public class ImplicitActiveSheetReferenceInspectionResult : InspectionResultBase
-    {
-        private readonly IdentifierReference _reference;
-        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
-
-        public ImplicitActiveSheetReferenceInspectionResult(IInspection inspection, IdentifierReference reference)
-            : base(inspection, reference.QualifiedModuleName, reference.Context)
-        {
-            _reference = reference;
-            _quickFixes = new CodeInspectionQuickFix[]
-            {
-                new IgnoreOnceQuickFix(reference.Context, QualifiedSelection, Inspection.AnnotationName), 
-            };
-        }
-
-        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
-
-        public override string Description
-        {
-            get { return string.Format(Inspection.Description, _reference.Declaration.IdentifierName); }
         }
     }
 }

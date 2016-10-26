@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -10,6 +12,8 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public abstract class CommandBase : ICommand
     {
+        private static readonly List<MethodBase> ExceptionTargetSites = new List<MethodBase>();
+
         protected CommandBase(ILogger logger)
         {
             _logger = logger;
@@ -33,12 +37,17 @@ namespace Rubberduck.UI.Command
             }
             catch (Exception exception)
             {
-                _logger.Fatal(exception);
+                Logger.Error(exception);
 
-                var messageBox = new MessageBox();
-                messageBox.Show(
-                    RubberduckUI.RubberduckFatalError, RubberduckUI.Rubberduck,
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!ExceptionTargetSites.Contains(exception.TargetSite))
+                {
+                    ExceptionTargetSites.Add(exception.TargetSite);
+
+                    var messageBox = new MessageBox();
+                    messageBox.Show(
+                        RubberduckUI.RubberduckFatalError, RubberduckUI.Rubberduck,
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 
                 return false;
             }
@@ -52,12 +61,17 @@ namespace Rubberduck.UI.Command
             }
             catch (Exception exception)
             {
-                _logger.Fatal(exception);
+                Logger.Error(exception);
 
-                var messageBox = new MessageBox();
-                messageBox.Show(
-                    RubberduckUI.RubberduckFatalError, RubberduckUI.Rubberduck,
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!ExceptionTargetSites.Contains(exception.TargetSite))
+                {
+                    ExceptionTargetSites.Add(exception.TargetSite);
+
+                    var messageBox = new MessageBox();
+                    messageBox.Show(
+                        RubberduckUI.RubberduckFatalError, RubberduckUI.Rubberduck,
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

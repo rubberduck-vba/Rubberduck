@@ -47,5 +47,24 @@ namespace Rubberduck.Parsing.Symbols
             // Gets the original source, without "synthetic" text such as "<EOF>".
             return stream.GetText(new Interval(context.Start.StartIndex, context.Stop.StopIndex));
         }
+
+        public static T GetChild<T>(RuleContext context)
+        {
+            if (context == null)
+            {
+                return default(T);
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (context.GetChild(index) is T)
+                {
+                    return (T)child;
+                }
+            }
+
+            return default(T);
+        }
     }
 }

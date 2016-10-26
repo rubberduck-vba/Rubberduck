@@ -13,11 +13,7 @@ namespace Rubberduck.Parsing.Annotations
             IEnumerable<string> parameters)
             : base(AnnotationType.Ignore, qualifiedSelection)
         {
-            if (!parameters.Any())
-            {
-                throw new InvalidAnnotationArgumentException(string.Format("{0} expects at least one argument but none were given.", this.GetType().Name));
-            }
-            _inspectionNames = parameters.ToList();
+            _inspectionNames = parameters;
         }
 
         public IEnumerable<string> InspectionNames
