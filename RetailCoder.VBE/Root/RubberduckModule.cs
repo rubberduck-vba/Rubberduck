@@ -26,7 +26,6 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
-using Ninject.Activation;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Parsing.Symbols;
@@ -108,10 +107,6 @@ namespace Rubberduck.Root
             Bind<SearchResultPresenterInstanceManager>()
                 .ToSelf()
                 .InSingletonScope();
-
-            Bind<ISourceControlProviderFactory>()
-                .To<SourceControlProviderFactory>()
-                .WhenInjectedInto<SourceControlViewViewModel>();
 
             Bind<IDockablePresenter>().To<SourceControlDockablePresenter>()
                 .WhenInjectedInto(
