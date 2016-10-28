@@ -10,9 +10,10 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class InspectionResultsCommand : CommandBase
     {
-        private readonly IPresenter _presenter;
+        private readonly IDockablePresenter _presenter;
 
-        public InspectionResultsCommand(IPresenter presenter) : base(LogManager.GetCurrentClassLogger())
+        public InspectionResultsCommand(IDockablePresenter presenter)
+            : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }

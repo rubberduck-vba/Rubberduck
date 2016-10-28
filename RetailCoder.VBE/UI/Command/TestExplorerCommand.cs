@@ -7,9 +7,10 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class TestExplorerCommand : CommandBase
     {
-        private readonly IPresenter _presenter;
+        private readonly IDockablePresenter _presenter;
 
-        public TestExplorerCommand(IPresenter presenter) : base(LogManager.GetCurrentClassLogger())
+        public TestExplorerCommand(IDockablePresenter presenter)
+            : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }

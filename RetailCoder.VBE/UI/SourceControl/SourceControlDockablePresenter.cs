@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+﻿using System.Diagnostics;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.SourceControl
@@ -13,9 +13,11 @@ namespace Rubberduck.UI.SourceControl
         {
         }
 
-        public UserControl Window()
+        public SourceControlPanel Window()
         {
-            return UserControl;
+            var control = UserControl as SourceControlPanel;
+            Debug.Assert(control != null);
+            return control;
         }
     }
 }

@@ -10,9 +10,10 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class CodeExplorerCommand : CommandBase
     {
-        private readonly IPresenter _presenter;
+        private readonly IDockablePresenter _presenter;
 
-        public CodeExplorerCommand(IPresenter presenter) : base(LogManager.GetCurrentClassLogger())
+        public CodeExplorerCommand(IDockablePresenter presenter)
+            : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }

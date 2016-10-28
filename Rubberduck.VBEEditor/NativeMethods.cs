@@ -63,13 +63,10 @@ namespace Rubberduck.VBEditor
         {
             const int MAX_BUFFER = 300;
 
-            StringBuilder bufferStringBuilder = null;
-            int charactersCount = 0;
-            string result = null;
+            var result = string.Empty;
+            var bufferStringBuilder = new StringBuilder(MAX_BUFFER + 1);
 
-            bufferStringBuilder = new StringBuilder(MAX_BUFFER + 1);
-
-            charactersCount = GetWindowText(windowHandle, bufferStringBuilder, MAX_BUFFER);
+            var charactersCount = GetWindowText(windowHandle, bufferStringBuilder, MAX_BUFFER);
             if (charactersCount > 0)
             {
                 result = bufferStringBuilder.ToString(0, charactersCount);
@@ -93,10 +90,7 @@ namespace Rubberduck.VBEditor
 
         internal static void EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate callBackEnumWindows)
         {
-            int result;
-
-            result = EnumChildWindows(parentWindowHandle, callBackEnumWindows, IntPtr.Zero);
-
+            var result = EnumChildWindows(parentWindowHandle, callBackEnumWindows, IntPtr.Zero);
             if (result != 0)
             {
                 Debug.WriteLine("EnumChildWindows failed");
@@ -106,7 +100,7 @@ namespace Rubberduck.VBEditor
         internal class ChildWindowFinder
         {
             private IntPtr _resultHandle = IntPtr.Zero;
-            private string _caption;
+            private readonly string _caption;
 
             internal ChildWindowFinder(string caption)
             {
@@ -115,13 +109,9 @@ namespace Rubberduck.VBEditor
 
             public int EnumWindowsProcToChildWindowByCaption(IntPtr windowHandle, IntPtr param)
             {
-                string caption;
-                int result;
-
                 // By default it will continue enumeration after this call
-                result = 1;
-
-                caption = GetWindowTextByHwnd(windowHandle);
+                var result = 1;
+                var caption = GetWindowTextByHwnd(windowHandle);
 
 
                 if (_caption == caption)
