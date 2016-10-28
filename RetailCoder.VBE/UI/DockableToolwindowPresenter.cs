@@ -12,21 +12,28 @@ namespace Rubberduck.UI
         void Hide();
     }
 
-    public abstract class DockableToolwindowPresenter : IPresenter, IDisposable
+    public interface IDockablePresenter : IPresenter
+    {
+        UserControl UserControl { get; }
+    }
+
+    public abstract class DockableToolwindowPresenter : IDockablePresenter, IDisposable
     {
         private readonly IAddIn _addin;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IWindow _window;
-        protected readonly UserControl UserControl;
+        private readonly UserControl _userControl;
 
         protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view)
         {
             _vbe = vbe;
             _addin = addin;
             Logger.Trace(string.Format("Initializing Dockable Panel ({0})", GetType().Name));
-            UserControl = view as UserControl;
+            _userControl = view as UserControl;
             _window = CreateToolWindow(view);
         }
+
+        public UserControl UserControl { get { return _userControl; } }
 
         private readonly IVBE _vbe;
         protected IVBE VBE { get { return _vbe; } }
@@ -135,9 +142,9 @@ namespace Rubberduck.UI
             }
             _userControlObject = null;
 
-            if (UserControl != null)
+            if (_userControl != null)
             {
-                UserControl.Dispose();
+                _userControl.Dispose();
             }
 
             _disposed = true;

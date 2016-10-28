@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
@@ -6,17 +7,16 @@ using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
     public class UndoCommand : CommandBase
     {
-        private readonly SourceControlDockablePresenter _presenter;
+        private readonly IDockablePresenter _presenter;
         private readonly IMessageBox _messageBox;
 
-        public UndoCommand(SourceControlDockablePresenter presenter, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
+        public UndoCommand(IDockablePresenter presenter, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
             _messageBox = messageBox;
@@ -30,11 +30,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            var panel = _presenter.Window() as SourceControlPanel;
-            if (panel == null)
-            {
-                return false;
-            }
+            var panel = _presenter.UserControl as SourceControlPanel;
+            Debug.Assert(panel != null);
 
             var panelViewModel = panel.ViewModel;
             if (panelViewModel == null)
@@ -51,11 +48,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void ExecuteImpl(object parameter)
         {
-            var panel = _presenter.Window() as SourceControlPanel;
-            if (panel == null)
-            {
-                return;
-            }
+            var panel = _presenter.UserControl as SourceControlPanel;
+            Debug.Assert(panel != null);
 
             var panelViewModel = panel.ViewModel;
             if (panelViewModel == null)
@@ -70,7 +64,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            var fileName = GetFileName((CodeExplorerComponentViewModel) parameter);
+            var fileName = GetFileName((ICodeExplorerDeclarationViewModel)parameter);
             var result = _messageBox.Show(string.Format(RubberduckUI.SourceControl_UndoPrompt, fileName),
                 RubberduckUI.SourceControl_UndoTitle, System.Windows.Forms.MessageBoxButtons.OKCancel,
                 System.Windows.Forms.MessageBoxIcon.Warning, System.Windows.Forms.MessageBoxDefaultButton.Button2);
@@ -84,7 +78,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _presenter.Show();
         }
 
-        private string GetFileName(CodeExplorerComponentViewModel node)
+        private string GetFileName(ICodeExplorerDeclarationViewModel node)
         {
             var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
 

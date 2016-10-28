@@ -14,11 +14,14 @@ namespace Rubberduck.UI.IdentifierReferences
 
         private void BindTarget(Declaration target)
         {
-            var listBox = Control.ResultBox;
+            var control = UserControl as SimpleListControl;
+            if (control == null) { return; }
+
+            var listBox = control.ResultBox;
             listBox.DataSource = target.References.Select(reference => new IdentifierReferenceListItem(reference)).ToList();
             listBox.DisplayMember = "DisplayString";
             listBox.ValueMember = "Selection";
-            Control.Navigate += ControlNavigate;
+            control.Navigate += ControlNavigate;
         }
 
         public static void OnNavigateIdentifierReference(IdentifierReference reference)
@@ -34,7 +37,5 @@ namespace Rubberduck.UI.IdentifierReferences
                 OnNavigateIdentifierReference(reference.GetReferenceItem());
             }
         }
-
-        SimpleListControl Control { get { return UserControl as SimpleListControl; } }
     }
 }

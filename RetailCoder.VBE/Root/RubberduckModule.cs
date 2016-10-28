@@ -94,6 +94,7 @@ namespace Rubberduck.Root
             
             Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();
 
+            Bind<SourceControlViewViewModel>().ToSelf().InSingletonScope();
             Bind<IControlView>().To<ChangesView>().InCallScope();
             Bind<IControlView>().To<BranchesView>().InCallScope();
             Bind<IControlView>().To<UnsyncedCommitsView>().InCallScope();
@@ -112,23 +113,26 @@ namespace Rubberduck.Root
                 .To<SourceControlProviderFactory>()
                 .WhenInjectedInto<SourceControlViewViewModel>();
 
-            Bind<IPresenter>().To<SourceControlDockablePresenter>()
-                .WhenInjectedInto<ShowSourceControlPanelCommand>()
+            Bind<IDockablePresenter>().To<SourceControlDockablePresenter>()
+                .WhenInjectedInto(
+                    typeof(ShowSourceControlPanelCommand),
+                    typeof(CommitCommand),
+                    typeof(UndoCommand))
                 .InSingletonScope();
 
-            Bind<IPresenter>().To<TestExplorerDockablePresenter>()
+            Bind<IDockablePresenter>().To<TestExplorerDockablePresenter>()
                 .WhenInjectedInto<TestExplorerCommand>()
                 .InSingletonScope();
 
-            Bind<IPresenter>().To<CodeInspectionsDockablePresenter>()
+            Bind<IDockablePresenter>().To<CodeInspectionsDockablePresenter>()
                 .WhenInjectedInto<InspectionResultsCommand>()
                 .InSingletonScope();
 
-            Bind<IPresenter>().To<CodeExplorerDockablePresenter>()
+            Bind<IDockablePresenter>().To<CodeExplorerDockablePresenter>()
                 .WhenInjectedInto<CodeExplorerCommand>()
                 .InSingletonScope();
 
-            Bind<IPresenter>().To<ToDoExplorerDockablePresenter>()
+            Bind<IDockablePresenter>().To<ToDoExplorerDockablePresenter>()
                 .WhenInjectedInto<ToDoExplorerCommand>()
                 .InSingletonScope();
 
