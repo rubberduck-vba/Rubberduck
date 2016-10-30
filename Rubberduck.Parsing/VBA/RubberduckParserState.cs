@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
@@ -68,25 +69,28 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _sinks = sinks;
-            _sinks.ProjectAdded += Sinks_ProjectAdded;
-            _sinks.ProjectRemoved += Sinks_ProjectRemoved;
-            _sinks.ProjectRenamed += Sinks_ProjectRenamed;
-            _sinks.ComponentAdded += Sinks_ComponentAdded;
-            _sinks.ComponentRemoved += Sinks_ComponentRemoved;
-            _sinks.ComponentRenamed += Sinks_ComponentRenamed;
+            if (sinks != null)
+            {
+                _sinks.ProjectAdded += Sinks_ProjectAdded;
+                _sinks.ProjectRemoved += Sinks_ProjectRemoved;
+                _sinks.ProjectRenamed += Sinks_ProjectRenamed;
+                _sinks.ComponentAdded += Sinks_ComponentAdded;
+                _sinks.ComponentRemoved += Sinks_ComponentRemoved;
+                _sinks.ComponentRenamed += Sinks_ComponentRenamed;
+            }
         }
 
         private bool _started;
         public void StartEventSinks()
         {
-            if (!_started)
+            if (!_started && _sinks != null)
             {
                 _sinks.Start();
                 _started = true;
             }
         }
 
-        private void Sinks_ProjectAdded(object sender, IProjectEventArgs e)
+        private void Sinks_ProjectAdded(object sender, ProjectEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
@@ -96,7 +100,7 @@ namespace Rubberduck.Parsing.VBA
             OnParseRequested(sender);
         }
 
-        private void Sinks_ProjectRemoved(object sender, IProjectEventArgs e)
+        private void Sinks_ProjectRemoved(object sender, ProjectEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
             
@@ -106,7 +110,7 @@ namespace Rubberduck.Parsing.VBA
             OnParseRequested(sender);
         }
 
-        private void Sinks_ProjectRenamed(object sender, IProjectRenamedEventArgs e)
+        private void Sinks_ProjectRenamed(object sender, ProjectRenamedEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
@@ -123,7 +127,7 @@ namespace Rubberduck.Parsing.VBA
             OnParseRequested(sender);
         }
 
-        private void Sinks_ComponentAdded(object sender, IComponentEventArgs e)
+        private void Sinks_ComponentAdded(object sender, ComponentEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
@@ -136,7 +140,7 @@ namespace Rubberduck.Parsing.VBA
             OnParseRequested(sender);
         }
 
-        private void Sinks_ComponentRemoved(object sender, IComponentEventArgs e)
+        private void Sinks_ComponentRemoved(object sender, ComponentEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
@@ -149,7 +153,7 @@ namespace Rubberduck.Parsing.VBA
             OnParseRequested(sender);
         }
 
-        private void Sinks_ComponentRenamed(object sender, IComponentRenamedEventArgs e)
+        private void Sinks_ComponentRenamed(object sender, ComponentRenamedEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 

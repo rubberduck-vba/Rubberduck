@@ -8,7 +8,9 @@ using Rubberduck.UI.ToDoItems;
 using RubberduckTests.Mocks;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.TodoExplorer

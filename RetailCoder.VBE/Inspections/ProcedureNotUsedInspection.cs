@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Inspections
 {
@@ -59,7 +58,8 @@ namespace Rubberduck.Inspections
                             && !IsInspectionDisabled(item, AnnotationName)).ToList();
             var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
-            issues = DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));
+            issues = DocumentEventHandlerPrefixes
+                .Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));
 
             return issues.ToList();
         }

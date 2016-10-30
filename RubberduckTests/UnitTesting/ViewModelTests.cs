@@ -7,7 +7,9 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 

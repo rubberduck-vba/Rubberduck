@@ -9,6 +9,8 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.API
@@ -66,8 +68,7 @@ namespace Rubberduck.API
             }
 
             _vbe = vbe;
-            _sinks = new Sinks(_vbe);
-            _state = new RubberduckParserState(_sinks);
+            _state = new RubberduckParserState(null);
             _state.StateChanged += _state_StateChanged;
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));

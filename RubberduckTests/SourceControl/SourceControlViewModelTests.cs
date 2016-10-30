@@ -10,7 +10,9 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 

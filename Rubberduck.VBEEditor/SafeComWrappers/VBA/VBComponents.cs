@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
@@ -11,9 +12,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBComponents : SafeComWrapper<VB.VBComponents>, IVBComponents
     {
+        private readonly IVBComponentsEventsSink _sink;
+
         public VBComponents(VB.VBComponents target) 
             : base(target)
         {
+            _sink = new VBComponentsEventsSink();
         }
 
         public int Count
@@ -165,6 +169,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     break;
                 default:
                     break;
+            }
+        }
+
+        public IVBComponentsEventsSink Events { get { return _sink; } }
+
+        public IConnectionPoint ConnectionPoint
+        {
+            get
+            {
+                try
+                {
+                    // ReSharper disable once SuspiciousTypeConversion.Global
+                    var connectionPointContainer = (IConnectionPointContainer)Target;
+                    var interfaceId = typeof(VB._dispVBComponentsEvents).GUID;
+                    IConnectionPoint result;
+                    connectionPointContainer.FindConnectionPoint(ref interfaceId, out result);
+                    return result;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
             }
         }
     }

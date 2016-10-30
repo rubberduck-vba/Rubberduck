@@ -8,7 +8,9 @@ using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
@@ -80,6 +81,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get { return new Windows(IsWrappingNullReference ? null : Target.Windows); }
         }
+
+        public Guid EventsInterfaceId { get { throw new NotImplementedException(); } }
 
         public override void Release(bool final = false)
         {

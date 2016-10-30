@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
@@ -9,11 +9,11 @@ namespace Rubberduck
 {
     public class AppMenu : IAppMenu, IDisposable
     {
-        private readonly IEnumerable<IParentMenuItem> _menus;
+        private readonly IReadOnlyList<IParentMenuItem> _menus;
 
         public AppMenu(IEnumerable<IParentMenuItem> menus)
         {
-            _menus = menus;
+            _menus = menus.ToList();
         }
 
         public void Initialize()
@@ -42,13 +42,10 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            foreach (var menu in _menus)
+            foreach (var menu in _menus.Where(menu => menu.Item != null))
             {
                 menu.RemoveChildren();
-                if (menu.Item != null)
-                {
-                    menu.Item.Delete();
-                }
+                menu.Item.Delete();
             }
         }
     }

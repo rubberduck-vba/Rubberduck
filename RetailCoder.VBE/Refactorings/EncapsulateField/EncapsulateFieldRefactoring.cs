@@ -5,7 +5,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Selection = Rubberduck.VBEditor.Selection;
 
 namespace Rubberduck.Refactorings.EncapsulateField

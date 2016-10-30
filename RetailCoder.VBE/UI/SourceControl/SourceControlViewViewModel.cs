@@ -9,12 +9,12 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using NLog;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using resx = Rubberduck.UI.SourceControl.SourceControl;
 
@@ -104,7 +104,7 @@ namespace Rubberduck.UI.SourceControl
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
-        private void ComponentAdded(object sender, IComponentEventArgs e)
+        private void ComponentAdded(object sender, ComponentEventArgs e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
@@ -121,7 +121,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void ComponentRemoved(object sender, IComponentEventArgs e)
+        private void ComponentRemoved(object sender, ComponentEventArgs e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
@@ -138,7 +138,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void ComponentRenamed(object sender, IComponentRenamedEventArgs e)
+        private void ComponentRenamed(object sender, ComponentRenamedEventArgs e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
@@ -165,7 +165,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void ProjectRemoved(object sender, IProjectEventArgs e)
+        private void ProjectRemoved(object sender, ProjectEventArgs e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents)
             {

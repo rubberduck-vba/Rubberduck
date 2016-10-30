@@ -10,6 +10,7 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
