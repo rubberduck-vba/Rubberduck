@@ -24,5 +24,22 @@ namespace Rubberduck.UI.ReferenceBrowser
         {
             InitializeComponent();
         }
+
+        public RegisteredLibraryViewModel SelectedLibrary
+        {
+            get
+            {
+                return (RegisteredLibraryViewModel)GetValue(SelectedLibraryProperty);
+            }
+            set
+            {
+                SetValue(SelectedLibraryProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty SelectedLibraryProperty = DependencyProperty.Register(
+            "SelectedLibrary",
+            typeof(RegisteredLibraryViewModel),
+            typeof(ReferenceListControl));
     }
 }

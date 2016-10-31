@@ -67,13 +67,44 @@
 
                     <local:ReferenceListControl DataContext="{Binding VbaProjectReferences}"
                                                 Grid.Column="0"
+                                                Margin="5"
                                                 Grid.Row="1"
                                                 Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Recent"
-                     IsEnabled="False"/>
+            <TabItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_Priority}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <local:ReferenceListControl DataContext="{Binding ActiveReferences}"
+                                                Margin="5"
+                                                Grid.Column="0"
+                                                Grid.RowSpan="2" />
+                    
+                    <Button Grid.Row="0" 
+                            Grid.Column="1"
+                            Margin="5,30"
+                            Command="{Binding IncreasePriorityCommand}">
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_Up}" />
+                    </Button>
+                    
+                    <Button Grid.Column="1"
+                            Grid.Row="1"
+                            Margin="5,30"
+                            Command="{Binding DecreasePriorityCommand}">
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReferenceBrowser_Down}" />
+                    </Button>
+                </Grid>
+            </TabItem>
         </TabControl>
 
         <Border Grid.Row="1"

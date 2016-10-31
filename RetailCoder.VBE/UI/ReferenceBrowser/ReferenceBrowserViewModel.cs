@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.ReferenceBrowser
 {
     public class ReferenceBrowserViewModel : ViewModelBase, IDisposable
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RegisteredLibraryModelService _service;
         private readonly ObservableCollection<RegisteredLibraryViewModel> _projectReferences;
         private string _filter;
 
-        public ReferenceBrowserViewModel(VBE vbe, RegisteredLibraryModelService service, IOpenFileDialog filePicker)
+        public ReferenceBrowserViewModel(IVBE vbe, RegisteredLibraryModelService service, IOpenFileDialog filePicker)
         {
             _vbe = vbe;
             _service = service;
@@ -28,18 +30,43 @@ namespace Rubberduck.UI.ReferenceBrowser
             FilterComReferences();
 
             VbaProjectReferences = new CollectionViewSource {Source = _projectReferences }.View;
-            VbaProjectReferences.Filter = o => ((RegisteredLibraryViewModel) o).Model is VbaProjectReferenceModel;
+            VbaProjectReferences.Filter = o =>
+            {
+                var model = ((RegisteredLibraryViewModel) o).Model;
+                return model is VbaProjectReferenceModel || model is UnloadedVbaProjectReferenceModel;
+            };
 
             BuildViewModels();
 
-            AddVbaProjectReferenceCommand = null;// new AddReferenceCommand(filePicker, AddVbaReference);
+            AddVbaProjectReferenceCommand = new AddReferenceCommand(filePicker, AddVbaReference);
             CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OnCloseWindow(new EventArgs()));
             OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UpdateReferencesAndClose());
+            IncreasePriorityCommand = null;
+            DecreasePriorityCommand = null;
+        }
+
+        private void AddVbaReference(string filePath)
+        {
+            VbaProjectReferenceModel model;
+            try
+            {
+                model = VbaProjectReferenceModel.LoadVbaProjectReference(filePath);
+            }
+            catch (Exception)
+            {
+                // TODO display an error message to the user.
+                return;
+            }
+            var vm = new RegisteredLibraryViewModel(model, true, true);
+            _projectReferences.Add(vm);
+            VbaProjectReferences.Refresh();
         }
 
         public ICollectionView ComReferences { get; private set; }
 
         public ICollectionView VbaProjectReferences { get; private set; }
+
+        public ICollectionView ActiveReferences { get; private set; }
 
         public string ComReferencesFilter
         {
@@ -62,26 +89,30 @@ namespace Rubberduck.UI.ReferenceBrowser
 
         public ICommand OkButtonCommand { get; private set; }
 
+        public ICommand IncreasePriorityCommand { get; private set; }
+
+        public ICommand DecreasePriorityCommand { get; private set; }
+
         private void BuildViewModels()
         {
             var libraries = _service.GetAllRegisteredLibraries();
-            var currentReferences = _vbe.ActiveVBProject.References.OfType<Reference>().ToList();
+            var currentReferences = _vbe.ActiveVBProject.References;
 
             // first add the existing references to the list.  That way we have the correct ordering.
             foreach (var r in currentReferences)
             {
                 // create a view model for the given reference.
-                if (r.Type == vbext_RefKind.vbext_rk_Project)
+                if (r.Type == ReferenceKind.Project)
                 {
                     var model = new VbaProjectReferenceModel(r);
-                    var vm = new RegisteredLibraryViewModel(model, true, !r.BuiltIn);
+                    var vm = new RegisteredLibraryViewModel(model, true, !r.IsBuiltIn);
                     _projectReferences.Add(vm);
                 }
                 else
                 {
                     var model = libraries.FirstOrDefault(l => string.Equals(l.FilePath, r.FullPath, StringComparison.CurrentCultureIgnoreCase));
                     libraries.Remove(model);  // remove here so we can sort and add later.
-                    var vm = new RegisteredLibraryViewModel(model, true, !r.BuiltIn);
+                    var vm = new RegisteredLibraryViewModel(model, true, !r.IsBuiltIn);
                     _projectReferences.Add(vm);
                 }
             }
@@ -110,7 +141,7 @@ namespace Rubberduck.UI.ReferenceBrowser
                 .ToList();
 
             // remove any references which aren't in the active models list.
-            foreach (var r in references.OfType<Reference>().ToList())
+            foreach (var r in references)
             {
                 if (!activeModels.Any(m => string.Equals(m.FilePath, r.FullPath, StringComparison.CurrentCultureIgnoreCase)))
                 {
@@ -123,7 +154,7 @@ namespace Rubberduck.UI.ReferenceBrowser
             while (referenceIndex <= references.Count)
             {
                 var currentModel = activeModels[modelIndex];
-                var currentReference = references.Item(referenceIndex);
+                var currentReference = references[referenceIndex];
 
                 if (string.Equals(currentModel.FilePath, currentReference.FullPath, StringComparison.CurrentCultureIgnoreCase))
                 {

@@ -1,15 +1,21 @@
 using System;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.ReferenceBrowser
 {
     public class VbaProjectReferenceModel : AbstractReferenceModel
     {
-        private readonly Reference _reference;
+        private readonly IReference _reference;
 
-        public VbaProjectReferenceModel(Reference reference)
+        public VbaProjectReferenceModel(IReference reference)
         {
             _reference = reference;
+        }
+
+        public static VbaProjectReferenceModel LoadVbaProjectReference(string filePath)
+        {
+            // TODO load the project from disk.  Get a reference to it from
+            throw new NotImplementedException();
         }
 
         public override string FilePath { get { return _reference.FullPath; } }

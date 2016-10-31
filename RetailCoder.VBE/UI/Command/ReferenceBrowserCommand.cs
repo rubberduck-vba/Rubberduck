@@ -2,6 +2,7 @@
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.UI.ReferenceBrowser;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -11,11 +12,11 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class ReferenceBrowserCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RegisteredLibraryModelService _service;
         private readonly IOpenFileDialog _filePicker;
 
-        public ReferenceBrowserCommand(VBE vbe, RegisteredLibraryModelService service, IOpenFileDialog filePicker) 
+        public ReferenceBrowserCommand(IVBE vbe, RegisteredLibraryModelService service, IOpenFileDialog filePicker) 
             : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
