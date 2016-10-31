@@ -9,9 +9,10 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class ToDoExplorerCommand : CommandBase
     {
-        private readonly IPresenter _presenter;
+        private readonly IDockablePresenter _presenter;
 
-        public ToDoExplorerCommand(IPresenter presenter) : base(LogManager.GetCurrentClassLogger())
+        public ToDoExplorerCommand(IDockablePresenter presenter)
+            : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }

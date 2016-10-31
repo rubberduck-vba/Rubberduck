@@ -82,7 +82,7 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return Provider == null
-                  ? new string[] { }
+                  ? Enumerable.Empty<string>()
                   : Provider.Branches.Select(b => b.Name);
             }
         }
@@ -92,7 +92,7 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return Provider == null
-                    ? new string[] { }
+                    ? Enumerable.Empty<string>()
                     : Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name);
             }
         }
@@ -102,7 +102,7 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return Provider == null
-                    ? new string[] { }
+                    ? Enumerable.Empty<string>()
                     : Provider.Branches.Where(b => !b.IsRemote && !string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name);
             }
         }
@@ -112,7 +112,7 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return Provider == null
-                    ? new string[] { }
+                    ? Enumerable.Empty<string>()
                     : Provider.Branches.Where(b => !b.IsRemote && string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name);
             }
         }
@@ -249,10 +249,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 return false;
             }
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var section in name.Split('/'))
             {
-                isValidName = section.FirstOrDefault() != '.' &&
-                              !section.EndsWith(".lock");
+                isValidName = isValidName 
+                    && section.FirstOrDefault() != '.' 
+                    && !section.EndsWith(".lock");
             }
 
             return isValidName;

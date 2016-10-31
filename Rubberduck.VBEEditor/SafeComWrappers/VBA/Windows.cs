@@ -32,9 +32,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new Window(Target.Item(index)); }
         }
 
-        public IWindow CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition, ref object docObj)
+        public ToolWindowInfo CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition)
         {
-            return new Window(Target.CreateToolWindow((VB.AddIn)addInInst.Target, progId, caption, guidPosition, ref docObj));
+            object control = null;
+            var window = new Window(Target.CreateToolWindow((VB.AddIn)addInInst.Target, progId, caption, guidPosition, ref control));
+            return new ToolWindowInfo(window, control);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

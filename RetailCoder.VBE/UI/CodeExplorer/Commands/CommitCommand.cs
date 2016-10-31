@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
@@ -8,9 +9,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     [CodeExplorerCommand]
     public class CommitCommand : CommandBase
     {
-        private readonly SourceControlDockablePresenter _presenter;
+        private readonly IDockablePresenter _presenter;
 
-        public CommitCommand(SourceControlDockablePresenter presenter) : base(LogManager.GetCurrentClassLogger())
+        public CommitCommand(IDockablePresenter presenter) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }
@@ -24,14 +25,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             _presenter.Show();
 
-            var panel = _presenter.Window() as SourceControlPanel;
-            if (panel != null)
+            var panel = _presenter.UserControl as SourceControlPanel;
+            Debug.Assert(panel != null);
+
+            var vm = panel.ViewModel;
+            if (vm != null)
             {
-                var vm = panel.ViewModel as SourceControlViewViewModel;
-                if (vm != null)
-                {
-                    vm.SetTab(SourceControlTab.Changes);
-                }
+                vm.SetTab(SourceControlTab.Changes);
             }
         }
     }

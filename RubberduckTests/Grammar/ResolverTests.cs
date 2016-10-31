@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing;
@@ -10,16 +9,17 @@ using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Grammar
 {
     [TestClass]
     public class ResolverTests
     {
-        private RubberduckParserState Resolve(string code, vbext_ComponentType moduleType = vbext_ComponentType.vbext_ct_StdModule)
+        private RubberduckParserState Resolve(string code, ComponentType moduleType = ComponentType.StandardModule)
         {
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleModule(code, moduleType, out component, new Rubberduck.VBEditor.Selection());
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
@@ -64,7 +64,7 @@ namespace RubberduckTests.Grammar
             return parser.State;
         }
 
-        private RubberduckParserState Resolve(params Tuple<string, vbext_ComponentType>[] components)
+        private RubberduckParserState Resolve(params Tuple<string, ComponentType>[] components)
         {
             var builder = new MockVbeBuilder();
             var projectBuilder = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected);
@@ -330,13 +330,13 @@ End Type
 Public Sub DoSomething()
     Dim a As {0}.{1}.{0}
 End Sub
-", MockVbeBuilder.TEST_PROJECT_NAME, MockVbeBuilder.TEST_MODULE_NAME);
+", MockVbeBuilder.TestProjectName, MockVbeBuilder.TestModuleName);
             // act
             var state = Resolve(code);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Project && item.IdentifierName == MockVbeBuilder.TEST_PROJECT_NAME);
+                item.DeclarationType == DeclarationType.Project && item.IdentifierName == MockVbeBuilder.TestProjectName);
 
             var reference = declaration.References.SingleOrDefault();
             Assert.IsNotNull(reference);
@@ -355,13 +355,13 @@ End Type
 Public Sub DoSomething()
     Dim a As {1}.{0}
 End Sub
-", MockVbeBuilder.TEST_PROJECT_NAME, MockVbeBuilder.TEST_MODULE_NAME);
+", MockVbeBuilder.TestProjectName, MockVbeBuilder.TestModuleName);
             // act
             var state = Resolve(code);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == MockVbeBuilder.TEST_PROJECT_NAME);
+                item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == MockVbeBuilder.TestProjectName);
 
             var reference = declaration.References.SingleOrDefault();
             Assert.IsNotNull(reference);

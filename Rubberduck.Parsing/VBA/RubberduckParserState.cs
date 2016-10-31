@@ -776,7 +776,7 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
         }
 
-        public IParseTree GetParseTree(VBComponent component)
+        public IParseTree GetParseTree(IVBComponent component)
         {
             return _moduleStates[new QualifiedModuleName(component)].ParseTree;
         }

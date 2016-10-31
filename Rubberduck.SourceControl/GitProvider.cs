@@ -5,13 +5,11 @@ using System.Runtime.InteropServices;
 using System.Security;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SourceControl
 {
-    public class GitProvider : SourceControlProviderBase // note: why not : IDisposable?
+    public class GitProvider : SourceControlProviderBase, IDisposable
     {
         private readonly LibGit2Sharp.Repository _repo;
         private readonly LibGit2Sharp.Credentials _credentials;
@@ -42,7 +40,7 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
+        public GitProvider(IVBProject project, IRepository repository, string userName, string passWord)
             : this(project, repository)
         {
             _credentials = new UsernamePasswordCredentials()
@@ -66,7 +64,7 @@ namespace Rubberduck.SourceControl
             _credentialsHandler = (url, user, cred) => _credentials;
         }
 
-        ~GitProvider()
+        public void Dispose()
         {
             if (_repo != null)
             {

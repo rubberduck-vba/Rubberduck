@@ -12,11 +12,13 @@ namespace Rubberduck.UI.Command.Refactorings
     public class CodePaneRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
 
-        public CodePaneRefactorRenameCommand(IVBE vbe, RubberduckParserState state) 
+        public CodePaneRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox) 
             : base (vbe)
         {
             _state = state;
+            _messageBox = messageBox;
         }
 
         public override RubberduckHotkey Hotkey
@@ -56,8 +58,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox());
-                var refactoring = new RenameRefactoring(Vbe, factory, new MessageBox(), _state);
+                var factory = new RenamePresenterFactory(Vbe, view, _state, _messageBox);
+                var refactoring = new RenameRefactoring(Vbe, factory, _messageBox, _state);
 
                 refactoring.Refactor(target);
             }

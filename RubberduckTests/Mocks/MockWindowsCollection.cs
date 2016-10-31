@@ -112,6 +112,24 @@ namespace RubberduckTests.Mocks
             get { throw new NotImplementedException(); }
         }
 
+        public ToolWindowInfo CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition)
+        {
+            throw new NotImplementedException();
+        }
+
         public IVBE VBE { get; set; }
+        public object Target { get { throw new NotImplementedException(); } }
+
+        public bool IsWrappingNullReference { get { throw new NotImplementedException(); } }
+
+        public void Release(bool final = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Equals(IWindows other)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

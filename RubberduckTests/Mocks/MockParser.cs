@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
@@ -10,6 +9,7 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using System.Threading;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
 {
@@ -20,9 +20,9 @@ namespace RubberduckTests.Mocks
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
+            IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            qualifiedModuleName = new QualifiedModuleName(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent(component));
+            qualifiedModuleName = new QualifiedModuleName(component);
             var parser = Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -30,7 +30,7 @@ namespace RubberduckTests.Mocks
             state = parser.State;
 
         }
-        public static RubberduckParser Create(VBE vbe, RubberduckParserState state)
+        public static RubberduckParser Create(IVBE vbe, RubberduckParserState state)
         {
             var attributeParser = new Mock<IAttributeParser>();
             attributeParser.Setup(m => m.Parse(It.IsAny<Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent>()))
@@ -38,9 +38,9 @@ namespace RubberduckTests.Mocks
             return Create(vbe, state, attributeParser.Object);
         }
 
-        public static RubberduckParser Create(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
+        public static RubberduckParser Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
-            return new RubberduckParser(new Rubberduck.VBEditor.SafeComWrappers.VBA.VBE(vbe), state, attributeParser,
+            return new RubberduckParser(vbe, state, attributeParser,
                 () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
                 new List<ICustomDeclarationLoader> {new DebugDeclarations(state), new FormEventDeclarations(state), new AliasDeclarations(state)}, true);
         }
