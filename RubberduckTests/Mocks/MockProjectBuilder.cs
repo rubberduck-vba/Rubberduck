@@ -274,7 +274,7 @@ namespace RubberduckTests.Mocks
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
                 lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).Count());
 
-            codeModule.Setup(m => m.Content()).Returns(() => content);
+            codeModule.Setup(m => m.Content()).Returns(() => string.Join(Environment.NewLine, lines));
 
             // ReSharper disable once UseIndexedProperty
             codeModule.Setup(m => m.GetLines(It.IsAny<int>(), It.IsAny<int>()))
@@ -304,6 +304,10 @@ namespace RubberduckTests.Mocks
                 {
                     lines.AddRange(newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                 });
+
+            codeModule.Setup(m => m.Equals(It.IsAny<ICodeModule>()))
+                .Returns((ICodeModule other) => ReferenceEquals(codeModule.Object.Target, other.Target));
+            codeModule.Setup(m => m.GetHashCode()).Returns(() => codeModule.Object.Target.GetHashCode());
 
             return codeModule;
         }
