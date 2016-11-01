@@ -128,7 +128,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
             var module = component.CodeModule;
             var pane = module.CodePane;
-            pane.SetSelection(selection);
+            pane.Selection = selection;
         }
     }
 }

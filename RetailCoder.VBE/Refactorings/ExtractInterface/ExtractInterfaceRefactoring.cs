@@ -43,9 +43,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return;
             }
 
-            QualifiedSelection? oldSelection = null;
             var pane = _vbe.ActiveCodePane;
             {
+                QualifiedSelection? oldSelection;
                 if (!pane.IsWrappingNullReference)
                 {
                     var module = pane.CodeModule;
@@ -62,7 +62,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
                 if (oldSelection.HasValue)
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
             }
 
@@ -77,7 +77,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 {
                     return;
                 }
-                pane.SetSelection(target.Selection);
+                pane.Selection = target.Selection;
             }
             Refactor();
         }
@@ -90,7 +90,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 {
                     return;
                 }
-                pane.SetSelection(target.QualifiedSelection.Selection);
+                pane.Selection = target.QualifiedSelection.Selection;
             }
             Refactor();
         }
@@ -129,7 +129,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
             var pane = _vbe.ActiveCodePane;
             {
-                pane.SetSelection(qualifiedSelection.Selection);
+                pane.Selection = qualifiedSelection.Selection;
             }
 
             var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _state, _messageBox);

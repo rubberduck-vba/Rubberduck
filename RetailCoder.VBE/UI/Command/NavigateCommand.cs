@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Input;
 using NLog;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command
 {
@@ -25,10 +24,7 @@ namespace Rubberduck.UI.Command
 
             try
             {
-                var pane = param.QualifiedName.Component.CodeModule.CodePane;
-                var selection = param.Selection;
-
-                pane.SetSelection(selection);
+                param.QualifiedName.Component.CodeModule.CodePane.Selection = param.Selection;
             }
             catch (COMException)
             {

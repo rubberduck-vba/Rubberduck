@@ -68,7 +68,7 @@ namespace Rubberduck.SmartIndenter
         
         private static Selection GetSelection(ICodePane codePane)
         {
-            return codePane.GetSelection();
+            return codePane.Selection;
         }
 
         public void Indent(IVBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)

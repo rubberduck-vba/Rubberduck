@@ -1098,7 +1098,7 @@ End Sub";
 
             var codePaneMock = new Mock<ICodePane>();
             codePaneMock.Setup(c => c.CodeModule).Returns(module);
-            codePaneMock.Setup(c => c.GetSelection());
+            codePaneMock.Setup(c => c.Selection);
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
             var vbeWrapper = vbe.Object;
@@ -1135,7 +1135,7 @@ End Sub";
 
             var codePaneMock = new Mock<ICodePane>();
             codePaneMock.Setup(c => c.CodeModule).Returns(module);
-            codePaneMock.Setup(c => c.GetSelection());
+            codePaneMock.Setup(c => c.Selection);
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
             var vbeWrapper = vbe.Object;
@@ -1169,7 +1169,7 @@ End Sub";
 
             var codePaneMock = new Mock<ICodePane>();
             codePaneMock.Setup(c => c.CodeModule).Returns(module);
-            codePaneMock.Setup(c => c.GetSelection());
+            codePaneMock.Setup(c => c.Selection);
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
             var vbeWrapper = vbe.Object;

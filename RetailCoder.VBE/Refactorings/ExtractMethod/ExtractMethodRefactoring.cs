@@ -72,7 +72,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
             var pane = _codeModule.CodePane;
             {
-                pane.SetSelection(target.Selection);
+                pane.Selection = target.Selection;
                 Refactor();
             }
         }

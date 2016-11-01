@@ -1048,7 +1048,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var codePane = project.Object.VBComponents[0].CodeModule.CodePane;
-            codePane.SetSelection(selection);
+            codePane.Selection = selection;
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, null);
 

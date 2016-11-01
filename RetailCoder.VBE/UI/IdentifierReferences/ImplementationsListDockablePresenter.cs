@@ -28,7 +28,7 @@ namespace Rubberduck.UI.IdentifierReferences
 
         public static void OnNavigateImplementation(Declaration implementation)
         {
-            implementation.QualifiedName.QualifiedModuleName.Component.CodeModule.CodePane.SetSelection(implementation.Selection);
+            implementation.QualifiedName.QualifiedModuleName.Component.CodeModule.CodePane.Selection = implementation.Selection;
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)

@@ -52,7 +52,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
                 if (oldSelection.HasValue)
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
 
                 _model.State.OnParseRequested(this);
@@ -67,7 +67,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 {
                     return;
                 }
-                pane.SetSelection(target.Selection);
+                pane.Selection = target.Selection;
                 Refactor();
             }
         }
@@ -85,7 +85,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 {
                     return;
                 }
-                pane.SetSelection(target.QualifiedSelection.Selection);
+                pane.Selection = target.QualifiedSelection.Selection;
                 Refactor();
             }
         }

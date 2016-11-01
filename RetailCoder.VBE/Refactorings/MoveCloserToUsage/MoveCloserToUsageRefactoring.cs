@@ -114,7 +114,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
                 if (oldSelection.HasValue)
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
 
                 _state.StateChanged += _state_StateChanged;
@@ -150,7 +150,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
                 if (oldSelection.HasValue)
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
 
                 _state.StateChanged -= _state_StateChanged;

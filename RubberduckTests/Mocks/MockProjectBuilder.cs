@@ -325,11 +325,8 @@ namespace RubberduckTests.Mocks
             var window = windows.CreateWindow(name);
             windows.Add(window);
 
-            codePane.Setup(p => p.SetSelection(It.IsAny<Selection>()));
-            codePane.Setup(p => p.SetSelection(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
+            codePane.SetupProperty(p => p.Selection, selection);
             codePane.Setup(p => p.Show());
-
-            codePane.Setup(p => p.GetSelection()).Returns(selection);
 
             codePane.SetupGet(p => p.VBE).Returns(_getVbe);
             codePane.SetupGet(p => p.Window).Returns(() => window);

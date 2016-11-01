@@ -3,7 +3,6 @@ using System.Diagnostics;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.Application
 {
@@ -28,7 +27,7 @@ namespace Rubberduck.VBEditor.Application
                 var line = module.GetProcBodyStartLine(qualifiedMemberName.MemberName, ProcKind.Procedure);
                 var pane = module.CodePane;
                 {
-                    pane.SetSelection(line, 1, line, 1);
+                    pane.Selection = new Selection(line, 1, line, 1);
                 }
             }
 

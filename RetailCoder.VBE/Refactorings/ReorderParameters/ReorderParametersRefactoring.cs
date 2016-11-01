@@ -55,7 +55,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
                 if (oldSelection.HasValue)
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
             }
 
@@ -66,7 +66,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             var pane = _vbe.ActiveCodePane;
             {
-                pane.SetSelection(target.Selection);
+                pane.Selection = target.Selection;
                 Refactor();
             }
         }
@@ -80,7 +80,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             var pane = _vbe.ActiveCodePane;
             {
-                pane.SetSelection(target.QualifiedSelection.Selection);
+                pane.Selection = target.QualifiedSelection.Selection;
                 Refactor();
             }
         }
