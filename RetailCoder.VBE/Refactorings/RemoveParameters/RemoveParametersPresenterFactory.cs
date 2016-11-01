@@ -23,17 +23,20 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public RemoveParametersPresenter Create()
         {
             var pane = _vbe.ActiveCodePane;
+            if (pane == null || pane.IsWrappingNullReference)
             {
-                var selection = pane.GetQualifiedSelection();
-
-                if (!selection.HasValue)
-                {
-                    return null;
-                }
-
-                var model = new RemoveParametersModel(_state, selection.Value, _messageBox);
-                return new RemoveParametersPresenter(_view, model, _messageBox);
+                return null;
             }
+
+            var selection = pane.GetQualifiedSelection();
+            if (!selection.HasValue)
+            {
+                return null;
+            }
+
+            var model = new RemoveParametersModel(_state, selection.Value, _messageBox);
+            return new RemoveParametersPresenter(_view, model, _messageBox);
+
         }
     }
 }
