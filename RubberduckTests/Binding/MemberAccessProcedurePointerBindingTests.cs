@@ -5,8 +5,9 @@ using RubberduckTests.Mocks;
 using System;
 using System.Linq;
 using Moq;
-using Rubberduck.Parsing;
 using System.Threading;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

@@ -239,6 +239,7 @@ namespace Rubberduck
             {
                 _logger.Error(e);
             }
+
             GC.WaitForPendingFinalizers();
             _isInitialized = false;
         }

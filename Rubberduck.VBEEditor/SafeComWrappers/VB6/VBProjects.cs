@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
 
@@ -8,9 +9,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBProjects : SafeComWrapper<VB.VBProjects>, IVBProjects
     {
+        private readonly IVBProjectsEventsSink _sink;
+
         public VBProjects(VB.VBProjects target) 
             : base(target)
         {
+            _sink = new VBProjectsEventsSink();
         }
 
         public int Count
@@ -41,6 +45,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public void Remove(IVBProject project)
         {
             Target.Remove((VB.VBProject)project.Target);
+        }
+
+        public IVBProjectsEventsSink Events { get { return _sink; } }
+
+        public IConnectionPoint ConnectionPoint
+        {
+            get
+            {
+                try
+                {
+                    var connectionPointContainer = (IConnectionPointContainer)Target;
+                    var interfaceId = typeof(VB._dispVBProjectsEvents).GUID;
+                    IConnectionPoint result;
+                    connectionPointContainer.FindConnectionPoint(ref interfaceId, out result);
+                    return result;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
         }
 
         public IVBProject this[object index]

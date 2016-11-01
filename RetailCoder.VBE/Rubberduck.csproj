@@ -310,11 +310,6 @@
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationExtensions.cs" />
-    <Compile Include="Common\Dispatch\DispatcherEventArgs.cs" />
-    <Compile Include="Common\Dispatch\DispatcherRenamedEventArgs.cs" />
-    <Compile Include="Common\Dispatch\VBComponentsEventsSink.cs" />
-    <Compile Include="Common\Dispatch\VBProjectsEventsSink.cs" />
-    <Compile Include="Common\Dispatch\VBProjectsEventsWrapper.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
     <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
     <Compile Include="Common\Hotkeys\Hotkey.cs" />
@@ -423,7 +418,6 @@
     <Compile Include="Settings\ToDoListConfigProvider.cs" />
     <Compile Include="Settings\UnitTestConfigProvider.cs" />
     <Compile Include="Settings\WhitelistedIdentifierSetting.cs" />
-    <Compile Include="Sinks.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
     </Compile>

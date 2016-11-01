@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -9,5 +10,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IVBProject Add(ProjectType type);
         IVBProject Open(string path);
         void Remove(IVBProject project);
+
+        IVBProjectsEventsSink Events { get; }
+        IConnectionPoint ConnectionPoint { get; }
     }
 }

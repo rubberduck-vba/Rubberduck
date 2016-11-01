@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -15,5 +16,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IVBComponent AddMTDesigner(int index = 0);
         void ImportSourceFile(string path);
         void RemoveSafely(IVBComponent component);
+
+        IVBComponentsEventsSink Events { get; }
+        IConnectionPoint ConnectionPoint { get; }
     }
 }
