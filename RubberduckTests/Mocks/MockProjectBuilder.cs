@@ -54,6 +54,8 @@ namespace RubberduckTests.Mocks
 
             _project.SetupProperty(m => m.HelpFile);
             _project.SetupGet(m => m.ProjectId).Returns(() => _project.Object.HelpFile);
+            _project.Setup(m => m.AssignProjectId())
+                .Callback(() => _project.Object.HelpFile = Guid.NewGuid().ToString());
 
             _vbComponents = CreateComponentsMock();
             _project.SetupGet(m => m.VBComponents).Returns(_vbComponents.Object);
