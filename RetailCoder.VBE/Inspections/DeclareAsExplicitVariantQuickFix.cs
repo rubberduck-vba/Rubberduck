@@ -1,6 +1,5 @@
 using System.Linq;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -17,32 +16,37 @@ namespace Rubberduck.Inspections
         public override void Fix()
         {
             var module = Selection.QualifiedName.Component.CodeModule;
+            var contextLines = module.GetLines(Context.GetSelection());
+            var originalIndent = contextLines.Substring(0, contextLines.TakeWhile(c => c == ' ').Count());
+
+            string originalInstruction;
+
+            // DeclareExplicitVariant() overloads return empty string if context is null
+            Selection selection;
+            var fix = DeclareExplicitVariant(Context as VBAParser.VariableSubStmtContext, out originalInstruction, out selection);
+            if (!string.IsNullOrEmpty(fix))
             {
-                string originalInstruction;
-
-                // DeclareExplicitVariant() overloads return empty string if context is null
-                Selection selection;
-                var fix = DeclareExplicitVariant(Context as VBAParser.VariableSubStmtContext, out originalInstruction, out selection);
-
-                if (string.IsNullOrEmpty(originalInstruction))
-                {
-                    fix = DeclareExplicitVariant(Context as VBAParser.ConstSubStmtContext, out originalInstruction, out selection);
-                }
-
-                if (string.IsNullOrEmpty(originalInstruction))
-                {
-                    fix = DeclareExplicitVariant(Context as VBAParser.ArgContext, out originalInstruction, out selection);
-                }
-
-                if (string.IsNullOrEmpty(originalInstruction))
-                {
-                    return;
-                }
-
-                
-                module.DeleteLines(selection.StartLine, selection.LineCount);
-                module.InsertLines(selection.StartLine, fix);
+                // maintain original indentation for a variable declaration
+                fix = originalIndent + fix;
             }
+
+            if (string.IsNullOrEmpty(originalInstruction))
+            {
+                fix = DeclareExplicitVariant(Context as VBAParser.ConstSubStmtContext, out originalInstruction, out selection);
+            }
+
+            if (string.IsNullOrEmpty(originalInstruction))
+            {
+                fix = DeclareExplicitVariant(Context as VBAParser.ArgContext, out originalInstruction, out selection);
+            }
+
+            if (string.IsNullOrEmpty(originalInstruction))
+            {
+                return;
+            }
+
+            module.DeleteLines(selection.StartLine, selection.LineCount);
+            module.InsertLines(selection.StartLine, fix);
         }
 
         private string DeclareExplicitVariant(VBAParser.ArgContext context, out string instruction, out Selection selection)
@@ -71,7 +75,7 @@ namespace Rubberduck.Inspections
                             {
                                 if (part is VBAParser.UnrestrictedIdentifierContext)
                                 {
-                                    fix += part.GetText() + ' ' + Tokens.As + ' ' + Tokens.Variant + ' ';
+                                    fix += part.GetText() + ' ' + Tokens.As + ' ' + Tokens.Variant;
                                 }
                                 else
                                 {
@@ -108,7 +112,7 @@ namespace Rubberduck.Inspections
             selection = parent.GetSelection();
 
             var variable = context.GetText();
-            var replacement = context.identifier().GetText() + ' ' + Tokens.As + ' ' + Tokens.Variant + ' ';
+            var replacement = context.identifier().GetText() + ' ' + Tokens.As + ' ' + Tokens.Variant;
 
             var result = instruction.Replace(variable, replacement);
             return result;
