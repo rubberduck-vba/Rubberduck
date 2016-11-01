@@ -8,7 +8,6 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using System.Threading;
-using Rubberduck.Parsing;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -34,7 +33,7 @@ namespace RubberduckTests.Mocks
         public static RubberduckParser Create(IVBE vbe, RubberduckParserState state)
         {
             var attributeParser = new Mock<IAttributeParser>();
-            attributeParser.Setup(m => m.Parse(It.IsAny<Rubberduck.VBEditor.SafeComWrappers.VBA.VBComponent>()))
+            attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>()))
                            .Returns(() => new Dictionary<Tuple<string, DeclarationType>, Attributes>());
             return Create(vbe, state, attributeParser.Object);
         }

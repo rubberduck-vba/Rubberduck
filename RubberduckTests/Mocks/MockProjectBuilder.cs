@@ -53,6 +53,9 @@ namespace RubberduckTests.Mocks
             _project = CreateProjectMock(name, filename, protection);
 
             _project.SetupProperty(m => m.HelpFile);
+            _project.SetupGet(m => m.ProjectId).Returns(() => _project.Object.HelpFile);
+            _project.Setup(m => m.AssignProjectId())
+                .Callback(() => _project.Object.HelpFile = Guid.NewGuid().ToString());
 
             _vbComponents = CreateComponentsMock();
             _project.SetupGet(m => m.VBComponents).Returns(_vbComponents.Object);
@@ -77,8 +80,6 @@ namespace RubberduckTests.Mocks
 
         /// <summary>
         /// Adds a new mock component to the project.
-        /// Use the <see cref="AddComponent(string,vbext_ComponentType,string,Selection)"/> overload to add module components.
-        /// Use this overload to add user forms created with a <see cref="RubberduckTests.Mocks.MockUserFormBuilder"/> instance.
         /// </summary>
         /// <param name="component">The component to add.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
@@ -273,6 +274,8 @@ namespace RubberduckTests.Mocks
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
                 lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).Count());
 
+            codeModule.Setup(m => m.Content()).Returns(() => content);
+
             // ReSharper disable once UseIndexedProperty
             codeModule.Setup(m => m.GetLines(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns<int, int>((start, count) => string.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
@@ -307,7 +310,7 @@ namespace RubberduckTests.Mocks
 
         private Mock<ICodePane> CreateCodePaneMock(string name, Selection selection)
         {
-            var windows = _getVbe().Windows as MockWindowsCollection;
+            var windows = _getVbe().Windows as Windows;
             if (windows == null)
             {
                 throw new InvalidOperationException("VBE.Windows collection must be a MockWindowsCollection object.");

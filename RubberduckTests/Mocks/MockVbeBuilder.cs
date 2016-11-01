@@ -18,6 +18,9 @@ namespace RubberduckTests.Mocks
         public const string TestModuleName = "TestModule1";
         private readonly Mock<IVBE> _vbe;
 
+        //private Mock<IWindows> _vbWindows;
+        private readonly Windows _windows = new Windows();
+
         private Mock<IVBProjects> _vbProjects;
         private readonly ICollection<IVBProject> _projects = new List<IVBProject>();
         
@@ -105,8 +108,8 @@ namespace RubberduckTests.Mocks
         private Mock<IVBE> CreateVbeMock()
         {
             var vbe = new Mock<IVBE>();
-            var windows = new MockWindowsCollection {VBE = vbe.Object};
-            vbe.Setup(m => m.Windows).Returns(() => windows);
+            _windows.VBE = vbe.Object;
+            vbe.Setup(m => m.Windows).Returns(() => _windows);
             vbe.SetupProperty(m => m.ActiveCodePane);
             vbe.SetupProperty(m => m.ActiveVBProject);
             
