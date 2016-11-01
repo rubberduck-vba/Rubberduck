@@ -324,7 +324,7 @@ Private Assert As New Rubberduck.AssertClass
             addTestModuleCommand.Execute(null);
 
             // mock suite auto-assigns "TestModule1" to the first component when we create the mock
-            var module = vbe.Object.VBProjects[0].VBComponents["TestModule2"].CodeModule;
+            var module = vbe.Object.VBProjects[0].VBComponents["TestModule1"].CodeModule;
             Assert.AreEqual(expected, module.Content());
         }
 

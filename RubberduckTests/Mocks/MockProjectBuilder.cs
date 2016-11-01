@@ -274,6 +274,8 @@ namespace RubberduckTests.Mocks
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
                 lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).Count());
 
+            codeModule.Setup(m => m.Content()).Returns(() => content);
+
             // ReSharper disable once UseIndexedProperty
             codeModule.Setup(m => m.GetLines(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns<int, int>((start, count) => string.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
