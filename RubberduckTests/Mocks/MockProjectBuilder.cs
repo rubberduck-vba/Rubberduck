@@ -236,7 +236,7 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.Type).Returns(() => type);
             result.SetupProperty(m => m.Name, name);
 
-            var module = CreateCodeModuleMock(name, content, selection);
+            var module = CreateCodeModuleMock(name, content, selection, result);
             module.SetupGet(m => m.Parent).Returns(() => result.Object);
             result.SetupGet(m => m.CodeModule).Returns(() => module.Object);
 
@@ -245,13 +245,14 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<ICodeModule> CreateCodeModuleMock(string name, string content, Selection selection)
+        private Mock<ICodeModule> CreateCodeModuleMock(string name, string content, Selection selection, Mock<IVBComponent> component)
         {
-            var codePane = CreateCodePaneMock(name, selection);
+            var codePane = CreateCodePaneMock(name, selection, component);
             codePane.SetupGet(m => m.VBE).Returns(_getVbe);
 
             var result = CreateCodeModuleMock(content);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
+            result.SetupGet(m => m.Parent).Returns(() => component.Object);
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
             result.SetupProperty(m => m.Name, name);
 
@@ -313,7 +314,7 @@ namespace RubberduckTests.Mocks
             return codeModule;
         }
 
-        private Mock<ICodePane> CreateCodePaneMock(string name, Selection selection)
+        private Mock<ICodePane> CreateCodePaneMock(string name, Selection selection, Mock<IVBComponent> component)
         {
             var windows = _getVbe().Windows as Windows;
             if (windows == null)
@@ -325,6 +326,8 @@ namespace RubberduckTests.Mocks
             var window = windows.CreateWindow(name);
             windows.Add(window);
 
+            codePane.Setup(p => p.GetQualifiedSelection()).Returns(() =>
+                new QualifiedSelection(new QualifiedModuleName(component.Object), selection));
             codePane.SetupProperty(p => p.Selection, selection);
             codePane.Setup(p => p.Show());
 
