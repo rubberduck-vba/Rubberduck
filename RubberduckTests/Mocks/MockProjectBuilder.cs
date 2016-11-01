@@ -264,7 +264,7 @@ namespace RubberduckTests.Mocks
 
         private static readonly string[] ModuleBodyTokens =
         {
-            Tokens.Sub, Tokens.Function, Tokens.Property
+            Tokens.Sub + ' ', Tokens.Function + ' ', Tokens.Property + ' '
         };
 
         private Mock<ICodeModule> CreateCodeModuleMock(string content)
@@ -274,16 +274,21 @@ namespace RubberduckTests.Mocks
             var codeModule = new Mock<ICodeModule>();
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
-                lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).Count());
+                lines.TakeWhile(line => line.Contains(Tokens.Declare + ' ') || !ModuleBodyTokens.Any(line.Contains)).Count());
 
             codeModule.Setup(m => m.Content()).Returns(() => string.Join(Environment.NewLine, lines));
-
-            // ReSharper disable once UseIndexedProperty
+            
+            codeModule.Setup(m => m.GetLines(It.IsAny<Selection>()))
+                .Returns((Selection selection) => string.Join(Environment.NewLine, lines.Skip(selection.StartLine - 1).Take(selection.LineCount)));
+            
             codeModule.Setup(m => m.GetLines(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns<int, int>((start, count) => string.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
 
             codeModule.Setup(m => m.ReplaceLine(It.IsAny<int>(), It.IsAny<string>()))
                 .Callback<int, string>((index, str) => lines[index - 1] = str);
+
+            codeModule.Setup(m => m.DeleteLines(It.IsAny<Selection>()))
+                .Callback<Selection>(selection => lines.RemoveRange(selection.StartLine - 1, selection.LineCount));
 
             codeModule.Setup(m => m.DeleteLines(It.IsAny<int>(), It.IsAny<int>()))
                 .Callback<int, int>((index, count) => lines.RemoveRange(index - 1, count));
