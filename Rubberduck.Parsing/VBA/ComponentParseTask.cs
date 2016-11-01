@@ -7,7 +7,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +14,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -65,30 +65,36 @@ namespace Rubberduck.Parsing.VBA
                 var comments = QualifyAndUnionComments(_qualifiedName, commentListener.Comments, commentListener.RemComments);
                 token.ThrowIfCancellationRequested();
 
-                ParseCompleted.Invoke(this, new ParseCompletionArgs
-                {
-                    ParseTree = tree,
-                    Tokens = stream,
-                    Attributes = attributes,
-                    Comments = comments,
-                    Annotations = annotationListener.Annotations
-                });
+                var completedHandler = ParseCompleted;
+                if (completedHandler != null)
+                    completedHandler.Invoke(this, new ParseCompletionArgs
+                    {
+                        ParseTree = tree,
+                        Tokens = stream,
+                        Attributes = attributes,
+                        Comments = comments,
+                        Annotations = annotationListener.Annotations
+                    });
             }
             catch (COMException exception)
             {
                 Logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
-                ParseFailure.Invoke(this, new ParseFailureArgs
-                {
-                    Cause = exception
-                });
+                var failedHandler = ParseFailure;
+                if (failedHandler != null)
+                    failedHandler.Invoke(this, new ParseFailureArgs
+                    {
+                        Cause = exception
+                    });
             }
             catch (SyntaxErrorException exception)
             {
                 Logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
-                ParseFailure.Invoke(this, new ParseFailureArgs
-                {
-                    Cause = exception
-                });
+                var failedHandler = ParseFailure;
+                if (failedHandler != null)
+                    failedHandler.Invoke(this, new ParseFailureArgs
+                    {
+                        Cause = exception
+                    });
             }
             catch (OperationCanceledException)
             {
@@ -98,7 +104,7 @@ namespace Rubberduck.Parsing.VBA
 
         private string RewriteAndPreprocess()
         {
-            var code = _rewriter == null ? string.Join(Environment.NewLine, _component.CodeModule.GetSanitizedCode()) : _rewriter.GetText();
+            var code = _rewriter == null ? string.Join(Environment.NewLine, CodeModule.GetSanitizedCode(_component.CodeModule)) : _rewriter.GetText();
             var processed = _preprocessor.Execute(_component.Name, code);
             return processed;
         }

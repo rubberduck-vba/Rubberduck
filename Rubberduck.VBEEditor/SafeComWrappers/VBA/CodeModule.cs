@@ -90,6 +90,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Target.DeleteLines(1, CountOfLines);
         }
 
+        public static string[] GetSanitizedCode(ICodeModule module)
+        {
+            var lines = module.CountOfLines;
+            if (lines == 0)
+            {
+                return new string[] { };
+            }
+
+            var code = module.GetLines(1, lines).Replace("\r", string.Empty).Split('\n');
+
+            StripLineNumbers(code);
+            return code;
+        }
+
         /// <summary>
         /// Gets an array of strings where each element is a line of code in the Module,
         /// with line numbers stripped and any other pre-processing that needs to be done.
@@ -108,7 +122,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return code;
         }
 
-        private void StripLineNumbers(string[] lines)
+        private static void StripLineNumbers(string[] lines)
         {
             var continuing = false;
             for (var line = 0; line < lines.Length; line++)
@@ -129,7 +143,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        private bool HasNumberedLine(string codeLine, out int? lineNumber)
+        private static bool HasNumberedLine(string codeLine, out int? lineNumber)
         {
             lineNumber = null;
 

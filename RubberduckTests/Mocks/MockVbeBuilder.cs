@@ -102,7 +102,10 @@ namespace RubberduckTests.Mocks
             builder.AddComponent(TestModuleName, type, content, selection);
             var project = builder.Build();
             component = project.Object.VBComponents[0];
-            return AddProject(project).Build();
+            var vbe = AddProject(project).Build();
+            vbe.Object.ActiveVBProject = project.Object;
+            vbe.Object.ActiveCodePane = component.CodeModule.CodePane;
+            return vbe;
         }
 
         private Mock<IVBE> CreateVbeMock()
@@ -126,7 +129,7 @@ namespace RubberduckTests.Mocks
 
             _vbCodePanes = CreateCodePanesMock();
             vbe.SetupGet(m => m.CodePanes).Returns(() => _vbCodePanes.Object);
-
+            
             return vbe;
         }
 

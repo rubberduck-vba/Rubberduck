@@ -30,6 +30,7 @@ namespace RubberduckTests.Mocks
             state = parser.State;
 
         }
+
         public static RubberduckParser Create(IVBE vbe, RubberduckParserState state)
         {
             var attributeParser = new Mock<IAttributeParser>();
