@@ -390,7 +390,7 @@ Public foo As Integer
             var state = Resolve(class1, class2);
 
             // assert
-            var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+            var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo" && !item.IsUndeclared);
 
             var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
             Assert.IsNull(reference);
@@ -1174,7 +1174,7 @@ End Sub
             var state = Resolve(code);
 
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable);
+                item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
             var usage = declaration.References.Single();
             var annotation = (IgnoreAnnotation)usage.Annotations.First();
@@ -1199,7 +1199,7 @@ End Sub
             var state = Resolve(code);
 
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable);
+                item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
             var usage = declaration.References.Single();
 
@@ -1244,7 +1244,7 @@ End Sub
             var state = Resolve(code);
 
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable);
+                item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
             var usage = declaration.References.Single();
 
