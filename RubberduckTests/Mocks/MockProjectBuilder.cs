@@ -143,6 +143,7 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.FileName).Returns(() => filename);
             result.SetupGet(m => m.Protection).Returns(() => protection);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
+            result.Setup(m => m.ComponentNames()).Returns(() => _vbComponents.Object.Select(component => component.Name).ToArray());
 
             return result;
         }
