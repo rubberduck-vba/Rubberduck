@@ -282,8 +282,6 @@
     <Compile Include="VBA\IAttributeParser.cs" />
     <Compile Include="VBA\IModuleExporter.cs" />
     <Compile Include="VBA\ModuleState.cs" />
-    <Compile Include="VBA\Nodes\INode.cs" />
-    <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\ParseErrorEventArgs.cs" />
     <Compile Include="VBA\ParserState.cs" />
     <Compile Include="VBA\ReferencePriorityMap.cs" />
