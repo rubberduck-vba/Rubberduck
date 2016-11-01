@@ -135,7 +135,6 @@
     <Compile Include="Inspections\VariableNotAssignedInspectionTests.cs" />
     <Compile Include="Inspections\VariableNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionTests.cs" />
-    <Compile Include="Mocks\MockFactory.cs" />
     <Compile Include="Mocks\MockProjectBuilder.cs" />
     <Compile Include="Mocks\MockUserFormBuilder.cs" />
     <Compile Include="Mocks\MockVbeBuilder.cs" />

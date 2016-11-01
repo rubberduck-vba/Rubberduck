@@ -11,10 +11,9 @@ using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using RubberduckTests.Mocks;
-using Windows = RubberduckTests.Mocks.Windows;
 
 namespace RubberduckTests.SourceControl
 {
@@ -22,8 +21,7 @@ namespace RubberduckTests.SourceControl
     public class SourceControlViewModelTests
     {
         private Mock<IVBE> _vbe;
-        private Windows _windows;
-        private Mock<IWindow> _window;
+
 #pragma warning disable 169
         private object _toolWindow;
 #pragma warning restore 169
@@ -46,9 +44,12 @@ namespace RubberduckTests.SourceControl
         [TestInitialize]
         public void InitializeMocks()
         {
-            _window = Mocks.MockFactory.CreateWindowMock();
-            _windows = new Windows() { _window.Object };
-            _vbe = Mocks.MockFactory.CreateVbeMock(_windows);
+            _vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .MockVbeBuilder()
+                .Build();
+            
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -500,7 +501,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
 
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<IVBProject>(), It.IsAny<IRepository>()))
                 .Throws(new SourceControlException(expectedTitle,
                     new LibGit2Sharp.LibGit2SharpException(expectedMessage))
                     );
@@ -609,7 +610,7 @@ namespace RubberduckTests.SourceControl
             _vm.CreateProviderWithCredentials(new SecureCredentials(username, password));
 
             //assert
-            _providerFactory.Verify(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()));
+            _providerFactory.Verify(f => f.CreateProvider(It.IsAny<IVBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()));
         }
 
         [TestMethod]
@@ -929,7 +930,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
 
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<IVBProject>(), It.IsAny<IRepository>()))
                 .Throws(new SourceControlException(expectedTitle,
                     new LibGit2Sharp.LibGit2SharpException(expectedMessage))
                     );
