@@ -6,12 +6,6 @@ namespace RubberduckTests.Mocks
 {
     static class MockFactory
     {
-        /// <summary>
-        /// Creates a mock <see cref="IWindow"/> that is particularly useful for passing into <see cref="MockWindowsCollection"/>'s ctor.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="Mock{IWindow}"/>that has all the properties needed for <see cref="DockableToolwindowPresenter"/> pre-setup.
-        /// </returns>
         internal static Mock<IWindow> CreateWindowMock()
         {
             var window = new Mock<IWindow>();
@@ -38,14 +32,6 @@ namespace RubberduckTests.Mocks
             return window;
         }
 
-        /// <summary>
-        /// Creates a new <see cref="Mock{VBE}"/> that returns the <see cref="IWindows"/> collection argument out of the Windows property.
-        /// </summary>
-        /// <param name="windows">
-        /// A <see cref="MockWindowsCollection"/> is expected. 
-        /// Other objects implementing the<see cref="IWindows"/> interface could cause issues.
-        /// </param>
-        /// <returns></returns>
         internal static Mock<IVBE> CreateVbeMock(Windows windows)
         {
             var vbe = new Mock<IVBE>();

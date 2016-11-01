@@ -139,7 +139,6 @@
     <Compile Include="Mocks\MockProjectBuilder.cs" />
     <Compile Include="Mocks\MockUserFormBuilder.cs" />
     <Compile Include="Mocks\MockVbeBuilder.cs" />
-    <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="Mocks\Windows.cs" />
     <Compile Include="MultiAssert.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorTests.cs" />
