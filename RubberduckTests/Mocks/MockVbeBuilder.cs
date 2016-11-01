@@ -105,8 +105,9 @@ namespace RubberduckTests.Mocks
         private Mock<IVBE> CreateVbeMock()
         {
             var vbe = new Mock<IVBE>();
-            var windows = new MockWindowsCollection {VBE = vbe.Object};
-            vbe.Setup(m => m.Windows).Returns(() => windows);
+            var windows = new Mock<IWindows>();
+            windows.Setup(m => m.VBE).Returns(() => vbe.Object);
+            vbe.Setup(m => m.Windows).Returns(() => windows.Object);
             vbe.SetupProperty(m => m.ActiveCodePane);
             vbe.SetupProperty(m => m.ActiveVBProject);
             

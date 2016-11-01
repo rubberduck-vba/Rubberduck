@@ -307,7 +307,7 @@ namespace RubberduckTests.Mocks
 
         private Mock<ICodePane> CreateCodePaneMock(string name, Selection selection)
         {
-            var windows = _getVbe().Windows as MockWindowsCollection;
+            var windows = _getVbe().Windows as Windows;
             if (windows == null)
             {
                 throw new InvalidOperationException("VBE.Windows collection must be a MockWindowsCollection object.");
