@@ -53,6 +53,7 @@ namespace RubberduckTests.Mocks
             _project = CreateProjectMock(name, filename, protection);
 
             _project.SetupProperty(m => m.HelpFile);
+            _project.SetupGet(m => m.ProjectId).Returns(() => _project.Object.HelpFile);
 
             _vbComponents = CreateComponentsMock();
             _project.SetupGet(m => m.VBComponents).Returns(_vbComponents.Object);
@@ -77,8 +78,6 @@ namespace RubberduckTests.Mocks
 
         /// <summary>
         /// Adds a new mock component to the project.
-        /// Use the <see cref="AddComponent(string,vbext_ComponentType,string,Selection)"/> overload to add module components.
-        /// Use this overload to add user forms created with a <see cref="RubberduckTests.Mocks.MockUserFormBuilder"/> instance.
         /// </summary>
         /// <param name="component">The component to add.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
