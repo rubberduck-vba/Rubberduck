@@ -172,7 +172,7 @@ namespace Rubberduck.SourceControl
                     var module = pane.CodeModule;
                     var component = module.Parent;
                     {
-                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection());
+                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
                         string name = null;
                         if (selection.QualifiedName.Component != null)
                         {
@@ -216,7 +216,7 @@ namespace Rubberduck.SourceControl
                     var module = pane.CodeModule;
                     var component = module.Parent;
                     {
-                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection());
+                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
                         string name = null;
                         if (selection.QualifiedName.Component != null)
                         {

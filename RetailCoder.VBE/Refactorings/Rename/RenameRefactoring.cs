@@ -53,7 +53,7 @@ namespace Rubberduck.Refactorings.Rename
 
             if (oldSelection.HasValue)
             {
-                pane.SetSelection(oldSelection.Value.Selection);
+                pane.Selection = oldSelection.Value.Selection;
             }
         }
 
@@ -64,7 +64,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 return;
             }
-            pane.SetSelection(target.Selection);
+            pane.Selection = target.Selection;
             Refactor();
         }
 
@@ -77,7 +77,7 @@ namespace Rubberduck.Refactorings.Rename
             var pane = _vbe.ActiveCodePane;
             if (!pane.IsWrappingNullReference)
             {
-                oldSelection = pane.GetSelection();
+                oldSelection = pane.Selection;
             }
 
             if (_model != null && _model.Declarations != null)
@@ -87,7 +87,7 @@ namespace Rubberduck.Refactorings.Rename
 
             if (!pane.IsWrappingNullReference)
             {
-                pane.SetSelection(oldSelection);
+                pane.Selection = oldSelection;
             }
         }
 

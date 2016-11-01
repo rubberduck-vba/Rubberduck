@@ -576,11 +576,11 @@ namespace Rubberduck.Parsing.Symbols
                 lExpr,
                 GetInnerMostWithExpression(),
                 StatementResolutionContext.Undefined);
-            _boundExpressionVisitor.AddIdentifierReferences(
-                firstExpression,
-                _qualifiedModuleName,
-                _currentScope,
-                _currentParent);
+            //_boundExpressionVisitor.AddIdentifierReferences(
+            //    firstExpression,
+            //    _qualifiedModuleName,
+            //    _currentScope,
+            //    _currentParent);
             if (firstExpression.Classification != ExpressionClassification.ResolutionFailed)
             {
                 // each iteration counts as an assignment
@@ -635,11 +635,11 @@ namespace Rubberduck.Parsing.Symbols
                     _currentScope,
                     _currentParent,
                     true);
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    firstExpression,
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent);
+                //_boundExpressionVisitor.AddIdentifierReferences(
+                //    firstExpression,
+                //    _qualifiedModuleName,
+                //    _currentScope,
+                //    _currentParent);
             }
             for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
             {

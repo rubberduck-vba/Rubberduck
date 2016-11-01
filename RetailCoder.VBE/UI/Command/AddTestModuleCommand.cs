@@ -59,7 +59,7 @@ namespace Rubberduck.UI.Command
 
         private const string TestModuleBaseName = "TestModule";
 
-        private string GetTestModule(UnitTestSettings settings)
+        private string GetTestModule(IUnitTestSettings settings)
         {
             var assertClass = settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive";
             var moduleBinding = settings.BindingMode == BindingMode.EarlyBinding

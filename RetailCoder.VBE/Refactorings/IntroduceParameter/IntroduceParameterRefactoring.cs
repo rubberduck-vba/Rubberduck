@@ -111,7 +111,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
                 if (oldSelection.HasValue)
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
 
                 _state.OnParseRequested(this);

@@ -93,7 +93,7 @@ namespace Rubberduck.Refactorings.IntroduceField
                 var module = oldSelection.Value.QualifiedName.Component.CodeModule;
                 var pane = module.CodePane;
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
             }
 

@@ -2,11 +2,9 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -20,10 +18,9 @@ namespace RubberduckTests.Commands
         [TestMethod]
         public void AddsTest()
         {
-            var input =
-                @"Option Explicit
+            var input = @"
+Option Explicit
 Option Private Module
-
 
 '@TestModule
 Private Assert As Object
@@ -56,10 +53,9 @@ Private Assert As Object
         [TestMethod]
         public void AddsTest_NullActiveCodePane()
         {
-            var input =
-                @"Option Explicit
+            var input = @"
+Option Explicit
 Option Private Module
-
 
 '@TestModule
 Private Assert As Object
@@ -131,10 +127,9 @@ Private Assert As Object
         [TestMethod]
         public void AddTest_CanExecute()
         {
-            var input =
-                @"Option Explicit
+            var input = @"
+Option Explicit
 Option Private Module
-
 
 '@TestModule
 Private Assert As Object
@@ -161,10 +156,9 @@ Private Assert As Object
         [TestMethod]
         public void AddsExpectedErrorTest()
         {
-            var input =
-@"Option Explicit
+            var input = @"
+Option Explicit
 Option Private Module
-
 
 '@TestModule
 Private Assert As Object
@@ -235,10 +229,9 @@ Private Assert As Object
         [TestMethod]
         public void AddExpectedErrorTest_CanExecute()
         {
-            var input =
-                @"Option Explicit
+            var input = @"
+Option Explicit
 Option Private Module
-
 
 '@TestModule
 Private Assert As Object
@@ -264,10 +257,9 @@ Private Assert As Object
         [TestMethod]
         public void AddsExpectedErrorTest_NullActiveCodePane()
         {
-            var input =
-@"Option Explicit
+            var input = @"
+Option Explicit
 Option Private Module
-
 
 '@TestModule
 Private Assert As Object
@@ -324,7 +316,7 @@ Private Assert As New Rubberduck.AssertClass
             addTestModuleCommand.Execute(null);
 
             // mock suite auto-assigns "TestModule1" to the first component when we create the mock
-            var module = vbe.Object.VBProjects[0].VBComponents["TestModule1"].CodeModule;
+            var module = vbe.Object.VBProjects[0].VBComponents["TestModule2"].CodeModule;
             Assert.AreEqual(expected, module.Content());
         }
 

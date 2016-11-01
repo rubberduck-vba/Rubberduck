@@ -324,7 +324,8 @@ End Sub";
             }
 
             var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
-            Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
+            var canExecute = extractInterfaceCommand.CanExecute(null);
+            Assert.IsTrue(canExecute);
         }
 
         [TestMethod]

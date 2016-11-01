@@ -859,7 +859,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ParameterCanBeByVal_EVentMember_MultipleParams_OneCanBeByVal_QuickFixWorks()
+        public void ParameterCanBeByVal_EventMember_MultipleParams_OneCanBeByVal_QuickFixWorks()
         {
             //Input
             const string inputCode1 =
@@ -899,9 +899,9 @@ End Sub";
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode3)
                 .Build();
 
-            var module1 = project.Object.VBComponents["IClass1"].CodeModule;
-            var module2 = project.Object.VBComponents["Class1"].CodeModule;
-            var module3 = project.Object.VBComponents["Class2"].CodeModule;
+            var module1 = project.Object.VBComponents["Class1"].CodeModule;
+            var module2 = project.Object.VBComponents["Class2"].CodeModule;
+            var module3 = project.Object.VBComponents["Class3"].CodeModule;
             var vbe = builder.AddProject(project).Build();
 
             var mockHost = new Mock<IHostApplication>();

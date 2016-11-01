@@ -69,13 +69,8 @@ namespace Rubberduck.UI.Command
                     var component = _vbe.SelectedVBComponent;
                     var selectedModule = component.CodeModule;
                     {
-                        return testModules.Any(a =>
-                        {
-                            var module = a.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                            {
-                                return module.Equals(selectedModule);
-                            }
-                        });
+                        var result = testModules.Any( a => a.QualifiedName.QualifiedModuleName.Component.CodeModule.Equals(selectedModule));
+                        return result;
                     }
                 }
                 catch (COMException)

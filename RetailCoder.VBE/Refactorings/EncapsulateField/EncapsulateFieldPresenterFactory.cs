@@ -18,7 +18,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public EncapsulateFieldPresenter Create()
         {
-            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+            var pane = _vbe.ActiveCodePane;
+            if (pane == null || pane.IsWrappingNullReference)
+            {
+                return null;
+            }
+
+            var selection = pane.GetQualifiedSelection();
             if (!selection.HasValue)
             {
                 return null;

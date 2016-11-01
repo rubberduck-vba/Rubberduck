@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing.VBA
             var module = _component.CodeModule;
             var pane = module.CodePane;
             {
-                pane.SetSelection(selection);
+                pane.Selection = selection;
             }
         }
     }

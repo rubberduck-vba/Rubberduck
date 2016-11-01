@@ -47,7 +47,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 var module = oldSelection.Value.QualifiedName.Component.CodeModule;
                 var pane = module.CodePane;
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
             }
 
@@ -58,7 +58,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var pane = _vbe.ActiveCodePane;
             {
-                pane.SetSelection(target.Selection);
+                pane.Selection = target.Selection;
             }
             Refactor();
         }
@@ -67,7 +67,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var pane = _vbe.ActiveCodePane;
             {
-                pane.SetSelection(target.QualifiedSelection.Selection);
+                pane.Selection = target.QualifiedSelection.Selection;
             }
             Refactor();
         }
@@ -112,7 +112,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             module.InsertLines(module.CountOfDeclarationLines + 1, newField);
             var pane = module.CodePane;
             {
-                pane.SetSelection(_model.TargetDeclaration.QualifiedSelection.Selection);
+                pane.Selection = _model.TargetDeclaration.QualifiedSelection.Selection;
             }
 
             for (var index = 1; index <= module.CountOfDeclarationLines; index++)

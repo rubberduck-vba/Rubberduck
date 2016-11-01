@@ -96,7 +96,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private void SetSelection(RegexSearchResult item)
         {
-            item.Module.CodePane.SetSelection(item.Selection);
+            item.Module.CodePane.Selection = item.Selection;
         }
 
         private List<RegexSearchResult> SearchSelection(string searchPattern)
@@ -105,7 +105,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
             var module = pane.CodeModule;
             {
                 var results = GetResultsFromModule(module, searchPattern);
-                return results.Where(r => pane.GetSelection().Contains(r.Selection)).ToList();
+                return results.Where(r => pane.Selection.Contains(r.Selection)).ToList();
             }
         }
 
@@ -127,7 +127,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
             {
                 var results = GetResultsFromModule(module, searchPattern);
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.GetSelection());
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.Selection);
                 dynamic block = state.AllDeclarations.FindTarget(qualifiedSelection, declarationTypes).Context.Parent;
                 var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line, block.Stop.Column);
                 return results.Where(r => selection.Contains(r.Selection)).ToList();

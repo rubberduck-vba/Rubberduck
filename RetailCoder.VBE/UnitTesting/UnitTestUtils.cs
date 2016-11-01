@@ -33,7 +33,7 @@ namespace Rubberduck.UnitTesting
         public static bool IsTestMethod(RubberduckParserState state, Declaration item)
         {
             return !state.AllUserDeclarations.Any(
-                    d => d.DeclarationType == DeclarationType.Parameter && d.ParentScopeDeclaration == item) &&
+                    d => d.DeclarationType == DeclarationType.Parameter && Equals(d.ParentScopeDeclaration, item)) &&
                 item.Accessibility == Accessibility.Public &&
                 item.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod);
         }
