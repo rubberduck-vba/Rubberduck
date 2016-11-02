@@ -241,7 +241,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void CanExecuteWhenActiveCodePaneHasCodeAndAnotherProjectHasSameNameEmptyClass()
+        public void CanExecuteNameCollision_ActiveCodePane_EmptyClass()
         {
             var input = @"
 Sub Foo()
