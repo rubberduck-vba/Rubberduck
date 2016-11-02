@@ -966,7 +966,7 @@ End Property
         }
 
         [TestMethod]
-        public void Factory_NullSelectionReturnsNullPresenter()
+        public void GivenNullActiveCodePane_FactoryReturnsNullPresenter()
         {
             //Input
             const string inputCode =
@@ -987,6 +987,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
+            vbe.Object.ActiveCodePane = null;
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, null);
             var actual = factory.Create();
 
