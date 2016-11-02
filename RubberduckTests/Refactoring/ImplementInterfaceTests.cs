@@ -727,10 +727,10 @@ End Property
         }
 
         [TestMethod]
-        public void ImplementInterface_AllTypes()
+        public void CreatesMethodStubForAllProcedureKinds()
         {
             //Input
-            const string inputCode1 =
+            const string interfaceCode =
 @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
@@ -746,32 +746,30 @@ End Property
 Public Property Set Buzz(value)
 End Property";
 
-            const string inputCode2 =
-@"Implements Class1";
-
-            var selection = new Selection(1, 1, 1, 1);
+            const string inputCode =
+@"Implements IClassModule";
 
             //Expectation
             const string expectedCode =
-@"Implements Class1
+@"Implements IClassModule
 
-Private Sub Class1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+Private Sub IClassModule_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
 
-Private Function Class1_Fizz(ByRef b As Variant) As Variant
+Private Function IClassModule_Fizz(ByRef b As Variant) As Variant
     Err.Raise 5 'TODO implement interface member
 End Function
 
-Private Property Get Class1_Buzz() As Variant
+Private Property Get IClassModule_Buzz() As Variant
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Let Class1_Buzz(ByRef value As Variant)
+Private Property Let IClassModule_Buzz(ByRef value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Set Class1_Buzz(ByRef value As Variant)
+Private Property Set IClassModule_Buzz(ByRef value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -779,8 +777,8 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                 .AddComponent("IClassModule", ComponentType.ClassModule, interfaceCode)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
                  .Build();
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
@@ -792,7 +790,7 @@ End Property
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
             var module = project.Object.VBComponents[1].CodeModule;
 
             //Act

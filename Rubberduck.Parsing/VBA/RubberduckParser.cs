@@ -320,7 +320,8 @@ namespace Rubberduck.Parsing.VBA
                 }, token)
                 .ContinueWith(t =>
                 {
-                    foreach (var declaration in finder.Undeclared)
+                    var undeclared = finder.Undeclared;
+                    foreach (var declaration in undeclared)
                     {
                         State.AddDeclaration(declaration);
                     }

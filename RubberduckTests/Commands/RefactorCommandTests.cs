@@ -241,22 +241,30 @@ End Sub";
         }
 
         [TestMethod]
-        public void ExtractInterface_CanExecute_ClassWithoutMembers_SameNameAsClassWithMembers()
+        public void CanExecuteWhenActiveCodePaneHasCodeAndAnotherProjectHasSameNameEmptyClass()
         {
-            var input =
-@"Sub foo()
-End Sub";
-
+            var input = @"
+Sub Foo()
+End Sub
+";
             var builder = new MockVbeBuilder();
-            var proj1 = builder.ProjectBuilder("TestProj1", ProjectProtection.Unprotected).AddComponent("Comp1", ComponentType.ClassModule, input).Build();
-            var proj2 = builder.ProjectBuilder("TestProj2", ProjectProtection.Unprotected).AddComponent("Comp1", ComponentType.ClassModule, "").Build();
+            var proj1 = builder.ProjectBuilder("TestProj1", ProjectProtection.Unprotected)
+                               .AddComponent("Class1", ComponentType.ClassModule, input)
+                               .Build();
+            var proj2 = builder.ProjectBuilder("TestProj2", ProjectProtection.Unprotected)
+                               .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
+                               .Build();
 
             var vbe = builder
                 .AddProject(proj1)
                 .AddProject(proj2)
                 .Build();
 
-            vbe.Setup(s => s.ActiveCodePane).Returns(proj1.Object.VBComponents[0].CodeModule.CodePane);
+            vbe.Object.ActiveCodePane = proj1.Object.VBComponents[0].CodeModule.CodePane;
+            if (string.IsNullOrEmpty(vbe.Object.ActiveCodePane.CodeModule.Content()))
+            {
+                Assert.Inconclusive("The active code pane should be the one with the method stub.");
+            }
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -268,7 +276,7 @@ End Sub";
                 Assert.Inconclusive("Parser Error");
             }
             var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, parser.State, null);
-            Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
+            Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
         [TestMethod]
