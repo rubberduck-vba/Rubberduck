@@ -332,8 +332,10 @@ namespace RubberduckTests.Mocks
             var window = windows.CreateWindow(name);
             windows.Add(window);
 
-            codePane.Setup(p => p.GetQualifiedSelection()).Returns(() =>
-                new QualifiedSelection(new QualifiedModuleName(component.Object), selection));
+            codePane.Setup(p => p.GetQualifiedSelection()).Returns(() => {
+                if (selection.IsEmpty()) { return null; }
+                return new QualifiedSelection(new QualifiedModuleName(component.Object), selection);
+            });
             codePane.SetupProperty(p => p.Selection, selection);
             codePane.Setup(p => p.Show());
 
