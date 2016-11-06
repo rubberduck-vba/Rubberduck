@@ -250,11 +250,10 @@ namespace RubberduckTests.Mocks
             var codePane = CreateCodePaneMock(name, selection, component);
             codePane.SetupGet(m => m.VBE).Returns(_getVbe);
 
-            var result = CreateCodeModuleMock(content);
+            var result = CreateCodeModuleMock(content, name);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.Parent).Returns(() => component.Object);
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
-            result.SetupProperty(m => m.Name, name);
 
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
 
@@ -267,7 +266,7 @@ namespace RubberduckTests.Mocks
             Tokens.Sub + ' ', Tokens.Function + ' ', Tokens.Property + ' '
         };
 
-        private Mock<ICodeModule> CreateCodeModuleMock(string content)
+        private Mock<ICodeModule> CreateCodeModuleMock(string content, string name)
         {
             var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
@@ -312,8 +311,10 @@ namespace RubberduckTests.Mocks
                     lines.AddRange(newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                 });
 
+            codeModule.SetupProperty(m => m.Name, name);
+
             codeModule.Setup(m => m.Equals(It.IsAny<ICodeModule>()))
-                .Returns((ICodeModule other) => ReferenceEquals(codeModule.Object.Target, other.Target));
+                .Returns((ICodeModule other) => name.Equals(other.Name) && content.Equals(other.Content()));
             codeModule.Setup(m => m.GetHashCode()).Returns(() => codeModule.Object.Target.GetHashCode());
 
             return codeModule;
@@ -331,8 +332,10 @@ namespace RubberduckTests.Mocks
             var window = windows.CreateWindow(name);
             windows.Add(window);
 
-            codePane.Setup(p => p.GetQualifiedSelection()).Returns(() =>
-                new QualifiedSelection(new QualifiedModuleName(component.Object), selection));
+            codePane.Setup(p => p.GetQualifiedSelection()).Returns(() => {
+                if (selection.IsEmpty()) { return null; }
+                return new QualifiedSelection(new QualifiedModuleName(component.Object), selection);
+            });
             codePane.SetupProperty(p => p.Selection, selection);
             codePane.Setup(p => p.Show());
 
