@@ -109,15 +109,15 @@ namespace Rubberduck.Parsing.Symbols
                 true,
                 null,
                 new Attributes());
-            var arrayNameParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Arrayname"), lboundFunction, "Integer", null, null, false, false);
-            var dimensionParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Dimension"), lboundFunction, "Integer", null, null, true, false);
+            var arrayNameParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Arrayname"), lboundFunction, "Variant", null, null, false, false, true);
+            var dimensionParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Dimension"), lboundFunction, "Long", null, null, true, false);
             lboundFunction.AddParameter(arrayNameParam);
             lboundFunction.AddParameter(dimensionParam);
             var uboundFunction = new FunctionDeclaration(
                 new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "UBound"),
                 parentModule,
                 parentModule,
-                "Integer",
+                "Long",
                 null,
                 null,
                 Accessibility.Public,
@@ -127,8 +127,8 @@ namespace Rubberduck.Parsing.Symbols
                 true,
                 null,
                 new Attributes());
-            var arrayParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Array"), uboundFunction, "Variant", null, null, false, false, true);
-            var rankParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Rank"), uboundFunction, "Integer", null, null, true, false);
+            var arrayParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Arrayname"), uboundFunction, "Variant", null, null, false, false, true);
+            var rankParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Dimension"), uboundFunction, "Long", null, null, true, false);
             uboundFunction.AddParameter(arrayParam);
             uboundFunction.AddParameter(rankParam);
             declarations.Add(arrayFunction);
