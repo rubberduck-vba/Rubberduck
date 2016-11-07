@@ -60,10 +60,15 @@ End Sub";
 
     ReDim myarr(1 To 10)
 
-    For i = LBound(myarr) To UBound(myarr)
+    For i = 1 To 10
+        DoSomething myarr(i)
     Next
 
-End Sub";
+End Sub
+
+Sub DoSomething(ByVal foo As Variant)
+End Sub
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
