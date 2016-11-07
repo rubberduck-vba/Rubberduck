@@ -22,12 +22,15 @@ namespace RubberduckTests.Binding
         [TestMethod]
         public void LExpressionIsProjectAndUnrestrictedNameIsProject()
         {
+            var enclosingModuleCode = string.Format("Public WithEvents anything As {0}.{0}", BindingTargetName);
+
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BindingTargetName, ProjectProtection.Unprotected);
-            string enclosingModuleCode = string.Format("Public WithEvents anything As {0}.{0}", BindingTargetName);
-            enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, enclosingModuleCode);
-            var enclosingProject = enclosingProjectBuilder.Build();
+            var enclosingProject = builder
+                .ProjectBuilder(BindingTargetName, ProjectProtection.Unprotected)
+                .AddComponent(TestClassName, ComponentType.ClassModule, enclosingModuleCode)
+                .Build();
             builder.AddProject(enclosingProject);
+
             var vbe = builder.Build();
             var state = Parse(vbe);
 
@@ -40,13 +43,16 @@ namespace RubberduckTests.Binding
         [TestMethod]
         public void LExpressionIsProjectAndUnrestrictedNameIsProceduralModule()
         {
-            const string PROJECT_NAME = "AnyName";
+            const string projectName = "AnyName";
+            var enclosingModuleCode = string.Format("Public WithEvents anything As {0}.{1}", projectName, BindingTargetName);
+
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(PROJECT_NAME, ProjectProtection.Unprotected);
-            string enclosingModuleCode = string.Format("Public WithEvents anything As {0}.{1}", PROJECT_NAME, BindingTargetName);
-            enclosingProjectBuilder.AddComponent(BindingTargetName, ComponentType.StandardModule, enclosingModuleCode);
-            var enclosingProject = enclosingProjectBuilder.Build();
+            var enclosingProject = builder
+                .ProjectBuilder(projectName, ProjectProtection.Unprotected)
+                .AddComponent(BindingTargetName, ComponentType.StandardModule, enclosingModuleCode)
+                .Build();
             builder.AddProject(enclosingProject);
+
             var vbe = builder.Build();
             var state = Parse(vbe);
 
@@ -58,13 +64,16 @@ namespace RubberduckTests.Binding
         [TestMethod]
         public void LExpressionIsProjectAndUnrestrictedNameIsClassModule()
         {
-            const string PROJECT_NAME = "AnyName";
+            const string projectName = "AnyName";
+            var enclosingModuleCode = string.Format("Public WithEvents anything As {0}.{1}", projectName, BindingTargetName);
+
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(PROJECT_NAME, ProjectProtection.Unprotected);
-            string enclosingModuleCode = string.Format("Public WithEvents anything As {0}.{1}", PROJECT_NAME, BindingTargetName);
-            enclosingProjectBuilder.AddComponent(BindingTargetName, ComponentType.ClassModule, enclosingModuleCode);
-            var enclosingProject = enclosingProjectBuilder.Build();
+            var enclosingProject = builder
+                .ProjectBuilder(projectName, ProjectProtection.Unprotected)
+                .AddComponent(BindingTargetName, ComponentType.ClassModule, enclosingModuleCode)
+                .Build();
             builder.AddProject(enclosingProject);
+
             var vbe = builder.Build();
             var state = Parse(vbe);
 
@@ -73,12 +82,12 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
-        [Ignore] // this failing test seems to be a resolver bug.
         [TestMethod]
         public void LExpressionIsProjectAndUnrestrictedNameIsType()
         {
             var builder = new MockVbeBuilder();
             const string referencedProjectName = "AnyReferencedProjectName";
+            var code = string.Format("Public WithEvents anything As {0}.{1}", referencedProjectName, BindingTargetName);
 
             var referencedProject = builder
                 .ProjectBuilder(referencedProjectName, ReferencedProjectFilepath, ProjectProtection.Unprotected)
@@ -89,7 +98,7 @@ namespace RubberduckTests.Binding
             var enclosingProject = builder
                 .ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected)
                 .AddReference(referencedProjectName, ReferencedProjectFilepath)
-                .AddComponent(TestClassName, ComponentType.ClassModule, string.Format("Public WithEvents anything As {0}.{1}", referencedProjectName, BindingTargetName))
+                .AddComponent(TestClassName, ComponentType.ClassModule, code)
                 .Build();
             builder.AddProject(enclosingProject);
 
@@ -105,11 +114,13 @@ namespace RubberduckTests.Binding
         public void LExpressionIsModuleAndUnrestrictedNameIsType()
         {
             var builder = new MockVbeBuilder();
-            const string CLASS_NAME = "AnyName";
-            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, string.Format("Public WithEvents anything As {0}.{1}", CLASS_NAME, BindingTargetName));
-            enclosingProjectBuilder.AddComponent(CLASS_NAME, ComponentType.ClassModule, CreateUdt(BindingTargetName));
-            var enclosingProject = enclosingProjectBuilder.Build();
+            const string className = "AnyName";
+
+            var enclosingProject = builder
+                .ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected)
+                .AddComponent(TestClassName, ComponentType.ClassModule, string.Format("Public WithEvents anything As {0}.{1}", className, BindingTargetName))
+                .AddComponent(className, ComponentType.ClassModule, CreateUdt(BindingTargetName))
+                .Build();
             builder.AddProject(enclosingProject);
 
             var vbe = builder.Build();
@@ -123,24 +134,24 @@ namespace RubberduckTests.Binding
         [TestMethod]
         public void NestedMemberAccessExpressions()
         {
+            const string projectName = "AnyProjectName";
+            const string className = "AnyName";
+
             var builder = new MockVbeBuilder();
-            const string PROJECT_NAME = "AnyProjectName";
-            const string CLASS_NAME = "AnyName";
-            var enclosingProjectBuilder = builder.ProjectBuilder(PROJECT_NAME, ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, string.Format("Public WithEvents anything As {0}.{1}.{2}", PROJECT_NAME, CLASS_NAME, BindingTargetName));
-            enclosingProjectBuilder.AddComponent(CLASS_NAME, ComponentType.ClassModule, CreateUdt(BindingTargetName));
-            var enclosingProject = enclosingProjectBuilder.Build();
+            var enclosingProject = builder
+                .ProjectBuilder(projectName, ProjectProtection.Unprotected)
+                .AddComponent(TestClassName, ComponentType.ClassModule, string.Format("Public WithEvents anything As {0}.{1}.{2}", projectName, className, BindingTargetName))
+                .AddComponent(className, ComponentType.ClassModule, CreateUdt(BindingTargetName))
+                .Build();
             builder.AddProject(enclosingProject);
 
             var vbe = builder.Build();
             var state = Parse(vbe);
 
-            Declaration declaration;
-
-            declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.ProjectName == PROJECT_NAME);
+            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.ProjectName == projectName);
             Assert.AreEqual(1, declaration.References.Count(), "Project reference expected");
 
-            declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.ClassModule && d.IdentifierName == CLASS_NAME);
+            declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.ClassModule && d.IdentifierName == className);
             Assert.AreEqual(1, declaration.References.Count(), "Module reference expected");
 
             declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.UserDefinedType && d.IdentifierName == BindingTargetName);

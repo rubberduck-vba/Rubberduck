@@ -6,7 +6,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using Moq;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -16,9 +15,9 @@ namespace RubberduckTests.Binding
     [TestClass]
     public class SimpleNameDefaultBindingTests
     {
-        private const string BINDING_TARGET_NAME = "BindingTarget";
-        private const string TEST_CLASS_NAME = "TestClass";
-        private const string REFERENCED_PROJECT_FILEPATH = @"C:\Temp\ReferencedProjectA";
+        private const string BindingTargetName = "BindingTarget";
+        private const string TestClassName = "TestClass";
+        private const string ReferencedProjectFilepath = @"C:\Temp\ReferencedProjectA";
 
         [TestMethod]
         public void EnclosingProcedureComesBeforeEnclosingModule()
@@ -27,16 +26,16 @@ namespace RubberduckTests.Binding
 Public Sub Test()
     Dim {0} As Long
     Dim a As String * {0}
-End Sub", BINDING_TARGET_NAME);
+End Sub", BindingTargetName);
 
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, testCode);
+            var enclosingProjectBuilder = builder.ProjectBuilder(BindingTargetName, ProjectProtection.Unprotected);
+            enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, testCode);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
             var state = Parse(vbe);
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Variable && d.IdentifierName == BINDING_TARGET_NAME);
+            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Variable && d.IdentifierName == BindingTargetName);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
@@ -44,14 +43,14 @@ End Sub", BINDING_TARGET_NAME);
         public void EnclosingModuleComesBeforeEnclosingProject()
         {
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
-            string code = CreateEnumType(BINDING_TARGET_NAME) + Environment.NewLine + CreateTestProcedure(BINDING_TARGET_NAME);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, code);
+            var enclosingProjectBuilder = builder.ProjectBuilder(BindingTargetName, ProjectProtection.Unprotected);
+            string code = CreateEnumType(BindingTargetName) + Environment.NewLine + CreateTestProcedure(BindingTargetName);
+            enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, code);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
             var state = Parse(vbe);
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Enumeration && d.IdentifierName == BINDING_TARGET_NAME);
+            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Enumeration && d.IdentifierName == BindingTargetName);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
@@ -59,14 +58,14 @@ End Sub", BINDING_TARGET_NAME);
         public void EnclosingProjectComesBeforeOtherModuleInEnclosingProject()
         {
             var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(BINDING_TARGET_NAME, ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
-            enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
+            var enclosingProjectBuilder = builder.ProjectBuilder(BindingTargetName, ProjectProtection.Unprotected);
+            enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, CreateTestProcedure(BindingTargetName));
+            enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BindingTargetName));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
             var state = Parse(vbe);
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.IdentifierName == BINDING_TARGET_NAME);
+            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.IdentifierName == BindingTargetName);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
@@ -74,24 +73,24 @@ End Sub", BINDING_TARGET_NAME);
         public void OtherModuleInEnclosingProjectComesBeforeReferencedProjectModule()
         {
             var builder = new MockVbeBuilder();
-            const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
+            const string referencedProjectName = "AnyReferencedProjectName";
 
-            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, ProjectProtection.Unprotected);
-            referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, ComponentType.ClassModule, string.Empty);
+            var referencedProjectBuilder = builder.ProjectBuilder(referencedProjectName, ReferencedProjectFilepath, ProjectProtection.Unprotected);
+            referencedProjectBuilder.AddComponent(BindingTargetName, ComponentType.ClassModule, string.Empty);
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
 
             var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
-            enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
+            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath);
+            enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, CreateTestProcedure(BindingTargetName));
+            enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BindingTargetName));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
 
             var vbe = builder.Build();
             var state = Parse(vbe);
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Enumeration && d.IdentifierName == BINDING_TARGET_NAME);
+            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Enumeration && d.IdentifierName == BindingTargetName);
 
             Assert.AreEqual(1, declaration.References.Count());
         }
@@ -100,23 +99,25 @@ End Sub", BINDING_TARGET_NAME);
         public void ReferencedProjectModuleComesBeforeReferencedProjectType()
         {
             var builder = new MockVbeBuilder();
-            const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
+            const string referencedProjectName = "AnyReferencedProjectName";
 
-            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, ProjectProtection.Unprotected);
-            referencedProjectBuilder.AddComponent(BINDING_TARGET_NAME, ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
-            var referencedProject = referencedProjectBuilder.Build();
+            var referencedProject = builder
+                .ProjectBuilder(referencedProjectName, ReferencedProjectFilepath, ProjectProtection.Unprotected)
+                .AddComponent(BindingTargetName, ComponentType.StandardModule, CreateEnumType(BindingTargetName))
+                .Build();
             builder.AddProject(referencedProject);
 
-            var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
-            var enclosingProject = enclosingProjectBuilder.Build();
+            var enclosingProject = builder
+                .ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected)
+                .AddReference(referencedProjectName, ReferencedProjectFilepath)
+                .AddComponent(TestClassName, ComponentType.ClassModule, CreateTestProcedure(BindingTargetName))
+                .Build();
             builder.AddProject(enclosingProject);
 
             var vbe = builder.Build();
             var state = Parse(vbe);
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.ProceduralModule && d.IdentifierName == BINDING_TARGET_NAME);
+            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.ProceduralModule && d.IdentifierName == BindingTargetName);
 
             Assert.AreEqual(1, declaration.References.Count());
         }
@@ -125,23 +126,23 @@ End Sub", BINDING_TARGET_NAME);
         public void ReferencedProjectClassNotMarkedAsGlobalClassModuleIsNotReferenced()
         {
             var builder = new MockVbeBuilder();
-            const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
+            const string referencedProjectName = "AnyReferencedProjectName";
 
-            var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, ProjectProtection.Unprotected);
-            referencedProjectBuilder.AddComponent("AnyName", ComponentType.ClassModule, CreateEnumType(BINDING_TARGET_NAME));
+            var referencedProjectBuilder = builder.ProjectBuilder(referencedProjectName, ReferencedProjectFilepath, ProjectProtection.Unprotected);
+            referencedProjectBuilder.AddComponent("AnyName", ComponentType.ClassModule, CreateEnumType(BindingTargetName));
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
 
             var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
-            enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, CreateTestProcedure(BINDING_TARGET_NAME));
+            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath);
+            enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, CreateTestProcedure(BindingTargetName));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
 
             var vbe = builder.Build();
             var state = Parse(vbe);
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Enumeration && d.IdentifierName == BINDING_TARGET_NAME);
+            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Enumeration && d.IdentifierName == BindingTargetName);
 
             Assert.AreEqual(0, declaration.References.Count());
         }
@@ -173,15 +174,6 @@ End Sub
 Public Enum {0}
     TestEnumMember
 End Enum
-", typeName);
-        }
-
-        private string CreateUdt(string typeName)
-        {
-            return string.Format(@"
-Public Type {0}
-    TestTypeMember As String
-End Type
 ", typeName);
         }
     }
