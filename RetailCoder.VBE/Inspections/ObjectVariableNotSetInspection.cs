@@ -75,10 +75,9 @@ namespace Rubberduck.Inspections
                     (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
                     && !item.IsArray
                     && item.IsTypeSpecified
-                    && !ValueTypes.Contains(item.AsTypeName)
-                    && (item.AsTypeDeclaration != null && (
-                        item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration
-                        && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)));
+                    && !ValueTypes.Contains(item.AsTypeName) 
+                    && (item.AsTypeDeclaration == null // null if unresolved (e.g. in unit tests)
+                        || (item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)));
 
             var interestingReferences = interestingDeclarations
                     .Union(interestingMembers.SelectMany(item =>
