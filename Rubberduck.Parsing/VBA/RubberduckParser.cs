@@ -10,6 +10,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
@@ -320,7 +321,7 @@ namespace Rubberduck.Parsing.VBA
                 }, token)
                 .ContinueWith(t =>
                 {
-                    var undeclared = finder.Undeclared;
+                    var undeclared = finder.Undeclared.ToList();
                     foreach (var declaration in undeclared)
                     {
                         State.AddDeclaration(declaration);
