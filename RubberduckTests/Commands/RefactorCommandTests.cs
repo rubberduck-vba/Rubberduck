@@ -225,7 +225,7 @@ End Sub";
         {
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleModule("Dim d As Boolean", ComponentType.ClassModule, out component, new Selection());
+            var vbe = builder.BuildFromSingleModule("Dim d As Boolean", ComponentType.ClassModule, out component, Selection.Home);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
@@ -249,10 +249,10 @@ End Sub
 ";
             var builder = new MockVbeBuilder();
             var proj1 = builder.ProjectBuilder("TestProj1", ProjectProtection.Unprotected)
-                               .AddComponent("Class1", ComponentType.ClassModule, input)
+                               .AddComponent("Class1", ComponentType.ClassModule, input, Selection.Home)
                                .Build();
             var proj2 = builder.ProjectBuilder("TestProj2", ProjectProtection.Unprotected)
-                               .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
+                               .AddComponent("Class1", ComponentType.ClassModule, string.Empty, Selection.Home)
                                .Build();
 
             var vbe = builder
