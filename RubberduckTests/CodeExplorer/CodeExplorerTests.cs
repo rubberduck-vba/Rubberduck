@@ -372,11 +372,12 @@ namespace RubberduckTests.CodeExplorer
         }
 
         [TestMethod]
-        public void RemoveModule_Export()
+        public void RemoveCommand_RemovesModuleWhenPromptOk()
         {
             var builder = new MockVbeBuilder();
-            var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "");
+            var projectMock = builder
+                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty);
 
             var components = projectMock.MockVBComponents;
 
@@ -393,9 +394,9 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                        It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>())).Returns(DialogResult.Yes);
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                                         It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
+                      .Returns(DialogResult.Yes);
 
             var commands = new List<CommandBase>
             {
@@ -416,11 +417,11 @@ namespace RubberduckTests.CodeExplorer
         }
 
         [TestMethod]
-        public void RemoveModule_Export_Cancel()
+        public void RemoveCommand_CancelsWhenFilePromptCancels()
         {
             var builder = new MockVbeBuilder();
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty);
 
             var components = projectMock.MockVBComponents;
 
@@ -432,14 +433,13 @@ namespace RubberduckTests.CodeExplorer
             mockHost.SetupAllProperties();
 
             var saveFileDialog = new Mock<ISaveFileDialog>();
-            saveFileDialog.Setup(o => o.OverwritePrompt);
-            saveFileDialog.Setup(o => o.FileName).Returns("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas");
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.Cancel);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                        It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>())).Returns(DialogResult.Yes);
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), 
+                                         It.IsAny<MessageBoxButtons>(),
+                                         It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
+                      .Returns(DialogResult.Yes);
 
             var commands = new List<CommandBase>
             {
@@ -460,7 +460,7 @@ namespace RubberduckTests.CodeExplorer
         }
 
         [TestMethod]
-        public void RemoveModule_NoExport()
+        public void RemoveCommand_GivenMsgBoxNO_RemovesModuleNoExport()
         {
             var builder = new MockVbeBuilder();
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
@@ -476,12 +476,13 @@ namespace RubberduckTests.CodeExplorer
             mockHost.SetupAllProperties();
 
             var saveFileDialog = new Mock<ISaveFileDialog>();
-            saveFileDialog.Setup(o => o.OverwritePrompt);
+            saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                        It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>())).Returns(DialogResult.No);
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), 
+                                         It.IsAny<MessageBoxButtons>(),
+                                         It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
+                      .Returns(DialogResult.No);
 
             var commands = new List<CommandBase>
             {

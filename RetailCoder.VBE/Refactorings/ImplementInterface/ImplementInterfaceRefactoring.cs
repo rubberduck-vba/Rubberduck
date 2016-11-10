@@ -78,9 +78,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
             {
                 var module = oldSelection.Value.QualifiedName.Component.CodeModule;
                 var pane = module.CodePane;
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
+                pane.Selection = oldSelection.Value.Selection;
             }
 
             _state.OnParseRequested(this);
@@ -88,7 +86,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         public void Refactor(Declaration target)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         private void ImplementMissingMembers()

@@ -70,7 +70,7 @@ namespace Rubberduck.Parsing.Binding
 
             var undeclaredLocal = _declarationFinder.OnUndeclaredVariable(_parent, _name, _context);
             return new SimpleNameExpression(undeclaredLocal, ExpressionClassification.Variable, _context);
-            return new ResolutionFailedExpression();
+            //return new ResolutionFailedExpression();
         }
 
         private IBoundExpression ResolveProcedureNamespace()

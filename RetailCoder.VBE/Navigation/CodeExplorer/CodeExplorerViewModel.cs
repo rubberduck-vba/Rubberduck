@@ -506,7 +506,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ExecuteRemoveComand(object param)
         {
             var node = (CodeExplorerComponentViewModel)SelectedItem;
-            SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel)p).Declaration.Project.Equals(node.Declaration.Project));
+            SelectedItem = Projects.FirstOrDefault(p => p.QualifiedSelection.HasValue 
+                && p.QualifiedSelection.Value.QualifiedName.ProjectId == node.Declaration.ProjectId);
 
             _externalRemoveCommand.Execute(param);
         }

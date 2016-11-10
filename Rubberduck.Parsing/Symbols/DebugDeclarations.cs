@@ -45,7 +45,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private IReadOnlyList<Declaration> Load(Declaration parentProject, Declaration parentModule)
         {
-            List<Declaration> declarations = new List<Declaration>();
+            var declarations = new List<Declaration>();
             var debugModuleName = new QualifiedModuleName(parentProject.QualifiedName.QualifiedModuleName.ProjectName, parentProject.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
             var debugModule = new ProceduralModuleDeclaration(new QualifiedMemberName(debugModuleName, "DebugModule"), parentProject, "DebugModule", true, new List<IAnnotation>(), new Attributes());
             var debugClassName = new QualifiedModuleName(parentProject.QualifiedName.QualifiedModuleName.ProjectName, parentProject.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
