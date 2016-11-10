@@ -13,7 +13,6 @@ using NLog;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -449,7 +448,7 @@ namespace Rubberduck.Parsing.VBA
             return result;
         }
 
-        public ParserState GetOrCreateModuleState(VBComponent component)
+        public ParserState GetOrCreateModuleState(IVBComponent component)
         {
             var key = new QualifiedModuleName(component);
             var state = _moduleStates.GetOrAdd(key, new ModuleState(ParserState.Pending)).State;
