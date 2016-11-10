@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using System.Runtime.InteropServices;
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -352,9 +351,11 @@ namespace Rubberduck.Parsing.VBA
             {
                 try
                 {
-                    if (item.FileName == reference.FullPath)
+                    // check the name not just the path, because path is empty in tests:
+                    if (item.Name == reference.Name && item.FileName == reference.FullPath)
                     {
                         project = item;
+                        break;
                     }
                 }
                 catch (IOException)
@@ -369,7 +370,11 @@ namespace Rubberduck.Parsing.VBA
             
             if (project != null)
             {
-                project.AssignProjectId();
+                if (string.IsNullOrEmpty(project.ProjectId))
+                {
+                    project.AssignProjectId();
+                }
+                return project.ProjectId;
             }
             return QualifiedModuleName.GetProjectId(reference);
         }
@@ -477,7 +482,7 @@ namespace Rubberduck.Parsing.VBA
             if (map == null || !map.IsLoaded)
             {
                 // we're removing a reference we weren't tracking? ...this shouldn't happen.
-                Debug.Assert(false);
+                //Debug.Assert(false);
                 return;
             }
             map.Remove(referencedProjectId);
