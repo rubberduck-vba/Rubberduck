@@ -17,7 +17,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         QualifiedSelection? GetQualifiedSelection();
         string Content();
         void Clear();
-        string[] GetSanitizedCode();
         string ContentHash();
         void AddFromString(string content);
         void AddFromFile(string path);

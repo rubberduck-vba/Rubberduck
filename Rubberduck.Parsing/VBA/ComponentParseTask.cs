@@ -14,7 +14,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using CodeModule = Rubberduck.VBEditor.SafeComWrappers.VBA.CodeModule;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -102,9 +101,64 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private static string[] GetSanitizedCode(ICodeModule module)
+        {
+            var lines = module.CountOfLines;
+            if (lines == 0)
+            {
+                return new string[] { };
+            }
+
+            var code = module.GetLines(1, lines).Replace("\r", string.Empty).Split('\n');
+
+            StripLineNumbers(code);
+            return code;
+        }
+
+        private static void StripLineNumbers(string[] lines)
+        {
+            var continuing = false;
+            for (var line = 0; line < lines.Length; line++)
+            {
+                var code = lines[line];
+                int? lineNumber;
+                if (!continuing && HasNumberedLine(code, out lineNumber))
+                {
+                    var lineNumberLength = lineNumber.ToString().Length;
+                    if (lines[line].Length > lineNumberLength)
+                    {
+                        // replace line number with as many spaces as characters taken, to avoid shifting the tokens
+                        lines[line] = new string(' ', lineNumberLength) + code.Substring(lineNumber.ToString().Length + 1);
+                    }
+                }
+
+                continuing = code.EndsWith("_");
+            }
+        }
+
+        private static bool HasNumberedLine(string codeLine, out int? lineNumber)
+        {
+            lineNumber = null;
+
+            if (string.IsNullOrWhiteSpace(codeLine.Trim()))
+            {
+                return false;
+            }
+
+            int line;
+            var firstToken = codeLine.TrimStart().Split(' ')[0];
+            if (int.TryParse(firstToken, out line))
+            {
+                lineNumber = line;
+                return true;
+            }
+
+            return false;
+        }
+
         private string RewriteAndPreprocess()
         {
-            var code = _rewriter == null ? string.Join(Environment.NewLine, CodeModule.GetSanitizedCode(_component.CodeModule)) : _rewriter.GetText();
+            var code = _rewriter == null ? string.Join(Environment.NewLine, GetSanitizedCode(_component.CodeModule)) : _rewriter.GetText();
             var processed = _preprocessor.Execute(_component.Name, code);
             return processed;
         }

@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Parsing.VBA
 {
     /// <summary>
-    /// A <c>Dictionary</c> keyed with a <see cref="VBProject"/>'s ID and valued with an <see cref="int"/> representing a <see cref="Reference"/>'s priority for that project.
+    /// A <c>Dictionary</c> keyed with a project's ID and valued with an int representing a reference's priority for that project.
     /// </summary>
     public class ReferencePriorityMap : Dictionary<string, int>
     {
