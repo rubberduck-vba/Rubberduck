@@ -676,7 +676,7 @@ End Property";
             const string inputCode2 =
 @"Implements Class1";
 
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = Selection.Home;
 
             //Expectation
             const string expectedCode =
@@ -800,5 +800,82 @@ End Property
             //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
+
+        [TestMethod]
+        public void ImplementsInterfaceInDocumentModule()
+        {
+            const string interfaceCode = @"Option Explicit
+Public Sub DoSomething()
+End Sub
+";
+            const string initialCode = @"Implements IInterface";
+            const string expectedCode = @"Implements IInterface
+
+Private Sub IInterface_DoSomething()
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            var selection = Selection.Home;
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
+                .AddComponent("Sheet1", ComponentType.Document, initialCode, selection)
+                .MockVbeBuilder()
+                .Build();
+
+            var project = vbe.Object.VBProjects[0];
+            var component = project.VBComponents["Sheet1"];
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+            var module = component.CodeModule;
+
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            Assert.AreEqual(expectedCode, module.Content());
+        }
+ 
+            [TestMethod]
+        public void ImplementsInterfaceInUserFormModule()
+        {
+            const string interfaceCode = @"Option Explicit
+Public Sub DoSomething()
+End Sub
+";
+            const string initialCode = @"Implements IInterface";
+            const string expectedCode = @"Implements IInterface
+
+Private Sub IInterface_DoSomething()
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            var selection = Selection.Home;
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
+                .AddComponent("Form1", ComponentType.UserForm, initialCode, selection)
+                .MockVbeBuilder()
+                .Build();
+
+            var project = vbe.Object.VBProjects[0];
+            var component = project.VBComponents["Form1"];
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+            var module = component.CodeModule;
+
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            Assert.AreEqual(expectedCode, module.Content());
+        }
     }
 }
+
