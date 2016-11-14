@@ -1503,10 +1503,25 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//udtMember", matches => matches.Count == 13);
         }
 
+
+        [TestMethod]
+        public void TestNestedParensForLiteralExpression()
+        {
+            //Assert.Inconclusive("See issue #2206");
+            const string code = @"
+Sub Test()
+    Dim foo As Integer
+    foo = ((42) + ((12)))
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//literalExpression", matches => matches.Count == 2);
+        }
+        
         [TestMethod]
         public void TestNestedParensForByValArgument()
         {
-            Assert.Inconclusive("See issue #");
+            Assert.Inconclusive("See issue #2206");
             const string code = @"
 Sub Test()
     DoSomething (foo), (bar)
