@@ -111,7 +111,7 @@ Icons in the `./Resources/Custom/` directory were created by (or modified using 
 
 ---
 
-##JetBrains | ReSharper
+##[JetBrains](https://www.jetbrains.com) | [ReSharper](https://www.jetbrains.com/resharper/)
 
 [![JetBrains ReSharper logo](https://cloud.githubusercontent.com/assets/5751684/20271309/616bb740-aa58-11e6-91c9-65287b740985.png)](https://www.jetbrains.com/resharper/)
 
