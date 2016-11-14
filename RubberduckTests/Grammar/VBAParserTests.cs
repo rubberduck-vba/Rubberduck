@@ -1519,12 +1519,25 @@ End Sub
         }
         
         [TestMethod]
-        public void TestNestedParensForByValArgument()
+        public void TestParensForByValSingleArg()
+        {
+            //Assert.Inconclusive("See issue #2206");
+            const string code = @"
+Sub Test()
+    DoSomething (foo)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 1);
+        }
+
+        [TestMethod]
+        public void TestParensForByValFirstArg()
         {
             Assert.Inconclusive("See issue #2206");
             const string code = @"
 Sub Test()
-    DoSomething (foo), (bar)
+    DoSomething (foo), bar
 End Sub
 ";
             var parseResult = Parse(code);
