@@ -52,7 +52,6 @@ namespace Rubberduck.API
         private RubberduckParserState _state;
         private AttributeParser _attributeParser;
         private RubberduckParser _parser;
-        private Sinks _sinks;
         private VBE _vbe;
 
         public ParserState()
@@ -156,10 +155,6 @@ namespace Rubberduck.API
                 _state.StateChanged -= _state_StateChanged;
             }
 
-            if (_sinks != null)
-            {
-                _sinks.Dispose();
-            }
 
             _vbe.Release();            
             _disposed = true;

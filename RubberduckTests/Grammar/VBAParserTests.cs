@@ -1503,13 +1503,41 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//udtMember", matches => matches.Count == 13);
         }
 
+
         [TestMethod]
-        public void TestNestedParensForByValArgument()
+        public void TestNestedParensForLiteralExpression()
         {
-            Assert.Inconclusive("See issue #");
+            //Assert.Inconclusive("See issue #2206");
             const string code = @"
 Sub Test()
-    DoSomething (foo), (bar)
+    Dim foo As Integer
+    foo = ((42) + ((12)))
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//literalExpression", matches => matches.Count == 2);
+        }
+        
+        [TestMethod]
+        public void TestParensForByValSingleArg()
+        {
+            //Assert.Inconclusive("See issue #2206");
+            const string code = @"
+Sub Test()
+    DoSomething (foo)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 1);
+        }
+
+        [TestMethod]
+        public void TestParensForByValFirstArg()
+        {
+            Assert.Inconclusive("See issue #2206");
+            const string code = @"
+Sub Test()
+    DoSomething (foo), bar
 End Sub
 ";
             var parseResult = Parse(code);
