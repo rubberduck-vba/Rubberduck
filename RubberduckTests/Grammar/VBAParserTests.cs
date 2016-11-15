@@ -1551,7 +1551,8 @@ End Sub
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
             // Don't remove this line otherwise we won't get notified of parser failures.
-            parser.AddErrorListener(new ExceptionErrorListener());
+            parser.ErrorHandler = new BailErrorStrategy();
+            //parser.AddErrorListener(new ExceptionErrorListener());
             // If SLL fails we want to get notified ASAP so we can fix it, that's why we don't retry using LL.
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             var tree = parser.startRule();

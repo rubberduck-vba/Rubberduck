@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using NLog;
-using Rubberduck.Parsing.Symbols;
 using System;
 using Rubberduck.Parsing.Preprocessing;
 
@@ -22,8 +21,8 @@ namespace Rubberduck.Parsing.VBA
             var lexer = new VBADateLexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBADateParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener());
-            VBADateParser.CompilationUnitContext tree = null;
+            //parser.AddErrorListener(new SyntaxErrorNotificationListener()); // notify?
+            VBADateParser.CompilationUnitContext tree;
             try
             {
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
