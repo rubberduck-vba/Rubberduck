@@ -37,14 +37,14 @@ namespace Rubberduck.SettingsProvider
 
             if (!File.Exists(FilePath))
             {
-                return (T)Convert.ChangeType(null, type);
+                return FailedLoadReturnValue();
             }
             var doc = GetConfigurationDoc(FilePath);
             
             var node = doc.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(type.Name));
             if (node == null)
             {
-                return (T)Convert.ChangeType(null, type);
+                return FailedLoadReturnValue();
             }
 
             using (var reader = node.CreateReader())
@@ -57,10 +57,16 @@ namespace Rubberduck.SettingsProvider
                 }
                 catch
                 {
-                    return (T)Convert.ChangeType(null, type);
+                    return FailedLoadReturnValue();
                 }
             }  
         }
+
+            private static T FailedLoadReturnValue()
+            {
+                return (T)Convert.ChangeType(null, typeof(T));
+            }
+
 
         public void Save(T toSerialize)
         {
