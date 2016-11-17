@@ -36,20 +36,26 @@ namespace Rubberduck.AutoSave
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var saveCommand = _vbe.CommandBars.FindControl(VbeSaveCommandId);
-            var activeProject = _vbe.ActiveVBProject;
-            var unsaved = _vbe
-                .VBProjects
-                .Where(project => !project.IsSaved && !string.IsNullOrEmpty(project.FileName));
+            SaveAllUnsavedProjects();
+        }
 
-            foreach (var project in unsaved)
+            private void SaveAllUnsavedProjects()
             {
-                _vbe.ActiveVBProject = project;
-                saveCommand.Execute();
+                var saveCommand = _vbe.CommandBars.FindControl(VbeSaveCommandId);
+                var activeProject = _vbe.ActiveVBProject;
+                var unsaved = _vbe
+                    .VBProjects
+                    .Where(project => !project.IsSaved && !string.IsNullOrEmpty(project.FileName));
+
+                foreach (var project in unsaved)
+                {
+                    _vbe.ActiveVBProject = project;
+                    saveCommand.Execute();
+                }
+
+                _vbe.ActiveVBProject = activeProject;
             }
 
-            _vbe.ActiveVBProject = activeProject;
-        }
 
         public void Dispose()
         {
