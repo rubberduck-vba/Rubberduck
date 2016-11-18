@@ -435,5 +435,33 @@ namespace RubberduckTests.SmartIndenter
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        //http://chat.stackexchange.com/transcript/message/33575758#33575758
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void SubFooTokenIsNotInterpretedAsProcedureStart()
+        {
+            var code = new[]
+            {
+                "Public Sub Test()",
+                "If Subject = 0 Then",
+                "Subject = 1",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub Test()",
+                "    If Subject = 0 Then",
+                "        Subject = 1",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
     }
 }
