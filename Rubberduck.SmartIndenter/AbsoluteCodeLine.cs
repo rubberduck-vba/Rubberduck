@@ -14,7 +14,7 @@ namespace Rubberduck.SmartIndenter
         private static readonly Regex StringReplaceRegex = new Regex(StringPlaceholder);
         private static readonly Regex LineNumberRegex = new Regex(@"^(?<number>\d+)\s+(?<code>.*)", RegexOptions.ExplicitCapture);
         private static readonly Regex EndOfLineCommentRegex = new Regex(@"^(?!(Rem\s)|('))(?<code>.*)(\s(?<comment>'.*))$", RegexOptions.ExplicitCapture);
-        private static readonly Regex ProcedureStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Sub|Function|Property\s(Let|Get|Set))");
+        private static readonly Regex ProcedureStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Sub|Function|Property\s(Let|Get|Set))\s");
         private static readonly Regex ProcedureStartIgnoreRegex = new Regex(@"^[LR]?Set\s|^Let\s|^(Public|Private)\sDeclare\s(Function|Sub)");
         private static readonly Regex ProcedureEndRegex = new Regex(@"^End\s(Sub|Function|Property)");
         private static readonly Regex TypeEnumStartRegex = new Regex(@"^(Public\s|Private\s)?(Enum\s|Type\s)");
