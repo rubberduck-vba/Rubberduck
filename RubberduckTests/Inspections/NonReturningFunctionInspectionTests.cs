@@ -477,7 +477,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void NonReturningFunction_ReturnsResult_InterfaceImplementation_NoQuickFix()
+        public void NonReturningFunction_ReturnsResult_InterfaceImplementation_OnlyIgnoreOnceQuickFix()
         {
             //Input
             const string inputCode1 =
@@ -507,7 +507,8 @@ End Function";
             var inspection = new NonReturningFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.First().QuickFixes.Count());
+            Assert.IsTrue(inspectionResults.First().QuickFixes.Any() 
+                && inspectionResults.First().QuickFixes.All(quickfix => quickfix.Description == InspectionsUI.IgnoreOnce));
         }
 
         [TestMethod]
