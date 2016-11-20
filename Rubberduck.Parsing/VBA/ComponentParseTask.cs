@@ -87,7 +87,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (SyntaxErrorException exception)
             {
-                System.Diagnostics.Debug.Assert(false, "A RecognitionException should be notified of, not thrown as a SyntaxErrorException. This lets the parser recover from parse errors.");
+                //System.Diagnostics.Debug.Assert(false, "A RecognitionException should be notified of, not thrown as a SyntaxErrorException. This lets the parser recover from parse errors.");
                 Logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
                 var failedHandler = ParseFailure;
                 if (failedHandler != null)
@@ -166,9 +166,9 @@ namespace Rubberduck.Parsing.VBA
 
         private IParseTree ParseInternal(string moduleName, string code, IParseTreeListener[] listeners, out ITokenStream outStream)
         {
-            var errorNotifier = new SyntaxErrorNotificationListener();
-            errorNotifier.OnSyntaxError += ParserSyntaxError;
-            return _parser.Parse(moduleName, code, listeners, errorNotifier, out outStream);
+            //var errorNotifier = new SyntaxErrorNotificationListener();
+            //errorNotifier.OnSyntaxError += ParserSyntaxError;
+            return _parser.Parse(moduleName, code, listeners, new ExceptionErrorListener(), out outStream);
         }
 
         private void ParserSyntaxError(object sender, SyntaxErrorEventArgs e)

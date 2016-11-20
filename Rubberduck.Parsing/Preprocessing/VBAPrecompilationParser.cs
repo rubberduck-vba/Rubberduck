@@ -17,7 +17,7 @@ namespace Rubberduck.Parsing.Preprocessing
             var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
-            //parser.AddErrorListener(new SyntaxErrorNotificationListener()); // notify?
+            parser.AddErrorListener(new ExceptionErrorListener()); // notify?
             VBAConditionalCompilationParser.CompilationUnitContext tree;
             try
             {
