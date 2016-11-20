@@ -2,7 +2,6 @@
 using Antlr4.Runtime.Atn;
 using NLog;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using System;
 
 namespace Rubberduck.Parsing.VBA
@@ -22,8 +21,8 @@ namespace Rubberduck.Parsing.VBA
             var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener());
-            ParserRuleContext tree = null;
+            //parser.AddErrorListener(new ExceptionErrorListener());
+            ParserRuleContext tree;
             try
             {
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;

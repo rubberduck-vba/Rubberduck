@@ -244,6 +244,8 @@
     <Compile Include="Symbols\FunctionDeclaration.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
     <Compile Include="Symbols\ProjectReferencePass.cs" />
+    <Compile Include="Symbols\SyntaxErrorInfo.cs" />
+    <Compile Include="Symbols\SyntaxErrorNotificationListener.cs" />
     <Compile Include="Symbols\TypeHierarchyPass.cs" />
     <Compile Include="Symbols\TypeAnnotationPass.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
@@ -284,7 +286,6 @@
     <Compile Include="VBA\VBADateLiteralParser.cs" />
     <Compile Include="VBA\VBAExpressionParser.cs" />
     <Compile Include="VBA\VBAModuleParser.cs" />
-    <Compile Include="VBA\WalkerCancelledException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Grammar\VBAParser.g4">

@@ -3,7 +3,6 @@ using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using System;
 
 namespace Rubberduck.Parsing.VBA
@@ -12,14 +11,14 @@ namespace Rubberduck.Parsing.VBA
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public IParseTree Parse(string moduleName, string moduleCode, IParseTreeListener[] listeners, out ITokenStream outStream)
+        public IParseTree Parse(string moduleName, string moduleCode, IParseTreeListener[] listeners, BaseErrorListener errorListener, out ITokenStream outStream)
         {
             var stream = new AntlrInputStream(moduleCode);
             var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener());
-            ParserRuleContext tree = null;
+            parser.AddErrorListener(errorListener);
+            ParserRuleContext tree;
             try
             {
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;

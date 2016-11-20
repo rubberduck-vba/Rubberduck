@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 
 namespace Rubberduck.Parsing.Symbols
 {

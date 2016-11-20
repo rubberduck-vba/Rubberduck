@@ -103,7 +103,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return result;
             }
-            return new List<Declaration>();
+            return Enumerable.Empty<Declaration>();
         }
 
         public Declaration FindProject(string name, Declaration currentScope = null)

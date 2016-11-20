@@ -507,14 +507,16 @@ namespace Rubberduck.Parsing.VBA
             return task;
         }
 
-        private void Cancel()
+        private void Cancel(bool createNewTokenSource = true)
         {
             lock (_cancellationTokens[0])
             {
                 _cancellationTokens[0].Cancel();
-
                 _cancellationTokens[0].Dispose();
-                _cancellationTokens.Add(new CancellationTokenSource());
+                if (createNewTokenSource)
+                {
+                    _cancellationTokens.Add(new CancellationTokenSource());
+                }
                 _cancellationTokens.RemoveAt(0);
             }
         }
@@ -641,16 +643,7 @@ namespace Rubberduck.Parsing.VBA
         public void Dispose()
         {
             State.ParseRequest -= ReparseRequested;
-
-            if (_cancellationTokens[0] != null)
-            {
-                try
-                {
-                    _cancellationTokens[0].Cancel();
-                    _cancellationTokens[0].Dispose();
-                }
-                catch (ObjectDisposedException) { /* todo: avoid this being thrown in the first place */ }
-            }
+            Cancel(false);
         }
     }
 }

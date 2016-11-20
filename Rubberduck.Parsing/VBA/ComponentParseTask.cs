@@ -87,6 +87,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (SyntaxErrorException exception)
             {
+                //System.Diagnostics.Debug.Assert(false, "A RecognitionException should be notified of, not thrown as a SyntaxErrorException. This lets the parser recover from parse errors.");
                 Logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
                 var failedHandler = ParseFailure;
                 if (failedHandler != null)
@@ -165,7 +166,19 @@ namespace Rubberduck.Parsing.VBA
 
         private IParseTree ParseInternal(string moduleName, string code, IParseTreeListener[] listeners, out ITokenStream outStream)
         {
-            return _parser.Parse(moduleName, code, listeners, out outStream);
+            //var errorNotifier = new SyntaxErrorNotificationListener();
+            //errorNotifier.OnSyntaxError += ParserSyntaxError;
+            return _parser.Parse(moduleName, code, listeners, new ExceptionErrorListener(), out outStream);
+        }
+
+        private void ParserSyntaxError(object sender, SyntaxErrorEventArgs e)
+        {
+            var handler = ParseFailure;
+            if (handler != null)
+            {
+                var args = new ParseFailureArgs {Cause = new SyntaxErrorException(e.Info)}; // todo: refactor. exceptions should be thrown, not passed around as data
+                handler.Invoke(this, args);
+            }
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)
