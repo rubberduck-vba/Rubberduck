@@ -133,6 +133,7 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<ToDoExplorerCommand>()
                 .InSingletonScope();
 
+            BindDockableToolwindows(assemblies);
             BindCommandsToCodeExplorer();
             ConfigureRubberduckMenu();
             ConfigureCodePaneContextMenu();
@@ -141,6 +142,15 @@ namespace Rubberduck.Root
             ConfigureProjectExplorerContextMenu();
             
             BindWindowsHooks();
+        }
+
+        private void BindDockableToolwindows(IEnumerable<Assembly> assemblies)
+        {
+            Kernel.Bind(t => t.From(assemblies)
+                .SelectAllClasses()
+                .InheritedFrom<IDockableUserControl>()
+                .BindToSelf()
+                .Configure(binding => binding.InSingletonScope()));
         }
 
         private void BindWindowsHooks()
