@@ -45,7 +45,7 @@ namespace Rubberduck.Common
 
         private CommandBase Command(RubberduckHotkey hotkey)
         {
-            return _commands.SingleOrDefault(s => s.Hotkey == hotkey);
+            return _commands.FirstOrDefault(s => s.Hotkey == hotkey);
         }
 
         public void HookHotkeys()
