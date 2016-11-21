@@ -430,12 +430,20 @@ namespace Rubberduck.Parsing.VBA
                             loadTasks.Add(
                                 Task.Run(() =>
                                 {
-                                    var comReflector = new ReferencedDeclarationsCollector(State);
-                                    var items = comReflector.GetDeclarationsForReference(localReference);
-
-                                    foreach (var declaration in items)
+                                    try
                                     {
-                                        State.AddDeclaration(declaration);
+                                        var comReflector = new ReferencedDeclarationsCollector(State);
+                                        var items = comReflector.GetDeclarationsForReference(localReference);
+
+                                        foreach (var declaration in items)
+                                        {
+                                            State.AddDeclaration(declaration);
+                                        }
+                                    }
+                                    catch (Exception exception)
+                                    {
+                                        Logger.Warn(string.Format("Types were not loaded from referenced type library '{0}'.", reference.Name));
+                                        Logger.Error(exception);
                                     }
                                 }));
                             map.IsLoaded = true;
