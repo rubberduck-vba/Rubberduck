@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -8,7 +9,35 @@ namespace Rubberduck.Parsing.VBA
 {
     public static class StringExtensions
     {
-
+        // see issues #1057 and #2364.
+        private static readonly IList<string> ValidRemCommentMarkers =
+            new List<string>
+            {
+                Tokens.Rem + ' ',
+                Tokens.Rem + '?',
+                Tokens.Rem + '<',
+                Tokens.Rem + '>',
+                Tokens.Rem + '{',
+                Tokens.Rem + '}',
+                Tokens.Rem + '~',
+                Tokens.Rem + '`',
+                Tokens.Rem + '!',
+                Tokens.Rem + '/',
+                Tokens.Rem + '*',
+                Tokens.Rem + '(',
+                Tokens.Rem + ')',
+                Tokens.Rem + '-',
+                Tokens.Rem + '=',
+                Tokens.Rem + '+',
+                Tokens.Rem + '\\',
+                Tokens.Rem + '|',
+                Tokens.Rem + ';',
+                Tokens.Rem + ':',
+                Tokens.Rem + '\'',
+                Tokens.Rem + '"',
+                Tokens.Rem + ',',
+                Tokens.Rem + '.',
+            };
 
         /// <summary>
         /// Returns a value indicating whether line of code is/contains a comment.
@@ -23,11 +52,22 @@ namespace Rubberduck.Parsing.VBA
             index = instruction.IndexOf(Tokens.CommentMarker, StringComparison.InvariantCulture);
             if (index >= 0)
             {
+                // line contains a single-quote comment marker
                 return true;
             }
 
-            index = instruction.IndexOf(Tokens.Rem + " ", StringComparison.InvariantCulture);
-            return index >= 0;
+            // note: REM comment markers are NOT implemented as per language specifications.
+            // ReSharper disable once ForCanBeConvertedToForeach
+            for (var i = 0; i < ValidRemCommentMarkers.Count; i++)
+            {
+                index = instruction.IndexOf(ValidRemCommentMarkers[i], StringComparison.InvariantCulture);
+                if (index >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static string StripStringLiterals(this string line)
