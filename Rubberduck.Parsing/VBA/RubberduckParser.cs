@@ -393,6 +393,13 @@ namespace Rubberduck.Parsing.VBA
                     for (var priority = 1; priority <= references.Count; priority++)
                     {
                         var reference = references[priority];
+
+                        // skip loading Rubberduck.tlb (GUID is defined in AssemblyInfo.cs)
+                        if (reference.Guid == "{E07C841C-14B4-4890-83E9-8C80B06DD59D}")
+                        {
+                            // todo: figure out why Rubberduck.tlb can't be loaded that way
+                            continue;
+                        }
                         var referencedProjectId = GetReferenceProjectId(reference, projects);
 
                         ReferencePriorityMap map = null;
@@ -423,12 +430,20 @@ namespace Rubberduck.Parsing.VBA
                             loadTasks.Add(
                                 Task.Run(() =>
                                 {
-                                    var comReflector = new ReferencedDeclarationsCollector(State);
-                                    var items = comReflector.GetDeclarationsForReference(localReference);
-
-                                    foreach (var declaration in items)
+                                    try
                                     {
-                                        State.AddDeclaration(declaration);
+                                        var comReflector = new ReferencedDeclarationsCollector(State);
+                                        var items = comReflector.GetDeclarationsForReference(localReference);
+
+                                        foreach (var declaration in items)
+                                        {
+                                            State.AddDeclaration(declaration);
+                                        }
+                                    }
+                                    catch (Exception exception)
+                                    {
+                                        Logger.Warn(string.Format("Types were not loaded from referenced type library '{0}'.", reference.Name));
+                                        Logger.Error(exception);
                                     }
                                 }));
                             map.IsLoaded = true;

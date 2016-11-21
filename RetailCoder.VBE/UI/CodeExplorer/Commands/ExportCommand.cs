@@ -7,7 +7,6 @@ using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {

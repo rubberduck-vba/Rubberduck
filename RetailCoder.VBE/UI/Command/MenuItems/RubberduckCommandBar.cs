@@ -16,17 +16,19 @@ namespace Rubberduck.UI.Command.MenuItems
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly IShowParserErrorsCommand _command;
+        private readonly ReparseCommand _reparseCommand;
 
         private ICommandBarButton _refreshButton;
         private ICommandBarButton _statusButton;
         private ICommandBarButton _selectionButton;
         private ICommandBar _commandbar;
 
-        public RubberduckCommandBar(RubberduckParserState state, IVBE vbe, IShowParserErrorsCommand command)
+        public RubberduckCommandBar(RubberduckParserState state, IVBE vbe, IShowParserErrorsCommand command, ReparseCommand reparseCommand)
         {
             _state = state;
             _vbe = vbe;
             _command = command;
+            _reparseCommand = reparseCommand;
         }
 
         public void SetSelectionText()
@@ -118,17 +120,6 @@ namespace Rubberduck.UI.Command.MenuItems
             }
         }
 
-        public event EventHandler Refresh;
-
-        private void OnRefresh()
-        {
-            var handler = Refresh;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
-        }
-
         public void Initialize()
         {
             _commandbar = _vbe.CommandBars.Add("Rubberduck", CommandBarPosition.Top);
@@ -163,7 +154,10 @@ namespace Rubberduck.UI.Command.MenuItems
 
         private void refreshButton_Click(object sender, CommandBarButtonClickEventArgs e)
         {
-            OnRefresh();
+            if (_reparseCommand.CanExecute(null))
+            {
+                _reparseCommand.Execute(null);
+            }
             e.Cancel = true;
         }
 

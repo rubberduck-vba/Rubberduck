@@ -17,8 +17,6 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -26,22 +24,27 @@ namespace Rubberduck.UI.Inspections
     {
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
-        private readonly IVBE _vbe;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
         private readonly IOperatingSystem _operatingSystem;
 
-        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, IVBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
-                                          IGeneralConfigService configService, IOperatingSystem operatingSystem)
+        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, 
+            INavigateCommand navigateCommand, ReparseCommand reparseCommand,
+            IClipboardWriter clipboard, IGeneralConfigService configService, IOperatingSystem operatingSystem)
         {
             _state = state;
             _inspector = inspector;
-            _vbe = vbe;
             _navigateCommand = navigateCommand;
             _clipboard = clipboard;
             _configService = configService;
             _operatingSystem = operatingSystem;
-            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), async param => await Task.Run(() => ExecuteRefreshCommandAsync()), CanExecuteRefreshCommand);
+            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), 
+                o => {
+                        IsBusy = true;
+                        reparseCommand.Execute(o); 
+                     },
+                o => !IsBusy && reparseCommand.CanExecute(o));
+
             _disableInspectionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteDisableInspectionCommand);
             _quickFixCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
             _quickFixInModuleCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInModuleCommand, _ => _state.Status == ParserState.Ready);
@@ -215,19 +218,9 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        private bool _canRefresh = true;
-        public bool CanRefresh
-        {
-            get { return _canRefresh; }
-            private set
-            {
-                _canRefresh = value; 
-                OnPropertyChanged();
-            }
-        }
-
         private bool _canQuickFix;
-                public bool CanQuickFix
+
+        public bool CanQuickFix
         {
             get { return _canQuickFix; }
             set
@@ -240,30 +233,18 @@ namespace Rubberduck.UI.Inspections
         private bool _isBusy;
         public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); } }
 
-        private async void ExecuteRefreshCommandAsync()
-        {
-            CanRefresh = _vbe.HostApplication() != null;
-            if (!CanRefresh)
-            {
-                return;
-            }
-            await Task.Yield();
-
-            IsBusy = true;
-
-            _state.OnParseRequested(this);
-        }
-
-        private bool CanExecuteRefreshCommand(object parameter)
-        {
-            return !IsBusy;
-        }
-
         private bool _runInspectionsOnReparse;
         private void _state_StateChanged(object sender, EventArgs e)
         {
+            if (_state.Status == ParserState.Error || _state.Status == ParserState.ResolverError)
+            {
+                IsBusy = false;
+                return;
+            }
+
             if (_state.Status != ParserState.Ready)
             {
+                IsBusy = true;
                 return;
             }
 
@@ -301,7 +282,6 @@ namespace Rubberduck.UI.Inspections
             {
                 Results = new ObservableCollection<ICodeInspectionResult>(results);
 
-                CanRefresh = true;
                 IsBusy = false;
                 SelectedItem = null;
             });
@@ -331,7 +311,7 @@ namespace Rubberduck.UI.Inspections
             // refresh if any quickfix has completed without cancelling:
             if (completed != 0 && cancelled < completed)
             {
-                Task.Run(() => ExecuteRefreshCommandAsync());
+                Task.Run(() => _refreshCommand.Execute(null));
             }
         }
 
@@ -400,7 +380,7 @@ namespace Rubberduck.UI.Inspections
             var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == _selectedInspection.Name);
             setting.Severity = CodeInspectionSeverity.DoNotShow;
 
-            Task.Run(() => _configService.SaveConfiguration(config)).ContinueWith(t => ExecuteRefreshCommandAsync());
+            Task.Run(() => _configService.SaveConfiguration(config)).ContinueWith(t => _refreshCommand.Execute(null));
         }
 
         private bool _canDisableInspection;

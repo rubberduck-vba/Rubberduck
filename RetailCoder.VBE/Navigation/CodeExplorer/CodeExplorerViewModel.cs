@@ -31,8 +31,12 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
-            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => _state.OnParseRequested(this),
-                param => !IsBusy && _state.IsDirty());
+            var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
+
+            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), 
+                reparseCommand == null ? (Action<object>)(o => { }) :
+                o => reparseCommand.Execute(o),
+                o => !IsBusy && reparseCommand != null && reparseCommand.CanExecute(o));
             
             _navigateCommand = commands.OfType<UI.CodeExplorer.Commands.NavigateCommand>().SingleOrDefault();
 

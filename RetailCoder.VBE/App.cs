@@ -51,7 +51,6 @@ namespace Rubberduck
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
-            _stateBar.Refresh += _stateBar_Refresh;
 
             UiDispatcher.Initialize();
         }
@@ -119,7 +118,7 @@ namespace Rubberduck
             }
         }
 
-        private void EnsureDirectoriesExist()
+        private static void EnsureLogFolderPathExists()
         {
             try
             {
@@ -141,7 +140,7 @@ namespace Rubberduck
 
         public void Startup()
         {
-            EnsureDirectoriesExist();
+            EnsureLogFolderPathExists();
             LoadConfig();
             _appMenus.Initialize();
             _stateBar.Initialize();
@@ -161,13 +160,6 @@ namespace Rubberduck
             {
                 // Won't matter anymore since we're shutting everything down anyway.
             }
-        }
-
-        private void _stateBar_Refresh(object sender, EventArgs e)
-        {
-            // handles "refresh" button click on "Rubberduck" command bar
-            _parser.State.OnParseRequested(sender);
-            _parser.State.StartEventSinks(); // no-op if already started
         }
 
         private void Parser_StateChanged(object sender, EventArgs e)
@@ -219,11 +211,6 @@ namespace Rubberduck
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
-            }
-
-            if (_stateBar != null)
-            {
-                _stateBar.Refresh -= _stateBar_Refresh;
             }
 
             if (_autoSave != null)

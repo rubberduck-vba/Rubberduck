@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
+using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command.MenuItems;
 
 namespace Rubberduck.UI.Command
@@ -20,6 +21,7 @@ namespace Rubberduck.UI.Command
     }
 
     [ComVisible(false)]
+    [CodeExplorerCommand]
     public class ReparseCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
@@ -45,6 +47,7 @@ namespace Rubberduck.UI.Command
         protected override void ExecuteImpl(object parameter)
         {
             _state.OnParseRequested(this);
+            _state.StartEventSinks(); // no-op if already started
         }
     }
 }
