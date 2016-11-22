@@ -382,6 +382,7 @@ namespace Rubberduck.Parsing.VBA
         private void SyncComReferences(IReadOnlyList<IVBProject> projects)
         {
             var loadTasks = new List<Task>();
+            var unmapped = new List<IReference>();
 
             foreach (var vbProject in projects)
             {
@@ -397,8 +398,8 @@ namespace Rubberduck.Parsing.VBA
                         // skip loading Rubberduck.tlb (GUID is defined in AssemblyInfo.cs)
                         if (reference.Guid == "{E07C841C-14B4-4890-83E9-8C80B06DD59D}")
                         {
-                            // todo: figure out why Rubberduck.tlb can't be loaded that way
-                            continue;
+                            // todo: figure out why Rubberduck.tlb *sometimes* throws
+                            //continue;
                         }
                         var referencedProjectId = GetReferenceProjectId(reference, projects);
 
@@ -442,6 +443,7 @@ namespace Rubberduck.Parsing.VBA
                                     }
                                     catch (Exception exception)
                                     {
+                                        unmapped.Add(reference);
                                         Logger.Warn(string.Format("Types were not loaded from referenced type library '{0}'.", reference.Name));
                                         Logger.Error(exception);
                                     }
@@ -458,7 +460,6 @@ namespace Rubberduck.Parsing.VBA
                 mappedIds.Add(item.ReferencedProjectId);
             }
 
-            var unmapped = new List<IReference>();
             foreach (var project in projects)
             {
                 var references = project.References;
