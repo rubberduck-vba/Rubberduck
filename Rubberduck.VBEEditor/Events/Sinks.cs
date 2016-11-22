@@ -56,7 +56,7 @@ namespace Rubberduck.VBEditor.Events
 
         private void RegisterComponentsEventSink(IVBComponents components, string projectId)
         {
-            if (_componentsEventsSinks.ContainsKey(projectId))
+            if (projectId == null || _componentsEventsSinks.ContainsKey(projectId))
             {
                 // already registered - this is caused by the initial load+rename of a project in the VBE
                 return;
@@ -77,7 +77,7 @@ namespace Rubberduck.VBEditor.Events
 
         private void UnregisterComponentsEventSink(string projectId)
         {
-            if (!_componentsEventsSinks.ContainsKey(projectId)) { return; }
+            if (projectId == null || !_componentsEventsSinks.ContainsKey(projectId)) { return; }
 
             var componentEventSink = _componentsEventsSinks[projectId];
             var info = _componentEventsInfo[projectId];
