@@ -2,6 +2,7 @@
 using System.Drawing;
 using Castle.Core.Internal;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -17,7 +18,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public abstract string Key { get; }
 
-        public Func<string> Caption
+        public virtual Func<string> Caption
         {
             get
             {
@@ -38,6 +39,8 @@ namespace Rubberduck.UI.Command.MenuItems
             return state != null && _command.CanExecute(state);
         }
 
+        public virtual ButtonStyle ButtonStyle { get { return ButtonStyle.IconAndCaption; } }
+        public virtual bool HiddenWhenDisabled { get { return false; } }
         public virtual bool BeginGroup { get { return false; } }
         public virtual int DisplayOrder { get { return default(int); } }
         public virtual Image Image { get { return null; } }

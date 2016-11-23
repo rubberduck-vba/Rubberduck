@@ -30,10 +30,12 @@ using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer.Commands;
+using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using ReparseCommandMenuItem = Rubberduck.UI.Command.MenuItems.CommandBars.ReparseCommandMenuItem;
 
 namespace Rubberduck.Root
 {
@@ -63,7 +65,6 @@ namespace Rubberduck.Root
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             Bind<GitProvider>().ToSelf().InSingletonScope();
-            Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
 
@@ -134,6 +135,7 @@ namespace Rubberduck.Root
 
             BindDockableToolwindows();
             BindCommandsToCodeExplorer();
+            ConfigureRubberduckCommandBar();
             ConfigureRubberduckMenu();
             ConfigureCodePaneContextMenu();
             ConfigureFormDesignerContextMenu();
@@ -245,6 +247,17 @@ namespace Rubberduck.Root
                     binding.Intercept().With<EnumerableCounterInterceptor<InspectionResultBase>>();
                 }
             }
+        }
+
+        private void ConfigureRubberduckCommandBar()
+        {
+            var commandBars = _vbe.CommandBars;
+            var items = GetRubberduckCommandBarItems();
+            Bind<RubberduckCommandBar>()
+                .ToSelf()
+                .InCallScope()
+                .WithPropertyValue("Parent", commandBars)
+                .WithConstructorArgument("items", items);
         }
 
         private void ConfigureRubberduckMenu()
@@ -387,6 +400,16 @@ namespace Rubberduck.Root
             {
                 Bind<ICustomDeclarationLoader>().To(loader).InSingletonScope();
             }
+        }
+
+        private IEnumerable<ICommandMenuItem> GetRubberduckCommandBarItems()
+        {
+            return new ICommandMenuItem[]
+            {
+                KernelInstance.Get<ReparseCommandMenuItem>(),
+                KernelInstance.Get<ShowParserErrorsCommandMenuItem>(),
+                KernelInstance.Get<ContextSelectionLabelMenuItem>()
+            };
         }
 
         private IEnumerable<IMenuItem> GetRubberduckMenuItems()

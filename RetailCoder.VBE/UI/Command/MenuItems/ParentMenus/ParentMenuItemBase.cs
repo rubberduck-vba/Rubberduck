@@ -4,34 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
-    internal static class CommandBarPopupFactory
-    {
-        public static ICommandBarPopup Create<TParent>(TParent parent, int? beforeIndex = null)
-            where TParent : ICommandBarControls
-        {
-            return CommandBarPopup.FromCommandBarControl(beforeIndex.HasValue
-                ? parent.Add(ControlType.Popup, beforeIndex.Value)
-                : parent.Add(ControlType.Popup));
-        }
-    }
-
-    internal static class CommandBarButtonFactory
-    {
-        public static ICommandBarButton Create<TParent>(TParent parent, int? beforeIndex = null)
-            where TParent : ICommandBarControls
-        {
-            return CommandBarButton.FromCommandBarControl(beforeIndex.HasValue
-                ? parent.Add(ControlType.Button, beforeIndex.Value)
-                : parent.Add(ControlType.Button));
-        }
-    }
-
     public abstract class ParentMenuItemBase : IParentMenuItem
     {
         private readonly string _key;

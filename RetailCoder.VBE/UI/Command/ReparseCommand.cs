@@ -7,18 +7,18 @@ using Rubberduck.UI.Command.MenuItems;
 
 namespace Rubberduck.UI.Command
 {
-    [ComVisible(false)]
-    public class ReparseCommandMenuItem : CommandMenuItemBase
-    {
-        public ReparseCommandMenuItem(CommandBase command) : base(command)
-        {
-        }
+    //[ComVisible(false)]
+    //public class ReparseCommandMenuItem : CommandMenuItemBase
+    //{
+    //    public ReparseCommandMenuItem(CommandBase command) : base(command)
+    //    {
+    //    }
 
-        public override string Key
-        {
-            get { return "HotkeyDescription_ParseAll"; }
-        }
-    }
+    //    public override string Key
+    //    {
+    //        get { return "HotkeyDescription_ParseAll"; }
+    //    }
+    //}
 
     [ComVisible(false)]
     [CodeExplorerCommand]
