@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Extensibility;
+﻿using Extensibility;
 using Ninject;
 using Ninject.Extensions.Factory;
 using Rubberduck.Common.WinAPI;

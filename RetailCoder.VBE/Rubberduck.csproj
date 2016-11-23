@@ -446,9 +446,17 @@
     <Compile Include="UI\CodeExplorer\Commands\AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\ReparseCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\RubberduckCommandBar.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\ShowParserErrorsCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\CommandBarButtonFactory.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\CommandBarPopupFactory.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\IAppCommandBar.cs" />
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommandMenuItem.cs" />
-    <Compile Include="UI\Command\MenuItems\ToolsParentMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\ToolsParentMenu.cs" />
     <Compile Include="UI\Controls\LinkButton.xaml.cs">
       <DependentUpon>LinkButton.xaml</DependentUpon>
     </Compile>
@@ -635,7 +643,6 @@
     <Compile Include="UI\Command\FindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigateParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\SmartIndenterParentMenu.cs" />
-    <Compile Include="UI\Command\MenuItems\RubberduckCommandBar.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorEncapsulateFieldCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorImplementInterfaceCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorExtractInterfaceCommandMenuItem.cs" />
