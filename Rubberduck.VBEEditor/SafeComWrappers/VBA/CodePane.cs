@@ -88,7 +88,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return new QualifiedSelection(moduleName, selection);
         }
 
-        public void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
+        private void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
             Target.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
@@ -109,6 +109,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (handle != IntPtr.Zero)
             {
                 NativeMethods.ActivateWindow(handle, mainWindowHandle);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("CodePane.ForceFocus() failed to get a handle on the MainWindow.");
             }
         }
 
