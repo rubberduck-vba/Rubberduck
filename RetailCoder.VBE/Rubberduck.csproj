@@ -448,7 +448,7 @@
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommandMenuItem.cs" />
-    <Compile Include="UI\Command\MenuItems\ToolsParentMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\ToolsParentMenu.cs" />
     <Compile Include="UI\Controls\LinkButton.xaml.cs">
       <DependentUpon>LinkButton.xaml</DependentUpon>
     </Compile>
