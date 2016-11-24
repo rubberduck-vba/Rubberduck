@@ -65,7 +65,7 @@ namespace Rubberduck
                 message = RubberduckUI.ParserState_LoadingReference;
             }
 
-            _stateBar.SetStatusLabelCaption(message);
+            _stateBar.SetStatusLabelCaption(message, _parser.State.ModuleExceptions.Count);
         }
 
         private void _hooks_MessageReceived(object sender, HookEventArgs e)
@@ -199,6 +199,7 @@ namespace Rubberduck
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
             _stateBar.SetStatusLabelCaption(ParserState.Pending);
+            _stateBar.EvaluateCanExecute(_parser.State);
             UpdateLoggingLevel();
         }
 
@@ -219,7 +220,7 @@ namespace Rubberduck
             Logger.Debug("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
             _stateBar.EvaluateCanExecute(_parser.State);
-            _stateBar.SetStatusLabelCaption(_parser.State.Status);
+            _stateBar.SetStatusLabelCaption(_parser.State.Status, _parser.State.ModuleExceptions.Count);
         }
 
         private void LoadConfig()

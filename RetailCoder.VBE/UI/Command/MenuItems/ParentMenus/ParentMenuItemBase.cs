@@ -30,6 +30,17 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
         public Func<string> Caption { get { return () => Key == null ? null : RubberduckUI.ResourceManager.GetString(Key, Settings.Settings.Culture); } }
 
+        public virtual string ToolTipKey { get; set; }
+        public virtual Func<string> ToolTipText
+        {
+            get
+            {
+                return () => string.IsNullOrEmpty(ToolTipKey)
+                    ? string.Empty
+                    : RubberduckUI.ResourceManager.GetString(ToolTipKey, UI.Settings.Settings.Culture);
+            }
+        }
+
         public virtual bool BeginGroup { get { return false; } }
         public virtual int DisplayOrder { get { return default(int); } }
 

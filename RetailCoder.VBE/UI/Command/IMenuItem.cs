@@ -9,6 +9,7 @@ namespace Rubberduck.UI.Command
     {
         string Key { get; }
         Func<string> Caption { get; }
+        Func<string> ToolTipText { get; }
         bool BeginGroup { get; }
         int DisplayOrder { get; }
     }
@@ -17,6 +18,7 @@ namespace Rubberduck.UI.Command
     {
         bool EvaluateCanExecute(RubberduckParserState state);
         bool HiddenWhenDisabled { get; }
+        bool IsVisible { get; }
         ButtonStyle ButtonStyle { get; }
         CommandBase Command { get; }
         Image Image { get; }

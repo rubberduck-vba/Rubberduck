@@ -1580,4 +1580,10 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Afficher l'écran d'initialisation</value>
   </data>
+  <data name="ParserErrorToolTipText" xml:space="preserve">
+    <value>{0} module(s) n'ont pas pu compléter; cliquez pour plus de détails.</value>
+  </data>
+  <data name="ReparseToolTipText" xml:space="preserve">
+    <value>{0}. Cliquez pour rafraîchir.</value>
+  </data>
 </root>

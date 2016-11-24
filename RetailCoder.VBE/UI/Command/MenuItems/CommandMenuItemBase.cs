@@ -22,9 +22,20 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             get
             {
-                return () => Key.IsNullOrEmpty() 
+                return () => string.IsNullOrEmpty(Key)
                     ? string.Empty 
                     : RubberduckUI.ResourceManager.GetString(Key, UI.Settings.Settings.Culture);
+            }
+        }
+
+        public virtual string ToolTipKey { get; set; }
+        public virtual Func<string> ToolTipText
+        {
+            get
+            {
+                return () => string.IsNullOrEmpty(ToolTipKey)
+                    ? string.Empty
+                    : RubberduckUI.ResourceManager.GetString(ToolTipKey, UI.Settings.Settings.Culture);
             }
         }
 
@@ -41,6 +52,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public virtual ButtonStyle ButtonStyle { get { return ButtonStyle.IconAndCaption; } }
         public virtual bool HiddenWhenDisabled { get { return false; } }
+        public virtual bool IsVisible { get { return true; } }
         public virtual bool BeginGroup { get { return false; } }
         public virtual int DisplayOrder { get { return default(int); } }
         public virtual Image Image { get { return null; } }
