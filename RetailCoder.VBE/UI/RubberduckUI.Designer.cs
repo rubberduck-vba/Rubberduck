@@ -2218,6 +2218,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} module(s) failed to parse; click for details..
+        /// </summary>
+        public static string ParserErrorToolTipText {
+            get {
+                return ResourceManager.GetString("ParserErrorToolTipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Details.
         /// </summary>
         public static string ParserProgress_ShowDetails {
@@ -2878,6 +2887,15 @@ namespace Rubberduck.UI {
         public static string ReorderPresenter_ParamArrayError {
             get {
                 return ResourceManager.GetString("ReorderPresenter_ParamArrayError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}. Click to refresh..
+        /// </summary>
+        public static string ReparseToolTipText {
+            get {
+                return ResourceManager.GetString("ReparseToolTipText", resourceCulture);
             }
         }
         

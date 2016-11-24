@@ -9,9 +9,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {
@@ -85,6 +83,7 @@ namespace Rubberduck.UI.Command
 
             try
             {
+                UpdateTab();
                 var presenter = _presenterService.Presenter(_viewModel);
                 presenter.Show();
             }

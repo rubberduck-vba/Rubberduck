@@ -40,7 +40,11 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             foreach (var kvp in _items)
             {
                 var item = kvp;
-                UiDispatcher.Invoke(() => item.Value.Caption = item.Key.Caption.Invoke());
+                UiDispatcher.Invoke(() =>
+                {
+                    item.Value.Caption = item.Key.Caption.Invoke();
+                    item.Value.TooltipText = item.Key.ToolTipText.Invoke();
+                });
             }
         }
 
@@ -72,9 +76,11 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             child.Mask = item.Mask;
             child.ApplyIcon();
 
+            child.IsVisible = item.IsVisible;
             child.BeginsGroup = item.BeginGroup;
             child.Tag = item.GetType().FullName;
             child.Caption = item.Caption.Invoke();
+            child.TooltipText = item.ToolTipText.Invoke();
 
             if (item.Command != null)
             {
@@ -109,7 +115,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             {
                 child.Click -= child_Click;
                 child.Delete();
-                child.Release(true);
+                //child.Release();
             }
         }
 

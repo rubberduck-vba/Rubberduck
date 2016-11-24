@@ -274,11 +274,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 return;
             }
-            
-            Debug.Assert(State.ParseTrees.Count == components.Count);
 
             if (State.Status < ParserState.Error)
             {
+                Debug.Assert(State.ParseTrees.Count == components.Count, string.Format("ParserState has {0} parse trees for {1} components.", State.ParseTrees.Count, components.Count));
                 State.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations);
                 Task.WaitAll(ResolveReferencesAsync(token.Token));
                 State.RebuildSelectionCache();

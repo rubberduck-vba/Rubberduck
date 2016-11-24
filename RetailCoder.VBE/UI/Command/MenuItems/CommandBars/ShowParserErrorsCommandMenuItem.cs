@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
+using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
@@ -11,25 +12,25 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         {
         }
 
-        private string _caption;
-        public void SetCaption(string caption)
-        {
-            _caption = caption;
-        }
-
-        public override Func<string> Caption { get { return () => _caption; } }
-
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
             return state.Status == ParserState.Error;
         }
 
-        //public override bool HiddenWhenDisabled { get { return true; } }
-        public override bool BeginGroup { get { return true; } }
+        private string _tooltip;
+        public void SetToolTip(string tooltip)
+        {
+            _tooltip = tooltip;
+        }
+        public override Func<string> ToolTipText { get { return () => _tooltip; } }
+
+        public override bool IsVisible { get { return false; } }
+        public override bool HiddenWhenDisabled { get { return true; } }
+        public override ButtonStyle ButtonStyle { get { return ButtonStyle.Icon; } }
 
         public override string Key { get { return string.Empty; } }
-        //public override Image Image { get { return Resources.cross_circle; } }
-        //public override Image Mask { get { return Resources.cross_circle_mask; } }
+        public override Image Image { get { return Resources.cross_circle; } }
+        public override Image Mask { get { return Resources.circle_mask; } }
         public override int DisplayOrder { get { return (int)RubberduckCommandBarItemDisplayOrder.ShowErrors; } }
     }
 }

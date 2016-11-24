@@ -12,18 +12,29 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         {
         }
 
-        public void SetStatusLabelCaption(ParserState state)
+        public void SetStatusLabelCaption(ParserState state, int? errorCount = null)
         {
             var caption = RubberduckUI.ResourceManager.GetString("ParserState_" + state, Settings.Settings.Culture);
-            SetStatusLabelCaption(caption);
+            SetStatusLabelCaption(caption, errorCount);
         }
 
-        public void SetStatusLabelCaption(string caption)
+        public void SetStatusLabelCaption(string caption, int? errorCount = null)
         {
-            var child = FindChildByTag(typeof(ShowParserErrorsCommandMenuItem).FullName) as ShowParserErrorsCommandMenuItem;
-            if (child == null) { return; }
+            var reparseCommandButton = FindChildByTag(typeof(ReparseCommandMenuItem).FullName) as ReparseCommandMenuItem;
+            if (reparseCommandButton == null) { return; }
 
-            UiDispatcher.Invoke(() => child.SetCaption(caption));
+            var showErrorsCommandButton = FindChildByTag(typeof(ShowParserErrorsCommandMenuItem).FullName) as ShowParserErrorsCommandMenuItem;
+            if (showErrorsCommandButton == null) { return; }
+
+            UiDispatcher.Invoke(() =>
+            {
+                reparseCommandButton.SetCaption(caption);
+                reparseCommandButton.SetToolTip(string.Format(RubberduckUI.ReparseToolTipText, caption));
+                if (errorCount.HasValue && errorCount.Value > 0)
+                {
+                    showErrorsCommandButton.SetToolTip(string.Format(RubberduckUI.ParserErrorToolTipText, errorCount.Value));
+                }
+            });
             Localize();
         }
 
@@ -32,7 +43,11 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             var child = FindChildByTag(typeof(ContextSelectionLabelMenuItem).FullName) as ContextSelectionLabelMenuItem;
             if (child == null) { return; }
 
-            UiDispatcher.Invoke(() => child.SetCaption(caption));
+            UiDispatcher.Invoke(() =>
+            {
+                child.SetCaption(caption);
+                //child.SetToolTip(?);
+            });
             Localize();
         }
 
