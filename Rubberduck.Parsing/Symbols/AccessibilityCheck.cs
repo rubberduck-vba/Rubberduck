@@ -8,16 +8,18 @@
             {
                 return true;
             }
-            if (callee.DeclarationType.HasFlag(DeclarationType.Module))
+            else if (callee.DeclarationType.HasFlag(DeclarationType.Module))
             {
                 return IsModuleAccessible(callingProject, callingModule, callee);
             }
-            return IsMemberAccessible(callingProject, callingModule, callingParent, callee);
+            else
+            {
+                return IsMemberAccessible(callingProject, callingModule, callingParent, callee);
+            }
         }
 
         public static bool IsModuleAccessible(Declaration callingProject, Declaration callingModule, Declaration calleeModule)
-        {
-            bool validAccessibility = IsValidAccessibility(calleeModule);
+        { 
             bool enclosingModule = callingModule.Equals(calleeModule);
             if (enclosingModule)
             {
@@ -26,17 +28,17 @@
             bool sameProject = callingModule.ParentScopeDeclaration.Equals(calleeModule.ParentScopeDeclaration);
             if (sameProject)
             {
-                return validAccessibility;
+                return IsValidAccessibility(calleeModule);
             }
-            if (calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule))
+            else if (calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule))
             {
                 bool isPrivate = ((ProceduralModuleDeclaration)calleeModule).IsPrivateModule;
-                return validAccessibility && !isPrivate;
+                return  !isPrivate && IsValidAccessibility(calleeModule);
             }
             else
             {
                 bool isExposed = calleeModule != null && ((ClassModuleDeclaration)calleeModule).IsExposed;
-                return validAccessibility && isExposed;
+                return isExposed && IsValidAccessibility(calleeModule);
             }
         }
 
@@ -51,17 +53,9 @@
 
         public static bool IsMemberAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration calleeMember)
         {
-            if (IsEnclosingModule(callingModule, calleeMember))
+            if (IsEnclosingModule(callingModule, calleeMember) || (CallerIsSubroutineOrProperty(callingParent) && CaleeHasSameParentAsCaller(callingParent, calleeMember)))
             {
                 return true;
-            }
-            var callerIsSubroutineOrProperty = callingParent.DeclarationType.HasFlag(DeclarationType.Property)
-                || callingParent.DeclarationType.HasFlag(DeclarationType.Function)
-                || callingParent.DeclarationType.HasFlag(DeclarationType.Procedure);
-            var calleeHasSameParent = callingParent.Equals(callingParent.ParentScopeDeclaration);
-            if (callerIsSubroutineOrProperty && calleeHasSameParent)
-            {
-                return calleeHasSameParent;
             }
             var memberModule = Declaration.GetModuleParent(calleeMember);
             if (IsModuleAccessible(callingProject, callingModule, memberModule))
@@ -78,20 +72,32 @@
             return false;
         }
 
-        private static bool IsEnclosingModule(Declaration callingModule, Declaration calleeMember)
-        {
-            if (callingModule.Equals(calleeMember.ParentScopeDeclaration))
+            private static bool IsEnclosingModule(Declaration callingModule, Declaration calleeMember)
             {
-                return true;
-            }
-            foreach (var supertype in ClassModuleDeclaration.GetSupertypes(callingModule))
-            {
-                if (IsEnclosingModule(supertype, calleeMember))
+                if (callingModule.Equals(calleeMember.ParentScopeDeclaration))
                 {
                     return true;
                 }
+                foreach (var supertype in ClassModuleDeclaration.GetSupertypes(callingModule))
+                {
+                    if (IsEnclosingModule(supertype, calleeMember))
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
-            return false;
-        }
+
+            private static bool CallerIsSubroutineOrProperty(Declaration callingParent)
+            {
+                return callingParent.DeclarationType.HasFlag(DeclarationType.Property)
+                    || callingParent.DeclarationType.HasFlag(DeclarationType.Function)
+                    || callingParent.DeclarationType.HasFlag(DeclarationType.Procedure);
+            }
+
+            private static bool CaleeHasSameParentAsCaller(Declaration callingParent, Declaration calleeMember)
+            {
+                return callingParent.Equals(calleeMember.ParentScopeDeclaration);
+            }
     }
 }
