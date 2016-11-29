@@ -117,8 +117,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             if (!IsWrappingNullReference)
             {
-                References.Release();
-                VBComponents.Release();
+                if (Protection == ProjectProtection.Unprotected)
+                {
+                    References.Release();
+                    VBComponents.Release();
+                }
                 base.Release(final);
             }
         }
