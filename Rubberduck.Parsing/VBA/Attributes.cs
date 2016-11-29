@@ -44,5 +44,10 @@ namespace Rubberduck.Parsing.VBA
         {
             Add("VB_GlobalNamespace", new[] {"True"});
         }
+
+        public void AddExposedClassAttribute()
+        {
+            Add("VB_Exposed", new[] { "True" });
+        }
     }
 }

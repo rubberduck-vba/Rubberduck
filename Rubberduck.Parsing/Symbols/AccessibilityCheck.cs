@@ -4,7 +4,11 @@
     {
         public static bool IsAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration callee)
         {
-            if (callee.DeclarationType.HasFlag(DeclarationType.Project))
+            if (callee == null)
+            {
+                return false;
+            }
+            else if (callee.DeclarationType.HasFlag(DeclarationType.Project))
             {
                 return true;
             }
@@ -20,49 +24,53 @@
 
         public static bool IsModuleAccessible(Declaration callingProject, Declaration callingModule, Declaration calleeModule)
         {
-            if (IsEnclosingModuleOfModule(callingModule, calleeModule))
+            if (calleeModule == null)
+            {
+                return false;
+            }    
+            else if (IsTheSameModule(callingModule, calleeModule) || IsEnclosingProject(callingProject, calleeModule))
             {
                 return true;
-            }
-            else if (IsInTheSameProject(callingModule, calleeModule))
-            {
-                return IsValidAccessibility(calleeModule);
             }
             else if (calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule))
             {
                 bool isPrivate = ((ProceduralModuleDeclaration)calleeModule).IsPrivateModule;
-                return  !isPrivate && IsValidAccessibility(calleeModule);
+                return !isPrivate;
             }
             else
             {
-                bool isExposed = calleeModule != null && ((ClassModuleDeclaration)calleeModule).IsExposed;
-                return isExposed && IsValidAccessibility(calleeModule);
+                bool isExposed = ((ClassModuleDeclaration)calleeModule).IsExposed;
+                return isExposed;
             }
         }
 
-            private static bool IsEnclosingModuleOfModule(Declaration callingModule, Declaration calleeModule)
+            private static bool IsTheSameModule(Declaration callingModule, Declaration calleeModule)
             {
-                return callingModule.Equals(calleeModule);
+                return calleeModule.Equals(callingModule);
             }
 
-            private static bool IsInTheSameProject(Declaration callingModule, Declaration calleeModule)
+            private static bool IsEnclosingProject(Declaration callingProject, Declaration calleeModule)
             {
-                return callingModule.ParentScopeDeclaration.Equals(calleeModule.ParentScopeDeclaration);
+                return calleeModule.ParentScopeDeclaration.Equals(callingProject);
             }
 
+            private static bool IsValidAccessibility(Declaration moduleOrMember)
+            {
+                return moduleOrMember != null
+                       && (moduleOrMember.Accessibility == Accessibility.Global
+                           || moduleOrMember.Accessibility == Accessibility.Public
+                           || moduleOrMember.Accessibility == Accessibility.Friend
+                           || moduleOrMember.Accessibility == Accessibility.Implicit);
+            }
 
-        public static bool IsValidAccessibility(Declaration moduleOrMember)
-        {
-            return moduleOrMember != null
-                   && (moduleOrMember.Accessibility == Accessibility.Global
-                       || moduleOrMember.Accessibility == Accessibility.Public
-                       || moduleOrMember.Accessibility == Accessibility.Friend
-                       || moduleOrMember.Accessibility == Accessibility.Implicit);
-        }
 
         public static bool IsMemberAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration calleeMember)
         {
-            if (IsEnclosingModuleOfInstanceMember(callingModule, calleeMember) || (CallerIsSubroutineOrProperty(callingParent) && CaleeHasSameParentAsCaller(callingParent, calleeMember)))
+            if (calleeMember == null)
+            {
+                return false;
+            }    
+            else if (IsEnclosingModuleOfInstanceMember(callingModule, calleeMember) || (IsSubroutineOrProperty(callingParent) && CaleeHasSameParentAsCaller(callingParent, calleeMember)))
             {
                 return true;
             }
@@ -97,11 +105,11 @@
                 return false;
             }
 
-            private static bool CallerIsSubroutineOrProperty(Declaration callingParent)
+            private static bool IsSubroutineOrProperty(Declaration decl)
             {
-                return callingParent.DeclarationType.HasFlag(DeclarationType.Property)
-                    || callingParent.DeclarationType.HasFlag(DeclarationType.Function)
-                    || callingParent.DeclarationType.HasFlag(DeclarationType.Procedure);
+                return decl.DeclarationType.HasFlag(DeclarationType.Property)
+                    || decl.DeclarationType.HasFlag(DeclarationType.Function)
+                    || decl.DeclarationType.HasFlag(DeclarationType.Procedure);
             }
 
             private static bool CaleeHasSameParentAsCaller(Declaration callingParent, Declaration calleeMember)
