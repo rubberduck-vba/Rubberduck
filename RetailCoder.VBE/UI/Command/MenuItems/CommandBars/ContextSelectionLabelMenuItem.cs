@@ -17,6 +17,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             _caption = caption;
         }
 
+        private string _tooltip;
+        public void SetToolTip(string tooltip)
+        {
+            _tooltip = tooltip;
+        }
+        public override Func<string> ToolTipText { get { return () => _tooltip; } }
+
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
             return false;

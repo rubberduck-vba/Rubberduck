@@ -3,23 +3,9 @@ using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.UI.Command.MenuItems;
 
 namespace Rubberduck.UI.Command
 {
-    //[ComVisible(false)]
-    //public class ReparseCommandMenuItem : CommandMenuItemBase
-    //{
-    //    public ReparseCommandMenuItem(CommandBase command) : base(command)
-    //    {
-    //    }
-
-    //    public override string Key
-    //    {
-    //        get { return "HotkeyDescription_ParseAll"; }
-    //    }
-    //}
-
     [ComVisible(false)]
     [CodeExplorerCommand]
     public class ReparseCommand : CommandBase

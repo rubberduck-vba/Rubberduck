@@ -1291,6 +1291,7 @@
     <Resource Include="Resources\Custom\PNG\Task.png" />
     <Resource Include="Resources\Custom\PNG\TestManager.png" />
     <Resource Include="Resources\Custom\PNG\TestMethod.png" />
+    <None Include="Resources\circle_mask.bmp" />
     <Content Include="Resources\Custom\attribution.txt" />
     <Content Include="Resources\Custom\cc_license.txt" />
     <Content Include="Resources\Custom\Mask\AddPropertyMask.bmp" />
