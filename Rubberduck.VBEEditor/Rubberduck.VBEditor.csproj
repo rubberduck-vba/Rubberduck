@@ -105,6 +105,7 @@
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="office">
       <HintPath>..\libs\Office.dll</HintPath>
