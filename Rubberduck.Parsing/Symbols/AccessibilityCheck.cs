@@ -19,14 +19,12 @@
         }
 
         public static bool IsModuleAccessible(Declaration callingProject, Declaration callingModule, Declaration calleeModule)
-        { 
-            bool enclosingModule = callingModule.Equals(calleeModule);
-            if (enclosingModule)
+        {
+            if (IsEnclosingModuleOfModule(callingModule, calleeModule))
             {
                 return true;
             }
-            bool sameProject = callingModule.ParentScopeDeclaration.Equals(calleeModule.ParentScopeDeclaration);
-            if (sameProject)
+            else if (IsInTheSameProject(callingModule, calleeModule))
             {
                 return IsValidAccessibility(calleeModule);
             }
@@ -42,6 +40,17 @@
             }
         }
 
+            private static bool IsEnclosingModuleOfModule(Declaration callingModule, Declaration calleeModule)
+            {
+                return callingModule.Equals(calleeModule);
+            }
+
+            private static bool IsInTheSameProject(Declaration callingModule, Declaration calleeModule)
+            {
+                return callingModule.ParentScopeDeclaration.Equals(calleeModule.ParentScopeDeclaration);
+            }
+
+
         public static bool IsValidAccessibility(Declaration moduleOrMember)
         {
             return moduleOrMember != null
@@ -53,7 +62,7 @@
 
         public static bool IsMemberAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration calleeMember)
         {
-            if (IsEnclosingModule(callingModule, calleeMember) || (CallerIsSubroutineOrProperty(callingParent) && CaleeHasSameParentAsCaller(callingParent, calleeMember)))
+            if (IsEnclosingModuleOfInstanceMember(callingModule, calleeMember) || (CallerIsSubroutineOrProperty(callingParent) && CaleeHasSameParentAsCaller(callingParent, calleeMember)))
             {
                 return true;
             }
@@ -72,7 +81,7 @@
             return false;
         }
 
-            private static bool IsEnclosingModule(Declaration callingModule, Declaration calleeMember)
+            private static bool IsEnclosingModuleOfInstanceMember(Declaration callingModule, Declaration calleeMember)
             {
                 if (callingModule.Equals(calleeMember.ParentScopeDeclaration))
                 {
@@ -80,7 +89,7 @@
                 }
                 foreach (var supertype in ClassModuleDeclaration.GetSupertypes(callingModule))
                 {
-                    if (IsEnclosingModule(supertype, calleeMember))
+                    if (IsEnclosingModuleOfInstanceMember(supertype, calleeMember))
                     {
                         return true;
                     }

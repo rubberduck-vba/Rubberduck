@@ -53,7 +53,10 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return new List<Declaration>();
             }
-            return ((ClassModuleDeclaration)type).Supertypes;
+            else
+            {
+                return ((ClassModuleDeclaration)type).Supertypes;
+            }
         }
 
 
@@ -70,23 +73,37 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     return _isExposed.Value;
                 }
-                // TODO: Find out if there's info about "being exposed" in type libraries.
-                // We take the conservative approach of treating all type library modules as exposed.
-                if (IsBuiltIn)
+                else if (IsBuiltIn)
                 {
-                    _isExposed = true;
+                    _isExposed = IsExposedForBuiltInModules();
                     return _isExposed.Value;
                 }
-                var attributeIsExposed = false;
-                IEnumerable<string> value;
-                if (Attributes.TryGetValue("VB_Exposed", out value))
+                else
                 {
-                    attributeIsExposed = value.Single() == "True";
+                    _isExposed = HasAttribute("VB_Exposed");
+                    return _isExposed.Value;
                 }
-                _isExposed = attributeIsExposed;
-                return _isExposed.Value;
             }
         }
+
+            // TODO: Find out if there's info about "being exposed" in type libraries.
+            // We take the conservative approach of treating all type library modules as exposed.
+            private static bool IsExposedForBuiltInModules()
+            {
+                return true;
+            }
+
+            private bool HasAttribute(string attributeName)
+            {
+                var hasAttribute = false;
+                IEnumerable<string> value;
+                if (Attributes.TryGetValue(attributeName, out value))
+                {
+                    hasAttribute = value.Single() == "True";
+                }
+                return hasAttribute;
+            }
+              
 
         private bool? _isGlobal;
         public bool IsGlobalClassModule
@@ -97,30 +114,25 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     return _isGlobal.Value;
                 }
-
-                var attributeIsGlobalClassModule = false;
-                IEnumerable<string> value;
-                if (Attributes.TryGetValue("VB_GlobalNamespace", out value))
-                {
-                    attributeIsGlobalClassModule = value.Single() == "True";
-                }
-                _isGlobal = attributeIsGlobalClassModule;
-
-                if (!_isGlobal.Value)
-                {
-                    foreach (var type in Subtypes)
-                    {
-                        if (type is ClassModuleDeclaration && ((ClassModuleDeclaration) type).IsGlobalClassModule)
-                        {
-                            _isGlobal = true;
-                            break;
-                        }
-                    }
-                }
-
+                _isGlobal = HasAttribute("VB_GlobalNamespace") || IsGlobalFromSubtypes();
                 return _isGlobal.Value;
             }
         }
+
+            private bool IsGlobalFromSubtypes()
+            {
+                var isGlobal = false;
+                foreach (var type in Subtypes)
+                {
+                    if (type is ClassModuleDeclaration && ((ClassModuleDeclaration)type).IsGlobalClassModule)
+                    {
+                        isGlobal = true;
+                        break;
+                    }
+                }
+                return isGlobal;
+            }
+
 
         private bool? _hasPredeclaredId;
         /// <summary>
@@ -135,17 +147,11 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     return _hasPredeclaredId.Value;
                 }
-
-                var attributeHasDefaultInstanceVariable = false;
-                IEnumerable<string> value;
-                if (Attributes.TryGetValue("VB_PredeclaredId", out value))
-                {
-                    attributeHasDefaultInstanceVariable = value.Single() == "True";
-                }
-                _hasPredeclaredId = attributeHasDefaultInstanceVariable;
+                _hasPredeclaredId = HasAttribute("VB_PredeclaredId");
                 return _hasPredeclaredId.Value;
             }
         }
+
 
         public bool HasDefaultInstanceVariable
         {
