@@ -118,7 +118,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 var component = this[name];
                 if (component.IsWrappingNullReference)
                 {
-                    throw new InvalidOperationException(string.Format("Could not find document component named '{0}'.", name));
+                    throw new IndexOutOfRangeException(string.Format("Could not find document component named '{0}'.", name));
                 }
                 component.CodeModule.Clear();
                 component.CodeModule.AddFromString(codeString);
