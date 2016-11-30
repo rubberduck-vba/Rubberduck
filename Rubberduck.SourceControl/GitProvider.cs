@@ -504,7 +504,7 @@ namespace Rubberduck.SourceControl
             }
             catch (SEHException ex)
             {
-                throw new SourceControlException(SourceControlText.GitRepoStatusFailed, ex);
+                throw new SourceControlException(SourceControlText.GitRepoStatusFailed + " (SEH Code " + ex.ErrorCode + ")", ex);
             }
         }
 
