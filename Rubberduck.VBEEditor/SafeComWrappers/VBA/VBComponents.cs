@@ -116,17 +116,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (ext == ComponentTypeExtensions.DocClassExtension)
             {
                 var component = this[name];
+                if (component.IsWrappingNullReference)
+                {
+                    throw new IndexOutOfRangeException(string.Format("Could not find document component named '{0}'.", name));
+                }
                 component.CodeModule.Clear();
                 component.CodeModule.AddFromString(codeString);
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
             {
-                IVBComponent component;
-                try
-                {
-                    component = this[name];
-                }
-                catch
+                var component = this[name];
+                if (component.IsWrappingNullReference)
                 {
                     component = Add(ComponentType.UserForm);
                     component.Properties["Caption"].Value = name;

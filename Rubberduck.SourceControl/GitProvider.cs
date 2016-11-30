@@ -495,10 +495,14 @@ namespace Rubberduck.SourceControl
             try
             {
                 base.Status();
-                return _repo.RetrieveStatus(new StatusOptions {IncludeUnaltered = true, DetectRenamesInWorkDir = true })
-                        .Select(item => new FileStatusEntry(item));
+                return _repo.RetrieveStatus(new StatusOptions {IncludeUnaltered = true, DetectRenamesInWorkDir = true})
+                    .Select(item => new FileStatusEntry(item));
             }
             catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitRepoStatusFailed, ex);
+            }
+            catch (SEHException ex)
             {
                 throw new SourceControlException(SourceControlText.GitRepoStatusFailed, ex);
             }

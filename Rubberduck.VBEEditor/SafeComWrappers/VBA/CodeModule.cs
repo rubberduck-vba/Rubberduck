@@ -87,7 +87,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Clear()
         {
-            Target.DeleteLines(1, CountOfLines);
+            if (Target.CountOfLines > 0)
+            {
+                Target.DeleteLines(1, CountOfLines);
+            }
         }
 
         private string _previousContentHash;
