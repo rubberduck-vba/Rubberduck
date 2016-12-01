@@ -15,16 +15,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
         }
 
-        public void HandleEvents()
-        {
-            ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
-        }
-
-        public void StopEvents()
-        {
-            ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
-        }
-
         private Microsoft.Office.Core.CommandBarButton Button
         {
             get { return (Microsoft.Office.Core.CommandBarButton)Target; }
@@ -35,10 +25,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.Target);
         }
 
-        public event EventHandler<CommandBarButtonClickEventArgs> Click;
+        private EventHandler<CommandBarButtonClickEventArgs> _clickHandler; 
+        public event EventHandler<CommandBarButtonClickEventArgs> Click
+        {
+            add
+            {
+                ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
+                _clickHandler += value;
+            }
+            remove
+            {
+                ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
+                _clickHandler -= value;
+            }
+        }
+
         private void Target_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
         {
-            var handler = Click;
+            var handler = _clickHandler;
             if (handler == null)
             {
                 return;
