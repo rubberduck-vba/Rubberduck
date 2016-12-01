@@ -165,6 +165,8 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         private void DeclareControlsAsMembers(IVBComponent form)
         {
+            if (form.Controls == null) { return; }
+
             foreach (var control in form.Controls)
             {
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,6 +13,7 @@ namespace RubberduckTests.SourceControl
     public class ChangesViewModelTests
     {
         private Mock<ISourceControlProvider> _provider;
+        private readonly object _locker = new object();
 
         [TestInitialize]
         public void SetupMocks()
@@ -80,10 +82,9 @@ namespace RubberduckTests.SourceControl
             };
 
             var errorThrown = bool.FalseString; // need a reference type
-
             vm.ErrorThrown += (sender, e) =>
             {
-                lock (errorThrown)
+                lock (_locker)
                 {
                     MultiAssert.Aggregate(
                         () => Assert.AreEqual(e.Title, Rubberduck.UI.RubberduckUI.SourceControl_CommitStatus),
@@ -100,7 +101,7 @@ namespace RubberduckTests.SourceControl
             vm.CommitCommand.Execute(null);
 
             //assert
-            lock (errorThrown)
+            lock (_locker)
             {
                 Assert.IsTrue(bool.Parse(errorThrown));
             }

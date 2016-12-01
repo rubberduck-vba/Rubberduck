@@ -85,7 +85,6 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             if (item.Command != null)
             {
                 child.Click += child_Click;
-                ((CommandBarButton)child).HandleEvents();                
             }
             return child;
         }

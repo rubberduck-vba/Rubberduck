@@ -159,7 +159,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 : string.Empty;
 
             child.Click += child_Click;
-            ((CommandBarButton)child).HandleEvents();
             return child;
         }
 
