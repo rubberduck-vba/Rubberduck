@@ -68,6 +68,7 @@ namespace RubberduckTests.Mocks
 
             var window = new Mock<IWindow>();
             window.SetupProperty(w => w.IsVisible, false);
+            _component.Setup(m => m.Controls).Returns(_vbControls.Object);
             _component.Setup(m => m.DesignerWindow()).Returns(window.Object);
 
             return _component;
