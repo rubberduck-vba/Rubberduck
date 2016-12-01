@@ -60,7 +60,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     return new Window(IsWrappingNullReference ? null : Target.MainWindow);
                 }
-                catch (InvalidComObjectException ex)
+                catch (InvalidComObjectException)
                 {
                     return null;
                 }

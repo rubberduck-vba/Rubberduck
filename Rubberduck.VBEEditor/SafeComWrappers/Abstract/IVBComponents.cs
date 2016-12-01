@@ -5,7 +5,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
     public interface IVBComponents : ISafeComWrapper, IComCollection<IVBComponent>, IEquatable<IVBComponents>
     {
-        IVBComponent this[object index] { get; }
+        new IVBComponent this[object index] { get; }
 
         IVBE VBE { get; }
         IVBProject Parent { get; }
