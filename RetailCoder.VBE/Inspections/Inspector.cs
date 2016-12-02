@@ -64,9 +64,9 @@ namespace Rubberduck.Inspections
 
                 // Prepare ParseTreeWalker based inspections
                 var parseTreeWalkResults = GetParseTreeResults(config, state);
-                foreach (var parseTreeInspection in _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow && inspection is IParseTreeInspection))
+                foreach (var parseTreeInspection in _inspections.OfType<IParseTreeInspection>().Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
                 {
-                    (parseTreeInspection as IParseTreeInspection).ParseTreeResults = parseTreeWalkResults;
+                    parseTreeInspection.ParseTreeResults = parseTreeWalkResults;
                 }
 
                 var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
