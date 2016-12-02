@@ -110,12 +110,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         public ICommandBar Item { get; private set; }
         public void RemoveChildren()
         {
-            foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
-            {
-                child.Click -= child_Click;
-                child.Delete();
-                //child.Release();
-            }
+            // note: doing this wrecks the teardown process. counter-intuitive? sure. but hey it works.
+            //foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
+            //{
+            //    child.Click -= child_Click;
+            //    child.Delete();
+            //    child.Release();
+            //}
         }
 
         // note: HAAAAACK!!!

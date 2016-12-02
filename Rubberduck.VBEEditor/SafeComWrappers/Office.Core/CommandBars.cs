@@ -77,15 +77,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public override void Release(bool final = false)
         {
-            if (!IsWrappingNullReference)
-            {
-                var commandBars = this.ToArray();
-                foreach (var commandBar in commandBars)
-                {
-                    commandBar.Release();
-                }
-                base.Release(final);
-            }
+            //if (!IsWrappingNullReference)
+            //{
+            //    var commandBars = this.ToArray();
+            //    foreach (var commandBar in commandBars)
+            //    {
+            //        commandBar.Release();
+            //    }
+            //    base.Release(final);
+            //}
         }
 
         public override bool Equals(ISafeComWrapper<Microsoft.Office.Core.CommandBars> other)
