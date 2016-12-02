@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -17,12 +18,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public ICommandBar Add(string name)
         {
+            DeleteExistingCommandBar(name);
             return new CommandBar(Target.Add(name, Temporary:true));
         }
 
         public ICommandBar Add(string name, CommandBarPosition position)
         {
+            DeleteExistingCommandBar(name);
             return new CommandBar(Target.Add(name, position, Temporary: true));
+        }
+
+        private void DeleteExistingCommandBar(string name)
+        {
+            try
+            {
+                var existing = Target[name];
+                if (existing != null)
+                {
+                    existing.Delete();
+                    Marshal.FinalReleaseComObject(existing);
+                }
+            }
+            catch
+            {
+                // specified commandbar didn't exist
+            }
         }
 
         public ICommandBarControl FindControl(int id)
