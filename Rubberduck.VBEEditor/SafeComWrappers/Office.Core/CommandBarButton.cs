@@ -51,9 +51,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             //note: event is fired for every parent the command exists under. not sure why.
             //System.Diagnostics.Debug.WriteLine("Target_Click: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.Name, Target.Caption, Tag, Target.GetHashCode());
 
-            var args = new CommandBarButtonClickEventArgs(new CommandBarButton(ctrl));
+            var button = new CommandBarButton(ctrl);
+            var args = new CommandBarButtonClickEventArgs(button);
             handler.Invoke(this, args);
             cancelDefault = args.Cancel;
+            button.Release(final:true);
         }
 
         public bool IsBuiltInFace
