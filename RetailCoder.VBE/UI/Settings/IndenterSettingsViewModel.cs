@@ -265,7 +265,13 @@ namespace Rubberduck.UI.Settings
 
         // ReSharper disable once InconsistentNaming
         private const string _previewSampleCode =
-@"' Example Procedure
+@"Public Enum TestEnum
+' some comment
+Foo
+Bar ' another comment
+End Enum
+
+' Example Procedure
 Sub ExampleProc()
 
 ' SMART INDENTER
@@ -277,7 +283,7 @@ Static name As String
 
 If YouLikeRubberduck Then
 ' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
-' Follow us on Twitter @rubberduck-vba/contributors 
+' Follow us on Twitter @rubberduckvba
 ' Visit http://rubberduckvba.com for news and updates
 
 Select Case X
