@@ -212,11 +212,15 @@ namespace Rubberduck
 
             _app = _kernel.Get<App>();
             _app.Startup();
+
             _isInitialized = true;
         }
 
         private void ShutdownAddIn()
         {
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve -= LoadFromSameFolder;
+
             User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
 
             if (_app != null)
