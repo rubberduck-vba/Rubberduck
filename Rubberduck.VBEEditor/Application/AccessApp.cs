@@ -1,3 +1,8 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using Microsoft.Office.Interop.Access;
+
 namespace Rubberduck.VBEditor.Application
 {
     public class AccessApp : HostApplicationBase<Microsoft.Office.Interop.Access.Application>
@@ -9,6 +14,21 @@ namespace Rubberduck.VBEditor.Application
             var call = GenerateMethodCall(qualifiedMemberName);
             Application.Run(call);
         }
+
+        //public List<string> FormDeclarations(QualifiedModuleName qualifiedModuleName)
+        //{
+        //    Application.DoCmd.OutputTo(AcOutputObjectType.acOutputForm, qualifiedModuleName.Name, AcCommand.acCmdExportText, 
+        //        Path.Combine(ExportPath, qualifiedModuleName.Name), null, null, null);
+        //}
+
+        //private string ExportPath
+        //{
+        //    get
+        //    {
+        //        var assemblyLocation = Assembly.GetAssembly(typeof(AccessApp)).Location;
+        //        return Path.GetDirectoryName(assemblyLocation);
+        //    }
+        //}
 
         private string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
