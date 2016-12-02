@@ -62,13 +62,10 @@ namespace Rubberduck.Inspections
             foreach (var declaration in declarationMembers)
             {
                 var declarationParameters =
-                    declarations.Where(d => d.DeclarationType == DeclarationType.Parameter &&
-                                                      d.ParentDeclaration == declaration)
+                    declarations.Where(d => d.DeclarationType == DeclarationType.Parameter && Equals(d.ParentDeclaration, declaration))
                                 .OrderBy(o => o.Selection.StartLine)
                                 .ThenBy(t => t.Selection.StartColumn)
                                 .ToList();
-
-                var parametersAreByRef = declarationParameters.Select(s => true).ToList();
 
                 var members = declarationMembers.Any(a => a.DeclarationType == DeclarationType.Event)
                     ? declarations.FindHandlersForEvent(declaration).Select(s => s.Item2).ToList()
@@ -77,26 +74,24 @@ namespace Rubberduck.Inspections
                 foreach (var member in members)
                 {
                     var parameters =
-                        declarations.Where(d => d.DeclarationType == DeclarationType.Parameter &&
-                                                          d.ParentDeclaration == member)
-                                    .OrderBy(o => o.Selection.StartLine)
-                                    .ThenBy(t => t.Selection.StartColumn)
+                        declarations.Where(d => d.DeclarationType == DeclarationType.Parameter && Equals(d.ParentDeclaration, member))
+                                    .OrderBy(d => d.Selection.StartLine)
+                                    .ThenBy(d => d.Selection.StartColumn)
                                     .ToList();
+
+                    var parametersAreByRef = parameters.Select(s => true).ToList();
 
                     for (var i = 0; i < parameters.Count; i++)
                     {
                         parametersAreByRef[i] = parametersAreByRef[i] && !IsUsedAsByRefParam(declarations, parameters[i]) &&
                             ((VBAParser.ArgContext)parameters[i].Context).BYVAL() == null &&
                             !parameters[i].References.Any(reference => reference.IsAssignment);
-                    }
-                }
 
-                for (var i = 0; i < declarationParameters.Count; i++)
-                {
-                    if (parametersAreByRef[i])
-                    {
-                        yield return new ParameterCanBeByValInspectionResult(this, State, declarationParameters[i],
-                            declarationParameters[i].Context, declarationParameters[i].QualifiedName);
+                        if (parametersAreByRef[i])
+                        {
+                            yield return new ParameterCanBeByValInspectionResult(this, State, declarationParameters[i],
+                                declarationParameters[i].Context, declarationParameters[i].QualifiedName);
+                        }
                     }
                 }
             }
