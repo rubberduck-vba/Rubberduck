@@ -35,7 +35,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             }
             remove
             {
-                ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
+                try
+                {
+                    ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
+                }
+                catch
+                {
+                    // he's gone, dave.
+                }
                 _clickHandler -= value;
             }
         }
