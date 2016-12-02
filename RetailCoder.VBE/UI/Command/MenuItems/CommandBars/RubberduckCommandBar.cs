@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         public void Dispose()
         {
             //note: doing this wrecks the teardown process. counter-intuitive? sure. but hey it works.
-            //RemoveChildren();
+            RemoveChildren();
             //Item.Delete();
             //Item.Release(true);
         }
