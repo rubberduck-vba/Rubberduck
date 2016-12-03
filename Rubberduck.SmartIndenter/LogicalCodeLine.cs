@@ -145,6 +145,11 @@ namespace Rubberduck.SmartIndenter
             return string.Join(Environment.NewLine, output);
         }
 
+        public override string ToString()
+        {
+            return _lines.Aggregate(string.Empty, (x, y) => x + y.ToString());
+        }
+
         private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)");
         private readonly Stack<AlignmentToken> _alignment = new Stack<AlignmentToken>();
 
