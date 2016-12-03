@@ -26,9 +26,9 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition Height="280" MaxHeight="280"/>
             <RowDefinition Height="5" />
-            <RowDefinition Height="200" />
+            <RowDefinition  />
         </Grid.RowDefinitions>
         <ScrollViewer>
             <StackPanel Margin="5">
@@ -198,7 +198,8 @@
 
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto">
+                      HorizontalScrollBarVisibility="Auto"
+                      Background="White">
             <TextBlock Background="White"
                        xml:space="preserve"
                        Margin="5,0"
