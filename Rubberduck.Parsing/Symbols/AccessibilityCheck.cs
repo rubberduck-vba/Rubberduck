@@ -4,45 +4,20 @@
     {
         public static bool IsAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration callee)
         {
-            if (callee == null)
-            {
-                return false;
-            }
-            else if (callee.DeclarationType.HasFlag(DeclarationType.Project))
-            {
-                return true;
-            }
-            else if (callee.DeclarationType.HasFlag(DeclarationType.Module))
-            {
-                return IsModuleAccessible(callingProject, callingModule, callee);
-            }
-            else
-            {
-                return IsMemberAccessible(callingProject, callingModule, callingParent, callee);
-            }
+            return callee != null 
+                    && (callee.DeclarationType.HasFlag(DeclarationType.Project) 
+                        || (callee.DeclarationType.HasFlag(DeclarationType.Module) && IsModuleAccessible(callingProject, callingModule, callee))
+                        || (!callee.DeclarationType.HasFlag(DeclarationType.Module) && IsMemberAccessible(callingProject, callingModule, callingParent, callee)));
         }
 
 
         public static bool IsModuleAccessible(Declaration callingProject, Declaration callingModule, Declaration calleeModule)
         {
-            if (calleeModule == null)
-            {
-                return false;
-            }    
-            else if (IsTheSameModule(callingModule, calleeModule) || IsEnclosingProject(callingProject, calleeModule))
-            {
-                return true;
-            }
-            else if (calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule))
-            {
-                bool isPrivate = ((ProceduralModuleDeclaration)calleeModule).IsPrivateModule;
-                return !isPrivate;
-            }
-            else
-            {
-                bool isExposed = ((ClassModuleDeclaration)calleeModule).IsExposed;
-                return isExposed;
-            }
+            return calleeModule != null
+                    && (IsTheSameModule(callingModule, calleeModule)
+                        || IsEnclosingProject(callingProject, calleeModule)
+                        || (calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule) && !((ProceduralModuleDeclaration)calleeModule).IsPrivateModule)
+                        || (!calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule) && ((ClassModuleDeclaration)calleeModule).IsExposed));
         }
 
             private static bool IsTheSameModule(Declaration callingModule, Declaration calleeModule)
@@ -63,34 +38,17 @@
             {
                 return false;
             }    
-            else if (IsEnclosingModuleOfInstanceMember(callingModule, calleeMember))
-            {
-                return true;
-            }
-            else if (IsLocalMemberOfTheCallingSubroutineOrProperty(callingParent, calleeMember))
+            if (IsEnclosingModuleOfInstanceMember(callingModule, calleeMember)
+                        || IsLocalMemberOfTheCallingSubroutineOrProperty(callingParent, calleeMember))
             {
                 return true;
             }
             var memberModule = Declaration.GetModuleParent(calleeMember);
-            if (IsModuleAccessible(callingProject, callingModule, memberModule))
-            {
-                if (calleeMember.DeclarationType.HasFlag(DeclarationType.EnumerationMember) || calleeMember.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember)) 
-                {
-                    return true;
-                }
-                else if (IsEnclosingProject(callingProject, memberModule) && IsAccessibleThroughoutTheSameProject(calleeMember))
-                {
-                    return true;
-                }
-                else
-                {
-                    return HasPublicScope(calleeMember);
-                }
-            }
-            else
-            {
-                return false;
-            }
+            return IsModuleAccessible(callingProject, callingModule, memberModule)
+                    && (calleeMember.DeclarationType.HasFlag(DeclarationType.EnumerationMember)
+                        || calleeMember.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember)
+                        || HasPublicScope(calleeMember)
+                        || (IsEnclosingProject(callingProject, memberModule) && IsAccessibleThroughoutTheSameProject(calleeMember)));
         }
 
             private static bool IsEnclosingModuleOfInstanceMember(Declaration callingModule, Declaration calleeMember)

@@ -53,10 +53,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return new List<Declaration>();
             }
-            else
-            {
-                return ((ClassModuleDeclaration)type).Supertypes;
-            }
+            return ((ClassModuleDeclaration)type).Supertypes;
         }
 
 
@@ -73,16 +70,13 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     return _isExposed.Value;
                 }
-                else if (IsBuiltIn)
+                if (IsBuiltIn)
                 {
                     _isExposed = IsExposedForBuiltInModules();
                     return _isExposed.Value;
                 }
-                else
-                {
-                    _isExposed = HasAttribute("VB_Exposed");
-                    return _isExposed.Value;
-                }
+                _isExposed = HasAttribute("VB_Exposed");
+                return _isExposed.Value;
             }
         }
 
