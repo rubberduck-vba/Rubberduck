@@ -37,7 +37,7 @@ namespace Rubberduck.SmartIndenter
 
             IndentEntireProcedureBody = true;
             IndentFirstCommentBlock = true;
-            IndentEnumTypeAsProcedure = true;
+            IndentEnumTypeAsProcedure = false;
             IndentFirstDeclarationBlock = true;
             AlignCommentsWithCode = true;
             AlignContinuations = true;

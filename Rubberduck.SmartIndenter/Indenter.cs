@@ -146,6 +146,7 @@ namespace Rubberduck.SmartIndenter
             var logical = BuildLogicalCodeLines(codeLines).ToList();
             var indents = 0;
             var start = false;
+            var enumStart = false;
             var inEnumType = false;
 
             foreach (var line in logical.Where(x => !x.IsEmpty))
@@ -153,8 +154,10 @@ namespace Rubberduck.SmartIndenter
                 inEnumType &= !line.IsEnumOrTypeEnd;
                 if (inEnumType)
                 {
+                    line.AtEnumTypeStart = enumStart;
+                    enumStart = line.IsCommentBlock;
                     line.IsEnumOrTypeMember = true;
-                    line.IndentationLevel = 1;
+                    line.IndentationLevel = line.EnumTypeIndents;
                     continue;
                 }
                 if (line.IsProcedureStart || line.IsEnumOrTypeStart)
@@ -166,6 +169,7 @@ namespace Rubberduck.SmartIndenter
                 indents += line.NextLineIndents;
                 start = line.IsProcedureStart || (line.AtProcedureStart && line.IsDeclaration) || (line.AtProcedureStart && line.IsCommentBlock);
                 inEnumType = line.IsEnumOrTypeStart;
+                enumStart = inEnumType;
             }
 
             var output = new List<string>();

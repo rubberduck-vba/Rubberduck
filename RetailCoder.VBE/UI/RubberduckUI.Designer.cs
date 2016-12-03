@@ -1912,6 +1912,36 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Public Enum ExampleEnum
+        ///&apos; Enum comment.
+        ///Foo
+        ///Bar &apos; Member comment.
+        ///End Enum
+        ///
+        ///&apos; Example Procedure
+        ///Sub ExampleProc()
+        ///
+        ///&apos; SMART INDENTER
+        ///&apos; Original VB6 code graciously offered to Rubberduck by Stephen Bullen &amp; Rob Bovey
+        ///&apos; © 2016 by Rubberduck VBA.
+        ///
+        ///Dim count As Integer
+        ///Static name As String
+        ///
+        ///If YouLikeRubberduck Then
+        ///&apos; Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
+        ///&apos; Follow us on Twitter @rubberduck-vba/contributors 
+        ///&apos; Visit http://rubberduckvba.com for news and updates
+        ///
+        ///Selec [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string IndenterSettings_PreviewCode {
+            get {
+                return ResourceManager.GetString("IndenterSettings_PreviewCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Special Options.
         /// </summary>
         public static string IndenterSettings_SpecialOptionsLabel {

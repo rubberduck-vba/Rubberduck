@@ -13,6 +13,7 @@ namespace Rubberduck.SmartIndenter
 
         public int IndentationLevel { get; set; }
         public bool AtProcedureStart { get; set; }
+        public bool AtEnumTypeStart { get; set; }
 
         public bool IsEmpty
         {
@@ -38,6 +39,14 @@ namespace Rubberduck.SmartIndenter
                 return _rebuilt.Segments.Count() < 2
                     ? _rebuilt.NextLineIndents
                     : _rebuilt.Segments.Select(s => new AbsoluteCodeLine(s, _settings)).Select(a => a.NextLineIndents).Sum();
+            }
+        }
+
+        public int EnumTypeIndents
+        {
+            get
+            {
+                return _settings.IndentEnumTypeAsProcedure && AtEnumTypeStart && IsCommentBlock && !_settings.IndentFirstCommentBlock ? 0 : 1;
             }
         }
 
