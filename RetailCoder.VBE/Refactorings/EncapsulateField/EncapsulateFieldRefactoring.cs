@@ -231,7 +231,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         (_model.ImplementSetSetterType ? setterText : string.Empty)).TrimEnd() + Environment.NewLine;
 
             var propertyTextLines = propertyText.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
-            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, "test", false));
+            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, "test"));
         }
     }
 }

@@ -146,6 +146,76 @@ namespace RubberduckTests.SmartIndenter
 
         [TestMethod]
         [TestCategory("Indenter")]
+        public void IndentEnumTypeCommentBlockOffWorks()
+        {
+            var code = new[]
+            {
+                "Public Enum Test",
+                "'Comment block",
+                "'Comment block",
+                "Foo",
+                "Bar",
+                "End Enum"
+            };
+
+            var expected = new[]
+            {
+                "Public Enum Test",
+                "    'Comment block",
+                "    'Comment block",
+                "    Foo",
+                "    Bar",
+                "End Enum"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentEnumTypeAsProcedure = false;
+                s.IndentFirstCommentBlock = true;
+                return s;
+            });
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void IndentEnumTypeCommentBlockOnWorks()
+        {
+            var code = new[]
+            {
+                "Public Enum Test",
+                "'Comment block",
+                "'Comment block",
+                "Foo",
+                "Bar",
+                "End Enum"
+            };
+
+            var expected = new[]
+            {
+                "Public Enum Test",
+                "'Comment block",
+                "'Comment block",
+                "    Foo",
+                "    Bar",
+                "End Enum"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentEnumTypeAsProcedure = true;
+                s.IndentFirstCommentBlock = false;
+                return s;
+            });
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
         public void IndentFirstCommentBlockOffOnlyOnFirst()
         {
             var code = new[]
