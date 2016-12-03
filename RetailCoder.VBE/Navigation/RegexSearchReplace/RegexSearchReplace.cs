@@ -13,7 +13,6 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 {
     public class RegexSearchReplace : IRegexSearchReplace
     {
-        private readonly RegexSearchReplaceModel _model;
         private readonly IVBE _vbe;
         private readonly IRubberduckParser _parser;
 

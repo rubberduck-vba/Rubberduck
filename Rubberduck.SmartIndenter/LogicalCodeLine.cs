@@ -13,6 +13,7 @@ namespace Rubberduck.SmartIndenter
 
         public int IndentationLevel { get; set; }
         public bool AtProcedureStart { get; set; }
+        public bool AtEnumTypeStart { get; set; }
 
         public bool IsEmpty
         {
@@ -38,6 +39,14 @@ namespace Rubberduck.SmartIndenter
                 return _rebuilt.Segments.Count() < 2
                     ? _rebuilt.NextLineIndents
                     : _rebuilt.Segments.Select(s => new AbsoluteCodeLine(s, _settings)).Select(a => a.NextLineIndents).Sum();
+            }
+        }
+
+        public int EnumTypeIndents
+        {
+            get
+            {
+                return _settings.IndentEnumTypeAsProcedure && AtEnumTypeStart && IsCommentBlock && !_settings.IndentFirstCommentBlock ? 0 : 1;
             }
         }
 
@@ -134,6 +143,11 @@ namespace Rubberduck.SmartIndenter
             }
 
             return string.Join(Environment.NewLine, output);
+        }
+
+        public override string ToString()
+        {
+            return _lines.Aggregate(string.Empty, (x, y) => x + y.ToString());
         }
 
         private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)");

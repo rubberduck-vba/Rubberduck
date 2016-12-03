@@ -46,13 +46,12 @@ End Sub
                 var qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
                 var emRule = new Mock<IExtractMethodRule>();
-                var theByte = new Byte();
                 emRule.Setup(emr => emr.setValidFlag(It.IsAny<IdentifierReference>(), It.IsAny<Selection>())).Returns(2);
                 var emRules = new List<IExtractMethodRule>() { emRule.Object, emRule.Object };
-                var SUT = new ExtractMethodParameterClassification(emRules);
+                var sut = new ExtractMethodParameterClassification(emRules);
 
                 //Act
-                SUT.classifyDeclarations(qSelection, declaration);
+                sut.classifyDeclarations(qSelection, declaration);
 
                 //Assert
                 // 2 rules on 1 referencdes = 2 validation checks

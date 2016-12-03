@@ -164,7 +164,7 @@ namespace Rubberduck.UI.Refactorings
                     (MustImplementSetSetterType ? setterText : string.Empty);
 
             var propertyTextLines = propertyText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, "test", false));
+            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, "test"));
         }
 
         private void ValidatePropertyName()

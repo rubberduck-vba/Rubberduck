@@ -122,16 +122,16 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1858
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2233
         [TestMethod]
         [TestCategory("Indenter")]
-        public void IfThenElseStatementWorks()
+        public void IfThenBareElseStatementWorks()
         {
             var code = new[]
             {
                 "Public Sub Test()",
                 "If Foo And Bar Then Foobar Else",
                 "Baz",
-                "End If",
                 "End Sub"
             };
 
@@ -139,8 +139,7 @@ namespace RubberduckTests.SmartIndenter
             {
                 "Public Sub Test()",
                 "    If Foo And Bar Then Foobar Else",
-                "        Baz",
-                "    End If",
+                "    Baz",
                 "End Sub"
             };
 
@@ -152,13 +151,15 @@ namespace RubberduckTests.SmartIndenter
         //https://github.com/rubberduck-vba/Rubberduck/issues/1858
         [TestMethod]
         [TestCategory("Indenter")]
-        public void ElseIfThenElseStatementWorks()
+        public void SingleLineElseIfElseStatementWorks()
         {
             var code = new[]
             {
                 "Public Sub Test()",
-                "If Foo Then NotFoobar",
-                "ElseIf Foo And Bar Then Foobar Else",
+                "If x Then",
+                "NotFoobar",
+                "ElseIf Foo And Bar Then Foobar",
+                "Else",
                 "Baz",
                 "End If",
                 "End Sub"
@@ -167,8 +168,10 @@ namespace RubberduckTests.SmartIndenter
             var expected = new[]
             {
                 "Public Sub Test()",
-                "    If Foo Then NotFoobar",
-                "    ElseIf Foo And Bar Then Foobar Else",
+                "    If x Then",
+                "        NotFoobar",
+                "    ElseIf Foo And Bar Then Foobar",
+                "    Else",
                 "        Baz",
                 "    End If",
                 "End Sub"
