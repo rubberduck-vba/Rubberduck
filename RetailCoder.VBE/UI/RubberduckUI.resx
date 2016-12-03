@@ -1796,4 +1796,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="ReparseToolTipText" xml:space="preserve">
     <value>{0}. Click to refresh.</value>
   </data>
+  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
+    <value>Indent comments in Enum and Type blocks like in procedures</value>
+  </data>
 </root>

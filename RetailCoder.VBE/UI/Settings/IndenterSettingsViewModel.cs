@@ -54,6 +54,21 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _indentEnumTypeAsProcedure;
+
+        public bool IndentEnumTypeAsProcedure
+        {
+            get { return _indentEnumTypeAsProcedure; }
+            set
+            {
+                if (_indentEnumTypeAsProcedure != value)
+                {
+                    _indentEnumTypeAsProcedure = value;
+                    OnPropertyChanged();
+                }
+            }           
+        }
+
         private bool _alignContinuations;
         public bool AlignContinuations
         {
@@ -265,7 +280,14 @@ namespace Rubberduck.UI.Settings
 
         // ReSharper disable once InconsistentNaming
         private const string _previewSampleCode =
-@"' Example Procedure
+@"
+Public Enum ExampleEnum
+' Enum comment.
+Foo
+Bar ' Member comment.
+End Enum
+
+' Example Procedure
 Sub ExampleProc()
 
 ' SMART INDENTER

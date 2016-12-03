@@ -9,6 +9,7 @@ namespace Rubberduck.SmartIndenter
     {
         public virtual bool IndentEntireProcedureBody { get; set; }
         public virtual bool IndentFirstCommentBlock { get; set; }
+        public virtual bool IndentEnumTypeAsProcedure { get; set; }
         public virtual bool IndentFirstDeclarationBlock { get; set; }
         public virtual bool AlignCommentsWithCode { get; set; }
         public virtual bool AlignContinuations { get; set; }
@@ -36,6 +37,7 @@ namespace Rubberduck.SmartIndenter
 
             IndentEntireProcedureBody = true;
             IndentFirstCommentBlock = true;
+            IndentEnumTypeAsProcedure = true;
             IndentFirstDeclarationBlock = true;
             AlignCommentsWithCode = true;
             AlignContinuations = true;
