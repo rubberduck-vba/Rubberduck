@@ -22,6 +22,7 @@
             }
         }
 
+
         public static bool IsModuleAccessible(Declaration callingProject, Declaration callingModule, Declaration calleeModule)
         {
             if (calleeModule == null)
@@ -54,14 +55,6 @@
                 return calleeModule.ParentScopeDeclaration.Equals(callingProject);
             }
 
-            private static bool IsValidAccessibility(Declaration moduleOrMember)
-            {
-                return moduleOrMember != null
-                       && (moduleOrMember.Accessibility == Accessibility.Global
-                           || moduleOrMember.Accessibility == Accessibility.Public
-                           || moduleOrMember.Accessibility == Accessibility.Friend
-                           || moduleOrMember.Accessibility == Accessibility.Implicit);
-            }
 
 
         public static bool IsMemberAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration calleeMember)
@@ -70,23 +63,34 @@
             {
                 return false;
             }    
-            else if (IsEnclosingModuleOfInstanceMember(callingModule, calleeMember) || (IsSubroutineOrProperty(callingParent) && CaleeHasSameParentAsCaller(callingParent, calleeMember)))
+            else if (IsEnclosingModuleOfInstanceMember(callingModule, calleeMember))
+            {
+                return true;
+            }
+            else if (IsLocalMemberOfTheCallingSubroutineOrProperty(callingParent, calleeMember))
             {
                 return true;
             }
             var memberModule = Declaration.GetModuleParent(calleeMember);
             if (IsModuleAccessible(callingProject, callingModule, memberModule))
             {
-                if (calleeMember.DeclarationType.HasFlag(DeclarationType.EnumerationMember) || calleeMember.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember))
+                if (calleeMember.DeclarationType.HasFlag(DeclarationType.EnumerationMember) || calleeMember.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember)) 
                 {
-                    return IsValidAccessibility(calleeMember.ParentDeclaration);
+                    return true;
+                }
+                else if (IsEnclosingProject(callingProject, memberModule) && IsAccessibleThroughoutTheSameProject(calleeMember))
+                {
+                    return true;
                 }
                 else
                 {
-                    return IsValidAccessibility(calleeMember);
+                    return HasPublicScope(calleeMember);
                 }
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
 
             private static bool IsEnclosingModuleOfInstanceMember(Declaration callingModule, Declaration calleeMember)
@@ -105,16 +109,41 @@
                 return false;
             }
 
-            private static bool IsSubroutineOrProperty(Declaration decl)
+            private static bool IsLocalMemberOfTheCallingSubroutineOrProperty(Declaration callingParent, Declaration calleeMember)
             {
-                return decl.DeclarationType.HasFlag(DeclarationType.Property)
-                    || decl.DeclarationType.HasFlag(DeclarationType.Function)
-                    || decl.DeclarationType.HasFlag(DeclarationType.Procedure);
+                return IsSubroutineOrProperty(callingParent) && CaleeHasSameParentScopeAsCaller(callingParent, calleeMember);
             }
 
-            private static bool CaleeHasSameParentAsCaller(Declaration callingParent, Declaration calleeMember)
+                private static bool IsSubroutineOrProperty(Declaration decl)
+                {
+                    return decl.DeclarationType.HasFlag(DeclarationType.Property)
+                        || decl.DeclarationType.HasFlag(DeclarationType.Function)
+                        || decl.DeclarationType.HasFlag(DeclarationType.Procedure);
+                }
+
+                private static bool CaleeHasSameParentScopeAsCaller(Declaration callingParent, Declaration calleeMember)
+                {
+                    return callingParent.Equals(calleeMember.ParentScopeDeclaration);
+                }
+
+            private static bool HasPublicScope(Declaration member)
             {
-                return callingParent.Equals(calleeMember.ParentScopeDeclaration);
+                return member.Accessibility == Accessibility.Public
+                    || member.Accessibility == Accessibility.Global
+                    || (member.Accessibility == Accessibility.Implicit && IsPublicByDefault(member));
+            }
+
+                private static bool IsPublicByDefault(Declaration member)
+                { 
+                    return IsSubroutineOrProperty(member) 
+                            || member.DeclarationType.HasFlag(DeclarationType.Enumeration)
+                            || member.DeclarationType.HasFlag(DeclarationType.UserDefinedType);
+                }
+
+            private static bool IsAccessibleThroughoutTheSameProject(Declaration member)
+            {
+                return HasPublicScope(member)
+                    || member.Accessibility == Accessibility.Friend; 
             }
     }
 }
