@@ -9,6 +9,7 @@ namespace Rubberduck.SmartIndenter
 {
     internal class AbsoluteCodeLine
     {
+        private const string StupidLineEnding = ": _";
         private const string StringPlaceholder = "\a";
         private static readonly Regex StringLiteralRegex = new Regex("\"(?:[^\"]+|\"\")*\"");
         private static readonly Regex StringReplaceRegex = new Regex(StringPlaceholder);
@@ -21,7 +22,7 @@ namespace Rubberduck.SmartIndenter
         private static readonly Regex TypeEnumEndRegex = new Regex(@"^End\s(Enum|Type)");
         private static readonly Regex InProcedureInRegex = new Regex(@"^(Else)?If\s.*\sThen$|^Else$|^Case\s|^With|^For\s|^Do$|^Do\s|^While$|^While\s|^Select Case");
         private static readonly Regex InProcedureOutRegex = new Regex(@"^Else(If)?|^Case\s|^End With|^Next\s|^Next$|^Loop$|^Loop\s|^Wend$|^End If$|^End Select");
-        private static readonly Regex DeclarationRegex = new Regex(@"^(Dim|Const|Static|Public|Private)\s.*\sAs\s");
+        private static readonly Regex DeclarationRegex = new Regex(@"^(Dim|Const|Static|Public|Private)\s(.*(\sAs\s)?|_)");
         private static readonly Regex PrecompilerInRegex = new Regex(@"^#(Else)?If\s.+Then$|^#Else$");
         private static readonly Regex PrecompilerOutRegex = new Regex(@"^#ElseIf\s.+Then|^#Else$|#End\sIf$");
         private static readonly Regex SingleLineElseIfRegex = new Regex(@"^ElseIf\s.*\sThen\s.*");
@@ -30,13 +31,24 @@ namespace Rubberduck.SmartIndenter
         private uint _lineNumber;
         private bool _numbered;
         private string _code;
+        private bool _stupidLineEnding;
         private readonly string[] _segments;
         private List<string> _strings;
 
         public AbsoluteCodeLine(string code, IIndenterSettings settings)
         {
             _settings = settings;
-            _code = code;
+
+            if (code.EndsWith(StupidLineEnding))
+            {
+                _code = code.Substring(0, code.Length - StupidLineEnding.Length);
+                _stupidLineEnding = true;
+            }
+            else
+            {
+                _code = code;
+            }
+            
             Original = code;
 
             ExtractStringLiterals();
@@ -110,7 +122,21 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsDeclaration
         {
-            get { return !IsEmpty && DeclarationRegex.IsMatch(_code); }
+            get { return !IsEmpty && (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) && DeclarationRegex.IsMatch(_code); }
+        }
+
+        public bool IsDeclarationContinuation { get; set; }
+
+        public bool HasDeclarationContinuation
+        {
+            get
+            {
+                return (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) &&
+                       !ContainsOnlyComment &&
+                       string.IsNullOrEmpty(EndOfLineComment) &&
+                       HasContinuation &&
+                       ((IsDeclarationContinuation && Segments.Count() == 1) || DeclarationRegex.IsMatch(Segments.Last()));
+            }
         }
 
         public bool HasContinuation
@@ -205,14 +231,17 @@ namespace Rubberduck.SmartIndenter
             if ((IsPrecompilerDirective && _settings.ForceCompilerDirectivesInColumn1) ||
                 (IsBareDebugStatement && _settings.ForceDebugStatementsInColumn1) ||
                 (atProcStart && !_settings.IndentFirstCommentBlock && ContainsOnlyComment) ||
-                (atProcStart && !_settings.IndentFirstDeclarationBlock && IsDeclaration))
+                (atProcStart && !_settings.IndentFirstDeclarationBlock && (IsDeclaration || IsDeclarationContinuation)))
             {
                 indents = 0;
             }
 
             var number = _numbered ? _lineNumber.ToString(CultureInfo.InvariantCulture) : string.Empty;
             var gap = Math.Max((absolute ? indents : _settings.IndentSpaces * indents) - number.Length, number.Length > 0 ? 1 : 0);
-            AlignDims(gap);
+            if (_settings.AlignDims && (IsDeclaration || IsDeclarationContinuation))
+            {
+                AlignDims(gap);
+            }
 
             var code = string.Join(": ", _segments);
             if (_strings.Any())
@@ -223,22 +252,26 @@ namespace Rubberduck.SmartIndenter
             code = string.Join(string.Empty, number, new string(' ', gap), code);
             if (string.IsNullOrEmpty(EndOfLineComment))
             {
-                return code;
+                return code + (_stupidLineEnding ? StupidLineEnding : string.Empty);
             }
 
             var position = Original.LastIndexOf(EndOfLineComment, StringComparison.Ordinal);
             switch (_settings.EndOfLineCommentStyle)
             {
                 case EndOfLineCommentStyle.Absolute:
-                    return string.Format("{0}{1}{2}", code, new string(' ', Math.Max(position - code.Length, 1)), EndOfLineComment);
+                    return string.Format("{0}{1}{2}{3}", code, new string(' ', Math.Max(position - code.Length, 1)),
+                                                         EndOfLineComment, _stupidLineEnding ? StupidLineEnding : string.Empty);
                 case EndOfLineCommentStyle.SameGap:
                     var uncommented = Original.Substring(0, position - 1);
-                    return string.Format("{0}{1}{2}", code, new string(' ', uncommented.Length - uncommented.TrimEnd().Length + 1), EndOfLineComment);
+                    return string.Format("{0}{1}{2}{3}", code, new string(' ', uncommented.Length - uncommented.TrimEnd().Length + 1), 
+                                                         EndOfLineComment, _stupidLineEnding ? StupidLineEnding : string.Empty);
                 case EndOfLineCommentStyle.StandardGap:
-                    return string.Format("{0}{1}{2}", code, new string(' ', _settings.IndentSpaces * 2), EndOfLineComment);
+                    return string.Format("{0}{1}{2}{3}", code, new string(' ', _settings.IndentSpaces * 2), EndOfLineComment,
+                                                        _stupidLineEnding ? StupidLineEnding : string.Empty);
                 case EndOfLineCommentStyle.AlignInColumn:
                     var align = _settings.EndOfLineCommentColumnSpaceAlignment - code.Length;
-                    return string.Format("{0}{1}{2}", code, new string(' ', Math.Max(align - 1, 1)), EndOfLineComment);
+                    return string.Format("{0}{1}{2}{3}", code, new string(' ', Math.Max(align - 1, 1)), EndOfLineComment,
+                                                        _stupidLineEnding ? StupidLineEnding : string.Empty);
                 default:
                     throw new InvalidEnumArgumentException();
             }
@@ -250,13 +283,10 @@ namespace Rubberduck.SmartIndenter
         }
 
         private void AlignDims(int postition)
-        {
-            if (!DeclarationRegex.IsMatch(_segments[0]) || IsProcedureStart) return;
+        {            
             var alignTokens = _segments[0].Split(new[] { " As " }, StringSplitOptions.None);
             var gap = Math.Max(_settings.AlignDimColumn - postition - alignTokens[0].Length - 2, 0);
-            _segments[0] = string.Format("{0}{1} As {2}", alignTokens[0].Trim(),
-                                                          (!_settings.AlignDims) ? string.Empty : new string(' ', gap),
-                                                          string.Join(" As ", alignTokens.Skip(1)));
+            _segments[0] = string.Format("{0}{1} As {2}", alignTokens[0].Trim(), new string(' ', gap), string.Join(" As ", alignTokens.Skip(1)));
         }
     }
 }

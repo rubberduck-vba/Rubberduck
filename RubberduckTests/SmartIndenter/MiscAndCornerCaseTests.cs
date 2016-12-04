@@ -440,7 +440,7 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //http://chat.stackexchange.com/transcript/message/33575758#33575758
-        [TestMethod]
+        [TestMethod]                // Broken in VB6 SmartIndenter.
         [TestCategory("Indenter")]
         public void SubFooTokenIsNotInterpretedAsProcedureStart()
         {
@@ -463,6 +463,129 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2133
+        [TestMethod]                // Broken in VB6 SmartIndenter.
+        [TestCategory("Indenter")]  
+        public void MultiLineDimWithCommasDontAlignDimWorks()
+        {
+            var code = new[]
+            {
+                "Public Sub FooBar()",
+                "Dim foo As Boolean, bar As String _",
+                ", baz As String _",
+                ", somethingElse As String",
+                "Dim x As Integer",
+                "If Not foo Then",
+                "x = 1",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub FooBar()",
+                "    Dim foo As Boolean, bar As String _",
+                "    , baz As String _",
+                "    , somethingElse As String",
+                "    Dim x As Integer",
+                "    If Not foo Then",
+                "        x = 1",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.AlignDims = false;
+                return s;
+            });
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2133
+        [TestMethod]                // Broken in VB6 SmartIndenter.
+        [TestCategory("Indenter")]
+        public void MultiLineDimWithCommasAlignDimsWorks()
+        {
+            var code = new[]
+            {
+                "Public Sub FooBar()",
+                "Dim foo As Boolean, bar As String _",
+                ", baz As String _",
+                ", somethingElse As String",
+                "Dim x As Integer",
+                "If Not foo Then",
+                "x = 1",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub FooBar()",
+                "    Dim foo   As Boolean, bar As String _",
+                "    , baz     As String _",
+                "    , somethingElse As String",
+                "    Dim x     As Integer",
+                "    If Not foo Then",
+                "        x = 1",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.AlignDims = true;
+                return s;
+            });
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2133
+        [TestMethod]                // Broken in VB6 SmartIndenter.
+        [TestCategory("Indenter")]
+        public void MultiLineDimWithCommasDontIndentFirstBlockWorks()
+        {
+            var code = new[]
+            {
+                "Public Sub FooBar()",
+                "Dim foo As Boolean, bar As String _",
+                ", baz As String _",
+                ", somethingElse As String",
+                "Dim x As Integer",
+                "If Not foo Then",
+                "x = 1",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub FooBar()",
+                "Dim foo As Boolean, bar As String _",
+                ", baz As String _",
+                ", somethingElse As String",
+                "Dim x As Integer",
+                "    If Not foo Then",
+                "        x = 1",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentFirstDeclarationBlock = false;
+                return s;
+            });
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
