@@ -350,10 +350,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return true;
             }
-            var functionSubroutinePropertyGet = match.DeclarationType == DeclarationType.Function
-                || match.DeclarationType == DeclarationType.Procedure
-                || match.DeclarationType == DeclarationType.PropertyGet;
-            if (!functionSubroutinePropertyGet)
+            if (!IsFunctionSubroutinePropertyGet(match))
             {
                 return true;
             }
@@ -361,14 +358,26 @@ namespace Rubberduck.Parsing.Binding
             {
                 return true;
             }
-            if (match.AsTypeName != null
-                && match.AsTypeName.ToUpperInvariant() != "VARIANT"
-                && match.AsTypeName.ToUpperInvariant() != "OBJECT"
-                && match.AsTypeIsBaseType)
+            if (IsTypeDeclarationOfSpecificBaseType(match))
             {
                 return false;
             }
             return true;
         }
+
+            private static bool IsFunctionSubroutinePropertyGet(Declaration match)
+            {
+                return match.DeclarationType == DeclarationType.Function
+                        || match.DeclarationType == DeclarationType.Procedure
+                        || match.DeclarationType == DeclarationType.PropertyGet;
+            }
+
+            private static bool IsTypeDeclarationOfSpecificBaseType(Declaration match)
+            {
+                return match.AsTypeName != null
+                        && match.AsTypeName.ToUpperInvariant() != "VARIANT"
+                        && match.AsTypeName.ToUpperInvariant() != "OBJECT"
+                        && match.AsTypeIsBaseType;
+            }
     }
 }
