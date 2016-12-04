@@ -28,6 +28,8 @@ namespace Rubberduck.SmartIndenter
 
         public void AddContinuationLine(AbsoluteCodeLine line)
         {
+            var last = _lines.Last();
+            line.IsDeclarationContinuation = last.HasDeclarationContinuation && !line.ContainsOnlyComment;
             _lines.Add(line);
         }
 
@@ -46,7 +48,16 @@ namespace Rubberduck.SmartIndenter
         {
             get
             {
-                return _settings.IndentEnumTypeAsProcedure && AtEnumTypeStart && IsCommentBlock && !_settings.IndentFirstCommentBlock ? 0 : 1;
+                if (!IsEnumOrTypeMember)
+                {
+                    return 0;
+                }
+                return _settings.IndentEnumTypeAsProcedure &&
+                       AtEnumTypeStart &&
+                       IsCommentBlock && 
+                       !_settings.IndentFirstCommentBlock
+                    ? 0
+                    : 1;
             }
         }
 
@@ -95,7 +106,7 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsDeclaration
         {
-            get { return _lines.All(x => x.IsDeclaration); }
+            get { return _lines.All(x => x.IsDeclaration || x.IsDeclarationContinuation); }
         }
 
         public bool IsCommentBlock
@@ -125,6 +136,11 @@ namespace Rubberduck.SmartIndenter
 
             foreach (var line in _lines.Skip(1))
             {
+                if (line.IsDeclarationContinuation && !line.IsProcedureStart)
+                {
+                    output.Add(line.Indent(IndentationLevel, AtProcedureStart));
+                    continue;
+                }
                 if (line.ContainsOnlyComment)
                 {
                     commentPos = alignment;
