@@ -242,6 +242,7 @@
     <Compile Include="Symbols\PropertySetDeclaration.cs" />
     <Compile Include="Symbols\PropertyGetDeclaration.cs" />
     <Compile Include="Symbols\FunctionDeclaration.cs" />
+    <Compile Include="Symbols\SerializableDeclaration.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
     <Compile Include="Symbols\ProjectReferencePass.cs" />
     <Compile Include="Symbols\SyntaxErrorInfo.cs" />
