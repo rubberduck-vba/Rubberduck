@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -667,7 +667,8 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Einstellungen auf Standardkonfiguration zurücksetzen?</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Das Umbenenen zu '{0}' wird einen Konflikt mit '{1}' auslösen. Wollen Sie fortfahren?</value>
+    <value>Das Umbenenen zu '{0}' wird einen Konflikt mit '{1}' auslösen.'
+Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>{0} Umbenennen</value>
@@ -1686,64 +1687,91 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>In Rubberduck ist ein Fehler aufgetreten. Bitte speichern Sie Ihre Arbeit und starten Sie das Hostprogramm neu. Laden Sie dann Ihre Logdatei zu unserer GitHub-Seite hoch.</value>
   </data>
-  <data name="ToolsMenu_SourceControl">
+  <data name="ToolsMenu_SourceControl" xml:space="preserve">
     <value>Version&amp;skontrolle</value>
   </data>
-  <data name="RegexAssistant_NoPatternError">
+  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
     <value>(kein Ausdruck gegeben)</value>
   </data>
-  <data name="TestExplorerMenu_AddTestModule">
+  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
     <value>Testm&amp;odul</value>
   </data>
-  <data name="RegexAssistant_GlobalFlag">
+  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
     <value>Global</value>
   </data>
-  <data name="RegexAssistant_Caption">
+  <data name="RegexAssistant_Caption" xml:space="preserve">
     <value>Rubberduck - Regexassistent</value>
   </data>
-  <data name="ToolsMenu">
+  <data name="ToolsMenu" xml:space="preserve">
     <value>T&amp;ools</value>
   </data>
-  <data name="ToolsMenu_RegexAssistant">
+  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
     <value>Regex&amp;assistent</value>
   </data>
-  <data name="RegexAssistant_Title">
+  <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Assistent für Reguläre Ausdrücke</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel">
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Explizit erlaubte Namen</value>
   </data>
-  <data name="ToolsMenu_TodoItems">
+  <data name="ToolsMenu_TodoItems" xml:space="preserve">
     <value>To&amp;Do Liste</value>
   </data>
-  <data name="RegexAssistant_Instructions">
+  <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Einen Regulären Ausdruck zur Analyse in die Box unten eingeben.</value>
   </data>
-  <data name="TestExplorerMenu_AddTestMethod">
+  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
     <value>Test&amp;methode</value>
   </data>
-  <data name="RegexAssistant_IgnoreCaseFlag">
+  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
     <value>Ignoriere Groß-/Kleinschreibung</value>
   </data>
-  <data name="HotkeyDescription_SourceControl">
+  <data name="HotkeyDescription_SourceControl" xml:space="preserve">
     <value>Versionskontrolle</value>
   </data>
-  <data name="TestExplorerMenu_AddExpectedErrorTestMethod">
+  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
     <value>Testmethode (&amp;erwartet Fehler)</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription">
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>Diese Namen werden von der Inspektion "Nutze aussagekräftige Namen" ignoriert.</value>
   </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel">
+  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Inspektionsschwere</value>
   </data>
-  <data name="RegexAssistant_DescriptionResultsLabel">
+  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
     <value>Beschreibung</value>
   </data>
-  <data name="CodeExplorer_Indent">
+  <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Einrücken</value>
   </data>
-  <data name="RegexAssistant_RegexPatternLabel">
+  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
     <value>Ausdruck</value>
+  </data>
+  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
+    <value>Kommentare in Enums und Typen wie in Prozeduren einrücken</value>
+  </data>
+  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse">
+    <value>Inspektionen nach erfolgreichem Parsen automatisch starten</value>
+  </data>
+  <data name="RubberduckReloadFailure_Title">
+    <value>Rubberduck wird nicht neu geladen</value>
+  </data>
+  <data name="GeneralSettings_ShowSplash">
+    <value>Ein Startlogo zu Beginn zeigen</value>
+  </data>
+  <data name="HotkeyDescription_RefactorEncapsulateField">
+    <value>Refactor /  Feld kapseln</value>
+  </data>
+  <data name="CodeExplorer_CollapseSubnodesToolTip">
+    <value>Knoten und alle Kindknoten einklappen</value>
+  </data>
+  <data name="CodeInspectionSettings_Misc">
+    <value>Verschiedenes</value>
+  </data>
+  <data name="CodeExplorer_ExpandSubnodesToolTip">
+    <value>Expand node and all child nodes</value>
+  </data>
+  <data name="RubberduckReloadFailure_Message">
+    <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>
   </data>
 </root>
