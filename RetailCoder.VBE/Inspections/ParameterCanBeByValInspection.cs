@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
@@ -68,6 +69,7 @@ namespace Rubberduck.Inspections
                                 .ThenBy(t => t.Selection.StartColumn)
                                 .ToList();
 
+                if (!declarationParameters.Any()) { continue; }
                 var parametersAreByRef = declarationParameters.Select(s => true).ToList();
 
                 var members = declarationMembers.Any(a => a.DeclarationType == DeclarationType.Event)
@@ -85,9 +87,10 @@ namespace Rubberduck.Inspections
 
                     for (var i = 0; i < parameters.Count; i++)
                     {
-                        parametersAreByRef[i] = parametersAreByRef[i] && !IsUsedAsByRefParam(declarations, parameters[i]) &&
-                            ((VBAParser.ArgContext)parameters[i].Context).BYVAL() == null &&
-                            !parameters[i].References.Any(reference => reference.IsAssignment);
+                        parametersAreByRef[i] = parametersAreByRef[i] &&
+                                                !IsUsedAsByRefParam(declarations, parameters[i]) &&
+                                                ((VBAParser.ArgContext) parameters[i].Context).BYVAL() == null &&
+                                                !parameters[i].References.Any(reference => reference.IsAssignment);
                     }
                 }
 

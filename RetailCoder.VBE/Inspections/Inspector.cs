@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime.Tree;
+using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
@@ -82,7 +83,14 @@ namespace Rubberduck.Inspections
                             }
                         }, token)).ToList();
 
-                await Task.WhenAll(inspections);
+                try
+                {
+                    await Task.WhenAll(inspections);
+                }
+                catch (Exception e)
+                {
+                    LogManager.GetCurrentClassLogger().Error(e);
+                }
                 state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
                 return allIssues;
             }
