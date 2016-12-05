@@ -151,7 +151,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             child.ApplyIcon();
 
             child.BeginsGroup = item.BeginGroup;
-            child.Tag = item.GetType().FullName;
+            child.Tag = Item.Parent.Name + "::" + Item.Tag + "::" + item.GetType().Name;
             child.Caption = item.Caption.Invoke();
             var command = item.Command; // todo: add 'ShortcutText' to a new 'interface CommandBase : System.Windows.Input.CommandBase'
             child.ShortcutText = command != null
@@ -162,20 +162,13 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             return child;
         }
 
-        // note: HAAAAACK!!!
-        private static int? _lastHashCode;
-
         private void child_Click(object sender, CommandBarButtonClickEventArgs e)
         {
-            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Control.Tag) as ICommandMenuItem;
-            if (item == null || (_lastHashCode.HasValue && e.Control.Target.GetHashCode() != _lastHashCode.Value))
+            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Control.Tag.EndsWith(menu.GetType().Name)) as ICommandMenuItem;
+            if (item == null)
             {
                 return;
             }
-
-            // without this hack, handler runs once for each menu item that's hooked up to the command.
-            // hash code is different on every frakkin' click. go figure. I've had it, this is the fix.
-            _lastHashCode = e.Control.Target.GetHashCode();
 
             Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
             item.Command.Execute(null);
