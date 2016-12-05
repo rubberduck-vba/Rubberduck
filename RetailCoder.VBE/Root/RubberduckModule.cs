@@ -408,7 +408,10 @@ namespace Rubberduck.Root
             {
                 KernelInstance.Get<ReparseCommandMenuItem>(),
                 KernelInstance.Get<ShowParserErrorsCommandMenuItem>(),
-                KernelInstance.Get<ContextSelectionLabelMenuItem>()
+                KernelInstance.Get<ContextSelectionLabelMenuItem>(),
+#if DEBUG
+                KernelInstance.Get<SerializeDeclarationsCommandMenuItem>()
+#endif
             };
         }
 
