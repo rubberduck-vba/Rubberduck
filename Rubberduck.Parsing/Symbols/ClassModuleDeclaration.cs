@@ -53,7 +53,8 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return new List<Declaration>();
             }
-            return ((ClassModuleDeclaration)type).Supertypes;
+            var classType = type as ClassModuleDeclaration;
+            return classType != null ? classType.Supertypes : new List<Declaration>();
         }
 
 
@@ -115,16 +116,7 @@ namespace Rubberduck.Parsing.Symbols
 
             private bool IsGlobalFromSubtypes()
             {
-                var isGlobal = false;
-                foreach (var type in Subtypes)
-                {
-                    if (type is ClassModuleDeclaration && ((ClassModuleDeclaration)type).IsGlobalClassModule)
-                    {
-                        isGlobal = true;
-                        break;
-                    }
-                }
-                return isGlobal;
+                return Subtypes.Any(subtype => (subtype is ClassModuleDeclaration && ((ClassModuleDeclaration)subtype).IsGlobalClassModule));
             }
 
 
