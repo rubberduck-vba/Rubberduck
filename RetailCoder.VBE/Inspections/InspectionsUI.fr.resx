@@ -274,7 +274,7 @@
     <value>'Option Base 1' est spécifié</value>
   </data>
   <data name="OptionExplicitInspectionMeta" xml:space="preserve">
-    <value>Rubberduck ne peut pas voir les variables qui ne sont pas déclarées, et VBA n'aura aucun problème à compiler une erreur typographique: utilisez 'Option Explicit' pour prévenir la compilation d'un programme erroné.</value>
+    <value>VBA n'aura aucun problème à compiler une erreur typographique: utilisez 'Option Explicit' pour prévenir la compilation d'un programme erroné.</value>
   </data>
   <data name="OptionExplicitInspectionName" xml:space="preserve">
     <value>'Option Explicit' n'est pas spécifiée.</value>

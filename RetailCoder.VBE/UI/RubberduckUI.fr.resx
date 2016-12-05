@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1585,5 +1585,46 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   </data>
   <data name="ReparseToolTipText" xml:space="preserve">
     <value>{0}. Cliquez pour rafraîchir.</value>
+  </data>
+  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
+    <value>Public Enum ExempleEnum
+' commentaire enum.
+Foo
+Bar ' commentaire membre enum.
+End Enum
+
+' Procédure exemple
+Sub ExampleProc()
+
+' SMART INDENTER
+' Code VB6 original gracieusement offert au projet Rubberduck par Stephen Bullen et Rob Bovey
+' © 2016 Rubberduck VBA.
+
+Dim count As Integer
+Static name As String
+
+If VousAimezRubberduck Then
+' Donnez-nous une étoile sur GitHub http://github.com/rubberduck-vba/Rubberduck
+' Suivez-nous sur Twitter @rubberduckvba
+' Visitez http://rubberduckvba.com pour les nouvelles et mises à jour
+
+Select Case X
+Case "A"
+' Si vous avez des commentaires ou suggestions, _
+ou si vous trouvez du code VBA valide qui ne s'indente pas correctement,
+
+#If VBA6 Then
+MsgBox "Contactez contact@rubberduck-vba.com"
+#End If
+
+Case "Les chaînes de caractères et paramètres peuvent être" _
+&amp; "alignés pour une lecture plus facile, en ignorant facultativement" _
+&amp; "les opérateurs (&amp;+, etc) au début d'une ligne."
+
+Debug.Print "X&lt;&gt;1"
+End Select      'Case X
+End If      'Plus d'outils? Suggestions http://github.com/rubberduck-vba/Rubberduck/Issues/New
+
+End Sub</value>
   </data>
 </root>

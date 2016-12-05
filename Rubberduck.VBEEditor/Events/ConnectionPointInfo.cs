@@ -35,7 +35,14 @@ namespace Rubberduck.VBEditor.Events
         public void Unadvise()
         {
             if (!_cookie.HasValue) { throw new InvalidOperationException(); }
-            _connectionPoint.Unadvise(_cookie.Value);
+            try
+            {
+                _connectionPoint.Unadvise(_cookie.Value);
+            }
+            catch (InvalidOperationException)
+            {
+                // hey, we tried.
+            }
         }
     }
 }

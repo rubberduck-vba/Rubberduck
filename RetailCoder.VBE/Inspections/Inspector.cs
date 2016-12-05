@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime.Tree;
+using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
@@ -64,9 +65,9 @@ namespace Rubberduck.Inspections
 
                 // Prepare ParseTreeWalker based inspections
                 var parseTreeWalkResults = GetParseTreeResults(config, state);
-                foreach (var parseTreeInspection in _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow && inspection is IParseTreeInspection))
+                foreach (var parseTreeInspection in _inspections.OfType<IParseTreeInspection>().Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
                 {
-                    (parseTreeInspection as IParseTreeInspection).ParseTreeResults = parseTreeWalkResults;
+                    parseTreeInspection.ParseTreeResults = parseTreeWalkResults;
                 }
 
                 var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
@@ -82,7 +83,14 @@ namespace Rubberduck.Inspections
                             }
                         }, token)).ToList();
 
-                await Task.WhenAll(inspections);
+                try
+                {
+                    await Task.WhenAll(inspections);
+                }
+                catch (Exception e)
+                {
+                    LogManager.GetCurrentClassLogger().Error(e);
+                }
                 state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
                 return allIssues;
             }
