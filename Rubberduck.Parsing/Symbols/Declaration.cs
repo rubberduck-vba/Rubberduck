@@ -159,24 +159,30 @@ namespace Rubberduck.Parsing.Symbols
 
             _projectId = _qualifiedName.QualifiedModuleName.ProjectId;
 
-            var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
-            string result;
-            if (@namespace == null)
-            {
-                result = _qualifiedName.QualifiedModuleName.Project == null
-                    ? _projectId
-                    : _qualifiedName.QualifiedModuleName.Project.Name;
-            }
-            else
-            {
-                var value = ((FolderAnnotation)@namespace).FolderName;
-                result = value;
-            }
-            _customFolder = result;
+            _customFolder = FolderFromAnnotations();
             _isArray = isArray;
             _asTypeContext = asTypeContext;
             _typeHint = typeHint;
         }
+
+            private string FolderFromAnnotations()
+            {
+                var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
+                string result;
+                if (@namespace == null)
+                {
+                    result = _qualifiedName.QualifiedModuleName.Project == null
+                        ? _projectId
+                        : _qualifiedName.QualifiedModuleName.Project.Name;
+                }
+                else
+                {
+                    var value = ((FolderAnnotation)@namespace).FolderName;
+                    result = value;
+                }
+                return result;
+            }
+
 
         public static Declaration GetModuleParent(Declaration declaration)
         {

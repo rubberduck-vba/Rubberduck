@@ -4,6 +4,7 @@
     {
         bool IndentEntireProcedureBody { get; set; }
         bool IndentFirstCommentBlock { get; set; }
+        bool IndentEnumTypeAsProcedure { get; set; }
         bool IndentFirstDeclarationBlock { get; set; }
         bool AlignCommentsWithCode { get; set; }
         bool AlignContinuations { get; set; }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1795,5 +1795,49 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="ReparseToolTipText" xml:space="preserve">
     <value>{0}. Click to refresh.</value>
+  </data>
+  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
+    <value>Indent comments in Enum and Type blocks like in procedures</value>
+  </data>
+  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
+    <value>Public Enum ExampleEnum
+' Enum comment.
+Foo
+Bar ' Member comment.
+End Enum
+
+' Example Procedure
+Sub ExampleProc()
+
+' SMART INDENTER
+' Original VB6 code graciously offered to Rubberduck by Stephen Bullen &amp; Rob Bovey
+' © 2016 by Rubberduck VBA.
+
+Dim count As Integer
+Static name As String
+
+If YouLikeRubberduck Then
+' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
+' Follow us on Twitter @rubberduck-vba/contributors 
+' Visit http://rubberduckvba.com for news and updates
+
+Select Case X
+Case "A"
+' If you have any comments or suggestions, _
+or find valid VBA code that isn't indented correctly,
+
+#If VBA6 Then
+MsgBox "Contact contact@rubberduck-vba.com"
+#End If
+
+Case "Continued strings and parameters can be" _
+&amp; "lined up for easier reading, optionally ignoring" _
+&amp; "any operators (&amp;+, etc) at the start of the line."
+
+Debug.Print "X&lt;&gt;1"
+End Select      'Case X
+End If      'More Tools?
+
+End Sub</value>
   </data>
 </root>

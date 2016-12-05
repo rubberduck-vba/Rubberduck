@@ -13,6 +13,7 @@ namespace Rubberduck.SmartIndenter
 
         public int IndentationLevel { get; set; }
         public bool AtProcedureStart { get; set; }
+        public bool AtEnumTypeStart { get; set; }
 
         public bool IsEmpty
         {
@@ -27,6 +28,8 @@ namespace Rubberduck.SmartIndenter
 
         public void AddContinuationLine(AbsoluteCodeLine line)
         {
+            var last = _lines.Last();
+            line.IsDeclarationContinuation = last.HasDeclarationContinuation && !line.ContainsOnlyComment;
             _lines.Add(line);
         }
 
@@ -38,6 +41,23 @@ namespace Rubberduck.SmartIndenter
                 return _rebuilt.Segments.Count() < 2
                     ? _rebuilt.NextLineIndents
                     : _rebuilt.Segments.Select(s => new AbsoluteCodeLine(s, _settings)).Select(a => a.NextLineIndents).Sum();
+            }
+        }
+
+        public int EnumTypeIndents
+        {
+            get
+            {
+                if (!IsEnumOrTypeMember)
+                {
+                    return 0;
+                }
+                return _settings.IndentEnumTypeAsProcedure &&
+                       AtEnumTypeStart &&
+                       IsCommentBlock && 
+                       !_settings.IndentFirstCommentBlock
+                    ? 0
+                    : 1;
             }
         }
 
@@ -86,7 +106,7 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsDeclaration
         {
-            get { return _lines.All(x => x.IsDeclaration); }
+            get { return _lines.All(x => x.IsDeclaration || x.IsDeclarationContinuation); }
         }
 
         public bool IsCommentBlock
@@ -116,6 +136,11 @@ namespace Rubberduck.SmartIndenter
 
             foreach (var line in _lines.Skip(1))
             {
+                if (line.IsDeclarationContinuation && !line.IsProcedureStart)
+                {
+                    output.Add(line.Indent(IndentationLevel, AtProcedureStart));
+                    continue;
+                }
                 if (line.ContainsOnlyComment)
                 {
                     commentPos = alignment;
@@ -134,6 +159,11 @@ namespace Rubberduck.SmartIndenter
             }
 
             return string.Join(Environment.NewLine, output);
+        }
+
+        public override string ToString()
+        {
+            return _lines.Aggregate(string.Empty, (x, y) => x + y.ToString());
         }
 
         private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)");

@@ -21,6 +21,7 @@ namespace Rubberduck.UI.Settings
             _ignoreOperatorsInContinuations = config.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations;
             _indentCase = config.UserSettings.IndenterSettings.IndentCase;
             _indentCompilerDirectives = config.UserSettings.IndenterSettings.IndentCompilerDirectives;
+            _indentEnumTypeAsProcedure = config.UserSettings.IndenterSettings.IndentEnumTypeAsProcedure;
             _indentEntireProcedureBody = config.UserSettings.IndenterSettings.IndentEntireProcedureBody;
             _indentFirstCommentBlock = config.UserSettings.IndenterSettings.IndentFirstCommentBlock;
             _indentFirstDeclarationBlock = config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock;
@@ -52,6 +53,21 @@ namespace Rubberduck.UI.Settings
                     OnPropertyChanged();
                 }
             }
+        }
+
+        private bool _indentEnumTypeAsProcedure;
+
+        public bool IndentEnumTypeAsProcedure
+        {
+            get { return _indentEnumTypeAsProcedure; }
+            set
+            {
+                if (_indentEnumTypeAsProcedure != value)
+                {
+                    _indentEnumTypeAsProcedure = value;
+                    OnPropertyChanged();
+                }
+            }           
         }
 
         private bool _alignContinuations;
@@ -263,57 +279,14 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        // ReSharper disable once InconsistentNaming
-        private const string _previewSampleCode =
-@"Public Enum TestEnum
-' some comment
-Foo
-Bar ' another comment
-End Enum
-
-' Example Procedure
-Sub ExampleProc()
-
-' SMART INDENTER
-' Original VB6 code graciously offered to Rubberduck by Stephen Bullen & Rob Bovey
-' @ 2016 by Rubberduck VBA.
-
-Dim count As Integer
-Static name As String
-
-If YouLikeRubberduck Then
-' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
-' Follow us on Twitter @rubberduckvba
-' Visit http://rubberduckvba.com for news and updates
-
-Select Case X
-Case ""A""
-' If you have any comments or suggestions, _
-or find valid VBA code that isn't indented correctly,
-
-#If VBA6 Then
-MsgBox ""Contact contact@rubberduck-vba.com""
-#End If
-
-Case ""Continued strings and parameters can be"" _
-& ""lined up for easier reading, optionally ignoring"" _
-& ""any operators (&+, etc) at the start of the line.""
-
-Debug.Print ""X<>1""
-End Select      'Case X
-End If      'More Tools?
-
-End Sub
-";
-
         public string PreviewSampleCode 
         {
             get
             {
                 var indenter = new Indenter(null, GetCurrentSettings);
 
-                var lines = _previewSampleCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                lines = indenter.Indent(lines, "TestModule", false).ToArray();
+                var lines = RubberduckUI.IndenterSettings_PreviewCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                lines = indenter.Indent(lines, "TestModule").ToArray();
                 return string.Join(Environment.NewLine, lines);
             }
         }
@@ -334,6 +307,7 @@ End Sub
                 IgnoreOperatorsInContinuations = IgnoreOperatorsInContinuations,
                 IndentCase = IndentCase,
                 IndentCompilerDirectives = IndentCompilerDirectives,
+                IndentEnumTypeAsProcedure = IndentEnumTypeAsProcedure,
                 IndentEntireProcedureBody = IndentEntireProcedureBody,
                 IndentFirstCommentBlock = IndentFirstCommentBlock,
                 IndentFirstDeclarationBlock = IndentFirstDeclarationBlock,
@@ -356,6 +330,7 @@ End Sub
             config.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1 = ForceDebugStatementsInColumn1;
             config.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations = IgnoreOperatorsInContinuations;
             config.UserSettings.IndenterSettings.IndentCase = IndentCase;
+            config.UserSettings.IndenterSettings.IndentEnumTypeAsProcedure = IndentEnumTypeAsProcedure;
             config.UserSettings.IndenterSettings.IndentCompilerDirectives = IndentCompilerDirectives;
             config.UserSettings.IndenterSettings.IndentEntireProcedureBody = IndentEntireProcedureBody;
             config.UserSettings.IndenterSettings.IndentFirstCommentBlock = IndentFirstCommentBlock;
@@ -376,6 +351,7 @@ End Sub
             ForceDebugStatementsInColumn1 = config.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1;
             IgnoreOperatorsInContinuations = config.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations;
             IndentCase = config.UserSettings.IndenterSettings.IndentCase;
+            IndentEnumTypeAsProcedure = config.UserSettings.IndenterSettings.IndentEnumTypeAsProcedure;
             IndentCompilerDirectives = config.UserSettings.IndenterSettings.IndentCompilerDirectives;
             IndentEntireProcedureBody = config.UserSettings.IndenterSettings.IndentEntireProcedureBody;
             IndentFirstCommentBlock = config.UserSettings.IndenterSettings.IndentFirstCommentBlock;
