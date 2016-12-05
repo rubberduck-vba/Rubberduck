@@ -100,7 +100,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
             var window = VBE.MainWindow;
             var mainWindowHandle = window.Handle();
-            var caption = window.Caption;
+            var caption = Window.Caption;
             var childWindowFinder = new NativeMethods.ChildWindowFinder(caption);
 
             NativeMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
