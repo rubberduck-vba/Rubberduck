@@ -163,12 +163,12 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         }
 
         // note: HAAAAACK!!!
-        private static int _lastHashCode;
+        private static int? _lastHashCode;
 
         private void child_Click(object sender, CommandBarButtonClickEventArgs e)
         {
             var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Control.Tag) as ICommandMenuItem;
-            if (item == null || e.Control.Target.GetHashCode() == _lastHashCode)
+            if (item == null || (_lastHashCode.HasValue && e.Control.Target.GetHashCode() != _lastHashCode.Value))
             {
                 return;
             }
