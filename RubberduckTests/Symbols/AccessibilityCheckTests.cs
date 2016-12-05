@@ -19,7 +19,7 @@ namespace RubberduckTests.Symbols
             Assert.IsTrue(AccessibilityCheck.IsAccessible(null,null,null,projectDeclatation));
         }
 
-            private static Declaration GetTestProject(string name)
+            private static ProjectDeclaration GetTestProject(string name)
             {
                 var qualifiedProjectName = new QualifiedMemberName(StubQualifiedModuleName(), name);
                 return new ProjectDeclaration(qualifiedProjectName, name, false);
@@ -43,7 +43,7 @@ namespace RubberduckTests.Symbols
             Assert.IsTrue(AccessibilityCheck.IsAccessible(projectDeclatation, moduleDeclatation, null, moduleDeclatation));
         }
 
-            private static Declaration GetTestClassModule(Declaration projectDeclatation, string name, bool isExposed = false)
+            private static ClassModuleDeclaration GetTestClassModule(Declaration projectDeclatation, string name, bool isExposed = false)
             {
                 var qualifiedClassModuleMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
                 var classModuleAttributes = new Rubberduck.Parsing.VBA.Attributes();
@@ -101,7 +101,7 @@ namespace RubberduckTests.Symbols
             Assert.IsTrue(AccessibilityCheck.IsAccessible(callingProjectDeclatation, callingModuleDeclatation, null, calleeModuleDeclatation));
         }
 
-            private static Declaration GetTestProceduralModule(Declaration projectDeclatation, string name)
+            private static ProceduralModuleDeclaration GetTestProceduralModule(Declaration projectDeclatation, string name)
             {
                 var qualifiedClassModuleMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
                 var proceduralModuleDeclaration = new ProceduralModuleDeclaration(qualifiedClassModuleMemberName, projectDeclatation, name, false, null, null);
@@ -126,15 +126,30 @@ namespace RubberduckTests.Symbols
             Assert.IsTrue(AccessibilityCheck.IsAccessible(projectDeclatation, moduleDeclatation, privateCallingFunctionDeclaration, privateCalleeFunctionDeclaration));
         }
 
-            private static Declaration GetTestFunction(Declaration moduleDeclatation, string name, Accessibility functionAccessibility)
+            private static FunctionDeclaration GetTestFunction(Declaration moduleDeclatation, string name, Accessibility functionAccessibility)
             {
                 var qualifiedFunctionMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
                 return new FunctionDeclaration(qualifiedFunctionMemberName, moduleDeclatation, moduleDeclatation, "test", null, "test", functionAccessibility, null, Selection.Home, false, false, null, null);
             }
 
+        [TestMethod]
+        public void PrivateProceduresAreAccessibleIfTheyAreInAClassAboveTheEnclosingModuleOfTheCallerInTheClassHierarchy()
+        {
+            var projectDeclatation = GetTestProject("test_project");
+            var callingModule = GetTestClassModule(projectDeclatation, "callingModule");
+            var privateCallingFunction = GetTestFunction(callingModule, "callingFoo", Accessibility.Private);
+            var supertypeOfCallingModule = GetTestClassModule(projectDeclatation, "callingModuleSuper");
+            callingModule.AddSupertype(supertypeOfCallingModule);
+            var supertypeOfSupertypeOfCallingModule = GetTestClassModule(projectDeclatation, "callingModuleSuperSuper");
+            supertypeOfCallingModule.AddSupertype(supertypeOfSupertypeOfCallingModule);
+            var privateCalleeFunction = GetTestFunction(supertypeOfSupertypeOfCallingModule, "calleeFoo", Accessibility.Private);
+
+            Assert.IsTrue(AccessibilityCheck.IsAccessible(projectDeclatation, callingModule, privateCallingFunction, privateCalleeFunction));
+        }
+
 
         [TestMethod]
-        public void PrivateProceduresAreNotAcessibleFromOtherModules()
+        public void PrivateProceduresAreNotAcessibleFromOtherUnrelatedModules()
         {
             var projectDeclatation = GetTestProject("test_project");
             var calleeModuleDeclatation = GetTestClassModule(projectDeclatation, "callee_test_Module");
@@ -143,7 +158,7 @@ namespace RubberduckTests.Symbols
             var callingFunctionDeclaration = GetTestFunction(callingModuleDeclatation, "callingFoo", Accessibility.Private);
 
             Assert.IsFalse(AccessibilityCheck.IsAccessible(projectDeclatation, callingModuleDeclatation, callingFunctionDeclaration, calleeFunctionDeclaration));
-            }
+        }
 
 
         [TestMethod]
@@ -251,7 +266,23 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        public void PrivateInstanceVariablesAreNotAcessibleFromOtherModules()
+            public void PrivateInstanceVariablesAreAccessibleIfTheyAreInAClassAboveTheEnclosingModuleOfTheCallerInTheClassHierarchy()
+        {
+            var projectDeclatation = GetTestProject("test_project");
+            var callingModule = GetTestClassModule(projectDeclatation, "callingModule");
+            var privateCallingFunction = GetTestFunction(callingModule, "callingFoo", Accessibility.Private);
+            var supertypeOfCallingModule = GetTestClassModule(projectDeclatation, "callingModuleSuper");
+            callingModule.AddSupertype(supertypeOfCallingModule);
+            var supertypeOfSupertypeOfCallingModule = GetTestClassModule(projectDeclatation, "callingModuleSuperSuper");
+            supertypeOfCallingModule.AddSupertype(supertypeOfSupertypeOfCallingModule);
+            var privateCalleeInstanceVariable = GetTestVariable(supertypeOfSupertypeOfCallingModule, "calleeFoo", Accessibility.Private);
+
+            Assert.IsTrue(AccessibilityCheck.IsAccessible(projectDeclatation, callingModule, privateCallingFunction, privateCalleeInstanceVariable));
+        }
+
+
+        [TestMethod]
+        public void PrivateInstanceVariablesAreNotAcessibleFromOtherUnrelatedModules()
         {
             var projectDeclatation = GetTestProject("test_project");
             var calleeModuleDeclatation = GetTestClassModule(projectDeclatation, "callee_test_Module");
