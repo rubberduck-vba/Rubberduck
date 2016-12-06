@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Microsoft.Office.Interop.Access;
+using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.Application
 {
@@ -15,20 +17,28 @@ namespace Rubberduck.VBEditor.Application
             Application.Run(call);
         }
 
-        //public List<string> FormDeclarations(QualifiedModuleName qualifiedModuleName)
-        //{
-        //    Application.DoCmd.OutputTo(AcOutputObjectType.acOutputForm, qualifiedModuleName.Name, AcCommand.acCmdExportText, 
-        //        Path.Combine(ExportPath, qualifiedModuleName.Name), null, null, null);
-        //}
+        public List<string> FormDeclarations(QualifiedModuleName qualifiedModuleName)
+        {
+            //TODO: Determine if component is Form/Report
+            string filePath = Path.Combine(ExportPath, qualifiedModuleName.Name +  MSAccessComponentType.Form.FileExtension());
+            Application.SaveAsText(AcObjectType.acForm, qualifiedModuleName.Name, filePath);
+            var code = File.ReadAllText(filePath);
+            File.Delete(filePath);
 
-        //private string ExportPath
-        //{
-        //    get
-        //    {
-        //        var assemblyLocation = Assembly.GetAssembly(typeof(AccessApp)).Location;
-        //        return Path.GetDirectoryName(assemblyLocation);
-        //    }
-        //}
+
+
+
+            return new List<string>();
+        }
+
+        private string ExportPath
+        {
+            get
+            {
+                var assemblyLocation = Assembly.GetAssembly(typeof(AccessApp)).Location;
+                return Path.GetDirectoryName(assemblyLocation);
+            }
+        }
 
         private string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
