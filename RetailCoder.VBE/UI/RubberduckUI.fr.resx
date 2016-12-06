@@ -1586,4 +1586,45 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="ReparseToolTipText" xml:space="preserve">
     <value>{0}. Cliquez pour rafraîchir.</value>
   </data>
+  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
+    <value>Public Enum ExempleEnum
+' commentaire enum.
+Foo
+Bar ' commentaire membre enum.
+End Enum
+
+' Procédure exemple
+Sub ExampleProc()
+
+' SMART INDENTER
+' Code VB6 original gracieusement offert au projet Rubberduck par Stephen Bullen et Rob Bovey
+' © 2016 Rubberduck VBA.
+
+Dim count As Integer
+Static name As String
+
+If VousAimezRubberduck Then
+' Donnez-nous une étoile sur GitHub http://github.com/rubberduck-vba/Rubberduck
+' Suivez-nous sur Twitter @rubberduckvba
+' Visitez http://rubberduckvba.com pour les nouvelles et mises à jour
+
+Select Case X
+Case "A"
+' Si vous avez des commentaires ou suggestions, _
+ou si vous trouvez du code VBA valide qui ne s'indente pas correctement,
+
+#If VBA6 Then
+MsgBox "Contactez contact@rubberduck-vba.com"
+#End If
+
+Case "Les chaînes de caractères et paramètres peuvent être" _
+&amp; "alignés pour une lecture plus facile, en ignorant facultativement" _
+&amp; "les opérateurs (&amp;+, etc) au début d'une ligne."
+
+Debug.Print "X&lt;&gt;1"
+End Select      'Case X
+End If      'Plus d'outils? Suggestions http://github.com/rubberduck-vba/Rubberduck/Issues/New
+
+End Sub</value>
+  </data>
 </root>

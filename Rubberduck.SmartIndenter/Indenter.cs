@@ -18,18 +18,6 @@ namespace Rubberduck.SmartIndenter
             _settings = settings;
         }
 
-        public event EventHandler<IndenterProgressEventArgs> ReportProgress;
-
-        //TODO: Unimplemented.
-        // ReSharper disable once UnusedMember.Local
-        private void OnReportProgress(string moduleName, int progress, int max)
-        {
-            var handler = ReportProgress;
-            if (handler == null) return;
-            var args = new IndenterProgressEventArgs(moduleName, progress, max);
-            handler.Invoke(this, args);
-        }
-
         public void IndentCurrentProcedure()
         {
             var pane = _vbe.ActiveCodePane;
@@ -71,7 +59,7 @@ namespace Rubberduck.SmartIndenter
             return codePane.Selection;
         }
 
-        public void Indent(IVBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(IVBComponent component)
         {
             var module = component.CodeModule;
             var lineCount = module.CountOfLines;
@@ -81,7 +69,7 @@ namespace Rubberduck.SmartIndenter
             }
 
             var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
-            var indented = Indent(codeLines, component.Name, reportProgress, linesAlreadyRebuilt).ToArray();
+            var indented = Indent(codeLines, component.Name).ToArray();
 
             for (var i = 0; i < lineCount; i++)
             {
@@ -92,7 +80,7 @@ namespace Rubberduck.SmartIndenter
             }
         }
 
-        public void Indent(IVBComponent component, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(IVBComponent component, string procedureName, Selection selection)
         {
             var module = component.CodeModule;
             var lineCount = module.CountOfLines;
@@ -103,7 +91,7 @@ namespace Rubberduck.SmartIndenter
 
             var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty).Split('\n');
 
-            var indented = Indent(codeLines, procedureName, reportProgress, linesAlreadyRebuilt).ToArray();
+            var indented = Indent(codeLines, procedureName).ToArray();
 
             for (var i = 0; i < selection.EndLine - selection.StartLine; i++)
             {
@@ -141,11 +129,12 @@ namespace Rubberduck.SmartIndenter
             return logical;
         }
 
-        public IEnumerable<string> Indent(IEnumerable<string> codeLines, string moduleName, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public IEnumerable<string> Indent(IEnumerable<string> codeLines, string moduleName)
         {
             var logical = BuildLogicalCodeLines(codeLines).ToList();
             var indents = 0;
             var start = false;
+            var enumStart = false;
             var inEnumType = false;
 
             foreach (var line in logical.Where(x => !x.IsEmpty))
@@ -153,8 +142,10 @@ namespace Rubberduck.SmartIndenter
                 inEnumType &= !line.IsEnumOrTypeEnd;
                 if (inEnumType)
                 {
+                    line.AtEnumTypeStart = enumStart;
+                    enumStart = line.IsCommentBlock;
                     line.IsEnumOrTypeMember = true;
-                    line.IndentationLevel = 1;
+                    line.IndentationLevel = line.EnumTypeIndents;
                     continue;
                 }
                 if (line.IsProcedureStart || line.IsEnumOrTypeStart)
@@ -166,6 +157,7 @@ namespace Rubberduck.SmartIndenter
                 indents += line.NextLineIndents;
                 start = line.IsProcedureStart || (line.AtProcedureStart && line.IsDeclaration) || (line.AtProcedureStart && line.IsCommentBlock);
                 inEnumType = line.IsEnumOrTypeStart;
+                enumStart = inEnumType;
             }
 
             var output = new List<string>();

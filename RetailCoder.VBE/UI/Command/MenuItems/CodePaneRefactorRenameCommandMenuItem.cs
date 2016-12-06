@@ -1,4 +1,3 @@
-using System.Windows.Input;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 

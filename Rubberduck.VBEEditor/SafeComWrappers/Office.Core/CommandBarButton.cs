@@ -32,6 +32,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             {
                 ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
                 _clickHandler += value;
+                System.Diagnostics.Debug.WriteLine("Added handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.Name, Target.Caption, Tag, Target.GetHashCode());
             }
             remove
             {
@@ -44,6 +45,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                     // he's gone, dave.
                 }
                 _clickHandler -= value;
+                System.Diagnostics.Debug.WriteLine("Removed handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.GetType().Name, Target.Caption, Tag, Target.GetHashCode());
             }
         }
 
@@ -54,9 +56,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             {
                 return;
             }
-            
+
+            System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
+
             //note: event is fired for every parent the command exists under. not sure why.
-            //System.Diagnostics.Debug.WriteLine("Target_Click: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.Name, Target.Caption, Tag, Target.GetHashCode());
+            System.Diagnostics.Debug.WriteLine("Executing handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.GetType().Name, Target.Caption, Tag, Target.GetHashCode());
 
             var button = new CommandBarButton(ctrl);
             var args = new CommandBarButtonClickEventArgs(button);

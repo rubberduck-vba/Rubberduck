@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -274,7 +274,7 @@
     <value>'Option Base 1' ist angegeben.</value>
   </data>
   <data name="OptionExplicitInspectionMeta" xml:space="preserve">
-    <value>Rubberduck kann keine Variablen auswerten, die nicht deklariert wurden. Nutze am besten 'Option Explicit' um fehleranfällige Programme zu erstellen.</value>
+    <value>Nutze am besten 'Option Explicit' um fehleranfällige Programme zu erstellen.</value>
   </data>
   <data name="OptionExplicitInspectionName" xml:space="preserve">
     <value>'Option Explicit' ist nicht angegeben.</value>
@@ -555,13 +555,13 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="MultipleDeclarationsInspectionResultFormat" xml:space="preserve">
     <value>Instruktion enthält Mehrfachdeklaration</value>
   </data>
-  <data name="MalformedAnnotationInspectionName">
+  <data name="MalformedAnnotationInspectionName" xml:space="preserve">
     <value>Unlesbare Annotation</value>
   </data>
-  <data name="MalformedAnnotationInspectionResultFormat">
+  <data name="MalformedAnnotationInspectionResultFormat" xml:space="preserve">
     <value>Annotation '{0}' ist nicht lesbar</value>
   </data>
-  <data name="MalformedAnnotationInspectionMeta">
+  <data name="MalformedAnnotationInspectionMeta" xml:space="preserve">
     <value>Eine Annotation in einem Kommentar konnte nicht gelesen werden.</value>
   </data>
 </root>

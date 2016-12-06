@@ -54,7 +54,7 @@
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(640, 512);
+            this.MinimumSize = new System.Drawing.Size(920, 620);
             this.Name = "SettingsForm";
             this.ShowInTaskbar = false;
             this.Text = "Settings";
