@@ -16,7 +16,7 @@ namespace Rubberduck.SettingsProvider
         private const string RootElement = "Configuration";
 
         private static readonly XmlSerializerNamespaces EmptyNamespace =
-            new XmlSerializerNamespaces(new[] { new XmlQualifiedName(string.Empty, string.Empty) });
+            new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
         
         private static readonly XmlWriterSettings OutputXmlSettings = new XmlWriterSettings
         {

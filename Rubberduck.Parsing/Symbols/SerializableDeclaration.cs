@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -12,11 +13,18 @@ namespace Rubberduck.Parsing.Symbols
 
         public SerializableDeclaration(Declaration declaration)
         {
-            ParentDeclaration = declaration.ParentDeclaration == null ? null : new SerializableDeclaration(declaration.ParentDeclaration);
-            ParentScope = declaration.ParentScopeDeclaration == null ? null : new SerializableDeclaration(declaration.ParentScopeDeclaration);
-            AsTypeDeclaration = declaration.AsTypeDeclaration == null ? null : new SerializableDeclaration(declaration.AsTypeDeclaration);
+            var parent = declaration.ParentDeclaration;
+            if (parent != null)
+            {
+                ParentDeclaration = new SerializableDeclaration(parent);
+            }
+
+            IdentifierName = declaration.IdentifierName;
+
+            ParentScope = declaration.ParentScope;
             QualifiedMemberName = declaration.QualifiedName;
-            Annotations = declaration.Annotations;
+            Annotations = declaration.Annotations.Cast<AnnotationBase>().ToArray();
+            Attributes = declaration.Attributes.ToArray();
             TypeHint = declaration.TypeHint;
             AsTypeName = declaration.AsTypeName;
             IsArray = declaration.IsArray;
@@ -27,13 +35,15 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType = declaration.DeclarationType;
         }
 
-        public QualifiedMemberName QualifiedMemberName { get; set; }
-        public IEnumerable<IAnnotation> Annotations { get; set; }
-        public Attributes Attributes { get; set; }
+        public string IdentifierName { get; set; }
 
         public SerializableDeclaration ParentDeclaration { get; set; }
-        public SerializableDeclaration ParentScope { get; set; }
-        public SerializableDeclaration AsTypeDeclaration { get; set; }
+
+        public QualifiedMemberName QualifiedMemberName { get; set; }
+        public AnnotationBase[] Annotations { get; set; }
+        public KeyValuePair<string, IEnumerable<string>>[] Attributes { get; set; }
+
+        public string ParentScope { get; set; }
         public string AsTypeName { get; set; }
         public string TypeHint { get; set; }
         public bool IsArray { get; set; }
@@ -45,7 +55,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration Unwrap()
         {
-            return new Declaration(QualifiedMemberName, ParentDeclaration.Unwrap(), ParentScope.Unwrap(), AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn, Annotations, Attributes);
+            var attributes = new Attributes();
+            foreach (var keyValuePair in Attributes)
+            {
+                attributes.Add(keyValuePair.Key, keyValuePair.Value);
+            }
+            return new Declaration(QualifiedMemberName, ParentDeclaration == null ? null : ParentDeclaration.Unwrap(), ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn, Annotations, attributes);
         }
     }
 }
