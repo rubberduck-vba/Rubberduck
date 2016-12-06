@@ -64,7 +64,8 @@ namespace Rubberduck.Root
             Bind<Sinks>().ToSelf().InSingletonScope();
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
-            Bind<GitProvider>().ToSelf().InSingletonScope();
+            Bind<ISourceControlProvider>().To<GitProvider>();
+            //Bind<GitProvider>().ToSelf().InSingletonScope();
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
 
