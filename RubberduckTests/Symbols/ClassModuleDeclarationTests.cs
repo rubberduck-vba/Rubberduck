@@ -11,7 +11,7 @@ namespace RubberduckTests.Symbols
     public class ClassModuleDeclarationTests
     {
         [TestMethod]
-        public void HasDeclarationTypeClassModule()
+        public void ClassModulesHaveDeclarationTypeClassModule()
         {
             var projectDeclaration = GetTestProject("testProject");
             var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
