@@ -542,7 +542,90 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2407
+        [TestMethod] 
+        [TestCategory("Indenter")]
+        public void ContinuationsInProcedureDeclarationsWithAlignWorks()
+        {
+            var code = new[]
+            {
+                "Sub MySub()",
+                "Dim x1 As Integer, x2 _",
+                "As Integer",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub MySub()",
+                "    Dim x1    As Integer, x2 _",
+                "              As Integer",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentFirstDeclarationBlock = true;
+                s.AlignDims = true;
+                s.AlignDimColumn = 15;
+                return s;
+            });
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2407
+        [TestMethod] 
+        [TestCategory("Indenter")]
+        public void ContinuationsInProcedureDeclarationsWithAlignWorksBareType()
+        {
+            var code = new[]
+            {
+                "Sub MySub()",
+                "Dim x1 As Integer",
+                "Dim x2 As _",
+                "Integer",
+                "Dim x3 As Integer: _",
+                "Dim x4 As _",
+                "Integer",
+                "Dim x5 As Integer _",
+                "'Comment _",
+                "as _",
+                "integer",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub MySub()",
+                "    Dim x1    As Integer",
+                "    Dim x2    As _",
+                "    Integer",
+                "    Dim x3    As Integer: _",
+                "    Dim x4    As _",
+                "    Integer",
+                "    Dim x5    As Integer _",
+                "        'Comment _",
+                "        as _",
+                "        integer",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentFirstDeclarationBlock = true;
+                s.AlignDims = true;
+                s.AlignDimColumn = 15;
+                return s;
+            });
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
         [TestMethod]
+        [TestCategory("Indenter")]
         public void ContinuationWithOnlyCommentWorks()
         {
             var code = new[]

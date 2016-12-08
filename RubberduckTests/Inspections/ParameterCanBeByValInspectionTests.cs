@@ -953,6 +953,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Content());
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2408
         [TestMethod]
         [TestCategory("Inspections")]
         public void ParameterCanBeByVal_QuickFixWithOptionalWorks()
@@ -986,6 +987,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Content());
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2408
         [TestMethod]
         [TestCategory("Inspections")]
         public void ParameterCanBeByVal_QuickFixWithOptionalByRefWorks()
@@ -998,6 +1000,51 @@ End Sub";
             const string expectedCode =
 @"Sub Test(Optional ByVal foo As String = ""bar"")
     Debug.Print foo
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            IVBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode, module.Content());
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2408
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_QuickFixWithOptional_LineContinuationsWorks()
+        {
+            Assert.Inconclusive("Pending more comprehensive fix.");
+            const string inputCode =
+@"Sub foo(Optional _
+  ByRef _
+  foo _
+  As _
+  Byte _
+  )
+  Debug.Print foo
+End Sub";
+
+            const string expectedCode =
+@"Sub foo(Optional _
+  ByVal _
+  foo _
+  As _
+  Byte _
+  )
+  Debug.Print foo
 End Sub";
 
             //Arrange
