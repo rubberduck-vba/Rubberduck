@@ -636,6 +636,19 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestMethod]
+        public void AccessibilityCheckDoesNotTakeIntoAccountThatAMemberMightNotBeAccessibleBecauseItIsCoveredByAnotherMemberInNarrowerScope()
+        {
+            var projectDeclatation = GetTestProject("test_project");
+            var moduleDeclatation = GetTestClassModule(projectDeclatation, "test_Module");
+            var privateInstanceVariable = GetTestVariable(moduleDeclatation, "x", Accessibility.Private);
+            var privateFunctionDeclaration = GetTestFunction(moduleDeclatation, "foo", Accessibility.Private);
+            var localVariable = GetTestVariable(privateFunctionDeclaration, "x", Accessibility.Implicit);   //This variable makes the instance variable of the same name inaccessible inside the function.
+
+            Assert.IsTrue(AccessibilityCheck.IsAccessible(projectDeclatation, moduleDeclatation, privateFunctionDeclaration, privateInstanceVariable));
+        }
+
+
 
         //null reference handling tests
         
