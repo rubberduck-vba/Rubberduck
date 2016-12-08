@@ -1,11 +1,37 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
+    [DataContract]
+    public class SerializableDeclarationTree
+    {
+        private readonly SerializableDeclaration _node;
+        private readonly IEnumerable<SerializableDeclarationTree> _children;
+
+        public SerializableDeclarationTree(Declaration declaration)
+            : this(new SerializableDeclaration(declaration)) { }
+
+        public SerializableDeclarationTree(SerializableDeclaration node)
+            : this(node, Enumerable.Empty<SerializableDeclarationTree>()) { }
+
+        public SerializableDeclarationTree(SerializableDeclaration node, IEnumerable<SerializableDeclarationTree> children)
+        {
+            _node = node;
+            _children = children;
+        }
+
+        [DataMember]
+        public SerializableDeclaration Node { get { return _node; } }
+        
+        [DataMember]
+        public IEnumerable<SerializableDeclarationTree> Children { get { return _children; } }
+    }
+
     public class SerializableDeclaration
     {
         public SerializableDeclaration()
