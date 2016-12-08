@@ -74,12 +74,13 @@ namespace Rubberduck.Inspections
         private void FixMethod(VBAParser.ArgContext context, QualifiedSelection qualifiedSelection)
         {
             var selectionLength = context.BYREF() == null ? 0 : 6;
+            var replacementStart = context.Start.Column + (context.OPTIONAL() == null ? 0 : 9);
 
             var module = qualifiedSelection.QualifiedName.Component.CodeModule;
             {
                 var lines = module.GetLines(context.Start.Line, 1);
 
-                var result = lines.Remove(context.Start.Column, selectionLength).Insert(context.Start.Column, Tokens.ByVal + ' ');
+                var result = lines.Remove(replacementStart, selectionLength).Insert(replacementStart, Tokens.ByVal + ' ');
                 module.ReplaceLine(context.Start.Line, result);
             }
         }
