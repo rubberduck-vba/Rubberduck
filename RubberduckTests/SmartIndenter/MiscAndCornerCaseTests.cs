@@ -641,7 +641,6 @@ namespace RubberduckTests.SmartIndenter
         [TestCategory("Indenter")]
         public void BracketedIdentifiersWork()
         {
-            Assert.Inconclusive("Pending fix for line numbers on continuation lines, function aligning of declarations.");
             var code = new[]
             {
                 "Sub test()",
