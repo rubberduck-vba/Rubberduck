@@ -1026,7 +1026,6 @@ End Sub";
         [TestCategory("Inspections")]
         public void ParameterCanBeByVal_QuickFixWithOptional_LineContinuationsWorks()
         {
-            Assert.Inconclusive("Pending more comprehensive fix.");
             const string inputCode =
 @"Sub foo(Optional _
   ByRef _

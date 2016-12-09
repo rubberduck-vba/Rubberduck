@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
@@ -73,15 +74,42 @@ namespace Rubberduck.Inspections
 
         private void FixMethod(VBAParser.ArgContext context, QualifiedSelection qualifiedSelection)
         {
-            var selectionLength = context.BYREF() == null ? 0 : 6;
-            var replacementStart = context.Start.Column + (context.OPTIONAL() == null ? 0 : 9);
+            var parameter = context.GetText();
+            var argList = context.parent.GetText();
 
             var module = qualifiedSelection.QualifiedName.Component.CodeModule;
             {
-                var lines = module.GetLines(context.Start.Line, 1);
+                string result;
+                if (context.BYREF() != null)
+                {
+                    result = parameter.Replace(Tokens.ByRef, Tokens.ByVal);
+                }
+                else if (context.OPTIONAL() != null)
+                {
+                    result = parameter.Replace(Tokens.Optional, Tokens.Optional + ' ' + Tokens.ByVal);
+                }
+                else
+                {
+                    result = Tokens.ByVal + ' ' + parameter;
+                }
 
-                var result = lines.Remove(replacementStart, selectionLength).Insert(replacementStart, Tokens.ByVal + ' ');
-                module.ReplaceLine(context.Start.Line, result);
+                var startLine = 0;
+                var stopLine = 0;
+                try
+                {
+                    dynamic proc = context.parent.parent;
+                    startLine = proc.GetType().GetProperty("Start").GetValue(proc).Line;
+                    stopLine =  proc.GetType().GetProperty("Stop").GetValue(proc).Line;
+                }
+                catch { return; }
+
+                var code = module.GetLines(startLine, stopLine - startLine + 1);
+                result = code.Replace(argList, argList.Replace(parameter, result));
+
+                foreach (var line in result.Split(new[] { "\r\n" }, StringSplitOptions.None))
+                {
+                    module.ReplaceLine(startLine++, line);
+                }  
             }
         }
     }
