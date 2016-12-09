@@ -10,11 +10,12 @@ namespace Rubberduck.SmartIndenter
     internal class AbsoluteCodeLine
     {
         private const string StupidLineEnding = ": _";
-        private const string StringPlaceholder = "\a";
-        private static readonly Regex StringLiteralRegex = new Regex("\"(?:[^\"]+|\"\")*\"");
-        private static readonly Regex StringReplaceRegex = new Regex(StringPlaceholder);
+        private const char StringPlaceholder = '\a';
+        private const char BracketPlaceholder = '\x2';
+        private static readonly Regex StringReplaceRegex = new Regex(StringPlaceholder.ToString(CultureInfo.InvariantCulture));
+        private static readonly Regex BracketReplaceRegex = new Regex(BracketPlaceholder.ToString(CultureInfo.InvariantCulture));
         private static readonly Regex LineNumberRegex = new Regex(@"^(?<number>\d+)\s+(?<code>.*)", RegexOptions.ExplicitCapture);
-        private static readonly Regex EndOfLineCommentRegex = new Regex(@"^(?!(Rem\s)|('))(?<code>.*)(\s(?<comment>'.*))$", RegexOptions.ExplicitCapture);
+        private static readonly Regex EndOfLineCommentRegex = new Regex(@"^(?!(Rem\s)|('))(?<code>[^']*)(\s(?<comment>'.*))$", RegexOptions.ExplicitCapture);      
         private static readonly Regex ProcedureStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Sub|Function|Property\s(Let|Get|Set))\s");
         private static readonly Regex ProcedureStartIgnoreRegex = new Regex(@"^[LR]?Set\s|^Let\s|^(Public|Private)\sDeclare\s(Function|Sub)");
         private static readonly Regex ProcedureEndRegex = new Regex(@"^End\s(Sub|Function|Property)");
@@ -31,9 +32,10 @@ namespace Rubberduck.SmartIndenter
         private uint _lineNumber;
         private bool _numbered;
         private string _code;
-        private bool _stupidLineEnding;
+        private readonly bool _stupidLineEnding;
         private readonly string[] _segments;
         private List<string> _strings;
+        private List<string> _brackets;
 
         public AbsoluteCodeLine(string code, IIndenterSettings settings)
         {
@@ -51,23 +53,69 @@ namespace Rubberduck.SmartIndenter
             
             Original = code;
 
-            ExtractStringLiterals();
+            ExtractStringLiteralsAndBrackets();
             ExtractLineNumber();
             ExtractEndOfLineComment();
-
+            _code = Regex.Replace(_code, StringPlaceholder + "+", StringPlaceholder.ToString(CultureInfo.InvariantCulture));
+            _code = Regex.Replace(_code, BracketPlaceholder + "+", BracketPlaceholder.ToString(CultureInfo.InvariantCulture)).Trim();
             _segments = _code.Split(new[] { ": " }, StringSplitOptions.None);
         }
 
-        private void ExtractStringLiterals()
+        //TODO: This should be a class.
+        private void ExtractStringLiteralsAndBrackets()
         {
             _strings = new List<string>();
-            var matches = StringLiteralRegex.Matches(_code);
-            if (matches.Count == 0) return;
-            foreach (var match in matches)
+            _brackets = new List<string>();
+
+            var chars = _code.ToCharArray();
+            var quoted = false;
+            var bracketed = false;
+            var ins = 0;
+            var strpos = 0;
+            var brkpos = 0;
+            for (var c = 0; c < chars.Length; c++)
             {
-                _strings.Add(match.ToString());
+                if (chars[c] == '"' && !bracketed)
+                {
+                    if (!quoted)
+                    {
+                        strpos = c;
+                        quoted = true;
+                        continue;
+                    }
+                    if (c + 1 < chars.Length && chars[c] == '"')
+                    {
+                        c++;
+                    }
+                    quoted = false;
+                    _strings.Add(new string(chars.Skip(strpos).Take(c - strpos).ToArray()));
+                    for (var e = strpos; e < c; e++)
+                    {
+                        chars[e] = StringPlaceholder;
+                    }
+                }
+                else if (!quoted && !bracketed && chars[c] == '[')
+                {
+                    bracketed = true;
+                    brkpos = c;
+                    ins++;
+                }
+                else if (!quoted && bracketed && chars[c] == ']')
+                {
+                    ins--;
+                    if (ins != 0)
+                    {
+                        continue;
+                    }
+                    bracketed = false;
+                    _brackets.Add(new string(chars.Skip(brkpos).Take(c - brkpos).ToArray()));
+                    for (var e = brkpos; e < c; e++)
+                    {
+                        chars[e] = BracketPlaceholder;
+                    }
+                }
             }
-            _code = StringLiteralRegex.Replace(_code, StringPlaceholder);
+            _code = new string(chars);            
         }
 
         private void ExtractLineNumber()
@@ -77,12 +125,9 @@ namespace Rubberduck.SmartIndenter
             {
                 _numbered = true;
                 _lineNumber = Convert.ToUInt32(match.Groups["number"].Value);
-                _code = match.Groups["code"].Value.Trim();
+                _code = match.Groups["code"].Value;
             }
-            else
-            {
-                _code = _code.Trim();
-            }
+            _code = _code.Trim();
         }
 
         private void ExtractEndOfLineComment()
@@ -98,7 +143,24 @@ namespace Rubberduck.SmartIndenter
         }
 
         public string Original { get; private set; }
-        
+
+        public string Escaped
+        {
+            get
+            {
+                var output = Original;
+                foreach (var item in _strings)
+                {
+                    output = output.Replace(item, new string(StringPlaceholder, item.Length));
+                }
+                foreach (var item in _brackets)
+                {
+                    output = output.Replace(item, new string(BracketPlaceholder, item.Length));
+                }
+                return output;
+            }
+        }
+
         public string EndOfLineComment { get; private set; }
 
         public IEnumerable<string> Segments
@@ -146,7 +208,7 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsPrecompilerDirective
         {
-            get { return Original.TrimStart().StartsWith("#"); }
+            get { return _code.TrimStart().StartsWith("#"); }
         }
 
         public bool IsBareDebugStatement
@@ -248,6 +310,10 @@ namespace Rubberduck.SmartIndenter
             {
                 code = _strings.Aggregate(code, (current, literal) => StringReplaceRegex.Replace(current, literal, 1));
             }
+            if (_brackets.Any())
+            {
+                code = _brackets.Aggregate(code, (current, expr) => BracketReplaceRegex.Replace(current, expr, 1));
+            }
 
             code = string.Join(string.Empty, number, new string(' ', gap), code);
             if (string.IsNullOrEmpty(EndOfLineComment))
@@ -283,10 +349,20 @@ namespace Rubberduck.SmartIndenter
         }
 
         private void AlignDims(int postition)
-        {            
+        {
+            if (_segments[0].Trim().StartsWith("As "))
+            {
+                _segments[0] = string.Format("{0}{1}", new String(' ', _settings.AlignDimColumn - postition - 1), _segments[0].Trim());
+                return;
+            }
             var alignTokens = _segments[0].Split(new[] { " As " }, StringSplitOptions.None);
+            if (alignTokens.Length <= 1)
+            {
+                return;
+            }
             var gap = Math.Max(_settings.AlignDimColumn - postition - alignTokens[0].Length - 2, 0);
-            _segments[0] = string.Format("{0}{1} As {2}", alignTokens[0].Trim(), new string(' ', gap), string.Join(" As ", alignTokens.Skip(1)));
+            _segments[0] = string.Format("{0}{1} As {2}", alignTokens[0].Trim(), new string(' ', gap),
+                                         string.Join(" As ", alignTokens.Skip(1)));
         }
     }
 }

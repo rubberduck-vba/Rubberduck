@@ -589,5 +589,108 @@ namespace RubberduckTests.SmartIndenter
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        [TestMethod]       
+        [TestCategory("Indenter")]
+        public void QuotesInsideStringLiteralsWork()
+        {
+            var code = new[]
+            {
+                "Public Sub Test()",
+                "Debug.Print \"This is a \"\" in the middle of a string.\"",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub Test()",
+                "    Debug.Print \"This is a \"\" in the middle of a string.\"",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void SingleQuoteInEndOfLineCommentWorks()
+        {
+            var code = new[]
+            {
+                "Public Sub Test()",
+                "Debug.Print Chr$(34) 'Prints a single '\"' character.",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub Test()",
+                "    Debug.Print Chr$(34)                         'Prints a single '\"' character.",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //http://chat.stackexchange.com/transcript/message/33933348#33933348
+        [TestMethod]        // Broken in VB6 SmartIndenter. Also broken in the code's conception. Sheesh - keep the cat off the keyboard.
+        [TestCategory("Indenter")]
+        public void BracketedIdentifiersWork()
+        {
+            Assert.Inconclusive("Pending fix for line numbers on continuation lines, function aligning of declarations.");
+            var code = new[]
+            {
+                "Sub test()",
+                "Dim _",
+                "s _",
+                "( _",
+                "[Option _ Explicit] _",
+                "+ _",
+                "1 _",
+                "To _",
+                "( _",
+                "[Evil : \"\" Comment \" 'here] _",
+                ") _",
+                "+ _",
+                "[End _ Sub] _",
+                ") _",
+                "As _",
+                "String _",
+                "* _",
+                "25",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub test()",
+                "    Dim _",
+                "    s _",
+                "    ( _",
+                "    [Option _ Explicit] _",
+                "    + _",
+                "    1 _",
+                "    To _",
+                "    ( _",
+                "    [Evil : \"\" Comment \" 'here] _",
+                "    ) _",
+                "    + _",
+                "    [End _ Sub] _",
+                "    ) _",
+                "    As _",
+                "    String _",
+                "    * _",
+                "    25",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
     }
 }
