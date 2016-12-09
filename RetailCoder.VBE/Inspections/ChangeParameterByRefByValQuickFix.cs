@@ -1,4 +1,6 @@
+using System;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -15,16 +17,38 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            var parameter = Context.GetText();
-            var newContent = string.Concat(_newToken, " ", parameter);
-            var selection = Selection.Selection;
-
-            var module = Selection.QualifiedName.Component.CodeModule;
+            try
             {
-                var lines = module.GetLines(selection.StartLine, selection.LineCount);
-                var result = lines.Replace(parameter, newContent);
-                module.ReplaceLine(selection.StartLine, result);
+                dynamic context = Context;
+                var parameter = Context.GetText();
+                dynamic args = Context.parent;
+                var argList = args.GetText();
+                var module = Selection.QualifiedName.Component.CodeModule;
+                {
+                    string result;
+                    if (context.OPTIONAL() != null)
+                    {
+                        result = parameter.Replace(Tokens.Optional, Tokens.Optional + ' ' + _newToken);
+                    }
+                    else
+                    {
+                        result = _newToken + ' ' + parameter;
+                    }
+
+                    dynamic proc = args.parent;
+                    var startLine = proc.GetType().GetProperty("Start").GetValue(proc).Line;
+                    var stopLine = proc.GetType().GetProperty("Stop").GetValue(proc).Line;
+                    var code = module.GetLines(startLine, stopLine - startLine + 1);
+                    result = code.Replace(argList, argList.Replace(parameter, result));
+
+                    foreach (var line in result.Split(new[] {"\r\n"}, StringSplitOptions.None))
+                    {
+                        module.ReplaceLine(startLine++, line);
+                    }
+                }
             }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch { }
         }
     }
 }

@@ -342,8 +342,8 @@ End Sub";
 End Sub";
 
             const string expectedCode =
-@"Sub Foo(Optional _
-        ByRef bar _
+@"Sub Foo(Optional ByRef _
+        bar _
         As Byte)
     bar = 1
 End Sub";
@@ -421,7 +421,7 @@ End Sub";
 
             const string expectedCode =
 @"Sub Foo( _
-        bar _
+        ByRef bar _
         As Byte)
     bar = 1
 End Sub";
