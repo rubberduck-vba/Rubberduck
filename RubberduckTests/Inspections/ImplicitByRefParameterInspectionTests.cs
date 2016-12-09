@@ -295,6 +295,158 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Content());
         }
 
+        //http://chat.stackexchange.com/transcript/message/34001991#34001991
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitByRefParameter_QuickFixWorks_OptionalParameter()
+        {
+            const string inputCode =
+@"Sub Foo(Optional arg1 As Integer)
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo(Optional ByRef arg1 As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            IVBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ImplicitByRefParameterInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Content());
+        }
+
+        //http://chat.stackexchange.com/transcript/message/34001991#34001991
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitByRefParameter_QuickFixWorks_Optional_LineContinuations()
+        {
+            const string inputCode =
+@"Sub Foo(Optional _
+        bar _
+        As Byte)
+    bar = 1
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo(Optional _
+        ByRef bar _
+        As Byte)
+    bar = 1
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            IVBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ImplicitByRefParameterInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Content());
+        }
+
+        //http://chat.stackexchange.com/transcript/message/34001991#34001991
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitByRefParameter_QuickFixWorks_LineContinuation()
+        {
+            const string inputCode =
+@"Sub Foo( bar _
+        As Byte)
+    bar = 1
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo( ByRef bar _
+        As Byte)
+    bar = 1
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            IVBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ImplicitByRefParameterInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Content());
+        }
+
+        //http://chat.stackexchange.com/transcript/message/34001991#34001991
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitByRefParameter_QuickFixWorks_LineContinuation_FirstLine()
+        {
+            const string inputCode =
+@"Sub Foo( _
+        bar _
+        As Byte)
+    bar = 1
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo( _
+        bar _
+        As Byte)
+    bar = 1
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            IVBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ImplicitByRefParameterInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Content());
+        }
+
         [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionType()
