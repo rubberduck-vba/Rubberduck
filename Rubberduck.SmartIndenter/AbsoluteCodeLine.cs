@@ -37,9 +37,12 @@ namespace Rubberduck.SmartIndenter
         private List<string> _strings;
         private List<string> _brackets;
 
-        public AbsoluteCodeLine(string code, IIndenterSettings settings)
+        public AbsoluteCodeLine(string code, IIndenterSettings settings) : this(code, settings, null) { }
+
+        public AbsoluteCodeLine(string code, IIndenterSettings settings, AbsoluteCodeLine previous)
         {
             _settings = settings;
+            Previous = previous;
 
             if (code.EndsWith(StupidLineEnding))
             {
@@ -56,6 +59,7 @@ namespace Rubberduck.SmartIndenter
             ExtractStringLiteralsAndBrackets();
             ExtractLineNumber();
             ExtractEndOfLineComment();
+
             _code = Regex.Replace(_code, StringPlaceholder + "+", StringPlaceholder.ToString(CultureInfo.InvariantCulture));
             _code = Regex.Replace(_code, BracketPlaceholder + "+", BracketPlaceholder.ToString(CultureInfo.InvariantCulture)).Trim();
             _segments = _code.Split(new[] { ": " }, StringSplitOptions.None);
@@ -120,12 +124,15 @@ namespace Rubberduck.SmartIndenter
 
         private void ExtractLineNumber()
         {
-            var match = LineNumberRegex.Match(_code);
-            if (match.Success)
+            if (Previous == null || !Previous.HasContinuation)
             {
-                _numbered = true;
-                _lineNumber = Convert.ToUInt32(match.Groups["number"].Value);
-                _code = match.Groups["code"].Value;
+                var match = LineNumberRegex.Match(_code);
+                if (match.Success)
+                {
+                    _numbered = true;
+                    _lineNumber = Convert.ToUInt32(match.Groups["number"].Value);
+                    _code = match.Groups["code"].Value;
+                }
             }
             _code = _code.Trim();
         }
@@ -141,6 +148,8 @@ namespace Rubberduck.SmartIndenter
             _code = match.Groups["code"].Value.Trim();
             EndOfLineComment = match.Groups["comment"].Value.Trim();
         }
+
+        public AbsoluteCodeLine Previous { get; private set; }
 
         public string Original { get; private set; }
 
@@ -203,7 +212,7 @@ namespace Rubberduck.SmartIndenter
 
         public bool HasContinuation
         {
-            get { return _code.EndsWith(" _") || EndOfLineComment.EndsWith(" _"); }
+            get { return _code.Equals("_") || _code.EndsWith(" _") || EndOfLineComment.EndsWith(" _"); }
         }
 
         public bool IsPrecompilerDirective
