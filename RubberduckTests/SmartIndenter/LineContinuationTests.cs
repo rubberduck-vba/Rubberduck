@@ -741,5 +741,59 @@ namespace RubberduckTests.SmartIndenter
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2402
+        [TestMethod]        // Broken in VB6 SmartIndenter.
+        [TestCategory("Indenter")]
+        public void SplitNamedParameterAlignsCorrectly()
+        {
+            var code = new[]
+            {
+                 "Sub Foo()",
+                 "Debug.Print WorksheetFunction.Sum(arg1:=1, arg2:=2, arg3 _",
+                 ":=3)",
+                 "End Sub"
+            };
+
+            var expected = new[]
+            {
+                 "Sub Foo()",
+                 "    Debug.Print WorksheetFunction.Sum(arg1:=1, arg2:=2, arg3 _",
+                 "                                      :=3)",
+                 "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2402
+        [TestMethod]        // Broken in VB6 SmartIndenter.
+        [TestCategory("Indenter")]
+        public void MultipleSplitNamedParametersAlignCorrectly()
+        {
+            var code = new[]
+            {
+                 "Sub Foo()",
+                 "Debug.Print WorksheetFunction.Sum(arg1:=1, arg2:=2, arg3 _",
+                 ":=3, arg4:=4, arg5:=6, arg6 _",
+                 ":=6)",
+                 "End Sub"
+            };
+
+            var expected = new[]
+            {
+                 "Sub Foo()",
+                 "    Debug.Print WorksheetFunction.Sum(arg1:=1, arg2:=2, arg3 _",
+                 "                                      :=3, arg4:=4, arg5:=6, arg6 _",
+                 "                                      :=6)",
+                 "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
     }
 }

@@ -132,10 +132,12 @@ namespace Rubberduck.SmartIndenter
             var current = _lines.First().Indent(IndentationLevel, AtProcedureStart);
             var commentPos = string.IsNullOrEmpty(_lines.First().EndOfLineComment) ? 0 : current.Length - _lines.First().EndOfLineComment.Length;
             output.Add(current);
-            var alignment = FunctionAlign(current);
+            var alignment = FunctionAlign(current, _lines[1].Original.Trim().StartsWith(":="));
 
-            foreach (var line in _lines.Skip(1))
+            //foreach (var line in _lines.Skip(1))
+            for (var i = 1; i < _lines.Count; i++)
             {
+                var line = _lines[i];
                 if (line.IsDeclarationContinuation && !line.IsProcedureStart)
                 {
                     output.Add(line.Indent(IndentationLevel, AtProcedureStart));
@@ -154,7 +156,7 @@ namespace Rubberduck.SmartIndenter
                 var operatorAdjust = _settings.IgnoreOperatorsInContinuations && OperatorIgnoreRegex.IsMatch(line.Original) ? 2 : 0;              
                 current = line.Indent(Math.Max(alignment - operatorAdjust, 0), AtProcedureStart, true);
                 output.Add(current);
-                alignment = FunctionAlign(current);
+                alignment = FunctionAlign(current, i + 1 < _lines.Count && _lines[i + 1].Original.Trim().StartsWith(":="));
                 commentPos = string.IsNullOrEmpty(line.EndOfLineComment) ? 0 : current.Length - line.EndOfLineComment.Length;
             }
 
@@ -169,7 +171,8 @@ namespace Rubberduck.SmartIndenter
         private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)");
         private readonly Stack<AlignmentToken> _alignment = new Stack<AlignmentToken>();
 
-        private int FunctionAlign(string line)
+        //The splitNamed parameter is a straight up hack for fixing https://github.com/rubberduck-vba/Rubberduck/issues/2402
+        private int FunctionAlign(string line, bool splitNamed)
         {
             var stackPos = _alignment.Count;
 
@@ -243,16 +246,14 @@ namespace Rubberduck.SmartIndenter
                 }
             }
             //If we end with a comma or a named parameter, get rid of all other comma alignments
-            if (line.EndsWith(", _") || line.EndsWith(":= _"))
+            if (line.EndsWith(", _") || line.EndsWith(":= _") || splitNamed)
             {
                 while (_alignment.Any() && _alignment.Peek().Type == AlignmentTokenType.Parameter)
                 {
                     _alignment.Pop();
                 }
-            }
-
-            //If we end with a "( _", remove it and the space alignment after it
-            if (line.EndsWith("( _"))
+            } 
+            else if (line.EndsWith("( _"))   //If we end with a "( _", remove it and the space alignment after it'
             {
                 _alignment.Pop();
                 _alignment.Pop();
