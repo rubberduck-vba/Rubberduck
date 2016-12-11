@@ -19,9 +19,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -148,7 +146,7 @@ namespace Rubberduck.Parsing.Symbols
             return typeName.Equals("LONG_PTR") ? "LongPtr" : typeName;  //Quickfix for http://chat.stackexchange.com/transcript/message/30119269#30119269
         }
 
-        public List<Declaration> GetDeclarationsForReference(IReference reference)
+        public List<Declaration> GetDeclarationsForReference(IReference reference, out SerializableDeclarationTree tree)
         {
             var output = new List<Declaration>();
             var projectName = reference.Name;
@@ -158,12 +156,14 @@ namespace Rubberduck.Parsing.Symbols
             LoadTypeLibEx(path, REGKIND.REGKIND_NONE, out typeLibrary);
             if (typeLibrary == null)
             {
+                tree = null;
                 return output;
             }
             var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
             var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
             var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName, isBuiltIn: true);
             output.Add(projectDeclaration);
+            var moduleTrees = new List<SerializableDeclarationTree>();
 
             var typeCount = typeLibrary.GetTypeInfoCount();
             for (var i = 0; i < typeCount; i++)
@@ -175,6 +175,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 catch (NullReferenceException)
                 {
+                    tree = null;
                     return output;
                 }
 
@@ -265,16 +266,14 @@ namespace Rubberduck.Parsing.Symbols
                         break;
                 }
 
+                ComInformation comInfo;
                 if (typeAttributes.guid == Guid.Empty)
                 {
-                    LoadDeclarationsInModule(output,
-                        new ComInformation(typeAttributes, 0, info, typeName, typeQualifiedModuleName,
-                            moduleDeclaration,
-                            typeDeclarationType));
+                    comInfo = new ComInformation(typeAttributes, 0, info, typeName, typeQualifiedModuleName, moduleDeclaration, typeDeclarationType);
+                    LoadDeclarationsInModule(output, comInfo);
                 }
                 else
                 {
-                    ComInformation comInfo;
                     if (_comInformation.TryGetValue(typeAttributes.guid, out comInfo))
                     {
                         comInfo.TypeQualifiedModuleName = typeQualifiedModuleName;
@@ -283,16 +282,16 @@ namespace Rubberduck.Parsing.Symbols
                     }
                     else
                     {
-                        _comInformation.Add(typeAttributes.guid,
-                            new ComInformation(typeAttributes, 0, info, typeName, typeQualifiedModuleName,
-                                moduleDeclaration,
-                                typeDeclarationType));
+                        comInfo = new ComInformation(typeAttributes, 0, info, typeName, typeQualifiedModuleName, moduleDeclaration, typeDeclarationType);
+                        _comInformation.Add(typeAttributes.guid, comInfo);
                     }
                 }
 
                 info.ReleaseTypeAttr(typeAttributesPointer);
 
                 output.Add(moduleDeclaration);
+                var moduleTree = new SerializableDeclarationTree(new SerializableDeclaration(moduleDeclaration), comInfo.MemberTrees);
+                moduleTrees.Add(moduleTree);
             }
 
             foreach (var member in _comInformation.Values)
@@ -300,7 +299,14 @@ namespace Rubberduck.Parsing.Symbols
                 LoadDeclarationsInModule(output, member);
             }
 
+            tree = new SerializableDeclarationTree(new SerializableDeclaration(projectDeclaration), moduleTrees);
             return output;
+        }
+
+        public List<Declaration> GetDeclarationsForReference(IReference reference)
+        {
+            SerializableDeclarationTree tree;
+            return GetDeclarationsForReference(reference, out tree);
         }
 
         private void LoadDeclarationsInModule(List<Declaration> output, ComInformation member)
@@ -353,12 +359,17 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     parameters.Last().IsParamArray = true;
                 }
+
+                var parameterTrees = parameters.Select(p => new SerializableDeclarationTree(p));
+                var tree = new SerializableDeclarationTree(new SerializableDeclaration(memberDeclaration), parameterTrees);
+                member.MemberTrees.Add(tree);
             }
 
             for (var fieldIndex = 0; fieldIndex < member.TypeAttributes.cVars; fieldIndex++)
             {
-                output.Add(CreateFieldDeclaration(member.TypeInfo, fieldIndex, member.TypeDeclarationType, member.TypeQualifiedModuleName,
-                    member.ModuleDeclaration));
+                var declaration = CreateFieldDeclaration(member.TypeInfo, fieldIndex, member.TypeDeclarationType, member.TypeQualifiedModuleName, member.ModuleDeclaration);
+                output.Add(declaration);
+                member.MemberTrees.Add(new SerializableDeclarationTree(declaration));
             }
         }
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -552,7 +552,8 @@
     <value>Remplacer la fonction '{0}' par la fonction typée équivalente</value>
   </data>
   <data name="UntypedFunctionUsageInspectionMeta" xml:space="preserve">
-    <value />
+    <value>Une fonction équivalente retourne une valeur 'String' et devrait préférablement être utilisée afin d'éviter les conversions implicites.
+Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle à cette fonction causerait une erreur d'exécution 'type mismatch'.</value>
   </data>
   <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
     <value>Remplacer 'Dim' par 'Private'</value>
@@ -578,5 +579,17 @@
   <data name="UndeclaredVariableInspectionResultFormat" xml:space="preserve">
     <value>La variable locale '{0}' n'est pas déclarée</value>
     <comment>{0} variable name</comment>
+  </data>
+  <data name="WriteOnlyPropertyQuickFix">
+    <value>Ajouter un accesseur 'Property Get'</value>
+  </data>
+  <data name="MalformedAnnotationInspectionName">
+    <value>Annotation incorrecte</value>
+  </data>
+  <data name="MalformedAnnotationInspectionResultFormat">
+    <value>Annotation '{0}' incorrecte.</value>
+  </data>
+  <data name="MalformedAnnotationInspectionMeta">
+    <value>Un commentaire contient une annotation spécifiée incorrectement.</value>
   </data>
 </root>

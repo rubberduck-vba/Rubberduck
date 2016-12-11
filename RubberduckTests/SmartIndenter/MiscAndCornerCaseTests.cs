@@ -246,6 +246,60 @@ namespace RubberduckTests.SmartIndenter
 
         [TestMethod]
         [TestCategory("Indenter")]
+        public void NegativeLineNumbersWork()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "-5 If Foo Then",
+                "-10 Debug.Print",
+                "-15 End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "-5  If Foo Then",
+                "-10     Debug.Print",
+                "-15 End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void HexLineNumbersWork()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "&HAAA If Foo Then",
+                "&HABE Debug.Print",
+                "&HAD2 End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "2730 If Foo Then",
+                "2750    Debug.Print",
+                "2770 End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
         public void LineNumberLongerThanIndentFallsBackToOneSpace()
         {
             var code = new[]
@@ -586,6 +640,108 @@ namespace RubberduckTests.SmartIndenter
                 s.IndentFirstDeclarationBlock = false;
                 return s;
             });
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]       
+        [TestCategory("Indenter")]
+        public void QuotesInsideStringLiteralsWork()
+        {
+            var code = new[]
+            {
+                "Public Sub Test()",
+                "Debug.Print \"This is a \"\" in the middle of a string.\"",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub Test()",
+                "    Debug.Print \"This is a \"\" in the middle of a string.\"",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void SingleQuoteInEndOfLineCommentWorks()
+        {
+            var code = new[]
+            {
+                "Public Sub Test()",
+                "Debug.Print Chr$(34) 'Prints a single '\"' character.",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub Test()",
+                "    Debug.Print Chr$(34)                         'Prints a single '\"' character.",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //http://chat.stackexchange.com/transcript/message/33933348#33933348
+        [TestMethod]        // Broken in VB6 SmartIndenter. Also broken in the code's conception. Sheesh - keep the cat off the keyboard.
+        [TestCategory("Indenter")]
+        public void BracketedIdentifiersWork()
+        {
+            var code = new[]
+            {
+                "Sub test()",
+                "Dim _",
+                "s _",
+                "( _",
+                "[Option _ Explicit] _",
+                "+ _",
+                "1 _",
+                "To _",
+                "( _",
+                "[Evil : \"\" Comment \" 'here] _",
+                ") _",
+                "+ _",
+                "[End _ Sub] _",
+                ") _",
+                "As _",
+                "String _",
+                "* _",
+                "25",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub test()",
+                "    Dim _",
+                "    s _",
+                "    ( _",
+                "    [Option _ Explicit] _",
+                "    + _",
+                "    1 _",
+                "    To _",
+                "    ( _",
+                "    [Evil : \"\" Comment \" 'here] _",
+                "    ) _",
+                "    + _",
+                "    [End _ Sub] _",
+                "    ) _",
+                "    As _",
+                "    String _",
+                "    * _",
+                "    25",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code, string.Empty);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }

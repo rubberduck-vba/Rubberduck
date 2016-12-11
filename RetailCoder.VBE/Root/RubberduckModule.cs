@@ -64,7 +64,8 @@ namespace Rubberduck.Root
             Bind<Sinks>().ToSelf().InSingletonScope();
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
-            Bind<GitProvider>().ToSelf().InSingletonScope();
+            Bind<ISourceControlProvider>().To<GitProvider>();
+            //Bind<GitProvider>().ToSelf().InSingletonScope();
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
 
@@ -185,6 +186,8 @@ namespace Rubberduck.Root
                 .InNamespaceOf<Configuration>()
                 .BindAllInterfaces()
                 .Configure(binding => binding.InSingletonScope()));
+
+            Bind<IPersistable<SerializableDeclaration>>().To<XmlPersistableDeclarations>().InCallScope();
 
             Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InCallScope();
             Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InCallScope();
@@ -408,7 +411,10 @@ namespace Rubberduck.Root
             {
                 KernelInstance.Get<ReparseCommandMenuItem>(),
                 KernelInstance.Get<ShowParserErrorsCommandMenuItem>(),
-                KernelInstance.Get<ContextSelectionLabelMenuItem>()
+                KernelInstance.Get<ContextSelectionLabelMenuItem>(),
+//#if DEBUG
+//                KernelInstance.Get<SerializeDeclarationsCommandMenuItem>()
+//#endif
             };
         }
 
