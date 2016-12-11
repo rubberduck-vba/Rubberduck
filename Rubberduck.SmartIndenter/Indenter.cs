@@ -107,10 +107,11 @@ namespace Rubberduck.SmartIndenter
             var settings = _settings.Invoke();
             var logical = new List<LogicalCodeLine>();
             LogicalCodeLine current = null;
+            AbsoluteCodeLine previous = null;
 
             foreach (var line in lines)
             {
-                var absolute = new AbsoluteCodeLine(line, settings);
+                var absolute = new AbsoluteCodeLine(line, settings, previous);
                 if (current == null)
                 {
                     current = new LogicalCodeLine(absolute, settings);
@@ -125,6 +126,7 @@ namespace Rubberduck.SmartIndenter
                 {
                     current = null;
                 }
+                previous = absolute;
             }
             return logical;
         }

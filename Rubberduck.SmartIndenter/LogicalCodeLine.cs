@@ -132,7 +132,7 @@ namespace Rubberduck.SmartIndenter
             var current = _lines.First().Indent(IndentationLevel, AtProcedureStart);
             var commentPos = string.IsNullOrEmpty(_lines.First().EndOfLineComment) ? 0 : current.Length - _lines.First().EndOfLineComment.Length;
             output.Add(current);
-            var alignment = FunctionAlign(current, _lines[1].Original.Trim().StartsWith(":="));
+            var alignment = FunctionAlign(current, _lines[1].Escaped.Trim().StartsWith(":="));
 
             //foreach (var line in _lines.Skip(1))
             for (var i = 1; i < _lines.Count; i++)
@@ -156,7 +156,7 @@ namespace Rubberduck.SmartIndenter
                 var operatorAdjust = _settings.IgnoreOperatorsInContinuations && OperatorIgnoreRegex.IsMatch(line.Original) ? 2 : 0;              
                 current = line.Indent(Math.Max(alignment - operatorAdjust, 0), AtProcedureStart, true);
                 output.Add(current);
-                alignment = FunctionAlign(current, i + 1 < _lines.Count && _lines[i + 1].Original.Trim().StartsWith(":="));
+                alignment = FunctionAlign(current, i + 1 < _lines.Count && _lines[i + 1].Escaped.Trim().StartsWith(":="));
                 commentPos = string.IsNullOrEmpty(line.EndOfLineComment) ? 0 : current.Length - line.EndOfLineComment.Length;
             }
 
@@ -181,9 +181,11 @@ namespace Rubberduck.SmartIndenter
                 var character = line.Substring(index - 1, 1);
                 switch (character)
                 {
-                    case "\"":
-                        //A String => jump to the end of it
-                        while (!line.Substring(index++, 1).Equals("\"")) { }
+                    case "\a":
+                        while (!line.Substring(index++, 1).Equals("\a")) { }
+                        break;
+                    case "\x2":
+                        while (!line.Substring(index++, 1).Equals("\x2")) { }
                         break;
                     case "(":
                         //Start of another function => remember this position
