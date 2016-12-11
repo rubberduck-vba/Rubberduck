@@ -246,6 +246,60 @@ namespace RubberduckTests.SmartIndenter
 
         [TestMethod]
         [TestCategory("Indenter")]
+        public void NegativeLineNumbersWork()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "-5 If Foo Then",
+                "-10 Debug.Print",
+                "-15 End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "-5  If Foo Then",
+                "-10     Debug.Print",
+                "-15 End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void HexLineNumbersWork()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "&HAAA If Foo Then",
+                "&HABE Debug.Print",
+                "&HAD2 End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "2730 If Foo Then",
+                "2750    Debug.Print",
+                "2770 End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code, string.Empty);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
         public void LineNumberLongerThanIndentFallsBackToOneSpace()
         {
             var code = new[]

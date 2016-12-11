@@ -14,7 +14,7 @@ namespace Rubberduck.SmartIndenter
         private const char BracketPlaceholder = '\x2';
         private static readonly Regex StringReplaceRegex = new Regex(StringPlaceholder.ToString(CultureInfo.InvariantCulture));
         private static readonly Regex BracketReplaceRegex = new Regex(BracketPlaceholder.ToString(CultureInfo.InvariantCulture));
-        private static readonly Regex LineNumberRegex = new Regex(@"^(?<number>\d+)\s+(?<code>.*)", RegexOptions.ExplicitCapture);
+        private static readonly Regex LineNumberRegex = new Regex(@"^(?<number>(-?\d+)|(&H[0-9A-F]{1,8}))\s+(?<code>.*)", RegexOptions.ExplicitCapture);
         private static readonly Regex EndOfLineCommentRegex = new Regex(@"^(?!(Rem\s)|('))(?<code>[^']*)(\s(?<comment>'.*))$", RegexOptions.ExplicitCapture);      
         private static readonly Regex ProcedureStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Sub|Function|Property\s(Let|Get|Set))\s");
         private static readonly Regex ProcedureStartIgnoreRegex = new Regex(@"^[LR]?Set\s|^Let\s|^(Public|Private)\sDeclare\s(Function|Sub)");
@@ -29,7 +29,7 @@ namespace Rubberduck.SmartIndenter
         private static readonly Regex SingleLineElseIfRegex = new Regex(@"^ElseIf\s.*\sThen\s.*");
 
         private readonly IIndenterSettings _settings;
-        private uint _lineNumber;
+        private int _lineNumber;
         private bool _numbered;
         private string _code;
         private readonly bool _stupidLineEnding;
@@ -129,9 +129,14 @@ namespace Rubberduck.SmartIndenter
                 var match = LineNumberRegex.Match(_code);
                 if (match.Success)
                 {
-                    _numbered = true;
-                    _lineNumber = Convert.ToUInt32(match.Groups["number"].Value);
                     _code = match.Groups["code"].Value;
+                    _numbered = true;
+                    var number = match.Groups["number"].Value;
+                    if (!int.TryParse(number, out _lineNumber))
+                    {
+                        int.TryParse(number.Replace("&H", string.Empty), NumberStyles.HexNumber, 
+                                     CultureInfo.InvariantCulture, out _lineNumber);
+                    }                  
                 }
             }
             _code = _code.Trim();
