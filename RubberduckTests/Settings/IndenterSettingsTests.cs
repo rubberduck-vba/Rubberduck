@@ -66,7 +66,6 @@ namespace RubberduckTests.Settings
             output.SetupProperty(s => s.IndentCompilerDirectives);
             output.SetupProperty(s => s.AlignDims);
             output.SetupProperty(s => s.AlignDimColumn);
-            output.SetupProperty(s => s.EnableUndo);
             output.SetupProperty(s => s.EndOfLineCommentStyle);
             output.SetupProperty(s => s.EndOfLineCommentColumnSpaceAlignment);
             output.SetupProperty(s => s.IndentSpaces);
@@ -84,7 +83,6 @@ namespace RubberduckTests.Settings
             output.Object.IndentCompilerDirectives = nondefault ? NondefaultIndentCompilerDirectives : DefaultIndentCompilerDirectives;
             output.Object.AlignDims = nondefault ? NondefaultAlignDims : DefaultAlignDims;
             output.Object.AlignDimColumn = nondefault ? NondefaultAlignDimColumn : DefaultAlignDimColumn;
-            output.Object.EnableUndo = nondefault ? NondefaultEnableUndo : DefaultEnableUndo;
             output.Object.EndOfLineCommentStyle = nondefault ? NondefaultEndOfLineCommentStyle : DefaultEndOfLineCommentStyle;
             output.Object.EndOfLineCommentColumnSpaceAlignment = nondefault ? NondefaultEndOfLineCommentColumnSpaceAlignment : DefaultEndOfLineCommentColumnSpaceAlignment;
             output.Object.IndentSpaces = nondefault ? NondefaultIndentSpaces : DefaultIndentSpaces;
@@ -118,7 +116,6 @@ namespace RubberduckTests.Settings
                 () => Assert.AreEqual(config.UserSettings.IndenterSettings.AlignContinuations, viewModel.AlignContinuations),
                 () => Assert.AreEqual(config.UserSettings.IndenterSettings.AlignDimColumn, viewModel.AlignDimColumn),
                 () => Assert.AreEqual(config.UserSettings.IndenterSettings.AlignDims, viewModel.AlignDims),
-                () => Assert.AreEqual(config.UserSettings.IndenterSettings.EnableUndo, viewModel.EnableUndo),
                 () => Assert.AreEqual(config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment, viewModel.EndOfLineCommentColumnSpaceAlignment),
                 () => Assert.AreEqual(config.UserSettings.IndenterSettings.EndOfLineCommentStyle, viewModel.EndOfLineCommentStyle),
                 () => Assert.AreEqual(config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1, viewModel.ForceCompilerDirectivesInColumn1),
@@ -146,7 +143,6 @@ namespace RubberduckTests.Settings
                 () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignContinuations, viewModel.AlignContinuations),
                 () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignDimColumn, viewModel.AlignDimColumn),
                 () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignDims, viewModel.AlignDims),
-                () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EnableUndo, viewModel.EnableUndo),
                 () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment, viewModel.EndOfLineCommentColumnSpaceAlignment),
                 () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EndOfLineCommentStyle, viewModel.EndOfLineCommentStyle),
                 () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1, viewModel.ForceCompilerDirectivesInColumn1),
@@ -195,15 +191,6 @@ namespace RubberduckTests.Settings
             var viewModel = new IndenterSettingsViewModel(defaultConfig);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignDims, viewModel.AlignDims);
-        }
-
-        [TestMethod]
-        public void EnableUndoIsSetInCtor()
-        {
-            var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
-
-            Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EnableUndo, viewModel.EnableUndo);
         }
 
         [TestMethod]
