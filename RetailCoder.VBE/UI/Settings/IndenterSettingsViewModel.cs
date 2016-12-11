@@ -13,7 +13,6 @@ namespace Rubberduck.UI.Settings
             _alignContinuations = config.UserSettings.IndenterSettings.AlignContinuations;
             _alignDimColumn = config.UserSettings.IndenterSettings.AlignDimColumn;
             _alignDims = config.UserSettings.IndenterSettings.AlignDims;
-            _enableUndo = config.UserSettings.IndenterSettings.EnableUndo;
             _endOfLineCommentColumnSpaceAlignment = config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment;
             _endOfLineCommentStyle = config.UserSettings.IndenterSettings.EndOfLineCommentStyle;
             _forceCompilerDirectivesInColumn1 = config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1;
@@ -108,20 +107,6 @@ namespace Rubberduck.UI.Settings
                 {
                     _alignDims = value;
                     OnPropertyChanged();
-                }
-            }
-        }
-
-        private bool _enableUndo;
-        public bool EnableUndo
-        {
-            get { return _enableUndo; }
-            set
-            {
-                if (_enableUndo != value)
-                {
-                    _enableUndo = value;
-                    OnPropertyChanged(); 
                 }
             }
         }
@@ -299,7 +284,6 @@ namespace Rubberduck.UI.Settings
                 AlignContinuations = AlignContinuations,
                 AlignDimColumn = AlignDimColumn,
                 AlignDims = AlignDims,
-                EnableUndo = EnableUndo,
                 EndOfLineCommentColumnSpaceAlignment = EndOfLineCommentColumnSpaceAlignment,
                 EndOfLineCommentStyle = EndOfLineCommentStyle,
                 ForceCompilerDirectivesInColumn1 = ForceCompilerDirectivesInColumn1,
@@ -323,7 +307,6 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.IndenterSettings.AlignContinuations = AlignContinuations;
             config.UserSettings.IndenterSettings.AlignDimColumn = AlignDimColumn;
             config.UserSettings.IndenterSettings.AlignDims = AlignDims;
-            config.UserSettings.IndenterSettings.EnableUndo = EnableUndo;
             config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment = EndOfLineCommentColumnSpaceAlignment;
             config.UserSettings.IndenterSettings.EndOfLineCommentStyle = EndOfLineCommentStyle;
             config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1 = ForceCompilerDirectivesInColumn1;
@@ -344,7 +327,6 @@ namespace Rubberduck.UI.Settings
             AlignContinuations = config.UserSettings.IndenterSettings.AlignContinuations;
             AlignDimColumn = config.UserSettings.IndenterSettings.AlignDimColumn;
             AlignDims = config.UserSettings.IndenterSettings.AlignDims;
-            EnableUndo = config.UserSettings.IndenterSettings.EnableUndo;
             EndOfLineCommentColumnSpaceAlignment = config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment;
             EndOfLineCommentStyle = config.UserSettings.IndenterSettings.EndOfLineCommentStyle;
             ForceCompilerDirectivesInColumn1 = config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1;
