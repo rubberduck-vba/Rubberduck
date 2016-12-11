@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly SerializableDeclaration _node;
         private readonly IEnumerable<SerializableDeclarationTree> _children;
 
-        public SerializableDeclarationTree(Declaration declaration)
+        public SerializableDeclarationTree(Declaration declaration)   
             : this(new SerializableDeclaration(declaration)) { }
 
         public SerializableDeclarationTree(SerializableDeclaration node)
@@ -39,12 +39,6 @@ namespace Rubberduck.Parsing.Symbols
 
         public SerializableDeclaration(Declaration declaration)
         {
-            var parent = declaration.ParentDeclaration;
-            if (parent != null)
-            {
-                ParentDeclaration = new SerializableDeclaration(parent);
-            }
-
             IdentifierName = declaration.IdentifierName;
 
             ParentScope = declaration.ParentScope;
@@ -63,8 +57,6 @@ namespace Rubberduck.Parsing.Symbols
 
         public string IdentifierName { get; set; }
 
-        public SerializableDeclaration ParentDeclaration { get; set; }
-
         public QualifiedMemberName QualifiedMemberName { get; set; }
         public AnnotationBase[] Annotations { get; set; }
         public KeyValuePair<string, IEnumerable<string>>[] Attributes { get; set; }
@@ -79,14 +71,14 @@ namespace Rubberduck.Parsing.Symbols
         public Accessibility Accessibility { get; set; }
         public DeclarationType DeclarationType { get; set; }
 
-        public Declaration Unwrap()
+        public Declaration Unwrap(Declaration parent)
         {
             var attributes = new Attributes();
             foreach (var keyValuePair in Attributes)
             {
                 attributes.Add(keyValuePair.Key, keyValuePair.Value);
             }
-            return new Declaration(QualifiedMemberName, ParentDeclaration == null ? null : ParentDeclaration.Unwrap(), ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn, Annotations, attributes);
+            return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn, Annotations, attributes);
         }
     }
 }

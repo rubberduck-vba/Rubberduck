@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -563,5 +563,32 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="MalformedAnnotationInspectionMeta" xml:space="preserve">
     <value>Eine Annotation in einem Kommentar konnte nicht gelesen werden.</value>
+  </data>
+  <data name="IntroduceLocalVariableQuickFix">
+    <value>Introduce local variable</value>
+  </data>
+  <data name="UndeclaredVariableInspectionMeta">
+    <value>Code that uses undeclared variables does not compile when Option Explicit is specified. Undeclared variables are always Variant, a data type that incurs unnecessary overhead and storage.</value>
+  </data>
+  <data name="WriteOnlyPropertyQuickFix">
+    <value>Add property get</value>
+  </data>
+  <data name="ModuleScopeDimKeywordInspectionMeta">
+    <value>The 'Public' keyword can only be used at module level; its counterpart 'Private' can also only be used at module level. 'Dim' however, can be used to declare both procedure and module scope variables. For consistency, it would be preferable to reserve 'Dim' for locals, and thus to use 'Private' instead of 'Dim' at module level.</value>
+  </data>
+  <data name="ChangeDimToPrivateQuickFix">
+    <value>Replace 'Dim' with 'Private'</value>
+  </data>
+  <data name="UndeclaredVariableInspectionName">
+    <value>Undeclared variable</value>
+  </data>
+  <data name="ModuleScopeDimKeywordInspectionName">
+    <value>Use of 'Dim' keyword at module level</value>
+  </data>
+  <data name="UndeclaredVariableInspectionResultFormat">
+    <value>Local variable '{0}' is not declared</value>
+  </data>
+  <data name="ModuleScopeDimKeywordInspectionResultFormat">
+    <value>Module-level variable '{0}' is declared with the 'Dim' keyword.</value>
   </data>
 </root>
