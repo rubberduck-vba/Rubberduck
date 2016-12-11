@@ -451,6 +451,7 @@
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ReparseCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\RubberduckCommandBar.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\SerializeDeclarationsCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ShowParserErrorsCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\CommandBarButtonFactory.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\CommandBarPopupFactory.cs" />

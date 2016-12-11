@@ -53,6 +53,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annotations\AnnotationBase.cs" />
@@ -242,6 +243,7 @@
     <Compile Include="Symbols\PropertySetDeclaration.cs" />
     <Compile Include="Symbols\PropertyGetDeclaration.cs" />
     <Compile Include="Symbols\FunctionDeclaration.cs" />
+    <Compile Include="Symbols\SerializableDeclaration.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
     <Compile Include="Symbols\ProjectReferencePass.cs" />
     <Compile Include="Symbols\SyntaxErrorInfo.cs" />
