@@ -20,7 +20,6 @@ namespace Rubberduck.SmartIndenter
         public virtual bool IndentCompilerDirectives { get; set; }
         public virtual bool AlignDims { get; set; }
         public virtual int AlignDimColumn { get; set; }
-        public virtual bool EnableUndo { get; set; }
         public virtual EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
         public virtual int EndOfLineCommentColumnSpaceAlignment { get; set; }
         public virtual int IndentSpaces { get; set; }
@@ -48,7 +47,6 @@ namespace Rubberduck.SmartIndenter
             IndentCompilerDirectives = true;
             AlignDims = false;
             AlignDimColumn = 15;
-            EnableUndo = true;
             EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn;
             EndOfLineCommentColumnSpaceAlignment = 50;
             IndentSpaces = tabWidth;

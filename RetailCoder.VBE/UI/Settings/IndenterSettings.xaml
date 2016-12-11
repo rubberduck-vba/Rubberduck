@@ -172,14 +172,6 @@
                                                    NumValue="{Binding IndentSpaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                    MinNumber="0"/>
                         </StackPanel>
-                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_EnableOptionsLabel}"
-                               FontWeight="SemiBold" />
-                        <CheckBox IsChecked="{Binding EnableUndo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  Margin="5,0,0,5"
-                                  HorizontalAlignment="Left">
-                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_EnableUndo}"
-                                        TextWrapping="WrapWithOverflow" />
-                        </CheckBox>
                     </StackPanel>
                 </Grid>
             </StackPanel>
