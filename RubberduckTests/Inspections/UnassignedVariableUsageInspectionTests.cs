@@ -155,6 +155,34 @@ End Sub";
             Assert.IsFalse(inspectionResults.Any());
         }
 
+        [TestMethod]
+        public void UnassignedVariableUsage_NoResultIfNoReferences()
+        {
+            const string inputCode =
+@"Sub DoSomething()
+    Dim foo
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new UnassignedVariableUsageInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
 //        Ignored until we can reinstate the quick fix on a specific reference
 //        [TestMethod]
 //        [TestCategory("Inspections")]
