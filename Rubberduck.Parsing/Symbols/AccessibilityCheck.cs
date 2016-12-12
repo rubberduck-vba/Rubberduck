@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Symbols
+﻿using System.Linq;
+
+namespace Rubberduck.Parsing.Symbols
 {
     public static class AccessibilityCheck
     {
@@ -38,7 +40,7 @@
             {
                 return false;
             }    
-            if (IsEnclosingModuleOfInstanceMember(callingModule, calleeMember)
+            if (IsInstanceMemberOfModuleOrOneOfItsSupertypes(callingModule, calleeMember)
                         || IsLocalMemberOfTheCallingSubroutineOrProperty(callingParent, calleeMember))
             {
                 return true;
@@ -51,21 +53,16 @@
                         || (IsEnclosingProject(callingProject, memberModule) && IsAccessibleThroughoutTheSameProject(calleeMember)));
         }
 
-            private static bool IsEnclosingModuleOfInstanceMember(Declaration callingModule, Declaration calleeMember)
+            private static bool IsInstanceMemberOfModuleOrOneOfItsSupertypes(Declaration module, Declaration member)
             {
-                if (callingModule.Equals(calleeMember.ParentScopeDeclaration))
-                {
-                    return true;
-                }
-                foreach (var supertype in ClassModuleDeclaration.GetSupertypes(callingModule))
-                {
-                    if (IsEnclosingModuleOfInstanceMember(supertype, calleeMember))
-                    {
-                        return true;
-                    }
-                }
-                return false;
+                return IsInstanceMemberOfModule(module, member)
+                       || ClassModuleDeclaration.GetSupertypes(module).Any(supertype => IsInstanceMemberOfModuleOrOneOfItsSupertypes(supertype, member));   //ClassModuleDeclaration.GetSuperTypes never returns null.
             }
+
+                private static bool IsInstanceMemberOfModule(Declaration module, Declaration member)
+                {
+                    return member.ParentScopeDeclaration.Equals(module);
+                }
 
             private static bool IsLocalMemberOfTheCallingSubroutineOrProperty(Declaration callingParent, Declaration calleeMember)
             {
