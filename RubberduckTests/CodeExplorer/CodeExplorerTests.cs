@@ -570,7 +570,7 @@ End Sub";
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+                new IndentCommand(state, new Indenter(vbe.Object,() => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -605,7 +605,7 @@ End Sub";
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+                new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -650,7 +650,7 @@ End Sub";
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+                new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -705,7 +705,7 @@ End Sub";
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+                new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -743,7 +743,7 @@ End Sub";
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+                new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -793,7 +793,7 @@ End Sub";
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+                new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -853,7 +853,7 @@ End Sub";
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+                new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -892,7 +892,7 @@ End Sub";
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
             var commands = new List<CommandBase>
             {
-                new IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+                new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -1476,30 +1476,46 @@ End Sub";
             return new Configuration(userSettings);
         }
 
-        private IIndenterSettings GetDefaultIndenterSettings()
-        {
-            var indenterSettings = new IndenterSettings
-            {
-                IndentEntireProcedureBody = true,
-                IndentFirstCommentBlock = true,
-                IndentFirstDeclarationBlock = true,
-                AlignCommentsWithCode = true,
-                AlignContinuations = true,
-                IgnoreOperatorsInContinuations = true,
-                IndentCase = false,
-                ForceDebugStatementsInColumn1 = false,
-                ForceCompilerDirectivesInColumn1 = false,
-                IndentCompilerDirectives = true,
-                AlignDims = false,
-                AlignDimColumn = 15,
-                EnableUndo = true,
-                EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn,
-                EndOfLineCommentColumnSpaceAlignment = 50,
-                IndentSpaces = 4
-            };
+        //private IIndenterSettings Settings.IndenterSettingsTests.GetMockIndenterSettings()()
+        //{
+        //    var indenterSettings = new IndenterSettings
+        //    {
+        //        IndentEntireProcedureBody = true,
+        //        IndentFirstCommentBlock = true,
+        //        IndentFirstDeclarationBlock = true,
+        //        AlignCommentsWithCode = true,
+        //        AlignContinuations = true,
+        //        IgnoreOperatorsInContinuations = true,
+        //        IndentCase = false,
+        //        ForceDebugStatementsInColumn1 = false,
+        //        ForceCompilerDirectivesInColumn1 = false,
+        //        IndentCompilerDirectives = true,
+        //        AlignDims = false,
+        //        AlignDimColumn = 15,
+        //        EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn,
+        //        EndOfLineCommentColumnSpaceAlignment = 50,
+        //        IndentSpaces = 4
+        //    };
 
-            return indenterSettings;
-        }
+        //    var settings = new Mock<IndenterSettings>();
+        //    settings.Setup(s => s.IndentEntireProcedureBody).Returns(true);
+        //    settings.Setup(s => s.IndentFirstCommentBlock).Returns(true);
+        //    settings.Setup(s => s.IndentFirstDeclarationBlock).Returns(true);
+        //    settings.Setup(s => s.AlignCommentsWithCode).Returns(true);
+        //    settings.Setup(s => s.AlignContinuations).Returns(true);
+        //    settings.Setup(s => s.IgnoreOperatorsInContinuations).Returns(true);
+        //    settings.Setup(s => s.IndentCase).Returns(false);
+        //    settings.Setup(s => s.ForceDebugStatementsInColumn1).Returns(false);
+        //    settings.Setup(s => s.ForceCompilerDirectivesInColumn1).Returns(false);
+        //    settings.Setup(s => s.IndentCompilerDirectives).Returns(true);
+        //    settings.Setup(s => s.AlignDims).Returns(false);
+        //    settings.Setup(s => s.AlignDimColumn).Returns(15);
+        //    settings.Setup(s => s.EndOfLineCommentStyle).Returns(EndOfLineCommentStyle.AlignInColumn);
+        //    settings.Setup(s => s.EndOfLineCommentColumnSpaceAlignment).Returns(50);
+        //    settings.Setup(s => s.IndentSpaces).Returns(4);
+
+        //    return indenterSettings;
+        //}
 
         private ConfigurationLoader GetDelimiterConfigLoader()
         {

@@ -4,6 +4,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -20,123 +21,319 @@ namespace Rubberduck.Parsing.Symbols
 
         public IReadOnlyList<Declaration> Load()
         {
-            foreach (var item in _finder.MatchName(Tokens.Err))
+            if (ThereIsAGlobalBuiltInErrVariableDeclaration(_finder))
             {
-                if (item.IsBuiltIn && item.DeclarationType == DeclarationType.Variable &&
-                    item.Accessibility == Accessibility.Global)
-                {
-                    return new List<Declaration>();
-                }
+                return new List<Declaration>();
             }
 
             var vba = _finder.FindProject("VBA");
             if (vba == null)
             {
-                // if VBA project is null, we haven't loaded any COM references;
-                // we're in a unit test and mock project didn't setup any references.
+                // If the VBA project is null, we haven't loaded any COM references;
+                // we're in a unit test and the mock project didn't setup any references.
                 return new List<Declaration>();
             }
 
             var informationModule = _finder.FindStdModule("Information", vba, true);
             Debug.Assert(informationModule != null, "We expect the information module to exist in the VBA project.");
 
-            return Load(vba, informationModule);
+            var debugDeclarations = LoadDebugDeclarations(vba);
+            var specialFormDeclarations = LoadSpecialFormDeclarations(informationModule);
+
+            return debugDeclarations.Concat(specialFormDeclarations).ToList();
         }
 
-        private IReadOnlyList<Declaration> Load(Declaration parentProject, Declaration parentModule)
+            private static bool ThereIsAGlobalBuiltInErrVariableDeclaration(DeclarationFinder finder) 
+            {
+                return finder.MatchName(Tokens.Err).Any(declaration => declaration.IsBuiltIn
+                                                                        && declaration.DeclarationType == DeclarationType.Variable
+                                                                        && declaration.Accessibility == Accessibility.Global);
+            }
+
+
+        private List<Declaration> LoadDebugDeclarations(Declaration parentProject)
         {
-            var declarations = new List<Declaration>();
-            var debugModuleName = new QualifiedModuleName(parentProject.QualifiedName.QualifiedModuleName.ProjectName, parentProject.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
-            var debugModule = new ProceduralModuleDeclaration(new QualifiedMemberName(debugModuleName, "DebugModule"), parentProject, "DebugModule", true, new List<IAnnotation>(), new Attributes());
-            var debugClassName = new QualifiedModuleName(parentProject.QualifiedName.QualifiedModuleName.ProjectName, parentProject.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
-            var debugClass = new ClassModuleDeclaration(new QualifiedMemberName(debugClassName, "DebugClass"), parentProject, "DebugClass", true, new List<IAnnotation>(), new Attributes(), true);
-            var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), debugModule, "Global", "DebugClass", null, true, false, Accessibility.Global, DeclarationType.Variable, false, null);
-            var debugAssert = new SubroutineDeclaration(new QualifiedMemberName(debugClassName, "Assert"), debugClass, debugClass, null, Accessibility.Global, null, Selection.Home, true, null, new Attributes());
-            var debugPrint = new SubroutineDeclaration(new QualifiedMemberName(debugClassName, "Print"), debugClass, debugClass, null, Accessibility.Global, null, Selection.Home, true, null, new Attributes());
-            declarations.Add(debugModule);
-            declarations.Add(debugClass);
-            declarations.Add(debugObject);
-            declarations.Add(debugAssert);
-            declarations.Add(debugPrint);
-            declarations.AddRange(AddSpecialFormDeclarations(parentModule));
+            var debugModule = DebugModuleDeclaration(parentProject);
+            var debugClass = DebugClassDeclaration(parentProject); 
+            var debugObject = DebugObjectDeclaration(debugModule);
+            var debugAssert = DebugAssertDeclaration(debugClass);
+            var debugPrint = DebugPrintDeclaration(debugClass);
+
             // Debug.Print has the same special syntax as the print and write statement.
             // Because of that it is treated specially in the grammar and normally wouldn't be resolved.
             // Since we still want it to be resolved we make it easier for the resolver to access the debug print
             // declaration by exposing it in this way.
             DebugPrint = debugPrint;
-            return declarations;
+
+            return new List<Declaration> { 
+                debugModule,
+                debugClass,
+                debugObject,
+                debugAssert,
+                debugPrint
+            };
         }
 
-        private List<Declaration> AddSpecialFormDeclarations(Declaration parentModule)
+
+            private static ProceduralModuleDeclaration DebugModuleDeclaration(Declaration parentProject)
+            {
+                return new ProceduralModuleDeclaration(
+                    new QualifiedMemberName(DebugModuleName(parentProject), "DebugModule"),
+                    parentProject,
+                    "DebugModule",
+                    true,
+                    new List<IAnnotation>(),
+                    new Attributes());
+}
+                
+                private static QualifiedModuleName DebugModuleName(Declaration parentProject)
+                {
+                    return new QualifiedModuleName(
+                        parentProject.QualifiedName.QualifiedModuleName.ProjectName,
+                        parentProject.QualifiedName.QualifiedModuleName.ProjectPath,
+                        "DebugClass");
+                }
+
+
+            private static ClassModuleDeclaration DebugClassDeclaration(Declaration parentProject)
+            {
+                return new ClassModuleDeclaration(
+                    new QualifiedMemberName(DebugClassName(parentProject), "DebugClass"), 
+                    parentProject, 
+                    "DebugClass", 
+                    true, 
+                    new List<IAnnotation>(), 
+                    new Attributes(), 
+                    true);
+            }
+
+                private static QualifiedModuleName DebugClassName(Declaration parentProject)
+                {
+                    return new QualifiedModuleName(
+                        parentProject.QualifiedName.QualifiedModuleName.ProjectName,
+                        parentProject.QualifiedName.QualifiedModuleName.ProjectPath,
+                        "DebugClass");
+                }
+
+            private static Declaration DebugObjectDeclaration(ProceduralModuleDeclaration debugModule)
+            {
+
+                return new Declaration(
+                    new QualifiedMemberName(debugModule.QualifiedName.QualifiedModuleName, "Debug"), 
+                    debugModule, 
+                    "Global", 
+                    "DebugClass", 
+                    null, 
+                    true, 
+                    false, 
+                    Accessibility.Global, 
+                    DeclarationType.Variable, 
+                    false, 
+                    null);
+            }
+
+            private static SubroutineDeclaration DebugAssertDeclaration(ClassModuleDeclaration debugClass)
+            {
+                return new SubroutineDeclaration(
+                    new QualifiedMemberName(debugClass.QualifiedName.QualifiedModuleName, "Assert"), 
+                    debugClass, 
+                    debugClass, 
+                    null, 
+                    Accessibility.Global, 
+                    null, 
+                    Selection.Home, 
+                    true, 
+                    null, 
+                    new Attributes());
+            }
+
+            private static SubroutineDeclaration DebugPrintDeclaration(ClassModuleDeclaration debugClass)
+            {
+                return new SubroutineDeclaration(
+                    new QualifiedMemberName(debugClass.QualifiedName.QualifiedModuleName, "Print"), 
+                    debugClass, 
+                    debugClass, 
+                    null, 
+                    Accessibility.Global, 
+                    null, Selection.Home, 
+                    true, 
+                    null, 
+                    new Attributes());
+            }
+
+
+        private List<Declaration> LoadSpecialFormDeclarations(Declaration parentModule)
         {
-            List<Declaration> declarations = new List<Declaration>();
             Debug.Assert(parentModule != null);
-            var arrayFunction = new FunctionDeclaration(
-                new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Array"),
-                parentModule,
-                parentModule,
-                "Variant",
-                null,
-                null,
-                Accessibility.Public,
-                null,
-                Selection.Home,
-                false,
-                true,
-                null,
-                new Attributes());
-            var inputFunction = new SubroutineDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Input"), parentModule, parentModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            var numberParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Number"), inputFunction, "Integer", null, null, false, false);
-            var filenumberParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputFunction, "Integer", null, null, false, false);
-            inputFunction.AddParameter(numberParam);
-            inputFunction.AddParameter(filenumberParam);
-            var inputBFunction = new SubroutineDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "InputB"), parentModule, parentModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            var numberBParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Number"), inputBFunction, "Integer", null, null, false, false);
-            var filenumberBParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputBFunction, "Integer", null, null, false, false);
-            inputBFunction.AddParameter(numberBParam);
-            inputBFunction.AddParameter(filenumberBParam);
-            var lboundFunction = new FunctionDeclaration(
-                new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "LBound"),
-                parentModule,
-                parentModule,
-                "Long",
-                null,
-                null,
-                Accessibility.Public,
-                null,
-                Selection.Home,
-                false,
-                true,
-                null,
-                new Attributes());
-            var arrayNameParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Arrayname"), lboundFunction, "Variant", null, null, false, false, true);
-            var dimensionParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Dimension"), lboundFunction, "Long", null, null, true, false);
-            lboundFunction.AddParameter(arrayNameParam);
-            lboundFunction.AddParameter(dimensionParam);
-            var uboundFunction = new FunctionDeclaration(
-                new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "UBound"),
-                parentModule,
-                parentModule,
-                "Long",
-                null,
-                null,
-                Accessibility.Public,
-                null,
-                Selection.Home,
-                false,
-                true,
-                null,
-                new Attributes());
-            var arrayParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Arrayname"), uboundFunction, "Variant", null, null, false, false, true);
-            var rankParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Dimension"), uboundFunction, "Long", null, null, true, false);
-            uboundFunction.AddParameter(arrayParam);
-            uboundFunction.AddParameter(rankParam);
-            declarations.Add(arrayFunction);
-            declarations.Add(inputFunction);
-            declarations.Add(inputBFunction);
-            declarations.Add(lboundFunction);
-            declarations.Add(uboundFunction);
-            return declarations;
+
+            var arrayFunction = ArrayFunction(parentModule);
+            var inputFunction = InputFunction(parentModule);
+            var inputBFunction = InputBFunction(parentModule);
+            var lboundFunction = LBoundFunction(parentModule);
+            var uboundFunction = UBoundFunction(parentModule);
+
+            return new List<Declaration> { 
+                arrayFunction,
+                inputFunction,
+                inputBFunction,
+                lboundFunction,
+                uboundFunction
+            };
         }
+
+            private static FunctionDeclaration ArrayFunction(Declaration parentModule)
+            {
+                return new FunctionDeclaration(
+                    new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Array"),
+                    parentModule,
+                    parentModule,
+                    "Variant",
+                    null,
+                    null,
+                    Accessibility.Public,
+                    null,
+                    Selection.Home,
+                    false,
+                    true,
+                    null,
+                    new Attributes());
+            }
+
+            private static SubroutineDeclaration InputFunction(Declaration parentModule)
+            {
+                var inputFunction = InputFunctionWithoutParameters(parentModule);
+                inputFunction.AddParameter(NumberParameter(parentModule, inputFunction));
+                inputFunction.AddParameter(FileNumberParameter(parentModule, inputFunction));
+                return inputFunction;
+            }
+
+                private static SubroutineDeclaration InputFunctionWithoutParameters(Declaration parentModule)
+                {
+                    return new SubroutineDeclaration(
+                        new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Input"), 
+                        parentModule, 
+                        parentModule, 
+                        "Variant", 
+                        Accessibility.Public, 
+                        null, 
+                        Selection.Home, 
+                        true, 
+                        null, 
+                        new Attributes());
+                }
+
+                private static ParameterDeclaration NumberParameter(Declaration parentModule, SubroutineDeclaration ParentSubroutine)
+                {
+                    return new ParameterDeclaration(
+                        new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Number"), 
+                        ParentSubroutine, 
+                        "Integer", 
+                        null, 
+                        null, 
+                        false, 
+                        false);
+                }
+
+                private static ParameterDeclaration FileNumberParameter(Declaration parentModule, SubroutineDeclaration ParentSubroutine)
+                {
+                    return new ParameterDeclaration(
+                        new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Filenumber"), 
+                        ParentSubroutine, 
+                        "Integer", 
+                        null, 
+                        null, 
+                        false, 
+                        false);
+                }
+
+            private static SubroutineDeclaration InputBFunction(Declaration parentModule)
+            {
+                var inputBFunction = InputBFunctionWithoutParameters(parentModule);
+                inputBFunction.AddParameter(NumberParameter(parentModule, inputBFunction));
+                inputBFunction.AddParameter(FileNumberParameter(parentModule, inputBFunction));
+                return inputBFunction;
+            }
+
+                private static SubroutineDeclaration InputBFunctionWithoutParameters(Declaration parentModule)
+                {
+                    return new SubroutineDeclaration(
+                        new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "InputB"), 
+                        parentModule, 
+                        parentModule, 
+                        "Variant", 
+                        Accessibility.Public, 
+                        null, 
+                        Selection.Home, 
+                        true, 
+                        null, 
+                        new Attributes());
+                }
+
+
+            private static FunctionDeclaration LBoundFunction(Declaration parentModule)
+            {
+                var lboundFunction = LBoundFunctionWithoutParameters(parentModule);
+                lboundFunction.AddParameter(ArrayNameParameter(parentModule, lboundFunction));
+                lboundFunction.AddParameter(DimensionParameter(parentModule, lboundFunction));
+                return lboundFunction;
+            }
+
+                private static FunctionDeclaration LBoundFunctionWithoutParameters(Declaration parentModule)
+                {
+                    return new FunctionDeclaration(
+                        new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "LBound"),
+                        parentModule,
+                        parentModule,
+                        "Long",
+                        null,
+                        null,
+                        Accessibility.Public,
+                        null,
+                        Selection.Home,
+                        false,
+                        true,
+                        null,
+                        new Attributes());
+                }
+        
+                private static ParameterDeclaration ArrayNameParameter(Declaration parentModule, FunctionDeclaration parentFunction)
+                {
+                    var arrayParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Arrayname"), parentFunction, "Variant", null, null, false, false, true);
+                    return arrayParam;
+                }
+
+                private static ParameterDeclaration DimensionParameter(Declaration parentModule, FunctionDeclaration parentFunction)
+                {
+                    var rankParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Dimension"), parentFunction, "Long", null, null, true, false);
+                    return rankParam;
+                }
+
+
+            private static FunctionDeclaration UBoundFunction(Declaration parentModule)
+            {
+                var uboundFunction = UBoundFunctionWithoutParameters(parentModule);
+                uboundFunction.AddParameter(ArrayNameParameter(parentModule, uboundFunction));
+                uboundFunction.AddParameter(DimensionParameter(parentModule, uboundFunction));
+                return uboundFunction;
+            }
+
+                private static FunctionDeclaration UBoundFunctionWithoutParameters(Declaration parentModule)
+                {
+                    return new FunctionDeclaration(
+                        new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "UBound"),
+                        parentModule,
+                        parentModule,
+                        "Long",
+                        null,
+                        null,
+                        Accessibility.Public,
+                        null,
+                        Selection.Home,
+                        false,
+                        true,
+                        null,
+                        new Attributes());
+                }
+
     }
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -557,16 +557,16 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>{0} '{1}' is implicitly 'Variant'</value>
   </data>
   <data name="MalformedAnnotationInspectionMeta" xml:space="preserve">
-    <value>An annotation comment is malformed.</value>
+    <value>An annotation comment is incorrectly specified.</value>
   </data>
   <data name="MalformedAnnotationInspectionName" xml:space="preserve">
-    <value>Malformed annotation</value>
+    <value>Incorrect annotation</value>
   </data>
   <data name="MalformedAnnotationInspectionResultFormat" xml:space="preserve">
-    <value>Malformed '{0}' annotation.</value>
+    <value>Incorrect '{0}' annotation.</value>
   </data>
   <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
-    <value>Add property get</value>
+    <value>Add property get accessor</value>
   </data>
   <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
     <value>Replace 'Dim' with 'Private'</value>

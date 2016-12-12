@@ -157,4 +157,7 @@
   <data name="GitUnpublishFailed" xml:space="preserve">
     <value>Unpublish fehlgeschlagen.</value>
   </data>
+  <data name="NoProjectOpen">
+    <value>There must be a project open for Rubberduck to successfully initialize a repository.</value>
+  </data>
 </root>

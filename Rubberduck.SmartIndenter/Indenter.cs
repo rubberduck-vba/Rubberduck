@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Configuration;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
@@ -71,13 +72,8 @@ namespace Rubberduck.SmartIndenter
             var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
             var indented = Indent(codeLines, component.Name).ToArray();
 
-            for (var i = 0; i < lineCount; i++)
-            {
-                if (module.GetLines(i + 1, 1) != indented[i])
-                {
-                    component.CodeModule.ReplaceLine(i + 1, indented[i]);
-                }
-            }
+            module.DeleteLines(1, lineCount);
+            module.InsertLines(1, string.Join("\r\n", indented));
         }
 
         public void Indent(IVBComponent component, string procedureName, Selection selection)
@@ -93,13 +89,8 @@ namespace Rubberduck.SmartIndenter
 
             var indented = Indent(codeLines, procedureName).ToArray();
 
-            for (var i = 0; i < selection.EndLine - selection.StartLine; i++)
-            {
-                if (module.GetLines(selection.StartLine + i, 1) != indented[i])
-                {
-                    component.CodeModule.ReplaceLine(selection.StartLine + i, indented[i]);
-                }
-            }
+            module.DeleteLines(selection.StartLine, selection.LineCount);
+            module.InsertLines(selection.StartLine, string.Join("\r\n", indented));
         }
 
         private IEnumerable<LogicalCodeLine> BuildLogicalCodeLines(IEnumerable<string> lines)
@@ -107,10 +98,11 @@ namespace Rubberduck.SmartIndenter
             var settings = _settings.Invoke();
             var logical = new List<LogicalCodeLine>();
             LogicalCodeLine current = null;
+            AbsoluteCodeLine previous = null;
 
             foreach (var line in lines)
             {
-                var absolute = new AbsoluteCodeLine(line, settings);
+                var absolute = new AbsoluteCodeLine(line, settings, previous);
                 if (current == null)
                 {
                     current = new LogicalCodeLine(absolute, settings);
@@ -125,6 +117,7 @@ namespace Rubberduck.SmartIndenter
                 {
                     current = null;
                 }
+                previous = absolute;
             }
             return logical;
         }

@@ -81,10 +81,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         public IEnumerable<SerializableDeclaration> Load(string path)
         {
-            if (string.IsNullOrEmpty(FullPath)) { throw new InvalidOperationException(); }
+            if (string.IsNullOrEmpty(path)) { throw new InvalidOperationException(); }
             throw new NotImplementedException();
         }
-
-        public string FullPath { get; set; }
     }
 }

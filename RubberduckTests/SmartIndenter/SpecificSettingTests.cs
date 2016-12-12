@@ -456,6 +456,7 @@ namespace RubberduckTests.SmartIndenter
             {
                 var s = IndenterSettingsTests.GetMockIndenterSettings();
                 s.AlignCommentsWithCode = false;
+                s.IndentFirstCommentBlock = false;
                 return s;
             });
             var actual = indenter.Indent(code, string.Empty);

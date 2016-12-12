@@ -1774,4 +1774,51 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="RubberduckReloadFailure_Message">
     <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>
   </data>
+  <data name="IndenterSettings_PreviewCode">
+    <value>Public Enum ExampleEnum
+' Enum comment.
+Foo
+Bar ' Member comment.
+End Enum
+
+' Example Procedure
+Sub ExampleProc()
+
+' SMART INDENTER
+' Original VB6 code graciously offered to Rubberduck by Stephen Bullen &amp; Rob Bovey
+' © 2016 by Rubberduck VBA.
+
+Dim count As Integer
+Static name As String
+
+If YouLikeRubberduck Then
+' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
+' Follow us on Twitter @rubberduckvba
+' Visit http://rubberduckvba.com for news and updates
+
+Select Case X
+Case "A"
+' If you have any comments or suggestions, _
+or find valid VBA code that isn't indented correctly,
+
+#If VBA6 Then
+MsgBox "Contact contact@rubberduck-vba.com"
+#End If
+
+Case "Continued strings and parameters can be" _
+&amp; "lined up for easier reading, optionally ignoring" _
+&amp; "any operators (&amp;+, etc) at the start of the line."
+
+Debug.Print "X&lt;&gt;1"
+End Select      'Case X
+End If      'More Tools? Suggestions http://github.com/rubberduck-vba/Rubberduck/Issues/New
+
+End Sub</value>
+  </data>
+  <data name="ParserErrorToolTipText">
+    <value>{0} module(s) failed to parse; click for details.</value>
+  </data>
+  <data name="ReparseToolTipText">
+    <value>{0}. Click to refresh.</value>
+  </data>
 </root>
