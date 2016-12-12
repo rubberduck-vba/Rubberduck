@@ -10,6 +10,12 @@ namespace Rubberduck.Parsing.Symbols
     {
         private readonly RubberduckParserState _state;
 
+        private Declaration _conversionModule;
+        private Declaration _fileSystemModule;
+        private Declaration _interactionModule;
+        private Declaration _stringsModule;
+
+
         public AliasDeclarations(RubberduckParserState state)
         {
             _state = state;
@@ -46,399 +52,489 @@ namespace Rubberduck.Parsing.Symbols
 
         private IReadOnlyList<Declaration> AddAliasDeclarations()
         {
-            var conversionModule = _state.AllDeclarations.SingleOrDefault(
-                    item => item.IdentifierName == "Conversion" && item.Scope == "VBE7.DLL;VBA.Conversion");
-
-            var fileSystemModule = _state.AllDeclarations.SingleOrDefault(
-                    item => item.IdentifierName == "FileSystem" && item.Scope == "VBE7.DLL;VBA.FileSystem");
-
-            var interactionModule = _state.AllDeclarations.SingleOrDefault(
-                    item => item.IdentifierName == "Interaction" && item.Scope == "VBE7.DLL;VBA.Interaction");
-
-            var stringsModule = _state.AllDeclarations.SingleOrDefault(
-                    item => item.IdentifierName == "Strings" && item.Scope == "VBE7.DLL;VBA.Strings");
-
-            // all these modules are all part of the same project--only need to check one
-            if (conversionModule == null)
+            UpdateAliasFunctionModulesFromReferencedProjects(_state);
+            
+            if (NoReferenceToProjectContainingTheFunctionAliases())
             {
                 return new List<Declaration>();
             }
+            
+            var possiblyAliasedFunctions = ReferencedBuiltInFunctionsThatMightHaveAnAlias(_state);
+            var functionAliases = FunctionAliasesWithoutParameters();
+            AddParametersToAliasesFromReferencedFunctions(functionAliases, possiblyAliasedFunctions);
+            
+            return functionAliases;
+        }
 
-            var functions = _state.AllDeclarations.Where(s => s.DeclarationType == DeclarationType.Function &&
-                                                              s.Scope.StartsWith("VBE") &&
-                                                              Tokens.Any(token => s.IdentifierName == "_B_var_" + token))
-                                                  .ToList();
-
-            var errorFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Error"),
-                    conversionModule,
-                    conversionModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var hexFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Hex"),
-                    conversionModule,
-                    conversionModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var octFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Oct"),
-                    conversionModule,
-                    conversionModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var strFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Str"),
-                    conversionModule,
-                    conversionModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var curDirFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "FileSystem"), "CurDir"),
-                    fileSystemModule,
-                    fileSystemModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var commandFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Interaction"), "Command"),
-                    interactionModule,
-                    interactionModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var environFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Interaction"), "Environ"),
-                    interactionModule,
-                    interactionModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var chrFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Chr"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var chrwFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "ChrW"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var formatFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Format"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var lcaseFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "LCase"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var leftFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Left"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var leftbFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "LeftB"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var ltrimFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "LTrim"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var midFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Mid"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var midbFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "MidB"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var trimFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Trim"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var rightFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Right"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var rightbFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "RightB"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var rtrimFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "RTrim"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var ucaseFunction = new FunctionDeclaration(
-                    new QualifiedMemberName(
-                        new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "UCase"),
-                    stringsModule,
-                    stringsModule,
-                    "Variant",
-                    null,
-                    string.Empty,
-                    Accessibility.Global,
-                    null,
-                    new Selection(),
-                    false,
-                    true,
-                    new List<IAnnotation>(),
-                    new Attributes());
-
-            var functionAliases = new List<Declaration> {
-                errorFunction,
-                hexFunction,
-                octFunction,
-                strFunction,
-                curDirFunction,
-                commandFunction,
-                environFunction,
-                chrFunction,
-                chrwFunction,
-                formatFunction,
-                lcaseFunction,
-                leftFunction,
-                leftbFunction,
-                ltrimFunction,
-                midFunction,
-                midbFunction,
-                trimFunction,
-                rightFunction,
-                rightbFunction,
-                rtrimFunction,
-                ucaseFunction
-            };
-
-            // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
-            foreach (FunctionDeclaration alias in functionAliases)
+            private void UpdateAliasFunctionModulesFromReferencedProjects(RubberduckParserState state)
             {
-                foreach (var parameter in ((FunctionDeclaration)functions.Single(s => s.IdentifierName == "_B_var_" + alias.IdentifierName)).Parameters)
+                _conversionModule = state.AllDeclarations.SingleOrDefault(
+                        item => item.IdentifierName == "Conversion" && item.Scope == "VBE7.DLL;VBA.Conversion");
+
+                _fileSystemModule = state.AllDeclarations.SingleOrDefault(
+                        item => item.IdentifierName == "FileSystem" && item.Scope == "VBE7.DLL;VBA.FileSystem");
+
+                _interactionModule = state.AllDeclarations.SingleOrDefault(
+                        item => item.IdentifierName == "Interaction" && item.Scope == "VBE7.DLL;VBA.Interaction");
+
+                _stringsModule = state.AllDeclarations.SingleOrDefault(
+                        item => item.IdentifierName == "Strings" && item.Scope == "VBE7.DLL;VBA.Strings");
+            }
+
+
+            private bool NoReferenceToProjectContainingTheFunctionAliases()
+            {
+                return _conversionModule == null;   // All the modules containing function aliases are part of the same project. --> Only need to check one.
+            }
+
+
+            private List<Declaration> ReferencedBuiltInFunctionsThatMightHaveAnAlias(RubberduckParserState state)
+            {
+                var functions = state.AllDeclarations.Where(s => s.DeclarationType == DeclarationType.Function
+                                                                  && s.Scope.StartsWith("VBE")
+                                                                  && Tokens.Any(token => s.IdentifierName == "_B_var_" + token));
+                return functions.ToList();
+            }
+
+
+            private List<FunctionDeclaration> FunctionAliasesWithoutParameters()
+            {
+                return new List<FunctionDeclaration> {
+                    ErrorFunction(),
+                    HexFunction(),
+                    OctFunction(),
+                    StrFunction(),
+                    CurDirFunction(),
+                    CommandFunction(),
+                    EnvironFunction(),
+                    ChrFunction(),
+                    ChrwFunction(),
+                    FormatFunction(),
+                    LCaseFunction(),
+                    LeftFunction(),
+                    LeftBFunction(),
+                    LTrimFunction(),
+                    MidFunction(),
+                    MidBFunction(),
+                    TrimFunction(),
+                    RightFunction(),
+                    RightBFunction(),
+                    RTrimFunction(),
+                    UCaseFunction()
+                };
+            }
+
+                private FunctionDeclaration ErrorFunction()
                 {
-                    alias.AddParameter(parameter);
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Error"),
+                            _conversionModule,
+                            _conversionModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration HexFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Hex"),
+                            _conversionModule,
+                            _conversionModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration OctFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Oct"),
+                            _conversionModule,
+                            _conversionModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration StrFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Str"),
+                            _conversionModule,
+                            _conversionModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration CurDirFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "FileSystem"), "CurDir"),
+                            _fileSystemModule,
+                            _fileSystemModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration CommandFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Interaction"), "Command"),
+                            _interactionModule,
+                            _interactionModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration EnvironFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Interaction"), "Environ"),
+                            _interactionModule,
+                            _interactionModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration ChrFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Chr"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration ChrwFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "ChrW"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration FormatFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Format"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration LCaseFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "LCase"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration LeftFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Left"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration LeftBFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "LeftB"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration LTrimFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "LTrim"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration MidFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Mid"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration MidBFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "MidB"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration TrimFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Trim"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration RightFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Right"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration RightBFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "RightB"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration RTrimFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "RTrim"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+                private FunctionDeclaration UCaseFunction()
+                {
+                    return new FunctionDeclaration(
+                            new QualifiedMemberName(
+                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "UCase"),
+                            _stringsModule,
+                            _stringsModule,
+                            "Variant",
+                            null,
+                            string.Empty,
+                            Accessibility.Global,
+                            null,
+                            new Selection(),
+                            false,
+                            true,
+                            new List<IAnnotation>(),
+                            new Attributes());
+                }
+
+
+            private static void AddParametersToAliasesFromReferencedFunctions(List<FunctionDeclaration> functionAliases, List<Declaration> referencedFunctions)
+            {
+                // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
+                foreach (var alias in functionAliases)
+                {
+                    foreach (var parameter in ((FunctionDeclaration)referencedFunctions.Single(s => s.IdentifierName == "_B_var_" + alias.IdentifierName)).Parameters)
+                    {
+                        alias.AddParameter(parameter);
+                    }
                 }
             }
 
-            return functionAliases;
-        }
     }
 }
