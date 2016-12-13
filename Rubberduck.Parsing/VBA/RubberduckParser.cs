@@ -433,7 +433,12 @@ namespace Rubberduck.Parsing.VBA
                                     try
                                     {
                                         var comReflector = new ReferencedDeclarationsCollector(State);
-                                        var items = comReflector.GetDeclarationsForReference(localReference);
+                                        SerializableDeclarationTree tree;
+                                        var items = comReflector.GetDeclarationsForReference(localReference, out tree);
+                                        if (tree != null)
+                                        {
+                                            State.BuiltInDeclarationTrees.Add(tree);
+                                        }
 
                                         foreach (var declaration in items)
                                         {
