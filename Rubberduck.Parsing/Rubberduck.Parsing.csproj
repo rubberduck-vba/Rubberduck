@@ -129,6 +129,7 @@
     <Compile Include="Preprocessing\VBADateListener.cs" />
     <Compile Include="Preprocessing\VBADateParser.cs" />
     <Compile Include="Preprocessing\VBADateVisitor.cs" />
+    <Compile Include="Symbols\SpecialFormDeclarations.cs" />
     <Compile Include="Symbols\ComInformation.cs" />
     <Compile Include="Symbols\CommentNode.cs" />
     <Compile Include="Symbols\ComParameter.cs" />
