@@ -320,6 +320,7 @@
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\LogLevelHelper.cs" />
     <Compile Include="Common\ModuleExporter.cs" />
+    <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\WinAPI\IRawDevice.cs" />
     <Compile Include="Common\WinAPI\KeyMap.cs" />
     <Compile Include="Common\WinAPI\RawKeyEventArgs.cs" />

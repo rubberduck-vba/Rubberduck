@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -34,7 +35,7 @@ namespace Rubberduck.Inspections
         private readonly Declaration _target;
         public override string Description
         {
-            get { return string.Format(InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat, _target.IdentifierName); }
+            get { return string.Format(InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat, _target.IdentifierName).Captialize(); }
         }
     }
 

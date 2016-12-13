@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                return string.Format(InspectionsUI.SelfAssignedDeclarationInspectionResultFormat, Target.IdentifierName);
+                return string.Format(InspectionsUI.SelfAssignedDeclarationInspectionResultFormat, Target.IdentifierName).Captialize();
             }
         }
     }
