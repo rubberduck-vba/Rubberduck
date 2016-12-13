@@ -529,7 +529,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An annotation comment is malformed..
+        ///   Looks up a localized string similar to An annotation comment is incorrectly specified..
         /// </summary>
         public static string MalformedAnnotationInspectionMeta {
             get {
@@ -538,7 +538,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Malformed annotation.
+        ///   Looks up a localized string similar to Incorrect annotation.
         /// </summary>
         public static string MalformedAnnotationInspectionName {
             get {
@@ -547,7 +547,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Malformed &apos;{0}&apos; annotation..
+        ///   Looks up a localized string similar to Incorrect &apos;{0}&apos; annotation..
         /// </summary>
         public static string MalformedAnnotationInspectionResultFormat {
             get {
@@ -1394,7 +1394,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A variable is declared and assigned a value/reference, but it&apos;s never referred to..
+        ///   Looks up a localized string similar to A variable is declared, but never referred to..
         /// </summary>
         public static string VariableNotUsedInspectionMeta {
             get {
@@ -1466,7 +1466,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add property get.
+        ///   Looks up a localized string similar to Add property get accessor.
         /// </summary>
         public static string WriteOnlyPropertyQuickFix {
             get {
