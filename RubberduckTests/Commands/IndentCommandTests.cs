@@ -170,7 +170,7 @@ End Sub
                 Assert.Inconclusive("Parser Error");
             }
 
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object));
+            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), parser.State);
             indentCommand.Execute(null);
 
             var module1 = project.Object.VBComponents["Comp1"].CodeModule;
@@ -198,7 +198,7 @@ End Sub
                 Assert.Inconclusive("Parser Error");
             }
 
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object));
+            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), parser.State);
             Assert.IsFalse(indentCommand.CanExecute(null));
         }
 
@@ -218,29 +218,12 @@ End Sub
                 Assert.Inconclusive("Parser Error");
             }
 
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object));
+            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), parser.State);
             Assert.IsTrue(indentCommand.CanExecute(null));
         }
 
         private static IIndenter CreateIndenter(IVBE vbe)
         {
-            //var settings = new Mock<IndenterSettings>();
-            //settings.Setup(s => s.IndentEntireProcedureBody).Returns(true);
-            //settings.Setup(s => s.IndentFirstCommentBlock).Returns(true);
-            //settings.Setup(s => s.IndentFirstDeclarationBlock).Returns(true);
-            //settings.Setup(s => s.AlignCommentsWithCode).Returns(true);
-            //settings.Setup(s => s.AlignContinuations).Returns(true);
-            //settings.Setup(s => s.IgnoreOperatorsInContinuations).Returns(true);
-            //settings.Setup(s => s.IndentCase).Returns(false);
-            //settings.Setup(s => s.ForceDebugStatementsInColumn1).Returns(false);
-            //settings.Setup(s => s.ForceCompilerDirectivesInColumn1).Returns(false);
-            //settings.Setup(s => s.IndentCompilerDirectives).Returns(true);
-            //settings.Setup(s => s.AlignDims).Returns(false);
-            //settings.Setup(s => s.AlignDimColumn).Returns(15);
-            //settings.Setup(s => s.EndOfLineCommentStyle).Returns(EndOfLineCommentStyle.AlignInColumn);
-            //settings.Setup(s => s.EndOfLineCommentColumnSpaceAlignment).Returns(50);
-            //settings.Setup(s => s.IndentSpaces).Returns(4);
-
             return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
     }
