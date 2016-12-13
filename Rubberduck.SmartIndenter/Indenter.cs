@@ -71,7 +71,7 @@ namespace Rubberduck.SmartIndenter
             }
 
             var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
-            var indented = Indent(codeLines, component.Name).ToArray();
+            var indented = Indent(codeLines, component.Name);
 
             module.DeleteLines(1, lineCount);
             module.InsertLines(1, string.Join("\r\n", indented));
