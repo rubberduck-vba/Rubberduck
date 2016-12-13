@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
@@ -27,7 +28,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(Inspection.Description, _reference.Declaration.IdentifierName); }
+            get { return string.Format(Inspection.Description, _reference.Declaration.IdentifierName).Captialize(); }
         }
 
         private ParserRuleContext GetFirst(Type nodeType)

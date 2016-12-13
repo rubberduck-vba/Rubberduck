@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
@@ -20,7 +21,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return Inspection.Description; }
+            get { return Inspection.Description.Captialize(); }
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }

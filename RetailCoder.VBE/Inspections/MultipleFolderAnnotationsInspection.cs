@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Annotations;
@@ -37,7 +38,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(Inspection.Description, Target.IdentifierName); }
+            get { return string.Format(Inspection.Description, Target.IdentifierName).Captialize(); }
         }
     }
 }
