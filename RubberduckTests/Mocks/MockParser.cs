@@ -43,7 +43,7 @@ namespace RubberduckTests.Mocks
         {
             return new RubberduckParser(vbe, state, attributeParser,
                 () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
-                new List<ICustomDeclarationLoader> {new DebugDeclarations(state), new FormEventDeclarations(state), new AliasDeclarations(state)}, true);
+                new List<ICustomDeclarationLoader> {new DebugDeclarations(state), new SpecialFormDeclarations(state), new FormEventDeclarations(state), new AliasDeclarations(state)}, true);
         }
     }
 }
