@@ -187,7 +187,7 @@ namespace Rubberduck.Root
                 .BindAllInterfaces()
                 .Configure(binding => binding.InSingletonScope()));
 
-            Bind<IPersistable<SerializableDeclaration>>().To<XmlPersistableDeclarations>().InCallScope();
+            Bind<IPersistable<SerializableDeclarationTree>>().To<XmlPersistableDeclarations>().InCallScope();
 
             Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InCallScope();
             Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InCallScope();
@@ -412,9 +412,9 @@ namespace Rubberduck.Root
                 KernelInstance.Get<ReparseCommandMenuItem>(),
                 KernelInstance.Get<ShowParserErrorsCommandMenuItem>(),
                 KernelInstance.Get<ContextSelectionLabelMenuItem>(),
-//#if DEBUG
-//                KernelInstance.Get<SerializeDeclarationsCommandMenuItem>()
-//#endif
+#if DEBUG
+                KernelInstance.Get<SerializeDeclarationsCommandMenuItem>()
+#endif
             };
         }
 

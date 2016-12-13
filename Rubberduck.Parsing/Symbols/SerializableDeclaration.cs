@@ -10,8 +10,11 @@ namespace Rubberduck.Parsing.Symbols
     [DataContract]
     public class SerializableDeclarationTree
     {
-        private readonly SerializableDeclaration _node;
-        private readonly IEnumerable<SerializableDeclarationTree> _children;
+        [DataMember(IsRequired = true)]
+        public readonly SerializableDeclaration Node;
+
+        [DataMember(IsRequired = true)]
+        public readonly IEnumerable<SerializableDeclarationTree> Children;
 
         public SerializableDeclarationTree(Declaration declaration)   
             : this(new SerializableDeclaration(declaration)) { }
@@ -21,15 +24,9 @@ namespace Rubberduck.Parsing.Symbols
 
         public SerializableDeclarationTree(SerializableDeclaration node, IEnumerable<SerializableDeclarationTree> children)
         {
-            _node = node;
-            _children = children;
+            Node = node;
+            Children = children;
         }
-
-        [DataMember]
-        public SerializableDeclaration Node { get { return _node; } }
-        
-        [DataMember]
-        public IEnumerable<SerializableDeclarationTree> Children { get { return _children; } }
     }
 
     public class SerializableDeclaration
@@ -41,10 +38,11 @@ namespace Rubberduck.Parsing.Symbols
         {
             IdentifierName = declaration.IdentifierName;
 
+            //todo: figure these out
+            //Annotations = declaration.Annotations.Cast<AnnotationBase>().ToArray();
+            //Attributes = declaration.Attributes.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray());
+
             ParentScope = declaration.ParentScope;
-            QualifiedMemberName = declaration.QualifiedName;
-            Annotations = declaration.Annotations.Cast<AnnotationBase>().ToArray();
-            Attributes = declaration.Attributes.ToArray();
             TypeHint = declaration.TypeHint;
             AsTypeName = declaration.AsTypeName;
             IsArray = declaration.IsArray;
@@ -53,13 +51,22 @@ namespace Rubberduck.Parsing.Symbols
             IsWithEvents = declaration.IsWithEvents;
             Accessibility = declaration.Accessibility;
             DeclarationType = declaration.DeclarationType;
+
+            MemberName = declaration.QualifiedName.MemberName;
+            ProjectName = declaration.QualifiedName.QualifiedModuleName.ProjectName;
+            ProjectPath = declaration.QualifiedName.QualifiedModuleName.ProjectPath;
+            ComponentName = declaration.QualifiedName.QualifiedModuleName.ComponentName;
         }
 
         public string IdentifierName { get; set; }
 
-        public QualifiedMemberName QualifiedMemberName { get; set; }
-        public AnnotationBase[] Annotations { get; set; }
-        public KeyValuePair<string, IEnumerable<string>>[] Attributes { get; set; }
+        public string MemberName { get; set; }
+        public string ProjectName { get; set; }
+        public string ProjectPath { get; set; }
+        public string ComponentName { get; set; }
+
+        public QualifiedModuleName QualifiedModuleName { get { return new QualifiedModuleName(ProjectName, ProjectPath, ComponentName); } }
+        public QualifiedMemberName QualifiedMemberName { get { return new QualifiedMemberName(QualifiedModuleName, MemberName); } }
 
         public string ParentScope { get; set; }
         public string AsTypeName { get; set; }
@@ -73,12 +80,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration Unwrap(Declaration parent)
         {
-            var attributes = new Attributes();
-            foreach (var keyValuePair in Attributes)
-            {
-                attributes.Add(keyValuePair.Key, keyValuePair.Value);
-            }
-            return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn, Annotations, attributes);
+            return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn);
         }
     }
 }
