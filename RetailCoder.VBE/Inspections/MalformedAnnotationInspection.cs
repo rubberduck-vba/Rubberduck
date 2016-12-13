@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
@@ -70,7 +71,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(Inspection.Description, ((VBAParser.AnnotationContext)Context).annotationName().GetText()); }
+            get { return string.Format(Inspection.Description, ((VBAParser.AnnotationContext)Context).annotationName().GetText()).Captialize(); }
         }
     }
 }

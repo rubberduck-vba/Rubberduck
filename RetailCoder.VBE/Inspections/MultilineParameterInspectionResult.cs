@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections
                 return string.Format(
                     Target.Context.GetSelection().LineCount > 3
                         ? RubberduckUI.EasterEgg_Continuator
-                        : InspectionsUI.MultilineParameterInspectionResultFormat, Target.IdentifierName);
+                        : InspectionsUI.MultilineParameterInspectionResultFormat, Target.IdentifierName).Captialize();
             }
         }
 

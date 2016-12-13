@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 
@@ -22,7 +23,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return Inspection.Description; }
+            get { return Inspection.Description.Captialize(); }
         }
     }
 }

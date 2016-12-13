@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
@@ -29,7 +30,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.EncapsulatePublicFieldInspectionResultFormat, Target.IdentifierName); }
+            get { return string.Format(InspectionsUI.EncapsulatePublicFieldInspectionResultFormat, Target.IdentifierName).Captialize(); }
         }
     }
 

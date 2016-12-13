@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                return string.Format(InspectionsUI.UnassignedVariableUsageInspectionResultFormat, Target.IdentifierName);
+                return string.Format(InspectionsUI.UnassignedVariableUsageInspectionResultFormat, Target.IdentifierName).Captialize();
             }
         }
     }

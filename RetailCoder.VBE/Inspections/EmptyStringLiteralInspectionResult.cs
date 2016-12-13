@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -24,7 +25,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return InspectionsUI.EmptyStringLiteralInspectionResultFormat; }
+            get { return InspectionsUI.EmptyStringLiteralInspectionResultFormat.Captialize(); }
         }
     }
 

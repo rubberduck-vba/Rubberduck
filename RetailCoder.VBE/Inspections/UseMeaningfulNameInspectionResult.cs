@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
@@ -28,7 +29,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.UseMeaningfulNameInspectionResultFormat, RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, UI.Settings.Settings.Culture), Target.IdentifierName); }
+            get { return string.Format(InspectionsUI.UseMeaningfulNameInspectionResultFormat, RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, UI.Settings.Settings.Culture), Target.IdentifierName).Captialize(); }
         }
 
         public override NavigateCodeEventArgs GetNavigationArgs()

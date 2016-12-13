@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
@@ -30,7 +31,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, Target.IdentifierName); }
+            get { return string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, Target.IdentifierName).Captialize(); }
         }
     }
 

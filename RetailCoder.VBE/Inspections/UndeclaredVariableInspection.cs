@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -43,7 +44,7 @@ namespace Rubberduck.Inspections
             get { return _quickFixes; }
         }
 
-        public override string Description{get { return string.Format(InspectionsUI.UndeclaredVariableInspectionResultFormat, Target.IdentifierName); }}
+        public override string Description { get { return string.Format(InspectionsUI.UndeclaredVariableInspectionResultFormat, Target.IdentifierName).Captialize(); } }
     }
 
     public class IntroduceLocalVariableQuickFix : CodeInspectionQuickFix
