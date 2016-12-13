@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Printing;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -26,9 +27,9 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
     public class SerializeDeclarationsCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IPersistable<SerializableDeclaration> _service;
+        private readonly IPersistable<SerializableDeclarationTree> _service;
 
-        public SerializeDeclarationsCommand(RubberduckParserState state, IPersistable<SerializableDeclaration> service) 
+        public SerializeDeclarationsCommand(RubberduckParserState state, IPersistable<SerializableDeclarationTree> service) 
             : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
@@ -48,38 +49,41 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             var path = Path.Combine(BasePath, "declarations");
             if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
 
-            var declarations = _state.AllDeclarations
-                .Where(declaration => declaration.IsBuiltIn)
-                .Select(declaration => new SerializableDeclaration(declaration))
-                .GroupBy(declaration => declaration.QualifiedMemberName.QualifiedModuleName.ProjectPath);
-            foreach (var project in declarations)
+            foreach (var tree in _state.BuiltInDeclarationTrees)
             {
                 System.Diagnostics.Debug.Assert(path != null, "project path isn't supposed to be null");
 
-                var filename = Path.GetFileNameWithoutExtension(project.Key) + ".xml";
-                _service.Persist(Path.Combine(path, filename), project);
+                var filename = Path.GetFileNameWithoutExtension(tree.Node.QualifiedMemberName.QualifiedModuleName.ProjectName) + ".xml";
+                _service.Persist(Path.Combine(path, filename), tree);
             }
         }
     }
 
-    public class XmlPersistableDeclarations : IPersistable<SerializableDeclaration>
+    public class XmlPersistableDeclarations : IPersistable<SerializableDeclarationTree>
     {
-        public void Persist(string path, IEnumerable<SerializableDeclaration> items)
+        public void Persist(string path, SerializableDeclarationTree tree)
         {
             if (string.IsNullOrEmpty(path)) { throw new InvalidOperationException(); }
 
-            var emptyNamespace = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });       
-            using (var writer = new StreamWriter(path, false))
+            var xmlSettings = new XmlWriterSettings
             {
-                var serializer = new XmlSerializer(typeof(SerializableDeclaration));
-                foreach (var item in items)
-                {
-                    serializer.Serialize(writer, item, emptyNamespace);
-                }
+                NamespaceHandling = NamespaceHandling.OmitDuplicates,
+                Encoding = Encoding.UTF8,
+                //Indent = true
+            };
+
+            using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
+            using (var xmlWriter = XmlWriter.Create(stream, xmlSettings))
+            using (var writer = XmlDictionaryWriter.CreateDictionaryWriter(xmlWriter))
+            {
+                writer.WriteStartDocument();
+                var settings = new DataContractSerializerSettings {RootNamespace = XmlDictionaryString.Empty};
+                var serializer = new DataContractSerializer(typeof (SerializableDeclarationTree), settings);
+                serializer.WriteObject(writer, tree);
             }
         }
 
-        public IEnumerable<SerializableDeclaration> Load(string path)
+        public SerializableDeclarationTree Load(string path)
         {
             if (string.IsNullOrEmpty(path)) { throw new InvalidOperationException(); }
             throw new NotImplementedException();

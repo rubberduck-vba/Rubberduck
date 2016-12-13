@@ -31,7 +31,8 @@ namespace Rubberduck.Inspections
             var lenbFunction = BuiltInDeclarations.SingleOrDefault(s => s.Scope == "VBE7.DLL;VBA.Strings.LenB");
 
             return from issue in declarations 
-                   where !DeclarationReferencesContainsReference(lenFunction, issue) 
+                   where issue.References.Any()
+                      && !DeclarationReferencesContainsReference(lenFunction, issue) 
                       && !DeclarationReferencesContainsReference(lenbFunction, issue) 
                    select new UnassignedVariableUsageInspectionResult(this, issue.Context, issue.QualifiedName.QualifiedModuleName, issue);
         }
