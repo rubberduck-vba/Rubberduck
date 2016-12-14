@@ -84,7 +84,8 @@ namespace Rubberduck
                 if (!pane.IsWrappingNullReference)
                 {
                     selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
-                    _stateBar.SetContextSelectionCaption(GetSelectionText(selectedDeclaration));
+                    var caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
+                    _stateBar.SetContextSelectionCaption(caption);
                 }
 
                 var currentStatus = _parser.State.Status;
@@ -97,55 +98,6 @@ namespace Rubberduck
                 _lastStatus = currentStatus;
                 _lastSelectedDeclaration = selectedDeclaration;
             }
-        }
-
-        private string GetSelectionText(Declaration declaration)
-        {
-            if (declaration == null && _vbe.ActiveCodePane != null)
-            {
-                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
-                if (selection.HasValue)
-                {
-                    return selection.Value.ToString();
-                }
-            }
-            else if (declaration == null && _vbe.ActiveCodePane == null)
-            {
-                return string.Empty;
-            }
-            else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
-            {
-                var typeName = declaration.HasTypeHint
-                    ? Declaration.TypeHintToTypeName[declaration.TypeHint]
-                    : declaration.AsTypeName;
-
-                return string.Format("{0}|{1}: {2} ({3}{4})",
-                    declaration.QualifiedSelection.Selection,
-                    declaration.QualifiedName.QualifiedModuleName,
-                    declaration.IdentifierName,
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
-                    string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + typeName);
-            }
-            else if (declaration != null)
-            {
-                // todo: confirm this is what we want, and then refator
-                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
-                if (selection.HasValue)
-                {
-                    var typeName = declaration.HasTypeHint
-                        ? Declaration.TypeHintToTypeName[declaration.TypeHint]
-                        : declaration.AsTypeName;
-
-                    return string.Format("{0}|{1}: {2} ({3}{4})",
-                        selection.Value.Selection,
-                        declaration.QualifiedName.QualifiedModuleName,
-                        declaration.IdentifierName,
-                        RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
-                        string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + typeName);
-                }
-            }
-
-            return string.Empty;
         }
 
         private bool ShouldEvaluateCanExecute(Declaration selectedDeclaration, ParserState currentStatus)
