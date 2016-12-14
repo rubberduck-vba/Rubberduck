@@ -1057,6 +1057,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Load Indenter Settings.
+        /// </summary>
+        public static string DialogCaption_LoadIndenterSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadIndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Indenter Settings.
+        /// </summary>
+        public static string DialogCaption_SaveIndenterSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveIndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML file|*.xml.
+        /// </summary>
+        public static string DialogMask_XmlFilesOnly {
+            get {
+                return ResourceManager.GetString("DialogMask_XmlFilesOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You&apos;ve earned the &quot;Continuator&quot; badge!.
         /// </summary>
         public static string EasterEgg_Continuator {
@@ -3246,11 +3273,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string SettingsCaption_ExportSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_ExportSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General Settings.
         /// </summary>
         public static string SettingsCaption_GeneralSettings {
             get {
                 return ResourceManager.GetString("SettingsCaption_GeneralSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string SettingsCaption_ImportSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_ImportSettings", resourceCulture);
             }
         }
         

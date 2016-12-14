@@ -1840,6 +1840,20 @@ End If      'More Tools? Suggestions http://github.com/rubberduck-vba/Rubberduck
 
 End Sub</value>
   </data>
+  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
+    <value>Load Indenter Settings</value>
+  </data>
+  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
+    <value>Save Indenter Settings</value>
+  </data>
+  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
+    <value>XML file|*.xml</value>
+  </data>
+  <data name="SettingsCaption_ExportSettings" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="SettingsCaption_ImportSettings" xml:space="preserve">
+    <value>Import</value>
   <data name="ContextReferences" xml:space="preserve">
     <value>references</value>
     <comment>Used to display number of references in commandbar's context selection</comment>
