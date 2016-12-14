@@ -59,16 +59,26 @@
                                     <ColumnDefinition MaxWidth="75"/>
                                     <ColumnDefinition MaxWidth="75"/>
                                 </Grid.ColumnDefinitions>
-                                <Button Foreground="Blue" Grid.Column="1" 
-                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                        Command="{Binding ImportButtonCommand}" >
-                                    <TextBlock TextDecorations="Underline" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ImportSettings}" />
-                                </Button>
-                                <Button Foreground="Blue" Grid.Column="2" 
-                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                        Command="{Binding ExportButtonCommand}" >
-                                    <TextBlock TextDecorations="Underline" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}" />
-                                </Button>
+                                <TextBlock Foreground="Blue" 
+                                            Grid.Column="1" 
+                                            TextDecorations="Underline" 
+                                            Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ImportSettings}" 
+                                            VerticalAlignment="Center"
+                                            Margin="5,0,5,0">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding Command="{Binding ImportButtonCommand}" MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                                <TextBlock Foreground="Blue" 
+                                            Grid.Column="2" 
+                                            TextDecorations="Underline" 
+                                            Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}" 
+                                            VerticalAlignment="Center"
+                                            Margin="5,0,5,0">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding Command="{Binding ExportButtonCommand}" MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
                             </Grid>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"/>
@@ -133,7 +143,7 @@
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_EndOfLineCommentStyle}"
                               FontWeight="SemiBold"
                               HorizontalAlignment="Left" />
-                        <StackPanel Orientation="Horizontal">                       
+                        <StackPanel Orientation="Horizontal">
                             <ComboBox Margin="5,0,0,5"
                                   Width="210"
                                   HorizontalAlignment="Left"
