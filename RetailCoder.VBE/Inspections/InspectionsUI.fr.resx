@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -329,7 +329,7 @@
     <value>Une variable est déclarée, mais pas assignée</value>
   </data>
   <data name="VariableNotUsedInspectionMeta" xml:space="preserve">
-    <value>Une variable est déclarée, une valeur ou référence y est assignée, mais rien n'y réfère.</value>
+    <value>Une variable est déclarée, mais rien n'y réfère.</value>
   </data>
   <data name="VariableNotUsedInspectionName" xml:space="preserve">
     <value>La variable n'est pas utilisée</value>
@@ -580,16 +580,16 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
     <value>La variable locale '{0}' n'est pas déclarée</value>
     <comment>{0} variable name</comment>
   </data>
-  <data name="WriteOnlyPropertyQuickFix">
+  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
     <value>Ajouter un accesseur 'Property Get'</value>
   </data>
-  <data name="MalformedAnnotationInspectionName">
+  <data name="MalformedAnnotationInspectionName" xml:space="preserve">
     <value>Annotation incorrecte</value>
   </data>
-  <data name="MalformedAnnotationInspectionResultFormat">
+  <data name="MalformedAnnotationInspectionResultFormat" xml:space="preserve">
     <value>Annotation '{0}' incorrecte.</value>
   </data>
-  <data name="MalformedAnnotationInspectionMeta">
+  <data name="MalformedAnnotationInspectionMeta" xml:space="preserve">
     <value>Un commentaire contient une annotation spécifiée incorrectement.</value>
   </data>
 </root>
