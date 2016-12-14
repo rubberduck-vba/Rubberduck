@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1750,31 +1750,31 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
     <value>Kommentare in Enums und Typen wie in Prozeduren einrücken</value>
   </data>
-  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse">
+  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
     <value>Inspektionen nach erfolgreichem Parsen automatisch starten</value>
   </data>
-  <data name="RubberduckReloadFailure_Title">
+  <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck wird nicht neu geladen</value>
   </data>
-  <data name="GeneralSettings_ShowSplash">
+  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Ein Startlogo zu Beginn zeigen</value>
   </data>
-  <data name="HotkeyDescription_RefactorEncapsulateField">
+  <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
     <value>Refactor /  Feld kapseln</value>
   </data>
-  <data name="CodeExplorer_CollapseSubnodesToolTip">
+  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
     <value>Knoten und alle Kindknoten einklappen</value>
   </data>
-  <data name="CodeInspectionSettings_Misc">
+  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
     <value>Verschiedenes</value>
   </data>
-  <data name="CodeExplorer_ExpandSubnodesToolTip">
+  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
     <value>Expand node and all child nodes</value>
   </data>
-  <data name="RubberduckReloadFailure_Message">
+  <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>
   </data>
-  <data name="IndenterSettings_PreviewCode">
+  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
     <value>Public Enum ExampleEnum
 ' Enum comment.
 Foo
@@ -1815,10 +1815,13 @@ End If      'More Tools? Suggestions http://github.com/rubberduck-vba/Rubberduck
 
 End Sub</value>
   </data>
-  <data name="ParserErrorToolTipText">
+  <data name="ParserErrorToolTipText" xml:space="preserve">
     <value>{0} module(s) failed to parse; click for details.</value>
   </data>
-  <data name="ReparseToolTipText">
+  <data name="ReparseToolTipText" xml:space="preserve">
     <value>{0}. Click to refresh.</value>
+  </data>
+  <data name="ContextReferences" xml:space="preserve">
+    <value>Referenzen</value>
   </data>
 </root>

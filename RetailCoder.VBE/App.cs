@@ -84,7 +84,8 @@ namespace Rubberduck
                 if (!pane.IsWrappingNullReference)
                 {
                     selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
-                    _stateBar.SetContextSelectionCaption(GetSelectionText(selectedDeclaration));
+                    var caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
+                    _stateBar.SetContextSelectionCaption(caption);
                 }
 
                 var currentStatus = _parser.State.Status;
@@ -119,7 +120,7 @@ namespace Rubberduck
                     ? Declaration.TypeHintToTypeName[declaration.TypeHint]
                     : declaration.AsTypeName;
 
-                return string.Format("{0}|{1}: {2} ({3}{4})",
+                return string.Format("{0}|{1}.{2} ({3}{4})",
                     declaration.QualifiedSelection.Selection,
                     declaration.QualifiedName.QualifiedModuleName,
                     declaration.IdentifierName,
@@ -128,6 +129,30 @@ namespace Rubberduck
             }
             else if (declaration != null)
             {
+                var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName.ToString();
+                if (declaration.DeclarationType == DeclarationType.Enumeration || 
+                    declaration.DeclarationType == DeclarationType.UserDefinedType)
+                {
+                    qualifiedModuleName = string.Format("{0};{1}",
+                        Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath),
+                        declaration.QualifiedName.QualifiedModuleName.ComponentName);
+                }
+                else if (declaration.DeclarationType == DeclarationType.EnumerationMember || 
+                         declaration.DeclarationType == DeclarationType.UserDefinedTypeMember)
+                {
+                    qualifiedModuleName = string.Format("{0};{1}.{2}",
+                        Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath),
+                        declaration.QualifiedName.QualifiedModuleName.ComponentName,
+                        declaration.ParentDeclaration.IdentifierName);
+                }
+                else if (declaration.DeclarationType == DeclarationType.ClassModule ||
+                         declaration.DeclarationType == DeclarationType.ProceduralModule)
+                {
+                    qualifiedModuleName = string.Format("{0};{1}",
+                        Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath),
+                        declaration.QualifiedName.QualifiedModuleName.ProjectName);
+                }
+
                 // todo: confirm this is what we want, and then refator
                 var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
                 if (selection.HasValue)
@@ -136,9 +161,9 @@ namespace Rubberduck
                         ? Declaration.TypeHintToTypeName[declaration.TypeHint]
                         : declaration.AsTypeName;
 
-                    return string.Format("{0}|{1}: {2} ({3}{4})",
+                    return string.Format("{0}|{1}.{2} ({3}{4})",
                         selection.Value.Selection,
-                        declaration.QualifiedName.QualifiedModuleName,
+                        qualifiedModuleName,
                         declaration.IdentifierName,
                         RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
                         string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + typeName);

@@ -36,6 +36,8 @@
 
         public override bool Equals(object obj)
         {
+            if (obj == null) { return false; }
+
             var other = (QualifiedSelection)obj;
             return other.QualifiedName.Equals(_qualifiedName)
                    && other.Selection.Equals(_selection);

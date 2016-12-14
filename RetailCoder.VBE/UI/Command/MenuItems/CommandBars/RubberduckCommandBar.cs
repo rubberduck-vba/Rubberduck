@@ -1,15 +1,20 @@
 using System;
 using System.Collections.Generic;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
     public class RubberduckCommandBar : AppCommandBarBase, IDisposable
     {
-        public RubberduckCommandBar(IEnumerable<ICommandMenuItem> items) 
+        private readonly IContextFormatter _formatter;
+
+        public RubberduckCommandBar(IEnumerable<ICommandMenuItem> items, IContextFormatter formatter) 
             : base("Rubberduck", CommandBarPosition.Top, items)
         {
+            _formatter = formatter;
         }
 
         public void SetStatusLabelCaption(ParserState state, int? errorCount = null)
@@ -36,6 +41,11 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 }
             });
             Localize();
+        }
+
+        public string GetContextSelectionCaption(ICodePane activeCodePane, Declaration declaration)
+        {
+            return _formatter.Format(activeCodePane, declaration);
         }
 
         public void SetContextSelectionCaption(string caption)

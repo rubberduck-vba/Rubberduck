@@ -451,6 +451,7 @@
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\IContextFormatter.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ReparseCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\RubberduckCommandBar.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\SerializeDeclarationsCommandMenuItem.cs" />
