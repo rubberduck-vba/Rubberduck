@@ -1854,6 +1854,7 @@ End Sub</value>
   </data>
   <data name="SettingsCaption_ImportSettings" xml:space="preserve">
     <value>Import</value>
+  </data>
   <data name="ContextReferences" xml:space="preserve">
     <value>references</value>
     <comment>Used to display number of references in commandbar's context selection</comment>
