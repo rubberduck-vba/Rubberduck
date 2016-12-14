@@ -8,11 +8,8 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
-    public class IndenterSettingsViewModel : ViewModelBase, ISettingsViewModel
+    public class IndenterSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
     {
-        private readonly CommandBase _importButtonCommand;
-        private readonly CommandBase _exportButtonCommand;
-
         public IndenterSettingsViewModel(Configuration config)
         {
             _alignCommentsWithCode = config.UserSettings.IndenterSettings.AlignCommentsWithCode;
@@ -33,25 +30,8 @@ namespace Rubberduck.UI.Settings
             _indentSpaces = config.UserSettings.IndenterSettings.IndentSpaces;
 
             PropertyChanged += IndenterSettingsViewModel_PropertyChanged;
-            _exportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
-            _importButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
-        }
-
-        public CommandBase ExportButtonCommand
-        {
-            get
-            {
-                return _exportButtonCommand;
-            }
-        }
-
-
-        public CommandBase ImportButtonCommand
-        {
-            get
-            {
-                return _importButtonCommand;
-            }
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
         void IndenterSettingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

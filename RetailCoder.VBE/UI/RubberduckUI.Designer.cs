@@ -1057,11 +1057,56 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Load General Settings.
+        /// </summary>
+        public static string DialogCaption_LoadGeneralSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadGeneralSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Load Indenter Settings.
         /// </summary>
         public static string DialogCaption_LoadIndenterSettings {
             get {
                 return ResourceManager.GetString("DialogCaption_LoadIndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Inspection Settings.
+        /// </summary>
+        public static string DialogCaption_LoadInspectionSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadInspectionSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Todo List Settings.
+        /// </summary>
+        public static string DialogCaption_LoadToDoSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadToDoSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Unit Test Settings.
+        /// </summary>
+        public static string DialogCaption_LoadUnitTestSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadUnitTestSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save General Settings.
+        /// </summary>
+        public static string DialogCaption_SaveGeneralSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveGeneralSettings", resourceCulture);
             }
         }
         
@@ -1075,7 +1120,34 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XML file|*.xml.
+        ///   Looks up a localized string similar to Save Inspection Settings.
+        /// </summary>
+        public static string DialogCaption_SaveInspectionSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveInspectionSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Todo List Settings.
+        /// </summary>
+        public static string DialogCaption_SaveToDoSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveToDoSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Unit Test Settings.
+        /// </summary>
+        public static string DialogCaption_SaveUnitTestSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveUnitTestSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML file (.xml)|*.xml|Rubberduck config file|*.config.
         /// </summary>
         public static string DialogMask_XmlFilesOnly {
             get {
