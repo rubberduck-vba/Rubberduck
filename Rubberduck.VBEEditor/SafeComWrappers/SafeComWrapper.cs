@@ -56,16 +56,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
         public static bool operator ==(SafeComWrapper<T> a, SafeComWrapper<T> b)
         {
-            if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
-            {
-                return true;
-            }
-            return !ReferenceEquals(a, null) && a.Equals(b);
+            return ReferenceEquals(a, null) ? ReferenceEquals(b, null) : a.Equals(b);
         }
 
         public static bool operator !=(SafeComWrapper<T> a, SafeComWrapper<T> b)
         {
-            return !(a == b);
+            return a != b;
         }
    }
 }
