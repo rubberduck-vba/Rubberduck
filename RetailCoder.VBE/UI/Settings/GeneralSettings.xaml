@@ -71,12 +71,9 @@
         <ScrollViewer>
             <Grid>
                 <StackPanel Grid.Row="0" Margin="5,5,5,0">
-                    <Label DockPanel.Dock="Top"
-                           Background="DarkGray"
-                           Foreground="White"
-                           FontWeight="SemiBold"
-                           Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_GeneralSettings}"
-                           Margin="0,0,0,3">
+                    <Label Background="DarkGray"
+                       HorizontalContentAlignment="Stretch"
+                       Margin="0,0,0,3">
                         <Label.Style>
                             <Style>
                                 <Style.Resources>
@@ -86,8 +83,45 @@
                                 </Style.Resources>
                             </Style>
                         </Label.Style>
-                    </Label>
-                    
+                        <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                                <Label Foreground="White"
+                                   FontWeight="SemiBold" 
+                                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_GeneralSettings}">
+                                </Label>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition MaxWidth="75"/>
+                                        <ColumnDefinition MaxWidth="75"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="Blue" 
+                                            Grid.Column="1" 
+                                            TextDecorations="Underline" 
+                                            Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ImportSettings}" 
+                                            VerticalAlignment="Center"
+                                            Margin="5,0,5,0">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding Command="{Binding ImportButtonCommand}" MouseAction="LeftClick" />
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                    <TextBlock Foreground="Blue" 
+                                            Grid.Column="2" 
+                                            TextDecorations="Underline" 
+                                            Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}" 
+                                            VerticalAlignment="Center"
+                                            Margin="5,0,5,0">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding Command="{Binding ExportButtonCommand}" MouseAction="LeftClick" />
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"/>
+                        </DockPanel>
+                    </Label>                  
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_LanguageLabel}" FontWeight="SemiBold" />
                     <ComboBox Width="210"
                       HorizontalAlignment="Left"

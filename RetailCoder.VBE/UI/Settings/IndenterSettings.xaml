@@ -49,7 +49,6 @@
                             <Label Foreground="White"
                                    FontWeight="SemiBold" 
                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_IndenterSettings}">
-
                             </Label>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
@@ -86,10 +85,11 @@
                 </Label>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition  />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="232*"  />
+                        <ColumnDefinition Width="161*" />
+                        <ColumnDefinition Width="70*"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel>
+                    <StackPanel Margin="0,0,0,22">
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_AlignmentOptionsLabel}"
                                FontWeight="SemiBold" />
                         <CheckBox IsChecked="{Binding AlignCommentsWithCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -157,7 +157,7 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1">
+                    <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,22">
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_IndentOptionsLabel}"
                                FontWeight="SemiBold" />
                         <CheckBox Name="IndentProcedureCheckBox"

@@ -3,16 +3,18 @@ using System.Globalization;
 using System.Linq;
 using NLog;
 using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
-    public class TodoSettingsViewModel : ViewModelBase, ISettingsViewModel
+    public class TodoSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
     {
         public TodoSettingsViewModel(Configuration config)
         {
-            TodoSettings = new ObservableCollection<ToDoMarker>(
-                    config.UserSettings.ToDoListSettings.ToDoMarkers);
+            TodoSettings = new ObservableCollection<ToDoMarker>(config.UserSettings.ToDoListSettings.ToDoMarkers);
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
         private ObservableCollection<ToDoMarker> _todoSettings;
@@ -57,10 +59,7 @@ namespace Rubberduck.UI.Settings
                 {
                     return _deleteTodoCommand;
                 }
-                return _deleteTodoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), value =>
-                {
-                    TodoSettings.Remove(value as ToDoMarker);
-                });
+                return _deleteTodoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), x => TodoSettings.Remove(x as ToDoMarker));
             }
         }
 
@@ -73,6 +72,37 @@ namespace Rubberduck.UI.Settings
         {
             TodoSettings = new ObservableCollection<ToDoMarker>(
                     config.UserSettings.ToDoListSettings.ToDoMarkers);
+        }
+
+        private void ImportSettings()
+        {
+            using (var dialog = new OpenFileDialog
+            {
+                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
+                Title = RubberduckUI.DialogCaption_LoadToDoSettings
+            })
+            {
+                dialog.ShowDialog();
+                if (string.IsNullOrEmpty(dialog.FileName)) return;
+                var service = new XmlPersistanceService<ToDoListSettings> { FilePath = dialog.FileName };
+                var loaded = service.Load(new ToDoListSettings());
+                TodoSettings = new ObservableCollection<ToDoMarker>(loaded.ToDoMarkers);
+            }
+        }
+
+        private void ExportSettings()
+        {
+            using (var dialog = new SaveFileDialog
+            {
+                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
+                Title = RubberduckUI.DialogCaption_SaveToDoSettings
+            })
+            {
+                dialog.ShowDialog();
+                if (string.IsNullOrEmpty(dialog.FileName)) return;
+                var service = new XmlPersistanceService<ToDoListSettings> { FilePath = dialog.FileName };
+                service.Save(new ToDoListSettings { ToDoMarkers = TodoSettings.Select(m => new ToDoMarker(m.Text.ToUpperInvariant())).Distinct().ToArray() });
+            }
         }
     }
 }
