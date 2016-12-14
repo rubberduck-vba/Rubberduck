@@ -303,6 +303,7 @@ namespace Rubberduck.Parsing.Symbols
             return output;
         }
 
+        [Obsolete("Use the overload that outputs a SerializableDeclarationTree instead.")]
         public List<Declaration> GetDeclarationsForReference(IReference reference)
         {
             SerializableDeclarationTree tree;
