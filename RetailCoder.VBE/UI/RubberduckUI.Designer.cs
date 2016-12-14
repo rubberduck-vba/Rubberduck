@@ -380,7 +380,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open project properties.
+        ///   Looks up a localized string similar to Project properties.
         /// </summary>
         public static string CodeExplorer_OpenProjectProperties {
             get {
@@ -1044,6 +1044,33 @@ namespace Rubberduck.UI {
         public static string DeselectAll_Button {
             get {
                 return ResourceManager.GetString("DeselectAll_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Indenter Settings.
+        /// </summary>
+        public static string DialogCaption_LoadIndenterSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadIndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Indenter Settings.
+        /// </summary>
+        public static string DialogCaption_SaveIndenterSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveIndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML file|*.xml.
+        /// </summary>
+        public static string DialogMask_XmlFilesOnly {
+            get {
+                return ResourceManager.GetString("DialogMask_XmlFilesOnly", resourceCulture);
             }
         }
         
@@ -2994,7 +3021,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file located at &quot;C:\Users\{username}\AppData\Roaming\Rubberduck\Logs\RubberduckLog.txt&quot; to a GitHub issue at &quot;https://github.com/rubberduck-vba/Rubberduck/issues/new&quot;..
+        ///   Looks up a localized string similar to Rubberduck encountered an error. Please save your work and restart the host program; if logging is enabled, you can upload your log file located at &apos;%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt&apos; to a GitHub issue at &apos;https://github.com/rubberduck-vba/Rubberduck/issues/new&apos; and report the bug..
         /// </summary>
         public static string RubberduckFatalError {
             get {
@@ -3237,11 +3264,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string SettingsCaption_ExportSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_ExportSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General Settings.
         /// </summary>
         public static string SettingsCaption_GeneralSettings {
             get {
                 return ResourceManager.GetString("SettingsCaption_GeneralSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string SettingsCaption_ImportSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_ImportSettings", resourceCulture);
             }
         }
         
@@ -3354,7 +3399,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By code order.
+        ///   Looks up a localized string similar to As in module.
         /// </summary>
         public static string SortStyle_ByCodeOrder {
             get {
@@ -3444,7 +3489,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clones remote repository from provided URI. Requires an empty project to be open in the VBE..
+        ///   Looks up a localized string similar to Clones remote repository from provided URI. Have an (empty) project active in the editor..
         /// </summary>
         public static string SourceControl_CloneRepositoryDescription {
             get {
@@ -3462,7 +3507,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command Prompt Exe location.
+        ///   Looks up a localized string similar to Command prompt executable location.
         /// </summary>
         public static string SourceControl_CommandPromptExeLabel {
             get {
@@ -3705,7 +3750,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A source file was modified out of the editor; should Rubberduck reload it?.
+        ///   Looks up a localized string similar to A source file was modified out of the editor; reload it?.
         /// </summary>
         public static string SourceControl_ExternalModifications {
             get {
@@ -3939,7 +3984,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a new repository from the open project..
+        ///   Looks up a localized string similar to Creates a new repository from the active project..
         /// </summary>
         public static string SourceControl_InitializeRepositoryDescription {
             get {
@@ -4056,7 +4101,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No active VBProject.
+        ///   Looks up a localized string similar to No active project.
         /// </summary>
         public static string SourceControl_NoActiveProject {
             get {
@@ -4110,7 +4155,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open repository from disk. Requires an empty project to be open in the VBE..
+        ///   Looks up a localized string similar to Open repository from disk. The active project will host the source code..
         /// </summary>
         public static string SourceControl_OpenRepositoryDescription {
             get {
@@ -4191,7 +4236,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publishes an existing repository to a remote location. Requires the open project to be connected to a repository..
+        ///   Looks up a localized string similar to Publishes an existing repository to a remote location. The active project must be connected to a repository..
         /// </summary>
         public static string SourceControl_PublishRepositoryDescription {
             get {
@@ -4326,7 +4371,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please set your log level to Fatal or lower and create an issue on our GitHub page with the contents of your log file in C:\Users\{username}\AppData\Roaming\Rubberduck\Logs..
+        ///   Looks up a localized string similar to If logging is enabled, you may create an issue on our GitHub page with the contents of your log file in &apos;%AppData%\Roaming\Rubberduck\Logs&apos; for support..
         /// </summary>
         public static string SourceControl_UnknownErrorMessage {
             get {
@@ -4758,7 +4803,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To-Do Explorer.
+        ///   Looks up a localized string similar to TODO Explorer.
         /// </summary>
         public static string TodoSettings_Caption {
             get {
