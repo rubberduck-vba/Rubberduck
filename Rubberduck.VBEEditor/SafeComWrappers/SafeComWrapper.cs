@@ -61,7 +61,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
         public static bool operator !=(SafeComWrapper<T> a, SafeComWrapper<T> b)
         {
-            return a != b;
+            return !(a == b);
         }
    }
 }
