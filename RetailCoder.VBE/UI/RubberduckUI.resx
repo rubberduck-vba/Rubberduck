@@ -1879,4 +1879,8 @@ End Sub</value>
   <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
     <value>Save Unit Test Settings</value>
   </data>
+  <data name="ContextReferences" xml:space="preserve">
+    <value>references</value>
+    <comment>Used to display number of references in commandbar's context selection</comment>
+  </data>
 </root>
