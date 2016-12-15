@@ -65,9 +65,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var declaration = ((CodeExplorerComponentViewModel)parameter).Declaration;
 
             var components = declaration.QualifiedName.QualifiedModuleName.Project.VBComponents;
-            {
-                components.Remove(declaration.QualifiedName.QualifiedModuleName.Component);
-            }
+            components.Remove(declaration.QualifiedName.QualifiedModuleName.Component);
         }
 
         private bool ExportFile(CodeExplorerComponentViewModel node)
