@@ -244,6 +244,11 @@
         </Style>
     </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
         <StackPanel Margin="5,5,5,0">
             <Label Background="DarkGray"
                        HorizontalContentAlignment="Stretch"
@@ -324,39 +329,43 @@
                     </Button>
                 </ToolBar>
             </ToolBarTray>
-            <DataGrid Name="TodoMarkerGrid"
-                      ItemsSource="{Binding TodoSettings}"
-                      AutoGenerateColumns="False"
-                      CanUserReorderColumns="False"
-                      IsReadOnly="False"
-                      SelectionMode="Single"
-                      CanUserAddRows="False"
-                      HorizontalGridLinesBrush="Transparent"
-                      VerticalGridLinesBrush="Transparent"
-                      HeadersVisibility="Column"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ItemContainerStyle="{StaticResource PrettifyRow}"
-                      ColumnHeaderHeight="22"
-                      BorderThickness="0"
-                      CellEditEnding="TodoMarkerGrid_CellEditEnding">
-                <DataGrid.InputBindings>
-                    <KeyBinding Key="Delete"
+        </StackPanel>
+        <DataGrid Name="TodoMarkerGrid"
+                Grid.Row="1"
+                Margin="5,0,5,5"
+                ItemsSource="{Binding TodoSettings}"
+                AutoGenerateColumns="False"
+                CanUserReorderColumns="False"
+                IsReadOnly="False"
+                SelectionMode="Single"
+                CanUserAddRows="False"
+                HorizontalGridLinesBrush="Transparent"
+                VerticalGridLinesBrush="Transparent"
+                HeadersVisibility="Column"
+                ScrollViewer.CanContentScroll="True" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ItemContainerStyle="{StaticResource PrettifyRow}"
+                ColumnHeaderHeight="22"
+                BorderThickness="0"
+                CellEditEnding="TodoMarkerGrid_CellEditEnding">
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete"
                                 Command="{Binding DeleteTodoCommand}"
                                 CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem}" />
-                </DataGrid.InputBindings>
-                <DataGrid.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-                </DataGrid.CellStyle>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoSettings_TextLabel}"
+            </DataGrid.InputBindings>
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoSettings_TextLabel}"
                                         Width="*"
                                         Binding="{Binding Text}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>
