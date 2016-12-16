@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 

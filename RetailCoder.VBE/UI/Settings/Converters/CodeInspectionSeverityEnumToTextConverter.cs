@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Resources;
 
 namespace Rubberduck.UI.Settings.Converters
 {

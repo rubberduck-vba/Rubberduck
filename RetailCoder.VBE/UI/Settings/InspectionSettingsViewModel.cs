@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Data;
 using NLog;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 

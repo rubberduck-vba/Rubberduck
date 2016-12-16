@@ -3,15 +3,18 @@ using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using NLog;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : InspectionBase, IParseTreeInspection
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private IEnumerable<QualifiedContext> _results;
 
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
@@ -22,7 +25,12 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public ParseTreeResults ParseTreeResults { get; set; }
+        public IEnumerable<QualifiedContext<VBAParser.ArgListContext>> ParseTreeResults { get { return _results.OfType<QualifiedContext<VBAParser.ArgListContext>>(); } }
+
+        public void SetResults(IEnumerable<QualifiedContext> results)
+        {
+            _results = results;
+        }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
@@ -31,7 +39,7 @@ namespace Rubberduck.Inspections
                 Logger.Debug("Aborting GetInspectionResults because ParseTree results were not passed");
                 return new InspectionResultBase[] { };
             }
-            var subStmts = ParseTreeResults.ArgListsWithOneByRefParam
+            var subStmts = ParseTreeResults.OfType<QualifiedContext<VBAParser.ArgListContext>>()
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext)
                 .Select(context => (VBAParser.SubStmtContext)context.Context.Parent)
                 .ToList();
@@ -70,20 +78,16 @@ namespace Rubberduck.Inspections
                             !State.AllDeclarations.FindBuiltInEventHandlers().Contains(declaration);
                 });
 
-            return ParseTreeResults.ArgListsWithOneByRefParam
-                .Where(context => context.Context.Parent is VBAParser.SubStmtContext &&
-                                  subStmtsNotImplementingInterfaces.Contains(context.Context.Parent) &&
-                                  subStmtsNotImplementingEvents.Contains(context.Context.Parent)
-                        && !IsInspectionDisabled(context.ModuleName.Component, context.Context.Start.Line))
-                .Select(context => new ProcedureShouldBeFunctionInspectionResult(this,
-                    State,
-                    new QualifiedContext<VBAParser.ArgListContext>(context.ModuleName,
-                        context.Context as VBAParser.ArgListContext),
-                    new QualifiedContext<VBAParser.SubStmtContext>(context.ModuleName,
-                        context.Context.Parent as VBAParser.SubStmtContext)));
+            return ParseTreeResults
+                .Where(result => result.Context.Parent is VBAParser.SubStmtContext &&
+                                  subStmtsNotImplementingInterfaces.Contains(result.Context.Parent) &&
+                                  subStmtsNotImplementingEvents.Contains(result.Context.Parent)
+                        && !IsInspectionDisabled(result.ModuleName.Component, result.Context.Start.Line))
+                .Select(result => new ProcedureCanBeWrittenAsFunctionInspectionResult(this, State, result,
+                    new QualifiedContext<VBAParser.SubStmtContext>(result.ModuleName, result.Context.Parent as VBAParser.SubStmtContext)));
         }
 
-        public class ArgListWithOneByRefParamListener : VBAParserBaseListener
+        public class SingleByRefParamArgListListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.ArgListContext> _contexts = new List<VBAParser.ArgListContext>();
             public IEnumerable<VBAParser.ArgListContext> Contexts { get { return _contexts; } }

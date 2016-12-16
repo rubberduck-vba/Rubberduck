@@ -11,6 +11,8 @@ using System.Windows;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
@@ -81,8 +83,8 @@ namespace Rubberduck.UI.Inspections
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
 
-        private ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
-        public ObservableCollection<ICodeInspectionResult> Results
+        private ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
+        public ObservableCollection<IInspectionResult> Results
         {
             get { return _results; }
             private set
@@ -92,7 +94,7 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        private CodeInspectionQuickFix _defaultFix;
+        private QuickFixBase _defaultFix;
 
         private INavigateSource _selectedItem;
         public INavigateSource SelectedItem
@@ -143,7 +145,7 @@ namespace Rubberduck.UI.Inspections
 
                 if (value)
                 {
-                    Results = new ObservableCollection<ICodeInspectionResult>(
+                    Results = new ObservableCollection<IInspectionResult>(
                             Results.OrderBy(o => o.Inspection.InspectionType)
                                 .ThenBy(t => t.Inspection.Name)
                                 .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
@@ -167,7 +169,7 @@ namespace Rubberduck.UI.Inspections
 
                 if (value)
                 {
-                    Results = new ObservableCollection<ICodeInspectionResult>(
+                    Results = new ObservableCollection<IInspectionResult>(
                             Results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
                                 .ThenBy(t => t.Inspection.Name)
                                 .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
@@ -280,7 +282,7 @@ namespace Rubberduck.UI.Inspections
 
             UiDispatcher.Invoke(() =>
             {
-                Results = new ObservableCollection<ICodeInspectionResult>(results);
+                Results = new ObservableCollection<IInspectionResult>(results);
 
                 IsBusy = false;
                 SelectedItem = null;
@@ -290,7 +292,7 @@ namespace Rubberduck.UI.Inspections
             LogManager.GetCurrentClassLogger().Trace("Inspections loaded in {0}ms", stopwatch.ElapsedMilliseconds);
         }
 
-        private void ExecuteQuickFixes(IEnumerable<CodeInspectionQuickFix> quickFixes)
+        private void ExecuteQuickFixes(IEnumerable<QuickFixBase> quickFixes)
         {
             var fixes = quickFixes.ToList();
             var completed = 0;
@@ -317,7 +319,7 @@ namespace Rubberduck.UI.Inspections
 
         private void ExecuteQuickFixCommand(object parameter)
         {
-            var quickFix = parameter as CodeInspectionQuickFix;
+            var quickFix = parameter as QuickFixBase;
             if (quickFix == null)
             {
                 return;
@@ -328,7 +330,7 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteQuickFixCommand(object parameter)
         {
-            var quickFix = parameter as CodeInspectionQuickFix;
+            var quickFix = parameter as QuickFixBase;
             return !IsBusy && quickFix != null && _state.Status == ParserState.Ready;
         }
 
