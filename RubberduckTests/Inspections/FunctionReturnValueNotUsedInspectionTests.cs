@@ -333,6 +333,35 @@ End Sub";
         }
 
         [TestMethod]
+        public void FunctionReturnValueNotUsed_DoesNotReturnResult_RecursiveFunction()
+        {
+            const string inputCode =
+@"Public Function Factorial(ByVal n As Long) As Long
+    If n <= 1 Then
+        Factorial = 1
+    Else
+        Factorial = Factorial(n - 1) * n
+    End If
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            IVBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_ArgumentFunctionCall()
         {
             const string inputCode =

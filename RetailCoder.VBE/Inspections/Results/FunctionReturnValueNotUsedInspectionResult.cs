@@ -12,6 +12,8 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
+
+
     public class FunctionReturnValueNotUsedInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<QuickFixBase> _quickFixes;
@@ -20,8 +22,9 @@ namespace Rubberduck.Inspections.Results
             IInspection inspection,
             ParserRuleContext context,
             QualifiedMemberName qualifiedName,
-            Declaration target)
-            : this(inspection, context, qualifiedName, new List<Tuple<ParserRuleContext, QualifiedSelection, Declaration>>(), target)
+            Declaration target,
+            bool allowConvertToProcedure = true)
+            : this(inspection, context, qualifiedName, new List<Tuple<ParserRuleContext, QualifiedSelection, Declaration>>(), target, allowConvertToProcedure)
         {
         }
 
@@ -30,17 +33,25 @@ namespace Rubberduck.Inspections.Results
             ParserRuleContext context,
             QualifiedMemberName qualifiedName,
             IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, Declaration>> children,
-            Declaration target)
+            Declaration target, bool allowConvertToProcedure = true)
             : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
-            var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, target);
-            var compositeFix = new CompositeCodeInspectionFix(root);
-            children.ToList().ForEach(child => compositeFix.AddChild(new ConvertToProcedureQuickFix(child.Item1, child.Item2, child.Item3)));
-            _quickFixes = new QuickFixBase[]
+            var ignoreOnce = new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName);
+            if (allowConvertToProcedure)
             {
-                compositeFix,
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
-            };
+                var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, target);
+                var compositeFix = new CompositeCodeInspectionFix(root);
+                children.ToList().ForEach(child => compositeFix.AddChild(new ConvertToProcedureQuickFix(child.Item1, child.Item2, child.Item3)));
+                _quickFixes = new QuickFixBase[]
+                {
+                    compositeFix,
+                    ignoreOnce
+                };
+            }
+            else
+            {
+                _quickFixes = new[] {ignoreOnce};
+            }
         }
 
         public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }

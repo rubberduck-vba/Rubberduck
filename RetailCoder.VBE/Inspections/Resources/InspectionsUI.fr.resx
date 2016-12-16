@@ -375,7 +375,7 @@
     <value>Le paramètre '{0}' passé par valeur est assigné</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionMeta" xml:space="preserve">
-    <value>Un membre est implémenté comme une fonction, mais utilisé comme une procédure. Considérez convertir la fonction en procédure.</value>
+    <value>Un membre est implémenté comme une fonction, mais utilisé comme une procédure. À moins que la fonction soit récursive, considérez la convertir en procédure. Si la fonction est récursive, aucun appelant externe n'utilise sa valeur de retour.</value>
   </data>
   <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' n'est pas utilisé(e).</value>
