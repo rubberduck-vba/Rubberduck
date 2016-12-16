@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Extensions;
@@ -52,29 +54,6 @@ namespace Rubberduck.Inspections
 
             return issues.Select(issue =>
                 new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
-        }
-    }
-
-    public class ImplicitActiveWorkbookReferenceInspectionResult : InspectionResultBase
-    {
-        private readonly IdentifierReference _reference;
-        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
-
-        public ImplicitActiveWorkbookReferenceInspectionResult(IInspection inspection, IdentifierReference reference)
-            : base(inspection, reference.QualifiedModuleName, reference.Context)
-        {
-            _reference = reference;
-            _quickFixes = new CodeInspectionQuickFix[]
-            {
-                new IgnoreOnceQuickFix(reference.Context, QualifiedSelection, Inspection.AnnotationName),
-            };
-        }
-
-        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
-
-        public override string Description
-        {
-            get { return string.Format(Inspection.Description, Context.GetText() /*_reference.Declaration.IdentifierName*/); }
         }
     }
 }
