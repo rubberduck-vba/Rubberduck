@@ -1,8 +1,11 @@
-﻿using Rubberduck.Settings;
+﻿using NLog;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
-    public class UnitTestSettingsViewModel : ViewModelBase, ISettingsViewModel
+    public class UnitTestSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
     {
         public UnitTestSettingsViewModel(Configuration config)
         {
@@ -11,6 +14,8 @@ namespace Rubberduck.UI.Settings
             ModuleInit = config.UserSettings.UnitTestSettings.ModuleInit;
             MethodInit = config.UserSettings.UnitTestSettings.MethodInit;
             DefaultTestStubInNewModule = config.UserSettings.UnitTestSettings.DefaultTestStubInNewModule;
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
         #region Properties
@@ -98,11 +103,54 @@ namespace Rubberduck.UI.Settings
 
         public void SetToDefaults(Configuration config)
         {
-            BindingMode = config.UserSettings.UnitTestSettings.BindingMode;
-            AssertMode = config.UserSettings.UnitTestSettings.AssertMode;
-            ModuleInit = config.UserSettings.UnitTestSettings.ModuleInit;
-            MethodInit = config.UserSettings.UnitTestSettings.MethodInit;
-            DefaultTestStubInNewModule = config.UserSettings.UnitTestSettings.DefaultTestStubInNewModule;
+            TransferSettingsToView(config.UserSettings.UnitTestSettings);
+        }
+
+        private void TransferSettingsToView(Rubberduck.Settings.UnitTestSettings toLoad)
+        {
+            BindingMode = toLoad.BindingMode;
+            AssertMode = toLoad.AssertMode;
+            ModuleInit = toLoad.ModuleInit;
+            MethodInit = toLoad.MethodInit;
+            DefaultTestStubInNewModule = toLoad.DefaultTestStubInNewModule;
+        }
+
+        private void ImportSettings()
+        {
+            using (var dialog = new OpenFileDialog
+            {
+                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
+                Title = RubberduckUI.DialogCaption_LoadUnitTestSettings
+            })
+            {
+                dialog.ShowDialog();
+                if (string.IsNullOrEmpty(dialog.FileName)) return;
+                var service = new XmlPersistanceService<Rubberduck.Settings.UnitTestSettings> { FilePath = dialog.FileName };
+                var loaded = service.Load(new Rubberduck.Settings.UnitTestSettings());
+                TransferSettingsToView(loaded);
+            }
+        }
+
+        private void ExportSettings()
+        {
+            using (var dialog = new SaveFileDialog
+            {
+                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
+                Title = RubberduckUI.DialogCaption_SaveUnitTestSettings
+            })
+            {
+                dialog.ShowDialog();
+                if (string.IsNullOrEmpty(dialog.FileName)) return;
+                var service = new XmlPersistanceService<Rubberduck.Settings.UnitTestSettings> { FilePath = dialog.FileName };
+                service.Save(new Rubberduck.Settings.UnitTestSettings
+                {
+                    BindingMode = BindingMode,
+                    AssertMode = AssertMode,
+                    ModuleInit = ModuleInit,
+                    MethodInit = MethodInit,
+                    DefaultTestStubInNewModule = DefaultTestStubInNewModule
+                });
+            }
         }
     }
 }

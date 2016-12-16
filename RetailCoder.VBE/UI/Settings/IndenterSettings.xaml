@@ -49,7 +49,6 @@
                             <Label Foreground="White"
                                    FontWeight="SemiBold" 
                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_IndenterSettings}">
-
                             </Label>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
@@ -59,16 +58,26 @@
                                     <ColumnDefinition MaxWidth="75"/>
                                     <ColumnDefinition MaxWidth="75"/>
                                 </Grid.ColumnDefinitions>
-                                <Button Foreground="Blue" Grid.Column="1" 
-                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                        Command="{Binding ImportButtonCommand}" >
-                                    <TextBlock TextDecorations="Underline" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ImportSettings}" />
-                                </Button>
-                                <Button Foreground="Blue" Grid.Column="2" 
-                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                        Command="{Binding ExportButtonCommand}" >
-                                    <TextBlock TextDecorations="Underline" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}" />
-                                </Button>
+                                <TextBlock Foreground="Blue" 
+                                            Grid.Column="1" 
+                                            TextDecorations="Underline" 
+                                            Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ImportSettings}" 
+                                            VerticalAlignment="Center"
+                                            Margin="5,0,5,0">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding Command="{Binding ImportButtonCommand}" MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                                <TextBlock Foreground="Blue" 
+                                            Grid.Column="2" 
+                                            TextDecorations="Underline" 
+                                            Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}" 
+                                            VerticalAlignment="Center"
+                                            Margin="5,0,5,0">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding Command="{Binding ExportButtonCommand}" MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
                             </Grid>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"/>
@@ -76,10 +85,11 @@
                 </Label>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition  />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="232*"  />
+                        <ColumnDefinition Width="161*" />
+                        <ColumnDefinition Width="70*"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel>
+                    <StackPanel Margin="0,0,0,22">
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_AlignmentOptionsLabel}"
                                FontWeight="SemiBold" />
                         <CheckBox IsChecked="{Binding AlignCommentsWithCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -133,7 +143,7 @@
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_EndOfLineCommentStyle}"
                               FontWeight="SemiBold"
                               HorizontalAlignment="Left" />
-                        <StackPanel Orientation="Horizontal">                       
+                        <StackPanel Orientation="Horizontal">
                             <ComboBox Margin="5,0,0,5"
                                   Width="210"
                                   HorizontalAlignment="Left"
@@ -147,7 +157,7 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1">
+                    <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,22">
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_IndentOptionsLabel}"
                                FontWeight="SemiBold" />
                         <CheckBox Name="IndentProcedureCheckBox"
