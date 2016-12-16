@@ -1769,59 +1769,98 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Verschiedenes</value>
   </data>
   <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Expand node and all child nodes</value>
+    <value>Knoten und alle Kindknoten aufklappen</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>
   </data>
   <data name="IndenterSettings_PreviewCode" xml:space="preserve">
-    <value>Public Enum ExampleEnum
-' Enum comment.
+    <value>Public Enum BeispielEnum
+' Enum Kommentar.
 Foo
-Bar ' Member comment.
+Bar ' Member-Kommentar.
 End Enum
 
-' Example Procedure
-Sub ExampleProc()
+' Beispielprozedur
+Sub BeispielProc()
 
 ' SMART INDENTER
-' Original VB6 code graciously offered to Rubberduck by Stephen Bullen &amp; Rob Bovey
+' Der originale VB6-Code wurde Rubberduck gnädigerweise von Stephen Bullen &amp; Rob Bovey angeboten
 ' © 2016 by Rubberduck VBA.
 
-Dim count As Integer
+Dim zaehler As Integer
 Static name As String
 
-If YouLikeRubberduck Then
-' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
-' Follow us on Twitter @rubberduckvba
-' Visit http://rubberduckvba.com for news and updates
+If SieMoegenRubberduck Then
+' Einen Stern auf GitHub geben: http://github.com/rubberduck-vba/Rubberduck
+' Auf Twitter folgen @rubberduckvba
+' http://rubberduckvba.com für Neuigkeiten und Aktualisierungen
 
 Select Case X
 Case "A"
-' If you have any comments or suggestions, _
-or find valid VBA code that isn't indented correctly,
+' Falls sie Kommentare oder Vorschläge haben, _
+oder validen VBA code gefunden haben, der nicht korrekt eingerückt wird,
 
 #If VBA6 Then
-MsgBox "Contact contact@rubberduck-vba.com"
+MsgBox "Kontaktieren Sie contact@rubberduck-vba.com"
 #End If
 
-Case "Continued strings and parameters can be" _
-&amp; "lined up for easier reading, optionally ignoring" _
-&amp; "any operators (&amp;+, etc) at the start of the line."
+Case "Fortgeführte Strings und Parameter können" _
+&amp; "zur Lesbarkeit aufgereiht werden. Optional können" _
+&amp; "beliebige Operatoren (&amp;+, usw.) am Zeilenbeginn ignoriert werden."
 
 Debug.Print "X&lt;&gt;1"
 End Select      'Case X
-End If      'More Tools? Suggestions http://github.com/rubberduck-vba/Rubberduck/Issues/New
+End If      'Mehr Werkzeuge? Vorschläge an http://github.com/rubberduck-vba/Rubberduck/Issues/New
 
 End Sub</value>
   </data>
   <data name="ParserErrorToolTipText" xml:space="preserve">
-    <value>{0} module(s) failed to parse; click for details.</value>
+    <value>{0} Modul(e) konnten nicht geparsed werden; Klicken Sie für Details.</value>
   </data>
   <data name="ReparseToolTipText" xml:space="preserve">
-    <value>{0}. Click to refresh.</value>
+    <value>{0}. Klicken zum aktualisieren.</value>
   </data>
   <data name="ContextReferences" xml:space="preserve">
     <value>Referenzen</value>
+  </data>
+  <data name="DialogCaption_SaveInspectionSettings">
+    <value>Einstellungen für Inspektionen speichern</value>
+  </data>
+  <data name="DialogCaption_SaveToDoSettings">
+    <value>Einstellungen für Todo-Liste speichern</value>
+  </data>
+  <data name="DialogMask_XmlFilesOnly">
+    <value>XML Datei (.xml)|*.xml|Rubberduck config file|*.config</value>
+  </data>
+  <data name="DialogCaption_SaveGeneralSettings">
+    <value>Allgemeine Einstellungen speichern</value>
+  </data>
+  <data name="DialogCaption_LoadToDoSettings">
+    <value>Einstellungen für Todo-Liste Laden</value>
+  </data>
+  <data name="DialogCaption_SaveUnitTestSettings">
+    <value>Einstellungen für Unit-Tests speichern</value>
+  </data>
+  <data name="DialogCaption_LoadUnitTestSettings">
+    <value>Einstellungen für Unit-Tests laden</value>
+  </data>
+  <data name="DialogCaption_LoadInspectionSettings">
+    <value>Einstellungen für Inspektionen laden</value>
+  </data>
+  <data name="SettingsCaption_ExportSettings">
+    <value>Export</value>
+  </data>
+  <data name="DialogCaption_SaveIndenterSettings">
+    <value>Einstellungen für Einrückung speichern</value>
+  </data>
+  <data name="DialogCaption_LoadIndenterSettings">
+    <value>Einstellungen für Einrückung laden</value>
+  </data>
+  <data name="DialogCaption_LoadGeneralSettings">
+    <value>Allgemeine Einstellungen Laden</value>
+  </data>
+  <data name="SettingsCaption_ImportSettings">
+    <value>Import</value>
   </data>
 </root>

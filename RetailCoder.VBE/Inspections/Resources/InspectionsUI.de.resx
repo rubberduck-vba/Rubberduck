@@ -378,9 +378,6 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="AssignedByValParameterInspectionResultFormat" xml:space="preserve">
     <value>Der Parameter '{0}' wird als byVal übergeben und bekommt ienen Wert zugesiesen.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspectionMeta" xml:space="preserve">
-    <value>Die Methode ist als Funktion geschrieben wird aber als Prozedur genutzt. Erwäge 'Function' in 'Sub' zu ändern.</value>
-  </data>
   <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' wird nicht genutzt</value>
   </data>
@@ -590,5 +587,8 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="ModuleScopeDimKeywordInspectionResultFormat" xml:space="preserve">
     <value>Die Modulvariable '{0}' ist mit dem 'Dim'-Schlüsselwort deklariert.</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspectionMeta">
+    <value>Ein Member ist als Funktion geschrieben, aber wird wie eine Prozedur verwendet. Falls die Funktion nicht rekursiv ist, sollten Sie in Erwägung ziehen, die 'Function' in ein 'Sub' zu konvertieren. Falls die Funktion rekursiv ist, verwendet keiner der externen Aufrufer den Rückgabewert.</value>
   </data>
 </root>
