@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetInterfaceMemberIssues(IEnumerable<Declaration> interfaceMembers)
         {
-            return from interfaceMember in interfaceMembers
+            return (from interfaceMember in interfaceMembers
                    let implementationMembers =
                        UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName).ToList()
                    where interfaceMember.DeclarationType == DeclarationType.Function &&
@@ -52,13 +52,14 @@ namespace Rubberduck.Inspections
                                        implementationMember.Selection), implementationMember))
                    select
                        new FunctionReturnValueNotUsedInspectionResult(this, interfaceMember.Context,
-                           interfaceMember.QualifiedName, implementationMemberIssues, interfaceMember);
+                           interfaceMember.QualifiedName, implementationMemberIssues, interfaceMember)).ToList();
         }
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
         {
             var returnValueNotUsedFunctions = nonInterfaceFunctions.Where(function => function.DeclarationType == DeclarationType.Function && !IsReturnValueUsed(function));
             var nonInterfaceIssues = returnValueNotUsedFunctions
+                .Where(function => !IsRecursive(function))
                 .Select(function =>
                         new FunctionReturnValueNotUsedInspectionResult(
                             this,
@@ -68,14 +69,15 @@ namespace Rubberduck.Inspections
             return nonInterfaceIssues;
         }
 
+        private bool IsRecursive(Declaration function)
+        {
+            return function.References.Any(usage => usage.ParentScoping.Equals(function) && IsIndexExprOrCallStmt(usage));
+        }
+
         private bool IsReturnValueUsed(Declaration function)
         {
             foreach (var usage in function.References)
             {
-                if (IsReturnStatement(function, usage))
-                {
-                    continue;
-                }
                 if (IsAddressOfCall(usage))
                 {
                     continue;
@@ -84,7 +86,7 @@ namespace Rubberduck.Inspections
                 {
                     continue;
                 }
-                if (IsCallStmt(usage))
+                if (IsCallStmt(usage)) // IsIndexExprOrCallStmt(usage))
                 {
                     continue;
                 }
@@ -93,6 +95,10 @@ namespace Rubberduck.Inspections
                     continue;
                 }
                 if (IsSet(usage))
+                {
+                    continue;
+                }
+                if (IsReturnStatement(function, usage))
                 {
                     continue;
                 }
@@ -116,6 +122,11 @@ namespace Rubberduck.Inspections
             return assignment.ParentScoping.Equals(function) && assignment.Declaration.Equals(function);
         }
 
+        private bool IsIndexExprOrCallStmt(IdentifierReference usage)
+        {
+            return IsCallStmt(usage) || IsIndexExprContext(usage);
+        }
+
         private bool IsCallStmt(IdentifierReference usage)
         {
             var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(usage.Context);
@@ -128,8 +139,22 @@ namespace Rubberduck.Inspections
             {
                 return true;
             }
-            bool isUsedAsArgumentThusReturnValueIsUsed = ParserRuleContextHelper.HasParent(usage.Context, argumentList);
-            return !isUsedAsArgumentThusReturnValueIsUsed;
+            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
+        }
+
+        private bool IsIndexExprContext(IdentifierReference usage)
+        {
+            var indexExpr = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(usage.Context);
+            if (indexExpr == null)
+            {
+                return false;
+            }
+            var argumentList = indexExpr.argumentList();
+            if (argumentList == null)
+            {
+                return true;
+            }
+            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
         }
 
         private bool IsLet(IdentifierReference usage)

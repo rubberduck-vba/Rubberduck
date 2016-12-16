@@ -16,18 +16,17 @@ namespace Rubberduck.Inspections.Results
 
         public NonReturningFunctionInspectionResult(IInspection inspection,
             QualifiedContext<ParserRuleContext> qualifiedContext, 
-            bool isInterfaceImplementation,
-            Declaration target)
+            Declaration target, bool canConvertToProcedure)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, target)
         {
-            _quickFixes = isInterfaceImplementation 
+            _quickFixes = canConvertToProcedure
                 ? new QuickFixBase[] 
                 {
+                    new ConvertToProcedureQuickFix(Context, QualifiedSelection, target),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
                 }
                 : new QuickFixBase[]
                 {
-                    new ConvertToProcedureQuickFix(Context, QualifiedSelection, target),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
                 };
         }

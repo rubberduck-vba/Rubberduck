@@ -379,7 +379,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Parameter '{0}' is passed ByVal and assigned a value</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionMeta" xml:space="preserve">
-    <value>A member is written as a function, but used as a procedure. Consider converting the 'Function' into a 'Sub'.</value>
+    <value>A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the 'Function' into a 'Sub'. If the function is recursive, none of its external callers are using the returned value.</value>
   </data>
   <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' is not used</value>
