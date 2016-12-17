@@ -82,7 +82,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         public SerializableDeclarationTree Load(string path)
         {
             if (string.IsNullOrEmpty(path)) { throw new InvalidOperationException(); }
-            throw new NotImplementedException();
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var xmlReader = XmlReader.Create(stream))
+            using (var reader = XmlDictionaryReader.CreateDictionaryReader(xmlReader))
+            {
+                var serializer = new DataContractSerializer(typeof(SerializableDeclarationTree));
+                return (SerializableDeclarationTree)serializer.ReadObject(reader);
+            }
         }
     }
 }
