@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.ObjectVariableNotSetInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ObjectVariableNotSetInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.ObjectVariableNotSetInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly IReadOnlyList<string> ValueTypes = new[]

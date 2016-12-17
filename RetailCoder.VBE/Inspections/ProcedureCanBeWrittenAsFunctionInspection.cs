@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         public IEnumerable<QualifiedContext<VBAParser.ArgListContext>> ParseTreeResults { get { return _results.OfType<QualifiedContext<VBAParser.ArgListContext>>(); } }

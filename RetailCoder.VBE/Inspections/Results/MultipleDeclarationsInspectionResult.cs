@@ -3,6 +3,7 @@ using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections.Results
 
         public override string Description
         {
-            get { return Inspection.Description.Captialize(); }
+            get { return InspectionsUI.MultipleDeclarationsInspectionResultFormat.Captialize(); }
         }
 
         public override IEnumerable<QuickFixBase> QuickFixes { get {return _quickFixes; } }

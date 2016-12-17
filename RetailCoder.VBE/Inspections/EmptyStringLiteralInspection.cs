@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.EmptyStringLiteralInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.EmptyStringLiteralInspection; } }
+        public override string Description { get { return InspectionsUI.EmptyStringLiteralInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         public IEnumerable<QualifiedContext<VBAParser.LiteralExpressionContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.LiteralExpressionContext>>(); } }

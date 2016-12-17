@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.UndeclaredVariableInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.UndeclaredVariableInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.UndeclaredVariableInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

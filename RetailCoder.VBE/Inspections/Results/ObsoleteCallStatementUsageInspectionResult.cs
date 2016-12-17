@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections.Results
 
         public override string Description
         {
-            get { return Inspection.Description.Captialize(); }
+            get { return InspectionsUI.ObsoleteCallStatementInspectionResultFormat.Captialize(); }
         }
     }
 }

@@ -587,7 +587,7 @@
                     </Grid.ColumnDefinitions>
                     <Image Style="{StaticResource IconStyle}" VerticalAlignment="Top" Grid.Column="0"
                            Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
-                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedItem.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
+                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedItem.Inspection.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                 </Grid>
 
                 <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Meta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
