@@ -1828,43 +1828,43 @@ End Sub</value>
   <data name="ContextReferences" xml:space="preserve">
     <value>références</value>
   </data>
-  <data name="DialogCaption_SaveInspectionSettings">
-    <value>Save Inspection Settings</value>
+  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres d'inspections</value>
   </data>
-  <data name="DialogCaption_SaveToDoSettings">
-    <value>Save Todo List Settings</value>
+  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres "TODO"</value>
   </data>
-  <data name="DialogMask_XmlFilesOnly">
-    <value>XML file (.xml)|*.xml|Rubberduck config file|*.config</value>
+  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
+    <value>Fichiers XML (.xml)|*.xml|Configuration de Rubberduck|*.config</value>
   </data>
-  <data name="DialogCaption_SaveGeneralSettings">
-    <value>Save General Settings</value>
+  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres généraux</value>
   </data>
-  <data name="DialogCaption_LoadToDoSettings">
-    <value>Load Todo List Settings</value>
+  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
+    <value>Charger les paramètres "TODO"</value>
   </data>
-  <data name="DialogCaption_SaveUnitTestSettings">
-    <value>Save Unit Test Settings</value>
+  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres des tests unitaires</value>
   </data>
-  <data name="DialogCaption_LoadUnitTestSettings">
-    <value>Load Unit Test Settings</value>
+  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
+    <value>Charger les paramètres des tests unitaires</value>
   </data>
-  <data name="DialogCaption_LoadInspectionSettings">
-    <value>Load Inspection Settings</value>
+  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
+    <value>Charger les paramètres d'inspections</value>
   </data>
-  <data name="SettingsCaption_ExportSettings">
+  <data name="SettingsCaption_ExportSettings" xml:space="preserve">
     <value>Export</value>
   </data>
-  <data name="DialogCaption_SaveIndenterSettings">
-    <value>Save Indenter Settings</value>
+  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres d'indentation</value>
   </data>
-  <data name="DialogCaption_LoadIndenterSettings">
-    <value>Load Indenter Settings</value>
+  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
+    <value>Charger les paramètres d'indentation</value>
   </data>
-  <data name="DialogCaption_LoadGeneralSettings">
-    <value>Load General Settings</value>
+  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
+    <value>Charger les paramètres généraux</value>
   </data>
-  <data name="SettingsCaption_ImportSettings">
+  <data name="SettingsCaption_ImportSettings" xml:space="preserve">
     <value>Import</value>
   </data>
 </root>
