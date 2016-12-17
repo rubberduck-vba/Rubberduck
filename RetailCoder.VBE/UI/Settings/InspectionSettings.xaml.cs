@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Controls;
 using Rubberduck.Inspections;
 using System.Collections.ObjectModel;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings

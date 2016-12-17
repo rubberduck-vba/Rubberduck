@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -46,8 +49,8 @@ namespace Rubberduck.Inspections
 
             return unassigned
                 .Select(issue =>
-                    new NonReturningFunctionInspectionResult(this, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context),
-                            interfaceImplementationMembers.Select(m => m.Scope).Contains(issue.Scope), issue));
+                    new NonReturningFunctionInspectionResult(this, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context), issue, 
+                        canConvertToProcedure: !IsRecursive(issue) && !interfaceImplementationMembers.Select(m => m.Scope).Contains(issue.Scope)));
         }
 
         private bool IsReturningUserDefinedType(Declaration member)
@@ -65,6 +68,46 @@ namespace Rubberduck.Inspections
             var visitor = new FunctionReturnValueAssignmentLocator(member.IdentifierName);
             var result = visitor.VisitBlock(block);
             return result;
+        }
+
+        private bool IsRecursive(Declaration function)
+        {
+            return function.References.Any(usage => usage.ParentScoping.Equals(function) && IsIndexExprOrCallStmt(usage));
+        }
+
+        private bool IsIndexExprOrCallStmt(IdentifierReference usage)
+        {
+            return IsCallStmt(usage) || IsIndexExprContext(usage);
+        }
+
+        private bool IsCallStmt(IdentifierReference usage)
+        {
+            var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(usage.Context);
+            if (callStmt == null)
+            {
+                return false;
+            }
+            var argumentList = CallStatement.GetArgumentList(callStmt);
+            if (argumentList == null)
+            {
+                return true;
+            }
+            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
+        }
+
+        private bool IsIndexExprContext(IdentifierReference usage)
+        {
+            var indexExpr = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(usage.Context);
+            if (indexExpr == null)
+            {
+                return false;
+            }
+            var argumentList = indexExpr.argumentList();
+            if (argumentList == null)
+            {
+                return true;
+            }
+            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
         }
 
         /// <summary>
