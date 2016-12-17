@@ -4,7 +4,6 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
@@ -15,7 +14,6 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
-using MessageBox = Rubberduck.UI.MessageBox;
 
 namespace RubberduckTests.Refactoring
 {

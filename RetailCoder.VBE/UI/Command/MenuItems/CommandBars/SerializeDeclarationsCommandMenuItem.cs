@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Printing;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;

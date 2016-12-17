@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;

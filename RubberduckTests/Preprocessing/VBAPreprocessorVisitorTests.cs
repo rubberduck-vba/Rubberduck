@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
-using Rubberduck.Parsing.Symbols;
 using System;
 using System.Diagnostics;
 using System.Globalization;

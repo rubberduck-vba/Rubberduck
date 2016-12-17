@@ -10,8 +10,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

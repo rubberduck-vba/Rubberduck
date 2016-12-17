@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols

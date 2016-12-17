@@ -4,7 +4,6 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
