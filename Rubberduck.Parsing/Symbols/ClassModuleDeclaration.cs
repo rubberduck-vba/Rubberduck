@@ -57,6 +57,11 @@ namespace Rubberduck.Parsing.Symbols
             return classType != null ? classType.Supertypes : new List<Declaration>();
         }
 
+        public static bool HasDefaultMember(Declaration type)
+        {
+            var classModule = type as ClassModuleDeclaration;
+            return classModule != null && classModule.DefaultMember != null;
+        }
 
         private bool? _isExposed;
         /// <summary>

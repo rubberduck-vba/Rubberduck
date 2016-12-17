@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections
                         !item.IsSelfAssigned &&
                         !item.IsArray &&
                         !ValueTypes.Contains(item.AsTypeName) &&
-                        (item.AsTypeDeclaration == null || (!IsBuiltInTypeWithDefaultMember(item.AsTypeDeclaration) &&
+                        (item.AsTypeDeclaration == null || (!ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration) &&
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration &&
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)) &&
                         (item.DeclarationType == DeclarationType.Variable ||
@@ -58,7 +58,7 @@ namespace Rubberduck.Inspections
                     && (item.AsTypeDeclaration == null // null if unresolved (e.g. in unit tests)
                         || (item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
                             && item.AsTypeDeclaration != null 
-                            && !IsBuiltInTypeWithDefaultMember(item.AsTypeDeclaration))));
+                            && !ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration))));
 
             var interestingReferences = interestingDeclarations
                     .Union(interestingMembers.SelectMany(item =>
@@ -74,12 +74,6 @@ namespace Rubberduck.Inspections
 
 
             return interestingReferences.Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
-        }
-
-        private bool IsBuiltInTypeWithDefaultMember(Declaration asType)
-        {
-            var classModule = asType as ClassModuleDeclaration;
-            return classModule != null && asType.IsBuiltIn && classModule.DefaultMember != null;
         }
     }
 }
