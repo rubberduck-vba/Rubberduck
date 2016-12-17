@@ -27,6 +27,22 @@ namespace Rubberduck.Parsing.Symbols
         }
     }
 
+    [DataContract]
+    public class SerializableMemberAttribute
+    {
+        public SerializableMemberAttribute(string name, IEnumerable<string> values)
+        {
+            Name = name;
+            Values = values;
+        }
+
+        [DataMember(IsRequired = true)]
+        public readonly string Name;
+
+        [DataMember(IsRequired = true)]
+        public readonly IEnumerable<string> Values;
+    }
+
     public class SerializableDeclaration
     {
         public SerializableDeclaration()
@@ -36,9 +52,9 @@ namespace Rubberduck.Parsing.Symbols
         {
             IdentifierName = declaration.IdentifierName;
 
-            //todo: figure these out
-            //Annotations = declaration.Annotations.Cast<AnnotationBase>().ToArray();
-            //Attributes = declaration.Attributes.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray());
+            Attributes = declaration.Attributes
+                .Select(a => new SerializableMemberAttribute(a.Key, a.Value))
+                .ToList();
 
             ParentScope = declaration.ParentScope;
             TypeHint = declaration.TypeHint;
@@ -55,6 +71,8 @@ namespace Rubberduck.Parsing.Symbols
             ProjectPath = declaration.QualifiedName.QualifiedModuleName.ProjectPath;
             ComponentName = declaration.QualifiedName.QualifiedModuleName.ComponentName;
         }
+
+        public List<SerializableMemberAttribute> Attributes { get; set; }
 
         public string IdentifierName { get; set; }
 
