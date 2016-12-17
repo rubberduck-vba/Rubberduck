@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
@@ -44,7 +43,7 @@ namespace Rubberduck.Inspections
                         !item.IsSelfAssigned &&
                         !item.IsArray &&
                         !ValueTypes.Contains(item.AsTypeName) &&
-                        (item.AsTypeDeclaration == null || (
+                        (item.AsTypeDeclaration == null || (!IsBuiltInTypeWithDefaultMember(item.AsTypeDeclaration) &&
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration &&
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)) &&
                         (item.DeclarationType == DeclarationType.Variable ||
@@ -57,7 +56,9 @@ namespace Rubberduck.Inspections
                     && item.IsTypeSpecified
                     && !ValueTypes.Contains(item.AsTypeName) 
                     && (item.AsTypeDeclaration == null // null if unresolved (e.g. in unit tests)
-                        || (item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)));
+                        || (item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
+                            && item.AsTypeDeclaration != null 
+                            && !IsBuiltInTypeWithDefaultMember(item.AsTypeDeclaration))));
 
             var interestingReferences = interestingDeclarations
                     .Union(interestingMembers.SelectMany(item =>
@@ -66,13 +67,19 @@ namespace Rubberduck.Inspections
                     .SelectMany(declaration =>
                         declaration.References.Where(reference =>
                         {
-                            var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
-                            return reference.IsAssignment && setStmtContext != null && setStmtContext.LET() == null;
+                            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+                            return reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null;
                         })
                     );
 
 
             return interestingReferences.Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
+        }
+
+        private bool IsBuiltInTypeWithDefaultMember(Declaration asType)
+        {
+            var classModule = asType as ClassModuleDeclaration;
+            return classModule != null && asType.IsBuiltIn && classModule.DefaultMember != null;
         }
     }
 }
