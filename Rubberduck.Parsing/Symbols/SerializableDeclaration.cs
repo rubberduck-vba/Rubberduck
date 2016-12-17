@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -71,6 +72,14 @@ namespace Rubberduck.Parsing.Symbols
             ProjectName = declaration.QualifiedName.QualifiedModuleName.ProjectName;
             ProjectPath = declaration.QualifiedName.QualifiedModuleName.ProjectPath;
             ComponentName = declaration.QualifiedName.QualifiedModuleName.ComponentName;
+
+            var param = declaration as ParameterDeclaration;
+            if (param != null)
+            {
+                IsOptionalParam = param.IsOptional;
+                IsByRefParam = param.IsByRef;
+                IsParamArray = param.IsParamArray;
+            }
         }
 
         public List<SerializableMemberAttribute> Attributes { get; set; }
@@ -95,14 +104,43 @@ namespace Rubberduck.Parsing.Symbols
         public Accessibility Accessibility { get; set; }
         public DeclarationType DeclarationType { get; set; }
 
+        public bool IsOptionalParam { get; set; }
+        public bool IsByRefParam { get; set; }
+        public bool IsParamArray { get; set; }
+
         public Declaration Unwrap(Declaration parent)
         {
+            var annotations = Enumerable.Empty<IAnnotation>();
             var attributes = new Attributes();
             foreach (var attribute in Attributes)
             {
                 attributes.Add(attribute.Name, attribute.Values);
             }
-            return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn, null, attributes);
+
+            switch (DeclarationType)
+            {
+                case DeclarationType.Project:
+                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, true);
+                case DeclarationType.ClassModule:
+                    return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
+                case DeclarationType.ProceduralModule:
+                    return new ProceduralModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
+                case DeclarationType.Procedure:
+                    return new SubroutineDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                case DeclarationType.Function:
+                    return new FunctionDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
+                case DeclarationType.PropertyGet:
+                    return new PropertyGetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
+                case DeclarationType.PropertyLet:
+                    return new PropertyLetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                case DeclarationType.PropertySet:
+                    return new PropertySetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                case DeclarationType.Parameter:
+                    return new ParameterDeclaration(QualifiedMemberName, parent, AsTypeName, null, TypeHint, IsOptionalParam, IsByRefParam, IsArray, IsParamArray);
+
+                default:
+                    return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn, null, attributes);
+            }
         }
     }
 }

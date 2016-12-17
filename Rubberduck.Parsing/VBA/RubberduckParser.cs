@@ -432,18 +432,20 @@ namespace Rubberduck.Parsing.VBA
                                 {
                                     try
                                     {
-                                        var comReflector = new ReferencedDeclarationsCollector(State);
-                                        SerializableDeclarationTree tree;
-                                        var items = comReflector.GetDeclarationsForReference(localReference, out tree);
-                                        if (tree != null)
-                                        {
-                                            State.BuiltInDeclarationTrees.Add(tree);
-                                        }
+                                        LoadSerializedBuiltInReferences(State);
+                                        //var comReflector = new ReferencedDeclarationsCollector(State);
+                                        //SerializableDeclarationTree tree;
 
-                                        foreach (var declaration in items)
-                                        {
-                                            State.AddDeclaration(declaration);
-                                        }
+                                        //var items = comReflector.GetDeclarationsForReference(localReference, out tree);
+                                        //if (tree != null)
+                                        //{
+                                        //    State.BuiltInDeclarationTrees.Add(tree);
+                                        //}
+
+                                        //foreach (var declaration in items)
+                                        //{
+                                        //    State.AddDeclaration(declaration);
+                                        //}
                                     }
                                     catch (Exception exception)
                                     {
@@ -483,6 +485,36 @@ namespace Rubberduck.Parsing.VBA
             foreach (var reference in unmapped)
             {
                 UnloadComReference(reference, projects);
+            }
+        }
+
+        private void LoadSerializedBuiltInReferences(RubberduckParserState state)
+        {
+            var basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
+            var files = Directory.GetFiles(basePath, "*.xml");
+            var reader = new XmlPersistableDeclarations();
+            foreach (var file in files)
+            {
+                var tree = reader.Load(file);
+                foreach (var declaration in UnwrapTree(tree))
+                {
+                    state.AddDeclaration(declaration);
+                }
+            }
+        }
+
+        private IEnumerable<Declaration> UnwrapTree(SerializableDeclarationTree tree, Declaration parent = null)
+        {
+            var current = tree.Node.Unwrap(parent);
+            yield return current;
+
+            foreach (var serializableDeclarationTree in tree.Children)
+            {
+                var unwrapped = UnwrapTree(serializableDeclarationTree, current);
+                foreach (var declaration in unwrapped)
+                {
+                    yield return declaration;
+                }
             }
         }
 
