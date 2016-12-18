@@ -146,6 +146,7 @@ namespace Rubberduck
         {
             EnsureLogFolderPathExists();
             LoadConfig();
+            CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _stateBar.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
@@ -193,6 +194,32 @@ namespace Rubberduck
                 _messageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
+            }
+        }
+
+        private void CheckForLegacyIndenterSettings()
+        {
+            try
+            {
+                Logger.Trace("Checking for legacy Smart Indenter settings.");
+                if (_config.UserSettings.GeneralSettings.SmartIndenterPrompted ||
+                    !_config.UserSettings.IndenterSettings.LegacySettingsExist())
+                {
+                    return;
+                }
+                var response =
+                    _messageBox.Show(RubberduckUI.SmartIndenter_LegacySettingPrompt, "Rubberduck", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (response == DialogResult.Yes)
+                {
+                    Logger.Trace("Attempting to load legacy Smart Indenter settings.");
+                    _config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
+                }
+                _config.UserSettings.GeneralSettings.SmartIndenterPrompted = true;
+                _configService.SaveConfiguration(_config);
+            }
+            catch 
+            {
+                //Meh.
             }
         }
 

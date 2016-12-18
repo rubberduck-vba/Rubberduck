@@ -7,6 +7,7 @@ namespace Rubberduck.Settings
     {
         DisplayLanguageSetting Language { get; set; }
         bool ShowSplash { get; set; }
+        bool SmartIndenterPrompted { get; set; }
         bool AutoSaveEnabled { get; set; }
         int AutoSavePeriod { get; set; }
         char Delimiter { get; set; }
@@ -18,6 +19,7 @@ namespace Rubberduck.Settings
     {
         public DisplayLanguageSetting Language { get; set; }
         public bool ShowSplash { get; set; }
+        public bool SmartIndenterPrompted { get; set; }
         public bool AutoSaveEnabled { get; set; }
         public int AutoSavePeriod { get; set; }
         public char Delimiter { get; set; }
@@ -27,6 +29,7 @@ namespace Rubberduck.Settings
         {
             Language = new DisplayLanguageSetting("en-US");
             ShowSplash = true;
+            SmartIndenterPrompted = false;
             AutoSaveEnabled = false;
             AutoSavePeriod = 10;
             Delimiter = '.';

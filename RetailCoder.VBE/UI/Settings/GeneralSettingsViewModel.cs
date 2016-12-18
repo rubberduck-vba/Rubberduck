@@ -17,6 +17,7 @@ namespace Rubberduck.UI.Settings
     public class GeneralSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
     {
         private readonly IOperatingSystem _operatingSystem;
+        private bool _indenterPrompted;
 
         public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem)
         {
@@ -166,6 +167,7 @@ namespace Rubberduck.UI.Settings
             {
                 Language = SelectedLanguage,
                 ShowSplash = ShowSplashAtStartup,
+                SmartIndenterPrompted = _indenterPrompted,
                 AutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
                 Delimiter = (char)Delimiter,
@@ -178,6 +180,7 @@ namespace Rubberduck.UI.Settings
             SelectedLanguage = Languages.First(l => l.Code == general.Language.Code);
             Hotkeys = new ObservableCollection<HotkeySetting>(hottkey.Settings);
             ShowSplashAtStartup = general.ShowSplash;
+            _indenterPrompted = general.SmartIndenterPrompted;
             AutoSaveEnabled = general.AutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;
             Delimiter = (DelimiterOptions)general.Delimiter;
@@ -198,6 +201,8 @@ namespace Rubberduck.UI.Settings
                 var general = service.Load(new Rubberduck.Settings.GeneralSettings());
                 var hkService = new XmlPersistanceService<HotkeySettings> { FilePath = dialog.FileName };
                 var hotkey = hkService.Load(new HotkeySettings());
+                //Always assume Smart Indenter registry import has been prompted if importing.
+                general.SmartIndenterPrompted = true;
                 TransferSettingsToView(general, hotkey);
             }
         }
