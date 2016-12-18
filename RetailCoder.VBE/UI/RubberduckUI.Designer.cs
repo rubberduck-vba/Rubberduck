@@ -3471,6 +3471,16 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Smart Indenter settings were found in your registry.
+        ///Would you like to import them to Rubberduck?.
+        /// </summary>
+        public static string SmartIndenter_LegacySettingPrompt {
+            get {
+                return ResourceManager.GetString("SmartIndenter_LegacySettingPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In&amp;dent.
         /// </summary>
         public static string SmartIndenterMenu {

@@ -1883,4 +1883,8 @@ End Sub</value>
     <value>references</value>
     <comment>Used to display number of references in commandbar's context selection</comment>
   </data>
+  <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
+    <value>Smart Indenter settings were found in your registry.
+Would you like to import them to Rubberduck?</value>
+  </data>
 </root>
