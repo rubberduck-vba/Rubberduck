@@ -14,7 +14,7 @@ namespace Rubberduck.Parsing.Symbols
         public readonly SerializableDeclaration Node;
 
         [DataMember(IsRequired = true)]
-        public readonly IEnumerable<SerializableDeclarationTree> Children;
+        public IEnumerable<SerializableDeclarationTree> Children;
 
         public SerializableDeclarationTree(Declaration declaration)   
             : this(new SerializableDeclaration(declaration)) { }

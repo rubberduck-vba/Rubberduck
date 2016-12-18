@@ -433,8 +433,12 @@ namespace Rubberduck.Parsing.VBA
                                     try
                                     {
                                         var comReflector = new ReferencedDeclarationsCollector(State);
-                                        SerializableDeclarationTree tree;
-                                        var items = comReflector.GetDeclarationsForReference(localReference, out tree);
+
+                                        var items = comReflector.GetDeclarationsForReference(localReference);
+                                        var root = items.SingleOrDefault(x => x.DeclarationType == DeclarationType.Project);
+                                        var serialize = new List<Declaration>(items);
+                                        var tree = GetSerializableTreeForDeclaration(root, serialize);
+
                                         if (tree != null)
                                         {
                                             State.BuiltInDeclarationTrees.Add(tree);
@@ -484,6 +488,21 @@ namespace Rubberduck.Parsing.VBA
             {
                 UnloadComReference(reference, projects);
             }
+        }
+
+        private SerializableDeclarationTree GetSerializableTreeForDeclaration(Declaration declaration, List<Declaration> declarations)
+        {
+            var output = new SerializableDeclarationTree(declaration);
+            var children = new List<SerializableDeclarationTree>();
+            var nodes = declarations.Where(x => x.ParentDeclaration.Equals(declaration)).ToList();
+            declarations.RemoveAll(nodes.Contains);
+            foreach (var item in nodes)
+            {
+                children.Add(GetSerializableTreeForDeclaration(item, declarations));
+            }
+
+            output.Children = children;
+            return output;
         }
 
         private void UnloadComReference(IReference reference, IReadOnlyList<IVBProject> projects)

@@ -14,7 +14,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _fileSystemModule;
         private Declaration _interactionModule;
         private Declaration _stringsModule;
-
+        private Declaration _dateTimeModule;
 
         public AliasDeclarations(RubberduckParserState state)
         {
@@ -79,6 +79,9 @@ namespace Rubberduck.Parsing.Symbols
 
                 _stringsModule = state.AllDeclarations.SingleOrDefault(
                         item => item.IdentifierName == "Strings" && item.Scope == "VBE7.DLL;VBA.Strings");
+
+                _dateTimeModule = state.AllDeclarations.SingleOrDefault(
+                        item => item.IdentifierName == "DateTime" && item.Scope == "VBE7.DLL;VBA.DateTime");
             }
 
 
