@@ -437,6 +437,7 @@ namespace Rubberduck.Parsing.VBA
                                         var items = comReflector.GetDeclarationsForReference(localReference);
                                         var root = items.SingleOrDefault(x => x.DeclarationType == DeclarationType.Project);
                                         var serialize = new List<Declaration>(items);
+                                        serialize.Remove(root);
                                         var tree = GetSerializableTreeForDeclaration(root, serialize);
 
                                         if (tree != null)
