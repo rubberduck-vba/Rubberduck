@@ -500,7 +500,7 @@ namespace Rubberduck.Parsing.VBA
         private SerializableDeclarationTree GetSerializableTreeForDeclaration(Declaration declaration, List<Declaration> declarations)
         {
             var children = new List<SerializableDeclarationTree>();
-            var nodes = declarations.Where(x => x.ParentDeclaration.Equals(declaration)).ToList();
+            var nodes = declarations.Where(x => x.ParentDeclaration != null && x.ParentDeclaration.Equals(declaration)).ToList();
             declarations.RemoveAll(nodes.Contains);
             foreach (var item in nodes)
             {
