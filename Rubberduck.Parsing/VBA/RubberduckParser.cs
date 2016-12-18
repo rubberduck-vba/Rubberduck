@@ -435,27 +435,21 @@ namespace Rubberduck.Parsing.VBA
                                         var comReflector = new ReferencedDeclarationsCollector(State);
 
                                         var items = comReflector.GetDeclarationsForReference(localReference);
-                                        var root = items.SingleOrDefault(x => x.DeclarationType == DeclarationType.Project);
+                                        var root = items.OfType<ProjectDeclaration>().SingleOrDefault();
                                         var serialize = new List<Declaration>(items);
+                                        foreach (var declaration in serialize)
+                                        {
+                                            State.AddDeclaration(declaration);
+                                        }
                                         serialize.Remove(root);
                                         var tree = GetSerializableTreeForDeclaration(root, serialize);
 
                                         if (tree != null)
                                         {
-                                            State.BuiltInDeclarationTrees.Add(tree);
+                                            var added = State.BuiltInDeclarationTrees.TryAdd(tree);
+                                            //if (!added) { throw new Exception();}
                                         }
-
-                                        //var items = comReflector.GetDeclarationsForReference(localReference, out tree);
-                                        //if (tree != null)
-                                        //{
-                                        //    State.BuiltInDeclarationTrees.Add(tree);
-                                        //}
-
-                                        //foreach (var declaration in items)
-                                        //{
-                                        //    State.AddDeclaration(declaration);
-                                        //}
-                                        }
+                                    }
                                     catch (Exception exception)
                                     {
                                         unmapped.Add(reference);
@@ -500,7 +494,7 @@ namespace Rubberduck.Parsing.VBA
         private SerializableDeclarationTree GetSerializableTreeForDeclaration(Declaration declaration, List<Declaration> declarations)
         {
             var children = new List<SerializableDeclarationTree>();
-            var nodes = declarations.Where(x => x.ParentDeclaration != null && x.ParentDeclaration.Equals(declaration)).ToList();
+            var nodes = declarations.Where(x => x.ParentDeclaration.Equals(declaration)).ToList();
             declarations.RemoveAll(nodes.Contains);
             foreach (var item in nodes)
             {

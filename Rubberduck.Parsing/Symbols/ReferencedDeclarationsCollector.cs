@@ -228,7 +228,7 @@ namespace Rubberduck.Parsing.Symbols
                         moduleDeclaration = module;
                         break;
                     default:
-                        string pseudoModuleName = string.Format("_{0}", typeName);
+                        var pseudoModuleName = string.Format("_{0}", typeName);
                         var pseudoParentModule = new ProceduralModuleDeclaration(
                             new QualifiedMemberName(projectQualifiedModuleName, pseudoModuleName),
                             projectDeclaration,
@@ -236,11 +236,7 @@ namespace Rubberduck.Parsing.Symbols
                             true,
                             new List<IAnnotation>(),
                             new Attributes());
-                        // Enums don't define their own type but have a declared type of "Long".
-                        if (typeDeclarationType == DeclarationType.Enumeration)
-                        {
-                            typeName = Tokens.Long;
-                        }
+
                         // UDTs and ENUMs don't seem to have a module parent that's why we add a "fake" module
                         // so that the rest of the application can treat it normally.
                         moduleDeclaration = new Declaration(
@@ -260,6 +256,8 @@ namespace Rubberduck.Parsing.Symbols
                             true,
                             null,
                             attributes);
+
+                        output.Add(pseudoParentModule);
                         break;
                 }
 
