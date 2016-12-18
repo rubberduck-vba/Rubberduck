@@ -26,9 +26,6 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration ModuleDeclaration { get; internal set; }
         public DeclarationType TypeDeclarationType { get; internal set; }
 
-        private readonly List<SerializableDeclarationTree> _trees = new List<SerializableDeclarationTree>();
-        internal IList<SerializableDeclarationTree> MemberTrees { get { return _trees; } }
-
         public override string ToString()
         {
             return ModuleDeclaration.IdentifierName;
