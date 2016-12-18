@@ -586,8 +586,8 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private readonly ConcurrentBag<SerializableDeclarationTree> _builtInDeclarationTrees = new ConcurrentBag<SerializableDeclarationTree>();
-        public IProducerConsumerCollection<SerializableDeclarationTree> BuiltInDeclarationTrees { get { return _builtInDeclarationTrees; } }
+        private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
+        public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees { get { return _builtInDeclarationTrees; } }
 
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.

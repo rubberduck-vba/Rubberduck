@@ -31,6 +31,9 @@ namespace Rubberduck.Parsing.Symbols
             _projectReferences = new List<ProjectReference>();
         }
 
+        public long MajorVersion { get; set; }
+        public long MinorVersion { get; set; }
+
         public IReadOnlyList<ProjectReference> ProjectReferences
         {
             get

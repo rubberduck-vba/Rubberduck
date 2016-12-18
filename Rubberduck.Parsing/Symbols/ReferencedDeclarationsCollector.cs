@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
@@ -16,8 +18,8 @@ using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
 using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
+using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -25,6 +27,7 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class ReferencedDeclarationsCollector
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly RubberduckParserState _state;
 
         /// <summary>
@@ -146,6 +149,40 @@ namespace Rubberduck.Parsing.Symbols
             return typeName.Equals("LONG_PTR") ? "LongPtr" : typeName;  //Quickfix for http://chat.stackexchange.com/transcript/message/30119269#30119269
         }
 
+        private void LoadVersionFromTypeLib(ITypeLib tlb, ProjectDeclaration project)
+        {
+            var attribPtr = IntPtr.Zero;
+            tlb.GetLibAttr(out attribPtr);
+            var typeAttr = (TYPELIBATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPELIBATTR));
+            project.MajorVersion = typeAttr.wMajorVerNum;
+            project.MinorVersion = typeAttr.wMinorVerNum;      
+        }
+
+        private bool SerializedVersionExists(ProjectDeclaration project)
+        {
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
+            if (!Directory.Exists(path))
+            {
+                return false;
+            }
+            //TODO: This is naively based on file name for now - this should attempt to deserialize any SerializableProject.Nodes in the directory and test for equity.
+            var testFile = Path.Combine(path, string.Format("{0}.{1}.{2}", project.ProjectName, project.MajorVersion, project.MinorVersion) + ".xml");
+            if (File.Exists(testFile))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private List<Declaration> LoadSerializedBuiltInReferences(ProjectDeclaration project)
+        {
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
+            var file = Path.Combine(path, string.Format("{0}.{1}.{2}", project.ProjectName, project.MajorVersion, project.MinorVersion) + ".xml");
+            var reader = new XmlPersistableDeclarations();
+            var deserialized = reader.Load(file);
+            return deserialized.Unwrap();
+        }
+
         public List<Declaration> GetDeclarationsForReference(IReference reference)
         {
             var output = new List<Declaration>();
@@ -161,6 +198,13 @@ namespace Rubberduck.Parsing.Symbols
             var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
             var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
             var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName, isBuiltIn: true);
+            LoadVersionFromTypeLib(typeLibrary, projectDeclaration);
+            if (SerializedVersionExists(projectDeclaration))
+            {
+                Logger.Trace(string.Format("Deserializing reference '{0}'.", reference.Name));
+                return LoadSerializedBuiltInReferences(projectDeclaration);
+            }
+            Logger.Trace(string.Format("COM reflecting reference '{0}'.", reference.Name));
             output.Add(projectDeclaration);
 
             var typeCount = typeLibrary.GetTypeInfoCount();
@@ -169,7 +213,7 @@ namespace Rubberduck.Parsing.Symbols
                 ITypeInfo info;
                 try
                 {
-                    typeLibrary.GetTypeInfo(i, out info);
+                    typeLibrary.GetTypeInfo(i, out info);                    
                 }
                 catch (NullReferenceException)
                 {
@@ -200,6 +244,7 @@ namespace Rubberduck.Parsing.Symbols
                 IntPtr typeAttributesPointer;
                 info.GetTypeAttr(out typeAttributesPointer);
                 var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
+
                 var attributes = new Attributes();
 
                 if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID))

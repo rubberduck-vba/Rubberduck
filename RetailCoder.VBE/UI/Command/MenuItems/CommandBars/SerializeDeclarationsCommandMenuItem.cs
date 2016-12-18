@@ -20,9 +20,9 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
     public class SerializeDeclarationsCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IPersistable<SerializableDeclarationTree> _service;
+        private readonly IPersistable<SerializableProject> _service;
 
-        public SerializeDeclarationsCommand(RubberduckParserState state, IPersistable<SerializableDeclarationTree> service) 
+        public SerializeDeclarationsCommand(RubberduckParserState state, IPersistable<SerializableProject> service) 
             : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
@@ -39,14 +39,14 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         protected override void ExecuteImpl(object parameter)
         {
-            var path = Path.Combine(BasePath, "declarations");
+            var path = Path.Combine(BasePath, "Declarations");
             if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
 
             foreach (var tree in _state.BuiltInDeclarationTrees)
             {
                 System.Diagnostics.Debug.Assert(path != null, "project path isn't supposed to be null");
 
-                var filename = Path.GetFileNameWithoutExtension(tree.Node.QualifiedMemberName.QualifiedModuleName.ProjectName) + ".xml";
+                var filename = string.Format("{0}.{1}.{2}", tree.Node.QualifiedMemberName.QualifiedModuleName.ProjectName, tree.MajorVersion, tree.MinorVersion) + ".xml";
                 _service.Persist(Path.Combine(path, filename), tree);
             }
         }
