@@ -499,7 +499,6 @@ namespace Rubberduck.Parsing.VBA
 
         private SerializableDeclarationTree GetSerializableTreeForDeclaration(Declaration declaration, List<Declaration> declarations)
         {
-            var output = new SerializableDeclarationTree(declaration);
             var children = new List<SerializableDeclarationTree>();
             var nodes = declarations.Where(x => x.ParentDeclaration.Equals(declaration)).ToList();
             declarations.RemoveAll(nodes.Contains);
@@ -508,8 +507,7 @@ namespace Rubberduck.Parsing.VBA
                 children.Add(GetSerializableTreeForDeclaration(item, declarations));
             }
 
-            output.Children = children;
-            return output;
+            return new SerializableDeclarationTree(declaration, children);
         }
 
         private void LoadSerializedBuiltInReferences(RubberduckParserState state)

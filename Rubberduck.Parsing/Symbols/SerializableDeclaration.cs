@@ -14,10 +14,13 @@ namespace Rubberduck.Parsing.Symbols
         public readonly SerializableDeclaration Node;
 
         [DataMember(IsRequired = true)]
-        public IEnumerable<SerializableDeclarationTree> Children;
+        public readonly IEnumerable<SerializableDeclarationTree> Children;
 
         public SerializableDeclarationTree(Declaration declaration)   
             : this(new SerializableDeclaration(declaration)) { }
+
+        public SerializableDeclarationTree(Declaration declaration, IEnumerable<SerializableDeclarationTree> children)
+            : this(new SerializableDeclaration(declaration), children) { }
 
         public SerializableDeclarationTree(SerializableDeclaration node)
             : this(node, Enumerable.Empty<SerializableDeclarationTree>()) { }
