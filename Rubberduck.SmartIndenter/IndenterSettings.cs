@@ -20,7 +20,6 @@ namespace Rubberduck.SmartIndenter
         public virtual bool IndentCompilerDirectives { get; set; }
         public virtual bool AlignDims { get; set; }
         public virtual int AlignDimColumn { get; set; }
-        public virtual bool EnableUndo { get; set; }
         public virtual EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
         public virtual int EndOfLineCommentColumnSpaceAlignment { get; set; }
         public virtual int IndentSpaces { get; set; }
@@ -28,13 +27,20 @@ namespace Rubberduck.SmartIndenter
         public IndenterSettings()
         {
             var tabWidth = 4;
-            var reg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\6.0\Common", false) ??
-                      Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\7.0\Common", false);
-            if (reg != null)
+            try
             {
-                tabWidth = Convert.ToInt32(reg.GetValue("TabWidth") ?? tabWidth);
+                var reg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\6.0\Common", false) ??
+                          Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\7.0\Common", false);
+                if (reg != null)
+                {
+                    tabWidth = Convert.ToInt32(reg.GetValue("TabWidth") ?? tabWidth);
+                }
             }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch { }
 
+            // Mocking requires these to be virtual.
+            // ReSharper disable DoNotCallOverridableMethodsInConstructor
             IndentEntireProcedureBody = true;
             IndentFirstCommentBlock = true;
             IndentEnumTypeAsProcedure = false;
@@ -48,10 +54,77 @@ namespace Rubberduck.SmartIndenter
             IndentCompilerDirectives = true;
             AlignDims = false;
             AlignDimColumn = 15;
-            EnableUndo = true;
             EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn;
             EndOfLineCommentColumnSpaceAlignment = 50;
             IndentSpaces = tabWidth;
+            // ReSharper restore DoNotCallOverridableMethodsInConstructor
+        }
+
+        private const string LegacySettingsSubKey = @"Software\VB and VBA Program Settings\Office Automation Ltd.\Smart Indenter";
+        public bool LegacySettingsExist()
+        {
+            try
+            {
+                return (Registry.CurrentUser.OpenSubKey(LegacySettingsSubKey, false) != null);
+            }
+            catch 
+            {
+                return false;
+            }
+            
+        }
+
+        public void LoadLegacyFromRegistry()
+        {
+            try
+            {
+                var reg = Registry.CurrentUser.OpenSubKey(LegacySettingsSubKey, false);
+                if (reg == null) return;
+                IndentEntireProcedureBody = GetSmartIndenterBoolean(reg, "IndentProc", IndentEntireProcedureBody);
+                IndentFirstCommentBlock = GetSmartIndenterBoolean(reg, "IndentFirst", IndentFirstCommentBlock);
+                IndentFirstDeclarationBlock = GetSmartIndenterBoolean(reg, "IndentDim", IndentFirstDeclarationBlock);
+                AlignCommentsWithCode = GetSmartIndenterBoolean(reg, "IndentCmt", AlignCommentsWithCode);
+                AlignContinuations = GetSmartIndenterBoolean(reg, "AlignContinued", AlignContinuations);
+                IgnoreOperatorsInContinuations = GetSmartIndenterBoolean(reg, "AlignIgnoreOps",
+                    IgnoreOperatorsInContinuations);
+                IndentCase = GetSmartIndenterBoolean(reg, "IndentCase", IndentCase);
+                ForceDebugStatementsInColumn1 = GetSmartIndenterBoolean(reg, "DebugCol1", ForceDebugStatementsInColumn1);
+                ForceCompilerDirectivesInColumn1 = GetSmartIndenterBoolean(reg, "CompilerCol1",
+                    ForceCompilerDirectivesInColumn1);
+                IndentCompilerDirectives = GetSmartIndenterBoolean(reg, "IndentCompiler", IndentCompilerDirectives);
+                AlignDims = GetSmartIndenterBoolean(reg, "AlignDim", AlignDims);
+                AlignDimColumn = Convert.ToInt32(reg.GetValue("AlignDimCol") ?? AlignDimColumn);
+
+                var eolSytle = reg.GetValue("EOLComments") as string;
+                if (!string.IsNullOrEmpty(eolSytle))
+                {
+                    switch (eolSytle)
+                    {
+                        case "Absolute":
+                            EndOfLineCommentStyle = EndOfLineCommentStyle.Absolute;
+                            break;
+                        case "SameGap":
+                            EndOfLineCommentStyle = EndOfLineCommentStyle.SameGap;
+                            break;
+                        case "StandardGap":
+                            EndOfLineCommentStyle = EndOfLineCommentStyle.StandardGap;
+                            break;
+                        case "AlignInCol":
+                            EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn;
+                            break;
+                    }
+                }
+                EndOfLineCommentColumnSpaceAlignment =
+                    Convert.ToInt32(reg.GetValue("EOLAlignCol") ?? EndOfLineCommentColumnSpaceAlignment);
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch { }
+        }
+
+        private static bool GetSmartIndenterBoolean(RegistryKey key, string name, bool current)
+        {
+            var value = key.GetValue(name) as string;
+            return string.IsNullOrEmpty(value) ? current : value.Trim().Equals("Y");
         }
     }
 }

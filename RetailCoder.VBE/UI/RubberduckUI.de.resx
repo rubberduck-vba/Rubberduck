@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1750,28 +1750,117 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
     <value>Kommentare in Enums und Typen wie in Prozeduren einrücken</value>
   </data>
-  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse">
+  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
     <value>Inspektionen nach erfolgreichem Parsen automatisch starten</value>
   </data>
-  <data name="RubberduckReloadFailure_Title">
+  <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck wird nicht neu geladen</value>
   </data>
-  <data name="GeneralSettings_ShowSplash">
+  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Ein Startlogo zu Beginn zeigen</value>
   </data>
-  <data name="HotkeyDescription_RefactorEncapsulateField">
+  <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
     <value>Refactor /  Feld kapseln</value>
   </data>
-  <data name="CodeExplorer_CollapseSubnodesToolTip">
+  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
     <value>Knoten und alle Kindknoten einklappen</value>
   </data>
-  <data name="CodeInspectionSettings_Misc">
+  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
     <value>Verschiedenes</value>
   </data>
-  <data name="CodeExplorer_ExpandSubnodesToolTip">
-    <value>Expand node and all child nodes</value>
+  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
+    <value>Knoten und alle Kindknoten aufklappen</value>
   </data>
-  <data name="RubberduckReloadFailure_Message">
+  <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>
+  </data>
+  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
+    <value>Public Enum BeispielEnum
+' Enum Kommentar.
+Foo
+Bar ' Member-Kommentar.
+End Enum
+
+' Beispielprozedur
+Sub BeispielProc()
+
+' SMART INDENTER
+' Der originale VB6-Code wurde Rubberduck gnädigerweise von Stephen Bullen &amp; Rob Bovey angeboten
+' © 2016 by Rubberduck VBA.
+
+Dim zaehler As Integer
+Static name As String
+
+If SieMoegenRubberduck Then
+' Einen Stern auf GitHub geben: http://github.com/rubberduck-vba/Rubberduck
+' Auf Twitter folgen @rubberduckvba
+' http://rubberduckvba.com für Neuigkeiten und Aktualisierungen
+
+Select Case X
+Case "A"
+' Falls sie Kommentare oder Vorschläge haben, _
+oder validen VBA code gefunden haben, der nicht korrekt eingerückt wird,
+
+#If VBA6 Then
+MsgBox "Kontaktieren Sie contact@rubberduck-vba.com"
+#End If
+
+Case "Fortgeführte Strings und Parameter können" _
+&amp; "zur Lesbarkeit aufgereiht werden. Optional können" _
+&amp; "beliebige Operatoren (&amp;+, usw.) am Zeilenbeginn ignoriert werden."
+
+Debug.Print "X&lt;&gt;1"
+End Select      'Case X
+End If      'Mehr Werkzeuge? Vorschläge an http://github.com/rubberduck-vba/Rubberduck/Issues/New
+
+End Sub</value>
+  </data>
+  <data name="ParserErrorToolTipText" xml:space="preserve">
+    <value>{0} Modul(e) konnten nicht geparsed werden; Klicken Sie für Details.</value>
+  </data>
+  <data name="ReparseToolTipText" xml:space="preserve">
+    <value>{0}. Klicken zum aktualisieren.</value>
+  </data>
+  <data name="ContextReferences" xml:space="preserve">
+    <value>Referenzen</value>
+  </data>
+  <data name="DialogCaption_SaveInspectionSettings">
+    <value>Einstellungen für Inspektionen speichern</value>
+  </data>
+  <data name="DialogCaption_SaveToDoSettings">
+    <value>Einstellungen für Todo-Liste speichern</value>
+  </data>
+  <data name="DialogMask_XmlFilesOnly">
+    <value>XML Datei (.xml)|*.xml|Rubberduck config file|*.config</value>
+  </data>
+  <data name="DialogCaption_SaveGeneralSettings">
+    <value>Allgemeine Einstellungen speichern</value>
+  </data>
+  <data name="DialogCaption_LoadToDoSettings">
+    <value>Einstellungen für Todo-Liste Laden</value>
+  </data>
+  <data name="DialogCaption_SaveUnitTestSettings">
+    <value>Einstellungen für Unit-Tests speichern</value>
+  </data>
+  <data name="DialogCaption_LoadUnitTestSettings">
+    <value>Einstellungen für Unit-Tests laden</value>
+  </data>
+  <data name="DialogCaption_LoadInspectionSettings">
+    <value>Einstellungen für Inspektionen laden</value>
+  </data>
+  <data name="SettingsCaption_ExportSettings">
+    <value>Export</value>
+  </data>
+  <data name="DialogCaption_SaveIndenterSettings">
+    <value>Einstellungen für Einrückung speichern</value>
+  </data>
+  <data name="DialogCaption_LoadIndenterSettings">
+    <value>Einstellungen für Einrückung laden</value>
+  </data>
+  <data name="DialogCaption_LoadGeneralSettings">
+    <value>Allgemeine Einstellungen Laden</value>
+  </data>
+  <data name="SettingsCaption_ImportSettings">
+    <value>Import</value>
   </data>
 </root>

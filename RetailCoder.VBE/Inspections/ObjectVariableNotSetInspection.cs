@@ -1,35 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class ObjectVariableNotSetInspectionResult : InspectionResultBase
-    {
-        private readonly IdentifierReference _reference;
-        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
-
-        public ObjectVariableNotSetInspectionResult(IInspection inspection, IdentifierReference reference)
-            : base(inspection, reference.QualifiedModuleName, reference.Context)
-        {
-            _reference = reference;
-            _quickFixes = new CodeInspectionQuickFix[]
-            {
-                new UseSetKeywordForObjectAssignmentQuickFix(_reference),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
-            };
-        }
-
-        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
-
-        public override string Description
-        {
-            get { return string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, _reference.Declaration.IdentifierName); }
-        }
-    }
-
     public sealed class ObjectVariableNotSetInspection : InspectionBase
     {
         public ObjectVariableNotSetInspection(RubberduckParserState state)

@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -31,7 +34,8 @@ namespace Rubberduck.Inspections
             var lenbFunction = BuiltInDeclarations.SingleOrDefault(s => s.Scope == "VBE7.DLL;VBA.Strings.LenB");
 
             return from issue in declarations 
-                   where !DeclarationReferencesContainsReference(lenFunction, issue) 
+                   where issue.References.Any()
+                      && !DeclarationReferencesContainsReference(lenFunction, issue) 
                       && !DeclarationReferencesContainsReference(lenbFunction, issue) 
                    select new UnassignedVariableUsageInspectionResult(this, issue.Context, issue.QualifiedName.QualifiedModuleName, issue);
         }

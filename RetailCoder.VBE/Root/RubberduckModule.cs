@@ -28,6 +28,7 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
@@ -186,6 +187,8 @@ namespace Rubberduck.Root
                 .InNamespaceOf<Configuration>()
                 .BindAllInterfaces()
                 .Configure(binding => binding.InSingletonScope()));
+
+            Bind<IPersistable<SerializableDeclarationTree>>().To<XmlPersistableDeclarations>().InCallScope();
 
             Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InCallScope();
             Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InCallScope();
@@ -409,7 +412,10 @@ namespace Rubberduck.Root
             {
                 KernelInstance.Get<ReparseCommandMenuItem>(),
                 KernelInstance.Get<ShowParserErrorsCommandMenuItem>(),
-                KernelInstance.Get<ContextSelectionLabelMenuItem>()
+                KernelInstance.Get<ContextSelectionLabelMenuItem>(),
+#if DEBUG
+                KernelInstance.Get<SerializeDeclarationsCommandMenuItem>()
+#endif
             };
         }
 

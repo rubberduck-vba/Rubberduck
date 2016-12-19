@@ -1494,7 +1494,7 @@ Tous ceux qui nous ont donné une étoile ou un "like"
     <value>Consigner...</value>
   </data>
   <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
-    <value>Warn</value>
+    <value>Avertissement</value>
   </data>
   <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Afficher dans le dossier</value>
@@ -1503,7 +1503,7 @@ Tous ceux qui nous ont donné une étoile ou un "like"
     <value>Exporter...</value>
   </data>
   <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
-    <value>Error</value>
+    <value>Erreur</value>
   </data>
   <data name="NoIndentAnnotation" xml:space="preserve">
     <value>Annoter avec '@&amp;NoIndent</value>
@@ -1626,5 +1626,245 @@ End Select      'Case X
 End If      'Plus d'outils? Suggestions http://github.com/rubberduck-vba/Rubberduck/Issues/New
 
 End Sub</value>
+  </data>
+  <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
+    <value>Initialiser un noueau repository</value>
+  </data>
+  <data name="SourceControl_OpenCommandPromptFailureTitle" xml:space="preserve">
+    <value>Échec de l'ouverture de l'invite de commande</value>
+  </data>
+  <data name="ToolsMenu_SourceControl" xml:space="preserve">
+    <value>Contrôle des &amp;sources</value>
+  </data>
+  <data name="SourceControl_PublishRepo_NoOpenRepo" xml:space="preserve">
+    <value>Aucun repository ouvert ne peut pousser à l'emplacement distant spécifié.</value>
+  </data>
+  <data name="SourceControl_FileStatus_Unaltered" xml:space="preserve">
+    <value>Inchangé</value>
+  </data>
+  <data name="SourceControl_FileStatus_Missing" xml:space="preserve">
+    <value>Manquant</value>
+  </data>
+  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
+    <value>(pas d'expression)</value>
+  </data>
+  <data name="RubberduckReloadFailure_Title" xml:space="preserve">
+    <value>Rubberduck ne redémarre pas.</value>
+  </data>
+  <data name="SourceControl_FileStatus_RenamedInWorkDir" xml:space="preserve">
+    <value>Renommé dans le dossier de travail</value>
+  </data>
+  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
+    <value>M&amp;odule de tests</value>
+  </data>
+  <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
+    <value>Refactorer / Encapsuler le champ</value>
+  </data>
+  <data name="SourceControl_PublishRepositoryDescription" xml:space="preserve">
+    <value>Publie un repository existant à un emplacement existant. Le projet actif doit être connecté à un repository.</value>
+  </data>
+  <data name="SourceControl_FilePickerDefaultRepoHeader" xml:space="preserve">
+    <value>Emplacement des repositories</value>
+  </data>
+  <data name="SourceControl_UnknownErrorMessage" xml:space="preserve">
+    <value>Si le journal est activé, vous pouvez créer un ticket sur notre page GitHub avec le contenu du journal situé dans '%AppData%\Roaming\Rubberduck\Logs'.</value>
+  </data>
+  <data name="SourceControl_FileStatus_Unreadable" xml:space="preserve">
+    <value>Illisible</value>
+  </data>
+  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
+    <value>Global</value>
+  </data>
+  <data name="SourceControl_FileStatus_RenamedInIndex" xml:space="preserve">
+    <value>Renommé en index</value>
+  </data>
+  <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
+    <value>Crée un nouveau repository avec le projet actif..</value>
+  </data>
+  <data name="SourceControl_ExternalModifications" xml:space="preserve">
+    <value>Un fichier source a été modifié sans l'éditeur; recharger le fichier?</value>
+  </data>
+  <data name="SourceControl_FileStatus_Staged" xml:space="preserve">
+    <value>En attente</value>
+  </data>
+  <data name="SourceControl_FileStatus_Untracked" xml:space="preserve">
+    <value>Pas de suivi</value>
+  </data>
+  <data name="SourceControl_CommandPromptExeLabel" xml:space="preserve">
+    <value>Emplacement de l'exécutable de l'invite de commande</value>
+  </data>
+  <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
+    <value>Clone un 'repository' distant à partir d'une URI; Ayez un projet (vide) actif dans l'éditeur.</value>
+  </data>
+  <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
+    <value>Cloner un repository distant</value>
+  </data>
+  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
+    <value>Réduire l'arborescence</value>
+  </data>
+  <data name="RegexAssistant_Caption" xml:space="preserve">
+    <value>Rubberduck - Analyseur Regex</value>
+  </data>
+  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
+    <value>Propriétés du projet</value>
+  </data>
+  <data name="SourceControl_NoActiveProject" xml:space="preserve">
+    <value>Pas de projet actif</value>
+  </data>
+  <data name="SourceControl_ActivateProject" xml:space="preserve">
+    <value>Veuillez ouvrir ou activer un projet et essayer de nouveau.</value>
+  </data>
+  <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
+    <value>Ouvrir un repository existant</value>
+  </data>
+  <data name="ToolsMenu" xml:space="preserve">
+    <value>&amp;Outils</value>
+  </data>
+  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
+    <value>&amp;Assistant Regex</value>
+  </data>
+  <data name="SourceControl_PublishRepo_FailureTitle" xml:space="preserve">
+    <value>Publier le repository</value>
+  </data>
+  <data name="RegexAssistant_Title" xml:space="preserve">
+    <value>Analyseur d'expressions Regex</value>
+  </data>
+  <data name="SourceControl_PublishRepositoryTitle" xml:space="preserve">
+    <value>Publier un repository existant</value>
+  </data>
+  <data name="SourceControl_FileStatus_Ignored" xml:space="preserve">
+    <value>Ignoré</value>
+  </data>
+  <data name="SourceControl_UnknownErrorTitle" xml:space="preserve">
+    <value>Une erreur inconnue s'est produite.</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Identifiants en liste blanche</value>
+  </data>
+  <data name="ToolsMenu_TodoItems" xml:space="preserve">
+    <value>À &amp;faire ("TODO")</value>
+  </data>
+  <data name="SourceControl_OpenCommandPromptButtonToolTip" xml:space="preserve">
+    <value>Ouvrir l'invite de commande</value>
+  </data>
+  <data name="RegexAssistant_Instructions" xml:space="preserve">
+    <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
+  </data>
+  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
+    <value>&amp;Méthode de test</value>
+  </data>
+  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
+    <value>Développer l'arborescence</value>
+  </data>
+  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
+    <value>Ignorer la casse</value>
+  </data>
+  <data name="HotkeyDescription_SourceControl" xml:space="preserve">
+    <value>Contrôle des sources</value>
+  </data>
+  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Méthode de test (&amp;erreur attendue)</value>
+  </data>
+  <data name="SortStyle_ByCodeOrder" xml:space="preserve">
+    <value>Tel que dans le module</value>
+  </data>
+  <data name="RubberduckReloadFailure_Message" xml:space="preserve">
+    <value>Les fenêtres ancrables n'ont probablement pas été correctement détruites, et/ou n'ont pas pu être recréées. l'environnement peut ne pas être dans un état stable. Rubberduck démerrera normalement à la prochaine initialisation du VBE.</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>L'inspection des noms ignorera ces identifiants</value>
+  </data>
+  <data name="SourceControl_FileStatus_Removed" xml:space="preserve">
+    <value>Supprimé</value>
+  </data>
+  <data name="ParserState_ResolvingReferences" xml:space="preserve">
+    <value>Résolution des références...</value>
+  </data>
+  <data name="SourceControl_FileStatus_TypeChanged" xml:space="preserve">
+    <value>Type modifié</value>
+  </data>
+  <data name="SourceControl_FilePickerCommandPromptHeader" xml:space="preserve">
+    <value>Exécutable de l'invite de commande</value>
+  </data>
+  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Niveau de sévérité</value>
+  </data>
+  <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
+    <value>Ouvrir un repository existant. Le projet actif recevra le code.</value>
+  </data>
+  <data name="SourceControl_FileStatus_Nonexistent" xml:space="preserve">
+    <value>Non-existent</value>
+  </data>
+  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="CodeExplorer_Indent" xml:space="preserve">
+    <value>Indenter</value>
+  </data>
+  <data name="SourceControl_FileStatus_Modified" xml:space="preserve">
+    <value>Modifié</value>
+  </data>
+  <data name="SourceControl_ManageRepositories" xml:space="preserve">
+    <value>Administrer</value>
+  </data>
+  <data name="SourceControl_FileStatus_StagedTypeChange" xml:space="preserve">
+    <value>Changement de type en attente</value>
+  </data>
+  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
+    <value>Expression</value>
+  </data>
+  <data name="ParserState_ResolvingDeclarations" xml:space="preserve">
+    <value>Résolusion des déclarations...</value>
+  </data>
+  <data name="SourceControl_FileStatus_Added" xml:space="preserve">
+    <value>Ajouté</value>
+  </data>
+  <data name="RubberduckFatalError" xml:space="preserve">
+    <value>Rubberduck a rencontré un problème. Veuillez enregistrer votre travail et redémarrer l'application hôte. Si le journal est activé, vous pouvez téléverser le fichier journal '%AppData%\Roaming\Rubberduck\Logs\RubberduckLog.txt' dans un nouveau ticket sur GitHub, au 'https://github.com/rubberduck-vba/Rubberduck/issues/new'.</value>
+  </data>
+  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
+    <value>Indenter les commentaires des blocs Enum et Type comme dans les procédures</value>
+  </data>
+  <data name="ContextReferences" xml:space="preserve">
+    <value>références</value>
+  </data>
+  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres d'inspections</value>
+  </data>
+  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres "TODO"</value>
+  </data>
+  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
+    <value>Fichiers XML (.xml)|*.xml|Configuration de Rubberduck|*.config</value>
+  </data>
+  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres généraux</value>
+  </data>
+  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
+    <value>Charger les paramètres "TODO"</value>
+  </data>
+  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres des tests unitaires</value>
+  </data>
+  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
+    <value>Charger les paramètres des tests unitaires</value>
+  </data>
+  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
+    <value>Charger les paramètres d'inspections</value>
+  </data>
+  <data name="SettingsCaption_ExportSettings" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres d'indentation</value>
+  </data>
+  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
+    <value>Charger les paramètres d'indentation</value>
+  </data>
+  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
+    <value>Charger les paramètres généraux</value>
+  </data>
+  <data name="SettingsCaption_ImportSettings" xml:space="preserve">
+    <value>Import</value>
   </data>
 </root>

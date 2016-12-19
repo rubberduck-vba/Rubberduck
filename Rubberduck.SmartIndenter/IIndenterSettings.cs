@@ -15,10 +15,12 @@
         bool IndentCompilerDirectives { get; set; }
         bool AlignDims { get; set; }
         int AlignDimColumn { get; set; }
-        bool EnableUndo { get; set; }
         EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
         int EndOfLineCommentColumnSpaceAlignment { get; set; }
         int IndentSpaces { get; set; }
+
+        bool LegacySettingsExist();
+        void LoadLegacyFromRegistry();
     }
 
     public enum EndOfLineCommentStyle

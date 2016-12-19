@@ -84,7 +84,8 @@ namespace Rubberduck
                 if (!pane.IsWrappingNullReference)
                 {
                     selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
-                    _stateBar.SetContextSelectionCaption(GetSelectionText(selectedDeclaration));
+                    var caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
+                    _stateBar.SetContextSelectionCaption(caption);
                 }
 
                 var currentStatus = _parser.State.Status;
@@ -97,55 +98,6 @@ namespace Rubberduck
                 _lastStatus = currentStatus;
                 _lastSelectedDeclaration = selectedDeclaration;
             }
-        }
-
-        private string GetSelectionText(Declaration declaration)
-        {
-            if (declaration == null && _vbe.ActiveCodePane != null)
-            {
-                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
-                if (selection.HasValue)
-                {
-                    return selection.Value.ToString();
-                }
-            }
-            else if (declaration == null && _vbe.ActiveCodePane == null)
-            {
-                return string.Empty;
-            }
-            else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
-            {
-                var typeName = declaration.HasTypeHint
-                    ? Declaration.TypeHintToTypeName[declaration.TypeHint]
-                    : declaration.AsTypeName;
-
-                return string.Format("{0}|{1}: {2} ({3}{4})",
-                    declaration.QualifiedSelection.Selection,
-                    declaration.QualifiedName.QualifiedModuleName,
-                    declaration.IdentifierName,
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
-                    string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + typeName);
-            }
-            else if (declaration != null)
-            {
-                // todo: confirm this is what we want, and then refator
-                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
-                if (selection.HasValue)
-                {
-                    var typeName = declaration.HasTypeHint
-                        ? Declaration.TypeHintToTypeName[declaration.TypeHint]
-                        : declaration.AsTypeName;
-
-                    return string.Format("{0}|{1}: {2} ({3}{4})",
-                        selection.Value.Selection,
-                        declaration.QualifiedName.QualifiedModuleName,
-                        declaration.IdentifierName,
-                        RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture),
-                        string.IsNullOrEmpty(declaration.AsTypeName) ? string.Empty : ": " + typeName);
-                }
-            }
-
-            return string.Empty;
         }
 
         private bool ShouldEvaluateCanExecute(Declaration selectedDeclaration, ParserState currentStatus)
@@ -194,6 +146,7 @@ namespace Rubberduck
         {
             EnsureLogFolderPathExists();
             LoadConfig();
+            CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _stateBar.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
@@ -241,6 +194,32 @@ namespace Rubberduck
                 _messageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
+            }
+        }
+
+        private void CheckForLegacyIndenterSettings()
+        {
+            try
+            {
+                Logger.Trace("Checking for legacy Smart Indenter settings.");
+                if (_config.UserSettings.GeneralSettings.SmartIndenterPrompted ||
+                    !_config.UserSettings.IndenterSettings.LegacySettingsExist())
+                {
+                    return;
+                }
+                var response =
+                    _messageBox.Show(RubberduckUI.SmartIndenter_LegacySettingPrompt, "Rubberduck", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (response == DialogResult.Yes)
+                {
+                    Logger.Trace("Attempting to load legacy Smart Indenter settings.");
+                    _config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
+                }
+                _config.UserSettings.GeneralSettings.SmartIndenterPrompted = true;
+                _configService.SaveConfiguration(_config);
+            }
+            catch 
+            {
+                //Meh.
             }
         }
 

@@ -683,7 +683,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Navigation</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>To-Do Explorer</value>
+    <value>TODO Explorer</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Code Inspections - {0}
@@ -1557,7 +1557,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>By type</value>
   </data>
   <data name="SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>By code order</value>
+    <value>As in module</value>
   </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignored</value>
@@ -1602,13 +1602,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>No open repository to push to specified remote location.</value>
   </data>
   <data name="SourceControl_ExternalModifications" xml:space="preserve">
-    <value>A source file was modified out of the editor; should Rubberduck reload it?</value>
+    <value>A source file was modified out of the editor; reload it?</value>
   </data>
   <data name="SourceControl_OpenCommandPromptButtonToolTip" xml:space="preserve">
     <value>Open Command Prompt</value>
   </data>
   <data name="SourceControl_CommandPromptExeLabel" xml:space="preserve">
-    <value>Command Prompt Exe location</value>
+    <value>Command prompt executable location</value>
   </data>
   <data name="SourceControl_FilePickerCommandPromptHeader" xml:space="preserve">
     <value>Command Prompt Executable</value>
@@ -1623,16 +1623,16 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Please open or activate a project and try again.</value>
   </data>
   <data name="SourceControl_NoActiveProject" xml:space="preserve">
-    <value>No active VBProject</value>
+    <value>No active project</value>
   </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Resolving references...</value>
   </data>
   <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
-    <value>Open project properties</value>
+    <value>Project properties</value>
   </data>
   <data name="SourceControl_UnknownErrorMessage" xml:space="preserve">
-    <value>Please set your log level to Fatal or lower and create an issue on our GitHub page with the contents of your log file in C:\Users\{username}\AppData\Roaming\Rubberduck\Logs.</value>
+    <value>If logging is enabled, you may create an issue on our GitHub page with the contents of your log file in '%AppData%\Roaming\Rubberduck\Logs' for support.</value>
   </data>
   <data name="SourceControl_UnknownErrorTitle" xml:space="preserve">
     <value>An unknown error occurred.</value>
@@ -1680,13 +1680,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Untracked</value>
   </data>
   <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
-    <value>Clones remote repository from provided URI. Requires an empty project to be open in the VBE.</value>
+    <value>Clones remote repository from provided URI. Have an (empty) project active in the editor.</value>
   </data>
   <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
     <value>Clone Remote Repository</value>
   </data>
   <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
-    <value>Creates a new repository from the open project.</value>
+    <value>Creates a new repository from the active project.</value>
   </data>
   <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
     <value>Initialize New Repository</value>
@@ -1695,7 +1695,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Manage</value>
   </data>
   <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
-    <value>Open repository from disk. Requires an empty project to be open in the VBE.</value>
+    <value>Open repository from disk. The active project will host the source code.</value>
   </data>
   <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
     <value>Open Existing Repository</value>
@@ -1704,13 +1704,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Open Working Directory</value>
   </data>
   <data name="SourceControl_PublishRepositoryDescription" xml:space="preserve">
-    <value>Publishes an existing repository to a remote location. Requires the open project to be connected to a repository.</value>
+    <value>Publishes an existing repository to a remote location. The active project must be connected to a repository.</value>
   </data>
   <data name="SourceControl_PublishRepositoryTitle" xml:space="preserve">
     <value>Publish Existing Repository</value>
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
-    <value>Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file located at "C:\Users\{username}\AppData\Roaming\Rubberduck\Logs\RubberduckLog.txt" to a GitHub issue at "https://github.com/rubberduck-vba/Rubberduck/issues/new".</value>
+    <value>Rubberduck encountered an error. Please save your work and restart the host program; if logging is enabled, you can upload your log file located at '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt' to a GitHub issue at 'https://github.com/rubberduck-vba/Rubberduck/issues/new' and report the bug.</value>
   </data>
   <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
     <value>Test Method (&amp;Expected Error)</value>
@@ -1839,5 +1839,52 @@ End Select      'Case X
 End If      'More Tools? Suggestions http://github.com/rubberduck-vba/Rubberduck/Issues/New
 
 End Sub</value>
+  </data>
+  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
+    <value>Load Indenter Settings</value>
+  </data>
+  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
+    <value>Save Indenter Settings</value>
+  </data>
+  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
+    <value>XML file (.xml)|*.xml|Rubberduck config file|*.config</value>
+  </data>
+  <data name="SettingsCaption_ExportSettings" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="SettingsCaption_ImportSettings" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
+    <value>Load General Settings</value>
+  </data>
+  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
+    <value>Load Inspection Settings</value>
+  </data>
+  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
+    <value>Load Todo List Settings</value>
+  </data>
+  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
+    <value>Load Unit Test Settings</value>
+  </data>
+  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
+    <value>Save General Settings</value>
+  </data>
+  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
+    <value>Save Inspection Settings</value>
+  </data>
+  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
+    <value>Save Todo List Settings</value>
+  </data>
+  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
+    <value>Save Unit Test Settings</value>
+  </data>
+  <data name="ContextReferences" xml:space="preserve">
+    <value>references</value>
+    <comment>Used to display number of references in commandbar's context selection</comment>
+  </data>
+  <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
+    <value>Smart Indenter settings were found in your registry.
+Would you like to import them to Rubberduck?</value>
   </data>
 </root>

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
+using NLog;
 using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
-    public class IndenterSettingsViewModel : ViewModelBase, ISettingsViewModel
+    public class IndenterSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
     {
         public IndenterSettingsViewModel(Configuration config)
         {
@@ -13,7 +16,6 @@ namespace Rubberduck.UI.Settings
             _alignContinuations = config.UserSettings.IndenterSettings.AlignContinuations;
             _alignDimColumn = config.UserSettings.IndenterSettings.AlignDimColumn;
             _alignDims = config.UserSettings.IndenterSettings.AlignDims;
-            _enableUndo = config.UserSettings.IndenterSettings.EnableUndo;
             _endOfLineCommentColumnSpaceAlignment = config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment;
             _endOfLineCommentStyle = config.UserSettings.IndenterSettings.EndOfLineCommentStyle;
             _forceCompilerDirectivesInColumn1 = config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1;
@@ -28,6 +30,8 @@ namespace Rubberduck.UI.Settings
             _indentSpaces = config.UserSettings.IndenterSettings.IndentSpaces;
 
             PropertyChanged += IndenterSettingsViewModel_PropertyChanged;
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
         void IndenterSettingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -108,20 +112,6 @@ namespace Rubberduck.UI.Settings
                 {
                     _alignDims = value;
                     OnPropertyChanged();
-                }
-            }
-        }
-
-        private bool _enableUndo;
-        public bool EnableUndo
-        {
-            get { return _enableUndo; }
-            set
-            {
-                if (_enableUndo != value)
-                {
-                    _enableUndo = value;
-                    OnPropertyChanged(); 
                 }
             }
         }
@@ -299,7 +289,6 @@ namespace Rubberduck.UI.Settings
                 AlignContinuations = AlignContinuations,
                 AlignDimColumn = AlignDimColumn,
                 AlignDims = AlignDims,
-                EnableUndo = EnableUndo,
                 EndOfLineCommentColumnSpaceAlignment = EndOfLineCommentColumnSpaceAlignment,
                 EndOfLineCommentStyle = EndOfLineCommentStyle,
                 ForceCompilerDirectivesInColumn1 = ForceCompilerDirectivesInColumn1,
@@ -323,7 +312,6 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.IndenterSettings.AlignContinuations = AlignContinuations;
             config.UserSettings.IndenterSettings.AlignDimColumn = AlignDimColumn;
             config.UserSettings.IndenterSettings.AlignDims = AlignDims;
-            config.UserSettings.IndenterSettings.EnableUndo = EnableUndo;
             config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment = EndOfLineCommentColumnSpaceAlignment;
             config.UserSettings.IndenterSettings.EndOfLineCommentStyle = EndOfLineCommentStyle;
             config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1 = ForceCompilerDirectivesInColumn1;
@@ -340,23 +328,58 @@ namespace Rubberduck.UI.Settings
 
         public void SetToDefaults(Configuration config)
         {
-            AlignCommentsWithCode = config.UserSettings.IndenterSettings.AlignCommentsWithCode;
-            AlignContinuations = config.UserSettings.IndenterSettings.AlignContinuations;
-            AlignDimColumn = config.UserSettings.IndenterSettings.AlignDimColumn;
-            AlignDims = config.UserSettings.IndenterSettings.AlignDims;
-            EnableUndo = config.UserSettings.IndenterSettings.EnableUndo;
-            EndOfLineCommentColumnSpaceAlignment = config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment;
-            EndOfLineCommentStyle = config.UserSettings.IndenterSettings.EndOfLineCommentStyle;
-            ForceCompilerDirectivesInColumn1 = config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1;
-            ForceDebugStatementsInColumn1 = config.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1;
-            IgnoreOperatorsInContinuations = config.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations;
-            IndentCase = config.UserSettings.IndenterSettings.IndentCase;
-            IndentEnumTypeAsProcedure = config.UserSettings.IndenterSettings.IndentEnumTypeAsProcedure;
-            IndentCompilerDirectives = config.UserSettings.IndenterSettings.IndentCompilerDirectives;
-            IndentEntireProcedureBody = config.UserSettings.IndenterSettings.IndentEntireProcedureBody;
-            IndentFirstCommentBlock = config.UserSettings.IndenterSettings.IndentFirstCommentBlock;
-            IndentFirstDeclarationBlock = config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock;
-            IndentSpaces = config.UserSettings.IndenterSettings.IndentSpaces;
+            TransferSettingsToView(config.UserSettings.IndenterSettings);
+        }
+
+        private void TransferSettingsToView(IIndenterSettings toLoad)
+        {
+            AlignCommentsWithCode = toLoad.AlignCommentsWithCode;
+            AlignContinuations = toLoad.AlignContinuations;
+            AlignDimColumn = toLoad.AlignDimColumn;
+            AlignDims = toLoad.AlignDims;
+            EndOfLineCommentColumnSpaceAlignment = toLoad.EndOfLineCommentColumnSpaceAlignment;
+            EndOfLineCommentStyle = toLoad.EndOfLineCommentStyle;
+            ForceCompilerDirectivesInColumn1 = toLoad.ForceCompilerDirectivesInColumn1;
+            ForceDebugStatementsInColumn1 = toLoad.ForceDebugStatementsInColumn1;
+            IgnoreOperatorsInContinuations = toLoad.IgnoreOperatorsInContinuations;
+            IndentCase = toLoad.IndentCase;
+            IndentEnumTypeAsProcedure = toLoad.IndentEnumTypeAsProcedure;
+            IndentCompilerDirectives = toLoad.IndentCompilerDirectives;
+            IndentEntireProcedureBody = toLoad.IndentEntireProcedureBody;
+            IndentFirstCommentBlock = toLoad.IndentFirstCommentBlock;
+            IndentFirstDeclarationBlock = toLoad.IndentFirstDeclarationBlock;
+            IndentSpaces = toLoad.IndentSpaces;           
+        }
+
+        private void ImportSettings()
+        {
+            using (var dialog = new OpenFileDialog
+            {
+                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
+                Title = RubberduckUI.DialogCaption_LoadIndenterSettings
+            })
+            {
+                dialog.ShowDialog();
+                if (string.IsNullOrEmpty(dialog.FileName)) return;
+                var service = new XmlPersistanceService<SmartIndenter.IndenterSettings> { FilePath = dialog.FileName };
+                var loaded = service.Load(new SmartIndenter.IndenterSettings());
+                TransferSettingsToView(loaded);
+            }
+        }
+
+        private void ExportSettings()
+        {
+            using (var dialog = new SaveFileDialog
+            {
+                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
+                Title = RubberduckUI.DialogCaption_SaveIndenterSettings
+            })
+            {
+                dialog.ShowDialog();
+                if (string.IsNullOrEmpty(dialog.FileName)) return;
+                var service = new XmlPersistanceService<SmartIndenter.IndenterSettings> {FilePath = dialog.FileName};
+                service.Save((SmartIndenter.IndenterSettings)GetCurrentSettings());
+            }
         }
     }
 }

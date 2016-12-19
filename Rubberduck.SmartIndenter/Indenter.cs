@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.SmartIndenter
 {
@@ -69,15 +68,10 @@ namespace Rubberduck.SmartIndenter
             }
 
             var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
-            var indented = Indent(codeLines, component.Name).ToArray();
+            var indented = Indent(codeLines, component.Name);
 
-            for (var i = 0; i < lineCount; i++)
-            {
-                if (module.GetLines(i + 1, 1) != indented[i])
-                {
-                    component.CodeModule.ReplaceLine(i + 1, indented[i]);
-                }
-            }
+            module.DeleteLines(1, lineCount);
+            module.InsertLines(1, string.Join("\r\n", indented));
         }
 
         public void Indent(IVBComponent component, string procedureName, Selection selection)
@@ -91,15 +85,14 @@ namespace Rubberduck.SmartIndenter
 
             var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty).Split('\n');
 
-            var indented = Indent(codeLines, procedureName).ToArray();
+            var indented = Indent(codeLines, procedureName);
 
-            for (var i = 0; i < selection.EndLine - selection.StartLine; i++)
-            {
-                if (module.GetLines(selection.StartLine + i, 1) != indented[i])
-                {
-                    component.CodeModule.ReplaceLine(selection.StartLine + i, indented[i]);
-                }
-            }
+            var start = selection.StartLine;
+            var lines = selection.LineCount;
+
+            //Deletelines fails if the the last line of the procedure is the last line of the module.
+            module.DeleteLines(start, start + lines < lineCount ? lines : lines - 1);
+            module.InsertLines(start, string.Join("\r\n", indented));
         }
 
         private IEnumerable<LogicalCodeLine> BuildLogicalCodeLines(IEnumerable<string> lines)

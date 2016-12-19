@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -74,7 +77,7 @@ namespace Rubberduck.Inspections
         {
             var enumerable = classes as IList<Declaration> ?? classes.ToList();
             var result = !ProcedureTypes.Contains(declaration.DeclarationType)
-                || declaration.References.Any(r => !r.IsAssignment)
+                || declaration.References.Any(r => !r.IsAssignment && !r.ParentScoping.Equals(declaration)) // recursive calls don't count
                 || handlers.Contains(declaration)
                 || IsPublicModuleMember(modules, declaration)
                 || IsClassLifeCycleHandler(enumerable, declaration)

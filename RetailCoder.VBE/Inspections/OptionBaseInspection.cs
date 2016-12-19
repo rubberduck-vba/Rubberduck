@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -30,7 +33,7 @@ namespace Rubberduck.Inspections
             }
 
             var issues = options.Where(option => ((VBAParser.OptionBaseStmtContext)option.Context).numberLiteral().GetText() == "1")
-                                .Select(issue => new OptionBaseInspectionResult(this, issue.QualifiedName.QualifiedModuleName));
+                                .Select(issue => new OptionBaseInspectionResult(this, issue));
 
             return issues;
         }
