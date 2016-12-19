@@ -187,7 +187,7 @@ namespace Rubberduck.Root
                 .BindAllInterfaces()
                 .Configure(binding => binding.InSingletonScope()));
 
-            Bind<IPersistable<SerializableDeclarationTree>>().To<XmlPersistableDeclarations>().InCallScope();
+            Bind<IPersistable<SerializableProject>>().To<XmlPersistableDeclarations>().InCallScope();
 
             Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InCallScope();
             Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InCallScope();

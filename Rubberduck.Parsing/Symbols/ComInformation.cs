@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
+﻿using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
