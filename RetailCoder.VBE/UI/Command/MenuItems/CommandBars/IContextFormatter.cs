@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

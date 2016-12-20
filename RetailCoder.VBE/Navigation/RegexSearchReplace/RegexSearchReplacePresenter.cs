@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Rubberduck.Parsing;
-using Rubberduck.UI;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-
-namespace Rubberduck.Navigation.RegexSearchReplace
+﻿namespace Rubberduck.Navigation.RegexSearchReplace
 {
     public class RegexSearchReplacePresenter //: IPresenter
     {

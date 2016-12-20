@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 

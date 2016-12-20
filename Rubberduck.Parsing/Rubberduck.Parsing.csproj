@@ -54,6 +54,7 @@
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annotations\AnnotationBase.cs" />
@@ -269,6 +270,7 @@
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\ConstantDeclaration.cs" />
+    <Compile Include="Symbols\XmlPersistableDeclarations.cs" />
     <Compile Include="Syntax\SyntaxTree.cs" />
     <Compile Include="Syntax\TextSpan.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
@@ -309,6 +311,10 @@
     <None Include="Preprocessing\VBALike.g4" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
+      <Project>{E85E1253-86D6-45EE-968B-F37348D44132}</Project>
+      <Name>Rubberduck.SettingsProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>

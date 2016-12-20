@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.MissingAnnotationArgumentInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.MissingAnnotationArgumentInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.MissingAnnotationArgumentInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public IEnumerable<QualifiedContext<VBAParser.AnnotationContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.AnnotationContext>>(); } }
 

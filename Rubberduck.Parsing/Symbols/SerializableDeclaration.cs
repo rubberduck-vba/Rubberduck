@@ -7,17 +7,19 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    [DataContract]
     public class SerializableDeclarationTree
     {
-        [DataMember(IsRequired = true)]
-        public readonly SerializableDeclaration Node;
+        public SerializableDeclaration Node;
 
-        [DataMember(IsRequired = true)]
-        public readonly IEnumerable<SerializableDeclarationTree> Children;
+        public IEnumerable<SerializableDeclarationTree> Children;
+
+        public SerializableDeclarationTree() { } 
 
         public SerializableDeclarationTree(Declaration declaration)   
             : this(new SerializableDeclaration(declaration)) { }
+
+        public SerializableDeclarationTree(Declaration declaration, IEnumerable<SerializableDeclarationTree> children)
+            : this(new SerializableDeclaration(declaration), children) { }
 
         public SerializableDeclarationTree(SerializableDeclaration node)
             : this(node, Enumerable.Empty<SerializableDeclarationTree>()) { }
@@ -26,6 +28,73 @@ namespace Rubberduck.Parsing.Symbols
         {
             Node = node;
             Children = children;
+        }
+    }
+
+    [DataContract]
+    public class SerializableMemberAttribute
+    {
+        public SerializableMemberAttribute(string name, IEnumerable<string> values)
+        {
+            Name = name;
+            Values = values;
+        }
+
+        [DataMember(IsRequired = true)]
+        public readonly string Name;
+
+        [DataMember(IsRequired = true)]
+        public readonly IEnumerable<string> Values;
+    }
+
+    [DataContract]
+    public class SerializableProject 
+    {
+        public SerializableProject() { }
+
+        public SerializableProject(Declaration declaration)
+        {
+            Node = new SerializableDeclaration(declaration);
+            var project = (ProjectDeclaration)declaration;
+            MajorVersion = project.MajorVersion;
+            MinorVersion = project.MinorVersion;
+        }
+
+        [DataMember(IsRequired = true)]
+        public SerializableDeclaration Node { get; set; }
+        [DataMember(IsRequired = true)]
+        public IEnumerable<SerializableDeclarationTree> Declarations { get; set; }
+        [DataMember(IsRequired = true)]
+        public long MajorVersion { get; set; }
+        [DataMember(IsRequired = true)]
+        public long MinorVersion { get; set; }
+
+        public List<Declaration> Unwrap()
+        {
+            var project = (ProjectDeclaration)Node.Unwrap(null);
+            project.MajorVersion = MajorVersion;
+            project.MinorVersion = MinorVersion;
+            var output = new List<Declaration> {project};
+            foreach (var declaration in Declarations)
+            {
+                output.AddRange(UnwrapTree(declaration, project));
+            }
+            return output;
+        }
+
+        private IEnumerable<Declaration> UnwrapTree(SerializableDeclarationTree tree, Declaration parent = null)
+        {
+            var current = tree.Node.Unwrap(parent);
+            yield return current;
+
+            foreach (var serializableDeclarationTree in tree.Children)
+            {
+                var unwrapped = UnwrapTree(serializableDeclarationTree, current);
+                foreach (var declaration in unwrapped)
+                {
+                    yield return declaration;
+                }
+            }
         }
     }
 
@@ -38,9 +107,9 @@ namespace Rubberduck.Parsing.Symbols
         {
             IdentifierName = declaration.IdentifierName;
 
-            //todo: figure these out
-            //Annotations = declaration.Annotations.Cast<AnnotationBase>().ToArray();
-            //Attributes = declaration.Attributes.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray());
+            Attributes = declaration.Attributes
+                .Select(a => new SerializableMemberAttribute(a.Key, a.Value))
+                .ToList();
 
             ParentScope = declaration.ParentScope;
             TypeHint = declaration.TypeHint;
@@ -56,7 +125,17 @@ namespace Rubberduck.Parsing.Symbols
             ProjectName = declaration.QualifiedName.QualifiedModuleName.ProjectName;
             ProjectPath = declaration.QualifiedName.QualifiedModuleName.ProjectPath;
             ComponentName = declaration.QualifiedName.QualifiedModuleName.ComponentName;
+
+            var param = declaration as ParameterDeclaration;
+            if (param != null)
+            {
+                IsOptionalParam = param.IsOptional;
+                IsByRefParam = param.IsByRef;
+                IsParamArray = param.IsParamArray;
+            }
         }
+
+        public List<SerializableMemberAttribute> Attributes { get; set; }
 
         public string IdentifierName { get; set; }
 
@@ -78,9 +157,43 @@ namespace Rubberduck.Parsing.Symbols
         public Accessibility Accessibility { get; set; }
         public DeclarationType DeclarationType { get; set; }
 
+        public bool IsOptionalParam { get; set; }
+        public bool IsByRefParam { get; set; }
+        public bool IsParamArray { get; set; }
+
         public Declaration Unwrap(Declaration parent)
         {
-            return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn);
+            var annotations = Enumerable.Empty<IAnnotation>();
+            var attributes = new Attributes();
+            foreach (var attribute in Attributes)
+            {
+                attributes.Add(attribute.Name, attribute.Values);
+            }
+
+            switch (DeclarationType)
+            {
+                case DeclarationType.Project:
+                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, true);                    
+                case DeclarationType.ClassModule:
+                    return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
+                case DeclarationType.ProceduralModule:
+                    return new ProceduralModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
+                case DeclarationType.Procedure:
+                    return new SubroutineDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                case DeclarationType.Function:
+                    return new FunctionDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
+                case DeclarationType.PropertyGet:
+                    return new PropertyGetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
+                case DeclarationType.PropertyLet:
+                    return new PropertyLetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                case DeclarationType.PropertySet:
+                    return new PropertySetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                case DeclarationType.Parameter:
+                    return new ParameterDeclaration(QualifiedMemberName, parent, AsTypeName, null, TypeHint, IsOptionalParam, IsByRefParam, IsArray, IsParamArray);
+
+                default:
+                    return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn, null, attributes);
+            }
         }
     }
 }

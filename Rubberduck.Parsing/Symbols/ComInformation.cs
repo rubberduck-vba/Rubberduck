@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
+﻿using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -25,9 +24,6 @@ namespace Rubberduck.Parsing.Symbols
         public QualifiedModuleName TypeQualifiedModuleName { get; internal set; }
         public Declaration ModuleDeclaration { get; internal set; }
         public DeclarationType TypeDeclarationType { get; internal set; }
-
-        private readonly List<SerializableDeclarationTree> _trees = new List<SerializableDeclarationTree>();
-        internal IList<SerializableDeclarationTree> MemberTrees { get { return _trees; } }
 
         public override string ToString()
         {

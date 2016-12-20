@@ -9,8 +9,6 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.API

@@ -6,7 +6,6 @@ using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
 using Rubberduck.Common;
-using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -188,7 +187,7 @@ namespace Rubberduck.Root
                 .BindAllInterfaces()
                 .Configure(binding => binding.InSingletonScope()));
 
-            Bind<IPersistable<SerializableDeclarationTree>>().To<XmlPersistableDeclarations>().InCallScope();
+            Bind<IPersistable<SerializableProject>>().To<XmlPersistableDeclarations>().InCallScope();
 
             Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InCallScope();
             Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InCallScope();
