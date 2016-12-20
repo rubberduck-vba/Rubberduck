@@ -35,7 +35,7 @@ namespace RubberduckTests.Settings
                 }
             };
 
-            var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null);
+            var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null, null);
             return new Configuration(userSettings);
         }
 
@@ -58,7 +58,7 @@ namespace RubberduckTests.Settings
                 }
             };
 
-            var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null);
+            var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null, null);
             return new Configuration(userSettings);
         }
 

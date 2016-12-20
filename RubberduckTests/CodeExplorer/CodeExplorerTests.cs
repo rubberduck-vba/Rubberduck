@@ -1461,7 +1461,7 @@ End Sub";
                 DefaultTestStubInNewModule = false
             };
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null);
+            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
 
@@ -1472,7 +1472,7 @@ End Sub";
                 Delimiter = '.'
             };
 
-            var userSettings = new UserSettings(settings, null, null, null, null, null);
+            var userSettings = new UserSettings(settings, null, null, null, null, null, null);
             return new Configuration(userSettings);
         }
 

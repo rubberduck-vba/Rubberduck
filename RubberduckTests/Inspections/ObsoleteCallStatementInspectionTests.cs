@@ -422,7 +422,7 @@ End Sub";
             });
             return new Configuration
             {
-                UserSettings = new UserSettings(null, null, null, settings, null, null)
+                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
             };
         }
     }

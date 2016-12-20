@@ -331,7 +331,7 @@ Private Assert As New Rubberduck.AssertClass
                 DefaultTestStubInNewModule = false
             };
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null);
+            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
     }
