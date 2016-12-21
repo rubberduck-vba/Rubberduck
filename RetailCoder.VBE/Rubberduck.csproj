@@ -365,6 +365,8 @@
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
+    <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspection.cs" />
+    <Compile Include="Inspections\Results\ImplicitDefaultMemberAssignmentInspectionResult.cs" />
     <Compile Include="Inspections\QuickFixes\IntroduceLocalVariableQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\OptionExplicitQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\RemoveCommentQuickFix.cs" />

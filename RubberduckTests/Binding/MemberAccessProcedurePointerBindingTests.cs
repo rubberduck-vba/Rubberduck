@@ -6,7 +6,6 @@ using System;
 using System.Linq;
 using Moq;
 using System.Threading;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

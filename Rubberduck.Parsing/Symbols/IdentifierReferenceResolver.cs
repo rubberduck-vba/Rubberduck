@@ -4,7 +4,6 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

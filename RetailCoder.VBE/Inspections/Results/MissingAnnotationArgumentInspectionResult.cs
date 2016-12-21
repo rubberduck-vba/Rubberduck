@@ -1,5 +1,6 @@
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 
@@ -14,7 +15,7 @@ namespace Rubberduck.Inspections.Results
 
         public override string Description
         {
-            get { return string.Format(Inspection.Description, ((VBAParser.AnnotationContext)Context).annotationName().GetText()).Captialize(); }
+            get { return string.Format(InspectionsUI.MissingAnnotationArgumentInspectionResultFormat, ((VBAParser.AnnotationContext)Context).annotationName().GetText()).Captialize(); }
         }
     }
 }

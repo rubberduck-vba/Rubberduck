@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using Castle.Core.Internal;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 

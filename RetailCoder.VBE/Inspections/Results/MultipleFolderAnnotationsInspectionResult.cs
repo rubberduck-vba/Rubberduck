@@ -1,5 +1,6 @@
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.Results
@@ -13,7 +14,7 @@ namespace Rubberduck.Inspections.Results
 
         public override string Description
         {
-            get { return string.Format(Inspection.Description, Target.IdentifierName).Captialize(); }
+            get { return string.Format(InspectionsUI.MultipleFolderAnnotationsInspectionResultFormat, Target.IdentifierName).Captialize(); }
         }
     }
 }

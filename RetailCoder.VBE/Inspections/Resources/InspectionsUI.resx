@@ -136,7 +136,7 @@
     <value>Consider naming your VBA project.</value>
   </data>
   <data name="DefaultProjectNameInspectionName" xml:space="preserve">
-    <value>Project has default name</value>
+    <value>Project name is not specified</value>
   </data>
   <data name="EmptyStringLiteralInspection" xml:space="preserve">
     <value>Prefer 'vbNullString' to an empty string literal</value>
@@ -241,25 +241,25 @@
     <value>The 'Call' statement is no longer required to call procedures, and only exists in the language to support legacy code that required it; it can be safely rewritten to an implicit call.</value>
   </data>
   <data name="ObsoleteCallStatementInspectionName" xml:space="preserve">
-    <value>'Call' statement usage</value>
+    <value>Use of 'Call' statement</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspectionMeta" xml:space="preserve">
     <value>The 'Rem' statement only exists in the language to support legacy code that required it; it can be safely replaced with an apostrophe / single-quote comment.</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspectionName" xml:space="preserve">
-    <value>'Rem' statement usage</value>
+    <value>Use of 'Rem' statement</value>
   </data>
   <data name="ObsoleteGlobalInspectionMeta" xml:space="preserve">
     <value>The 'Global' keyword only exists in the language to support legacy code that required it; it can be safely replaced with the 'Public' modifier.</value>
   </data>
   <data name="ObsoleteGlobalInspectionName" xml:space="preserve">
-    <value>'Global' statement usage</value>
+    <value>Use of 'Global' access modifier</value>
   </data>
   <data name="ObsoleteLetStatementInspectionMeta" xml:space="preserve">
     <value>The 'Let' statement only exists in the language to support legacy code that required it; it can be safely removed, since modern VBA does not require that keyword for value assignments.</value>
   </data>
   <data name="ObsoleteLetStatementInspectionName" xml:space="preserve">
-    <value>'Let' statement usage</value>
+    <value>Use of explicit 'Let' statement</value>
   </data>
   <data name="ObsoleteTypeHintInspectionMeta" xml:space="preserve">
     <value>Type hint characters only exist in the language to support legacy code that required it; they can be safely replaced in declarations with an "As" type clause that specifies the type explicitly, and they can be omitted in other identifier references.</value>
@@ -370,7 +370,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Object variable reference is self-assigned</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionName" xml:space="preserve">
-    <value>Function return value is never used.</value>
+    <value>Function return value is never used</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionResultFormat" xml:space="preserve">
     <value>Return value of function '{0}' is never used.</value>
@@ -592,5 +592,14 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
     <value>Introduce local variable</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspectionMeta" xml:space="preserve">
+    <value>Such assignments look like they are assigning an object variable to a value type on the surface, but they are actually assigning that object's default member, implicitly. Consider referring to the default member explicitly, for improved readability.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspectionName" xml:space="preserve">
+    <value>Implicit default member assignment</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspectionResultFormat" xml:space="preserve">
+    <value>Assignment to '{0}' implicitly assigns default member of class '{1}'</value>
   </data>
 </root>

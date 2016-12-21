@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
@@ -16,8 +18,8 @@ using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
 using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
+using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -25,6 +27,7 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class ReferencedDeclarationsCollector
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly RubberduckParserState _state;
 
         /// <summary>
@@ -146,7 +149,41 @@ namespace Rubberduck.Parsing.Symbols
             return typeName.Equals("LONG_PTR") ? "LongPtr" : typeName;  //Quickfix for http://chat.stackexchange.com/transcript/message/30119269#30119269
         }
 
-        public List<Declaration> GetDeclarationsForReference(IReference reference, out SerializableDeclarationTree tree)
+        private void LoadVersionFromTypeLib(ITypeLib tlb, ProjectDeclaration project)
+        {
+            var attribPtr = IntPtr.Zero;
+            tlb.GetLibAttr(out attribPtr);
+            var typeAttr = (TYPELIBATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPELIBATTR));
+            project.MajorVersion = typeAttr.wMajorVerNum;
+            project.MinorVersion = typeAttr.wMinorVerNum;      
+        }
+
+        private bool SerializedVersionExists(ProjectDeclaration project)
+        {
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
+            if (!Directory.Exists(path))
+            {
+                return false;
+            }
+            //TODO: This is naively based on file name for now - this should attempt to deserialize any SerializableProject.Nodes in the directory and test for equity.
+            var testFile = Path.Combine(path, string.Format("{0}.{1}.{2}", project.ProjectName, project.MajorVersion, project.MinorVersion) + ".xml");
+            if (File.Exists(testFile))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private List<Declaration> LoadSerializedBuiltInReferences(ProjectDeclaration project)
+        {
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
+            var file = Path.Combine(path, string.Format("{0}.{1}.{2}", project.ProjectName, project.MajorVersion, project.MinorVersion) + ".xml");
+            var reader = new XmlPersistableDeclarations();
+            var deserialized = reader.Load(file);
+            return deserialized.Unwrap();
+        }
+
+        public List<Declaration> GetDeclarationsForReference(IReference reference)
         {
             var output = new List<Declaration>();
             var projectName = reference.Name;
@@ -156,14 +193,19 @@ namespace Rubberduck.Parsing.Symbols
             LoadTypeLibEx(path, REGKIND.REGKIND_NONE, out typeLibrary);
             if (typeLibrary == null)
             {
-                tree = null;
                 return output;
             }
             var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
             var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
             var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName, isBuiltIn: true);
+            LoadVersionFromTypeLib(typeLibrary, projectDeclaration);
+            if (SerializedVersionExists(projectDeclaration))
+            {
+                Logger.Trace(string.Format("Deserializing reference '{0}'.", reference.Name));
+                return LoadSerializedBuiltInReferences(projectDeclaration);
+            }
+            Logger.Trace(string.Format("COM reflecting reference '{0}'.", reference.Name));
             output.Add(projectDeclaration);
-            var moduleTrees = new List<SerializableDeclarationTree>();
 
             var typeCount = typeLibrary.GetTypeInfoCount();
             for (var i = 0; i < typeCount; i++)
@@ -171,11 +213,10 @@ namespace Rubberduck.Parsing.Symbols
                 ITypeInfo info;
                 try
                 {
-                    typeLibrary.GetTypeInfo(i, out info);
+                    typeLibrary.GetTypeInfo(i, out info);                    
                 }
                 catch (NullReferenceException)
                 {
-                    tree = null;
                     return output;
                 }
 
@@ -203,6 +244,7 @@ namespace Rubberduck.Parsing.Symbols
                 IntPtr typeAttributesPointer;
                 info.GetTypeAttr(out typeAttributesPointer);
                 var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
+
                 var attributes = new Attributes();
 
                 if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID))
@@ -231,7 +273,7 @@ namespace Rubberduck.Parsing.Symbols
                         moduleDeclaration = module;
                         break;
                     default:
-                        string pseudoModuleName = string.Format("_{0}", typeName);
+                        var pseudoModuleName = string.Format("_{0}", typeName);
                         var pseudoParentModule = new ProceduralModuleDeclaration(
                             new QualifiedMemberName(projectQualifiedModuleName, pseudoModuleName),
                             projectDeclaration,
@@ -239,11 +281,7 @@ namespace Rubberduck.Parsing.Symbols
                             true,
                             new List<IAnnotation>(),
                             new Attributes());
-                        // Enums don't define their own type but have a declared type of "Long".
-                        if (typeDeclarationType == DeclarationType.Enumeration)
-                        {
-                            typeName = Tokens.Long;
-                        }
+
                         // UDTs and ENUMs don't seem to have a module parent that's why we add a "fake" module
                         // so that the rest of the application can treat it normally.
                         moduleDeclaration = new Declaration(
@@ -263,6 +301,8 @@ namespace Rubberduck.Parsing.Symbols
                             true,
                             null,
                             attributes);
+
+                        output.Add(pseudoParentModule);
                         break;
                 }
 
@@ -290,8 +330,6 @@ namespace Rubberduck.Parsing.Symbols
                 info.ReleaseTypeAttr(typeAttributesPointer);
 
                 output.Add(moduleDeclaration);
-                var moduleTree = new SerializableDeclarationTree(new SerializableDeclaration(moduleDeclaration), comInfo.MemberTrees);
-                moduleTrees.Add(moduleTree);
             }
 
             foreach (var member in _comInformation.Values)
@@ -299,15 +337,7 @@ namespace Rubberduck.Parsing.Symbols
                 LoadDeclarationsInModule(output, member);
             }
 
-            tree = new SerializableDeclarationTree(new SerializableDeclaration(projectDeclaration), moduleTrees);
             return output;
-        }
-
-        [Obsolete("Use the overload that outputs a SerializableDeclarationTree instead.")]
-        public List<Declaration> GetDeclarationsForReference(IReference reference)
-        {
-            SerializableDeclarationTree tree;
-            return GetDeclarationsForReference(reference, out tree);
         }
 
         private void LoadDeclarationsInModule(List<Declaration> output, ComInformation member)
@@ -360,17 +390,12 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     parameters.Last().IsParamArray = true;
                 }
-
-                var parameterTrees = parameters.Select(p => new SerializableDeclarationTree(p));
-                var tree = new SerializableDeclarationTree(new SerializableDeclaration(memberDeclaration), parameterTrees);
-                member.MemberTrees.Add(tree);
             }
 
             for (var fieldIndex = 0; fieldIndex < member.TypeAttributes.cVars; fieldIndex++)
             {
                 var declaration = CreateFieldDeclaration(member.TypeInfo, fieldIndex, member.TypeDeclarationType, member.TypeQualifiedModuleName, member.ModuleDeclaration);
                 output.Add(declaration);
-                member.MemberTrees.Add(new SerializableDeclarationTree(declaration));
             }
         }
 

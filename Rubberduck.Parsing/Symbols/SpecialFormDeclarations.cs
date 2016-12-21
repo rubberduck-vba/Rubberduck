@@ -1,5 +1,4 @@
-﻿using NLog;
-using Rubberduck.Parsing.Annotations;
+﻿using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;

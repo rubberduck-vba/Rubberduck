@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Windows.Input;
 using Rubberduck.Common.WinAPI;
 using NLog;
 using Rubberduck.UI;
