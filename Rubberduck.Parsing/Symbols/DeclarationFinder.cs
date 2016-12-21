@@ -263,6 +263,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberEnclosingProcedure(Declaration enclosingProcedure, string memberName, DeclarationType memberType, ParserRuleContext onSiteContext = null)
         {
+            if (memberType == DeclarationType.Variable && enclosingProcedure.IdentifierName.Equals(memberName))
+            {
+                return enclosingProcedure;
+            }
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
