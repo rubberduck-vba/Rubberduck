@@ -52,6 +52,9 @@ Filename: "{dotnet4064}\RegAsm.exe"; Parameters: "/codebase {#AddinDLL}"; Workin
 Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/u {#AddinDLL}"; WorkingDir: "{app}"; StatusMsg: "Unregistering Controls..."; Flags: runascurrentuser runminimized; Check: Is32BitOfficeInstalled
 Filename: "{dotnet4064}\RegAsm.exe"; Parameters: "/u {#AddinDLL}"; WorkingDir: "{app}"; StatusMsg: "Unregistering Controls..."; Flags: runascurrentuser runminimized; Check: Is64BitOfficeInstalled
 
+[UninstallDelete]
+Type: filesandordirs; Name: "{localappdata}\{#AppName}"
+
 [CustomMessages]
 ; TODO add additional languages here.
 English.NETFramework40NotInstalled=Microsoft .NET Framework 4.0 installation was not detected.

@@ -1102,6 +1102,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Load Window Settings.
+        /// </summary>
+        public static string DialogCaption_LoadWindowSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadWindowSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save General Settings.
         /// </summary>
         public static string DialogCaption_SaveGeneralSettings {
@@ -1143,6 +1152,15 @@ namespace Rubberduck.UI {
         public static string DialogCaption_SaveUnitTestSettings {
             get {
                 return ResourceManager.GetString("DialogCaption_SaveUnitTestSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Window Settings.
+        /// </summary>
+        public static string DialogCaption_SaveWindowSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveWindowSettings", resourceCulture);
             }
         }
         
@@ -3408,6 +3426,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Window Settings.
+        /// </summary>
+        public static string SettingsCaption_WindowSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_WindowSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click [Ok] to close the window and apply changes, or [Cancel] to discard them..
         /// </summary>
         public static string SettingsInstructions_GeneralSettings {
@@ -3449,6 +3476,15 @@ namespace Rubberduck.UI {
         public static string SettingsInstructions_UnitTestSettings {
             get {
                 return ResourceManager.GetString("SettingsInstructions_UnitTestSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure the settings for window visibility..
+        /// </summary>
+        public static string SettingsInstructions_WindowSettings {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_WindowSettings", resourceCulture);
             }
         }
         
@@ -5151,6 +5187,15 @@ namespace Rubberduck.UI {
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Window visibility at startup.
+        /// </summary>
+        public static string WindowSettings_StartupVisibilityHeader {
+            get {
+                return ResourceManager.GetString("WindowSettings_StartupVisibilityHeader", resourceCulture);
             }
         }
     }

@@ -110,7 +110,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         }
 
         /// <summary>
-        /// Exports the component to the folder. The file is name matches the component name and file extension is based on the component's type.
+        /// Exports the component to the folder. The file name matches the component name and file extension is based on the component's type.
         /// </summary>
         /// <param name="folder">Destination folder for the resulting source file.</param>
         public string ExportAsSourceFile(string folder)
