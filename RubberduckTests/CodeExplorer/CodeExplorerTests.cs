@@ -121,7 +121,7 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
@@ -1517,7 +1517,7 @@ End Sub";
 
         private ConfigurationLoader GetDelimiterConfigLoader()
         {
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDelimiterConfig());
 
             return configLoader.Object;

@@ -308,7 +308,7 @@ Private Assert As New Rubberduck.AssertClass
                 Assert.Inconclusive("Parser Error");
             }
 
-            var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null);
+            var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             var config = GetUnitTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
