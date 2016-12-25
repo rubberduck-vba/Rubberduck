@@ -26,17 +26,16 @@ namespace Rubberduck.Parsing.ComReflection
         }
 
         public ComModule(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(typeLib, attrib, index)
-        {           
+        {
+            Type = DeclarationType.ProceduralModule;
             if (attrib.cFuncs > 0)
             {
                 Debug.Assert(attrib.cVars == 0);
-                Type = DeclarationType.ProceduralModule;
                 GetComMembers(info, attrib);
             }
             else
             {
                 Debug.Assert(attrib.cVars > 0);
-                Type = DeclarationType.Module;
                 GetComFields(info, attrib);
             }
         }

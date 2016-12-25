@@ -109,7 +109,8 @@ namespace Rubberduck.Parsing.ComReflection
                             var coclass = type ?? new ComCoClass(typeLibrary, info, typeAttributes, index);
                             _classes.Add(coclass as ComCoClass);
                             if (type != null) KnownTypes.TryAdd(typeAttributes.guid, coclass);
-                            break;                       
+                            break;
+                        case TYPEKIND.TKIND_ALIAS:
                         case TYPEKIND.TKIND_DISPATCH:
                         case TYPEKIND.TKIND_INTERFACE:
                             var intface = type ?? new ComInterface(typeLibrary, info, typeAttributes, index);
@@ -124,9 +125,6 @@ namespace Rubberduck.Parsing.ComReflection
                             _modules.Add(module as ComModule);
                             if (type != null) KnownTypes.TryAdd(typeAttributes.guid, module);
                             break;
-                        case TYPEKIND.TKIND_ALIAS:
-                            //Haven't seen one of these either.
-                            throw new NotImplementedException(string.Format("Didn't expect to find a TKIND_ALIAS in {0}.", Path));
                         default:
                             throw new NotImplementedException(string.Format("Didn't expect a TYPEATTR with multiple typekind flags set in {0}.", Path));
                     }
