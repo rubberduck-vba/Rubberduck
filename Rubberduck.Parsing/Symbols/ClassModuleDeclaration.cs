@@ -75,6 +75,8 @@ namespace Rubberduck.Parsing.Symbols
                 coClass.ImplementedInterfaces.Where(i => !i.IsRestricted && !IgnoredInterfaces.Contains(i.Name))
                     .Select(i => i.Name)
                     .ToList();
+            _supertypes = new HashSet<Declaration>();
+            _subtypes = new HashSet<Declaration>();
         }
 
         public ClassModuleDeclaration(ComInterface intrface, Declaration parent, QualifiedModuleName module,

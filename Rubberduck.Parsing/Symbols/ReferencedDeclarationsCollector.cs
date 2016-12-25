@@ -150,7 +150,8 @@ namespace Rubberduck.Parsing.Symbols
                     output.Add(enumDeclaration);
                     output.AddRange(members);
                 }
-                var fields = module as ComModule;
+
+                var fields = module as IComTypeWithFields;
                 if (fields == null || !fields.Fields.Any())
                 {
                     continue;
@@ -224,23 +225,7 @@ namespace Rubberduck.Parsing.Symbols
                     return new PropertyLetDeclaration(member, parent, module, attributes);
                 default:
                     Debug.Assert(false);
-                    return new Declaration(
-                        new QualifiedMemberName(module, member.Name), 
-                        parent,
-                        parent,
-                        string.Empty,   // asTypeName.Name,
-                        null,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        member.Type,
-                        null,
-                        Selection.Home,
-                        false,
-                        null,
-                        true,
-                        null,
-                        attributes);
+                    return null as Declaration;
             }
         }
     }

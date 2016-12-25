@@ -49,6 +49,12 @@ namespace Rubberduck.Parsing.ComReflection
             get { return _modules; }
         }
 
+        private readonly List<ComStruct> _structs = new List<ComStruct>();
+        public IEnumerable<ComStruct> Structs
+        {
+            get { return _structs; }
+        }
+
         public IEnumerable<IComType> Members
         {
             get
@@ -56,7 +62,8 @@ namespace Rubberduck.Parsing.ComReflection
                 return _modules.Cast<IComType>()
                     .Union(_interfaces)
                     .Union(_classes)
-                    .Union(_enumerations);
+                    .Union(_enumerations)
+                    .Union(_structs);
             }
         } 
 
@@ -118,8 +125,9 @@ namespace Rubberduck.Parsing.ComReflection
                             if (type != null) KnownTypes.TryAdd(typeAttributes.guid, intface);
                             break;
                         case TYPEKIND.TKIND_RECORD:
-                            //IIR these aren't available to VBA.  I could quite possibly be wrong though.
-                            throw new NotImplementedException(string.Format("Didn't expect to find a TKIND_RECORD in {0}.", Path));
+                            var structure = new ComStruct(typeLibrary, info, typeAttributes, index);
+                            _structs.Add(structure);
+                            break;
                         case TYPEKIND.TKIND_MODULE:
                             var module = type ?? new ComModule(typeLibrary, info, typeAttributes, index);
                             _modules.Add(module as ComModule);

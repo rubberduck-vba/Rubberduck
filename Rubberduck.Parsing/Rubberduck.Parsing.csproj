@@ -116,6 +116,7 @@
     <Compile Include="ComReflection\ComEnumeration.cs" />
     <Compile Include="ComReflection\ComEnumerationMember.cs" />
     <Compile Include="ComReflection\ComInterface.cs" />
+    <Compile Include="ComReflection\ComStruct.cs" />
     <Compile Include="ComReflection\ComType.cs" />
     <Compile Include="ComReflection\ComVariant.cs" />
     <Compile Include="Grammar\Annotations.cs" />

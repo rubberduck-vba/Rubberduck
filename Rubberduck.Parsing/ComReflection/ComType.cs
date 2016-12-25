@@ -17,6 +17,11 @@ namespace Rubberduck.Parsing.ComReflection
         IEnumerable<ComMember> Members { get; }
     }
 
+    public interface IComTypeWithFields : IComType
+    {
+        IEnumerable<ComField> Fields { get; }
+    }
+
     [DebuggerDisplay("{Name}")]
     public abstract class ComType : ComBase, IComType
     {

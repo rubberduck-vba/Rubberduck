@@ -200,15 +200,15 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration(ComField field, Declaration parent, QualifiedModuleName module)
             : this(
-                new QualifiedMemberName(module, string.IsNullOrEmpty(field.Name) ? "Foo" : field.Name),
+                new QualifiedMemberName(module, field.Name),
                 parent,
                 parent,
-                string.IsNullOrEmpty(field.Name) ? "Foo" : field.Name,
+                field.Name,
                 null,
                 false,
                 false,
                 Accessibility.Global,
-                field.IsConstant ? DeclarationType.Constant : DeclarationType.UserDefinedType, //TODO: This is wrong.
+                field.Type,
                 null,
                 Selection.Home,
                 false,
