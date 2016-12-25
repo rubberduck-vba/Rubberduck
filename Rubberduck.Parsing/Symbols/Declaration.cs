@@ -162,7 +162,6 @@ namespace Rubberduck.Parsing.Symbols
             _isArray = isArray;
             _asTypeContext = asTypeContext;
             _typeHint = typeHint;
-            Debug.Assert(!string.IsNullOrEmpty(_qualifiedName.MemberName)); 
         }
 
         public Declaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module) : this(
@@ -181,13 +180,13 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 true,
                 null,
-                new Attributes()) { Debug.Assert(module != null && !string.IsNullOrEmpty(_qualifiedName.MemberName)); }
+                new Attributes()) { }
 
         public Declaration(ComEnumerationMember member, Declaration parent, QualifiedModuleName module) : this(
                 new QualifiedMemberName(module, member.Name),
                 parent,
                 parent,
-                member.Name,
+                parent.IdentifierName,
                 null,
                 false,
                 false,
@@ -196,7 +195,7 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 Selection.Home,
                 false,
-                null) { Debug.Assert(module != null && !string.IsNullOrEmpty(_qualifiedName.MemberName)); }
+                null) { }
 
         public Declaration(ComField field, Declaration parent, QualifiedModuleName module)
             : this(
@@ -212,7 +211,7 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 Selection.Home,
                 false,
-                null) { Debug.Assert(module != null && !string.IsNullOrEmpty(_qualifiedName.MemberName)); }
+                null) { }
 
         private string FolderFromAnnotations()
             {
