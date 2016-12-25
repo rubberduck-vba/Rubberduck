@@ -33,7 +33,7 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public ProjectDeclaration(ComProject project, QualifiedModuleName module)
-            : this(new QualifiedMemberName(module, project.Name), project.Name, true)
+            : this(module.QualifyMemberName(project.Name), project.Name, true)
         {
             MajorVersion = project.MajorVersion;
             MinorVersion = project.MinorVersion;

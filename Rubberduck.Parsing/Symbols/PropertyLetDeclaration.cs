@@ -47,7 +47,7 @@ namespace Rubberduck.Parsing.Symbols
         public PropertyLetDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
             Attributes attributes)
             : this(
-                new QualifiedMemberName(module, member.Name),
+                module.QualifyMemberName(member.Name),
                 parent,
                 parent,
                 string.Empty, //TODO:  Need to get the types for these.
@@ -61,7 +61,7 @@ namespace Rubberduck.Parsing.Symbols
             _parameters =
                 member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
                     .Cast<Declaration>()
-                    .ToList();  
+                    .ToList(); 
         }
 
         public IEnumerable<Declaration> Parameters

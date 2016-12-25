@@ -1,5 +1,4 @@
-﻿using System;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA;
@@ -47,7 +46,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public SubroutineDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
             Attributes attributes)
-            : this(new QualifiedMemberName(module, member.Name),
+            : this(
+                module.QualifyMemberName(member.Name),
                 parent,
                 parent,
                 string.Empty,
@@ -61,7 +61,7 @@ namespace Rubberduck.Parsing.Symbols
             _parameters =
                 member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
                     .Cast<Declaration>()
-                    .ToList();            
+                    .ToList();          
         }
 
         public IEnumerable<Declaration> Parameters

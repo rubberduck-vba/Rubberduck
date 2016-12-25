@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.Symbols
         public ProceduralModuleDeclaration(ComModule statics, Declaration parent, QualifiedModuleName module,
             Attributes attributes)
             : this(
-                new QualifiedMemberName(module, statics.Name),
+                module.QualifyMemberName(statics.Name),
                 parent,
                 statics.Name,
                 true,
@@ -49,7 +49,7 @@ namespace Rubberduck.Parsing.Symbols
         //This is the pseudo-module ctor for COM enumerations.
         public ProceduralModuleDeclaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module)
             : this(
-                new QualifiedMemberName(module, string.Format("_{0}", enumeration.Name)),
+                module.QualifyMemberName(string.Format("_{0}", enumeration.Name)),
                 parent,
                 string.Format("_{0}", enumeration.Name),
                 true,
@@ -59,7 +59,7 @@ namespace Rubberduck.Parsing.Symbols
         //This is the pseudo-module ctor for anything else from COM with fields instead of members.
         public ProceduralModuleDeclaration(string pseudo, Declaration parent, QualifiedModuleName module)
             : this(
-                new QualifiedMemberName(module, pseudo),
+                module.QualifyMemberName(pseudo),
                 parent,
                 pseudo,
                 true,

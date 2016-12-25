@@ -54,7 +54,7 @@ namespace Rubberduck.Parsing.Symbols
         public ClassModuleDeclaration(ComCoClass coClass, Declaration parent, QualifiedModuleName module,
             Attributes attributes)
             : base(
-                new QualifiedMemberName(module, coClass.Name),
+                module.QualifyMemberName(coClass.Name),
                 parent,
                 parent,
                 coClass.Name,
@@ -82,7 +82,7 @@ namespace Rubberduck.Parsing.Symbols
         public ClassModuleDeclaration(ComInterface intrface, Declaration parent, QualifiedModuleName module,
             Attributes attributes)
             : this(
-                new QualifiedMemberName(module, intrface.Name),
+                module.QualifyMemberName(intrface.Name),
                 parent,
                 intrface.Name,
                 true,

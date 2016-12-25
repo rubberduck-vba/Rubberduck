@@ -51,7 +51,7 @@ namespace Rubberduck.Parsing.Symbols
         public PropertyGetDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
             Attributes attributes)
             : this(
-                new QualifiedMemberName(module, member.Name),
+                module.QualifyMemberName(member.Name),
                 parent,
                 parent,
                 member.ReturnType.TypeName,

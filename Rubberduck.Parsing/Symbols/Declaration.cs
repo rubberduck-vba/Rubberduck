@@ -165,7 +165,7 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public Declaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module) : this(
-                new QualifiedMemberName(module, enumeration.Name),
+                module.QualifyMemberName(enumeration.Name),
                 parent,
                 parent,
                 enumeration.Name,
@@ -183,7 +183,7 @@ namespace Rubberduck.Parsing.Symbols
                 new Attributes()) { }
 
         public Declaration(ComEnumerationMember member, Declaration parent, QualifiedModuleName module) : this(
-                new QualifiedMemberName(module, member.Name),
+                module.QualifyMemberName(member.Name),
                 parent,
                 parent,
                 parent.IdentifierName,
@@ -199,7 +199,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration(ComField field, Declaration parent, QualifiedModuleName module)
             : this(
-                new QualifiedMemberName(module, field.Name),
+                module.QualifyMemberName(field.Name),
                 parent,
                 parent,
                 field.Name,

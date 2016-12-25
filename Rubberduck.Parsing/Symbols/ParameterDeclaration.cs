@@ -79,7 +79,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public ParameterDeclaration(ComParameter parameter, Declaration parent, QualifiedModuleName module)
             : this(
-                new QualifiedMemberName(module, parameter.Name),
+                module.QualifyMemberName(parameter.Name),
                 parent,
                 parameter.TypeName,
                 null,
