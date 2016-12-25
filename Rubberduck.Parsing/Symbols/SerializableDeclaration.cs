@@ -11,7 +11,13 @@ namespace Rubberduck.Parsing.Symbols
     {
         public SerializableDeclaration Node;
 
-        public IEnumerable<SerializableDeclarationTree> Children;
+        private List<SerializableDeclarationTree> _children = new List<SerializableDeclarationTree>();
+
+        public IEnumerable<SerializableDeclarationTree> Children
+        {
+            get { return _children; } 
+            set { _children = new List<SerializableDeclarationTree>(value); }
+        }
 
         public SerializableDeclarationTree() { } 
 
@@ -28,6 +34,11 @@ namespace Rubberduck.Parsing.Symbols
         {
             Node = node;
             Children = children;
+        }
+
+        public void AddChildTree(SerializableDeclarationTree tree)
+        {
+            _children.Add(tree);
         }
     }
 
@@ -63,11 +74,35 @@ namespace Rubberduck.Parsing.Symbols
         [DataMember(IsRequired = true)]
         public SerializableDeclaration Node { get; set; }
         [DataMember(IsRequired = true)]
-        public IEnumerable<SerializableDeclarationTree> Declarations { get; set; }
+
+        private List<SerializableDeclarationTree> _declarations = new List<SerializableDeclarationTree>();
+
+        public IEnumerable<SerializableDeclarationTree> Declarations
+        {
+            get { return _declarations; }
+            set { _declarations = new List<SerializableDeclarationTree>(value); }
+        }
+
         [DataMember(IsRequired = true)]
         public long MajorVersion { get; set; }
         [DataMember(IsRequired = true)]
         public long MinorVersion { get; set; }
+
+        public void AddDeclaration(SerializableDeclarationTree tree)
+        {
+            _declarations.Add(tree);
+        }
+
+        private readonly Dictionary<string, SerializableDeclarationTree> _pseudoLookup = new Dictionary<string, SerializableDeclarationTree>(); 
+        public SerializableDeclarationTree GetPseudoDeclaration(Declaration declaration)
+        {
+            if (!_pseudoLookup.ContainsKey(declaration.IdentifierName))
+            {
+                _declarations.Add(new SerializableDeclarationTree(declaration));
+            }
+
+            return _pseudoLookup[declaration.IdentifierName];
+        }
 
         public List<Declaration> Unwrap()
         {

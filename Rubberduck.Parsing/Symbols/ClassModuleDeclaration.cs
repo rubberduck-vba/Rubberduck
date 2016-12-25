@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
@@ -46,6 +47,45 @@ namespace Rubberduck.Parsing.Symbols
             _supertypes = new HashSet<Declaration>();
             _subtypes = new HashSet<Declaration>();
         }
+
+        // skip IDispatch.. just about everything implements it and RD doesn't need to care about it; don't care about IUnknown either
+        private static readonly HashSet<string> IgnoredInterfaces = new HashSet<string>(new[] { "IDispatch", "IUnknown" });
+
+        public ClassModuleDeclaration(ComCoClass coClass, Declaration parent, QualifiedModuleName module,
+            Attributes attributes)
+            : base(
+                new QualifiedMemberName(module, coClass.Name),
+                parent,
+                parent,
+                coClass.Name,
+                null,
+                false,
+                coClass.EventInterfaces.Any(),
+                Accessibility.Public,
+                DeclarationType.ClassModule,
+                null,
+                Selection.Home,
+                false,
+                null,
+                true,
+                new List<IAnnotation>(),
+                attributes)
+        {
+            _supertypeNames =
+                coClass.ImplementedInterfaces.Where(i => !i.IsRestricted && !IgnoredInterfaces.Contains(i.Name))
+                    .Select(i => i.Name)
+                    .ToList();
+        }
+
+        public ClassModuleDeclaration(ComInterface intrface, Declaration parent, QualifiedModuleName module,
+            Attributes attributes)
+            : this(
+                new QualifiedMemberName(module, intrface.Name),
+                parent,
+                intrface.Name,
+                true,
+                new List<IAnnotation>(),
+                attributes) { }
 
         public static IEnumerable<Declaration> GetSupertypes(Declaration type)
         {

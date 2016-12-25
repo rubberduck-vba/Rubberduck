@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -163,7 +164,58 @@ namespace Rubberduck.Parsing.Symbols
             _typeHint = typeHint;
         }
 
-            private string FolderFromAnnotations()
+        public Declaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module) : this(
+                new QualifiedMemberName(module, enumeration.Name),
+                parent,
+                parent,
+                enumeration.Name,
+                null,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.Enumeration,
+                null,
+                Selection.Home,
+                false,
+                null,
+                true,
+                null,
+                new Attributes()) { }
+
+        public Declaration(ComEnumerationMember member, Declaration parent, QualifiedModuleName module) : this(
+                new QualifiedMemberName(module, member.Name),
+                parent,
+                parent,
+                member.Name,
+                null,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.EnumerationMember,
+                null,
+                Selection.Home,
+                false,
+                null,
+                true) { }
+
+        public Declaration(ComField field, Declaration parent, QualifiedModuleName module)
+            : this(
+                new QualifiedMemberName(module, field.Name),
+                parent,
+                parent,
+                field.Name,
+                null,
+                false,
+                false,
+                Accessibility.Global,
+                field.IsConstant ? DeclarationType.Constant : DeclarationType.UserDefinedType, //TODO: This is wrong.
+                null,
+                Selection.Home,
+                false,
+                null,
+                true) { }
+
+        private string FolderFromAnnotations()
             {
                 var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
                 string result;

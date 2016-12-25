@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
@@ -30,9 +31,40 @@ namespace Rubberduck.Parsing.Symbols
                   null,
                   isBuiltIn,
                   annotations,
-                  attributes)
+                  attributes) { }
+
+        public ProceduralModuleDeclaration(ComModule statics, Declaration parent, QualifiedModuleName module,
+            Attributes attributes)
+            : this(
+                new QualifiedMemberName(module, statics.Name),
+                parent,
+                statics.Name,
+                true,
+                new List<IAnnotation>(),
+                attributes)
         {
+            IsPrivateModule = statics.IsRestricted;
         }
+
+        //This is the pseudo-module ctor for COM enumerations.
+        public ProceduralModuleDeclaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module)
+            : this(
+                new QualifiedMemberName(module, string.Format("_{0}", enumeration.Name)),
+                parent,
+                string.Format("_{0}", enumeration.Name),
+                true,
+                new List<IAnnotation>(),
+                new Attributes()) { }
+
+        //This is the pseudo-module ctor for anything else from COM with fields instead of members.
+        public ProceduralModuleDeclaration(string pseudo, Declaration parent, QualifiedModuleName module)
+            : this(
+                new QualifiedMemberName(module, pseudo),
+                parent,
+                pseudo,
+                true,
+                new List<IAnnotation>(),
+                new Attributes()) { }
 
         public bool IsPrivateModule { get; internal set; }
     }

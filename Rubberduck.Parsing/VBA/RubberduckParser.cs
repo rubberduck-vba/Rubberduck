@@ -444,12 +444,12 @@ namespace Rubberduck.Parsing.VBA
                                         }
                                         serialize.Remove(root);
 
-                                        var project = GetSerializableProject(root, serialize);
-                                        if (project != null)
-                                        {
-                                            var added = State.BuiltInDeclarationTrees.TryAdd(project);
-                                            //if (!added) { throw new Exception();}
-                                        }
+                                        //var project = GetSerializableProject(root, serialize);
+                                        //if (project != null)
+                                        //{
+                                        //    var added = State.BuiltInDeclarationTrees.TryAdd(project);
+                                        //    //if (!added) { throw new Exception();}
+                                        //}
                                     }
                                     catch (Exception exception)
                                     {
