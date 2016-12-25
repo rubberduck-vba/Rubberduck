@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
@@ -75,17 +76,16 @@ namespace Rubberduck.Parsing.ComReflection
             int count;
             info.GetNames(Index, names, 255, out count);
 
-            for (var index = 0; index < funcDesc.cParams; index++)
+            for (var index = 0; index < count - 1; index++)
             {
                 var paramPtr = new IntPtr(funcDesc.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof(ELEMDESC)) * index);
                 var elemDesc = (ELEMDESC)Marshal.PtrToStructure(paramPtr, typeof(ELEMDESC));
                 var param = new ComParameter(elemDesc, info, names[index + 1]);
                 Parameters.Add(param);
-                //TODO:
-                //if (parameters.Any() && memberDescriptor.cParamsOpt == -1)
-                //{
-                //    parameters.Last().IsParamArray = true;
-                //}
+            }
+            if (Parameters.Any() && funcDesc.cParamsOpt == -1)
+            {
+                Parameters.Last().IsParamArray = true;
             }
         }
 

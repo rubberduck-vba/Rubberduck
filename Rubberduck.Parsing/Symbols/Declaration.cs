@@ -151,7 +151,7 @@ namespace Rubberduck.Parsing.Symbols
             _accessibility = accessibility;
             _declarationType = declarationType;
             _selection = selection;
-            _context = context;
+            Context = context;
             _isBuiltIn = isBuiltIn;
             _annotations = annotations;
             _attributes = attributes ?? new Attributes();
@@ -162,6 +162,7 @@ namespace Rubberduck.Parsing.Symbols
             _isArray = isArray;
             _asTypeContext = asTypeContext;
             _typeHint = typeHint;
+            Debug.Assert(!string.IsNullOrEmpty(_qualifiedName.MemberName)); 
         }
 
         public Declaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module) : this(
@@ -180,7 +181,7 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 true,
                 null,
-                new Attributes()) { }
+                new Attributes()) { Debug.Assert(module != null && !string.IsNullOrEmpty(_qualifiedName.MemberName)); }
 
         public Declaration(ComEnumerationMember member, Declaration parent, QualifiedModuleName module) : this(
                 new QualifiedMemberName(module, member.Name),
@@ -195,15 +196,14 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 Selection.Home,
                 false,
-                null,
-                true) { }
+                null) { Debug.Assert(module != null && !string.IsNullOrEmpty(_qualifiedName.MemberName)); }
 
         public Declaration(ComField field, Declaration parent, QualifiedModuleName module)
             : this(
-                new QualifiedMemberName(module, field.Name),
+                new QualifiedMemberName(module, string.IsNullOrEmpty(field.Name) ? "Foo" : field.Name),
                 parent,
                 parent,
-                field.Name,
+                string.IsNullOrEmpty(field.Name) ? "Foo" : field.Name,
                 null,
                 false,
                 false,
@@ -212,8 +212,7 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 Selection.Home,
                 false,
-                null,
-                true) { }
+                null) { Debug.Assert(module != null && !string.IsNullOrEmpty(_qualifiedName.MemberName)); }
 
         private string FolderFromAnnotations()
             {
@@ -285,18 +284,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly QualifiedMemberName _qualifiedName;
         public QualifiedMemberName QualifiedName { get { return _qualifiedName; } }
 
-        private ParserRuleContext _context;
-        public ParserRuleContext Context
-        {
-            get
-            {
-                return _context;
-            }
-            set
-            {
-                _context = value;
-            }
-        }
+        public ParserRuleContext Context { get; set; }
 
         private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
         public IEnumerable<IdentifierReference> References
@@ -391,24 +379,6 @@ namespace Rubberduck.Parsing.Symbols
                     annotations));
         }
 
-        //public void AddReference(IdentifierReference reference)
-        //{
-        //    if (reference == null || reference.Declaration.Context == reference.Context)
-        //    {
-        //        return;
-        //    }
-        //    if (reference.Context.Parent != _context
-        //        && !_references.Select(r => r.Context).Contains(reference.Context.Parent)
-        //        && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName
-        //            && r.Selection.StartLine == reference.Selection.StartLine
-        //            && r.Selection.EndLine == reference.Selection.EndLine
-        //            && r.Selection.StartColumn == reference.Selection.StartColumn
-        //            && r.Selection.EndColumn == reference.Selection.EndColumn))
-        //    {
-        //        _references.Add(reference);
-        //    }
-        //}
-
         public void AddMemberCall(IdentifierReference reference)
         {
             if (reference == null || reference.Declaration == null || reference.Declaration.Context == reference.Context)
@@ -459,7 +429,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public object[] ToArray()
         {
-            return new object[] { this.ProjectName, this.CustomFolder, this.ComponentName, this.DeclarationType.ToString(), this.Scope, this.IdentifierName, this.AsTypeName };
+            return new object[] { ProjectName, CustomFolder, ComponentName, DeclarationType.ToString(), Scope, IdentifierName, AsTypeName };
         }
 
 
@@ -548,7 +518,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.PropertyLet,
             DeclarationType.PropertyLet,
             DeclarationType.UserDefinedType,
-            DeclarationType.Constant,
+            DeclarationType.Constant
         };
 
         public bool IsSelected(QualifiedSelection selection)
