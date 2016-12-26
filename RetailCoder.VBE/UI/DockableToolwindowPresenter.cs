@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Configuration;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI
@@ -23,13 +26,18 @@ namespace Rubberduck.UI
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IWindow _window;
         private readonly UserControl _userControl;
+        private readonly WindowSettings _settings;  //Storing this really doesn't matter - it's only checked on startup and never persisted.
 
-        protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view)
+        protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view, IConfigProvider<WindowSettings> settingsProvider)
         {
             _vbe = vbe;
             _addin = addin;
             Logger.Trace(string.Format("Initializing Dockable Panel ({0})", GetType().Name));
             _userControl = view as UserControl;
+            if (settingsProvider != null)
+            {
+                _settings = settingsProvider.Create();
+            }
             _window = CreateToolWindow(view);
         }
 
@@ -69,7 +77,7 @@ namespace Rubberduck.UI
 
             EnsureMinimumWindowSize(toolWindow);
 
-            toolWindow.IsVisible = false; //hide it again
+            toolWindow.IsVisible = _settings != null && !_settings.IsWindowVisible(this);
 
             userControlHost.AddUserControl(control as UserControl, new IntPtr(_vbe.MainWindow.HWnd));
             return toolWindow;
