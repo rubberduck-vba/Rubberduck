@@ -35,7 +35,9 @@ namespace Rubberduck.Parsing.ComReflection
             }
             else
             {
-                
+                Debug.Assert(varDesc.varkind == VARKIND.VAR_PERINSTANCE);
+                string typeName;
+                ValueType = ComVariant.TypeNames.TryGetValue((VarEnum)varDesc.elemdescVar.tdesc.vt, out typeName) ? typeName : "Object";                
             }
         }
     }

@@ -46,17 +46,7 @@ namespace Rubberduck.Parsing.Symbols
             IsPrivateModule = statics.IsRestricted;
         }
 
-        //This is the pseudo-module ctor for COM enumerations.
-        public ProceduralModuleDeclaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module)
-            : this(
-                module.QualifyMemberName(string.Format("_{0}", enumeration.Name)),
-                parent,
-                string.Format("_{0}", enumeration.Name),
-                true,
-                new List<IAnnotation>(),
-                new Attributes()) { }
-
-        //This is the pseudo-module ctor for anything else from COM with fields instead of members.
+        //This is the pseudo-module ctor for COM enumerations and types.
         public ProceduralModuleDeclaration(string pseudo, Declaration parent, QualifiedModuleName module)
             : this(
                 module.QualifyMemberName(pseudo),
