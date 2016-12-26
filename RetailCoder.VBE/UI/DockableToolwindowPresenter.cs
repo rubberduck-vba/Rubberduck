@@ -77,7 +77,7 @@ namespace Rubberduck.UI
 
             EnsureMinimumWindowSize(toolWindow);
 
-            toolWindow.IsVisible = _settings != null && !_settings.IsWindowVisible(this);
+            toolWindow.IsVisible = _settings != null && _settings.IsWindowVisible(this);
 
             userControlHost.AddUserControl(control as UserControl, new IntPtr(_vbe.MainWindow.HWnd));
             return toolWindow;
