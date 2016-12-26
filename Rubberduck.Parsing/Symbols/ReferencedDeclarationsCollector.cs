@@ -104,7 +104,8 @@ namespace Rubberduck.Parsing.Symbols
 
             var declarations = deserialized.Unwrap();
 
-            foreach (var members in declarations.Where(d => d.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
+            foreach (var members in declarations.Where(d => d.DeclarationType != DeclarationType.Project && 
+                                                            d.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
                                                             ProceduralTypes.Contains(d.DeclarationType))
                                                 .GroupBy(d => d.ParentDeclaration))
             { 
