@@ -36,6 +36,14 @@ namespace Rubberduck.Parsing.Symbols
             Children = children;
         }
 
+        public void AddChildren(IEnumerable<Declaration> declarations)
+        {
+            foreach (var child in declarations)
+            {
+                _children.Add(new SerializableDeclarationTree(child));
+            }
+        }
+
         public void AddChildTree(SerializableDeclarationTree tree)
         {
             _children.Add(tree);
