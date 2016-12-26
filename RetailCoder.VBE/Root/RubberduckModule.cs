@@ -194,6 +194,7 @@ namespace Rubberduck.Root
             Bind<IPersistanceService<HotkeySettings>>().To<XmlPersistanceService<HotkeySettings>>().InCallScope();
             Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InCallScope();
             Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InCallScope();
+            Bind<IPersistanceService<WindowSettings>>().To<XmlPersistanceService<WindowSettings>>().InCallScope();
             Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InCallScope();
             Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InCallScope();
 
@@ -205,6 +206,7 @@ namespace Rubberduck.Root
             Bind<IHotkeySettings>().To<HotkeySettings>().InCallScope();
             Bind<IToDoListSettings>().To<ToDoListSettings>().InCallScope();
             Bind<IUnitTestSettings>().To<UnitTestSettings>().InCallScope();
+            Bind<IWindowSettings>().To<WindowSettings>().InCallScope();
             Bind<IIndenterSettings>().To<IndenterSettings>().InCallScope();
             Bind<ISourceControlSettings>().To<SourceControlSettings>().InCallScope();        
         }

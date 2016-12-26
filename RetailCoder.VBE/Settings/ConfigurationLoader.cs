@@ -32,9 +32,10 @@ namespace Rubberduck.Settings
         private readonly IConfigProvider<CodeInspectionSettings> _inspectionProvider;
         private readonly IConfigProvider<UnitTestSettings> _unitTestProvider;
         private readonly IConfigProvider<IndenterSettings> _indenterProvider;
+        private readonly IConfigProvider<WindowSettings> _windowProvider;
 
         public ConfigurationLoader(IConfigProvider<GeneralSettings> generalProvider, IConfigProvider<HotkeySettings> hotkeyProvider, IConfigProvider<ToDoListSettings> todoProvider,
-                                   IConfigProvider<CodeInspectionSettings> inspectionProvider, IConfigProvider<UnitTestSettings> unitTestProvider, IConfigProvider<IndenterSettings> indenterProvider)
+                                   IConfigProvider<CodeInspectionSettings> inspectionProvider, IConfigProvider<UnitTestSettings> unitTestProvider, IConfigProvider<IndenterSettings> indenterProvider, IConfigProvider<WindowSettings> windowProvider)
         {
             _generalProvider = generalProvider;
             _hotkeyProvider = hotkeyProvider;
@@ -42,6 +43,7 @@ namespace Rubberduck.Settings
             _inspectionProvider = inspectionProvider;
             _unitTestProvider = unitTestProvider;
             _indenterProvider = indenterProvider;
+            _windowProvider = windowProvider;
         }
 
         /// <summary>
@@ -58,7 +60,8 @@ namespace Rubberduck.Settings
                     _todoProvider.Create(),
                     _inspectionProvider.Create(),
                     _unitTestProvider.Create(),
-                    _indenterProvider.Create()
+                    _indenterProvider.Create(),
+                    _windowProvider.Create()
                 )
             };            
             return config;
@@ -75,7 +78,8 @@ namespace Rubberduck.Settings
                     _todoProvider.CreateDefaults(),
                     _inspectionProvider.CreateDefaults(),
                     _unitTestProvider.CreateDefaults(),
-                    _indenterProvider.CreateDefaults()
+                    _indenterProvider.CreateDefaults(),
+                    _windowProvider.CreateDefaults()
                 )
             };
         }
@@ -93,6 +97,7 @@ namespace Rubberduck.Settings
             _inspectionProvider.Save(toSerialize.UserSettings.CodeInspectionSettings);
             _unitTestProvider.Save(toSerialize.UserSettings.UnitTestSettings);
             _indenterProvider.Save(toSerialize.UserSettings.IndenterSettings);
+            _windowProvider.Save(toSerialize.UserSettings.WindowSettings);
 
             OnSettingsChanged(new ConfigurationChangedEventArgs(inspectOnReparse, langChanged, !oldInspectionSettings.SequenceEqual(newInspectionSettings)));
         }

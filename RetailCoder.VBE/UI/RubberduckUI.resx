@@ -1084,6 +1084,9 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
     <value>Unit Test Settings</value>
   </data>
+  <data name="SettingsCaption_WindowSettings" xml:space="preserve">
+    <value>Window Settings</value>
+  </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Severity:</value>
   </data>
@@ -1095,6 +1098,9 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
     <value>Configure the settings for new unit test modules and methods.</value>
+  </data>
+  <data name="SettingsInstructions_WindowSettings" xml:space="preserve">
+    <value>Configure the settings for window visibility.</value>
   </data>
   <data name="UnitTestSettings_AssertMode" xml:space="preserve">
     <value>Type safety:</value>
@@ -1125,6 +1131,9 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
     <value>Test Module Template</value>
+  </data>
+  <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
+    <value>Window visibility at startup</value>
   </data>
   <data name="TestOutcome_Failed" xml:space="preserve">
     <value>Failed</value>
@@ -1867,6 +1876,9 @@ End Sub</value>
   <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
     <value>Load Unit Test Settings</value>
   </data>
+  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
+    <value>Load Window Settings</value>
+  </data>
   <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
     <value>Save General Settings</value>
   </data>
@@ -1878,6 +1890,9 @@ End Sub</value>
   </data>
   <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
     <value>Save Unit Test Settings</value>
+  </data>
+  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
+    <value>Save Window Settings</value>
   </data>
   <data name="ContextReferences" xml:space="preserve">
     <value>references</value>
