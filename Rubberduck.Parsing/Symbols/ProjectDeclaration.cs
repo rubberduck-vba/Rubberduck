@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor;
+﻿using Rubberduck.Parsing.ComReflection;
+using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,6 +30,13 @@ namespace Rubberduck.Parsing.Symbols
                   isBuiltIn)
         {
             _projectReferences = new List<ProjectReference>();
+        }
+
+        public ProjectDeclaration(ComProject project, QualifiedModuleName module)
+            : this(module.QualifyMemberName(project.Name), project.Name, true)
+        {
+            MajorVersion = project.MajorVersion;
+            MinorVersion = project.MinorVersion;
         }
 
         public long MajorVersion { get; set; }

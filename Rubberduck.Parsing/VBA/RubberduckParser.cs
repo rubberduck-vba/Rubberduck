@@ -432,23 +432,24 @@ namespace Rubberduck.Parsing.VBA
                                 {
                                     try
                                     {
-                                        Logger.Trace(string.Format("Loading referenced type '{0}'.", reference.Name));
-                                        var comReflector = new ReferencedDeclarationsCollector(State);
+                                        Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
 
-                                        var items = comReflector.GetDeclarationsForReference(localReference);
-                                        var root = items.OfType<ProjectDeclaration>().SingleOrDefault();
-                                        var serialize = new List<Declaration>(items);
-                                        foreach (var declaration in serialize)
+                                        var comReflector = new ReferencedDeclarationsCollector(State, localReference);
+                                        if (comReflector.SerializedVersionExists)
                                         {
-                                            State.AddDeclaration(declaration);
+                                            Logger.Trace(string.Format("Deserializing reference '{0}'.", localReference.Name));
+                                            foreach (var declaration in comReflector.LoadDeclarationsFromXml())
+                                            {
+                                                State.AddDeclaration(declaration);
+                                            }
                                         }
-                                        serialize.Remove(root);
-
-                                        var project = GetSerializableProject(root, serialize);
-                                        if (project != null)
+                                        else
                                         {
-                                            var added = State.BuiltInDeclarationTrees.TryAdd(project);
-                                            //if (!added) { throw new Exception();}
+                                            Logger.Trace(string.Format("COM reflecting reference '{0}'.", localReference.Name));
+                                            foreach (var declaration in comReflector.LoadDeclarationsFromLibrary())
+                                            {
+                                                State.AddDeclaration(declaration);
+                                            }
                                         }
                                     }
                                     catch (Exception exception)
@@ -490,31 +491,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 UnloadComReference(reference, projects);
             }
-        }
-
-        private SerializableProject GetSerializableProject(ProjectDeclaration declaration, List<Declaration> declarations)
-        {
-            var project = new SerializableProject(declaration);
-            var children = new List<SerializableDeclarationTree>();
-            var nodes = declarations.Where(x => x.ParentDeclaration.Equals(declaration)).ToList();
-            foreach (var item in nodes)
-            {
-                children.Add(GetSerializableTreeForDeclaration(item, declarations));
-            }
-            project.Declarations = children;
-            return project;
-        }
-
-        private SerializableDeclarationTree GetSerializableTreeForDeclaration(Declaration declaration, List<Declaration> declarations)
-        {
-            var children = new List<SerializableDeclarationTree>();
-            var nodes = declarations.Where(x => x.ParentDeclaration.Equals(declaration)).ToList();
-            declarations.RemoveAll(nodes.Contains);
-            foreach (var item in nodes)
-            {
-                children.Add(GetSerializableTreeForDeclaration(item, declarations));
-            }
-            return new SerializableDeclarationTree(declaration, children);
         }
 
         private void UnloadComReference(IReference reference, IReadOnlyList<IVBProject> projects)

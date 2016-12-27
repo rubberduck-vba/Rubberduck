@@ -30,8 +30,9 @@ namespace Rubberduck.Inspections
                 && !declaration.IsSelfAssigned
                 && !declaration.References.Any(reference => reference.IsAssignment));
 
-            var lenFunction = BuiltInDeclarations.SingleOrDefault(s => s.Scope == "VBE7.DLL;VBA.Strings.Len");
-            var lenbFunction = BuiltInDeclarations.SingleOrDefault(s => s.Scope == "VBE7.DLL;VBA.Strings.LenB");
+            //The parameter scoping was apparently incorrect before - need to filter for the actual function.
+            var lenFunction = BuiltInDeclarations.SingleOrDefault(s => s.DeclarationType == DeclarationType.Function && s.Scope.Equals("VBE7.DLL;VBA.Strings.Len"));
+            var lenbFunction = BuiltInDeclarations.SingleOrDefault(s => s.DeclarationType == DeclarationType.Function && s.Scope.Equals("VBE7.DLL;VBA.Strings.Len"));
 
             return from issue in declarations 
                    where issue.References.Any()

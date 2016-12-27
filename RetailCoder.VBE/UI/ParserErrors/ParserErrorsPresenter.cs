@@ -17,7 +17,7 @@ namespace Rubberduck.UI.ParserErrors
     public class ParserErrorsPresenter : DockableToolwindowPresenter, IParserErrorsPresenter
     {
         public ParserErrorsPresenter(IVBE vbe, IAddIn addin) 
-            : base(vbe, addin, new SimpleListControl(RubberduckUI.ParseErrors_Caption))
+            : base(vbe, addin, new SimpleListControl(RubberduckUI.ParseErrors_Caption), null)
         {
             _source = new BindingList<ParseErrorListItem>();
             var control = UserControl as SimpleListControl;
