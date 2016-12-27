@@ -106,7 +106,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 VBProjects.Release();
                 CodePanes.Release();
-                CommandBars.Release();
+                //CommandBars.Release();
                 Windows.Release();
                 AddIns.Release();
                 base.Release(final);
