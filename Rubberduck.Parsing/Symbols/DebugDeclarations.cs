@@ -12,21 +12,23 @@ namespace Rubberduck.Parsing.Symbols
     public class DebugDeclarations : ICustomDeclarationLoader
     {
         public static Declaration DebugPrint;
-        private readonly DeclarationFinder _finder;
+        private readonly RubberduckParserState _state;
 
         public DebugDeclarations(RubberduckParserState state)
         {
-            _finder = new DeclarationFinder(state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
+            _state = state;
         }
 
         public IReadOnlyList<Declaration> Load()
         {
-            if (ThereIsAGlobalBuiltInErrVariableDeclaration(_finder))
+            var finder = new DeclarationFinder(_state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
+
+            if (ThereIsAGlobalBuiltInErrVariableDeclaration(finder))
             {
                 return new List<Declaration>();
             }
 
-            var vba = _finder.FindProject("VBA");
+            var vba = finder.FindProject("VBA");
             if (vba == null)
             {
                 // If the VBA project is null, we haven't loaded any COM references;
