@@ -432,22 +432,24 @@ namespace Rubberduck.Parsing.VBA
                                 {
                                     try
                                     {
-                                        var comReflector = new ReferencedDeclarationsCollector(State);
+                                        Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
 
-                                        var items = comReflector.GetDeclarationsForReference(localReference);
-                                        var root = items.OfType<ProjectDeclaration>().SingleOrDefault();
-                                        var serialize = new List<Declaration>(items);
-                                        foreach (var declaration in serialize)
+                                        var comReflector = new ReferencedDeclarationsCollector(State, localReference);
+                                        if (comReflector.SerializedVersionExists)
                                         {
-                                            State.AddDeclaration(declaration);
+                                            Logger.Trace(string.Format("Deserializing reference '{0}'.", localReference.Name));
+                                            foreach (var declaration in comReflector.LoadDeclarationsFromXml())
+                                            {
+                                                State.AddDeclaration(declaration);
+                                            }
                                         }
-                                        serialize.Remove(root);
-                                        var tree = GetSerializableTreeForDeclaration(root, serialize);
-
-                                        if (tree != null)
+                                        else
                                         {
-                                            var added = State.BuiltInDeclarationTrees.TryAdd(tree);
-                                            //if (!added) { throw new Exception();}
+                                            Logger.Trace(string.Format("COM reflecting reference '{0}'.", localReference.Name));
+                                            foreach (var declaration in comReflector.LoadDeclarationsFromLibrary())
+                                            {
+                                                State.AddDeclaration(declaration);
+                                            }
                                         }
                                     }
                                     catch (Exception exception)
@@ -488,49 +490,6 @@ namespace Rubberduck.Parsing.VBA
             foreach (var reference in unmapped)
             {
                 UnloadComReference(reference, projects);
-            }
-        }
-
-        private SerializableDeclarationTree GetSerializableTreeForDeclaration(Declaration declaration, List<Declaration> declarations)
-        {
-            var children = new List<SerializableDeclarationTree>();
-            var nodes = declarations.Where(x => x.ParentDeclaration.Equals(declaration)).ToList();
-            declarations.RemoveAll(nodes.Contains);
-            foreach (var item in nodes)
-            {
-                children.Add(GetSerializableTreeForDeclaration(item, declarations));
-            }
-
-            return new SerializableDeclarationTree(declaration, children);
-        }
-
-        private void LoadSerializedBuiltInReferences(RubberduckParserState state)
-        {
-            var basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
-            var files = Directory.GetFiles(basePath, "*.xml");
-            var reader = new XmlPersistableDeclarations();
-            foreach (var file in files)
-            {
-                var tree = reader.Load(file);
-                foreach (var declaration in UnwrapTree(tree))
-                {
-                    state.AddDeclaration(declaration);
-                }
-            }
-        }
-
-        private IEnumerable<Declaration> UnwrapTree(SerializableDeclarationTree tree, Declaration parent = null)
-        {
-            var current = tree.Node.Unwrap(parent);
-            yield return current;
-
-            foreach (var serializableDeclarationTree in tree.Children)
-            {
-                var unwrapped = UnwrapTree(serializableDeclarationTree, current);
-                foreach (var declaration in unwrapped)
-                {
-                    yield return declaration;
-                }
             }
         }
 

@@ -7,11 +7,13 @@
       xsi:type="File" 
       name="file"
       fileName="${specialfolder:folder=ApplicationData}/Rubberduck/Logs/RubberduckLog.txt"
-      layout="${longdate};${uppercase:${level}};${logger};${message};${exception:format=tostring}"
+      layout="${longdate};${uppercase:${level}}-${gdc:item=RubberduckVersion};${logger};${message};${exception:format=tostring}"
       archiveFileName="${specialfolder:folder=ApplicationData}/Rubberduck/Logs/archives/RubberduckLog.{#}.txt"
       archiveAboveSize="5242880"
       archiveNumbering="Sequence"
       concurrentWrites="true"
+      archiveEvery="Day"
+      deleteOldFileOnStartup="true"
       keepFileOpen="false"
       encoding="UTF-8"/>
     <target 

@@ -7,14 +7,19 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    [DataContract]
     public class SerializableDeclarationTree
     {
-        [DataMember(IsRequired = true)]
-        public readonly SerializableDeclaration Node;
+        public SerializableDeclaration Node;
 
-        [DataMember(IsRequired = true)]
-        public readonly IEnumerable<SerializableDeclarationTree> Children;
+        private List<SerializableDeclarationTree> _children = new List<SerializableDeclarationTree>();
+
+        public IEnumerable<SerializableDeclarationTree> Children
+        {
+            get { return _children; } 
+            set { _children = new List<SerializableDeclarationTree>(value); }
+        }
+
+        public SerializableDeclarationTree() { } 
 
         public SerializableDeclarationTree(Declaration declaration)   
             : this(new SerializableDeclaration(declaration)) { }
@@ -29,6 +34,19 @@ namespace Rubberduck.Parsing.Symbols
         {
             Node = node;
             Children = children;
+        }
+
+        public void AddChildren(IEnumerable<Declaration> declarations)
+        {
+            foreach (var child in declarations)
+            {
+                _children.Add(new SerializableDeclarationTree(child));
+            }
+        }
+
+        public void AddChildTree(SerializableDeclarationTree tree)
+        {
+            _children.Add(tree);
         }
     }
 
@@ -46,6 +64,81 @@ namespace Rubberduck.Parsing.Symbols
 
         [DataMember(IsRequired = true)]
         public readonly IEnumerable<string> Values;
+    }
+
+    [DataContract]
+    public class SerializableProject 
+    {
+        public SerializableProject() { }
+
+        public SerializableProject(Declaration declaration)
+        {
+            Node = new SerializableDeclaration(declaration);
+            var project = (ProjectDeclaration)declaration;
+            MajorVersion = project.MajorVersion;
+            MinorVersion = project.MinorVersion;
+        }
+
+        [DataMember(IsRequired = true)]
+        public SerializableDeclaration Node { get; set; }
+        [DataMember(IsRequired = true)]
+
+        private List<SerializableDeclarationTree> _declarations = new List<SerializableDeclarationTree>();
+
+        public IEnumerable<SerializableDeclarationTree> Declarations
+        {
+            get { return _declarations; }
+            set { _declarations = new List<SerializableDeclarationTree>(value); }
+        }
+
+        [DataMember(IsRequired = true)]
+        public long MajorVersion { get; set; }
+        [DataMember(IsRequired = true)]
+        public long MinorVersion { get; set; }
+
+        public void AddDeclaration(SerializableDeclarationTree tree)
+        {
+            _declarations.Add(tree);
+        }
+
+        private readonly Dictionary<string, SerializableDeclarationTree> _pseudoLookup = new Dictionary<string, SerializableDeclarationTree>(); 
+        public SerializableDeclarationTree GetPseudoDeclaration(Declaration declaration)
+        {
+            if (!_pseudoLookup.ContainsKey(declaration.IdentifierName))
+            {
+                _declarations.Add(new SerializableDeclarationTree(declaration));
+            }
+
+            return _pseudoLookup[declaration.IdentifierName];
+        }
+
+        public List<Declaration> Unwrap()
+        {
+            var project = (ProjectDeclaration)Node.Unwrap(null);
+            project.MajorVersion = MajorVersion;
+            project.MinorVersion = MinorVersion;
+            var output = new List<Declaration> {project};
+            foreach (var declaration in Declarations)
+            {
+                output.AddRange(UnwrapTree(declaration, project));
+            }
+            return output;
+        }
+
+        private IEnumerable<Declaration> UnwrapTree(SerializableDeclarationTree tree, Declaration parent = null)
+        {
+            var current = tree.Node.Unwrap(parent);
+            yield return current;
+
+            foreach (var serializableDeclarationTree in tree.Children)
+            {
+                var unwrapped = UnwrapTree(serializableDeclarationTree, current);
+                foreach (var declaration in unwrapped)
+                {
+                    yield return declaration;
+                }
+            }
+        }
     }
 
     public class SerializableDeclaration
@@ -123,7 +216,7 @@ namespace Rubberduck.Parsing.Symbols
             switch (DeclarationType)
             {
                 case DeclarationType.Project:
-                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, true);
+                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, true);                    
                 case DeclarationType.ClassModule:
                     return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
                 case DeclarationType.ProceduralModule:

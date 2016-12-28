@@ -7,9 +7,9 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class XmlPersistableDeclarations : IPersistable<SerializableDeclarationTree>
+    public class XmlPersistableDeclarations : IPersistable<SerializableProject>
     {
-        public void Persist(string path, SerializableDeclarationTree tree)
+        public void Persist(string path, SerializableProject tree)
         {
             if (string.IsNullOrEmpty(path)) { throw new InvalidOperationException(); }
 
@@ -26,20 +26,20 @@ namespace Rubberduck.Parsing.Symbols
             {
                 writer.WriteStartDocument();
                 var settings = new DataContractSerializerSettings {RootNamespace = XmlDictionaryString.Empty};
-                var serializer = new DataContractSerializer(typeof (SerializableDeclarationTree), settings);
+                var serializer = new DataContractSerializer(typeof(SerializableProject), settings);
                 serializer.WriteObject(writer, tree);
             }
         }
 
-        public SerializableDeclarationTree Load(string path)
+        public SerializableProject Load(string path)
         {
             if (string.IsNullOrEmpty(path)) { throw new InvalidOperationException(); }
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             using (var xmlReader = XmlReader.Create(stream))
             using (var reader = XmlDictionaryReader.CreateDictionaryReader(xmlReader))
             {
-                var serializer = new DataContractSerializer(typeof(SerializableDeclarationTree));
-                return (SerializableDeclarationTree)serializer.ReadObject(reader);
+                var serializer = new DataContractSerializer(typeof(SerializableProject));
+                return (SerializableProject)serializer.ReadObject(reader);
             }
         }
     }

@@ -1112,6 +1112,30 @@ End Sub
         }
 
         [TestMethod]
+        public void FunctionWithSameNameAsEnumReturnAssignment_DoesntResolveToEnum()
+        {
+            var code = @"
+
+Option Explicit
+Public Enum Foos
+    Foo1
+End Enum
+
+Public Function Foos() As Foos
+    Foos = Foo1
+End Function
+";
+
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Enumeration
+                && item.IdentifierName == "Foos");
+
+            Assert.IsTrue(declaration.References.All(item => item.Selection.StartLine != 9));
+        }
+
+        [TestMethod]
         public void UserDefinedTypeParameterAsTypeName_ResolvesToUserDefinedTypeDeclaration()
         {
             var code = @"

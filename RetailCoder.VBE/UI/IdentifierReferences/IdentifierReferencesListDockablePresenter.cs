@@ -7,7 +7,7 @@ namespace Rubberduck.UI.IdentifierReferences
     public class IdentifierReferencesListDockablePresenter : DockableToolwindowPresenter
     {
         public IdentifierReferencesListDockablePresenter(IVBE vbe, IAddIn addin, SimpleListControl control, Declaration target)
-            : base(vbe, addin, control)
+            : base(vbe, addin, control, null)
         {
             BindTarget(target);
         }

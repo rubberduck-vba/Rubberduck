@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     foreach (var setting in config.UserSettings.CodeInspectionSettings.CodeInspections)
                     {
-                        if (inspection.Description == setting.Description)
+                        if (inspection.Name == setting.Name)
                         {
                             inspection.Severity = setting.Severity;
                         }

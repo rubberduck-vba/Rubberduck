@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -150,7 +151,7 @@ namespace Rubberduck.Parsing.Symbols
             _accessibility = accessibility;
             _declarationType = declarationType;
             _selection = selection;
-            _context = context;
+            Context = context;
             _isBuiltIn = isBuiltIn;
             _annotations = annotations;
             _attributes = attributes ?? new Attributes();
@@ -172,7 +173,75 @@ namespace Rubberduck.Parsing.Symbols
             _typeHint = typeHint;
         }
 
-            private string FolderFromAnnotations()
+        public Declaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module) : this(
+                module.QualifyMemberName(enumeration.Name),
+                parent,
+                parent,
+                "Long",     //Match the VBA default type declaration.  Technically these *can* be a LongLong on 64 bit systems, but would likely crash the VBE... 
+                null,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.Enumeration,
+                null,
+                Selection.Home,
+                false,
+                null,
+                true,
+                null,
+                new Attributes()) { }
+
+        public Declaration(ComStruct structure, Declaration parent, QualifiedModuleName module)
+            : this(
+                module.QualifyMemberName(structure.Name),
+                parent,
+                parent,
+                structure.Name,
+                null,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.UserDefinedType,
+                null,
+                Selection.Home,
+                false,
+                null,
+                true,
+                null,
+                new Attributes()) { }
+
+        public Declaration(ComEnumerationMember member, Declaration parent, QualifiedModuleName module) : this(
+                module.QualifyMemberName(member.Name),
+                parent,
+                parent,
+                parent.IdentifierName,
+                null,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.EnumerationMember,
+                null,
+                Selection.Home,
+                false,
+                null) { }
+
+        public Declaration(ComField field, Declaration parent, QualifiedModuleName module)
+            : this(
+                module.QualifyMemberName(field.Name),
+                parent,
+                parent,
+                field.ValueType,
+                null,
+                false,
+                false,
+                Accessibility.Global,
+                field.Type,
+                null,
+                Selection.Home,
+                false,
+                null) { }
+
+        private string FolderFromAnnotations()
             {
                 var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
                 string result;
@@ -242,18 +311,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly QualifiedMemberName _qualifiedName;
         public QualifiedMemberName QualifiedName { get { return _qualifiedName; } }
 
-        private ParserRuleContext _context;
-        public ParserRuleContext Context
-        {
-            get
-            {
-                return _context;
-            }
-            set
-            {
-                _context = value;
-            }
-        }
+        public ParserRuleContext Context { get; set; }
 
         private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
         public IEnumerable<IdentifierReference> References
@@ -348,24 +406,6 @@ namespace Rubberduck.Parsing.Symbols
                     annotations));
         }
 
-        //public void AddReference(IdentifierReference reference)
-        //{
-        //    if (reference == null || reference.Declaration.Context == reference.Context)
-        //    {
-        //        return;
-        //    }
-        //    if (reference.Context.Parent != _context
-        //        && !_references.Select(r => r.Context).Contains(reference.Context.Parent)
-        //        && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName
-        //            && r.Selection.StartLine == reference.Selection.StartLine
-        //            && r.Selection.EndLine == reference.Selection.EndLine
-        //            && r.Selection.StartColumn == reference.Selection.StartColumn
-        //            && r.Selection.EndColumn == reference.Selection.EndColumn))
-        //    {
-        //        _references.Add(reference);
-        //    }
-        //}
-
         public void AddMemberCall(IdentifierReference reference)
         {
             if (reference == null || reference.Declaration == null || reference.Declaration.Context == reference.Context)
@@ -409,7 +449,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public object[] ToArray()
         {
-            return new object[] { this.ProjectName, this.CustomFolder, this.ComponentName, this.DeclarationType.ToString(), this.Scope, this.IdentifierName, this.AsTypeName };
+            return new object[] { ProjectName, CustomFolder, ComponentName, DeclarationType.ToString(), Scope, IdentifierName, AsTypeName };
         }
 
 
@@ -498,7 +538,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.PropertyLet,
             DeclarationType.PropertyLet,
             DeclarationType.UserDefinedType,
-            DeclarationType.Constant,
+            DeclarationType.Constant
         };
 
         public bool IsSelected(QualifiedSelection selection)

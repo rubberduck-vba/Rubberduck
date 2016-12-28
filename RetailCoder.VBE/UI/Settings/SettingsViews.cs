@@ -6,6 +6,7 @@
         TodoSettings,
         InspectionSettings,
         UnitTestSettings,
-        IndenterSettings
+        IndenterSettings,
+        WindowSettings
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -45,6 +46,28 @@ namespace Rubberduck.Parsing.Symbols
                   attributes)
         {
             _parameters = new List<Declaration>();
+        }
+
+        public FunctionDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
+            Attributes attributes) : this(
+                module.QualifyMemberName(member.Name),
+                parent,
+                parent,
+                member.ReturnType.TypeName,
+                null,
+                null,
+                Accessibility.Global,
+                null,
+                Selection.Home,
+                member.ReturnType.IsArray,
+                true,
+                null,
+                attributes)
+        {
+            _parameters =
+                member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
+                    .Cast<Declaration>()
+                    .ToList();
         }
 
         public IEnumerable<Declaration> Parameters
