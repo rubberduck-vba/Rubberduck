@@ -529,10 +529,9 @@ namespace Rubberduck.Parsing.Symbols
 
             private static void AddParametersToAliasesFromReferencedFunctions(List<FunctionDeclaration> functionAliases, List<Declaration> referencedFunctions)
             {
-                // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
                 foreach (var alias in functionAliases)
                 {
-                    foreach (var parameter in ((FunctionDeclaration)referencedFunctions.Single(s => s.IdentifierName == "_B_var_" + alias.IdentifierName)).Parameters)
+                    foreach (var parameter in referencedFunctions.OfType<FunctionDeclaration>().Single(s => s.IdentifierName == "_B_var_" + alias.IdentifierName).Parameters)
                     {
                         alias.AddParameter(parameter);
                     }
