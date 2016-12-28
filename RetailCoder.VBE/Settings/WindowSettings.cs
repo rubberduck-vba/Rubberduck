@@ -1,4 +1,11 @@
 ﻿using System.Xml.Serialization;
+using Rubberduck.Properties;
+using Rubberduck.UI;
+using Rubberduck.UI.CodeExplorer;
+using Rubberduck.UI.Inspections;
+using Rubberduck.UI.SourceControl;
+using Rubberduck.UI.ToDoItems;
+using Rubberduck.UI.UnitTesting;
 
 namespace Rubberduck.Settings
 {
@@ -9,6 +16,8 @@ namespace Rubberduck.Settings
         bool SourceControlVisibleOnStartup { get; set; }
         bool TestExplorerVisibleOnStartup { get; set; }
         bool TodoExplorerVisibleOnStartup { get; set; }
+
+        bool IsWindowVisible(DockableToolwindowPresenter candidate);
     }
 
     [XmlType(AnonymousType = true)]
@@ -34,5 +43,33 @@ namespace Rubberduck.Settings
         public bool SourceControlVisibleOnStartup { get; set; }
         public bool TestExplorerVisibleOnStartup { get; set; }
         public bool TodoExplorerVisibleOnStartup { get; set; }
+
+        public bool IsWindowVisible(DockableToolwindowPresenter candidate)
+        {
+            //I'm sure there's a better way to do this, because this is a lazy-ass way to do it.
+            //We're injecting into the base class, so check the derived class:
+            if (candidate is CodeExplorerDockablePresenter)
+            {
+                return CodeExplorerVisibleOnStartup;
+            }
+            if (candidate is CodeInspectionsDockablePresenter)
+            {
+                return CodeInspectionsVisibleOnStartup;
+            }
+            if (candidate is SourceControlDockablePresenter)
+            {
+                return SourceControlVisibleOnStartup;
+            }
+            if (candidate is TestExplorerDockablePresenter)
+            {
+                return TestExplorerVisibleOnStartup;
+            }
+            if (candidate is ToDoExplorerDockablePresenter)
+            {
+                return TodoExplorerVisibleOnStartup;
+            }
+            //Oh. Hello. I have no clue who you are...
+            return false;
+        }
     }
 }

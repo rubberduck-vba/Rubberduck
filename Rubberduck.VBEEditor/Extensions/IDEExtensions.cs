@@ -5,14 +5,43 @@ using System.Linq;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
+using Exception = System.Exception;
 
 namespace Rubberduck.VBEditor.Extensions
 {
     public static class VBEExtensions
     {
+        private static readonly Dictionary<string, Type> HostAppMap = new Dictionary<string, Type>
+        {
+            {"EXCEL.EXE", typeof(ExcelApp)},
+            {"WINWORD.EXE", typeof(WordApp)},
+            {"MSACCESS.EXE", typeof(AccessApp)},
+            {"POWERPNT.EXE", typeof(PowerPointApp)},
+            {"OUTLOOK.EXE", typeof(OutlookApp)},
+            {"WINPROJ.EXE", typeof(ProjectApp)},
+            {"MSPUB.EXE", typeof(PublisherApp)},
+            {"VISIO.EXE", typeof(VisioApp)},
+            {"ACAD.EXE", typeof(AutoCADApp)},
+            {"CORELDRW.EXE", typeof(CorelDRAWApp)},
+            {"SLDWORKS.EXE", typeof(SolidWorksApp)},
+        };
+
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>
         public static IHostApplication HostApplication(this IVBE vbe)
         {
+            var host = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath).ToUpperInvariant();
+            //This needs the VBE as a ctor argument.
+            if (host.Equals("SLDWORKS.EXE"))
+            {
+                return new SolidWorksApp(vbe);
+            }
+            //The rest don't.
+            if (HostAppMap.ContainsKey(host))
+            {
+                return (IHostApplication)Activator.CreateInstance(HostAppMap[host]);
+            }
+
+            //Guessing the above will work like 99.9999% of the time for supported applications.
             var project = vbe.ActiveVBProject;
             {
                 if (project.IsWrappingNullReference)
@@ -114,6 +143,10 @@ namespace Rubberduck.VBEditor.Extensions
         /// <summary> Returns whether the host supports unit tests.</summary>
         public static bool HostSupportsUnitTests(this IVBE vbe)
         {
+            var host = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath).ToUpperInvariant();
+            if (HostAppMap.ContainsKey(host)) return true;
+            //Guessing the above will work like 99.9999% of the time for supported applications.
+
             var project = vbe.ActiveVBProject;
             {
                 if (project.IsWrappingNullReference)

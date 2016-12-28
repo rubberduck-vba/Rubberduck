@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
@@ -76,6 +77,21 @@ namespace Rubberduck.Parsing.Symbols
             IsParamArray = isParamArray;
         }
 
+        public ParameterDeclaration(ComParameter parameter, Declaration parent, QualifiedModuleName module)
+            : this(
+                module.QualifyMemberName(parameter.Name),
+                parent,
+                parameter.TypeName,
+                null,
+                null,
+                parameter.IsOptional,
+                parameter.IsByRef,
+                parameter.IsArray)
+        {
+            IsParamArray = parameter.IsParamArray;
+        }
+            
+  
         public bool IsOptional { get { return _isOptional; } }
         public bool IsByRef { get { return _isByRef; } }
         public bool IsParamArray { get; set; }
