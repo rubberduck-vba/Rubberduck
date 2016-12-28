@@ -156,6 +156,15 @@ namespace Rubberduck.Parsing.Symbols
             _attributes = attributes ?? new Attributes();
 
             _projectId = _qualifiedName.QualifiedModuleName.ProjectId;
+            var projectDeclaration = Declaration.GetProjectParent(parentDeclaration);
+            if (projectDeclaration != null)
+            {
+                _projectName = projectDeclaration.IdentifierName;
+            }
+            else if (_declarationType == DeclarationType.Project)
+            {
+                _projectName = _identifierName;
+            }
 
             _customFolder = FolderFromAnnotations();
             _isArray = isArray;
@@ -392,17 +401,10 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public string ProjectId { get { return _projectId; } }
 
+        private readonly string _projectName;
         public string ProjectName
         {
-            get
-            {
-                if (Project != null)
-                {
-                    return Project.Name;
-                }
-                // Referenced projects have their identifier name set as their project name.
-                return IdentifierName;
-            }
+            get { return _projectName; }
         }
 
         public object[] ToArray()
