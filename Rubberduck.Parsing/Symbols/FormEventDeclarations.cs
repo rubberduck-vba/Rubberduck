@@ -26,169 +26,69 @@ namespace Rubberduck.Parsing.Symbols
             return AddHiddenMSFormDeclarations(formsClassModule);
         }
 
-            private static Declaration FormsClassModuleFromParserState(RubberduckParserState state)
+        private static Declaration FormsClassModuleFromParserState(RubberduckParserState state)
+        {
+            var result = state.AllDeclarations.LastOrDefault(declaration =>
+                declaration.DeclarationType == DeclarationType.ClassModule
+                && declaration.ProjectName == "MSForms"
+                && declaration.IdentifierName == "FormEvents");
+
+            return result;
+        }
+
+        private IReadOnlyList<Declaration> AddHiddenMSFormDeclarations(Declaration formsClassModule)
+        {
+
+            var userFormActivateEvent = CreateDeclaration(formsClassModule, "Activate");
+            var userFormDeactivateEvent = CreateDeclaration(formsClassModule, "Deactivate");
+            var userFormInitializeEvent = CreateDeclaration(formsClassModule, "Initialize");
+            var userFormQueryCloseEvent = CreateDeclaration(formsClassModule, "QueryClose");
+            var userFormQueryCloseEventCancelParameter = CreateParameter(userFormQueryCloseEvent, "Cancel", "Integer", true);
+            var userFormQueryCloseEventCloseModeParameter = CreateParameter(userFormQueryCloseEvent, "CloseMode", "Integer", true);
+            var userFormResizeEvent = CreateDeclaration(formsClassModule, "Resize");
+            var userFormTerminateEvent = CreateDeclaration(formsClassModule, "Terminate");
+
+            return new List<Declaration>
             {
-                return state.AllDeclarations.LastOrDefault(declaration => declaration.DeclarationType == DeclarationType.ClassModule
-                                                                            && declaration.Scope == "FM20.DLL;MSForms.FormEvents");
-            }
+                userFormActivateEvent,
+                userFormDeactivateEvent,
+                userFormInitializeEvent,
+                userFormQueryCloseEvent,
+                userFormQueryCloseEventCancelParameter,
+                userFormQueryCloseEventCloseModeParameter,
+                userFormResizeEvent,
+                userFormTerminateEvent
+            };
+        }
 
+        private static Declaration CreateDeclaration(Declaration parent, string name)
+        {
+            return new Declaration(
+                new QualifiedMemberName(parent.QualifiedName.QualifiedModuleName, name),
+                parent,
+                parent.Scope,
+                string.Empty,
+                string.Empty,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.Event,
+                false,
+                null);
+        }
 
-            private IReadOnlyList<Declaration> AddHiddenMSFormDeclarations(Declaration formsClassModule)
-            {
-
-                var userFormActivateEvent = UserFormActivateEvent(formsClassModule);
-                var userFormDeactivateEvent = UserFormDeactivateEvent(formsClassModule);
-                var userFormInitializeEvent = UserFormInitializeEvent(formsClassModule);
-                var userFormQueryCloseEvent = UserFormQueryCloseEvent(formsClassModule);
-                var userFormQueryCloseEventCancelParameter = UserFormQueryCloseEventCancelParameter(userFormQueryCloseEvent);
-                var userFormQueryCloseEventCloseModeParameter = UserFormQueryCloseEventCloseModeParameter(userFormQueryCloseEvent);
-                var userFormResizeEvent = UserFormResizeEvent(formsClassModule);
-                var userFormTerminateEvent = UserFormTerminateEvent(formsClassModule);
-
-                return new List<Declaration>
-                {
-                    userFormActivateEvent,
-                    userFormDeactivateEvent,
-                    userFormInitializeEvent,
-                    userFormQueryCloseEvent,
-                    userFormQueryCloseEventCancelParameter,
-                    userFormQueryCloseEventCloseModeParameter,
-                    userFormResizeEvent,
-                    userFormTerminateEvent
-                };
-            }
-
-                private static Declaration UserFormActivateEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Activate"),
-                        formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
-
-                private static Declaration UserFormDeactivateEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Deactivate"),
-                        formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
-
-                private static Declaration UserFormInitializeEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Initialize"),
-                        formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
-
-                private static Declaration UserFormQueryCloseEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "QueryClose"),
-                        formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
-
-                private static ParameterDeclaration UserFormQueryCloseEventCancelParameter(Declaration userFormQueryCloseEvent)
-                {
-                    return new ParameterDeclaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Cancel"),
-                        userFormQueryCloseEvent,
-                        null,
-                        new Selection(),
-                        "Integer",
-                        null,
-                        string.Empty,
-                        false,
-                        true);
-                }
-
-                private static ParameterDeclaration UserFormQueryCloseEventCloseModeParameter(Declaration userFormQueryCloseEvent)
-                {
-                    return new ParameterDeclaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "CloseMode"),
-                        userFormQueryCloseEvent,
-                        null,
-                        new Selection(),
-                        "Integer",
-                        null,
-                        string.Empty,
-                        false,
-                        true);
-                }
-
-                private static Declaration UserFormResizeEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Resize"),
-                        formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
-
-                private static Declaration UserFormTerminateEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Terminate"),
-                        formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
-
+        private static ParameterDeclaration CreateParameter(Declaration parent, string name, string asType, bool isByRef = false, bool isOptional = false)
+        {
+            return new ParameterDeclaration(
+                new QualifiedMemberName(parent.ParentDeclaration.QualifiedName.QualifiedModuleName, name),
+                parent,
+                null,
+                Selection.Empty,
+                asType,
+                null,
+                string.Empty,
+                isOptional,
+                isByRef);
+        }
     }
 }
