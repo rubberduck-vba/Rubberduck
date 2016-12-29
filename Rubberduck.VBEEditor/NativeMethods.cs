@@ -39,6 +39,14 @@ namespace Rubberduck.VBEditor
         [DllImport("user32", ExactSpelling = true, CharSet = CharSet.Unicode)]
         internal static extern int EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate lpEnumFunction, IntPtr lParam);
 
+        /// <param name="parentHandle">         Handle of the parent window. IntPtr.Zero is the desktop. </param>
+        /// <param name="childAfter">           The child window to begin searching after. </param>
+        /// <param name="lclassName">           The window class name (optional). </param>
+        /// <param name="windowTitle">          The window caption (optional). </param>
+        /// <returns>   An IntPtr to the found windows hWnd, IntPtr.Zero if no match is found. </returns>
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
+
         /// <summary>   Gets window text. </summary>
         ///
         /// <param name="hWnd">         The window handle. </param>

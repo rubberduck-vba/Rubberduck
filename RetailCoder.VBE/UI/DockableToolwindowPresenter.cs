@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Configuration;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI
@@ -55,7 +55,7 @@ namespace Rubberduck.UI
             {
                 var info = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId);
                 _userControlObject = info.UserControl;
-                toolWindow = info.ToolWindow;
+                toolWindow = info.ToolWindow;                
             }
             catch (COMException exception)
             {
@@ -76,6 +76,9 @@ namespace Rubberduck.UI
             toolWindow.IsVisible = true; //window resizing doesn't work without this
 
             EnsureMinimumWindowSize(toolWindow);
+
+            //Get the hwnd here - otherwise, FindWindowEx won't find it (because it's hidden).
+            toolWindow.RealHwnd = toolWindow.ToHwnd();
 
             toolWindow.IsVisible = _settings != null && _settings.IsWindowVisible(this);
 
