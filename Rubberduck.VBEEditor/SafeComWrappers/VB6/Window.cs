@@ -12,8 +12,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
-        public IntPtr RealHwnd { get; set; }
-
         public int HWnd
         {
             get { return IsWrappingNullReference ? 0 : Target.HWnd; }
