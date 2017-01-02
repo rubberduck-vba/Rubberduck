@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.Native;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using VB = Microsoft.Vbe.Interop;
@@ -15,39 +11,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public Window(VB.Window window)
             : base(window)
         {
-            _events = WinEventProc;
-        }
-
-        //ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-        private readonly WinEvents.WinEventDelegate _events;
-        private IntPtr _hook = IntPtr.Zero;
-        private IntPtr _hwnd = IntPtr.Zero;
-
-        public IntPtr RealHwnd
-        {
-            get { return _hwnd; }
-            set
-            {
-                if (value == _hwnd)
-                {
-                    return;
-                }
-                //Are we hooked to a different hwnd?
-                if (_hook != IntPtr.Zero)
-                {
-                    WinEvents.UnhookWinEvent(_hook);
-                }
-                _hwnd = value;
-                //May as well set the WinEventHook too now that we have an hwnd.
-                if (_hwnd == IntPtr.Zero)
-                {
-                    return;
-                }
-                //Just grab everything for now.  We can narrow this once we determine what we care about.
-                _hook = WinEvents.SetWinEventHook((uint)WinEvents.EventConstant.EVENT_MIN,
-                    (uint)WinEvents.EventConstant.EVENT_MAX, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(_events), 0, 0,
-                    (uint)WinEvents.WinEventFlags.WINEVENT_OUTOFCONTEXT);
-            }
         }
 
         public int HWnd
@@ -152,38 +115,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         
         public override void Release(bool final = false)
         {
-            if (_hook != IntPtr.Zero)
-            {
-                WinEvents.UnhookWinEvent(_hook);
-                _hook = IntPtr.Zero;
-            }
             if (!IsWrappingNullReference)
             {
                 LinkedWindowFrame.Release();
                 base.Release(final);
             } 
-        }
-
-        public event EventHandler<EventArgs> Activate;
-        public event EventHandler<EventArgs> Deactivate;
-
-        private bool _hasfocus;
-        protected void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, uint idObject, uint idChild, uint dwEventThread, uint dwmsEventTime)
-        {
-            if ((WinEvents.EventConstant)eventType == WinEvents.EventConstant.EVENT_SYSTEM_FOREGROUND)
-            {
-                _hasfocus = hwnd == _hwnd;
-                OnFocusChange();
-            }
-        }
-
-        protected virtual void OnFocusChange()
-        {
-            var handler = _hasfocus ? Activate : Deactivate;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
         }
 
         public override bool Equals(ISafeComWrapper<VB.Window> other)

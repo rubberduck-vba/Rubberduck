@@ -1,33 +1,18 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.Native;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using IAddIns = Rubberduck.VBEditor.SafeComWrappers.Abstract.IAddIns;
-using IWindow = Rubberduck.VBEditor.SafeComWrappers.Abstract.IWindow;
-using IWindows = Rubberduck.VBEditor.SafeComWrappers.Abstract.IWindows;
 using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBE : SafeComWrapper<VB.VBE>, IVBE
     {
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-        private readonly WinEvents.WinEventDelegate _events;
-        private readonly IntPtr _hook = IntPtr.Zero;
-        private readonly IntPtr _hwnd = IntPtr.Zero;
-
         public VBE(VB.VBE target)
-            :base(target)
+            : base(target)
         {
-            _events = WinEventProc;
-            _hwnd = new IntPtr(target.MainWindow.HWnd);
-            _hook = WinEvents.SetWinEventHook((uint)WinEvents.EventConstant.EVENT_MIN,
-                (uint)WinEvents.EventConstant.EVENT_MAX, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(_events), 0, 0,
-                (uint)WinEvents.WinEventFlags.WINEVENT_OUTOFCONTEXT);
         }
 
         public string Version
@@ -44,7 +29,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBProject ActiveVBProject
         {
             get { return new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject); }
-            set { Target.ActiveVBProject = (VB.VBProject) value.Target; }
+            set { Target.ActiveVBProject = (VB.VBProject)value.Target; }
         }
 
         public IWindow ActiveWindow
@@ -101,12 +86,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override void Release(bool final = false)
         {
-            WinEvents.UnhookWinEvent(_hook);
             if (!IsWrappingNullReference)
             {
                 VBProjects.Release();
                 CodePanes.Release();
-                CommandBars.Release();
+                //CommandBars.Release();
                 Windows.Release();
                 AddIns.Release();
                 base.Release(final);
@@ -145,24 +129,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             var module = component.CodeModule;
             var pane = module.CodePane;
             pane.Selection = selection;
-        }
-
-        private bool _hasfocus;
-        private void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, uint idObject, uint idChild, uint dwEventThread, uint dwmsEventTime)
-        {
-            if ((WinEvents.EventConstant)eventType == WinEvents.EventConstant.EVENT_SYSTEM_FOREGROUND)
-            {
-                _hasfocus = hwnd == _hwnd;
-                if (hwnd == _hwnd)
-                {
-                    Debug.WriteLine("Focus {0} for hwnd {1:X8} ({2}).", _hasfocus ? "set" : "lost", hwnd.ToInt32(), hwnd.ToClassName());
-                }
-            }
-            if (hwnd == _hwnd && (WinEvents.EventConstant) eventType == WinEvents.EventConstant.EVENT_OBJECT_DESTROY)
-            {
-                Debug.WriteLine("VBE out.");
-                //TODO. Get rid of the access violation on the next line of the Output window.
-            }
         }
     }
 }
