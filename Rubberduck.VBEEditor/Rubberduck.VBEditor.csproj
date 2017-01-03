@@ -127,7 +127,6 @@
     <Compile Include="Events\ProjectEventArgs.cs" />
     <Compile Include="Events\ProjectRenamedEventArgs.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
-    <Compile Include="Native\WinEvents.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\Abstract\IVBComponentsEventsSink.cs" />
     <Compile Include="SafeComWrappers\Abstract\IVBProjectsEventsSink.cs" />
