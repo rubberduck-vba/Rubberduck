@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -585,8 +586,8 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private readonly List<SerializableDeclarationTree> _builtInDeclarationTrees = new List<SerializableDeclarationTree>();
-        public IList<SerializableDeclarationTree> BuiltInDeclarationTrees { get { return _builtInDeclarationTrees; } }
+        private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
+        public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees { get { return _builtInDeclarationTrees; } }
 
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.

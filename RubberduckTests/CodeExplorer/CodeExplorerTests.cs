@@ -6,7 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Navigation.Folders;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Settings;
@@ -14,7 +13,6 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -123,7 +121,7 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var state = new RubberduckParserState(new Mock<ISinks>().Object);
@@ -1461,7 +1459,7 @@ End Sub";
                 DefaultTestStubInNewModule = false
             };
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null);
+            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
 
@@ -1472,7 +1470,7 @@ End Sub";
                 Delimiter = '.'
             };
 
-            var userSettings = new UserSettings(settings, null, null, null, null, null);
+            var userSettings = new UserSettings(settings, null, null, null, null, null, null);
             return new Configuration(userSettings);
         }
 
@@ -1519,7 +1517,7 @@ End Sub";
 
         private ConfigurationLoader GetDelimiterConfigLoader()
         {
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDelimiterConfig());
 
             return configLoader.Object;

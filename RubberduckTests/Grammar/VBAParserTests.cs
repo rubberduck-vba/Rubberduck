@@ -4,7 +4,6 @@ using Antlr4.Runtime.Tree;
 using Antlr4.Runtime.Tree.Xpath;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
 

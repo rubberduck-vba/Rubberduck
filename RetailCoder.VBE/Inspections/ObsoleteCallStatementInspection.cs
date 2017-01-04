@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.ObsoleteCallStatementInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ObsoleteCallStatementInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.ObsoleteCallStatementInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         public IEnumerable<QualifiedContext<VBAParser.CallStmtContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.CallStmtContext>>(); } }

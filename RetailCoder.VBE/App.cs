@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using Infralution.Localization.Wpf;
 using NLog;
+using NLog.Fluent;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
@@ -145,6 +148,7 @@ namespace Rubberduck
         public void Startup()
         {
             EnsureLogFolderPathExists();
+            LogRubberduckSart();
             LoadConfig();
             CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
@@ -221,6 +225,21 @@ namespace Rubberduck
             {
                 //Meh.
             }
+        }
+
+        private void LogRubberduckSart()
+        {
+            var version = GetType().Assembly.GetName().Version.ToString();
+            GlobalDiagnosticsContext.Set("RubberduckVersion", version);
+            var headers = new List<string>
+            {
+                string.Format("Rubberduck version {0} loading:", version),
+                string.Format("\tOperating System: {0} {1}", Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86"),
+                string.Format("\tHost Product: {0} {1}", Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86"),
+                string.Format("\tHost Version: {0}", Application.ProductVersion),
+                string.Format("\tHost Executable: {0}", Path.GetFileName(Application.ExecutablePath)),
+            };
+            Logger.Log(LogLevel.Info, string.Join(Environment.NewLine, headers));
         }
 
         private bool _disposed;

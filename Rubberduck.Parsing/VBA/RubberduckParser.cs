@@ -432,17 +432,24 @@ namespace Rubberduck.Parsing.VBA
                                 {
                                     try
                                     {
-                                        var comReflector = new ReferencedDeclarationsCollector(State);
-                                        SerializableDeclarationTree tree;
-                                        var items = comReflector.GetDeclarationsForReference(localReference, out tree);
-                                        if (tree != null)
-                                        {
-                                            State.BuiltInDeclarationTrees.Add(tree);
-                                        }
+                                        Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
 
-                                        foreach (var declaration in items)
+                                        var comReflector = new ReferencedDeclarationsCollector(State, localReference);
+                                        if (comReflector.SerializedVersionExists)
                                         {
-                                            State.AddDeclaration(declaration);
+                                            Logger.Trace(string.Format("Deserializing reference '{0}'.", localReference.Name));
+                                            foreach (var declaration in comReflector.LoadDeclarationsFromXml())
+                                            {
+                                                State.AddDeclaration(declaration);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Logger.Trace(string.Format("COM reflecting reference '{0}'.", localReference.Name));
+                                            foreach (var declaration in comReflector.LoadDeclarationsFromLibrary())
+                                            {
+                                                State.AddDeclaration(declaration);
+                                            }
                                         }
                                     }
                                     catch (Exception exception)

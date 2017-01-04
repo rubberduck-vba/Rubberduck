@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly string[] Targets = 

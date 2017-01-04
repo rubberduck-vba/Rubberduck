@@ -10,8 +10,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -192,7 +190,7 @@ End Sub";
 End Sub";
 
             //Arrange
-            var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null);
+            var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
@@ -720,7 +718,7 @@ End Sub";
             });
             return new Configuration
             {
-                UserSettings = new UserSettings(null, null, null, settings, null, null)
+                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
             };
         }
     }

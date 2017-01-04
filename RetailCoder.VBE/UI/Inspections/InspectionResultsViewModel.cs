@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using NLog;
 using Rubberduck.Common;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.VBA;

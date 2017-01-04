@@ -3,12 +3,10 @@ using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -1111,6 +1109,30 @@ End Sub
             Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
                 item.ParentScoping.IdentifierName == "DoSomething"
                 && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+        }
+
+        [TestMethod]
+        public void FunctionWithSameNameAsEnumReturnAssignment_DoesntResolveToEnum()
+        {
+            var code = @"
+
+Option Explicit
+Public Enum Foos
+    Foo1
+End Enum
+
+Public Function Foos() As Foos
+    Foos = Foo1
+End Function
+";
+
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Enumeration
+                && item.IdentifierName == "Foos");
+
+            Assert.IsTrue(declaration.References.All(item => item.Selection.StartLine != 9));
         }
 
         [TestMethod]

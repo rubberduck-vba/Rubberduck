@@ -7,8 +7,6 @@ using Rubberduck.Settings;
 using Rubberduck.UI.ToDoItems;
 using RubberduckTests.Mocks;
 using Rubberduck.Common;
-using Rubberduck.Parsing;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -127,7 +125,7 @@ namespace RubberduckTests.TodoExplorer
                 }
             };
 
-            var userSettings = new UserSettings(null, null, todoSettings, null, null, null);
+            var userSettings = new UserSettings(null, null, todoSettings, null, null, null, null);
             return new Configuration(userSettings);
         }
 

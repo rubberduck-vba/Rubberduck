@@ -592,4 +592,13 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="MissingAnnotationArgumentInspectionMeta" xml:space="preserve">
     <value>Un paramètre d'annotation est manquant ou incorrectement spécifié. La syntaxe correcte est: '@Annotation([paramètre])\nExemple: '@Folder("Parent.Enfant")</value>
   </data>
+  <data name="ImplicitDefaultMemberAssignmentInspectionMeta" xml:space="preserve">
+    <value>De tels assignations semblent en surface assigner une valeur à un objet, mais en réalité assignent implicitement au membre par défaut de cet objet. Considérez plutôt assigner explicitement au membre par défaut, pour une lisibilité accrue.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspectionName" xml:space="preserve">
+    <value>Assignation implicite au membre par défaut</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspectionResultFormat" xml:space="preserve">
+    <value>Assignation de '{0}' réfère implicitement au membre par défaut de la classe '{1}'</value>
+  </data>
 </root>

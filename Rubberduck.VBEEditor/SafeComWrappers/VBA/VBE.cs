@@ -11,7 +11,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
     public class VBE : SafeComWrapper<VB.VBE>, IVBE
     {
         public VBE(VB.VBE target)
-            :base(target)
+            : base(target)
         {
         }
 
@@ -29,7 +29,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBProject ActiveVBProject
         {
             get { return new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject); }
-            set { Target.ActiveVBProject = (VB.VBProject) value.Target; }
+            set { Target.ActiveVBProject = (VB.VBProject)value.Target; }
         }
 
         public IWindow ActiveWindow
