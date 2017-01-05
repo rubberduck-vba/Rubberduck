@@ -140,6 +140,24 @@ namespace Rubberduck.Parsing.Symbols
             return result;
         }
 
+        public Declaration FindClassModule(string name, Declaration parent = null, bool includeBuiltIn = false)
+        {
+            Declaration result = null;
+            try
+            {
+                var matches = MatchName(name);
+                result = matches.SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
+                    && (parent == null || parent.Equals(declaration.ParentDeclaration))
+                    && (includeBuiltIn || !declaration.IsBuiltIn));
+            }
+            catch (InvalidOperationException exception)
+            {
+                Logger.Error(exception, "Multiple matches found for class module '{0}'.", name);
+            }
+
+            return result;
+        }
+
         public Declaration FindReferencedProject(Declaration callingProject, string referencedProjectName)
         {
             return FindInReferencedProjectByPriority(callingProject, referencedProjectName, p => p.DeclarationType.HasFlag(DeclarationType.Project));

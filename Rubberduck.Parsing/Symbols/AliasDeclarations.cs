@@ -56,7 +56,14 @@ namespace Rubberduck.Parsing.Symbols
 
         private IReadOnlyList<Declaration> AddAliasDeclarations()
         {
-            UpdateAliasFunctionModulesFromReferencedProjects(_state);
+            var finder = new DeclarationFinder(_state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
+
+            if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder))
+            {
+                return new List<Declaration>();
+            }
+
+            UpdateAliasFunctionModulesFromReferencedProjects(finder);
 
             if (NoReferenceToProjectContainingTheFunctionAliases())
             {
@@ -70,10 +77,8 @@ namespace Rubberduck.Parsing.Symbols
             return functionAliases.Concat<Declaration>(PropertyGetDeclarations()).ToList();
         }
 
-        private void UpdateAliasFunctionModulesFromReferencedProjects(RubberduckParserState state)
+        private void UpdateAliasFunctionModulesFromReferencedProjects(DeclarationFinder finder)
         {
-            var finder = new DeclarationFinder(state.AllDeclarations, new CommentNode[] {}, new IAnnotation[] {});
-
             var vba = finder.FindProject("VBA");
             if (vba == null)
             {
@@ -87,6 +92,19 @@ namespace Rubberduck.Parsing.Symbols
             _interactionModule = finder.FindStdModule("Interaction", vba, true);
             _stringsModule = finder.FindStdModule("Strings", vba, true);
             _dateTimeModule = finder.FindStdModule("DateTime", vba, true);
+        }
+
+
+        private static bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder)
+        {
+            return ThereIsAGlobalBuiltInErrVariableDeclaration(finder);
+        }
+
+        private static bool ThereIsAGlobalBuiltInErrVariableDeclaration(DeclarationFinder finder)
+        {
+            return finder.MatchName(Grammar.Tokens.Err).Any(declaration => declaration.IsBuiltIn
+                                                                    && declaration.DeclarationType == DeclarationType.Variable
+                                                                    && declaration.Accessibility == Accessibility.Global);
         }
 
 
