@@ -14,6 +14,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _fileSystemModule;
         private Declaration _interactionModule;
         private Declaration _stringsModule;
+        private Declaration _dateTimeModule;
 
         public AliasDeclarations(RubberduckParserState state)
         {
@@ -48,7 +49,9 @@ namespace Rubberduck.Parsing.Symbols
             Grammar.Tokens.RightB,
             Grammar.Tokens.RTrim,
             Grammar.Tokens.String,
-            Grammar.Tokens.UCase
+            Grammar.Tokens.UCase,
+            Grammar.Tokens.Date,
+            Grammar.Tokens.Time,
         };
 
         private IReadOnlyList<Declaration> AddAliasDeclarations()
@@ -64,7 +67,7 @@ namespace Rubberduck.Parsing.Symbols
             var functionAliases = FunctionAliasesWithoutParameters();
             AddParametersToAliasesFromReferencedFunctions(functionAliases, possiblyAliasedFunctions);
 
-            return functionAliases;
+            return functionAliases.Concat<Declaration>(PropertyGetDeclarations()).ToList();
         }
 
         private void UpdateAliasFunctionModulesFromReferencedProjects(RubberduckParserState state)
@@ -83,6 +86,7 @@ namespace Rubberduck.Parsing.Symbols
             _fileSystemModule = finder.FindStdModule("FileSystem", vba, true);
             _interactionModule = finder.FindStdModule("Interaction", vba, true);
             _stringsModule = finder.FindStdModule("Strings", vba, true);
+            _dateTimeModule = finder.FindStdModule("DateTime", vba, true);
         }
 
 
@@ -102,6 +106,50 @@ namespace Rubberduck.Parsing.Symbols
             return functions.ToList();
         }
 
+        private List<PropertyGetDeclaration> PropertyGetDeclarations()
+        {
+            return new List<PropertyGetDeclaration>
+            {
+                DatePropertyGet(),
+                TimePropertyGet(),
+            };
+        }
+
+        private PropertyGetDeclaration DatePropertyGet()
+        {
+            return new PropertyGetDeclaration(
+                new QualifiedMemberName(_dateTimeModule.QualifiedName.QualifiedModuleName, "Date"),
+                _dateTimeModule,
+                _dateTimeModule,
+                "Variant",
+                null,
+                string.Empty,
+                Accessibility.Global,
+                null,
+                new Selection(),
+                false,
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+        }
+
+        private PropertyGetDeclaration TimePropertyGet()
+        {
+            return new PropertyGetDeclaration(
+                new QualifiedMemberName(_dateTimeModule.QualifiedName.QualifiedModuleName, "Time"),
+                _dateTimeModule,
+                _dateTimeModule,
+                "Variant",
+                null,
+                string.Empty,
+                Accessibility.Global,
+                null,
+                new Selection(),
+                false,
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+        }
 
         private List<FunctionDeclaration> FunctionAliasesWithoutParameters()
         {
@@ -128,7 +176,7 @@ namespace Rubberduck.Parsing.Symbols
                 RightBFunction(),
                 RTrimFunction(),
                 StringFunction(),
-                UCaseFunction()
+                UCaseFunction(),
             };
         }
 
