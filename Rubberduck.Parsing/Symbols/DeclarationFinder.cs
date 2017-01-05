@@ -298,21 +298,16 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
-            var project = callingProject;
-            var module = callingModule;
-            var parent = callingParent;
-
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
-                && Declaration.GetModuleParent(m).DeclarationType == DeclarationType.ProceduralModule
+                && (Declaration.GetModuleParent(m).DeclarationType == DeclarationType.ProceduralModule || memberType == DeclarationType.Enumeration || memberType == DeclarationType.EnumerationMember)
                 && Declaration.GetProjectParent(m).Equals(callingProject)
                 && !callingModule.Equals(Declaration.GetModuleParent(m)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;
         }
-
         private static bool IsInstanceSensitive(DeclarationType memberType)
         {
             return memberType.HasFlag(DeclarationType.Variable) || memberType == DeclarationType.Constant || memberType.HasFlag(DeclarationType.Procedure) || memberType.HasFlag(DeclarationType.Function);
