@@ -532,10 +532,11 @@ namespace Rubberduck.Parsing.Symbols
         {
             foreach (var alias in functionAliases)
             {
-                var parameters = referencedFunctions.OfType<FunctionDeclaration>()
-                    .Single(s => s.IdentifierName == "_B_var_" + alias.IdentifierName)
-                    .Parameters;
-                foreach (var parameter in parameters)
+                var function = referencedFunctions.OfType<FunctionDeclaration>()
+                    .SingleOrDefault(s => s.IdentifierName == "_B_var_" + alias.IdentifierName);
+
+                if (function == null) { continue; }
+                foreach (var parameter in function.Parameters)
                 {
                     alias.AddParameter(parameter);
                 }
