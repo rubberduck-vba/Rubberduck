@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             var finder = new DeclarationFinder(_state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
 
-            if (ThereIsAGlobalBuiltInErrVariableDeclaration(finder))
+            if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder))
             {
                 return new List<Declaration>();
             }
@@ -37,9 +37,14 @@ namespace Rubberduck.Parsing.Symbols
             return LoadDebugDeclarations(vba);
         }
 
+        private static bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder)
+        {
+            return ThereIsAGlobalBuiltInErrVariableDeclaration(finder);
+        }
+
             private static bool ThereIsAGlobalBuiltInErrVariableDeclaration(DeclarationFinder finder) 
             {
-                return finder.MatchName(Tokens.Err).Any(declaration => declaration.IsBuiltIn
+                return finder.MatchName(Grammar.Tokens.Err).Any(declaration => declaration.IsBuiltIn
                                                                         && declaration.DeclarationType == DeclarationType.Variable
                                                                         && declaration.Accessibility == Accessibility.Global);
             }

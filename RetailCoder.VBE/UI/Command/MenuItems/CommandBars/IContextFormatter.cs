@@ -45,11 +45,15 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             typeName = "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) + ")";
 
-            if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
+            if (declaration.DeclarationType.HasFlag(DeclarationType.Project))
+            {
+                formattedDeclaration = System.IO.Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath) + ";" + declaration.IdentifierName;
+            }
+            else if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
             {
                 formattedDeclaration = moduleName.ToString();
             }
-
+            
             if (declaration.DeclarationType.HasFlag(DeclarationType.Member))
             {
                 formattedDeclaration = declaration.QualifiedName.ToString();
@@ -59,7 +63,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                     formattedDeclaration += typeName;
                 }
             }
-
+            
             if (declaration.DeclarationType == DeclarationType.Enumeration
                 || declaration.DeclarationType == DeclarationType.UserDefinedType)
             {
@@ -68,8 +72,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                     ? System.IO.Path.GetFileName(moduleName.ProjectPath) + ";" + moduleName.ProjectName + "." + declaration.IdentifierName
                     : moduleName.ToString();
             }
-
-            if (declaration.DeclarationType == DeclarationType.EnumerationMember
+            else if (declaration.DeclarationType == DeclarationType.EnumerationMember
                 || declaration.DeclarationType == DeclarationType.UserDefinedTypeMember)
             {
                 formattedDeclaration = string.Format("{0}.{1}.{2}",
@@ -81,13 +84,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             }
 
             var subscripts = declaration.IsArray ? "()" : string.Empty;
-            if (declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
+            if (declaration.ParentDeclaration != null && declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
             {
                 // locals, parameters
                 formattedDeclaration = string.Format("{0}:{1}{2} {3}", declaration.ParentDeclaration.QualifiedName, declaration.IdentifierName, subscripts, typeName);
             }
 
-            if (declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+            if (declaration.ParentDeclaration != null && declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
             {
                 // fields
                 var withEvents = declaration.IsWithEvents ? "(WithEvents) " : string.Empty;

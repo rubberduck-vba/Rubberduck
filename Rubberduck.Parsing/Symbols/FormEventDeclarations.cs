@@ -33,12 +33,11 @@ namespace Rubberduck.Parsing.Symbols
             var msForms = finder.FindProject("MSForms");
             if (msForms == null)
             {
-                // If the VBA project is null, we haven't loaded any COM references;
-                // we're in a unit test and the mock project didn't setup any references.
+                //The corresponding COM reference has not been loaded.
                 return null;
             }
 
-            return finder.FindStdModule("FormEvents", msForms, true);
+            return finder.FindClassModule("FormEvents", msForms, true);
         }
 
 
