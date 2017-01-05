@@ -200,12 +200,12 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(accessibleConstant, ExpressionClassification.Variable, _context);
             }
-            var accessibleType = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.Enumeration);
+            var accessibleType = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.EnumerationMember);
             if (IsValidMatch(accessibleType, _name))
             {
                 return new SimpleNameExpression(accessibleType, ExpressionClassification.Type, _context);
             }
-            var accessibleMember = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.EnumerationMember);
+            var accessibleMember = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.Enumeration);
             if (IsValidMatch(accessibleMember, _name))
             {
                 return new SimpleNameExpression(accessibleMember, ExpressionClassification.Value, _context);
@@ -328,6 +328,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(globalClassModuleSubroutine, ExpressionClassification.Subroutine, _context);
             }
+
             return null;
         }
 
@@ -354,7 +355,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return true;
             }
-            if (((IDeclarationWithParameter)match).Parameters.Count() > 0)
+            if (((IDeclarationWithParameter)match).Parameters.Any())
             {
                 return true;
             }
