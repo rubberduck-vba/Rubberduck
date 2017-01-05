@@ -101,7 +101,6 @@
     <Compile Include="Symbols\PropertyGetDeclarationTests.cs" />
     <Compile Include="Symbols\PropertyLetDeclarationTests.cs" />
     <Compile Include="Symbols\PropertySetDeclarationTests.cs" />
-    <Compile Include="UnitTesting\ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="Commands\FindAllImplementationsTests.cs" />
     <Compile Include="Commands\FindAllReferencesTests.cs" />
