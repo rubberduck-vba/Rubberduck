@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
@@ -27,35 +26,35 @@ namespace Rubberduck.Parsing.Symbols
             return AddHiddenMSFormDeclarations(formsClassModule);
         }
 
-            private static Declaration FormsClassModuleFromParserState(RubberduckParserState state)
-            {
-                var finder = new DeclarationFinder(state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
+        private static Declaration FormsClassModuleFromParserState(RubberduckParserState state)
+        {
+            var finder = new DeclarationFinder(state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
 
-                var msForms = finder.FindProject("MSForms");
-                if (msForms == null)
-                {
-                    // If the VBA project is null, we haven't loaded any COM references;
-                    // we're in a unit test and the mock project didn't setup any references.
-                    return null;
+            var msForms = finder.FindProject("MSForms");
+            if (msForms == null)
+            {
+                // If the VBA project is null, we haven't loaded any COM references;
+                // we're in a unit test and the mock project didn't setup any references.
+                return null;
             }
 
-                return finder.FindStdModule("FormEvents", msForms, true); 
-            }
+            return finder.FindStdModule("FormEvents", msForms, true);
+        }
 
 
-            private IReadOnlyList<Declaration> AddHiddenMSFormDeclarations(Declaration formsClassModule)
-            {
+        private IReadOnlyList<Declaration> AddHiddenMSFormDeclarations(Declaration formsClassModule)
+        {
 
-            var userFormActivateEvent = CreateDeclaration(formsClassModule, "Activate");
-            var userFormDeactivateEvent = CreateDeclaration(formsClassModule, "Deactivate");
-            var userFormInitializeEvent = CreateDeclaration(formsClassModule, "Initialize");
-            var userFormQueryCloseEvent = CreateDeclaration(formsClassModule, "QueryClose");
-            var userFormQueryCloseEventCancelParameter = CreateParameter(userFormQueryCloseEvent, "Cancel", "Integer", true);
-            var userFormQueryCloseEventCloseModeParameter = CreateParameter(userFormQueryCloseEvent, "CloseMode", "Integer", true);
-            var userFormResizeEvent = CreateDeclaration(formsClassModule, "Resize");
-            var userFormTerminateEvent = CreateDeclaration(formsClassModule, "Terminate");
+            var userFormActivateEvent = UserFormActivateEvent(formsClassModule);
+            var userFormDeactivateEvent = UserFormDeactivateEvent(formsClassModule);
+            var userFormInitializeEvent = UserFormInitializeEvent(formsClassModule);
+            var userFormQueryCloseEvent = UserFormQueryCloseEvent(formsClassModule);
+            var userFormQueryCloseEventCancelParameter = UserFormQueryCloseEventCancelParameter(userFormQueryCloseEvent);
+            var userFormQueryCloseEventCloseModeParameter = UserFormQueryCloseEventCloseModeParameter(userFormQueryCloseEvent);
+            var userFormResizeEvent = UserFormResizeEvent(formsClassModule);
+            var userFormTerminateEvent = UserFormTerminateEvent(formsClassModule);
 
-                return new List<Declaration>
+            return new List<Declaration>
                 {
                     userFormActivateEvent,
                     userFormDeactivateEvent,
@@ -66,131 +65,131 @@ namespace Rubberduck.Parsing.Symbols
                     userFormResizeEvent,
                     userFormTerminateEvent
                 };
-            }
+        }
 
-        private static Declaration CreateDeclaration(Declaration parent, string name)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Activate"),
-                        formsClassModule,
-                        formsClassModule.Scope,
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
+        private static Declaration UserFormActivateEvent(Declaration formsClassModule)
+        {
+            return new Declaration(
+                new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Activate"),
+                formsClassModule,
+                formsClassModule.Scope,
+                string.Empty,
+                string.Empty,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.Event,
+                false,
+                null);
+        }
 
-                private static Declaration UserFormDeactivateEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Deactivate"),
-                        formsClassModule,
-                        formsClassModule.Scope,
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
+        private static Declaration UserFormDeactivateEvent(Declaration formsClassModule)
+        {
+            return new Declaration(
+                new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Deactivate"),
+                formsClassModule,
+                formsClassModule.Scope,
+                string.Empty,
+                string.Empty,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.Event,
+                false,
+                null);
+        }
 
-                private static Declaration UserFormInitializeEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Initialize"),
-                        formsClassModule,
-                        formsClassModule.Scope,
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
+        private static Declaration UserFormInitializeEvent(Declaration formsClassModule)
+        {
+            return new Declaration(
+                new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Initialize"),
+                formsClassModule,
+                formsClassModule.Scope,
+                string.Empty,
+                string.Empty,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.Event,
+                false,
+                null);
+        }
 
-                private static Declaration UserFormQueryCloseEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "QueryClose"),
-                        formsClassModule,
-                        formsClassModule.Scope,
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
+        private static Declaration UserFormQueryCloseEvent(Declaration formsClassModule)
+        {
+            return new Declaration(
+                new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "QueryClose"),
+                formsClassModule,
+                formsClassModule.Scope,
+                string.Empty,
+                string.Empty,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.Event,
+                false,
+                null);
+        }
 
-                private static ParameterDeclaration UserFormQueryCloseEventCancelParameter(Declaration userFormQueryCloseEvent)
-                {
-                    return new ParameterDeclaration(
-                        new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "Cancel"),
-                        userFormQueryCloseEvent,
-                        null,
-                Selection.Empty,
-                asType,
-                        null,
-                        string.Empty,
-                isOptional,
-                isByRef);
-                }
+        private static ParameterDeclaration UserFormQueryCloseEventCancelParameter(Declaration userFormQueryCloseEvent)
+        {
+            return new ParameterDeclaration(
+                new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "Cancel"),
+                userFormQueryCloseEvent,
+                null,
+                new Selection(),
+                "Integer",
+                null,
+                string.Empty,
+                false,
+                true);
+        }
 
-                private static ParameterDeclaration UserFormQueryCloseEventCloseModeParameter(Declaration userFormQueryCloseEvent)
-                {
-                    return new ParameterDeclaration(
-                        new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "CloseMode"),
-                        userFormQueryCloseEvent,
-                        null,
-                        new Selection(),
-                        "Integer",
-                        null,
-                        string.Empty,
-                        false,
-                        true);
-                }
+        private static ParameterDeclaration UserFormQueryCloseEventCloseModeParameter(Declaration userFormQueryCloseEvent)
+        {
+            return new ParameterDeclaration(
+                new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "CloseMode"),
+                userFormQueryCloseEvent,
+                null,
+                new Selection(),
+                "Integer",
+                null,
+                string.Empty,
+                false,
+                true);
+        }
 
-                private static Declaration UserFormResizeEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Resize"),
-                        formsClassModule,
-                        formsClassModule.Scope,
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
+        private static Declaration UserFormResizeEvent(Declaration formsClassModule)
+        {
+            return new Declaration(
+                new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Resize"),
+                formsClassModule,
+                formsClassModule.Scope,
+                string.Empty,
+                string.Empty,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.Event,
+                false,
+                null);
+        }
 
-                private static Declaration UserFormTerminateEvent(Declaration formsClassModule)
-                {
-                    return new Declaration(
-                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Terminate"),
-                        formsClassModule,
-                        formsClassModule.Scope,
-                        string.Empty,
-                        string.Empty,
-                        false,
-                        false,
-                        Accessibility.Global,
-                        DeclarationType.Event,
-                        false,
-                        null);
-                }
+        private static Declaration UserFormTerminateEvent(Declaration formsClassModule)
+        {
+            return new Declaration(
+                new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Terminate"),
+                formsClassModule,
+                formsClassModule.Scope,
+                string.Empty,
+                string.Empty,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.Event,
+                false,
+                null);
+        }
 
     }
 }
