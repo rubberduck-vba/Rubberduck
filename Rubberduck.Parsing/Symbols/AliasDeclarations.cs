@@ -68,20 +68,21 @@ namespace Rubberduck.Parsing.Symbols
 
             private void UpdateAliasFunctionModulesFromReferencedProjects(RubberduckParserState state)
             {
-                _conversionModule = state.AllDeclarations.SingleOrDefault(
-                        item => item.IdentifierName == "Conversion" && item.Scope == "VBE7.DLL;VBA.Conversion");
+                var finder = new DeclarationFinder(state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
 
-                _fileSystemModule = state.AllDeclarations.SingleOrDefault(
-                        item => item.IdentifierName == "FileSystem" && item.Scope == "VBE7.DLL;VBA.FileSystem");
+                var vba = finder.FindProject("VBA");
+                if (vba == null)
+                {
+                    // If the VBA project is null, we haven't loaded any COM references;
+                    // we're in a unit test and the mock project didn't setup any references.
+                    return;
+                }
 
-                _interactionModule = state.AllDeclarations.SingleOrDefault(
-                        item => item.IdentifierName == "Interaction" && item.Scope == "VBE7.DLL;VBA.Interaction");
-
-                _stringsModule = state.AllDeclarations.SingleOrDefault(
-                        item => item.IdentifierName == "Strings" && item.Scope == "VBE7.DLL;VBA.Strings");
-
-                _dateTimeModule = state.AllDeclarations.SingleOrDefault(
-                        item => item.IdentifierName == "DateTime" && item.Scope == "VBE7.DLL;VBA.DateTime");
+                _conversionModule = finder.FindStdModule("Conversion", vba, true);
+                _fileSystemModule = finder.FindStdModule("FileSystem", vba, true); 
+                _interactionModule = finder.FindStdModule("Interaction", vba, true); 
+                _stringsModule = finder.FindStdModule("Strings", vba, true);             
+                _dateTimeModule = finder.FindStdModule("DateTime", vba, true); 
             }
 
 
@@ -130,8 +131,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration ErrorFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Error"),
+                            new QualifiedMemberName(_conversionModule.QualifiedName.QualifiedModuleName, "Error"),
                             _conversionModule,
                             _conversionModule,
                             "Variant",
@@ -149,8 +149,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration HexFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Hex"),
+                            new QualifiedMemberName(_conversionModule.QualifiedName.QualifiedModuleName, "Hex"),
                             _conversionModule,
                             _conversionModule,
                             "Variant",
@@ -168,8 +167,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration OctFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Oct"),
+                            new QualifiedMemberName(_conversionModule.QualifiedName.QualifiedModuleName, "Oct"),
                             _conversionModule,
                             _conversionModule,
                             "Variant",
@@ -187,8 +185,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration StrFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Str"),
+                            new QualifiedMemberName(_conversionModule.QualifiedName.QualifiedModuleName, "Str"),
                             _conversionModule,
                             _conversionModule,
                             "Variant",
@@ -206,8 +203,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration CurDirFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "FileSystem"), "CurDir"),
+                            new QualifiedMemberName(_fileSystemModule.QualifiedName.QualifiedModuleName, "CurDir"),
                             _fileSystemModule,
                             _fileSystemModule,
                             "Variant",
@@ -225,8 +221,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration CommandFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Interaction"), "Command"),
+                            new QualifiedMemberName(_interactionModule.QualifiedName.QualifiedModuleName, "Command"),
                             _interactionModule,
                             _interactionModule,
                             "Variant",
@@ -244,8 +239,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration EnvironFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Interaction"), "Environ"),
+                            new QualifiedMemberName(_interactionModule.QualifiedName.QualifiedModuleName, "Environ"),
                             _interactionModule,
                             _interactionModule,
                             "Variant",
@@ -263,8 +257,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration ChrFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Chr"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "Chr"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -282,8 +275,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration ChrwFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "ChrW"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "ChrW"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -301,8 +293,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration FormatFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Format"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "Format"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -320,8 +311,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration LCaseFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "LCase"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "LCase"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -339,8 +329,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration LeftFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Left"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "Left"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -358,8 +347,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration LeftBFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "LeftB"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "LeftB"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -377,8 +365,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration LTrimFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "LTrim"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "LTrim"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -396,8 +383,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration MidFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Mid"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "Mid"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -415,8 +401,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration MidBFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "MidB"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "MidB"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -434,8 +419,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration TrimFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Trim"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "Trim"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -453,8 +437,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration RightFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Right"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "Right"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -472,8 +455,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration RightBFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "RightB"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "RightB"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -491,8 +473,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration RTrimFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "RTrim"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "RTrim"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",
@@ -510,8 +491,7 @@ namespace Rubberduck.Parsing.Symbols
                 private FunctionDeclaration UCaseFunction()
                 {
                     return new FunctionDeclaration(
-                            new QualifiedMemberName(
-                                new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "UCase"),
+                            new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "UCase"),
                             _stringsModule,
                             _stringsModule,
                             "Variant",

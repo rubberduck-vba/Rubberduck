@@ -462,7 +462,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        public void PublicEnumsInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
+        public void PublicEnumsInNonPrivateProceduralModulesAreAccessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
             var calleeModuleDeclatation = GetTestProceduralModule(calleeProjectDeclatation, "callee_test_Module");
@@ -476,7 +476,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        public void GlobalEnumsInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
+        public void GlobalEnumsInNonPrivateProceduralModulesAreAccessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
             var calleeModuleDeclatation = GetTestProceduralModule(calleeProjectDeclatation, "callee_test_Module");
@@ -490,11 +490,53 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        public void ImplicitelyScopedEnumsInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
+        public void ImplicitelyScopedEnumsInNonPrivateProceduralModulesAreAccessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
             var calleeModuleDeclatation = GetTestProceduralModule(calleeProjectDeclatation, "callee_test_Module");
             var enumDeclarartion = GetTestEnum(calleeModuleDeclatation, "x", Accessibility.Implicit);
+            var callingProjectDeclatation = GetTestProject("calling_test_project");
+            var callingModuleDeclatation = GetTestClassModule(callingProjectDeclatation, "calling_test_Module");
+            var functionDeclaration = GetTestFunction(callingModuleDeclatation, "callingFoo", Accessibility.Private);
+
+            Assert.IsTrue(AccessibilityCheck.IsAccessible(callingProjectDeclatation, callingModuleDeclatation, functionDeclaration, enumDeclarartion));
+        }
+
+
+        [TestMethod]
+        public void PublicEnumsInExposedClassesAreNotAccessibleFromOtherProjects()
+        {
+            var calleeProjectDeclatation = GetTestProject("callee_test_project");
+            var calleeModuleDeclaration = GetTestClassModule(calleeProjectDeclatation, "callee_test_Module", true);
+            var enumDeclarartion = GetTestEnum(calleeModuleDeclaration, "x", Accessibility.Public);
+            var callingProjectDeclatation = GetTestProject("calling_test_project");
+            var callingModuleDeclatation = GetTestClassModule(callingProjectDeclatation, "calling_test_Module");
+            var functionDeclaration = GetTestFunction(callingModuleDeclatation, "callingFoo", Accessibility.Private);
+
+            Assert.IsTrue(AccessibilityCheck.IsAccessible(callingProjectDeclatation, callingModuleDeclatation, functionDeclaration, enumDeclarartion));
+        }
+
+
+        [TestMethod]
+        public void GlobalEnumsInExposedClassesAreAccessibleFromOtherProjects()
+        {
+            var calleeProjectDeclatation = GetTestProject("callee_test_project");
+            var calleeModuleDeclaration = GetTestClassModule(calleeProjectDeclatation, "callee_test_Module", true);
+            var enumDeclarartion = GetTestEnum(calleeModuleDeclaration, "x", Accessibility.Global);
+            var callingProjectDeclatation = GetTestProject("calling_test_project");
+            var callingModuleDeclatation = GetTestClassModule(callingProjectDeclatation, "calling_test_Module");
+            var functionDeclaration = GetTestFunction(callingModuleDeclatation, "callingFoo", Accessibility.Private);
+
+            Assert.IsTrue(AccessibilityCheck.IsAccessible(callingProjectDeclatation, callingModuleDeclatation, functionDeclaration, enumDeclarartion));
+        }
+
+
+        [TestMethod]
+        public void ImplicitelyScopedEnumsInExposedClassesAreAcessibleFromOtherProjects()
+        {
+            var calleeProjectDeclatation = GetTestProject("callee_test_project");
+            var calleeModuleDeclaration = GetTestClassModule(calleeProjectDeclatation, "callee_test_Module", true);
+            var enumDeclarartion = GetTestEnum(calleeModuleDeclaration, "x", Accessibility.Implicit);
             var callingProjectDeclatation = GetTestProject("calling_test_project");
             var callingModuleDeclatation = GetTestClassModule(callingProjectDeclatation, "calling_test_Module");
             var functionDeclaration = GetTestFunction(callingModuleDeclatation, "callingFoo", Accessibility.Private);
