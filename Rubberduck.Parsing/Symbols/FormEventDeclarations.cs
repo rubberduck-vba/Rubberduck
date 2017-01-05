@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -28,8 +29,17 @@ namespace Rubberduck.Parsing.Symbols
 
             private static Declaration FormsClassModuleFromParserState(RubberduckParserState state)
             {
-                return state.AllDeclarations.LastOrDefault(declaration => declaration.DeclarationType == DeclarationType.ClassModule
-                                                                            && declaration.Scope == "FM20.DLL;MSForms.FormEvents");
+                var finder = new DeclarationFinder(state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
+
+                var msForms = finder.FindProject("MSForms");
+                if (msForms == null)
+                {
+                    // If the VBA project is null, we haven't loaded any COM references;
+                    // we're in a unit test and the mock project didn't setup any references.
+                    return null;
+                }
+
+                return finder.FindStdModule("FormEvents", msForms, true); 
             }
 
 
@@ -61,10 +71,9 @@ namespace Rubberduck.Parsing.Symbols
                 private static Declaration UserFormActivateEvent(Declaration formsClassModule)
                 {
                     return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Activate"),
+                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Activate"),
                         formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
+                        formsClassModule.Scope,
                         string.Empty,
                         string.Empty,
                         false,
@@ -78,10 +87,9 @@ namespace Rubberduck.Parsing.Symbols
                 private static Declaration UserFormDeactivateEvent(Declaration formsClassModule)
                 {
                     return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Deactivate"),
+                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Deactivate"),
                         formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
+                        formsClassModule.Scope,
                         string.Empty,
                         string.Empty,
                         false,
@@ -95,10 +103,9 @@ namespace Rubberduck.Parsing.Symbols
                 private static Declaration UserFormInitializeEvent(Declaration formsClassModule)
                 {
                     return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Initialize"),
+                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Initialize"),
                         formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
+                        formsClassModule.Scope,
                         string.Empty,
                         string.Empty,
                         false,
@@ -112,10 +119,9 @@ namespace Rubberduck.Parsing.Symbols
                 private static Declaration UserFormQueryCloseEvent(Declaration formsClassModule)
                 {
                     return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "QueryClose"),
+                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "QueryClose"),
                         formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
+                        formsClassModule.Scope,
                         string.Empty,
                         string.Empty,
                         false,
@@ -129,8 +135,7 @@ namespace Rubberduck.Parsing.Symbols
                 private static ParameterDeclaration UserFormQueryCloseEventCancelParameter(Declaration userFormQueryCloseEvent)
                 {
                     return new ParameterDeclaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Cancel"),
+                        new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "Cancel"),
                         userFormQueryCloseEvent,
                         null,
                         new Selection(),
@@ -144,8 +149,7 @@ namespace Rubberduck.Parsing.Symbols
                 private static ParameterDeclaration UserFormQueryCloseEventCloseModeParameter(Declaration userFormQueryCloseEvent)
                 {
                     return new ParameterDeclaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "CloseMode"),
+                        new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "CloseMode"),
                         userFormQueryCloseEvent,
                         null,
                         new Selection(),
@@ -159,10 +163,9 @@ namespace Rubberduck.Parsing.Symbols
                 private static Declaration UserFormResizeEvent(Declaration formsClassModule)
                 {
                     return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Resize"),
+                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Resize"),
                         formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
+                        formsClassModule.Scope,
                         string.Empty,
                         string.Empty,
                         false,
@@ -176,10 +179,9 @@ namespace Rubberduck.Parsing.Symbols
                 private static Declaration UserFormTerminateEvent(Declaration formsClassModule)
                 {
                     return new Declaration(
-                        new QualifiedMemberName(
-                            new QualifiedModuleName("MSForms", "C:\\WINDOWS\\system32\\FM20.DLL", "FormEvents"), "Terminate"),
+                        new QualifiedMemberName(formsClassModule.QualifiedName.QualifiedModuleName, "Terminate"),
                         formsClassModule,
-                        "FM20.DLL;MSForms.FormEvents",
+                        formsClassModule.Scope,
                         string.Empty,
                         string.Empty,
                         false,
