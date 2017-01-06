@@ -151,17 +151,15 @@ The *Code Explorer* will also be displaying the corresponding module node with a
 
 ![Module "ThisWorkbook" didn't parse correctly](https://cloud.githubusercontent.com/assets/5751684/21708276/e8f67e50-d3a4-11e6-8c1d-e84d4e9ccce6.png)
 
-You'll find the *Code Explorer* under the *Navigate* menu. It's Rubberduck's enhanced *Project Explorer*, and the Ctrl+R hotkey can be hijacked to display it instead of the VBE's under-featured tree.
+You'll find the *Code Explorer* under the *Navigate* menu. By default the Ctrl+R hotkey to display it instead of the VBE's own *Project Explorer*. The treeview lists not only modules, but also every single one of their members, with their signatures if you want. And you can make it arrange your modules into folders, simply by adding a `@Folder("Parent.Child")` annotation/comment to your modules:
 
 ![Code Explorer toolwindow](https://cloud.githubusercontent.com/assets/5751684/21708614/90335a46-d3a8-11e6-9e76-61cc3f566c7a.png)
 
-The treeview lists not only modules, but also every single one of their members, with their signatures if you want. And you can make it arrange your modules into folders, simply by adding a `@Folder("Parent.Child")` annotation/comment to your modules.
-
-The *inspection results* toolwindow can be displayed by pressing Ctrl+Shit+i (default hotkey), and allows you to double-click to navigate all potential issues that Rubberduck found in your code.
+The *inspection results* toolwindow can be displayed by pressing Ctrl+Shift+i (default hotkey), and allows you to double-click to navigate all potential issues that Rubberduck found in your code.
 
 ![inspection results](https://cloud.githubusercontent.com/assets/5751684/21708911/d0c47bc4-d3aa-11e6-88f2-b0c9fcfda7ed.png)
 
-Rubberduck also features a port of the popular 32-bit VBE add-in "Smart Indenter", so you can turn this:
+Rubberduck also features a port of the popular "Smart Indenter" add-in (now supports 64-bit hosts, and with a few bugfixes on top of that!), so you can turn this:
 
 ````vb
 Sub DoSomething()
