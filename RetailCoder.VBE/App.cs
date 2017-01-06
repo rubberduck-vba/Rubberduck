@@ -23,7 +23,7 @@ namespace Rubberduck
     {
         private readonly IVBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly IRubberduckParser _parser;
+        private readonly IParseCoordinator _parser;
         private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
@@ -36,7 +36,7 @@ namespace Rubberduck
 
         public App(IVBE vbe, 
             IMessageBox messageBox,
-            IRubberduckParser parser,
+            IParseCoordinator parser,
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,

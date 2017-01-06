@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParser : IRubberduckParser
+    public class ParseCoordinator : IParseCoordinator
     {
         public RubberduckParserState State { get { return _state; } }
         
@@ -37,7 +37,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly bool _isTestScope;
 
-        public RubberduckParser(
+        public ParseCoordinator(
             IVBE vbe,
             RubberduckParserState state,
             IAttributeParser attributeParser,

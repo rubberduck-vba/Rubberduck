@@ -158,7 +158,7 @@
     <Compile Include="Binding\SimpleNameTypeBinding.cs" />
     <Compile Include="ComHelper.cs" />
     <Compile Include="IParseResultProvider.cs" />
-    <Compile Include="IRubberduckParser.cs" />
+    <Compile Include="IParseCoordinator.cs" />
     <Compile Include="ParsingText.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -296,7 +296,7 @@
     <Compile Include="VBA\ParseErrorEventArgs.cs" />
     <Compile Include="VBA\ParserState.cs" />
     <Compile Include="VBA\ReferencePriorityMap.cs" />
-    <Compile Include="VBA\RubberduckParser.cs" />
+    <Compile Include="VBA\ParseCoordinator.cs" />
     <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\VBALikePatternParser.cs" />
