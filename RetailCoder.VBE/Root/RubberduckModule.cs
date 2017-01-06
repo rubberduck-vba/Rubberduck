@@ -75,7 +75,7 @@ namespace Rubberduck.Root
             {
                 Assembly.GetExecutingAssembly(),
                 Assembly.GetAssembly(typeof(IHostApplication)),
-                Assembly.GetAssembly(typeof(IRubberduckParser)),
+                Assembly.GetAssembly(typeof(IParseCoordinator)),
                 Assembly.GetAssembly(typeof(IIndenter))
             };
 
@@ -91,7 +91,7 @@ namespace Rubberduck.Root
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
 
             BindCustomDeclarationLoadersToParser();
-            Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
+            Rebind<IParseCoordinator>().To<ParseCoordinator>().InSingletonScope();
             Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)));
             
             Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();

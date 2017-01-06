@@ -3,7 +3,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing
 {
-    public interface IRubberduckParser : IDisposable
+    public interface IParseCoordinator : IDisposable
     {
         RubberduckParserState State { get; }
     }

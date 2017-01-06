@@ -14,9 +14,9 @@ namespace Rubberduck.Navigation.RegexSearchReplace
     public class RegexSearchReplace : IRegexSearchReplace
     {
         private readonly IVBE _vbe;
-        private readonly IRubberduckParser _parser;
+        private readonly IParseCoordinator _parser;
 
-        public RegexSearchReplace(IVBE vbe, IRubberduckParser parser)
+        public RegexSearchReplace(IVBE vbe, IParseCoordinator parser)
         {
             _vbe = vbe;
             _parser = parser;
