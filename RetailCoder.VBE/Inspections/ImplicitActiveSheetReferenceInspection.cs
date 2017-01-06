@@ -38,8 +38,9 @@ namespace Rubberduck.Inspections
             }
 
             var matches = BuiltInDeclarations.Where(item =>
+                        item.ProjectName == "Excel" &&
                         Targets.Contains(item.IdentifierName) &&
-                        item.ParentScope == "EXCEL.EXE;Excel._Global" &&
+                        item.ParentDeclaration.ComponentName == "Global" &&
                         item.AsTypeName == "Range").ToList();
 
             var issues = matches.Where(item => item.References.Any())

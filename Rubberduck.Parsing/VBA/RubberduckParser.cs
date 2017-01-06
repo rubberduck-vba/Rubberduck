@@ -654,7 +654,7 @@ namespace Rubberduck.Parsing.VBA
                     var watch = Stopwatch.StartNew();
                     walker.Walk(listener, tree);
                     watch.Stop();
-                    Logger.Debug("Binding Resolution done for component '{0}' in {1}ms (thread {2})", component.Name,
+                    Logger.Debug("Binding resolution done for component '{0}' in {1}ms (thread {2})", component.Name,
                         watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
 
                     State.SetModuleState(component, ParserState.Ready);
