@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections
                 .SelectMany(declaration => declaration.References.Distinct());
 
             return issues
-                .Where(issue => !issue.IsInspectionDisabled(Name))
+                .Where(issue => !issue.IsInspectionDisabled(AnnotationName))
                 .Select(issue => new ImplicitActiveSheetReferenceInspectionResult(this, issue));
         }
     }
