@@ -6,13 +6,12 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Inspections.Results
 {
-    class AggregateInspectionResult: InspectionResultBase
+    class AggregateInspectionResult: IInspectionResult
     {
         private readonly IEnumerable<QuickFixBase> _quickFixes;
         private readonly List<IInspectionResult> _results;
 
-        public AggregateInspectionResult(List<IInspectionResult> encapsulatedResults) 
-            : base(null, new QualifiedModuleName(), null)
+        public AggregateInspectionResult(List<IInspectionResult> encapsulatedResults)
         {
             if (encapsulatedResults.Count == 0)
             {
@@ -23,7 +22,9 @@ namespace Rubberduck.Inspections.Results
             // If there were any reasonable way to provide this mess with a fix, we'd put it here
         }
 
-        public override string Description
+        //public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+
+        public string Description
         {
             get
             {
@@ -31,6 +32,45 @@ namespace Rubberduck.Inspections.Results
             }
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public IInspection Inspection
+        {
+            get
+            {
+                return _results[0].Inspection;
+            }
+        }
+
+        public QualifiedSelection QualifiedSelection
+        {
+            get
+            {
+                return _results[0].QualifiedSelection;
+            }
+        }
+
+        public IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int CompareTo(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(IInspectionResult other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] ToArray()
+        {
+            throw new NotImplementedException();
+        }
+
+        
     }
 }
