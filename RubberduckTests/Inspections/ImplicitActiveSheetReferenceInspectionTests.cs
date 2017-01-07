@@ -49,7 +49,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
+            var inspection = new ImplicitActiveSheetReferenceInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -86,10 +86,10 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
+            var inspection = new ImplicitActiveSheetReferenceInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -127,7 +127,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, parser.State);
+            var inspection = new ImplicitActiveSheetReferenceInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
@@ -146,7 +146,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, null);
+            var inspection = new ImplicitActiveSheetReferenceInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
@@ -162,7 +162,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             const string inspectionName = "ImplicitActiveSheetReferenceInspection";
-            var inspection = new ImplicitActiveSheetReferenceInspection(vbe.Object, null);
+            var inspection = new ImplicitActiveSheetReferenceInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

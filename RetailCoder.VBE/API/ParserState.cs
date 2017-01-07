@@ -49,7 +49,7 @@ namespace Rubberduck.API
 
         private RubberduckParserState _state;
         private AttributeParser _attributeParser;
-        private RubberduckParser _parser;
+        private ParseCoordinator _parser;
         private VBE _vbe;
 
         public ParserState()
@@ -70,7 +70,7 @@ namespace Rubberduck.API
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
-            _parser = new RubberduckParser(vbe, _state, _attributeParser, preprocessorFactory,
+            _parser = new ParseCoordinator(vbe, _state, _attributeParser, preprocessorFactory,
                 new List<ICustomDeclarationLoader> { new DebugDeclarations(_state), new SpecialFormDeclarations(_state), new FormEventDeclarations(_state), new AliasDeclarations(_state) });
         }
 
