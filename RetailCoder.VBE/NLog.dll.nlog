@@ -12,6 +12,8 @@
       archiveAboveSize="5242880"
       archiveNumbering="Sequence"
       concurrentWrites="true"
+      archiveEvery="Day"
+      deleteOldFileOnStartup="true"
       keepFileOpen="false"
       encoding="UTF-8"/>
     <target 

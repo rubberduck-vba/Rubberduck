@@ -10,21 +10,23 @@ namespace Rubberduck.Parsing.Symbols
     public class DebugDeclarations : ICustomDeclarationLoader
     {
         public static Declaration DebugPrint;
-        private readonly DeclarationFinder _finder;
+        private readonly RubberduckParserState _state;
 
         public DebugDeclarations(RubberduckParserState state)
         {
-            _finder = new DeclarationFinder(state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
+            _state = state;
         }
 
         public IReadOnlyList<Declaration> Load()
         {
-            if (ThereIsAGlobalBuiltInErrVariableDeclaration(_finder))
+            var finder = new DeclarationFinder(_state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
+
+            if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder))
             {
                 return new List<Declaration>();
             }
 
-            var vba = _finder.FindProject("VBA");
+            var vba = finder.FindProject("VBA");
             if (vba == null)
             {
                 // If the VBA project is null, we haven't loaded any COM references;
@@ -35,9 +37,14 @@ namespace Rubberduck.Parsing.Symbols
             return LoadDebugDeclarations(vba);
         }
 
+        private static bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder)
+        {
+            return ThereIsAGlobalBuiltInErrVariableDeclaration(finder);
+        }
+
             private static bool ThereIsAGlobalBuiltInErrVariableDeclaration(DeclarationFinder finder) 
             {
-                return finder.MatchName(Tokens.Err).Any(declaration => declaration.IsBuiltIn
+                return finder.MatchName(Grammar.Tokens.Err).Any(declaration => declaration.IsBuiltIn
                                                                         && declaration.DeclarationType == DeclarationType.Variable
                                                                         && declaration.Accessibility == Accessibility.Global);
             }
