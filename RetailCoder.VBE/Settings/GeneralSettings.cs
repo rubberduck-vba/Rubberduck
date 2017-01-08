@@ -1,5 +1,7 @@
-﻿using NLog;
+﻿using System;
+using NLog;
 using System.Xml.Serialization;
+using Rubberduck.Common;
 
 namespace Rubberduck.Settings
 {
@@ -23,7 +25,27 @@ namespace Rubberduck.Settings
         public bool AutoSaveEnabled { get; set; }
         public int AutoSavePeriod { get; set; }
         public char Delimiter { get; set; }
-        public int MinimumLogLevel { get; set; }
+
+        private int _logLevel;
+        public int MinimumLogLevel
+        {
+            get { return _logLevel; }
+            set
+            {
+                if (value < LogLevelHelper.MinLogLevel())
+                {
+                    _logLevel = LogLevelHelper.MinLogLevel();
+                }
+                else if (value > LogLevelHelper.MaxLogLevel())
+                {
+                    _logLevel = LogLevelHelper.MaxLogLevel();
+                }
+                else
+                {
+                    _logLevel = value;
+                }               
+            }
+        }
 
         public GeneralSettings()
         {
