@@ -46,6 +46,7 @@ namespace RubberduckTests.SourceControl
             _openFileDialog = new Mock<IOpenFileDialog>();
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ViewIsPopulatedOnRefresh()
         {
@@ -62,6 +63,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(CommandPromptLocation, vm.CommandPromptLocation, "Command Prompt Location");
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ConfigIsPopulatedFromViewOnSave()
         {
@@ -84,6 +86,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(OtherCommandPromptLocation, _config.CommandPromptLocation, "Command Prompt Location");
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ConfigIsSavedOnSave()
         {
@@ -98,6 +101,7 @@ namespace RubberduckTests.SourceControl
             _configService.Verify(s => s.Save(_config));
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ChangesToViewAreRevertedOnCancel()
         {
@@ -121,6 +125,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(CommandPromptLocation, vm.CommandPromptLocation, "Command Prompt Location");
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OnBrowseDefaultRepoLocation_WhenUserConfirms_ViewMatchesSelectedPath()
         {
@@ -139,6 +144,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(_folderBrowser.Object.SelectedPath, vm.DefaultRepositoryLocation);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OnBrowseDefaultRepoLocation_WhenUserCancels_ViewRemainsUnchanged()
         {
@@ -157,6 +163,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(RepoLocation, vm.DefaultRepositoryLocation);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OnBrowseCommandPromptLocation_WhenUserConfirms_ViewMatchesSelectedPath()
         {
@@ -175,6 +182,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(_openFileDialog.Object.FileName, vm.CommandPromptLocation);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OnBrowseCommandPromptLocation_WhenUserCancels_ViewRemainsUnchanged()
         {
