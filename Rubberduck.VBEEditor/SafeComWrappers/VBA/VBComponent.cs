@@ -58,6 +58,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private string SafeName
         {
+            get { return Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), "_")); }
         }
 
         public IControls Controls
