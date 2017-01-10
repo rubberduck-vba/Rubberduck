@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             // DeclareExplicitVariant() overloads return empty string if context is null
             Selection selection;
-            var fix = DeclareExplicitVariant(Context as VBAParser.VariableSubStmtContext, out originalInstruction, out selection);
+            var fix = DeclareExplicitVariant(Context as VBAParser.VariableSubStmtContext, contextLines, out originalInstruction, out selection);
             if (!string.IsNullOrEmpty(fix))
             {
                 // maintain original indentation for a variable declaration
@@ -34,7 +35,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(Context as VBAParser.ConstSubStmtContext, out originalInstruction, out selection);
+                fix = DeclareExplicitVariant(Context as VBAParser.ConstSubStmtContext, contextLines, out originalInstruction, out selection);
             }
 
             if (string.IsNullOrEmpty(originalInstruction))
@@ -100,7 +101,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return fix;
         }
 
-        private string DeclareExplicitVariant(VBAParser.VariableSubStmtContext context, out string instruction, out Selection selection)
+        private string DeclareExplicitVariant(VBAParser.VariableSubStmtContext context, string contextLines, out string instruction, out Selection selection)
         {
             if (context == null)
             {
@@ -110,17 +111,19 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             var parent = (ParserRuleContext)context.Parent.Parent;
-            instruction = parent.GetText();
             selection = parent.GetSelection();
+            instruction = contextLines.Substring(selection.StartColumn - 1);
 
             var variable = context.GetText();
             var replacement = context.identifier().GetText() + ' ' + Tokens.As + ' ' + Tokens.Variant;
 
-            var result = instruction.Replace(variable, replacement);
+            var insertIndex = instruction.IndexOf(variable, StringComparison.Ordinal);
+            var result = instruction.Substring(0, insertIndex)
+                         + replacement + instruction.Substring(insertIndex + variable.Length);
             return result;
         }
 
-        private string DeclareExplicitVariant(VBAParser.ConstSubStmtContext context, out string instruction, out Selection selection)
+        private string DeclareExplicitVariant(VBAParser.ConstSubStmtContext context, string contextLines, out string instruction, out Selection selection)
         {
             if (context == null)
             {
@@ -130,8 +133,8 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             var parent = (ParserRuleContext)context.Parent;
-            instruction = parent.GetText();
-            selection = parent.GetSelection(); 
+            selection = parent.GetSelection();
+            instruction = contextLines.Substring(selection.StartColumn - 1);
 
             var constant = context.GetText();
             var replacement = context.identifier().GetText() + ' '
@@ -139,7 +142,9 @@ namespace Rubberduck.Inspections.QuickFixes
                               + context.EQ().GetText() + ' '
                               + context.expression().GetText();
 
-            var result = instruction.Replace(constant, replacement);
+            var insertIndex = instruction.IndexOf(constant, StringComparison.Ordinal);
+            var result = instruction.Substring(0, insertIndex)
+                         + replacement + instruction.Substring(insertIndex + constant.Length);
             return result;
         }
     }

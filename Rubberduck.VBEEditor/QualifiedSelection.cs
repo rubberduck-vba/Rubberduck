@@ -1,6 +1,8 @@
-﻿namespace Rubberduck.VBEditor
+﻿using System;
+
+namespace Rubberduck.VBEditor
 {
-    public struct QualifiedSelection
+    public struct QualifiedSelection : IComparable<QualifiedSelection>
     {
         public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection)
         {
@@ -13,6 +15,16 @@
 
         private readonly Selection _selection;
         public Selection Selection { get { return _selection; } }
+
+        public int CompareTo(QualifiedSelection other)
+        {
+            if (other.QualifiedName != QualifiedName)
+            {
+                return string.Compare(QualifiedName.ToString(), other.QualifiedName.ToString(), StringComparison.Ordinal);
+            }
+
+            return Selection.CompareTo(other.Selection);
+        }
 
         public override string ToString()
         {
