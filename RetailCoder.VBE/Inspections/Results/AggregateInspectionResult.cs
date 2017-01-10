@@ -18,6 +18,8 @@ namespace Rubberduck.Inspections.Results
             _results = results;
             _result = results[0];
         }
+
+        public IReadOnlyList<IInspectionResult> IndividualResults { get { return _results; } }
         
         public override string Description
         {
@@ -33,6 +35,11 @@ namespace Rubberduck.Inspections.Results
             {
                 return _result.QualifiedSelection;
             }
+        }
+
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get { return _result.QuickFixes == null ? base.QuickFixes : new[] { _result.QuickFixes.FirstOrDefault() }; }
         }
 
         public override QuickFixBase DefaultQuickFix { get { return _result.QuickFixes == null ? null : _result.QuickFixes.FirstOrDefault(); } }
