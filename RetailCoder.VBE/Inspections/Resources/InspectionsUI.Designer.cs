@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning {0}: {1} results.
+        ///   Looks up a localized string similar to {0} ({1} results).
         /// </summary>
         public static string AggregateInspectionResultFormat {
             get {

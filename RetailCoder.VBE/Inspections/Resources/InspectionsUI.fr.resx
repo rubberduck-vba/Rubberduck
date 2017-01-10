@@ -601,4 +601,7 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="ImplicitDefaultMemberAssignmentInspectionResultFormat" xml:space="preserve">
     <value>Assignation de '{0}' réfère implicitement au membre par défaut de la classe '{1}'</value>
   </data>
+  <data name="AggregateInspectionResultFormat" xml:space="preserve">
+    <value>{0} ({1} résultats)</value>
+  </data>
 </root>
