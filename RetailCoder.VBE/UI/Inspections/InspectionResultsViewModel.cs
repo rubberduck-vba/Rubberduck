@@ -12,6 +12,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
@@ -353,12 +354,16 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var items = _results.Where(result => result.Inspection == SelectedInspection
-                && result.QualifiedSelection.QualifiedName == selectedResult.QualifiedSelection.QualifiedName)
-                .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
-                .OrderByDescending(item => item.Selection.Selection.EndLine)
-                .ThenByDescending(item => item.Selection.Selection.EndColumn);
+            var filteredResults = _results
+                .Where(result => result.Inspection == SelectedInspection
+                              && result.QualifiedSelection.QualifiedName == selectedResult.QualifiedSelection.QualifiedName)
+                .ToList();
 
+            var items = filteredResults.Where(result => !(result is AggregateInspectionResult))
+                .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
+                .Union(filteredResults.OfType<AggregateInspectionResult>()
+                               .SelectMany(aggregate => aggregate.IndividualResults.Select(result => result.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))))
+                .OrderByDescending(fix => fix.Selection);
             ExecuteQuickFixes(items);
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor
@@ -122,6 +123,9 @@ namespace Rubberduck.VBEditor
         private readonly string _projectPath;
         public string ProjectPath { get { return _projectPath; } }
 
+        private static readonly Regex CaptionProjectRegex = new Regex(@"^(?:[^-]+)(?:\s-\s)(?<project>.+)(?:\s-\s.*)?$");
+        private static readonly Regex OpenModuleRegex = new Regex(@"^(?<project>.+)(?<module>\s-\s\[.*\((Code|UserForm)\)\])$");
+
         // because this causes a flicker in the VBE, we only want to do it once.
         // we also want to defer it as long as possible because it is only
         // needed in a couple places, and QualifiedModuleName is used in many places.
@@ -146,17 +150,18 @@ namespace Rubberduck.VBEditor
                             vbe.ActiveVBProject = _project;
                         }
 
-                        var windowCaptionElements = mainWindow.Caption.Split(' ').ToList();
-                        // without an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2"}
-                        // with an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2", "-", "[Thisworkbook", "(Code)]"}
-                        // so we need to index of the first "-" element; the display name is the element next to that.
-                        _projectDisplayName = windowCaptionElements[windowCaptionElements.IndexOf("-") + 1];
-                        return _projectDisplayName;
+                        var caption = mainWindow.Caption;
+                        if (CaptionProjectRegex.IsMatch(caption))
+                        {
+                            caption = CaptionProjectRegex.Matches(caption)[0].Groups["project"].Value;
+                            _projectDisplayName = OpenModuleRegex.IsMatch(caption)
+                                ? OpenModuleRegex.Matches(caption)[0].Groups["project"].Value
+                                : caption;
+                        }
                     }
-                    catch
-                    {
-                        return string.Empty;
-                    }
+                    // ReSharper disable once EmptyGeneralCatchClause
+                    catch { }
+                    return _projectDisplayName;
                 }
             }
         }
