@@ -68,7 +68,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
         /// </summary>
-        public QualifiedSelection QualifiedSelection
+        public virtual QualifiedSelection QualifiedSelection
         {
             get
             {
@@ -85,13 +85,13 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets all available "quick fixes" for a code inspection result.
         /// </summary>
-        public virtual IEnumerable<QuickFixBase> QuickFixes { get { return new QuickFixBase[] {}; } }
+        public virtual IEnumerable<QuickFixBase> QuickFixes { get { return Enumerable.Empty<QuickFixBase>(); } }
 
         public bool HasQuickFixes { get { return QuickFixes.Any(); } }
 
         public virtual QuickFixBase DefaultQuickFix { get { return QuickFixes.FirstOrDefault(); } }
 
-        public int CompareTo(IInspectionResult other)
+        public virtual int CompareTo(IInspectionResult other)
         {
             return Inspection.CompareTo(other.Inspection);
         }

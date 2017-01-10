@@ -239,9 +239,12 @@ namespace Rubberduck.Parsing.VBA
 
         private void RemoveProject(string projectId, bool notifyStateChanged = false)
         {
-            if (_projects.ContainsKey(projectId))
+            lock (_projects)
             {
-                _projects.Remove(projectId);
+                if (_projects.ContainsKey(projectId))
+                {
+                    _projects.Remove(projectId);
+                }
             }
 
             ClearStateCache(projectId, notifyStateChanged);
@@ -251,7 +254,10 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                return new List<IVBProject>(_projects.Values);
+                lock(_projects)
+                {
+                    return new List<IVBProject>(_projects.Values);
+                }
             }
         }
 
@@ -303,11 +309,20 @@ namespace Rubberduck.Parsing.VBA
                 var projectId = component.Collection.Parent.HelpFile;
 
                 IVBProject project = null;
-                foreach (var item in _projects)
+                lock (_projects)
                 {
-                    if (item.Value.HelpFile == projectId)
+                    foreach (var item in _projects)
                     {
-                        project = project != null ? null : item.Value;
+                        if (item.Value.HelpFile == projectId)
+                        {
+                            if (project != null)
+                            {
+                                // ghost component detected, abort project iteration
+                                project = null;
+                                break;
+                            }
+                            project = item.Value;
+                        }
                     }
                 }
 
@@ -1077,6 +1092,7 @@ namespace Rubberduck.Parsing.VBA
 
             _moduleStates.Clear();
             _declarationSelections.Clear();
+            // no lock because nobody should try to update anything here
             _projects.Clear();
 
             _isDisposed = true;

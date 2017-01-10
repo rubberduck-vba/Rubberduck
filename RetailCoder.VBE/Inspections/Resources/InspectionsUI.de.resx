@@ -568,7 +568,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Code, der undeklarierte Variablen verwendet, kompiliert nicht wenn 'Option Explicit' spezifiziert wird. Undeklarierte Variablen sind immer vom Typ 'Variant', was unnötige Zusatzkosten in Ausführungszeit und Speicherverbauch verursacht.</value>
   </data>
   <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
-    <value>Add property get</value>
+    <value>Addieren 'Property Get'</value>
   </data>
   <data name="ModuleScopeDimKeywordInspectionMeta" xml:space="preserve">
     <value>Das Schlüsselwort 'Public' kann nur auf Modulebene verwendet werden; Sein Konterpart 'Private' kann auch nur auf Modulebene verwendet werden. 'Dim' jedoch kann verwendet werden, um sowohl modulweite als auch prozedurweite Variablen zu deklarieren. Um der Konsistenz Willen ist es besser, 'Dim' nur für lokale Variablen zu verwenden, also 'Private' statt 'Dim' auf Modulebene zu verwenden.</value>
@@ -588,7 +588,10 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="ModuleScopeDimKeywordInspectionResultFormat" xml:space="preserve">
     <value>Die Modulvariable '{0}' ist mit dem 'Dim'-Schlüsselwort deklariert.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspectionMeta">
+  <data name="FunctionReturnValueNotUsedInspectionMeta" xml:space="preserve">
     <value>Ein Member ist als Funktion geschrieben, aber wird wie eine Prozedur verwendet. Falls die Funktion nicht rekursiv ist, sollten Sie in Erwägung ziehen, die 'Function' in ein 'Sub' zu konvertieren. Falls die Funktion rekursiv ist, verwendet keiner der externen Aufrufer den Rückgabewert.</value>
+  </data>
+  <data name="AggregateInspectionResultFormat" xml:space="preserve">
+    <value>{0} ({1} Ergebnisse)</value>
   </data>
 </root>

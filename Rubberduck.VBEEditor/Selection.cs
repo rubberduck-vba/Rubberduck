@@ -2,7 +2,7 @@
 
 namespace Rubberduck.VBEditor
 {
-    public struct Selection : IEquatable<Selection>
+    public struct Selection : IEquatable<Selection>, IComparable<Selection>
     {
         public Selection(int startLine, int startColumn, int endLine, int endColumn)
         {
@@ -86,6 +86,20 @@ namespace Rubberduck.VBEditor
                    && other.EndLine == EndLine
                    && other.StartColumn == StartColumn
                    && other.EndColumn == EndColumn;
+        }
+
+        public int CompareTo(Selection other)
+        {
+            if (this > other)
+            {
+                return 1;
+            }
+            if (this < other)
+            {
+                return -1;
+            }
+
+            return 0;
         }
 
         public override string ToString()

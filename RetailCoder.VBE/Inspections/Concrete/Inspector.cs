@@ -13,6 +13,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
+using Rubberduck.Inspections.Results;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -22,6 +23,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             private readonly IGeneralConfigService _configService;
             private readonly List<IInspection> _inspections;
+            private readonly int AGGREGATION_THRESHOLD = 128;
 
             public Inspector(IGeneralConfigService configService, IEnumerable<IInspection> inspections)
             {
@@ -94,7 +96,14 @@ namespace Rubberduck.Inspections.Concrete
                     LogManager.GetCurrentClassLogger().Error(e);
                 }
                 state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
-                return allIssues;
+
+                var issuesByType = allIssues.GroupBy(issue => issue.GetType())
+                                            .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
+                return issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
+                    .SelectMany(kv => kv.Value)
+                    .Union(issuesByType.Where(kv => kv.Value.Count > AGGREGATION_THRESHOLD)
+                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).ToList())));
+                //return allIssues;
             }
 
             private IReadOnlyList<QualifiedContext> GetParseTreeResults(Configuration config, RubberduckParserState state)
