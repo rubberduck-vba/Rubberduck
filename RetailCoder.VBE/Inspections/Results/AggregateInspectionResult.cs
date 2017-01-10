@@ -2,6 +2,7 @@
 using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 
 namespace Rubberduck.Inspections.Results
@@ -33,6 +34,8 @@ namespace Rubberduck.Inspections.Results
                 return _result.QualifiedSelection;
             }
         }
+
+        public override QuickFixBase DefaultQuickFix { get { return _result.QuickFixes == null ? null : _result.QuickFixes.FirstOrDefault(); } }
 
         public override int CompareTo(IInspectionResult other)
         {
