@@ -97,7 +97,8 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
 
-                var issuesByType = allIssues.GroupBy(issue => issue.GetType()).ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
+                var issuesByType = allIssues.GroupBy(issue => issue.GetType())
+                                            .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
                 return issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
                     .SelectMany(kv => kv.Value)
                     .Union(issuesByType.Where(kv => kv.Value.Count > AGGREGATION_THRESHOLD)
