@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using System.Linq;
+using NLog;
 using NLog.Config;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,16 @@ namespace Rubberduck.Common
                 logLevels.Add(LogLevel.FromOrdinal(logLevelOrdinal));
             }
             return logLevels;
+        }
+
+        public static int MinLogLevel()
+        {
+            return GetLogLevels().Min(lvl => lvl.Ordinal);
+        }
+
+        public static int MaxLogLevel()
+        {
+            return GetLogLevels().Max(lvl => lvl.Ordinal);
         }
 
         public static void SetMinimumLogLevel(LogLevel minimumLogLevel)

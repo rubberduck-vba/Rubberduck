@@ -1,4 +1,7 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using Path = System.IO.Path;
+using System.Runtime.InteropServices;
+using Microsoft.Office.Interop.Visio;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Application
 {
@@ -9,14 +12,19 @@ namespace Rubberduck.VBEditor.Application
 
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            string call = GenerateMethodCall(qualifiedMemberName);
+            var call = GenerateMethodCall(qualifiedMemberName);
             Application.Run(call);
         }
 
-       protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
+        protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
-            var documentName = qualifiedMemberName.QualifiedModuleName.ProjectDisplayName;
-            return string.Concat(documentName, "!", qualifiedMemberName.ToString());
+            var module = qualifiedMemberName.QualifiedModuleName;
+
+            var documentName = string.IsNullOrEmpty(module.Project.FileName)
+                ? module.ProjectDisplayName
+                : Path.GetFileName(module.Project.FileName);
+
+            return string.Format("'{0}'!{1}", documentName.Replace("'", "''"), qualifiedMemberName);
         }
     }
 }
