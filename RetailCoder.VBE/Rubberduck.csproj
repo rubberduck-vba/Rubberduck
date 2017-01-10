@@ -366,6 +366,12 @@
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspection.cs" />
+    <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionsUI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Inspections\Results\AggregateInspectionResult.cs" />
     <Compile Include="Inspections\Results\ImplicitDefaultMemberAssignmentInspectionResult.cs" />
     <Compile Include="Inspections\QuickFixes\IntroduceLocalVariableQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\OptionExplicitQuickFix.cs" />
@@ -519,11 +525,6 @@
     <Compile Include="Inspections\Results\FunctionReturnValueNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\Abstract\IInspection.cs" />
     <Compile Include="Inspections\Abstract\IInspectionModel.cs" />
-    <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InspectionsUI.resx</DependentUpon>
-    </Compile>
     <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
     <Compile Include="Inspections\QuickFixes\SelfAssignedDeclarationInspectionResult.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspection.cs" />
@@ -1038,8 +1039,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Inspections\Resources\InspectionsUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspections\Resources\InspectionsUI.de.resx">
       <Generator>ResXFileCodeGenerator</Generator>
