@@ -19,6 +19,7 @@ namespace RubberduckTests.Commands
     [TestClass]
     public class FindAllImplementationsTests
     {
+        [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_ReturnsCorrectNumber()
         {
@@ -56,6 +57,7 @@ End Sub";
             Assert.AreEqual(2, vm.Tabs[0].SearchResults.Count);
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_SelectedImplementation_ReturnsCorrectNumber()
         {
@@ -93,6 +95,7 @@ End Sub";
             Assert.AreEqual(2, vm.Tabs[0].SearchResults.Count);
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_SelectedReference_ReturnsCorrectNumber()
         {
@@ -136,6 +139,7 @@ End Sub";
             Assert.AreEqual(2, vm.Tabs[0].SearchResults.Count);
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_NoResults_DisplayMessageBox()
         {
@@ -168,6 +172,7 @@ End Sub";
                 It.IsAny<MessageBoxIcon>()), Times.Once);
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_SingleResult_Navigates()
         {
@@ -206,6 +211,7 @@ End Sub";
             navigateCommand.Verify(n => n.Execute(It.IsAny<object>()), Times.Once);
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_NullTarget_Aborts()
         {
@@ -229,6 +235,7 @@ End Sub";
             Assert.IsFalse(vm.Tabs.Any());
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_StateNotReady_Aborts()
         {
@@ -264,6 +271,7 @@ End Sub";
             Assert.IsFalse(vm.Tabs.Any());
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_CanExecute_NullTarget()
         {
@@ -285,6 +293,7 @@ End Sub";
             Assert.IsFalse(command.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_CanExecute_StateNotReady()
         {
@@ -318,6 +327,7 @@ End Sub";
             Assert.IsFalse(command.CanExecute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo")));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_CanExecute_NullActiveCodePane()
         {
