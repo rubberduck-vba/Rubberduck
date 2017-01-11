@@ -45,7 +45,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public object Value
         {
             get { return IsWrappingNullReference ? null : Target.Value; }
-            set { Target.Value = value; }
+            set { if (!IsWrappingNullReference) Target.Value = value; }
         }
 
         /// <summary>
@@ -53,12 +53,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// </summary>
         public object GetIndexedValue(object index1, object index2 = null, object index3 = null, object index4 = null)
         {
-            return Target.get_IndexedValue(index1, index2, index3, index4);
+            return IsWrappingNullReference ? null : Target.get_IndexedValue(index1, index2, index3, index4);
         }
 
         public void SetIndexedValue(object value, object index1, object index2 = null, object index3 = null, object index4 = null)
         {
-            Target.set_IndexedValue(index1, index2, index3, index4, value);
+            if (!IsWrappingNullReference) Target.set_IndexedValue(index1, index2, index3, index4, value);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public object Object
         {
             get { return IsWrappingNullReference ? null : Target.Object; }
-            set { Target.Object = value; }
+            set { if (!IsWrappingNullReference) Target.Object = value; }
         }
 
         public override bool Equals(ISafeComWrapper<VB.Property> other)

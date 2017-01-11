@@ -52,7 +52,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         private void Target_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
         {
             var handler = _clickHandler;
-            if (handler == null)
+            if (handler == null || IsWrappingNullReference)
             {
                 return;
             }
@@ -72,31 +72,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public bool IsBuiltInFace
         {
             get { return !IsWrappingNullReference && Button.BuiltInFace; }
-            set { Button.BuiltInFace = value; }
+            set { if (!IsWrappingNullReference) Button.BuiltInFace = value; }
         }
 
         public int FaceId 
         {
             get { return IsWrappingNullReference ? 0 : Button.FaceId; }
-            set { Button.FaceId = value; }
+            set { if (!IsWrappingNullReference) Button.FaceId = value; }
         }
 
         public string ShortcutText
         {
             get { return IsWrappingNullReference ? string.Empty : Button.ShortcutText; }
-            set { Button.ShortcutText = value; }
+            set { if (!IsWrappingNullReference) Button.ShortcutText = value; }
         }
 
         public ButtonState State
         {
             get { return IsWrappingNullReference ? 0 : (ButtonState)Button.State; }
-            set { Button.State = (Microsoft.Office.Core.MsoButtonState)value; }
+            set { if (!IsWrappingNullReference) Button.State = (Microsoft.Office.Core.MsoButtonState)value; }
         }
 
         public ButtonStyle Style
         {
             get { return IsWrappingNullReference ? 0 : (ButtonStyle)Button.Style; }
-            set { Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value; }
+            set { if (!IsWrappingNullReference) Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value; }
         }
 
         public Image Picture { get; set; }
@@ -104,6 +104,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public void ApplyIcon()
         {
+            if (IsWrappingNullReference) return;
+            
             Button.FaceId = 0;
             if (Picture == null || Mask == null)
             {

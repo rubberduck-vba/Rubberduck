@@ -42,37 +42,41 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Remove(IVBComponent item)
         {
-            Target.Remove((VB.VBComponent) item.Target);
+            if (!IsWrappingNullReference) Target.Remove((VB.VBComponent)item.Target);
         }
 
         public IVBComponent Add(ComponentType type)
         {
-            return new VBComponent(Target.Add((VB.vbext_ComponentType) type));
+            return new VBComponent(IsWrappingNullReference ? null : Target.Add((VB.vbext_ComponentType)type));
         }
 
         public IVBComponent Import(string path)
         {
-            return new VBComponent(Target.Import(path));
+            return new VBComponent(IsWrappingNullReference ? null : Target.Import(path));
         }
 
         public IVBComponent AddCustom(string progId)
         {
-            return new VBComponent(Target.AddCustom(progId));
+            return new VBComponent(IsWrappingNullReference ? null : Target.AddCustom(progId));
         }
 
         public IVBComponent AddMTDesigner(int index = 0)
         {
-            return new VBComponent(Target.AddMTDesigner(index));
+            return new VBComponent(IsWrappingNullReference ? null : Target.AddMTDesigner(index));
         }
 
         IEnumerator<IVBComponent> IEnumerable<IVBComponent>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IVBComponent>(Target, o => new VBComponent((VB.VBComponent)o));
+            return IsWrappingNullReference
+                ? new ComWrapperEnumerator<IVBComponent>(null, o => new VBComponent(null))
+                : new ComWrapperEnumerator<IVBComponent>(Target, o => new VBComponent((VB.VBComponent) o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<IVBComponent>)this).GetEnumerator();
+            return IsWrappingNullReference
+                ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
+                : ((IEnumerable<IVBComponent>) this).GetEnumerator();
         }
 
         public override void Release(bool final = false)

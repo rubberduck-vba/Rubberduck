@@ -18,13 +18,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public ICommandBar Add(string name)
         {
             DeleteExistingCommandBar(name);
-            return new CommandBar(Target.Add(name, Temporary:true));
+            return new CommandBar(IsWrappingNullReference ? null : Target.Add(name, Temporary: true));
         }
 
         public ICommandBar Add(string name, CommandBarPosition position)
         {
             DeleteExistingCommandBar(name);
-            return new CommandBar(Target.Add(name, position, Temporary: true));
+            return new CommandBar(IsWrappingNullReference ? null : Target.Add(name, position, Temporary: true));
         }
 
         private void DeleteExistingCommandBar(string name)
@@ -46,17 +46,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public ICommandBarControl FindControl(int id)
         {
-            return new CommandBarControl(Target.FindControl(Id:id));
+            return new CommandBarControl(IsWrappingNullReference ? null : Target.FindControl(Id: id));
         }
 
         public ICommandBarControl FindControl(ControlType type, int id)
         {
-            return new CommandBarControl(Target.FindControl(type, id));
+            return new CommandBarControl(IsWrappingNullReference ? null : Target.FindControl(type, id));
         }
 
         IEnumerator<ICommandBar> IEnumerable<ICommandBar>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<ICommandBar>(Target, o => new CommandBar((Microsoft.Office.Core.CommandBar)o));
+            return IsWrappingNullReference
+                ? new ComWrapperEnumerator<ICommandBar>(null, o => new CommandBar(null))
+                : new ComWrapperEnumerator<ICommandBar>(Target,
+                    o => new CommandBar((Microsoft.Office.Core.CommandBar) o));
         }
 
         public IEnumerator GetEnumerator()
@@ -71,7 +74,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public ICommandBar this[object index]
         {
-            get { return new CommandBar(Target[index]); }
+            get { return new CommandBar(IsWrappingNullReference ? null : Target[index]); }
         }
 
         public override void Release(bool final = false)

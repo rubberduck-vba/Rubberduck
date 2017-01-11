@@ -29,27 +29,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IWindow this[object index]
         {
-            get { return new Window(Target.Item(index)); }
+            get { return new Window(IsWrappingNullReference ? null : Target.Item(index)); }
         }
 
         public void Remove(IWindow window)
         {
+            if (IsWrappingNullReference) return;
             Target.Remove(((Window)window).Target);
         }
 
         public void Add(IWindow window)
         {
+            if (IsWrappingNullReference) return;
             Target.Add(((Window)window).Target);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return Target.GetEnumerator();
+            return IsWrappingNullReference ? new List<IEnumerable>().GetEnumerator() : Target.GetEnumerator();
         }
 
         IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IWindow>(Target, o => new Window((VB.Window)o));
+            return IsWrappingNullReference
+                ? new ComWrapperEnumerator<IWindow>(null, o => new Window(null))
+                : new ComWrapperEnumerator<IWindow>(Target, o => new Window((VB.Window) o));
         }
 
         public override void Release(bool final = false)

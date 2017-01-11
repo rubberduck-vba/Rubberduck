@@ -29,7 +29,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public int TopLine
         {
             get { return IsWrappingNullReference ? 0 : Target.TopLine; }
-            set { Target.TopLine = value; }
+            set { if (!IsWrappingNullReference) Target.TopLine = value; }
         }
 
         public int CountOfVisibleLines
@@ -50,11 +50,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public Selection Selection
         {
             get { return GetSelection(); }
-            set { SetSelection(value.StartLine, value.StartColumn, value.EndLine, value.EndColumn); }
+            set { if (!IsWrappingNullReference) SetSelection(value.StartLine, value.StartColumn, value.EndLine, value.EndColumn); }
         }
 
         private Selection GetSelection()
         {
+            if (IsWrappingNullReference) return new Selection(0, 0, 0, 0);
+
             int startLine;
             int startColumn;
             int endLine;
@@ -90,12 +92,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
+            if (IsWrappingNullReference) return;
             Target.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
         }
 
         private void ForceFocus()
         {
+            if (IsWrappingNullReference) return;
             Show();
 
             var window = VBE.MainWindow;
@@ -118,6 +122,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Show()
         {
+            if (IsWrappingNullReference) return;
             Target.Show();
         }
 

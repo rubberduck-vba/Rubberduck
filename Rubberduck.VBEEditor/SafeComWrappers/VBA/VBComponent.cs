@@ -53,7 +53,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public string Name
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
         private string SafeName

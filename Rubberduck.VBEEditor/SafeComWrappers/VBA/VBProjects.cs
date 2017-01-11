@@ -34,11 +34,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IVBProject Add(ProjectType type)
         {
-            return new VBProject(Target.Add((VB.vbext_ProjectType)type));
+            return new VBProject(IsWrappingNullReference ? null : Target.Add((VB.vbext_ProjectType)type));
         }
 
         public void Remove(IVBProject project)
         {
+            if (IsWrappingNullReference) return;
             Target.Remove((VB.VBProject) project.Target);
         }
 
@@ -65,22 +66,26 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IVBProject Open(string path)
         {
-            return new VBProject(Target.Open(path));
+            return new VBProject(IsWrappingNullReference ? null : Target.Open(path));
         }
 
         public IVBProject this[object index]
         {
-            get { return new VBProject(Target.Item(index)); }
+            get { return new VBProject(IsWrappingNullReference ? null : Target.Item(index)); }
         }
 
         IEnumerator<IVBProject> IEnumerable<IVBProject>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IVBProject>(Target, o => new VBProject((VB.VBProject)o));
+            return IsWrappingNullReference
+                ? new ComWrapperEnumerator<IVBProject>(null, o => new VBProject(null))
+                : new ComWrapperEnumerator<IVBProject>(Target, o => new VBProject((VB.VBProject) o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<IVBProject>)this).GetEnumerator();
+            return IsWrappingNullReference
+                ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
+                : ((IEnumerable<IVBProject>) this).GetEnumerator();
         }
 
         public override void Release(bool final = false)

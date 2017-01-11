@@ -232,7 +232,7 @@ namespace Rubberduck.UI.Command
         {
             if (_state != null)
             {
-                _state.StateChanged += _state_StateChanged;
+                _state.StateChanged -= _state_StateChanged;
             }
         }
     }
