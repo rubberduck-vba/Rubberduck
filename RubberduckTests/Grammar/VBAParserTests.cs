@@ -1544,15 +1544,30 @@ End Sub
         }
 
         [TestMethod]
-        public void TestCaseIsEqExpression()
+        public void TestCaseIsEqExpressionWithLiteral()
         {
             const string code = @"
-    Sub Test(ByVal foo As Integer)
-        Select Case foo
-            Case Is = 42
-                Exit Sub
-        End Select
-    End Sub
+Sub Test(ByVal foo As Integer)
+    Select Case foo
+        Case Is = 42
+            Exit Sub
+    End Select
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//rangeClause", matches => matches.Count == 1);
+        }
+
+        [TestMethod]
+        public void TestCaseIsEqExpressionWithEnum()
+        {
+            const string code = @"
+Sub Test(ByVal foo As vbext_ComponentType)
+    Select Case foo
+        Case Is = vbext_ct_StdModule
+            Exit Sub
+    End Select
+End Sub
 ";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//rangeClause", matches => matches.Count == 1);
