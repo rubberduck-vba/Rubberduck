@@ -459,9 +459,9 @@ caseClause :
 ;
 caseElseClause : CASE whiteSpace? ELSE endOfStatement block;
 rangeClause :
-    expression
-    | selectStartValue whiteSpace TO whiteSpace selectEndValue   
-    | (IS whiteSpace?)? comparisonOperator whiteSpace? expression
+    (IS whiteSpace?)? comparisonOperator whiteSpace? expression
+	| selectStartValue whiteSpace TO whiteSpace selectEndValue 
+    | expression
 ;
 selectStartValue : expression;
 selectEndValue : expression;
@@ -562,28 +562,28 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
 // 5.6 Expressions
 expression :
-    // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
-    literalExpression                                                                               # literalExpr
-    | lExpression                                                                                   # lExpr
-    | builtInType                                                                                   # builtInTypeExpr
-    | LPAREN whiteSpace? expression whiteSpace? RPAREN                                              # parenthesizedExpr
-    | TYPEOF whiteSpace expression                                                                  # typeofexpr        // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
-    | NEW whiteSpace expression                                                                     # newExpr
-    | expression whiteSpace? POW whiteSpace? expression                                             # powOp
-    | MINUS whiteSpace? expression                                                                  # unaryMinusOp
-    | expression whiteSpace? (MULT | DIV) whiteSpace? expression                                    # multOp
-    | expression whiteSpace? INTDIV whiteSpace? expression                                          # intDivOp
-    | expression whiteSpace? MOD whiteSpace? expression                                             # modOp
-    | expression whiteSpace? (PLUS | MINUS) whiteSpace? expression                                  # addOp
-    | expression whiteSpace? AMPERSAND whiteSpace? expression                                       # concatOp
-    | expression whiteSpace? (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) whiteSpace? expression    # relationalOp
-    | NOT whiteSpace? expression                                                                    # logicalNotOp
-    | expression whiteSpace? AND whiteSpace? expression                                             # logicalAndOp
-    | expression whiteSpace? OR whiteSpace? expression                                              # logicalOrOp
-    | expression whiteSpace? XOR whiteSpace? expression                                             # logicalXorOp
-    | expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
-    | expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
-    | HASH expression                                                                               # markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
+    // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.	
+	literalExpression                                                                               # literalExpr
+	| lExpression                                                                                   # lExpr
+	| builtInType                                                                                   # builtInTypeExpr
+	| LPAREN whiteSpace? expression whiteSpace? RPAREN                                              # parenthesizedExpr
+	| TYPEOF whiteSpace expression                                                                  # typeofexpr        // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
+	| NEW whiteSpace expression                                                                     # newExpr
+	| expression whiteSpace? POW whiteSpace? expression                                             # powOp
+	| MINUS whiteSpace? expression                                                                  # unaryMinusOp
+	| expression whiteSpace? (MULT | DIV) whiteSpace? expression                                    # multOp
+	| expression whiteSpace? INTDIV whiteSpace? expression                                          # intDivOp
+	| expression whiteSpace? MOD whiteSpace? expression                                             # modOp
+	| expression whiteSpace? (PLUS | MINUS) whiteSpace? expression                                  # addOp
+	| expression whiteSpace? AMPERSAND whiteSpace? expression                                       # concatOp
+	| expression whiteSpace? (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) whiteSpace? expression    # relationalOp
+	| NOT whiteSpace? expression                                                                    # logicalNotOp
+	| expression whiteSpace? AND whiteSpace? expression                                             # logicalAndOp
+	| expression whiteSpace? OR whiteSpace? expression                                              # logicalOrOp
+	| expression whiteSpace? XOR whiteSpace? expression                                             # logicalXorOp
+	| expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
+	| expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
+	| HASH expression                                                                               # markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
 ;
 
 // 5.6.5 Literal Expressions
