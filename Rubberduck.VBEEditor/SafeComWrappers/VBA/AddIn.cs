@@ -32,20 +32,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Description
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Description; } 
-            set { Target.Description = value; }
+            get { return IsWrappingNullReference ? string.Empty : Target.Description; }
+            set { if (!IsWrappingNullReference) Target.Description = value; }
         }
 
         public bool Connect
         {
             get { return !IsWrappingNullReference && Target.Connect; }
-            set { Target.Connect = value; }
+            set { if (!IsWrappingNullReference) Target.Connect = value; }
         }
 
         public object Object // definitely leaks a COM object
         {
             get { return IsWrappingNullReference ? null : Target.Object; }
-            set { Target.Object = value; }
+            set { if (!IsWrappingNullReference) Target.Object = value; }
         }
 
         public override bool Equals(ISafeComWrapper<VB.AddIn> other)

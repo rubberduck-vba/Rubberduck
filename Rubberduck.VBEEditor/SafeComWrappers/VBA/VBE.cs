@@ -23,13 +23,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public ICodePane ActiveCodePane
         {
             get { return new CodePane(IsWrappingNullReference ? null : Target.ActiveCodePane); }
-            set { Target.ActiveCodePane = (VB.CodePane)value.Target; }
+            set { if (!IsWrappingNullReference) Target.ActiveCodePane = (VB.CodePane)value.Target; }
         }
 
         public IVBProject ActiveVBProject
         {
             get { return new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject); }
-            set { Target.ActiveVBProject = (VB.VBProject)value.Target; }
+            set { if (!IsWrappingNullReference) Target.ActiveVBProject = (VB.VBProject)value.Target; }
         }
 
         public IWindow ActiveWindow
