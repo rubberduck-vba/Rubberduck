@@ -15,6 +15,7 @@ namespace RubberduckTests.Commands
     [TestClass]
     public class UnitTestCommandTests
     {
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddsTest()
         {
@@ -50,6 +51,7 @@ Private Assert As Object
                 Environment.NewLine, module.Content());
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddsTest_NullActiveCodePane()
         {
@@ -83,6 +85,7 @@ Private Assert As Object
             Assert.AreEqual(input, module.Content());
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddTest_CanExecute_NonReadyState()
         {
@@ -104,6 +107,7 @@ Private Assert As Object
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddTest_CanExecute_NoTestModule()
         {
@@ -124,6 +128,7 @@ Private Assert As Object
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddTest_CanExecute()
         {
@@ -153,6 +158,7 @@ Private Assert As Object
             Assert.IsTrue(addTestMethodCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddsExpectedErrorTest()
         {
@@ -185,6 +191,7 @@ Private Assert As Object
                         "TestMethod1")) + Environment.NewLine, module.Content());
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddExpectedErrorTest_CanExecute_NonReadyState()
         {
@@ -206,6 +213,7 @@ Private Assert As Object
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddExpectedErrorTest_CanExecute_NoTestModule()
         {
@@ -226,6 +234,7 @@ Private Assert As Object
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddExpectedErrorTest_CanExecute()
         {
@@ -254,6 +263,7 @@ Private Assert As Object
             Assert.IsTrue(addTestMethodCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddsExpectedErrorTest_NullActiveCodePane()
         {
@@ -283,6 +293,7 @@ Private Assert As Object
             Assert.AreEqual(input, module.Content());
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddsTestModule()
         {
