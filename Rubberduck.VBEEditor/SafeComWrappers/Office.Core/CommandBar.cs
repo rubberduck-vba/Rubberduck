@@ -29,13 +29,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public bool IsEnabled
         {
             get { return !IsWrappingNullReference && Target.Enabled; }
-            set { Target.Enabled = value; }
+            set { if (!IsWrappingNullReference) Target.Enabled = value; }
         }
 
         public int Height
         {
             get { return IsWrappingNullReference ? 0 : Target.Height; }
-            set { Target.Height = value; }
+            set { if (!IsWrappingNullReference) Target.Height = value; }
         }
 
         public int Index
@@ -46,25 +46,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public int Left
         {
             get { return IsWrappingNullReference ? 0 : Target.Left; }
-            set { Target.Left = value; }
+            set { if (!IsWrappingNullReference) Target.Left = value; }
         }
 
         public string Name
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
         public CommandBarPosition Position
         {
             get { return IsWrappingNullReference ? 0 : (CommandBarPosition)Target.Position; }
-            set { Target.Position = (Microsoft.Office.Core.MsoBarPosition)value; }
+            set { if (!IsWrappingNullReference) Target.Position = (Microsoft.Office.Core.MsoBarPosition)value; }
         }
 
         public int Top
         {
             get { return IsWrappingNullReference ? 0 : Target.Top; }
-            set { Target.Top = value; }
+            set { if (!IsWrappingNullReference) Target.Top = value; }
         }
 
         public CommandBarType Type
@@ -75,28 +75,28 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public bool IsVisible
         {
             get { return !IsWrappingNullReference && Target.Visible; }
-            set { Target.Visible = value; }
+            set { if (!IsWrappingNullReference) Target.Visible = value; }
         }
 
         public int Width
         {
             get { return IsWrappingNullReference ? 0 : Target.Width; }
-            set { Target.Width = value; }
+            set { if (!IsWrappingNullReference) Target.Width = value; }
         }
 
         public ICommandBarControl FindControl(int id)
         {
-            return new CommandBarControl(Target.FindControl(Id: id));
+            return new CommandBarControl(IsWrappingNullReference ? null : Target.FindControl(Id: id));
         }
 
         public ICommandBarControl FindControl(ControlType type, int id)
         {
-            return new CommandBarControl(Target.FindControl(type, id));
+            return new CommandBarControl(IsWrappingNullReference ? null : Target.FindControl(type, id));
         }
         
         public void Delete()
         {
-            Target.Delete();
+            if (!IsWrappingNullReference) Target.Delete();
         }
 
         public override void Release(bool final = false)
