@@ -146,6 +146,18 @@ namespace Rubberduck.Parsing.ComReflection
                 }
                 catch (COMException) { }
             }
+            ApplySpecificLibraryTweaks();
+        }
+
+        private void ApplySpecificLibraryTweaks()
+        {
+            if (!Name.ToUpper().Equals("EXCEL")) return;
+            var application = _classes.SingleOrDefault(x => x.Guid.ToString().Equals("00024500-0000-0000-c000-000000000046"));
+            var worksheetFunction = _interfaces.SingleOrDefault(i => i.Guid.ToString().Equals("00020845-0000-0000-c000-000000000046"));
+            if (application != null && worksheetFunction != null)
+            {
+                application.AddInterface(worksheetFunction);
+            }
         }
     }
 }
