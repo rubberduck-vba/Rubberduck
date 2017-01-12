@@ -41,6 +41,14 @@ namespace Rubberduck.Parsing.ComReflection
             get { return _events.Count > 0; }
         }
 
+        public void AddInterface(ComInterface intrface, bool restricted = false)
+        {
+            if (!_interfaces.ContainsKey(intrface))
+            {
+                _interfaces.Add(intrface, restricted);
+            }
+        }
+
         public ComCoClass(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base (typeLib, attrib, index)
         {
             Type = DeclarationType.ClassModule;

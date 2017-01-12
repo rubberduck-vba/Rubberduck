@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsHidden { get; private set; }
         public bool IsRestricted { get; private set; }
         public bool IsExtensible { get; private set; }
-
+        
         protected ComType(ITypeInfo info, TYPEATTR attrib)
             : base(info)
         {
