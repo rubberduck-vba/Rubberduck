@@ -82,10 +82,13 @@ namespace Rubberduck.Parsing.ComReflection
                 }
                 catch (COMException) { }
 
-                DefaultInterface = flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FDEFAULT) ? intface : DefaultInterface;
                 if (flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FSOURCE))
                 {
                     _events.Add(intface);
+                }
+                else
+                {
+                    DefaultInterface = flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FDEFAULT) ? intface : DefaultInterface;
                 }
                 _interfaces.Add(intface, flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FRESTRICTED));
                 info.ReleaseTypeAttr(attribPtr);
