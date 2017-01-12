@@ -41,6 +41,14 @@ namespace Rubberduck.Parsing.ComReflection
             get { return _events.Count > 0; }
         }
 
+        public void AddInterface(ComInterface intrface, bool restricted = false)
+        {
+            if (!_interfaces.ContainsKey(intrface))
+            {
+                _interfaces.Add(intrface, restricted);
+            }
+        }
+
         public ComCoClass(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base (typeLib, attrib, index)
         {
             Type = DeclarationType.ClassModule;
@@ -74,10 +82,13 @@ namespace Rubberduck.Parsing.ComReflection
                 }
                 catch (COMException) { }
 
-                DefaultInterface = flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FDEFAULT) ? intface : DefaultInterface;
                 if (flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FSOURCE))
                 {
                     _events.Add(intface);
+                }
+                else
+                {
+                    DefaultInterface = flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FDEFAULT) ? intface : DefaultInterface;
                 }
                 _interfaces.Add(intface, flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FRESTRICTED));
                 info.ReleaseTypeAttr(attribPtr);
