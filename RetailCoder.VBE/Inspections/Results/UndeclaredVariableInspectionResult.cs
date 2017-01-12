@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Results
             _quickFixes = new QuickFixBase[]
             {
                 new IntroduceLocalVariableQuickFix(target), 
-                new IgnoreOnceQuickFix(target.Context, target.QualifiedSelection, inspection.Name), 
+                new IgnoreOnceQuickFix(target.Context, target.QualifiedSelection, inspection.AnnotationName), 
             };
         }
 

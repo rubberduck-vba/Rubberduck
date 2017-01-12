@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
@@ -20,7 +21,7 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            return UserDeclarations.Where(item => item.IsUndeclared)
+            return UserDeclarations.Where(item => item.IsUndeclared && item.DeclarationType == DeclarationType.Variable)
                 .Select(item => new UndeclaredVariableInspectionResult(this, item));
         }
     }

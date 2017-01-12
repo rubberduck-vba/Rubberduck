@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections
 
             return declarations.SelectMany(declaration => declaration.References
                 .Where(item => _tokens.Contains(item.IdentifierName) &&
-                               !IsInspectionDisabled(item.QualifiedModuleName.Component, item.Selection.StartLine))
+                               !IsInspectionDisabled(item, AnnotationName))
                 .Select(item => new UntypedFunctionUsageInspectionResult(this, item)));
         }
     }
