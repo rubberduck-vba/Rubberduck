@@ -25,12 +25,10 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var interfaceMembersScope = UserDeclarations.FindInterfaceImplementationMembers().Select(m => m.Scope);
-            var builtinEventHandlers = State.AllDeclarations.FindBuiltInEventHandlers();
+            var builtinEventHandlers = Declarations.FindBuiltInEventHandlers();
 
             var issues = (from item in UserDeclarations
-                where
-                    !IsInspectionDisabled(item, AnnotationName)
-                    && item.DeclarationType == DeclarationType.Parameter
+                where item.DeclarationType == DeclarationType.Parameter
                     // ParamArray parameters do not allow an explicit "ByRef" parameter mechanism.               
                     && !((ParameterDeclaration)item).IsParamArray
                     && !interfaceMembersScope.Contains(item.ParentScope)
@@ -40,7 +38,6 @@ namespace Rubberduck.Inspections
                 select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
                 .Select(issue => new ImplicitByRefParameterInspectionResult(this, issue.Context.unrestrictedIdentifier().GetText(), issue));
 
- 
             return issues;
         }
     }
