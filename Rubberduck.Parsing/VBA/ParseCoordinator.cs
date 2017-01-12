@@ -209,7 +209,7 @@ namespace Rubberduck.Parsing.VBA
                 }
 
                 State.SetStatusAndFireStateChanged(requestor, State.Status);
-                return;
+                //return; // returning here leaves state in 'ResolvedDeclarations' when a module is removed, which disables refresh
             }
             
             foreach (var component in toParse)
