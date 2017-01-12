@@ -14,7 +14,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public bool BeginsGroup
         {
             get { return !IsWrappingNullReference && Target.BeginGroup; }
-            set { Target.BeginGroup = value; }
+            set { if (!IsWrappingNullReference) Target.BeginGroup = value; }
         }
 
         public bool IsBuiltIn
@@ -25,25 +25,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public string Caption
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Caption; }
-            set { Target.Caption = value; }
+            set { if (!IsWrappingNullReference) Target.Caption = value; }
         }
 
         public string DescriptionText
         {
             get { return IsWrappingNullReference ? string.Empty : Target.DescriptionText; }
-            set { Target.DescriptionText = value; }
+            set { if (!IsWrappingNullReference) Target.DescriptionText = value; }
         }
 
         public bool IsEnabled
         {
             get { return !IsWrappingNullReference && Target.Enabled; }
-            set { Target.Enabled = value; }
+            set { if (!IsWrappingNullReference) Target.Enabled = value; }
         }
 
         public int Height
         {
             get { return Target.Height; }
-            set { Target.Height = value; }
+            set { if (!IsWrappingNullReference) Target.Height = value; }
         }
 
         public int Id
@@ -64,7 +64,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public string OnAction
         {
             get { return IsWrappingNullReference ? string.Empty : Target.OnAction; }
-            set { Target.OnAction = value; }
+            set { if (!IsWrappingNullReference) Target.OnAction = value; }
         }
 
         public ICommandBar Parent
@@ -75,25 +75,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public string Parameter
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Parameter; }
-            set { Target.Parameter = value; }
+            set { if (!IsWrappingNullReference) Target.Parameter = value; }
         }
 
         public int Priority
         {
             get { return IsWrappingNullReference ? 0 : Target.Priority; }
-            set { Target.Priority = value; }
+            set { if (!IsWrappingNullReference) Target.Priority = value; }
         }
 
         public string Tag 
         {
             get { return Target.Tag; }
-            set { Target.Tag = value; }
+            set { if (!IsWrappingNullReference) Target.Tag = value; }
         }
 
         public string TooltipText
         {
             get { return IsWrappingNullReference ? string.Empty : Target.TooltipText; }
-            set { Target.TooltipText = value; }
+            set { if (!IsWrappingNullReference) Target.TooltipText = value; }
         }
 
         public int Top
@@ -109,28 +109,28 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public bool IsVisible
         {
             get { return !IsWrappingNullReference && Target.Visible; }
-            set { Target.Visible = value; }
+            set { if (!IsWrappingNullReference) Target.Visible = value; }
         }
 
         public int Width
         {
             get { return IsWrappingNullReference ? 0 : Target.Width; }
-            set { Target.Width = value; }
+            set { if (!IsWrappingNullReference) Target.Width = value; }
         }
 
         public bool IsPriorityDropped
         {
-            get { return Target.IsPriorityDropped; }
+            get { return (!IsWrappingNullReference) && Target.IsPriorityDropped; }
         }
 
         public void Delete()
         {
-            Target.Delete(true);
+            if (!IsWrappingNullReference) Target.Delete(true);
         }
 
         public void Execute()
         {
-            Target.Execute();
+            if (!IsWrappingNullReference) Target.Execute();
         }
 
         public override bool Equals(ISafeComWrapper<Microsoft.Office.Core.CommandBarControl> other)

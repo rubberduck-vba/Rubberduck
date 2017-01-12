@@ -602,4 +602,8 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ImplicitDefaultMemberAssignmentInspectionResultFormat" xml:space="preserve">
     <value>Assignment to '{0}' implicitly assigns default member of class '{1}'</value>
   </data>
+  <data name="AggregateInspectionResultFormat" xml:space="preserve">
+    <value>{0} ({1} results)</value>
+    <comment>{0} inpection description, {1} result count</comment>
+  </data>
 </root>

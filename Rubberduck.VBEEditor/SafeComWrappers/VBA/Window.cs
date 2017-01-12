@@ -41,31 +41,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public bool IsVisible
         {
             get { return !IsWrappingNullReference && Target.Visible; }
-            set { Target.Visible = value; }
+            set { if (!IsWrappingNullReference) Target.Visible = value; }
         }
 
         public int Left
         {
             get { return IsWrappingNullReference ? 0 : Target.Left; }
-            set { Target.Left = value; }
+            set { if (!IsWrappingNullReference) Target.Left = value; }
         }
 
         public int Top
         {
             get { return IsWrappingNullReference ? 0 : Target.Top; }
-            set { Target.Top = value; }
+            set { if (!IsWrappingNullReference) Target.Top = value; }
         }
 
         public int Width
         {
             get { return IsWrappingNullReference ? 0 : Target.Width; }
-            set { Target.Width = value; }
+            set { if (!IsWrappingNullReference) Target.Width = value; }
         }
 
         public int Height
         {
             get { return IsWrappingNullReference ? 0 : Target.Height; }
-            set { Target.Height = value; }
+            set { if (!IsWrappingNullReference) Target.Height = value; }
         }
 
         public WindowState WindowState
@@ -90,27 +90,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Close()
         {
-            Target.Close();
+            if (!IsWrappingNullReference) Target.Close();
         }
 
         public void SetFocus()
         {
-            Target.SetFocus();
+            if (!IsWrappingNullReference) Target.SetFocus();
         }
 
         public void SetKind(WindowKind eKind)
         {
-            Target.SetKind((vbext_WindowType)eKind);
+            if (!IsWrappingNullReference) Target.SetKind((vbext_WindowType)eKind);
         }
 
         public void Detach()
         {
-            Target.Detach();
+            if (!IsWrappingNullReference) Target.Detach();
         }
 
         public void Attach(int lWindowHandle)
         {
-            Target.Attach(lWindowHandle);
+            if (!IsWrappingNullReference) Target.Attach(lWindowHandle);
         }
         
         public override void Release(bool final = false)

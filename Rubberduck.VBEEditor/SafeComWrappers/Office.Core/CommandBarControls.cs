@@ -25,27 +25,32 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public ICommandBarControl this[object index]
         {
-            get { return new CommandBarControl(Target[index]); }
+            get { return new CommandBarControl(!IsWrappingNullReference ? Target[index] : null); }
         }
 
         public ICommandBarControl Add(ControlType type)
         {
-            return new CommandBarControl(Target.Add(type, Temporary:true));
+            return new CommandBarControl(IsWrappingNullReference ? null : Target.Add(type, Temporary:true));
         }
 
         public ICommandBarControl Add(ControlType type, int before)
         {
-            return new CommandBarControl(Target.Add(type, Before:before, Temporary:true));
+            return new CommandBarControl(IsWrappingNullReference ? null : Target.Add(type, Before: before, Temporary: true));
         }
 
         IEnumerator<ICommandBarControl> IEnumerable<ICommandBarControl>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<ICommandBarControl>(Target, o => new CommandBarControl((Microsoft.Office.Core.CommandBarControl)o));
+            return IsWrappingNullReference
+                ? new ComWrapperEnumerator<ICommandBarControl>(null, o => new CommandBarControl(null))
+                : new ComWrapperEnumerator<ICommandBarControl>(Target,
+                    o => new CommandBarControl((Microsoft.Office.Core.CommandBarControl) o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<ICommandBarControl>)this).GetEnumerator();
+            return IsWrappingNullReference
+                ? new List<ICommandBarControl>().GetEnumerator()
+                : ((IEnumerable<ICommandBarControl>) this).GetEnumerator();
         }
 
         public override void Release(bool final = false)

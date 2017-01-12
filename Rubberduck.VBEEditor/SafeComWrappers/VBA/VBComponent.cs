@@ -53,7 +53,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public string Name
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            set { if (!IsWrappingNullReference) Target.Name = value; }
+        }
+
+        private string SafeName
+        {
+            get { return Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), "_")); }
         }
 
         public IControls Controls
@@ -107,7 +112,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// <param name="folder">Destination folder for the resulting source file.</param>
         public string ExportAsSourceFile(string folder)
         {
-            var fullPath = Path.Combine(folder, Name + Type.FileExtension());
+            var fullPath = Path.Combine(folder, SafeName + Type.FileExtension());
             switch (Type)
             {
                 case ComponentType.UserForm:
@@ -165,7 +170,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private string ExportToTempFile()
         {
-            var path = Path.Combine(Path.GetTempPath(), Name + Type.FileExtension());
+            var path = Path.Combine(Path.GetTempPath(), SafeName + Type.FileExtension());
             Export(path);
             return path;
         }

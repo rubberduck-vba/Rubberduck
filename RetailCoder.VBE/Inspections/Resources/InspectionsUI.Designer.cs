@@ -61,6 +61,15 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ({1} results).
+        /// </summary>
+        public static string AggregateInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("AggregateInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead if the caller isn&apos;t supposed to know the new value. If the caller should see the new value, the parameter should be passed ByRef instead, and you have a bug..
         /// </summary>
         public static string AssignedByValParameterInspectionMeta {

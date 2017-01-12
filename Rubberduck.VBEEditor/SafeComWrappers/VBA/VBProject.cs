@@ -27,19 +27,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public string HelpFile
         {
             get { return IsWrappingNullReference ? string.Empty : Target.HelpFile; }
-            set { Target.HelpFile = value; }
+            set { if (!IsWrappingNullReference) Target.HelpFile = value; }
         }
 
         public string Description 
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Description; }
-            set { Target.Description = value; } 
+            set { if (!IsWrappingNullReference) Target.Description = value; } 
         }
 
         public string Name
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
         public EnvironmentMode Mode
@@ -105,12 +105,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void SaveAs(string fileName)
         {
-            Target.SaveAs(fileName);
+            if (!IsWrappingNullReference) Target.SaveAs(fileName);
         }
 
         public void MakeCompiledFile()
         {
-            Target.MakeCompiledFile();
+            if (!IsWrappingNullReference) Target.MakeCompiledFile();
         }
 
         public override void Release(bool final = false)

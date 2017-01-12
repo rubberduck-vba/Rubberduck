@@ -34,17 +34,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IProperty this[object index]
         {
-            get { return new Property(Target.Item(index)); }
+            get { return new Property(IsWrappingNullReference ? null : Target.Item(index)); }
         }
 
         IEnumerator<IProperty> IEnumerable<IProperty>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IProperty>(Target, o => new Property((VB.Property)o));
+            return IsWrappingNullReference
+                ? new ComWrapperEnumerator<IProperty>(null, o => new Property(null))
+                : new ComWrapperEnumerator<IProperty>(Target, o => new Property((VB.Property) o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<IProperty>)this).GetEnumerator();
+            return IsWrappingNullReference
+                ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
+                : ((IEnumerable<IProperty>) this).GetEnumerator();
         }
 
         public override void Release(bool final = false)

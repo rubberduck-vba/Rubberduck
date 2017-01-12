@@ -30,22 +30,26 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public ICodePane Current 
         { 
             get { return new CodePane(IsWrappingNullReference ? null : Target.Current); }
-            set { Target.Current = (VB.CodePane)value.Target;}
+            set { if (!IsWrappingNullReference) Target.Current = (VB.CodePane)value.Target; }
         }
 
         public ICodePane this[object index]
         {
-            get { return new CodePane(Target.Item(index)); }
+            get { return new CodePane(IsWrappingNullReference ? null : Target.Item(index)); }
         }
 
         IEnumerator<ICodePane> IEnumerable<ICodePane>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<ICodePane>(Target, o => new CodePane((VB.CodePane)o));
+            return IsWrappingNullReference
+                ? new ComWrapperEnumerator<ICodePane>(null, o => new CodePane(null))
+                : new ComWrapperEnumerator<ICodePane>(Target, o => new CodePane((VB.CodePane) o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<ICodePane>)this).GetEnumerator();
+            return IsWrappingNullReference
+                ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
+                : ((IEnumerable<ICodePane>) this).GetEnumerator();
         }
 
         public override void Release(bool final = false)
