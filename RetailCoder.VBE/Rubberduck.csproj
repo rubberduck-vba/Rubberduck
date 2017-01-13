@@ -365,6 +365,7 @@
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
+    <Compile Include="Inspections\HungarianNotationInspection.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -372,6 +373,7 @@
       <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
     <Compile Include="Inspections\Results\AggregateInspectionResult.cs" />
+    <Compile Include="Inspections\Results\HungarianNotationInspectionResult.cs" />
     <Compile Include="Inspections\Results\ImplicitDefaultMemberAssignmentInspectionResult.cs" />
     <Compile Include="Inspections\QuickFixes\IntroduceLocalVariableQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\OptionExplicitQuickFix.cs" />

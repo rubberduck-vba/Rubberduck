@@ -606,4 +606,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>{0} ({1} results)</value>
     <comment>{0} inpection description, {1} result count</comment>
   </data>
+  <data name="HungarianNotationInspectionMeta" xml:space="preserve">
+    <value>Hungarian notation makes code less readable, and is redundant when strongly typed variables and meaningful names are used.</value>
+  </data>
+  <data name="HungarianNotationInspectionName" xml:space="preserve">
+    <value>Variable uses Hungarian notation.</value>
+  </data>
+  <data name="HungarianNotationInspectionResultFormat" xml:space="preserve">
+    <value>Consider renaming {0} '{1}'</value>
+  </data>
 </root>
