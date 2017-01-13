@@ -2422,5 +2422,67 @@ End Sub
 
             Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
         }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2478
+        [TestMethod]
+        public void VariableNamedBfResolvesAsAVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim bf As Integer
+    Debug.Print bf
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "bf");
+
+            Assert.IsNotNull(declaration);
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2478
+        [TestMethod]
+        public void ProcedureNamedBfResolvesAsAProcedure()
+        {
+            // arrange
+            var code = @"
+Public Sub Bf()
+    Debug.Print ""I'm cool with that""
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
+                item.DeclarationType == DeclarationType.Procedure && item.IdentifierName == "Bf");
+
+            Assert.IsNotNull(declaration);
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2478
+        [TestMethod]
+        public void TypeNamedBfResolvesAsAType()
+        {
+            // arrange
+            var code = @"
+Private Type Bf
+    b As Long
+    f As Long
+End Type
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
+                item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == "Bf");
+
+            Assert.IsNotNull(declaration);
+        }
     }
 }

@@ -525,7 +525,7 @@ unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
 identifier : untypedIdentifier | typedIdentifier;
 untypedIdentifier : identifierValue;
 typedIdentifier : identifierValue typeHint;
-identifierValue : IDENTIFIER | keyword | foreignName;
+identifierValue : IDENTIFIER | keyword | foreignName | BF;
 foreignName : L_SQUARE_BRACKET foreignIdentifier* R_SQUARE_BRACKET;
 foreignIdentifier : ~(L_SQUARE_BRACKET | R_SQUARE_BRACKET) | foreignName;
 

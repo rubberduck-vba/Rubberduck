@@ -317,7 +317,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
     <value>Implementiere als Funktion und passe die Aufrufe an</value>
   </data>
-  <data name="UseMeaningfulNameInspectionResultFormat" xml:space="preserve">
+  <data name="IdentifierNameInspectionResultFormat" xml:space="preserve">
     <value>Übelege die Umbenennung {0} '{1}'</value>
   </data>
   <data name="UseMeaningfulNameInspectionMeta" xml:space="preserve">

@@ -1,13 +1,9 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
-using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -16,14 +12,15 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class UseMeaningfulNameInspectionTests
+    public class HungarianNotationInspectionTests
     {
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UseMeaningfulName_ReturnsResult_NameWithoutVowels()
+        public void HungarianNotation_ReturnsResult_VariableWithThreeLetterPrefix()
         {
-            const string inputCode = 
-@"Sub Ffffff()
+            const string inputCode =
+@"Sub Hungarian()
+    Dim strFoo As String
 End Sub";
 
             //Arrange
@@ -40,7 +37,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -48,10 +45,11 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UseMeaningfulName_ReturnsResult_NameUnderThreeLetters()
+        public void HungarianNotation_ReturnsResult_VariableWithOneLetterPrefix()
         {
             const string inputCode =
-@"Sub Oo()
+@"Sub Hungarian()
+    Dim oFoo As Object
 End Sub";
 
             //Arrange
@@ -68,7 +66,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -76,16 +74,17 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UseMeaningfulName_ReturnsResult_NameEndsWithDigit()
+        public void HungarianNotation_ReturnsResult_ForClass()
         {
             const string inputCode =
-@"Sub Foo1()
+@"Sub Test()
+    Debug.Print ""Ez egy objektum""
 End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .AddComponent("clsMagyar", ComponentType.ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -96,7 +95,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -104,10 +103,11 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UseMeaningfulName_DoesNotReturnsResult_GoodName_LowerCaseVowels()
+        public void HungarianNotation_DoesNotReturnsResult_AllLowerCase()
         {
             const string inputCode =
-@"Sub FooBar()
+@"Sub NoHungarianHere()
+    Dim strong As Variant
 End Sub";
 
             //Arrange
@@ -124,90 +124,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UseMeaningfulName_DoesNotReturnsResult_GoodName_UpperCaseVowels()
-        {
-            const string inputCode =
-@"Sub FOOBAR()
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UseMeaningfulName_DoesNotReturnsResult_OptionBase()
-        {
-            const string inputCode =
-@"Option Base 1";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UseMeaningfulName_DoesNotReturnResult_NameWithoutVowels_NameIsInWhitelist()
-        {
-            const string inputCode =
-@"Sub sss()
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -215,13 +132,39 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UseMeaningfulName_Ignored_DoesNotReturnResult()
+        public void HungarianNotation_DoesNotReturnsResult_UpperCaseFirstLetter()
         {
             const string inputCode =
-@"'@Ignore UseMeaningfulName
-Sub Ffffff()
-End Sub";
+@"Option Explicit";
 
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("Stripper", ComponentType.ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+        
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void HungarianNotation_DoesNotReturnsResult_ThreeLetterVariable()
+        {
+            const string inputCode =
+@"Sub InExcelSomewhere()
+    Dim col As Long
+End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
@@ -236,7 +179,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -244,23 +187,18 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UseMeaningfulName_IgnoreQuickFixWorks()
+        public void HungarianNotation_DoesNotReturnResult_WhenIgnored()
         {
             const string inputCode =
-@"Sub Ffffff()
+@"Sub MagyarRendbenVan()
+    '@Ignore HungarianNotation
+    Dim strFoo As Variant
 End Sub";
-
-            const string expectedCode =
-@"'@Ignore UseMeaningfulName
-Sub Ffffff()
-End Sub";
-
             //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
-            var module = project.Object.VBComponents[0].CodeModule;
             var vbe = builder.AddProject(project).Build();
 
             var mockHost = new Mock<IHostApplication>();
@@ -270,43 +208,38 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspection = new UseMeaningfulNameInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void InspectionType()
+        public void HungarianNotation_DoesNotReturnResult_WhenWhitelisted()
         {
-            var inspection = new UseMeaningfulNameInspection(null, null, null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-        }
+            const string inputCode =
+@"Sub Feherlista()
+    Dim oRange As Object
+End Sub";
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionName()
-        {
-            const string inspectionName = "UseMeaningfulNameInspection";
-            var inspection = new UseMeaningfulNameInspection(null, null, null);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
-            Assert.AreEqual(inspectionName, inspection.Name);
-        }
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-        internal static Mock<IPersistanceService<CodeInspectionSettings>> GetInspectionSettings()
-        {
-            var settings = new Mock<IPersistanceService<CodeInspectionSettings>>();
-            settings.Setup(s => s.Load(It.IsAny<CodeInspectionSettings>()))
-                .Returns(new CodeInspectionSettings(null, new[]
-                {
-                    new WhitelistedIdentifierSetting("sss"),
-                    new WhitelistedIdentifierSetting("oRange")
-                }, true));
+            var inspection = new UseMeaningfulNameInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+            var inspectionResults = inspection.GetInspectionResults();
 
-            return settings;
+            Assert.IsFalse(inspectionResults.Any());
         }
     }
 }
