@@ -5,21 +5,24 @@ using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.Results
 {
-    public class UseMeaningfulNameInspectionResult : InspectionResultBase
+    public class IdentifierNameInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<QuickFixBase> _quickFixes;
 
-        public UseMeaningfulNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, IMessageBox messageBox)
+        public IdentifierNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, IMessageBox messageBox, IPersistanceService<CodeInspectionSettings> settings)
             : base(inspection, target)
         {
             _quickFixes = new QuickFixBase[]
             {
                 new RenameDeclarationQuickFix(target.Context, target.QualifiedSelection, target, parserState, messageBox),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
+                new IgnoreOnceQuickFix(Context, target.QualifiedSelection, Inspection.AnnotationName), 
+                new AddIdentifierToWhiteListQuickFix(Context, target.QualifiedSelection, target, settings)
             };
         }
 
@@ -27,7 +30,7 @@ namespace Rubberduck.Inspections.Results
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.UseMeaningfulNameInspectionResultFormat, RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, UI.Settings.Settings.Culture), Target.IdentifierName).Captialize(); }
+            get { return string.Format(InspectionsUI.IdentifierNameInspectionResultFormat, RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, UI.Settings.Settings.Culture), Target.IdentifierName).Captialize(); }
         }
 
         public override NavigateCodeEventArgs GetNavigationArgs()

@@ -317,7 +317,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
     <value>Implement as function and update usages.</value>
   </data>
-  <data name="UseMeaningfulNameInspectionResultFormat" xml:space="preserve">
+  <data name="IdentifierNameInspectionResultFormat" xml:space="preserve">
     <value>Consider renaming {0} '{1}'</value>
   </data>
   <data name="UseMeaningfulNameInspectionMeta" xml:space="preserve">
@@ -605,5 +605,14 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="AggregateInspectionResultFormat" xml:space="preserve">
     <value>{0} ({1} results)</value>
     <comment>{0} inpection description, {1} result count</comment>
+  </data>
+  <data name="HungarianNotationInspectionMeta" xml:space="preserve">
+    <value>Hungarian notation makes code less readable, and is redundant when strongly typed variables and meaningful names are used.</value>
+  </data>
+  <data name="HungarianNotationInspectionName" xml:space="preserve">
+    <value>Variable uses Hungarian notation.</value>
+  </data>
+  <data name="WhiteListIdentifierQuickFix" xml:space="preserve">
+    <value>Add to whitelist</value>
   </data>
 </root>

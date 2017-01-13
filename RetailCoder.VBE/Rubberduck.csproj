@@ -365,7 +365,9 @@
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
+    <Compile Include="Inspections\HungarianNotationInspection.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspection.cs" />
+    <Compile Include="Inspections\QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -542,7 +544,7 @@
     <Compile Include="Inspections\Results\ProcedureCanBeWrittenAsFunctionInspectionResult.cs" />
     <Compile Include="Inspections\Results\UntypedFunctionUsageInspectionResult.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspection.cs" />
-    <Compile Include="Inspections\Results\UseMeaningfulNameInspectionResult.cs" />
+    <Compile Include="Inspections\Results\IdentifierNameInspectionResult.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerCustomFolderViewModel.cs" />
