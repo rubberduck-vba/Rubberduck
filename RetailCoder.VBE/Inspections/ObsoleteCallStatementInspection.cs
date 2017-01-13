@@ -51,8 +51,7 @@ namespace Rubberduck.Inspections
                     if (!stringStrippedLines.Contains(":"))
                     {
                         results.Add(new ObsoleteCallStatementUsageInspectionResult(this,
-                                new QualifiedContext<VBAParser.CallStmtContext>(context.ModuleName,
-                                    context.Context as VBAParser.CallStmtContext)));
+                                new QualifiedContext<VBAParser.CallStmtContext>(context.ModuleName, context.Context)));
                     }
                 }
             }

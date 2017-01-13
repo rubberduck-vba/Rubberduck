@@ -36,13 +36,13 @@ namespace Rubberduck.Inspections
         {
             var declarations = UserDeclarations.ToList();
 
-            var classes = UserDeclarations.Where(item => item.DeclarationType == DeclarationType.ClassModule).ToList();
-            var modules = UserDeclarations.Where(item => item.DeclarationType == DeclarationType.ProceduralModule).ToList();
+            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule).ToList();
+            var modules = declarations.Where(item => item.DeclarationType == DeclarationType.ProceduralModule).ToList();
 
             var handlers = declarations.Where(item => item.DeclarationType == DeclarationType.Control)
                 .SelectMany(control => declarations.FindEventHandlers(control)).ToList();
 
-            var withEventFields = UserDeclarations.Where(item => item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
+            var withEventFields = declarations.Where(item => item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
             handlers.AddRange(withEventFields.SelectMany(field => declarations.FindEventProcedures(field)));
 
             var forms = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule
@@ -54,11 +54,10 @@ namespace Rubberduck.Inspections
                 handlers.AddRange(forms.SelectMany(form => State.FindFormEventHandlers(form)));
             }
 
-            handlers.AddRange(State.AllDeclarations.FindBuiltInEventHandlers());
+            handlers.AddRange(Declarations.FindBuiltInEventHandlers());
 
             var items = declarations
-                .Where(item => !IsIgnoredDeclaration(declarations, item, handlers, classes, modules)
-                            && !IsInspectionDisabled(item, AnnotationName)).ToList();
+                .Where(item => !IsIgnoredDeclaration(declarations, item, handlers, classes, modules)).ToList();
             var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
             issues = DocumentEventHandlerPrefixes
