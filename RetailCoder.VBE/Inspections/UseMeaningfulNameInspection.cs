@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections
                                                   char.IsDigit(declaration.IdentifierName.Last()) ||
                                                   !declaration.IdentifierName.Any(c => 
                                                       "aeiouy".Any(a => string.Compare(a.ToString(), c.ToString(), StringComparison.OrdinalIgnoreCase) == 0))))
-                            .Select(issue => new UseMeaningfulNameInspectionResult(this, issue, State, _messageBox))
+                            .Select(issue => new IdentifierNameInspectionResult(this, issue, State, _messageBox, _settings))
                             .ToList();
 
             return issues;

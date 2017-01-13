@@ -315,9 +315,9 @@ namespace Rubberduck.Inspections.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Consider renaming {0} &apos;{1}&apos;.
         /// </summary>
-        public static string HungarianNotationInspectionResultFormat {
+        public static string IdentifierNameInspectionResultFormat {
             get {
-                return ResourceManager.GetString("HungarianNotationInspectionResultFormat", resourceCulture);
+                return ResourceManager.GetString("IdentifierNameInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -1421,15 +1421,6 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Consider renaming {0} &apos;{1}&apos;.
-        /// </summary>
-        public static string UseMeaningfulNameInspectionResultFormat {
-            get {
-                return ResourceManager.GetString("UseMeaningfulNameInspectionResultFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A variable is declared, but never assigned a value/reference. If Rubberduck is correct, the variable could probably be safely removed..
         /// </summary>
         public static string VariableNotAssignedInspectionMeta {
@@ -1498,6 +1489,15 @@ namespace Rubberduck.Inspections.Resources {
         public static string VariableTypeNotDeclaredInspectionResultFormat {
             get {
                 return ResourceManager.GetString("VariableTypeNotDeclaredInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add to whitelist.
+        /// </summary>
+        public static string WhiteListIdentifierQuickFix {
+            get {
+                return ResourceManager.GetString("WhiteListIdentifierQuickFix", resourceCulture);
             }
         }
         

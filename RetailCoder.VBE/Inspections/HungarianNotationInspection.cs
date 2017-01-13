@@ -9,6 +9,9 @@ using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -95,9 +98,14 @@ namespace Rubberduck.Inspections
 
         #endregion
 
-        public HungarianNotationInspection(RubberduckParserState state, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Suggestion)
-            : base(state, defaultSeverity)
+        private readonly IMessageBox _messageBox;
+        private readonly IPersistanceService<CodeInspectionSettings> _settings;
+
+        public HungarianNotationInspection(IMessageBox messageBox, RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
+            _messageBox = messageBox;
+            _settings = settings;
         }
 
         public override string Description
@@ -112,11 +120,15 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
+            var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
+            var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToList();
+
             var hungarians = UserDeclarations
-                            .Where(declaration => TargetDeclarationTypes.Contains(declaration.DeclarationType) &&
-                                        HungarianIdentifierRegex.IsMatch(declaration.IdentifierName))
-                            .Select(issue => new HungarianNotationInspectionResult(this, issue))
-                            .ToList();
+                                .Where(declaration => !whitelistedNames.Contains(declaration.IdentifierName) &&
+                                                      TargetDeclarationTypes.Contains(declaration.DeclarationType) &&
+                                                      HungarianIdentifierRegex.IsMatch(declaration.IdentifierName))
+                                .Select(issue => new IdentifierNameInspectionResult(this, issue, State, _messageBox, _settings))
+                                .ToList();
             return hungarians;
         }
     }
