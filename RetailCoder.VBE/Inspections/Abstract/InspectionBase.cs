@@ -128,6 +128,18 @@ namespace Rubberduck.Inspections.Abstract
                 && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
+        protected bool IsInspectionDisabled(IdentifierReference reference, string inspectionName)
+        {
+            if (reference == null)
+            {
+                return false;
+            }
+
+            return reference.Annotations.Any(annotation =>
+                annotation.AnnotationType == AnnotationType.Ignore
+                && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
+        }
+
         public int CompareTo(IInspection other)
         {
             return string.Compare(InspectionType + Name, other.InspectionType + other.Name, StringComparison.Ordinal);

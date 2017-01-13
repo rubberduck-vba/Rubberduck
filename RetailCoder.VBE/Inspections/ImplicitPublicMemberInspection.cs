@@ -33,11 +33,10 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
-                         where !IsInspectionDisabled(item, AnnotationName) 
-                               && ProcedureTypes.Contains(item.DeclarationType)
+                         where ProcedureTypes.Contains(item.DeclarationType)
                                && item.Accessibility == Accessibility.Implicit
                          let context = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)
-                               select new ImplicitPublicMemberInspectionResult(this, context, item);
+                         select new ImplicitPublicMemberInspectionResult(this, context, item);
             return issues;
         }
     }
