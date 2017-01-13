@@ -313,7 +313,7 @@
   <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
     <value>Implémenter comme une fonction, et mettre à jour les appels</value>
   </data>
-  <data name="UseMeaningfulNameInspectionResultFormat" xml:space="preserve">
+  <data name="IdentifierNameInspectionResultFormat" xml:space="preserve">
     <value>Considérez renommer {0} '{1}'</value>
   </data>
   <data name="UseMeaningfulNameInspectionMeta" xml:space="preserve">
