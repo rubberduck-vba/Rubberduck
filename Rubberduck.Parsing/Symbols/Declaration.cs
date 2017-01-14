@@ -318,24 +318,11 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                return _references.Union(_memberCalls);
+                return _references;
             }
             set
             {
                 _references = new ConcurrentBag<IdentifierReference>(value);
-            }
-        }
-
-        private ConcurrentBag<IdentifierReference> _memberCalls = new ConcurrentBag<IdentifierReference>();
-        public IEnumerable<IdentifierReference> MemberCalls
-        {
-            get
-            {
-                return _memberCalls.ToList();
-            }
-            set
-            {
-                _memberCalls = new ConcurrentBag<IdentifierReference>(value);
             }
         }
 
@@ -404,16 +391,6 @@ namespace Rubberduck.Parsing.Symbols
                     isAssignmentTarget,
                     hasExplicitLetStatement,
                     annotations));
-        }
-
-        public void AddMemberCall(IdentifierReference reference)
-        {
-            if (reference == null || reference.Declaration == null || reference.Declaration.Context == reference.Context)
-            {
-                return;
-            }
-
-            _memberCalls.Add(reference);
         }
 
         private readonly Selection _selection;
