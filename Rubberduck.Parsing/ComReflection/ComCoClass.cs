@@ -38,7 +38,12 @@ namespace Rubberduck.Parsing.ComReflection
 
         public IEnumerable<ComMember> Members
         {
-            get { return ImplementedInterfaces.SelectMany(i => i.Members); }
+            get { return ImplementedInterfaces.Where(x => !_events.Contains(x)).SelectMany(i => i.Members); }
+        }
+
+        public IEnumerable<ComMember> SourceMembers
+        {
+            get { return _events.SelectMany(i => i.Members); }
         }
 
         public bool WithEvents

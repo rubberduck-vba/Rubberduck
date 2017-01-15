@@ -37,10 +37,6 @@ namespace Rubberduck.Parsing.ComReflection
 
         private void SetDeclarationType(FUNCDESC funcDesc, ITypeInfo info)
         {
-            if (ReturnsWithEventsObject)
-            {
-                Type = DeclarationType.Event;
-            }
             if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET))
             {
                 Type = DeclarationType.PropertyGet;
