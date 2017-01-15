@@ -48,15 +48,18 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             return _formatter.Format(activeCodePane, declaration);
         }
 
-        public void SetContextSelectionCaption(string caption)
+        public void SetContextSelectionCaption(string caption, int contextReferenceCount)
         {
-            var child = FindChildByTag(typeof(ContextSelectionLabelMenuItem).FullName) as ContextSelectionLabelMenuItem;
-            if (child == null) { return; }
+            var contextLabel = FindChildByTag(typeof(ContextSelectionLabelMenuItem).FullName) as ContextSelectionLabelMenuItem;
+            if (contextLabel == null) { return; }
+
+            var contextReferences = FindChildByTag(typeof(ReferenceCounterLabelMenuItem).FullName) as ReferenceCounterLabelMenuItem;
+            if (contextReferences == null) { return; }
 
             UiDispatcher.Invoke(() =>
             {
-                child.SetCaption(caption);
-                //child.SetToolTip(?);
+                contextLabel.SetCaption(caption);
+                contextReferences.SetCaption(contextReferenceCount);
             });
             Localize();
         }
@@ -74,6 +77,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
     {
         RequestReparse,
         ShowErrors,
-        ContextStatus
+        ContextStatus,
+        ContextRefCount,
     }
 }

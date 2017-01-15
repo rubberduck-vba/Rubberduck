@@ -414,6 +414,7 @@ namespace Rubberduck.Root
                 KernelInstance.Get<ReparseCommandMenuItem>(),
                 KernelInstance.Get<ShowParserErrorsCommandMenuItem>(),
                 KernelInstance.Get<ContextSelectionLabelMenuItem>(),
+                KernelInstance.Get<ReferenceCounterLabelMenuItem>(),
 #if DEBUG
                 KernelInstance.Get<SerializeDeclarationsCommandMenuItem>()
 #endif

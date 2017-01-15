@@ -14,8 +14,8 @@ namespace Rubberduck.Parsing.ComReflection
     [DebuggerDisplay("{Name}")]
     public class ComProject : ComBase
     {
-        public static ConcurrentDictionary<Guid, ComType> KnownTypes = new ConcurrentDictionary<Guid, ComType>();
-        public static ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new ConcurrentDictionary<Guid, ComEnumeration>(); 
+        public static readonly ConcurrentDictionary<Guid, ComType> KnownTypes = new ConcurrentDictionary<Guid, ComType>();
+        public static readonly ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new ConcurrentDictionary<Guid, ComEnumeration>(); 
 
         public string Path { get; set; }
         public long MajorVersion { get; private set; }
@@ -120,7 +120,9 @@ namespace Rubberduck.Parsing.ComReflection
                             if (type != null) KnownTypes.TryAdd(typeAttributes.guid, coclass);
                             break;
                         case TYPEKIND.TKIND_ALIAS:
-                            //The current handling of this is wrong - these don't have to be classes or interfaces. In the VBE module for example,
+                        case TYPEKIND.TKIND_UNION:
+                            
+                        //The current handling of this is wrong - these don't have to be classes or interfaces. In the VBE module for example,
                             //"LongPtr" is defined as an alias to "Long" (at least on a 32 bit system) - RD is currently treating is like a class.  
                             //Unclear if these can *also* define alternative names for interfaces as well, but all the ones I've seen have been basically
                             //a C typedef.  So... this needs work. Don't make any assumptions about these elsewhere in the code until this is nailed down.

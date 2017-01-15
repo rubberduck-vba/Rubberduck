@@ -70,6 +70,8 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor(Declaration target)
         {
+            if (target.IsBuiltIn) { return; }
+
             var presenter = _factory.Create();
             _model = presenter.Show(target);
 
