@@ -615,4 +615,14 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="WhiteListIdentifierQuickFix" xml:space="preserve">
     <value>Add to whitelist</value>
   </data>
+  <data name="MemberNotOnInterfaceInspectionMeta" xml:space="preserve">
+    <value>A member access is being used that is not declared on the object's interface. This is most likely an error. If the member access is using the object's extensible interface, consider using a non-extensible equivalent to allow compile time checks that will avoid the possibility of a run-time error 438.</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspectionName" xml:space="preserve">
+    <value>Member does not exist on interface</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspectionResultFormat" xml:space="preserve">
+    <value>Member '{0}' is not declared on the interface for type '{1}'.</value>
+    <comment>{0} Member used, {1} type being accessed.</comment>
+  </data>
 </root>

@@ -367,6 +367,7 @@
     <Compile Include="Common\UndocumentedAttribute.cs" />
     <Compile Include="Inspections\HungarianNotationInspection.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspection.cs" />
+    <Compile Include="Inspections\MemberNotOnInterfaceInspection.cs" />
     <Compile Include="Inspections\QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -381,6 +382,7 @@
     <Compile Include="Inspections\QuickFixes\RenameDeclarationQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\RemoveUnusedParameterQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\ReplaceGlobalModifierQuickFix.cs" />
+    <Compile Include="Inspections\Results\MemberNotOnInterfaceInspectionResult.cs" />
     <Compile Include="Inspections\Results\ObjectVariableNotSetInspectionResult.cs" />
     <Compile Include="Inspections\Results\MultipleFolderAnnotationsInspectionResult.cs" />
     <Compile Include="Inspections\QuickFixes\MoveFieldCloserToUsageQuickFix.cs" />
