@@ -113,7 +113,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _projectDeclarations.Clear();
-            //State.ClearBuiltInReferences();
+            State.ClearBuiltInReferences();
 
             var parseTasks = new Task[components.Count];
             for (var i = 0; i < components.Count; i++)
