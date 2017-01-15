@@ -35,6 +35,7 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null && 
+                                                     decl.ParentDeclaration.DeclarationType != DeclarationType.Project &&
                                                      decl.AsTypeDeclaration.DeclarationType == DeclarationType.ClassModule &&
                                                      ((ClassModuleDeclaration)decl.AsTypeDeclaration).IsExtensible &&
                                                      decl.References.Any(usage => InterestingTypes.Contains(usage.Context.Parent.GetType())))
