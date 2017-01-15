@@ -48,6 +48,7 @@ namespace RubberduckTests.Settings
             return new Configuration(userSettings);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SaveConfigWorks()
         {
@@ -61,6 +62,7 @@ namespace RubberduckTests.Settings
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SetDefaultsWorks()
         {
@@ -73,6 +75,7 @@ namespace RubberduckTests.Settings
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void InspectionsAreSetInCtor()
         {
@@ -83,6 +86,7 @@ namespace RubberduckTests.Settings
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void InspectionSeveritiesAreUpdated()
         {

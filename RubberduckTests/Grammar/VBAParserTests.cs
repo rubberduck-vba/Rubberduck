@@ -1670,6 +1670,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
         }
 
+        [TestCategory("Parser")]
         [TestMethod]
         public void TestCaseIsEqExpressionWithLiteral()
         {
@@ -1685,6 +1686,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//rangeClause", matches => matches.Count == 1);
         }
 
+        [TestCategory("Parser")]
         [TestMethod]
         public void TestCaseIsEqExpressionWithEnum()
         {
