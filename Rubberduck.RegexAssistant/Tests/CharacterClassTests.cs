@@ -7,6 +7,7 @@ namespace Rubberduck.RegexAssistant.Tests
     [TestClass]
     public class CharacterClassTests
     {
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void InvertedCharacterClass()
         {
@@ -22,6 +23,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void SimpleCharacterRange()
         {
@@ -37,6 +39,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void UnicodeCharacterRange()
         {
@@ -52,6 +55,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void OctalCharacterRange()
         {
@@ -67,6 +71,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void HexadecimalCharacterRange()
         {
@@ -82,6 +87,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void MixedCharacterRanges()
         {
@@ -98,6 +104,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void RangeFailureWithCharacterClass()
         {
@@ -116,7 +123,8 @@ namespace Rubberduck.RegexAssistant.Tests
                 }
             }
         }
-        
+
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void EscapedLiteralRanges()
         {
@@ -146,6 +154,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void SkipsIncorrectlyEscapedLiterals()
         {
@@ -166,6 +175,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void IncorrectlyEscapedRangeTargetLiteralsBlowUp()
         {
@@ -186,6 +196,7 @@ namespace Rubberduck.RegexAssistant.Tests
 
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void IgnoresBackreferenceSpecifiers()
         {
