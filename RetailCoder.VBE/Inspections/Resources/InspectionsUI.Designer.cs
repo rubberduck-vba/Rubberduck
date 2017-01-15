@@ -592,6 +592,33 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A member access is being used that is not declared on the object&apos;s interface. This is most likely an error. If the member access is using the object&apos;s extensible interface, consider using a non-extensible equivalent to allow compile time checks that will avoid the possibility of a run-time error 438..
+        /// </summary>
+        public static string MemberNotOnInterfaceInspectionMeta {
+            get {
+                return ResourceManager.GetString("MemberNotOnInterfaceInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member does not exist on interface.
+        /// </summary>
+        public static string MemberNotOnInterfaceInspectionName {
+            get {
+                return ResourceManager.GetString("MemberNotOnInterfaceInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is not declared on the interface for type &apos;{1}&apos;..
+        /// </summary>
+        public static string MemberNotOnInterfaceInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("MemberNotOnInterfaceInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An annotation parameter is missing or incorrectly specified. The correct syntax is : &apos;@Annotation([parameter])\nExample: &apos;@Folder(&quot;Parent.Child&quot;).
         /// </summary>
         public static string MissingAnnotationArgumentInspectionMeta {
