@@ -11,6 +11,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 // ReSharper disable LocalizableElement
@@ -292,25 +293,28 @@ namespace Rubberduck.Common
                                                    : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
                                            });
 
-            // class module built-in events
-            var classModuleHandlers = declarationList.Where(item =>
+            var user = declarationList.FirstOrDefault(decl => !decl.IsBuiltIn);
+            var host = user != null ? user.Project.VBE.HostApplication() : null ;
+
+            var handlers = declarationList.Where(item =>
+                        // class module built-in events
+                        (item.DeclarationType == DeclarationType.Procedure &&
+                        item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule && (
+                            item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
+                            item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase))) ||
+                        // standard module built-in handlers (Excel specific):
+                        (host != null &&
+                        host.ApplicationName.Equals("Excel", StringComparison.InvariantCultureIgnoreCase) &&
                         item.DeclarationType == DeclarationType.Procedure &&
-                        item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
-                        (item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase)
-                        || item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase)));
+                        item.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule && (
+                            item.IdentifierName.Equals("auto_open", StringComparison.InvariantCultureIgnoreCase) ||
+                            item.IdentifierName.Equals("auto_close", StringComparison.InvariantCultureIgnoreCase))) ||
+                        // user handlers:
+                        (!item.IsBuiltIn &&
+                         item.DeclarationType == DeclarationType.Procedure &&
+                         handlerNames.Contains(item.IdentifierName))
+                        ).ToList();
 
-            // standard module built-in handlers:
-            var stdModuleHandlers = declarationList.Where(item =>
-                        item.DeclarationType == DeclarationType.Procedure &&
-                        item.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule &&
-                (item.IdentifierName.Equals("auto_open", StringComparison.InvariantCultureIgnoreCase)
-                || item.IdentifierName.Equals("auto_close", StringComparison.InvariantCultureIgnoreCase)));
-
-            var handlers = declarationList.Where(declaration => !declaration.IsBuiltIn
-                                                     && declaration.DeclarationType == DeclarationType.Procedure
-                                                     && handlerNames.Contains(declaration.IdentifierName)).ToList();
-
-            handlers.AddRange(classModuleHandlers.Concat(stdModuleHandlers));
             return handlers;
         }
 

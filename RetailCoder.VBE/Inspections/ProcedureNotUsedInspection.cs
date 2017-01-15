@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections
             "Workbook_",
             "Document_",
             "Application_",
-            "Session_",
+            "Session_"
         };
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections
                 .SelectMany(control => declarations.FindEventHandlers(control)).ToList();
 
             var withEventFields = declarations.Where(item => item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
-            handlers.AddRange(withEventFields.SelectMany(field => declarations.FindEventProcedures(field)));
+            handlers.AddRange(withEventFields.SelectMany(declarations.FindEventProcedures));
 
             var forms = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule
                         && item.QualifiedName.QualifiedModuleName.Component.Type == ComponentType.UserForm)
