@@ -97,7 +97,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 formattedDeclaration = string.Format("{0}{1}.{2} {3}", withEvents, moduleName, declaration.IdentifierName, typeName);
             }
 
-            return string.Format("{0} | {1} {2}", formattedDeclaration.Trim(), declaration.References.Count(), RubberduckUI.ContextReferences);
+            return formattedDeclaration.Trim();
         }
     }
 }

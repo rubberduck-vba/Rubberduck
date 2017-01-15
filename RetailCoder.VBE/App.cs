@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Infralution.Localization.Wpf;
 using NLog;
-using NLog.Fluent;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
@@ -13,6 +11,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -87,8 +86,9 @@ namespace Rubberduck
                 if (!pane.IsWrappingNullReference)
                 {
                     selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
+                    var refCount = selectedDeclaration == null ? 0 : selectedDeclaration.References.Count();
                     var caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
-                    _stateBar.SetContextSelectionCaption(caption);
+                    _stateBar.SetContextSelectionCaption(caption, refCount);
                 }
 
                 var currentStatus = _parser.State.Status;
