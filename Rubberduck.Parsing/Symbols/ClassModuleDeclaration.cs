@@ -77,6 +77,7 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList();
             _supertypes = new HashSet<Declaration>();
             _subtypes = new HashSet<Declaration>();
+            IsExtensible = coClass.IsExtensible;
         }
 
         public ClassModuleDeclaration(ComInterface intrface, Declaration parent, QualifiedModuleName module,
@@ -87,7 +88,10 @@ namespace Rubberduck.Parsing.Symbols
                 intrface.Name,
                 true,
                 new List<IAnnotation>(),
-                attributes) { }
+                attributes)
+        {
+            IsExtensible = intrface.IsExtensible;
+        }
 
         public static IEnumerable<Declaration> GetSupertypes(Declaration type)
         {
@@ -104,6 +108,8 @@ namespace Rubberduck.Parsing.Symbols
             var classModule = type as ClassModuleDeclaration;
             return classModule != null && classModule.DefaultMember != null;
         }
+
+        public bool IsExtensible { get; set; }
 
         private bool? _isExposed;
         /// <summary>

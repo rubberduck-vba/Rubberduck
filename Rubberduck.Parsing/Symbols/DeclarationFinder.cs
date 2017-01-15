@@ -13,6 +13,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IDictionary<QualifiedModuleName, CommentNode[]> _comments;
         private readonly IDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly IDictionary<QualifiedMemberName, IList<Declaration>> _undeclared;
+        private readonly AnnotationService _annotationService;
 
         private readonly IReadOnlyList<Declaration> _declarations;
         private readonly IDictionary<string, Declaration[]> _declarationsByName;
@@ -35,6 +36,7 @@ namespace Rubberduck.Parsing.Symbols
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
 
             _undeclared = new Dictionary<QualifiedMemberName, IList<Declaration>>();
+            _annotationService = new AnnotationService(this);
         }
 
         public IEnumerable<Declaration> Undeclared
@@ -294,7 +296,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration OnUndeclaredVariable(Declaration enclosingProcedure, string identifierName, ParserRuleContext context)
         {
-            var undeclaredLocal = new Declaration(new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName), enclosingProcedure, enclosingProcedure, "Variant", string.Empty, false, false, Accessibility.Implicit, DeclarationType.Variable, context, context.GetSelection(), false, null, false, null, null, true);
+            var annotations = _annotationService.FindAnnotations(enclosingProcedure.QualifiedName.QualifiedModuleName, context.Start.Line);
+            var undeclaredLocal =
+                new Declaration(
+                    new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
+                    enclosingProcedure, enclosingProcedure, "Variant", string.Empty, false, false,
+                    Accessibility.Implicit, DeclarationType.Variable, context, context.GetSelection(), false, null,
+                    false, annotations, null, true);
 
             var hasUndeclared = _undeclared.ContainsKey(enclosingProcedure.QualifiedName);
             if (hasUndeclared)

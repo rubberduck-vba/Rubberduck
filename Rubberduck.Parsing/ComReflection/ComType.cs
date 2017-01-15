@@ -9,8 +9,7 @@ namespace Rubberduck.Parsing.ComReflection
         bool IsAppObject { get; }
         bool IsPreDeclared { get; }
         bool IsHidden { get; }
-        bool IsRestricted { get; }
-        bool IsExtensible { get; }
+        bool IsRestricted { get; }        
     }
 
     public interface IComTypeWithMembers : IComType
@@ -30,7 +29,6 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsPreDeclared { get; private set; }
         public bool IsHidden { get; private set; }
         public bool IsRestricted { get; private set; }
-        public bool IsExtensible { get; private set; }
         
         protected ComType(ITypeInfo info, TYPEATTR attrib)
             : base(info)
@@ -51,8 +49,7 @@ namespace Rubberduck.Parsing.ComReflection
             IsAppObject = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FAPPOBJECT);
             IsPreDeclared = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID);
             IsHidden = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FHIDDEN);
-            IsRestricted = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FRESTRICTED);
-            IsExtensible = !attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FNONEXTENSIBLE);
+            IsRestricted = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FRESTRICTED);           
         }
     }
 }

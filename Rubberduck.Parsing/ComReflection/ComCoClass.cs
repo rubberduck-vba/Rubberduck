@@ -15,6 +15,11 @@ namespace Rubberduck.Parsing.ComReflection
         private readonly Dictionary<ComInterface, bool> _interfaces = new Dictionary<ComInterface, bool>();
         private readonly List<ComInterface> _events = new List<ComInterface>();
 
+        public bool IsExtensible
+        {
+            get { return _interfaces.Keys.Any(i => i.IsExtensible); }
+        }
+
         public ComInterface DefaultInterface { get; private set; }
 
         public IEnumerable<ComInterface> EventInterfaces

@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
+using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -14,7 +15,9 @@ namespace Rubberduck.Parsing.ComReflection
     public class ComInterface : ComType, IComTypeWithMembers
     {
         private readonly List<ComInterface> _inherited = new List<ComInterface>();
-        private readonly List<ComMember> _members = new List<ComMember>(); 
+        private readonly List<ComMember> _members = new List<ComMember>();
+
+        public bool IsExtensible { get; private set; }
 
         public IEnumerable<ComInterface> InheritedInterfaces
         {
@@ -41,6 +44,7 @@ namespace Rubberduck.Parsing.ComReflection
 
         private void GetImplementedInterfaces(ITypeInfo info, TYPEATTR typeAttr)
         {
+            IsExtensible = !typeAttr.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FNONEXTENSIBLE);
             for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
             {
                 int href;
