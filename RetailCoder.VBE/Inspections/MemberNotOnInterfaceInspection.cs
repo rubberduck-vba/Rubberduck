@@ -39,34 +39,21 @@ namespace Rubberduck.Inspections
                                                      ((ClassModuleDeclaration)decl.AsTypeDeclaration).IsExtensible &&
                                                      decl.References.Any(usage => InterestingTypes.Contains(usage.Context.Parent.GetType())))
                                             .ToList();
-            
-            var issues = new List<InspectionResultBase>();
+
             //Unfortunately finding implemented members is fairly expensive, so group by the return type.
-            foreach (var access in targets.GroupBy(t => t.AsTypeDeclaration))
-            {
-                var typeDeclaration = access.Key;
-                var typeMembers =
-                    new HashSet<string>(BuiltInDeclarations.Where(d => d.ParentDeclaration != null && d.ParentDeclaration.Equals(typeDeclaration))
-                                                           .Select(d => d.IdentifierName)
-                                                           .Distinct());
-                foreach (var references in access.Select(usage => usage.References.Where(r => InterestingTypes.Contains(r.Context.Parent.GetType()))))
-                {
-                    foreach (var reference in references.Where(r => !r.IsInspectionDisabled(Name)))
-                    {
-                        var identifier = reference.Context.Parent.GetChild(reference.Context.Parent.ChildCount - 1);
-                        if (!typeMembers.Contains(identifier.GetText()))
-                        {
-                            var pseudoDeclaration = CreatePseudoDeclaration((ParserRuleContext)identifier, reference);
-                            if (pseudoDeclaration.Annotations.Any())
-                            {
-                                continue;
-                            }
-                            issues.Add(new MemberNotOnInterfaceInspectionResult(this, pseudoDeclaration, (ParserRuleContext)identifier, typeDeclaration));
-                        }
-                    }
-                }
-            }
-            return issues;
+            return (from access in targets.GroupBy(t => t.AsTypeDeclaration)
+                let typeDeclaration = access.Key
+                let typeMembers = new HashSet<string>(BuiltInDeclarations.Where(d => d.ParentDeclaration != null && d.ParentDeclaration.Equals(typeDeclaration))
+                                                                         .Select(d => d.IdentifierName)
+                                                                         .Distinct())
+                from references in access.Select(usage => usage.References.Where(r => InterestingTypes.Contains(r.Context.Parent.GetType())))
+                from reference in references.Where(r => !r.IsInspectionDisabled(AnnotationName))
+                let identifier = reference.Context.Parent.GetChild(reference.Context.Parent.ChildCount - 1)
+                where !typeMembers.Contains(identifier.GetText())
+                let pseudoDeclaration = CreatePseudoDeclaration((ParserRuleContext) identifier, reference)
+                where !pseudoDeclaration.Annotations.Any()
+                select new MemberNotOnInterfaceInspectionResult(this, pseudoDeclaration, (ParserRuleContext) identifier, typeDeclaration))
+                                                               .Cast<InspectionResultBase>().ToList();
         }
 
         //Builds a throw-away Declaration for the indentifiers found by the inspection. These aren't (and shouldn't be) created by the parser.
