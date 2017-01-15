@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
             }
 
-            if (target == null)
+            if (target == null || target.IsBuiltIn)
             {
                 return;
             }
