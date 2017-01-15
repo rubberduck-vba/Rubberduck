@@ -26,7 +26,9 @@ namespace Rubberduck.Inspections
         private static readonly string[] ParentScopes =
         {
             "_Global",
+            "Global",
             "_Application",
+            "Application",
             "Sheets",
             //"Worksheets",
         };
@@ -37,11 +39,10 @@ namespace Rubberduck.Inspections
                 .Where(item => item.ProjectName == "Excel" && ParentScopes.Contains(item.ComponentName) 
                     && item.References.Any(r => Targets.Contains(r.IdentifierName)))
                 .SelectMany(declaration => declaration.References.Distinct())
-                .Where(item => Targets.Contains(item.IdentifierName))
                 .ToList();
-
-            return issues.Select(issue =>
-                new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
+                
+            var filtered = issues.Where(item => Targets.Contains(item.IdentifierName));
+            return filtered.Select(issue => new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
         }
     }
 }
