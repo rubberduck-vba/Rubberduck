@@ -139,9 +139,6 @@ namespace Rubberduck.Parsing.ComReflection
                             _modules.Add(module as ComModule);
                             if (type != null) KnownTypes.TryAdd(typeAttributes.guid, module);
                             break;
-                        case TYPEKIND.TKIND_UNION:
-                            //This appears to be an unsupported member type in VBA.
-                            break;
                         default:
                             throw new NotImplementedException(string.Format("Didn't expect a TYPEATTR with multiple typekind flags set in {0}.", Path));
                     }
