@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections
                 .SelectMany(control => declarations.FindEventHandlers(control)).ToList();
 
             var withEventFields = declarations.Where(item => item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
-            handlers.AddRange(withEventFields.SelectMany(declarations.FindEventProcedures));
+            handlers.AddRange(withEventFields.SelectMany(Declarations.FindEventProcedures));
 
             var forms = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule
                         && item.QualifiedName.QualifiedModuleName.Component.Type == ComponentType.UserForm)
