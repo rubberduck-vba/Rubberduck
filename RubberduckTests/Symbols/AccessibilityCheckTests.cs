@@ -11,7 +11,7 @@ namespace RubberduckTests.Symbols
 
         //project tests
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Project")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ProjectsAreAlwaysAccessible()
         {
@@ -35,7 +35,7 @@ namespace RubberduckTests.Symbols
 
         //module tests
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Module")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ModulesCanBeAccessedFromWithinThemselves()
         {
@@ -57,7 +57,7 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Module")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ModulesCanBeAccessedFromTheSameProject()
         {
@@ -69,7 +69,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Module")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ExposedClassModulesCanBeAccessedFromOtherProjects()
         {
@@ -82,7 +82,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Module")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void NonExposedClassModulesCannotBeAccessedFromOtherProjects()
         {
@@ -95,7 +95,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Module")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void NonPrivateProceduralModulesCanBeAccessedFromOtherProjects()
         {
@@ -121,7 +121,7 @@ namespace RubberduckTests.Symbols
 
         //procedure tests
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Procedure")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PrivateProceduresAreAccessibleFromTheEnclosingModule()
         {
@@ -139,7 +139,7 @@ namespace RubberduckTests.Symbols
                 return new FunctionDeclaration(qualifiedFunctionMemberName, moduleDeclatation, moduleDeclatation, "test", null, "test", functionAccessibility, null, Selection.Home, false, false, null, null);
             }
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Procedure")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PrivateProceduresAreAccessibleIfTheyAreInAClassAboveTheEnclosingModuleOfTheCallerInTheClassHierarchy()
         {
@@ -156,7 +156,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Procedure")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PrivateProceduresAreNotAcessibleFromOtherUnrelatedModules()
         {
@@ -170,7 +170,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Procedure")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void FriendProceduresAreAcessibleFromOtherModulesInTheSameProject()
         {
@@ -184,7 +184,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Procedure")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void FriendProceduresAreNotAcessibleFromOtherProjects()
         {
@@ -199,7 +199,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Procedure")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PublicProceduresInExposedClassModulesAreAcessibleFromOtherProjects()
         {
@@ -214,7 +214,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Procedure")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PublicProceduresInNonPrivateProceduralModulesAreAcessibleFromOtherProjects()
         {
@@ -229,7 +229,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Procedure")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ImplicitelyScopedProceduresInExposedClassModulesAreAcessibleFromOtherProjects()
         {
@@ -244,7 +244,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Procedure")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ImplicitelyScopedProceduresInNonPrivateProceduralModulesAreAcessibleFromOtherProjects()
         {
@@ -262,7 +262,7 @@ namespace RubberduckTests.Symbols
 
         //instance variable tests
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Instance Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PrivateInstanceVariablesAreAccessibleFromTheEnclosingModule()     
         {
@@ -281,7 +281,7 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Instance Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
             public void PrivateInstanceVariablesAreAccessibleIfTheyAreInAClassAboveTheEnclosingModuleOfTheCallerInTheClassHierarchy()
         {
@@ -298,7 +298,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Instance Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PrivateInstanceVariablesAreNotAcessibleFromOtherUnrelatedModules()
         {
@@ -312,7 +312,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Instance Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PublicInstanceVariablesInExposedClassModulesAreAcessibleFromOtherProjects()
         {
@@ -327,7 +327,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Instance Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PublicInstanceVariablesInNonPrivateProceduralModulesAreAcessibleFromTheSameProject()
         {
@@ -341,7 +341,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Instance Variables")]
+        [TestCategory("Resolver")]
         [TestMethod] 
         public void PublicInstanceVariablesInNonPrivateProceduralModulesAreAcessibleFromOtherProjects()
         {
@@ -356,7 +356,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Instance Variables")]
+        [TestCategory("Resolver")]
         [TestMethod] 
         public void GlobalInstanceVariablesInNonPrivateProceduralModulesAreAcessibleFromOtherProjects()
         {
@@ -371,7 +371,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Instance Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ImplicitlyScopedInstanceVariablesAreAcessibleWithinTheirEnclosingModule()
         {
@@ -384,7 +384,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Instance Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ImplicitlyScopedInstanceVariablesAreNotAcessibleFromOtherModules()
         {
@@ -401,7 +401,7 @@ namespace RubberduckTests.Symbols
 
         //local variable tests
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Local Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void LocalMembersAreAcessibleFromTheMethodTheyAreDefinedIn()
         {
@@ -414,7 +414,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Local Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void LocalMembersAreNotAcessibleFromOtherMethods()
         {
@@ -428,7 +428,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Local Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void StaticLocalMembersAreAcessibleFromTheMethodTheyAreDefinedIn()
         {
@@ -441,7 +441,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Local Variables")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void StaticLocalMembersAreNotAcessibleFromOtherMethods()
         {
@@ -458,7 +458,7 @@ namespace RubberduckTests.Symbols
 
         //enum tests
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Enum")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PrivateEnumsAreAccessibleInTheSameModule()
         {
@@ -477,7 +477,7 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Enum")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PrivateEnumsAreNotAccessibleFromOtherModules()
         {
@@ -491,7 +491,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Enum")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PublicEnumsInNonPrivateProceduralModulesAreAccessibleFromOtherProjects()
         {
@@ -506,7 +506,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Enum")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GlobalEnumsInNonPrivateProceduralModulesAreAccessibleFromOtherProjects()
         {
@@ -521,7 +521,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Enum")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ImplicitelyScopedEnumsInNonPrivateProceduralModulesAreAccessibleFromOtherProjects()
         {
@@ -536,7 +536,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Enum")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PublicEnumsInExposedClassesAreNotAccessibleFromOtherProjects()
         {
@@ -551,7 +551,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Enum")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GlobalEnumsInExposedClassesAreAccessibleFromOtherProjects()
         {
@@ -566,7 +566,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Enum")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ImplicitelyScopedEnumsInExposedClassesAreAcessibleFromOtherProjects()
         {
@@ -585,7 +585,7 @@ namespace RubberduckTests.Symbols
         //user type tests
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / User Type")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PrivateUserTypesAreAccessibleInTheSameModule()
         {
@@ -604,7 +604,7 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / User Type")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PrivateUserTypesAreNotAccessibleFromOtherModules()
         {
@@ -618,7 +618,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / User Type")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PublicUserTypesInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
         {
@@ -633,7 +633,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / User Type")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GlobalUserTypesInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
         {
@@ -648,7 +648,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / User Type")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ImplicitelyScopedUserTypesInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
         {
@@ -665,7 +665,7 @@ namespace RubberduckTests.Symbols
 
         //further tests (derived from code already present)
 
-        [TestCategory("Resolver"), TestCategory("Resolver / User Type")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void EnumMembersInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
         {
@@ -686,7 +686,7 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / User Type")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void UserTypeMembersInExposedClassModulesAreAcessibleFromOtherProjects()
         {
@@ -707,7 +707,7 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / User Type")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void UserTypeMembersInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
         {
@@ -721,7 +721,7 @@ namespace RubberduckTests.Symbols
             Assert.IsTrue(AccessibilityCheck.IsAccessible(callingProjectDeclatation, callingModuleDeclatation, otherPrivateFunctionDeclaration, instanceVariable));
         }
 
-        [TestCategory("Resolver"), TestCategory("Resolver / User Type")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void AccessibilityCheckDoesNotTakeIntoAccountThatAMemberMightNotBeAccessibleBecauseItIsCoveredByAnotherMemberInNarrowerScope()
         {
@@ -738,7 +738,7 @@ namespace RubberduckTests.Symbols
 
         //null reference handling tests
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Null Reference")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void CalleesWhichAreNullAreNotAcessibleFromOtherProjects()
         {
@@ -750,7 +750,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Null Reference")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void CalleeModulesWhichAreNullAreNotAcessibleFromOtherProjects()
         {
@@ -762,7 +762,7 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver"), TestCategory("Resolver / Null Reference")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void CalleeMembersWhichAreNullAreNotAcessibleFromOtherProjects()
         {
