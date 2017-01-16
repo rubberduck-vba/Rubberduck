@@ -842,14 +842,14 @@ endOfStatement :
 
 // Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
 commentOrAnnotation :
-    annotationList
+    annotationList 
     | comment
     | remComment
 ;
 remComment : REM whiteSpace? commentBody;
 comment : SINGLEQUOTE commentBody;
 commentBody : (LINE_CONTINUATION | ~NEWLINE)*;
-annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+;
+annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+ (whiteSpace? COLON commentBody)?;
 annotation : annotationName annotationArgList?;
 annotationName : unrestrictedIdentifier;
 annotationArgList : 
