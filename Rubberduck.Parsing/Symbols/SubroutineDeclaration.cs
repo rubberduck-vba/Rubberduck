@@ -45,18 +45,24 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public SubroutineDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
-            Attributes attributes)
-            : this(
-                module.QualifyMemberName(member.Name),
-                parent,
-                parent,
-                string.Empty,
-                Accessibility.Global,
-                null,
-                Selection.Home,
-                true,
-                null,
-                attributes)
+            Attributes attributes, bool eventHandler)
+            : base(
+                  module.QualifyMemberName(member.Name),
+                  parent,
+                  parent,
+                  string.Empty,
+                  null,
+                  false,
+                  false,
+                  Accessibility.Global,
+                  eventHandler ? DeclarationType.Event : DeclarationType.Procedure,
+                  null,
+                  Selection.Home,
+                  false,
+                  null,
+                  true,
+                  null,
+                  attributes)
         {
             _parameters =
                 member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))

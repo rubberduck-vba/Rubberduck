@@ -156,25 +156,11 @@ namespace Rubberduck.Parsing.Symbols
                 var membered = module as IComTypeWithMembers;
                 if (membered != null)
                 {
-                    foreach (var item in membered.Members.Where(m => !m.IsRestricted && !IgnoredInterfaceMembers.Contains(m.Name)))
+                    CreateMemberDeclarations(membered.Members, moduleName, declaration, moduleTree);
+                    var coClass = membered as ComCoClass;
+                    if (coClass != null)
                     {
-                        var memberDeclaration = CreateMemberDeclaration(item, moduleName, declaration);
-                        _declarations.Add(memberDeclaration);
-
-                        var memberTree = new SerializableDeclarationTree(memberDeclaration);
-                        moduleTree.AddChildTree(memberTree); 
-
-                        var hasParams = memberDeclaration as IDeclarationWithParameter;
-                        if (hasParams != null)
-                        {
-                            _declarations.AddRange(hasParams.Parameters);
-                            memberTree.AddChildren(hasParams.Parameters);
-                        }
-                        var coClass = memberDeclaration as ClassModuleDeclaration;
-                        if (coClass != null && item.IsDefault)
-                        {
-                            coClass.DefaultMember = memberDeclaration;
-                        }
+                        CreateMemberDeclarations(coClass.SourceMembers, moduleName, declaration, moduleTree, true);
                     }
                 }
 
@@ -217,6 +203,31 @@ namespace Rubberduck.Parsing.Symbols
             return _declarations;
         }
 
+        private void CreateMemberDeclarations(IEnumerable<ComMember> members, QualifiedModuleName moduleName, Declaration declaration,
+                                              SerializableDeclarationTree moduleTree, bool eventHandlers = false)
+        {
+            foreach (var item in members.Where(m => !m.IsRestricted && !IgnoredInterfaceMembers.Contains(m.Name)))
+            {
+                var memberDeclaration = CreateMemberDeclaration(item, moduleName, declaration, eventHandlers);
+                _declarations.Add(memberDeclaration);
+
+                var memberTree = new SerializableDeclarationTree(memberDeclaration);
+                moduleTree.AddChildTree(memberTree);
+
+                var hasParams = memberDeclaration as IDeclarationWithParameter;
+                if (hasParams != null)
+                {
+                    _declarations.AddRange(hasParams.Parameters);
+                    memberTree.AddChildren(hasParams.Parameters);
+                }
+                var coClass = memberDeclaration as ClassModuleDeclaration;
+                if (coClass != null && item.IsDefault)
+                {
+                    coClass.DefaultMember = memberDeclaration;
+                }
+            }
+        }
+
         private Declaration CreateModuleDeclaration(IComType module, QualifiedModuleName project, Declaration parent, Attributes attributes)
         {
             var enumeration = module as ComEnumeration;
@@ -248,7 +259,7 @@ namespace Rubberduck.Parsing.Symbols
             return new ProceduralModuleDeclaration(module as ComModule, parent, project, attributes);
         }
 
-        private Declaration CreateMemberDeclaration(ComMember member, QualifiedModuleName module, Declaration parent)
+        private Declaration CreateMemberDeclaration(ComMember member, QualifiedModuleName module, Declaration parent, bool handler)
         {
             var attributes = new Attributes();
             if (member.IsEnumerator)
@@ -266,9 +277,8 @@ namespace Rubberduck.Parsing.Symbols
 
             switch (member.Type)
             {
-                case DeclarationType.Event:
                 case DeclarationType.Procedure:
-                    return new SubroutineDeclaration(member, parent, module, attributes);
+                    return new SubroutineDeclaration(member, parent, module, attributes, handler);
                 case DeclarationType.Function:
                     return new FunctionDeclaration(member, parent, module, attributes);
                 case DeclarationType.PropertyGet:

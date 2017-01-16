@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
@@ -50,6 +52,34 @@ namespace RubberduckTests.Mocks
                     new FormEventDeclarations(state), 
                     new AliasDeclarations(state),
                 }, true);
+        }
+
+        private static readonly HashSet<DeclarationType> ProceduralTypes =
+            new HashSet<DeclarationType>(new[]
+            {
+                DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet,
+                DeclarationType.PropertyLet, DeclarationType.PropertySet
+            });
+
+        public static void AddTestLibrary(this RubberduckParserState state, string serialized)
+        {
+            var reader = new XmlPersistableDeclarations();
+            var deserialized = reader.Load(Path.Combine("Resolver", serialized));
+
+            var declarations = deserialized.Unwrap();
+
+            foreach (var members in declarations.Where(d => d.DeclarationType != DeclarationType.Project &&
+                                                            d.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
+                                                            ProceduralTypes.Contains(d.DeclarationType))
+                                                .GroupBy(d => d.ParentDeclaration))
+            {
+                state.CoClasses.TryAdd(members.Select(m => m.IdentifierName).ToList(), members.First().ParentDeclaration);
+            }
+
+            foreach (var declaration in declarations)
+            {
+                state.AddDeclaration(declaration);
+            }
         }
     }
 }
