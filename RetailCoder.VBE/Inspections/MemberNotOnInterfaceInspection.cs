@@ -18,9 +18,7 @@ namespace Rubberduck.Inspections
         private static readonly List<Type> InterestingTypes = new List<Type>
         {
             typeof(VBAParser.MemberAccessExprContext),
-            typeof(VBAParser.WithMemberAccessExprContext),
-            typeof(VBAParser.DictionaryAccessExprContext),
-            typeof(VBAParser.WithDictionaryAccessExprContext)
+            typeof(VBAParser.WithMemberAccessExprContext)
         }; 
 
         public MemberNotOnInterfaceInspection(RubberduckParserState state, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
@@ -34,7 +32,7 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null && 
+            var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null &&
                                                      decl.ParentDeclaration.DeclarationType != DeclarationType.Project &&
                                                      decl.AsTypeDeclaration.DeclarationType == DeclarationType.ClassModule &&
                                                      ((ClassModuleDeclaration)decl.AsTypeDeclaration).IsExtensible &&
