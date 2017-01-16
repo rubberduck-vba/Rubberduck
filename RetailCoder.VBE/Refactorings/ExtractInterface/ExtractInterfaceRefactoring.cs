@@ -103,7 +103,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
             {
                 interfaceComponent.Name = _model.InterfaceName;
 
-                interfaceModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
+                var optionPresent = interfaceModule.CountOfLines > 1;
+                if (!optionPresent)
+                {
+                    interfaceModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
+                }
                 interfaceModule.InsertLines(3, GetInterfaceModuleBody());
 
                 var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;
