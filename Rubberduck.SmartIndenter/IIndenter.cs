@@ -9,7 +9,8 @@ namespace Rubberduck.SmartIndenter
         void IndentCurrentProcedure();
         void IndentCurrentModule();
         void Indent(IVBComponent component);
-        void Indent(IVBComponent component, string procedureName, Selection selection);
-        IEnumerable<string> Indent(IEnumerable<string> lines, string moduleName);
+        void Indent(IVBComponent component, Selection selection);
+        IEnumerable<string> Indent(IEnumerable<string> lines);
+        IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines);
     }
 }

@@ -40,7 +40,7 @@ namespace Rubberduck.SmartIndenter
             var endLine = startLine + module.GetProcCountLines(procName, procKind);
 
             selection = new Selection(startLine, 1, endLine, 1);
-            Indent(module.Parent, procName, selection);
+            Indent(module.Parent, selection);
         }
 
         public void IndentCurrentModule()
@@ -68,13 +68,13 @@ namespace Rubberduck.SmartIndenter
             }
 
             var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
-            var indented = Indent(codeLines, component.Name);
+            var indented = Indent(codeLines, true);
 
             module.DeleteLines(1, lineCount);
             module.InsertLines(1, string.Join("\r\n", indented));
         }
 
-        public void Indent(IVBComponent component, string procedureName, Selection selection)
+        public void Indent(IVBComponent component, Selection selection)
         {
             var module = component.CodeModule;
             var lineCount = module.CountOfLines;
@@ -85,7 +85,7 @@ namespace Rubberduck.SmartIndenter
 
             var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty).Split('\n');
 
-            var indented = Indent(codeLines, procedureName);
+            var indented = Indent(codeLines);
 
             var start = selection.StartLine;
             var lines = selection.LineCount;
@@ -124,15 +124,27 @@ namespace Rubberduck.SmartIndenter
             return logical;
         }
 
-        public IEnumerable<string> Indent(IEnumerable<string> codeLines, string moduleName)
+        public IEnumerable<string> Indent(IEnumerable<string> codeLines)
+        {
+            return Indent(codeLines, false);
+        }
+
+        /// <summary>
+        /// Indents a range of code lines. Do not call directly on selections. Use Indent(IVBComponent, Selection) instead.
+        /// </summary>
+        /// <param name="codeLines">Code lines to indent.</param>
+        /// <param name="forceTrailingNewLines">If true adds a number of blank lines after the last procedure based on VerticallySpaceProcedures settings.</param>
+        /// <returns></returns>
+        public IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines)
         {
             var logical = BuildLogicalCodeLines(codeLines).ToList();
             var indents = 0;
             var start = false;
             var enumStart = false;
             var inEnumType = false;
+            var inProcedure = false;
 
-            foreach (var line in logical.Where(x => !x.IsEmpty))
+            foreach (var line in logical)
             {
                 inEnumType &= !line.IsEnumOrTypeEnd;
                 if (inEnumType)
@@ -140,13 +152,22 @@ namespace Rubberduck.SmartIndenter
                     line.AtEnumTypeStart = enumStart;
                     enumStart = line.IsCommentBlock;
                     line.IsEnumOrTypeMember = true;
-                    line.IndentationLevel = line.EnumTypeIndents;
+                    line.InsideProcedureTypeOrEnum = true;
+                    line.IndentationLevel = line.EnumTypeIndents;                    
                     continue;
                 }
+
+                if (line.IsProcedureStart)
+                {
+                    inProcedure = true;                    
+                }                               
+                line.InsideProcedureTypeOrEnum = inProcedure || enumStart;
+                inProcedure = inProcedure && !line.IsProcudureEnd && !line.IsEnumOrTypeEnd;
                 if (line.IsProcedureStart || line.IsEnumOrTypeStart)
                 {
                     indents = 0;
                 }
+
                 line.AtProcedureStart = start;
                 line.IndentationLevel = indents - line.Outdents;
                 indents += line.NextLineIndents;
@@ -155,8 +176,47 @@ namespace Rubberduck.SmartIndenter
                 enumStart = inEnumType;
             }
 
+            return GenerateCodeLineStrings(logical, forceTrailingNewLines);
+        }
+
+        private IEnumerable<string> GenerateCodeLineStrings(IEnumerable<LogicalCodeLine> logical, bool forceTrailingNewLines)
+        {
             var output = new List<string>();
-            foreach (var line in logical)
+            var settings = _settings.Invoke();
+
+            List<LogicalCodeLine> indent;
+            if (settings.VerticallySpaceProcedures)
+            {
+                indent = new List<LogicalCodeLine>();
+                var lines = logical.ToArray();
+                for (var i = 0; i < lines.Length; i++)
+                {
+                    indent.Add(lines[i]);
+                    if (!lines[i].IsEnumOrTypeEnd && !lines[i].IsProcudureEnd)
+                    {
+                        continue;
+                    }
+                    while (++i < lines.Length && lines[i].IsEmpty) { }
+                    if (i != lines.Length)
+                    {
+                        if (settings.LinesBetweenProcedures > 0)
+                        {
+                            indent.Add(new LogicalCodeLine(Enumerable.Repeat(new AbsoluteCodeLine(string.Empty, settings), settings.LinesBetweenProcedures), settings));
+                        }
+                        indent.Add(lines[i]);
+                    }
+                    else if (i == lines.Length && forceTrailingNewLines)
+                    {
+                        indent.Add(new LogicalCodeLine(Enumerable.Repeat(new AbsoluteCodeLine(string.Empty, settings), Math.Max(settings.LinesBetweenProcedures, 1)), settings));
+                    }
+                }
+            }
+            else
+            {
+                indent = logical.ToList();
+            }
+
+            foreach (var line in indent)
             {
                 output.AddRange(line.Indented().Split(new[] { Environment.NewLine }, StringSplitOptions.None));
             }
