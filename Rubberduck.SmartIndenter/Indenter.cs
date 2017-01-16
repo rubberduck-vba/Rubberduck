@@ -17,6 +17,9 @@ namespace Rubberduck.SmartIndenter
             _settings = settings;
         }
 
+        /// <summary>
+        /// Indents the procedure selected in the ActiveCodePane. If more than one is selected, the first is indented.
+        /// </summary>
         public void IndentCurrentProcedure()
         {
             var pane = _vbe.ActiveCodePane;
@@ -43,6 +46,9 @@ namespace Rubberduck.SmartIndenter
             Indent(module.Parent, selection);
         }
 
+        /// <summary>
+        /// Indents the code in the ActiveCodePane.
+        /// </summary>
         public void IndentCurrentModule()
         {
             var pane = _vbe.ActiveCodePane;
@@ -58,6 +64,10 @@ namespace Rubberduck.SmartIndenter
             return codePane.Selection;
         }
 
+        /// <summary>
+        /// Indents the code in the VBComponent's CodeModule.
+        /// </summary>
+        /// <param name="component">The VBComponent to indent</param>
         public void Indent(IVBComponent component)
         {
             var module = component.CodeModule;
@@ -74,6 +84,11 @@ namespace Rubberduck.SmartIndenter
             module.InsertLines(1, string.Join("\r\n", indented));
         }
 
+        /// <summary>
+        /// DO NOT USE - Not fully implemented. Use the Indent(IVBComponent component) instead and ping @Comintern if you need this functionality...
+        /// </summary>
+        /// <param name="component">The VBComponent to indent</param>
+        /// <param name="selection">The selection to indent</param>
         public void Indent(IVBComponent component, Selection selection)
         {
             var module = component.CodeModule;
@@ -124,6 +139,12 @@ namespace Rubberduck.SmartIndenter
             return logical;
         }
 
+        /// <summary>
+        /// Indents a range of code lines. NOTE: If inserting procedures, use the forceTrailingNewLines overload to preserve vertical spacing in the module.
+        /// Do not call directly on selections. Use Indent(IVBComponent, Selection) instead.
+        /// </summary>
+        /// <param name="codeLines">Code lines to indent</param>
+        /// <returns>Indented code lines</returns>
         public IEnumerable<string> Indent(IEnumerable<string> codeLines)
         {
             return Indent(codeLines, false);
@@ -132,9 +153,9 @@ namespace Rubberduck.SmartIndenter
         /// <summary>
         /// Indents a range of code lines. Do not call directly on selections. Use Indent(IVBComponent, Selection) instead.
         /// </summary>
-        /// <param name="codeLines">Code lines to indent.</param>
-        /// <param name="forceTrailingNewLines">If true adds a number of blank lines after the last procedure based on VerticallySpaceProcedures settings.</param>
-        /// <returns></returns>
+        /// <param name="codeLines">Code lines to indent</param>
+        /// <param name="forceTrailingNewLines">If true adds a number of blank lines after the last procedure based on VerticallySpaceProcedures settings</param>
+        /// <returns>Indented code lines</returns>
         public IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines)
         {
             var logical = BuildLogicalCodeLines(codeLines).ToList();
