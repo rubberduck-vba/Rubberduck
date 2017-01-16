@@ -271,14 +271,6 @@ END";
         }
 
         [TestMethod]
-        public void TestCommentThatLooksLikeAnnotation()
-        {
-            string code = @"'@param foo: the value of something";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
-        }
-
-        [TestMethod]
         public void TestForeignIdentifier()
         {
             string code = @"
