@@ -14,6 +14,7 @@ namespace Rubberduck.SmartIndenter
         public int IndentationLevel { get; set; }
         public bool AtProcedureStart { get; set; }
         public bool AtEnumTypeStart { get; set; }
+        public bool InsideProcedureTypeOrEnum { get; set; }
 
         public bool IsEmpty
         {
@@ -23,6 +24,12 @@ namespace Rubberduck.SmartIndenter
         public LogicalCodeLine(AbsoluteCodeLine first, IIndenterSettings settings)
         {
             _lines.Add(first);
+            _settings = settings;
+        }
+
+        public LogicalCodeLine(IEnumerable<AbsoluteCodeLine> lines, IIndenterSettings settings)
+        {
+            _lines = lines.ToList();
             _settings = settings;
         }
 
@@ -89,7 +96,12 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsProcedureStart
         {
-            get { return _lines.Any(x => x.IsProcedureStart) && !_lines.Any(x => x.IsProcedureEnd); }
+            get { return _lines.Any(x => x.IsProcedureStart); }
+        }
+
+        public bool IsProcudureEnd
+        {
+            get { return _lines.Any(x => x.IsProcedureEnd); }
         }
 
         public bool IsEnumOrTypeStart

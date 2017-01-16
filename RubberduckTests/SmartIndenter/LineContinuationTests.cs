@@ -25,7 +25,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -46,7 +46,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -71,7 +71,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -103,7 +103,7 @@ namespace RubberduckTests.SmartIndenter
                 s.IgnoreOperatorsInContinuations = true;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -135,7 +135,7 @@ namespace RubberduckTests.SmartIndenter
                 s.IgnoreOperatorsInContinuations = false;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -162,7 +162,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -189,7 +189,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -220,7 +220,7 @@ namespace RubberduckTests.SmartIndenter
                 s.EndOfLineCommentColumnSpaceAlignment = 50;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -239,7 +239,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
@@ -257,7 +257,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
@@ -284,7 +284,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -315,7 +315,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -345,7 +345,7 @@ namespace RubberduckTests.SmartIndenter
                 s.IgnoreOperatorsInContinuations = false;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -370,7 +370,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -395,7 +395,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -422,7 +422,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -479,7 +479,7 @@ namespace RubberduckTests.SmartIndenter
                 s.AlignCommentsWithCode = true;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -538,7 +538,7 @@ namespace RubberduckTests.SmartIndenter
                 s.IndentFirstDeclarationBlock = true;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -571,7 +571,7 @@ namespace RubberduckTests.SmartIndenter
                 s.AlignDimColumn = 15;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -620,7 +620,7 @@ namespace RubberduckTests.SmartIndenter
                 s.AlignDimColumn = 15;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -651,7 +651,7 @@ namespace RubberduckTests.SmartIndenter
                 s.IndentFirstDeclarationBlock = true;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -691,7 +691,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -731,7 +731,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -776,7 +776,7 @@ namespace RubberduckTests.SmartIndenter
                 s.AlignContinuations = false;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -821,7 +821,7 @@ namespace RubberduckTests.SmartIndenter
                 s.AlignContinuations = false;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -847,7 +847,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -875,7 +875,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
     }

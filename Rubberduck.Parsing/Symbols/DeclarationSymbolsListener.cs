@@ -470,7 +470,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
             var typeHint = Identifier.GetTypeHintValue(identifier);
-            var isArray = asTypeClause != null && asTypeClause.type().LPAREN() != null;
+            var isArray = asTypeName.EndsWith("()");
             var declaration = CreateDeclaration(
                 name,
                 asTypeName,

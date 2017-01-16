@@ -7,6 +7,7 @@ using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -169,6 +170,44 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2266
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_FunctionReturnsArrayOfType_ReturnsNoResult()
+        {
+            const string inputCode = @"
+Private Function GetSomeDictionaries() As Dictionary()
+    Dim temp(0 To 1) As Worksheet
+    Set temp(0) = New Dictionary
+    Set temp(1) = New Dictionary
+    GetSomeDictionaries = temp
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("Codez", ComponentType.StandardModule, inputCode)
+                .AddReference("Scripting", @"C:\Windows\SysWOW64\scrrun.dll", true)
+                .Build();
+
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.State.AddTestLibrary("Scripting.1.0.xml");
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ObjectVariableNotSetInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         [TestMethod]
