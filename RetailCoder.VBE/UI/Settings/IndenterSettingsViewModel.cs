@@ -28,6 +28,8 @@ namespace Rubberduck.UI.Settings
             _indentFirstCommentBlock = config.UserSettings.IndenterSettings.IndentFirstCommentBlock;
             _indentFirstDeclarationBlock = config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock;
             _indentSpaces = config.UserSettings.IndenterSettings.IndentSpaces;
+            _spaceProcedures = config.UserSettings.IndenterSettings.VerticallySpaceProcedures;
+            _procedureSpacing = config.UserSettings.IndenterSettings.LinesBetweenProcedures;
 
             PropertyChanged += IndenterSettingsViewModel_PropertyChanged;
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
@@ -269,6 +271,34 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _spaceProcedures;
+        public bool VerticallySpaceProcedures
+        {
+            get { return _spaceProcedures; }
+            set
+            {
+                if (_spaceProcedures != value)
+                {
+                    _spaceProcedures = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _procedureSpacing;
+        public int LinesBetweenProcedures
+        {
+            get { return _procedureSpacing; }
+            set
+            {
+                if (_procedureSpacing != value)
+                {
+                    _procedureSpacing = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public string PreviewSampleCode 
         {
             get
@@ -300,7 +330,9 @@ namespace Rubberduck.UI.Settings
                 IndentEntireProcedureBody = IndentEntireProcedureBody,
                 IndentFirstCommentBlock = IndentFirstCommentBlock,
                 IndentFirstDeclarationBlock = IndentFirstDeclarationBlock,
-                IndentSpaces = IndentSpaces
+                IndentSpaces = IndentSpaces,
+                VerticallySpaceProcedures = VerticallySpaceProcedures,
+                LinesBetweenProcedures = LinesBetweenProcedures
             };
         }
 
@@ -324,6 +356,8 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.IndenterSettings.IndentFirstCommentBlock = IndentFirstCommentBlock;
             config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock = IndentFirstDeclarationBlock;
             config.UserSettings.IndenterSettings.IndentSpaces = IndentSpaces;
+            config.UserSettings.IndenterSettings.VerticallySpaceProcedures = VerticallySpaceProcedures;
+            config.UserSettings.IndenterSettings.LinesBetweenProcedures = LinesBetweenProcedures;
         }
 
         public void SetToDefaults(Configuration config)
@@ -348,7 +382,9 @@ namespace Rubberduck.UI.Settings
             IndentEntireProcedureBody = toLoad.IndentEntireProcedureBody;
             IndentFirstCommentBlock = toLoad.IndentFirstCommentBlock;
             IndentFirstDeclarationBlock = toLoad.IndentFirstDeclarationBlock;
-            IndentSpaces = toLoad.IndentSpaces;           
+            IndentSpaces = toLoad.IndentSpaces;
+            VerticallySpaceProcedures = toLoad.VerticallySpaceProcedures;
+            LinesBetweenProcedures = toLoad.LinesBetweenProcedures;
         }
 
         private void ImportSettings()

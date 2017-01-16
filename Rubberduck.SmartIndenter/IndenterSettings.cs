@@ -7,6 +7,9 @@ namespace Rubberduck.SmartIndenter
     [XmlType(AnonymousType = true)]
     public class IndenterSettings : IIndenterSettings
     {
+        public const int MinimumVerticalSpacing = 0;
+        public const int MaximumVerticalSpacing = 2;
+
         public virtual bool IndentEntireProcedureBody { get; set; }
         public virtual bool IndentFirstCommentBlock { get; set; }
         public virtual bool IndentEnumTypeAsProcedure { get; set; }
@@ -23,6 +26,28 @@ namespace Rubberduck.SmartIndenter
         public virtual EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
         public virtual int EndOfLineCommentColumnSpaceAlignment { get; set; }
         public virtual int IndentSpaces { get; set; }
+        public virtual bool VerticallySpaceProcedures { get; set; }
+
+        private int _procedureSpacing;
+        public virtual int LinesBetweenProcedures
+        {
+            get { return _procedureSpacing; }
+            set
+            {
+                if (value < MinimumVerticalSpacing)
+                {
+                    _procedureSpacing = MinimumVerticalSpacing;
+                }
+                else if (value > MaximumVerticalSpacing)
+                {
+                    _procedureSpacing = MaximumVerticalSpacing;
+                }
+                else
+                {
+                    _procedureSpacing = value;
+                }
+            }
+        }
 
         public IndenterSettings()
         {
@@ -57,6 +82,8 @@ namespace Rubberduck.SmartIndenter
             EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn;
             EndOfLineCommentColumnSpaceAlignment = 50;
             IndentSpaces = tabWidth;
+            VerticallySpaceProcedures = true;
+            LinesBetweenProcedures = 1;
             // ReSharper restore DoNotCallOverridableMethodsInConstructor
         }
 

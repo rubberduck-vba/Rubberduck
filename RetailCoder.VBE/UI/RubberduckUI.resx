@@ -1902,4 +1902,10 @@ End Sub</value>
     <value>Smart Indenter settings were found in your registry.
 Would you like to import them to Rubberduck?</value>
   </data>
+  <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
+    <value>Maintain vertical spacing</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
+    <value>Vertical Spacing</value>
+  </data>
 </root>
