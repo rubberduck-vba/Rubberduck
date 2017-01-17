@@ -337,7 +337,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                _undeclared[enclosingProcedure.QualifiedName] = new[] { undeclaredLocal };
+                _undeclared[enclosingProcedure.QualifiedName] = new List<Declaration> { undeclaredLocal };
             }
 
             return undeclaredLocal;
