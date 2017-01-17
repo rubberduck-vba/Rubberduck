@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
@@ -35,6 +36,14 @@ namespace Rubberduck.Parsing.Symbols
         {
             if (string.IsNullOrEmpty(path)) { throw new InvalidOperationException(); }
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                return Load(stream);
+            }
+        }
+
+        public SerializableProject Load(Stream stream)
+        {
+            if (stream == null) { throw new ArgumentNullException(); }
             using (var xmlReader = XmlReader.Create(stream))
             using (var reader = XmlDictionaryReader.CreateDictionaryReader(xmlReader))
             {
