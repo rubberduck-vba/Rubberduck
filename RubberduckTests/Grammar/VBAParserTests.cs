@@ -273,7 +273,7 @@ END";
         [TestMethod]
         public void TestCommentThatLooksLikeAnnotation()
         {
-            string code = @"'@param foo: the value of something";
+            string code = @"'@param foo; the value of something";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
         }
@@ -1533,7 +1533,7 @@ End Sub
         [TestMethod]
         public void TestParensForByValFirstArg()
         {
-            Assert.Inconclusive("See issue #2206");
+            //Assert.Inconclusive("See issue #2206");
             const string code = @"
 Sub Test()
     DoSomething (foo), bar

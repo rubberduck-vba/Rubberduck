@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Properties;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.Events;
@@ -2483,6 +2485,55 @@ End Type
                 item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == "Bf");
 
             Assert.IsNotNull(declaration);
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2523
+        [TestMethod]
+        public void AnnotationFollowedByCommentAnnotatesDeclaration()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    '@Ignore VariableNotAssigned: that's actually a Rubberduck bug, see #2522
+    ReDim orgs(0 To items.Count - 1, 0 To 1)
+End Sub
+";
+            var results = new[] { "VariableNotAssigned" };
+
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
+
+            var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
+            Assert.IsNotNull(annotation);
+            Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2523
+        [TestMethod]
+        public void AnnotationListFollowedByCommentAnnotatesDeclaration()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    '@Ignore VariableNotAssigned, UndeclaredVariable, VariableNotUsed: Ignore ALL the inspections!
+    ReDim orgs(0 To items.Count - 1, 0 To 1)
+End Sub
+";
+
+            var results = new[] { "VariableNotAssigned", "UndeclaredVariable", "VariableNotUsed" };
+
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
+
+            var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
+            Assert.IsNotNull(annotation);
+            Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
         }
     }
 }

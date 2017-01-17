@@ -10,12 +10,10 @@ namespace Rubberduck.Inspections.QuickFixes
     public class IgnoreOnceQuickFix : QuickFixBase
     {
         private readonly string _annotationText;
-        private readonly string _inspectionName;
 
         public IgnoreOnceQuickFix(ParserRuleContext context, QualifiedSelection selection, string inspectionName) 
             : base(context, selection, InspectionsUI.IgnoreOnce)
         {
-            _inspectionName = inspectionName;
             _annotationText = "'" + Annotations.AnnotationMarker +
                               Annotations.IgnoreInspection + ' ' + inspectionName;
         }
@@ -39,7 +37,11 @@ namespace Rubberduck.Inspections.QuickFixes
                 int commentStart;
                 if (codeLine.HasComment(out commentStart) && codeLine.Substring(commentStart).StartsWith(ignoreAnnotation))
                 {
-                    annotationText = codeLine + ", " + _inspectionName;
+                    var indentation = codeLine.Length - codeLine.TrimStart().Length;
+                    annotationText = string.Format("{0}{1},{2}", 
+                                                   new string(' ', indentation), 
+                                                   _annotationText,
+                                                   codeLine.Substring(indentation + ignoreAnnotation.Length));
                     module.ReplaceLine(insertLine - 1, annotationText);
                 }
                 else
