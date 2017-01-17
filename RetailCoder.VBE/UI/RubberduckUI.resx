@@ -1908,4 +1908,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
     <value>Vertical Spacing</value>
   </data>
+  <data name="DeclarationType_BracketedExpression" xml:space="preserve">
+    <value>runtime expression</value>
+  </data>
 </root>

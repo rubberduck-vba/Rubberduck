@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -28,7 +29,8 @@ namespace Rubberduck.Parsing.Binding
             _module = module;
             _parent = parent;
             _context = context;
-            _name = name;
+            // hack; SimpleNameContext.Identifier() excludes the square brackets
+            _name = context.Start.Text == "[" && context.Stop.Text == "]" ? "[" + name + "]" : name;
             _propertySearchType = StatementContext.GetSearchDeclarationType(statementContext);
         }
         
@@ -68,8 +70,16 @@ namespace Rubberduck.Parsing.Binding
                 return boundExpression;
             }
 
-            var undeclaredLocal = _declarationFinder.OnUndeclaredVariable(_parent, _name, _context);
-            return new SimpleNameExpression(undeclaredLocal, ExpressionClassification.Variable, _context);
+            if (_context.Start.Text == "[" && _context.Stop.Text == "]")
+            {
+                var bracketedExpression = _declarationFinder.OnBracketedExpression(_context.GetText(), _context);
+                return new SimpleNameExpression(bracketedExpression, ExpressionClassification.Unbound, _context);
+            }
+            else
+            {
+                var undeclaredLocal = _declarationFinder.OnUndeclaredVariable(_parent, _name, _context);
+                return new SimpleNameExpression(undeclaredLocal, ExpressionClassification.Variable, _context);
+            }
             //return new ResolutionFailedExpression();
         }
 

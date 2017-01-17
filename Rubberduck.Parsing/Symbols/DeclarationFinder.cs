@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor.Application;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -26,6 +28,7 @@ namespace Rubberduck.Parsing.Symbols
 
     public class DeclarationFinder
     {
+        private readonly IHostApplication _hostApp;
         private readonly IDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly IDictionary<QualifiedMemberName, IList<Declaration>> _undeclared;
         private readonly AnnotationService _annotationService;
@@ -34,10 +37,9 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IDictionary<string, Declaration[]> _declarationsByName;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public DeclarationFinder(
-            IReadOnlyList<Declaration> declarations,
-            IEnumerable<IAnnotation> annotations)
+        public DeclarationFinder(IReadOnlyList<Declaration> declarations, IEnumerable<IAnnotation> annotations, IHostApplication hostApp = null)
         {
+            _hostApp = hostApp;
             _annotations = annotations.GroupBy(node => node.QualifiedSelection.QualifiedName)
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
             _declarations = declarations.GroupBy(item => item.QualifiedName.QualifiedModuleName)
@@ -341,6 +343,24 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             return undeclaredLocal;
+        }
+
+        public Declaration OnBracketedExpression(string expression, ParserRuleContext context)
+        {
+            var hostApp = FindProject(_hostApp == null ? "VBA" : _hostApp.ApplicationName);
+            var qualifiedName = hostApp.QualifiedName.QualifiedModuleName.QualifyMemberName(expression);
+
+            var exists = _undeclared.ContainsKey(qualifiedName);
+            if (exists)
+            {
+                return _undeclared[qualifiedName][0];
+            }
+            else
+            {
+                var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, context.GetSelection(), false, null);
+                _undeclared.Add(qualifiedName, new List<Declaration> { item });
+                return item;
+            }
         }
 
         public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)

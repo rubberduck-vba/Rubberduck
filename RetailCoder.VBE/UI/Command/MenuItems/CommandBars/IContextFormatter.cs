@@ -45,13 +45,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             typeName = "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) + ")";
 
-            if (declaration.DeclarationType.HasFlag(DeclarationType.Project))
+            if (declaration.DeclarationType.HasFlag(DeclarationType.Project) || declaration.DeclarationType == DeclarationType.BracketedExpression)
             {
-                formattedDeclaration = System.IO.Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath) + ";" + declaration.IdentifierName;
+                formattedDeclaration = System.IO.Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath) + ";" + declaration.IdentifierName + " (" + declarationType + ")";
             }
             else if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                formattedDeclaration = moduleName.ToString();
+                formattedDeclaration = moduleName + " (" + declarationType + ")";
             }
             
             if (declaration.DeclarationType.HasFlag(DeclarationType.Member))
