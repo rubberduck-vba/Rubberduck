@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class DeclarationFinder
     {
-        private readonly IDictionary<QualifiedModuleName, CommentNode[]> _comments;
+        //private readonly IDictionary<QualifiedModuleName, CommentNode[]> _comments;
         private readonly IDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly IDictionary<QualifiedMemberName, IList<Declaration>> _undeclared;
         private readonly AnnotationService _annotationService;
@@ -24,8 +24,8 @@ namespace Rubberduck.Parsing.Symbols
             IEnumerable<CommentNode> comments,
             IEnumerable<IAnnotation> annotations)
         {
-            _comments = comments.GroupBy(node => node.QualifiedSelection.QualifiedName)
-                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
+            //_comments = comments.GroupBy(node => node.QualifiedSelection.QualifiedName)
+            //    .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
             _annotations = annotations.GroupBy(node => node.QualifiedSelection.QualifiedName)
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
             _declarations = declarations;
