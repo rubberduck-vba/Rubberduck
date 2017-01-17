@@ -365,6 +365,7 @@
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
+    <Compile Include="Inspections\HostSpecificExpressionInspection.cs" />
     <Compile Include="Inspections\HungarianNotationInspection.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspection.cs" />

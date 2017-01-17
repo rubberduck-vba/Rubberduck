@@ -625,4 +625,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Member '{0}' is not declared on the interface for type '{1}'.</value>
     <comment>{0} Member used, {1} type being accessed.</comment>
   </data>
+  <data name="HostSpecificExpressionInspectionMeta" xml:space="preserve">
+    <value>Bracketed expressions are evaluated by the host application at runtime, which means VBA can't validate the expression at compile-time. Consider using the host application's object model instead.</value>
+  </data>
+  <data name="HostSpecificExpressionInspectionName" xml:space="preserve">
+    <value>Host-specific bracketed expression is only evaluated at runtime</value>
+  </data>
+  <data name="HostSpecificExpressionInspectionResultFormat" xml:space="preserve">
+    <value>Expression '{0}' cannot be validated at compile-time.</value>
+  </data>
 </root>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
@@ -96,6 +97,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public override int GetHashCode()
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
+        }
+
+        public IHostApplication HostApplication()
+        {
+            return null;
         }
 
         public bool IsInDesignMode
