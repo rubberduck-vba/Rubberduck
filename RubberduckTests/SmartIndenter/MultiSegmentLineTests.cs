@@ -18,8 +18,13 @@ namespace RubberduckTests.SmartIndenter
                 "Private Sub Bar(): Debug.Assert Foo = 42: End Sub"
             };
 
-            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = false;
+                return s;
+            });
+            var actual = indenter.Indent(code);
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
@@ -33,8 +38,13 @@ namespace RubberduckTests.SmartIndenter
                 "Public Enum Bar: X = 1: Y = 2: End Enum"
             };
 
-            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = false;
+                return s;
+            });
+            var actual = indenter.Indent(code);
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
@@ -48,8 +58,13 @@ namespace RubberduckTests.SmartIndenter
                 "Public Enum Bar: X = 1: Y = 2: End Enum"
             };
 
-            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = false;
+                return s;
+            });
+            var actual = indenter.Indent(code);
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
@@ -64,7 +79,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
@@ -91,7 +106,7 @@ namespace RubberduckTests.SmartIndenter
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -127,7 +142,7 @@ namespace RubberduckTests.SmartIndenter
                 s.IndentCase = true;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -161,7 +176,7 @@ namespace RubberduckTests.SmartIndenter
                 s.IndentCase = true;
                 return s;
             });
-            var actual = indenter.Indent(code, string.Empty);
+            var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
     }

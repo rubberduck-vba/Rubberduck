@@ -555,7 +555,8 @@ End Sub";
 @"Sub Foo()
     Dim d As Boolean
     d = True
-End Sub";
+End Sub
+";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
@@ -630,7 +631,8 @@ End Sub";
 @"Sub Foo()
     Dim d As Boolean
     d = True
-End Sub";
+End Sub
+";
 
             var builder = new MockVbeBuilder();
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
@@ -685,7 +687,8 @@ End Sub";
 @"Sub Foo()
     Dim d As Boolean
     d = True
-End Sub";
+End Sub
+";
 
             var builder = new MockVbeBuilder();
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
@@ -773,7 +776,8 @@ End Sub";
 Sub Foo()
     Dim d As Boolean
     d = True
-End Sub";
+End Sub
+";
 
             var builder = new MockVbeBuilder();
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
@@ -833,7 +837,8 @@ End Sub";
 Sub Foo()
     Dim d As Boolean
     d = True
-End Sub";
+End Sub
+";
 
             var builder = new MockVbeBuilder();
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
