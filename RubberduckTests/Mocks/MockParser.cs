@@ -9,7 +9,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -34,15 +33,15 @@ namespace RubberduckTests.Mocks
 
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state)
+        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
         {
             var attributeParser = new Mock<IAttributeParser>();
             attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>()))
                            .Returns(() => new Dictionary<Tuple<string, DeclarationType>, Attributes>());
-            return Create(vbe, state, attributeParser.Object);
+            return Create(vbe, state, attributeParser.Object, serializedDeclarationsPath);
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
+        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, string serializedDeclarationsPath = null)
         {
             return new ParseCoordinator(vbe, state, attributeParser,
                 () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
@@ -52,7 +51,7 @@ namespace RubberduckTests.Mocks
                     new SpecialFormDeclarations(state), 
                     new FormEventDeclarations(state), 
                     new AliasDeclarations(state),
-                }, true);
+                }, true, serializedDeclarationsPath);
         }
 
         private static readonly HashSet<DeclarationType> ProceduralTypes =

@@ -39,6 +39,7 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly bool _isTestScope;
+        private readonly string _serializedDeclarationsPath;
         private readonly IHostApplication _hostApp;
 
         public ParseCoordinator(
@@ -47,7 +48,8 @@ namespace Rubberduck.Parsing.VBA
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
             IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders,
-            bool isTestScope = false)
+            bool isTestScope = false,
+            string serializedDeclarationsPath = null)
         {
             _vbe = vbe;
             _state = state;
@@ -55,6 +57,8 @@ namespace Rubberduck.Parsing.VBA
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
             _isTestScope = isTestScope;
+            _serializedDeclarationsPath = serializedDeclarationsPath 
+                ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
             _hostApp = _vbe.HostApplication();
 
             state.ParseRequest += ReparseRequested;
@@ -439,7 +443,7 @@ namespace Rubberduck.Parsing.VBA
                                     {
                                         Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
 
-                                        var comReflector = new ReferencedDeclarationsCollector(State, localReference);
+                                        var comReflector = new ReferencedDeclarationsCollector(State, localReference, _serializedDeclarationsPath);
                                         if (comReflector.SerializedVersionExists)
                                         {
                                             Logger.Trace(string.Format("Deserializing reference '{0}'.", localReference.Name));
