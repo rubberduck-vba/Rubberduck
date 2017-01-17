@@ -291,7 +291,7 @@ namespace Rubberduck.Parsing.VBA
                 State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
             }
 
-            var finder = new DeclarationFinder(State.AllDeclarations, State.AllComments, State.AllAnnotations);
+            var finder = new DeclarationFinder(State.AllDeclarations, State.AllAnnotations);
             var passes = new List<ICompilationPass>
                 {
                     // This pass has to come first because the type binding resolution depends on it.
