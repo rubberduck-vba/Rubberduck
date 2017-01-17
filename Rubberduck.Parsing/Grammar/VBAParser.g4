@@ -563,10 +563,10 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 // 5.6 Expressions
 expression :
     // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.	
-	literalExpression                                                                               # literalExpr
+	whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN                                    # parenthesizedExpr
+	|literalExpression                                                                              # literalExpr
 	| lExpression                                                                                   # lExpr
 	| builtInType                                                                                   # builtInTypeExpr
-	| LPAREN whiteSpace? expression whiteSpace? RPAREN                                              # parenthesizedExpr
 	| TYPEOF whiteSpace expression                                                                  # typeofexpr        // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
 	| NEW whiteSpace expression                                                                     # newExpr
 	| expression whiteSpace? POW whiteSpace? expression                                             # powOp
@@ -600,7 +600,7 @@ objectLiteralIdentifier : NOTHING;
 variantLiteralIdentifier : EMPTY | NULL;
 
 lExpression :
-    lExpression whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                     # indexExpr
+    lExpression LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                                 # indexExpr
     | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? unrestrictedIdentifier                  # memberAccessExpr
     | lExpression mandatoryLineContinuation? EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
     | ME                                                                                                            # instanceExpr
@@ -637,6 +637,7 @@ argumentExpression :
     // Special case for redim statements. The resolver doesn't have to deal with this because it is "picked apart" in the redim statement.
     | lowerBoundArgumentExpression whiteSpace TO whiteSpace upperBoundArgumentExpression
 ;
+
 lowerBoundArgumentExpression : expression;
 upperBoundArgumentExpression : expression;
 

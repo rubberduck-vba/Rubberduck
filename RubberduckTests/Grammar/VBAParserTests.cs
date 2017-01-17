@@ -1533,7 +1533,7 @@ End Sub
         [TestMethod]
         public void TestParensForByValFirstArg()
         {
-            Assert.Inconclusive("See issue #2206");
+            //Assert.Inconclusive("See issue #2206");
             const string code = @"
 Sub Test()
     DoSomething (foo), bar
