@@ -868,6 +868,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to runtime expression.
+        /// </summary>
+        public static string DeclarationType_BracketedExpression {
+            get {
+                return ResourceManager.GetString("DeclarationType_BracketedExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to class.
         /// </summary>
         public static string DeclarationType_ClassModule {

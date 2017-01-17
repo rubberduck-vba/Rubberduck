@@ -60,7 +60,9 @@ namespace Rubberduck.Parsing.Symbols
         [DebuggerDisplay("LineLabel")]
         LineLabel = 1 << 25,
         [DebuggerDisplay("UnresolvedMember")]
-        UnresolvedMember = 1 << 26
+        UnresolvedMember = 1 << 26,
+        [DebuggerDisplay("BracketedExpression")]
+        BracketedExpression = 1 << 27,
     }
 
     public interface IIdentifier { IdentifierNode Identifier { get; } }

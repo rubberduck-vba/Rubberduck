@@ -3,37 +3,54 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor.Application;
 
 namespace Rubberduck.Parsing.Symbols
 {
+    internal static class DictionaryExtensions
+    {
+        public static IEnumerable<TValue> AllValues<TKey, TValue>(
+            this IDictionary<TKey, TValue[]> source)
+        {
+            return source.SelectMany(item => item.Value);
+        }
+
+        public static IEnumerable<TValue> AllValues<TKey, TValue>(
+        this IDictionary<TKey, IList<TValue>> source)
+        {
+            return source.SelectMany(item => item.Value);
+        }
+    }
+
     public class DeclarationFinder
     {
-        //private readonly IDictionary<QualifiedModuleName, CommentNode[]> _comments;
+        private static readonly SquareBracketedNameComparer NameComparer = new SquareBracketedNameComparer();
+
+        private readonly IHostApplication _hostApp;
         private readonly IDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly IDictionary<QualifiedMemberName, IList<Declaration>> _undeclared;
         private readonly AnnotationService _annotationService;
 
-        private readonly IReadOnlyList<Declaration> _declarations;
+        private readonly IDictionary<QualifiedModuleName, Declaration[]> _declarations;
         private readonly IDictionary<string, Declaration[]> _declarationsByName;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public DeclarationFinder(
-            IReadOnlyList<Declaration> declarations,
-            IEnumerable<CommentNode> comments,
-            IEnumerable<IAnnotation> annotations)
+        public DeclarationFinder(IReadOnlyList<Declaration> declarations, IEnumerable<IAnnotation> annotations, IHostApplication hostApp = null)
         {
-            //_comments = comments.GroupBy(node => node.QualifiedSelection.QualifiedName)
-            //    .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
+            _hostApp = hostApp;
             _annotations = annotations.GroupBy(node => node.QualifiedSelection.QualifiedName)
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
-            _declarations = declarations;
+            _declarations = declarations.GroupBy(item => item.QualifiedName.QualifiedModuleName)
+                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
             _declarationsByName = declarations.GroupBy(declaration => new
             {
                 IdentifierName = declaration.IdentifierName.ToLowerInvariant()
             })
-            .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
+            .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray(), NameComparer);
 
             _undeclared = new Dictionary<QualifiedMemberName, IList<Declaration>>();
             _annotationService = new AnnotationService(this);
@@ -41,27 +58,35 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> Undeclared
         {
-            get { return _undeclared.SelectMany(e => e.Value); }
+            get { return _undeclared.AllValues(); }
         }
 
+        private IEnumerable<Declaration> _nonBaseAsType;
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
         {
-            return _declarations
+            return _nonBaseAsType ?? (
+                _nonBaseAsType = _declarations.AllValues()
                 .Where(d =>
                 !string.IsNullOrWhiteSpace(d.AsTypeName)
                 && !d.AsTypeIsBaseType
                 && d.DeclarationType != DeclarationType.Project
-                && d.DeclarationType != DeclarationType.ProceduralModule).ToList();
+                && d.DeclarationType != DeclarationType.ProceduralModule).ToList());
         }
 
+        private IEnumerable<Declaration> _classes;
         public IEnumerable<Declaration> FindClasses()
         {
-            return _declarations.Where(d => d.DeclarationType == DeclarationType.ClassModule).ToList();
+            return _classes ?? (
+                _classes = _declarations.AllValues()
+                .Where(d => d.DeclarationType == DeclarationType.ClassModule).ToList());
         }
 
+        private IEnumerable<Declaration> _projects;
         public IEnumerable<Declaration> FindProjects()
         {
-            return _declarations.Where(d => d.DeclarationType == DeclarationType.Project).ToList();
+            return _projects ?? (
+                _projects = _declarations.AllValues()
+                .Where(d => d.DeclarationType == DeclarationType.Project).ToList());
         }
 
         public Declaration FindParameter(Declaration procedure, string parameterName)
@@ -77,7 +102,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return result;
             }
-            return new List<IAnnotation>();
+            return Enumerable.Empty<IAnnotation>();
         }
 
         public bool IsMatch(string declarationName, string potentialMatchName)
@@ -101,11 +126,9 @@ namespace Rubberduck.Parsing.Symbols
         {
             var normalizedName = name.ToLowerInvariant();
             Declaration[] result;
-            if (_declarationsByName.TryGetValue(normalizedName, out result))
-            {
-                return result;
-            }
-            return Enumerable.Empty<Declaration>();
+            return _declarationsByName.TryGetValue(normalizedName, out result) 
+                ? result 
+                : Enumerable.Empty<Declaration>();
         }
 
         public Declaration FindProject(string name, Declaration currentScope = null)
@@ -126,6 +149,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindStdModule(string name, Declaration parent = null, bool includeBuiltIn = false)
         {
+            Debug.Assert(parent != null);
             Declaration result = null;
             try
             {
@@ -144,6 +168,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindClassModule(string name, Declaration parent = null, bool includeBuiltIn = false)
         {
+            Debug.Assert(parent != null);
             Declaration result = null;
             try
             {
@@ -283,7 +308,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberEnclosingProcedure(Declaration enclosingProcedure, string memberName, DeclarationType memberType, ParserRuleContext onSiteContext = null)
         {
-            if (memberType == DeclarationType.Variable && enclosingProcedure.IdentifierName.Equals(memberName))
+            if (memberType == DeclarationType.Variable && NameComparer.Equals(enclosingProcedure.IdentifierName, memberName))
             {
                 return enclosingProcedure;
             }
@@ -320,6 +345,24 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             return undeclaredLocal;
+        }
+
+        public Declaration OnBracketedExpression(string expression, ParserRuleContext context)
+        {
+            var hostApp = FindProject(_hostApp == null ? "VBA" : _hostApp.ApplicationName);
+            var qualifiedName = hostApp.QualifiedName.QualifiedModuleName.QualifyMemberName(expression);
+
+            var exists = _undeclared.ContainsKey(qualifiedName);
+            if (exists)
+            {
+                return _undeclared[qualifiedName][0];
+            }
+            else
+            {
+                var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, context.GetSelection(), false, null);
+                _undeclared.Add(qualifiedName, new List<Declaration> { item });
+                return item;
+            }
         }
 
         public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)

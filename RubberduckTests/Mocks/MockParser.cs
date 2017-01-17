@@ -9,6 +9,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -65,13 +66,25 @@ namespace RubberduckTests.Mocks
         {
             var reader = new XmlPersistableDeclarations();
             var deserialized = reader.Load(Path.Combine("Resolver", serialized));
+            AddTestLibrary(state, deserialized);
+        }
 
+        // ReSharper disable once UnusedMember.Global; used by RubberduckWeb to load serialized declarations.
+        public static void AddTestLibrary(this RubberduckParserState state, Stream stream)
+        {
+            var reader = new XmlPersistableDeclarations();
+            var deserialized = reader.Load(stream);
+            AddTestLibrary(state, deserialized);
+        }
+
+        private static void AddTestLibrary(RubberduckParserState state, SerializableProject deserialized)
+        {
             var declarations = deserialized.Unwrap();
 
             foreach (var members in declarations.Where(d => d.DeclarationType != DeclarationType.Project &&
                                                             d.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
                                                             ProceduralTypes.Contains(d.DeclarationType))
-                                                .GroupBy(d => d.ParentDeclaration))
+                .GroupBy(d => d.ParentDeclaration))
             {
                 state.CoClasses.TryAdd(members.Select(m => m.IdentifierName).ToList(), members.First().ParentDeclaration);
             }

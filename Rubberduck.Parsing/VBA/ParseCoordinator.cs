@@ -14,6 +14,9 @@ using System.Linq;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Extensions;
+
 // ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
@@ -36,6 +39,7 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly bool _isTestScope;
+        private readonly IHostApplication _hostApp;
 
         public ParseCoordinator(
             IVBE vbe,
@@ -51,6 +55,7 @@ namespace Rubberduck.Parsing.VBA
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
             _isTestScope = isTestScope;
+            _hostApp = _vbe.HostApplication();
 
             state.ParseRequest += ReparseRequested;
         }
@@ -291,7 +296,7 @@ namespace Rubberduck.Parsing.VBA
                 State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
             }
 
-            var finder = new DeclarationFinder(State.AllDeclarations, State.AllComments, State.AllAnnotations);
+            var finder = new DeclarationFinder(State.AllDeclarations, State.AllAnnotations, _hostApp);
             var passes = new List<ICompilationPass>
                 {
                     // This pass has to come first because the type binding resolution depends on it.
