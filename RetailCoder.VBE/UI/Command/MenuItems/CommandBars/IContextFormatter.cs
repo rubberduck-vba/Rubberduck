@@ -75,12 +75,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             else if (declaration.DeclarationType == DeclarationType.EnumerationMember
                 || declaration.DeclarationType == DeclarationType.UserDefinedTypeMember)
             {
-                formattedDeclaration = string.Format("{0}.{1}.{2}",
+                formattedDeclaration = string.Format("{0}.{1}.{2} {3}",
                     declaration.IsBuiltIn 
                         ? System.IO.Path.GetFileName(moduleName.ProjectPath) + ";" + moduleName.ProjectName 
                         : moduleName.ToString(), 
                     declaration.ParentDeclaration.IdentifierName, 
-                    declaration.IdentifierName);
+                    declaration.IdentifierName,
+                    typeName);
             }
 
             var subscripts = declaration.IsArray ? "()" : string.Empty;

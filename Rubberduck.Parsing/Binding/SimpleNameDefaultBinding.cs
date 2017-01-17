@@ -93,7 +93,9 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable);
+            var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable)
+                ?? _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable)
+                ;
             if (IsValidMatch(localVariable, _name))
             {
                 return new SimpleNameExpression(localVariable, ExpressionClassification.Variable, _context);

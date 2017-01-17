@@ -28,6 +28,8 @@ namespace Rubberduck.Parsing.Symbols
 
     public class DeclarationFinder
     {
+        private static readonly SquareBracketedNameComparer NameComparer = new SquareBracketedNameComparer();
+
         private readonly IHostApplication _hostApp;
         private readonly IDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly IDictionary<QualifiedMemberName, IList<Declaration>> _undeclared;
@@ -48,7 +50,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 IdentifierName = declaration.IdentifierName.ToLowerInvariant()
             })
-            .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
+            .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray(), NameComparer);
 
             _undeclared = new Dictionary<QualifiedMemberName, IList<Declaration>>();
             _annotationService = new AnnotationService(this);
@@ -306,7 +308,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberEnclosingProcedure(Declaration enclosingProcedure, string memberName, DeclarationType memberType, ParserRuleContext onSiteContext = null)
         {
-            if (memberType == DeclarationType.Variable && enclosingProcedure.IdentifierName.Equals(memberName))
+            if (memberType == DeclarationType.Variable && NameComparer.Equals(enclosingProcedure.IdentifierName, memberName))
             {
                 return enclosingProcedure;
             }
