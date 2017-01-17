@@ -20,7 +20,7 @@ namespace RubberduckTests.Inspections
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Codez", ComponentType.StandardModule, inputCode)
-                .AddReference("Scripting", @"C:\Windows\SysWOW64\scrrun.dll", true)
+                .AddReference("Scripting", "", 1, 0, true)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
