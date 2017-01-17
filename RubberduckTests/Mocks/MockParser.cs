@@ -69,6 +69,7 @@ namespace RubberduckTests.Mocks
             AddTestLibrary(state, deserialized);
         }
 
+        // ReSharper disable once UnusedMember.Global; used by RubberduckWeb to load serialized declarations.
         public static void AddTestLibrary(this RubberduckParserState state, Stream stream)
         {
             var reader = new XmlPersistableDeclarations();
