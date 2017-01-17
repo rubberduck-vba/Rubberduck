@@ -6,6 +6,7 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -24,8 +25,11 @@ Public Sub DoSomething()
 End Sub
 ";
             var builder = new MockVbeBuilder();
-            IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(code, out component);
+            var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, code)
+                .AddReference("Excel", "", true)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupGet(m => m.ApplicationName).Returns("Excel");
             vbe.Setup(m => m.HostApplication()).Returns(() => mockHost.Object);

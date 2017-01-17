@@ -36,19 +36,16 @@ namespace RubberduckTests.Mocks
 
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
         {
-            var path = serializedDeclarationsPath ??
-                       Path.Combine(Assembly.GetAssembly(typeof (MockParser)).Location, "TestFiles", "Resolver");
-
             var attributeParser = new Mock<IAttributeParser>();
             attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>()))
                            .Returns(() => new Dictionary<Tuple<string, DeclarationType>, Attributes>());
-            return Create(vbe, state, attributeParser.Object, path);
+            return Create(vbe, state, attributeParser.Object, serializedDeclarationsPath);
         }
 
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, string serializedDeclarationsPath = null)
         {
             var path = serializedDeclarationsPath ??
-                       Path.Combine(Assembly.GetAssembly(typeof(MockParser)).Location, "TestFiles", "Resolver");
+                       Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
 
             return new ParseCoordinator(vbe, state, attributeParser,
                 () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
