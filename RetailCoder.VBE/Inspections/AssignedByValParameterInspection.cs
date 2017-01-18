@@ -24,9 +24,11 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var parameters = State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
-                .Where(item => !IsIgnoringInspectionResultFor(item, AnnotationName))
-                .Where(item => ((VBAParser.ArgContext) item.Context).BYVAL() != null
-                               && item.References.Any(reference => reference.IsAssignment));
+                .OfType<ParameterDeclaration>()
+                .Where(item => !item.IsByRef 
+                    && !IsIgnoringInspectionResultFor(item, AnnotationName)
+                    && item.References.Any(reference => reference.IsAssignment))
+                .ToList();
 
             return parameters
                 .Select(param => new AssignedByValParameterInspectionResult(this, param))
