@@ -46,7 +46,7 @@ namespace Rubberduck.Inspections
                                                                          .Select(d => d.IdentifierName)
                                                                          .Distinct())
                 from references in access.Select(usage => usage.References.Where(r => InterestingTypes.Contains(r.Context.Parent.GetType())))
-                from reference in references.Where(r => !r.IsInspectionDisabled(AnnotationName))
+                from reference in references.Where(r => !r.IsIgnoringInspectionResultFor(AnnotationName))
                 let identifier = reference.Context.Parent.GetChild(reference.Context.Parent.ChildCount - 1)
                 where !typeMembers.Contains(identifier.GetText())
                 let pseudoDeclaration = CreatePseudoDeclaration((ParserRuleContext) identifier, reference)

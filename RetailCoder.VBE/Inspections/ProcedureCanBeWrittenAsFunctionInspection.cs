@@ -82,7 +82,7 @@ namespace Rubberduck.Inspections
                 .Where(result => result.Context.Parent is VBAParser.SubStmtContext &&
                                   subStmtsNotImplementingInterfaces.Contains(result.Context.Parent) &&
                                   subStmtsNotImplementingEvents.Contains(result.Context.Parent)
-                        && !IsInspectionDisabled(result.ModuleName.Component, result.Context.Start.Line))
+                        && !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
                 .Select(result => new ProcedureCanBeWrittenAsFunctionInspectionResult(this, State, result,
                     new QualifiedContext<VBAParser.SubStmtContext>(result.ModuleName, result.Context.Parent as VBAParser.SubStmtContext)));
         }

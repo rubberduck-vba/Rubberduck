@@ -39,6 +39,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly ConcurrentDictionary<QualifiedMemberName, IList<Declaration>> _undeclared;
         private readonly ConcurrentDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly ConcurrentDictionary<Declaration, Declaration[]> _parametersByParent;
+        private readonly ConcurrentDictionary<DeclarationType, Declaration[]> _userDeclarationsByType;
         
         private static readonly object ThreadLock = new object();
 
@@ -57,7 +58,10 @@ namespace Rubberduck.Parsing.Symbols
                 declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
                             .GroupBy(declaration => declaration.ParentDeclaration)
                             .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray()));
-
+            _userDeclarationsByType = new ConcurrentDictionary<DeclarationType, Declaration[]>(
+                declarations.Where(declaration => !declaration.IsBuiltIn)
+                            .GroupBy(declaration => declaration.DeclarationType)
+                            .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray()));
 
             _projects = _projects = declarations.Where(d => d.DeclarationType == DeclarationType.Project).ToList();
             _classes = _declarations.AllValues().Where(d => d.DeclarationType == DeclarationType.ClassModule).ToList();
@@ -91,9 +95,34 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IEnumerable<Declaration> _projects;
         public IEnumerable<Declaration> Projects { get { return _projects; } }
 
+        public IEnumerable<Declaration> UserDeclarations(DeclarationType type)
+        {
+            Declaration[] result;
+            if (!_userDeclarationsByType.TryGetValue(type, out result))
+            {
+                result = _userDeclarationsByType
+                    .Where(item => item.Key.HasFlag(type))
+                    .SelectMany(item => item.Value)
+                    .ToArray();
+            }
+            return result;
+        }
+
         public Declaration FindParameter(Declaration procedure, string parameterName)
         {
             return _parametersByParent[procedure].SingleOrDefault(parameter => parameter.IdentifierName == parameterName);
+        }
+
+        public IEnumerable<Declaration> FindMemberMatches(Declaration parent, string memberName)
+        {
+            Declaration[] children;
+            if (_declarations.TryGetValue(parent.QualifiedName.QualifiedModuleName, out children))
+            {
+                return children.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member)
+                                             && item.IdentifierName == memberName).ToList();
+            }
+
+            return Enumerable.Empty<Declaration>();
         }
 
         public IEnumerable<IAnnotation> FindAnnotations(QualifiedModuleName module)
