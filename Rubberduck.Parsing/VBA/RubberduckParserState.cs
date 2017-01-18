@@ -59,6 +59,8 @@ namespace Rubberduck.Parsing.VBA
 
         public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
+        public DeclarationFinder DeclarationFinder { get; internal set; }
+
         public RubberduckParserState(ISinks sinks)
         {
             var values = Enum.GetValues(typeof(ParserState));
