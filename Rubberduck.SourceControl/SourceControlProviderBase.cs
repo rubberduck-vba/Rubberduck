@@ -173,11 +173,7 @@ namespace Rubberduck.SourceControl
                     var component = module.Parent;
                     {
                         var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
-                        string name = null;
-                        if (selection.QualifiedName.Component != null)
-                        {
-                            name = selection.QualifiedName.Component.Name;
-                        }
+                        var name = string.IsNullOrEmpty(selection.QualifiedName.ComponentName) ? null : selection.QualifiedName.ComponentName;
 
                         components.RemoveSafely(item);
 
@@ -217,12 +213,7 @@ namespace Rubberduck.SourceControl
                     var component = module.Parent;
                     {
                         var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
-                        string name = null;
-                        if (selection.QualifiedName.Component != null)
-                        {
-                            name = selection.QualifiedName.Component.Name;
-                        }
-
+                        var name = string.IsNullOrEmpty(selection.QualifiedName.ComponentName) ? null : selection.QualifiedName.ComponentName;
                         try
                         {
                             Project.LoadAllComponents(CurrentRepository.LocalLocation);

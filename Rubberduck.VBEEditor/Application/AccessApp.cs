@@ -46,7 +46,7 @@ namespace Rubberduck.VBEditor.Application
             // http://msdn.microsoft.com/en-us/library/office/ff193559(v=office.15).aspx
             // https://github.com/retailcoder/Rubberduck/issues/109
 
-            var projectName = qualifiedMemberName.QualifiedModuleName.Project.Name;
+            var projectName = qualifiedMemberName.QualifiedModuleName.ProjectName;
             return string.Concat(projectName, ".", qualifiedMemberName.MemberName);
         }
     }

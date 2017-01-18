@@ -364,8 +364,7 @@ namespace Rubberduck.Common
             var items = state.AllDeclarations.ToList();
 
             var forms = items.Where(item => item.DeclarationType == DeclarationType.ClassModule
-                && item.QualifiedName.QualifiedModuleName.Component != null
-                && item.QualifiedName.QualifiedModuleName.Component.Type == ComponentType.UserForm)
+                && item.QualifiedName.QualifiedModuleName.ComponentType == ComponentType.UserForm)
                 .ToList();
 
             var result = new List<Declaration>();
