@@ -130,7 +130,6 @@
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\Abstract\IVBComponentsEventsSink.cs" />
     <Compile Include="SafeComWrappers\Abstract\IVBProjectsEventsSink.cs" />
-    <Compile Include="SafeComWrappers\BaseClasses\VBProject.cs" />
     <Compile Include="SafeComWrappers\DispatcherEventArgs.cs" />
     <Compile Include="SafeComWrappers\MSAccessComponentType.cs" />
     <Compile Include="SafeComWrappers\MSForms\ControlType.cs" />

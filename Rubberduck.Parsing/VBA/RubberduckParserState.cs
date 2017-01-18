@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -355,7 +354,7 @@ namespace Rubberduck.Parsing.VBA
             var moduleStates = new List<ParserState>();
             foreach (var moduleState in _moduleStates)
             {
-                if (string.IsNullOrEmpty(moduleState.Key.ComponentName))
+                if (moduleState.Key.Component == null || string.IsNullOrEmpty(moduleState.Key.ComponentName))
                 {
                     continue;
                 }
