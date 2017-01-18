@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
@@ -19,7 +21,8 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            return Enumerable.Empty<InspectionResultBase>();
+            return Declarations.Where(item => item.DeclarationType == DeclarationType.BracketedExpression)
+                .Select(item => new HostSpecificExpressionInspectionResult(this, item)).ToList();
         }
     }
 }

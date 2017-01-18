@@ -376,6 +376,7 @@
       <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
     <Compile Include="Inspections\Results\AggregateInspectionResult.cs" />
+    <Compile Include="Inspections\Results\HostSpecificExpressionInspectionResult.cs" />
     <Compile Include="Inspections\Results\ImplicitDefaultMemberAssignmentInspectionResult.cs" />
     <Compile Include="Inspections\QuickFixes\IntroduceLocalVariableQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\OptionExplicitQuickFix.cs" />
