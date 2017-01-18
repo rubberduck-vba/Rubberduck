@@ -20,7 +20,7 @@ namespace RubberduckTests.Inspections
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Codez", ComponentType.StandardModule, inputCode)
-                .AddReference("Scripting", @"C:\Windows\SysWOW64\scrrun.dll", true)
+                .AddReference("Scripting", MockVbeBuilder.LibraryPathScripting, 1, 0, true)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
@@ -64,9 +64,9 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim dict As IDictionary
+    Dim dict As Dictionary
     Set dict = New Dictionary
-    dict.Foo
+    dict.NonMember
 End Sub";
 
             //Arrange

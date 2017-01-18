@@ -35,7 +35,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 7, true)                
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -72,7 +72,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 7, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -112,7 +112,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 7, true)
                 .Build();
             var module = project.Object.VBComponents[0].CodeModule;
             var vbe = builder.AddProject(project).Build();
@@ -142,7 +142,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
-                .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 7, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -157,7 +157,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
-                .AddReference("Excel", "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 7, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -170,11 +170,11 @@ End Sub";
         private List<Declaration> GetExcelRangeDeclarations()
         {
             var excelDeclaration = new ProjectDeclaration(new QualifiedMemberName(new QualifiedModuleName("Excel",
-                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "Excel"), "Excel"), "Excel", true);
+                    MockVbeBuilder.LibraryPathMsExcel, "Excel"), "Excel"), "Excel", true);
 
             var globalDeclaration = new ClassModuleDeclaration(new QualifiedMemberName(
                 new QualifiedModuleName("Excel",
-                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "_Global"),
+                    MockVbeBuilder.LibraryPathMsExcel, "_Global"),
                 "_Global"), excelDeclaration, "_Global", true, null, null);
 
             var globalCoClassDeclarationAttributes = new Attributes();
@@ -183,7 +183,7 @@ End Sub";
 
             var globalCoClassDeclaration = new ClassModuleDeclaration(new QualifiedMemberName(
                 new QualifiedModuleName("Excel",
-                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "Global"),
+                    MockVbeBuilder.LibraryPathMsExcel, "Global"),
                 "Global"), excelDeclaration, "Global", true, null, globalCoClassDeclarationAttributes);
 
             globalDeclaration.AddSubtype(globalCoClassDeclaration);
@@ -192,23 +192,23 @@ End Sub";
 
             var rangeClassModuleDeclaration = new ClassModuleDeclaration(new QualifiedMemberName(
                 new QualifiedModuleName("Excel",
-                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "Range"),
+                    MockVbeBuilder.LibraryPathMsExcel, "Range"),
                 "Range"), excelDeclaration, "Range", true, new List<IAnnotation>(), new Attributes());
 
             var rangeDeclaration = new PropertyGetDeclaration(new QualifiedMemberName(
                 new QualifiedModuleName("Excel",
-                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "_Global"), "Range"),
+                    MockVbeBuilder.LibraryPathMsExcel, "_Global"), "Range"),
                 globalDeclaration, globalDeclaration, "Range", null, null, Accessibility.Global, null, Selection.Home,
                 false, true, new List<IAnnotation>(), new Attributes());
 
             var firstParamDeclaration = new ParameterDeclaration(new QualifiedMemberName(
                 new QualifiedModuleName("Excel",
-                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "_Global"),
+                    MockVbeBuilder.LibraryPathMsExcel, "_Global"),
                 "Cell1"), rangeDeclaration, "Variant", null, null, false, false);
 
             var secondParamDeclaration = new ParameterDeclaration(new QualifiedMemberName(
                 new QualifiedModuleName("Excel",
-                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "_Global"),
+                    MockVbeBuilder.LibraryPathMsExcel, "_Global"),
                 "Cell2"), rangeDeclaration, "Variant", null, null, true, false);
 
             rangeDeclaration.AddParameter(firstParamDeclaration);

@@ -34,7 +34,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -101,7 +101,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -140,7 +140,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -183,7 +183,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -226,12 +226,12 @@ End Sub";
         private List<Declaration> GetBuiltInDeclarations()
         {
             var vbaDeclaration = new ProjectDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "VBA"), "VBA"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "VBA"), "VBA"),
                 "VBA",
                 true);
 
             var conversionModule = new ProceduralModuleDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Conversion"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Conversion"), "Conversion"),
                 vbaDeclaration,
                 "Conversion",
                 true,
@@ -239,7 +239,7 @@ End Sub";
                 new Attributes());
 
             var fileSystemModule = new ProceduralModuleDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "FileSystem"), "FileSystem"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "FileSystem"), "FileSystem"),
                 vbaDeclaration,
                 "FileSystem",
                 true,
@@ -247,7 +247,7 @@ End Sub";
                 new Attributes());
 
             var interactionModule = new ProceduralModuleDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Interaction"), "Interaction"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Interaction"), "Interaction"),
                 vbaDeclaration,
                 "Interaction",
                 true,
@@ -255,7 +255,7 @@ End Sub";
                 new Attributes());
 
             var stringsModule = new ProceduralModuleDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Strings"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Strings"), "Strings"),
                 vbaDeclaration,
                 "Strings",
                 true,
@@ -263,7 +263,7 @@ End Sub";
                 new Attributes());
 
             var dateTimeModule = new ProceduralModuleDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "DateTime"), "DateTime"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "DateTime"), "DateTime"),
                 vbaDeclaration,
                 "Strings",
                 true,

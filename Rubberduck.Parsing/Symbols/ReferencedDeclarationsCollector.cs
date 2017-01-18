@@ -45,6 +45,7 @@ namespace Rubberduck.Parsing.Symbols
         #endregion
 
         private readonly RubberduckParserState _state;
+        private readonly string _serializedDeclarationsPath;
         private SerializableProject _serialized;
         private readonly List<Declaration> _declarations = new List<Declaration>(); 
 
@@ -64,9 +65,10 @@ namespace Rubberduck.Parsing.Symbols
         private readonly int _referenceMajor;
         private readonly int _referenceMinor;
 
-        public ReferencedDeclarationsCollector(RubberduckParserState state, IReference reference)
+        public ReferencedDeclarationsCollector(RubberduckParserState state, IReference reference, string serializedDeclarationsPath)
         {
             _state = state;
+            _serializedDeclarationsPath = serializedDeclarationsPath;
             _path = reference.FullPath;
             _referenceName = reference.Name;
             _referenceMajor = reference.Major;
@@ -77,13 +79,12 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
-                if (!Directory.Exists(path))
+                if (!Directory.Exists(_serializedDeclarationsPath))
                 {
                     return false;
                 }
                 //TODO: This is naively based on file name for now - this should attempt to deserialize any SerializableProject.Nodes in the directory and test for equity.
-                var testFile = Path.Combine(path, string.Format("{0}.{1}.{2}", _referenceName, _referenceMajor, _referenceMinor) + ".xml");
+                var testFile = Path.Combine(_serializedDeclarationsPath, string.Format("{0}.{1}.{2}", _referenceName, _referenceMajor, _referenceMinor) + ".xml");
                 return File.Exists(testFile);
             }
         }

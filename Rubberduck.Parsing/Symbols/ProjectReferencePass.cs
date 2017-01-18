@@ -17,7 +17,7 @@ namespace Rubberduck.Parsing.Symbols
         public void Execute()
         {
             var stopwatch = Stopwatch.StartNew();
-            var projects = _declarationFinder.FindProjects();
+            var projects = _declarationFinder.Projects.ToList();
             var allReferences = projects.Where(p => !p.IsBuiltIn).SelectMany(p => ((ProjectDeclaration)p).ProjectReferences).ToList();
             var builtInProjects = projects.Where(p => p.IsBuiltIn).ToList();
             // Give each built-in project access to all other projects so that e.g. CurrentDb in Access has access to the Database class defined in a different project.
