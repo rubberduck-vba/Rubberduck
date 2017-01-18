@@ -27,7 +27,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, code)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathExcel, 1, 7, true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 7, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
             var mockHost = new Mock<IHostApplication>();
