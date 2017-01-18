@@ -75,7 +75,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             _isOptional = isOptional;
             _isByRef = isByRef;
-            _isImplicitByRef = isByRef && ((VBAParser.ArgContext) context).BYREF() == null;
+            _isImplicitByRef = isByRef && (context == null || ((VBAParser.ArgContext) context).BYREF() == null);
             IsParamArray = isParamArray;
         }
 

@@ -343,9 +343,16 @@ namespace Rubberduck.Parsing.VBA
         {
             foreach (var customDeclarationLoader in _customDeclarationLoaders)
             {
-                foreach (var declaration in customDeclarationLoader.Load())
+                try
                 {
-                    State.AddDeclaration(declaration);
+                    foreach (var declaration in customDeclarationLoader.Load())
+                    {
+                        State.AddDeclaration(declaration);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception);
                 }
             }
         }
