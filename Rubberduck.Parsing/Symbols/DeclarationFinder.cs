@@ -121,11 +121,22 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> MatchName(string name)
         {
-            var normalizedName = name.ToLowerInvariant();
+            var normalizedName = ToNormalizedName(name);
             Declaration[] result;
             return _declarationsByName.TryGetValue(normalizedName, out result) 
                 ? result 
                 : Enumerable.Empty<Declaration>();
+        }
+
+        private string ToNormalizedName(string name)
+        {
+            var lower = name.ToLowerInvariant();
+            if (lower.Length > 1 && lower[0] == '[' && lower[lower.Length - 1] == ']')
+            {
+                var result = lower.Substring(1, lower.Length - 2);
+                return result;
+            }
+            return lower;
         }
 
         public Declaration FindProject(string name, Declaration currentScope = null)
@@ -346,7 +357,10 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration OnBracketedExpression(string expression, ParserRuleContext context)
         {
             var hostApp = FindProject(_hostApp == null ? "VBA" : _hostApp.ApplicationName);
-            Debug.Assert(hostApp != null);
+            if (hostApp == null)
+            {
+                
+            }
 
             var qualifiedName = hostApp.QualifiedName.QualifiedModuleName.QualifyMemberName(expression);
 
