@@ -17,13 +17,13 @@ namespace Rubberduck.Parsing.Symbols
         public static IEnumerable<TValue> AllValues<TKey, TValue>(
             this IDictionary<TKey, TValue[]> source)
         {
-            return source.SelectMany(item => item.Value);
+            return source.SelectMany(item => item.Value).ToList();
         }
 
         public static IEnumerable<TValue> AllValues<TKey, TValue>(
         this IDictionary<TKey, IList<TValue>> source)
         {
-            return source.SelectMany(item => item.Value);
+            return source.SelectMany(item => item.Value).ToList();
         }
     }
 
@@ -38,6 +38,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly ConcurrentDictionary<QualifiedModuleName, Declaration[]> _declarations;
         private readonly ConcurrentDictionary<QualifiedMemberName, IList<Declaration>> _undeclared;
         private readonly ConcurrentDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
+        private readonly ConcurrentDictionary<Declaration, Declaration[]> _parametersByParent;
         
         private static readonly object ThreadLock = new object();
 
@@ -48,14 +49,22 @@ namespace Rubberduck.Parsing.Symbols
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray()));
             _declarations = new ConcurrentDictionary<QualifiedModuleName, Declaration[]>(declarations.GroupBy(item => item.QualifiedName.QualifiedModuleName)
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray()));
-            _declarationsByName = new ConcurrentDictionary<string, Declaration[]>(declarations.GroupBy(declaration => new
-            {
-                IdentifierName = declaration.IdentifierName.ToLowerInvariant()
-            })
-                .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray(), NameComparer));
+
+            _declarationsByName = new ConcurrentDictionary<string, Declaration[]>(
+                declarations.GroupBy(declaration => new { IdentifierName = declaration.IdentifierName.ToLowerInvariant() })
+                            .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray(), NameComparer));
+            _parametersByParent = new ConcurrentDictionary<Declaration, Declaration[]>(
+                declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
+                            .GroupBy(declaration => declaration.ParentDeclaration)
+                            .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray()));
+
+
+            _projects = _projects = declarations.Where(d => d.DeclarationType == DeclarationType.Project).ToList();
+            _classes = _declarations.AllValues().Where(d => d.DeclarationType == DeclarationType.ClassModule).ToList();
 
             _undeclared = new ConcurrentDictionary<QualifiedMemberName, IList<Declaration>>(new Dictionary<QualifiedMemberName, IList<Declaration>>());
             _annotationService = new AnnotationService(this);
+
         }
 
         public IEnumerable<Declaration> Undeclared
@@ -76,40 +85,21 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private IEnumerable<Declaration> _classes;
-        public IEnumerable<Declaration> FindClasses()
-        {
-            lock (ThreadLock)
-            {
-                return _classes ?? (_classes = _declarations.AllValues().Where(d => 
-                    d.DeclarationType == DeclarationType.ClassModule).ToList());
-            }
-        }
+        private readonly IEnumerable<Declaration> _classes;
+        public IEnumerable<Declaration> Classes { get { return _classes; } }
 
-        private IEnumerable<Declaration> _projects;
-        public IEnumerable<Declaration> FindProjects()
-        {
-            lock (ThreadLock)
-            {
-                return _projects ?? (_projects = _declarations.AllValues().Where(d => 
-                    d.DeclarationType == DeclarationType.Project).ToList());
-            }
-        }
+        private readonly IEnumerable<Declaration> _projects;
+        public IEnumerable<Declaration> Projects { get { return _projects; } }
 
         public Declaration FindParameter(Declaration procedure, string parameterName)
         {
-            var matches = MatchName(parameterName);
-            return matches.FirstOrDefault(m => procedure.Equals(m.ParentDeclaration) && m.DeclarationType == DeclarationType.Parameter);
+            return _parametersByParent[procedure].SingleOrDefault(parameter => parameter.IdentifierName == parameterName);
         }
 
         public IEnumerable<IAnnotation> FindAnnotations(QualifiedModuleName module)
         {
             IAnnotation[] result;
-            if (_annotations.TryGetValue(module, out result))
-            {
-                return result;
-            }
-            return Enumerable.Empty<IAnnotation>();
+            return _annotations.TryGetValue(module, out result) ? result : Enumerable.Empty<IAnnotation>();
         }
 
         public bool IsMatch(string declarationName, string potentialMatchName)
@@ -356,6 +346,8 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration OnBracketedExpression(string expression, ParserRuleContext context)
         {
             var hostApp = FindProject(_hostApp == null ? "VBA" : _hostApp.ApplicationName);
+            Debug.Assert(hostApp != null);
+
             var qualifiedName = hostApp.QualifiedName.QualifiedModuleName.QualifyMemberName(expression);
 
             IList<Declaration> undeclared;

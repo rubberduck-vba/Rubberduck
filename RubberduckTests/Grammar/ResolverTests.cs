@@ -1,14 +1,13 @@
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Properties;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -18,11 +17,12 @@ namespace RubberduckTests.Grammar
     [TestClass]
     public class ResolverTests
     {
-        private RubberduckParserState Resolve(string code, ComponentType moduleType = ComponentType.StandardModule)
+        private RubberduckParserState Resolve(string code, bool loadStdLib = false, ComponentType moduleType = ComponentType.StandardModule)
         {
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleModule(code, moduleType, out component, new Rubberduck.VBEditor.Selection());
+            var vbe = builder
+                .BuildFromSingleModule(code, moduleType, out component, Selection.Empty, loadStdLib);
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -217,7 +217,7 @@ Public Sub DoSomething()
 End Sub
 ";
             // act
-            var state = Resolve(code);
+            var state = Resolve(code, true);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -462,7 +462,7 @@ End Type
 Private this As TFoo
 ";
             // act
-            var state = Resolve(code, ComponentType.ClassModule);
+            var state = Resolve(code, false, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -570,7 +570,7 @@ Public Property Get Bar() As Integer
 End Property
 ";
             // act
-            var state = Resolve(code, ComponentType.ClassModule);
+            var state = Resolve(code, false, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -596,7 +596,7 @@ Public Property Get Bar() As Integer
 End Property
 ";
             // act
-            var state = Resolve(code, ComponentType.ClassModule);
+            var state = Resolve(code, false, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
