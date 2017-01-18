@@ -2,6 +2,7 @@
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -12,7 +13,8 @@ namespace Rubberduck.Parsing.Symbols
         public ProjectDeclaration(
             QualifiedMemberName qualifiedName,
             string name,
-            bool isBuiltIn)
+            bool isBuiltIn,
+            IVBProject project)
             : base(
                   qualifiedName,
                   null,
@@ -29,11 +31,12 @@ namespace Rubberduck.Parsing.Symbols
                   null,
                   isBuiltIn)
         {
+            _project = project;
             _projectReferences = new List<ProjectReference>();
         }
 
         public ProjectDeclaration(ComProject project, QualifiedModuleName module)
-            : this(module.QualifyMemberName(project.Name), project.Name, true)
+            : this(module.QualifyMemberName(project.Name), project.Name, true, null)
         {
             MajorVersion = project.MajorVersion;
             MinorVersion = project.MinorVersion;
@@ -49,6 +52,15 @@ namespace Rubberduck.Parsing.Symbols
                 return _projectReferences.OrderBy(reference => reference.Priority).ToList();
             }
         }
+
+        private readonly IVBProject _project;
+        /// <summary>
+        /// Gets a reference to the VBProject the declaration is made in.
+        /// </summary>
+        /// <remarks>
+        /// This property is intended to differenciate identically-named VBProjects.
+        /// </remarks>
+        public override IVBProject Project { get { return _project; } }
 
         public void AddProjectReference(string referencedProjectId, int priority)
         {

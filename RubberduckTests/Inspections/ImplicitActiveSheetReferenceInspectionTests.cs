@@ -170,7 +170,7 @@ End Sub";
         private List<Declaration> GetExcelRangeDeclarations()
         {
             var excelDeclaration = new ProjectDeclaration(new QualifiedMemberName(new QualifiedModuleName("Excel",
-                    MockVbeBuilder.LibraryPathMsExcel, "Excel"), "Excel"), "Excel", true);
+                    MockVbeBuilder.LibraryPathMsExcel, "Excel"), "Excel"), "Excel", true, null);
 
             var globalDeclaration = new ClassModuleDeclaration(new QualifiedMemberName(
                 new QualifiedModuleName("Excel",

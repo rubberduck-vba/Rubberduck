@@ -38,7 +38,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             try
             {
                 var node = (CodeExplorerComponentViewModel)parameter;
-                var componentType = node.Declaration.QualifiedName.QualifiedModuleName.Component.Type;
+                var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
                 return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
             }
             catch (COMException)
