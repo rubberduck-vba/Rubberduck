@@ -617,7 +617,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
             var projectId = qualifiedName.QualifiedModuleName.ProjectId;
-            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name, isBuiltIn: false);
+            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name, false, project);
 
             var references = new List<ReferencePriorityMap>();
             foreach (var item in _projectReferences)

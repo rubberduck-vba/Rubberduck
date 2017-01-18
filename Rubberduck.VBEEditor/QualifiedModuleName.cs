@@ -1,6 +1,6 @@
 using System;
-using System.Linq;
 using System.Text.RegularExpressions;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor
@@ -28,14 +28,14 @@ namespace Rubberduck.VBEditor
         public static string GetProjectId(IReference reference)
         {
             var projectName = reference.Name;
-            var path = reference.FullPath;
-            return new QualifiedModuleName(projectName, path, projectName).ProjectId;
+            return new QualifiedModuleName(projectName, reference.FullPath, projectName).ProjectId;
         }
 
         public QualifiedModuleName(IVBProject project)
         {
             _component = null;
             _componentName = null;
+            _componentType = ComponentType.Undefined;
             _project = project;
             _projectName = project.Name;
             _projectPath = string.Empty;
@@ -48,6 +48,7 @@ namespace Rubberduck.VBEditor
         {
             _project = null; // field is only assigned when the instance refers to a VBProject.
 
+            _componentType = component.Type;
             _component = component;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
@@ -89,9 +90,10 @@ namespace Rubberduck.VBEditor
             _projectName = projectName;
             _projectDisplayName = null;
             _projectPath = projectPath;
-            _projectId = (_projectName + ";" + _projectPath).GetHashCode().ToString();
+            _projectId = string.Format("{0};{1}", _projectName, _projectPath).GetHashCode().ToString();
             _componentName = componentName;
             _component = null;
+            _componentType = ComponentType.ComComponent;
             _contentHashCode = 0;
         }
 
@@ -102,6 +104,9 @@ namespace Rubberduck.VBEditor
 
         private readonly IVBComponent _component;
         public IVBComponent Component { get { return _component; } }
+
+        private readonly ComponentType _componentType;
+        public ComponentType ComponentType { get { return _componentType; } }
 
         private readonly IVBProject _project;
         public IVBProject Project { get { return _project; } }
@@ -168,7 +173,7 @@ namespace Rubberduck.VBEditor
 
         public override string ToString()
         {
-            return _component == null && string.IsNullOrEmpty(_projectName)
+            return string.IsNullOrEmpty(_componentName) && string.IsNullOrEmpty(_projectName)
                 ? string.Empty
                 : (string.IsNullOrEmpty(_projectPath) ? string.Empty : System.IO.Path.GetFileName(_projectPath) + ";")
                      + _projectName + "." + _componentName;

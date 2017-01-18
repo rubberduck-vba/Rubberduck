@@ -355,7 +355,7 @@ namespace Rubberduck.Parsing.VBA
             var moduleStates = new List<ParserState>();
             foreach (var moduleState in _moduleStates)
             {
-                if (moduleState.Key.Component == null || moduleState.Key.ComponentName == string.Empty)
+                if (string.IsNullOrEmpty(moduleState.Key.ComponentName))
                 {
                     continue;
                 }

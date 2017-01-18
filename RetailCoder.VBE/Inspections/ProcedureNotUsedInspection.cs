@@ -46,7 +46,7 @@ namespace Rubberduck.Inspections
             handlers.AddRange(withEventFields.SelectMany(Declarations.FindEventProcedures));
 
             var forms = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule
-                        && item.QualifiedName.QualifiedModuleName.Component.Type == ComponentType.UserForm)
+                        && item.QualifiedName.QualifiedModuleName.ComponentType == ComponentType.UserForm)
                 .ToList();
 
             if (forms.Any())
@@ -159,7 +159,7 @@ namespace Rubberduck.Inspections
         {
             var interfaces = classes.Where(item => item.References.Any(reference =>
                     ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context.Parent)
-                    && reference.QualifiedModuleName.Component.Name == componentName));
+                    && reference.QualifiedModuleName.ComponentName == componentName));
 
             var members = interfaces.SelectMany(declarations.InScope)
                 .Select(member => member.ComponentName + "_" + member.IdentifierName);

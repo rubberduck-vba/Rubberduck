@@ -228,7 +228,7 @@ End Sub";
             var vbaDeclaration = new ProjectDeclaration(
                 new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "VBA"), "VBA"),
                 "VBA",
-                true);
+                true, null);
 
             var conversionModule = new ProceduralModuleDeclaration(
                 new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Conversion"),

@@ -170,7 +170,7 @@ End Sub";
         private List<Declaration> GetExcelRangeDeclarations()
         {
             var excelDeclaration = new ProjectDeclaration(new QualifiedMemberName(new QualifiedModuleName("Excel",
-                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "Excel"), "Excel"), "Excel", true);
+                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "Excel"), "Excel"), "Excel", true, null);
 
             var globalDeclaration = new ClassModuleDeclaration(new QualifiedMemberName(
                 new QualifiedModuleName("Excel",
