@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private static Declaration FormsClassModuleFromParserState(RubberduckParserState state)
         {
-            var finder = new DeclarationFinder(state.AllDeclarations, new CommentNode[] { }, new IAnnotation[] { });
+            var finder = new DeclarationFinder(state.AllDeclarations, new IAnnotation[] { });
 
             var msForms = finder.FindProject("MSForms");
             if (msForms == null)

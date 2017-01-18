@@ -90,6 +90,7 @@
     <Compile Include="Commands\IndentCommandTests.cs" />
     <Compile Include="Commands\UnitTestCommandTests.cs" />
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
+    <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
     <Compile Include="Inspections\IgnoreOnceQuickFixTests.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
@@ -319,7 +320,19 @@
     <Content Include="Testfiles\Preprocessor\Reference_Module_1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Testfiles\Resolver\Excel.1.7.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\Office.2.5.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Testfiles\Resolver\Scripting.1.0.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\stdole.2.0.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\VBA.4.1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

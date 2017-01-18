@@ -295,6 +295,33 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bracketed expressions are evaluated by the host application at runtime, which means VBA can&apos;t validate the expression at compile-time. Consider using the host application&apos;s object model instead..
+        /// </summary>
+        public static string HostSpecificExpressionInspectionMeta {
+            get {
+                return ResourceManager.GetString("HostSpecificExpressionInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Host-specific bracketed expression is only evaluated at runtime.
+        /// </summary>
+        public static string HostSpecificExpressionInspectionName {
+            get {
+                return ResourceManager.GetString("HostSpecificExpressionInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expression &apos;{0}&apos; cannot be validated at compile-time..
+        /// </summary>
+        public static string HostSpecificExpressionInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("HostSpecificExpressionInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hungarian notation makes code less readable, and is redundant when strongly typed variables and meaningful names are used..
         /// </summary>
         public static string HungarianNotationInspectionMeta {

@@ -14,6 +14,9 @@ using System.Linq;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Extensions;
+
 // ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
@@ -36,6 +39,8 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly bool _isTestScope;
+        private readonly string _serializedDeclarationsPath;
+        private readonly IHostApplication _hostApp;
 
         public ParseCoordinator(
             IVBE vbe,
@@ -43,7 +48,8 @@ namespace Rubberduck.Parsing.VBA
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
             IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders,
-            bool isTestScope = false)
+            bool isTestScope = false,
+            string serializedDeclarationsPath = null)
         {
             _vbe = vbe;
             _state = state;
@@ -51,9 +57,14 @@ namespace Rubberduck.Parsing.VBA
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
             _isTestScope = isTestScope;
+            _serializedDeclarationsPath = serializedDeclarationsPath 
+                ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
+            _hostApp = _vbe.HostApplication();
 
             state.ParseRequest += ReparseRequested;
         }
+
+        public DeclarationFinder DeclarationFinder { get; private set; }
 
         // Do not access this from anywhere but ReparseRequested.
         // ReparseRequested needs to have a reference to all the cancellation tokens,
@@ -291,13 +302,13 @@ namespace Rubberduck.Parsing.VBA
                 State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
             }
 
-            var finder = new DeclarationFinder(State.AllDeclarations, State.AllComments, State.AllAnnotations);
+            DeclarationFinder = new DeclarationFinder(State.AllDeclarations, State.AllAnnotations, _hostApp);
             var passes = new List<ICompilationPass>
                 {
                     // This pass has to come first because the type binding resolution depends on it.
-                    new ProjectReferencePass(finder),
-                    new TypeHierarchyPass(finder, new VBAExpressionParser()),
-                    new TypeAnnotationPass(finder, new VBAExpressionParser())
+                    new ProjectReferencePass(DeclarationFinder),
+                    new TypeHierarchyPass(DeclarationFinder, new VBAExpressionParser()),
+                    new TypeAnnotationPass(DeclarationFinder, new VBAExpressionParser())
                 };
             passes.ForEach(p => p.Execute());
 
@@ -315,11 +326,11 @@ namespace Rubberduck.Parsing.VBA
                 {
                     State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
 
-                    ResolveReferences(finder, kvp.Key.Component, kvp.Value);
+                    ResolveReferences(DeclarationFinder, kvp.Key.Component, kvp.Value);
                 }, token)
                 .ContinueWith(t =>
                 {
-                    var undeclared = finder.Undeclared.ToList();
+                    var undeclared = DeclarationFinder.Undeclared.ToList();
                     foreach (var declaration in undeclared)
                     {
                         State.AddDeclaration(declaration);
@@ -434,7 +445,7 @@ namespace Rubberduck.Parsing.VBA
                                     {
                                         Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
 
-                                        var comReflector = new ReferencedDeclarationsCollector(State, localReference);
+                                        var comReflector = new ReferencedDeclarationsCollector(State, localReference, _serializedDeclarationsPath);
                                         if (comReflector.SerializedVersionExists)
                                         {
                                             Logger.Trace(string.Format("Deserializing reference '{0}'.", localReference.Name));

@@ -97,9 +97,9 @@ namespace RubberduckTests.Mocks
         /// <param name="filePath">The path to the referenced library.</param>
         /// <param name="isBuiltIn">Indicates whether the reference is a built-in reference.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
-        public MockProjectBuilder AddReference(string name, string filePath, bool isBuiltIn = false)
+        public MockProjectBuilder AddReference(string name, string filePath, int major = 0, int minor = 0, bool isBuiltIn = false)
         {
-            var reference = CreateReferenceMock(name, filePath, isBuiltIn);
+            var reference = CreateReferenceMock(name, filePath, major, minor, isBuiltIn);
             _references.Add(reference.Object);
             return this;
         }
@@ -212,7 +212,7 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<IReference> CreateReferenceMock(string name, string filePath, bool isBuiltIn = true)
+        private Mock<IReference> CreateReferenceMock(string name, string filePath, int major, int minor, bool isBuiltIn = true)
         {
             var result = new Mock<IReference>();
 
@@ -221,6 +221,8 @@ namespace RubberduckTests.Mocks
 
             result.SetupGet(m => m.Name).Returns(() => name);
             result.SetupGet(m => m.FullPath).Returns(() => filePath);
+            result.SetupGet(m => m.Major).Returns(() => major);
+            result.SetupGet(m => m.Minor).Returns(() => minor);
 
             result.SetupGet(m => m.IsBuiltIn).Returns(isBuiltIn);
 
