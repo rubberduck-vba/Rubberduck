@@ -65,6 +65,9 @@ namespace Rubberduck.Parsing.Symbols
         IInspection Inspection { get; }
     }
 
+    /// <summary>
+    /// Indicates that a type can be annotated with inspection results.
+    /// </summary>
     public interface IInspectionResultAnnotatable
     {
         IReadOnlyList<IInspectionResult> InspectionResults { get; set; }
@@ -74,7 +77,7 @@ namespace Rubberduck.Parsing.Symbols
     /// Defines a declared identifier.
     /// </summary>
     [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
-    public class Declaration : IEquatable<Declaration>
+    public class Declaration : IEquatable<Declaration>, IInspectionResultAnnotatable
     {
         public static readonly string[] BaseTypes =
         {
@@ -698,5 +701,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             _references = new ConcurrentBag<IdentifierReference>();
         }
+
+        public IReadOnlyList<IInspectionResult> InspectionResults { get; set; }
     }
 }

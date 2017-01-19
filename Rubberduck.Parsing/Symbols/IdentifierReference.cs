@@ -10,7 +10,7 @@ using System;
 namespace Rubberduck.Parsing.Symbols
 {
     [DebuggerDisplay("({IdentifierName}) IsAss:{IsAssignment} | {Selection} ")]
-    public class IdentifierReference : IEquatable<IdentifierReference>
+    public class IdentifierReference : IEquatable<IdentifierReference>, IInspectionResultAnnotatable
     {
         public IdentifierReference(
             QualifiedModuleName qualifiedName, 
@@ -143,5 +143,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             return HashCode.Compute(QualifiedModuleName, Selection, Declaration);
         }
+
+        public IReadOnlyList<IInspectionResult> InspectionResults { get; set; }
     }
 }
