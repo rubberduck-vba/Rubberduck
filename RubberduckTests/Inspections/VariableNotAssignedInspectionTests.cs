@@ -5,6 +5,7 @@ using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
@@ -179,7 +180,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
-            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -213,7 +214,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
-            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -246,7 +247,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
-            inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -279,7 +280,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
-            inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -313,7 +314,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
-            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }

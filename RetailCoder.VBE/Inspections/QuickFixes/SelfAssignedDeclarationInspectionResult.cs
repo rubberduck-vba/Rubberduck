@@ -8,7 +8,7 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public class SelfAssignedDeclarationInspectionResult : InspectionResultBase
     {
-        public SelfAssignedDeclarationInspectionResult(IInspection inspection, Declaration target)
+        public SelfAssignedDeclarationInspectionResult(Parsing.Symbols.IInspection inspection, Declaration target)
             : base(inspection, target)
         {
         }

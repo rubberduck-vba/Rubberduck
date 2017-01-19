@@ -3,7 +3,9 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -23,7 +25,7 @@ namespace Rubberduck.Inspections
             "Cells", "Range", "Columns", "Rows"
         };
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => item.IsBuiltIn && item.IdentifierName == "Excel");
             if (excel == null) { return Enumerable.Empty<InspectionResultBase>(); }

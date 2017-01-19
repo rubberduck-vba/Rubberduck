@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.Results
         private readonly string _identifierName;
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string identifierName, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration target)
+        public ImplicitVariantReturnTypeInspectionResult(Parsing.Symbols.IInspection inspection, string identifierName, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration target)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, target)
         {
             _identifierName = identifierName;

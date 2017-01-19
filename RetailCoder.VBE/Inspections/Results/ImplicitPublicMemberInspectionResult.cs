@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.Results
         private IEnumerable<QuickFixBase> _quickFixes;
         private readonly QualifiedContext<ParserRuleContext> _qualifiedContext;
 
-        public ImplicitPublicMemberInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration item)
+        public ImplicitPublicMemberInspectionResult(Parsing.Symbols.IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration item)
             : base(inspection, item)
         {
             _qualifiedContext = qualifiedContext;

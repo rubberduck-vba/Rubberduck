@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -19,7 +20,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.DefaultProjectNameInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var projects = State.DeclarationFinder.UserDeclarations(DeclarationType.Project)
                 .Where(item => item.IdentifierName.StartsWith("VBAProject"))

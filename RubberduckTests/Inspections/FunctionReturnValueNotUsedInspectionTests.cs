@@ -5,6 +5,7 @@ using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
@@ -534,7 +535,7 @@ End Sub";
             var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             string actual = module.Content();
             Assert.AreEqual(expectedCode, actual);
@@ -580,7 +581,7 @@ End Sub";
             var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             string actual = module.Content();
             Assert.AreEqual(expectedCode, actual);
@@ -635,7 +636,7 @@ End Function";
             var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             var project = vbe.Object.VBProjects[0];
             var interfaceModule = project.VBComponents[0].CodeModule;
@@ -679,7 +680,7 @@ End Sub";
             var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }

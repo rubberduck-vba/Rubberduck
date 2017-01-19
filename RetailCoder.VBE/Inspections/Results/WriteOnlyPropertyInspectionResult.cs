@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.Results
     {
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public WriteOnlyPropertyInspectionResult(IInspection inspection, Declaration target) 
+        public WriteOnlyPropertyInspectionResult(Parsing.Symbols.IInspection inspection, Declaration target) 
             : base(inspection, target)
         { }
 

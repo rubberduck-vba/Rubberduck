@@ -3,6 +3,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.Results
 {

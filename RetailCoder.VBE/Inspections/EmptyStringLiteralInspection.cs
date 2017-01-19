@@ -6,6 +6,8 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
+using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -29,7 +31,7 @@ namespace Rubberduck.Inspections
             _parseTreeResults = results;
         }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {   
             if (ParseTreeResults == null)
             {

@@ -5,6 +5,7 @@ using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
@@ -256,7 +257,7 @@ End Sub";
             var inspection = new ImplicitByRefParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -290,7 +291,7 @@ End Sub";
             var inspection = new ImplicitByRefParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -324,7 +325,7 @@ End Sub";
             var inspection = new ImplicitByRefParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -364,7 +365,7 @@ End Sub";
             var inspection = new ImplicitByRefParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -402,7 +403,7 @@ End Sub";
             var inspection = new ImplicitByRefParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -442,7 +443,7 @@ End Sub";
             var inspection = new ImplicitByRefParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }

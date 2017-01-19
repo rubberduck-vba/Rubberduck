@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections.Results
         private readonly string _assignedIdentifier;
         private readonly string _defaultMemberOf;
 
-        public ImplicitDefaultMemberAssignmentInspectionResult(IInspection inspection, IdentifierReference reference)
+        public ImplicitDefaultMemberAssignmentInspectionResult(Parsing.Symbols.IInspection inspection, IdentifierReference reference)
             :base(inspection, reference.QualifiedModuleName, reference.Context)
         {
             var module = reference.Declaration.AsTypeDeclaration as ClassModuleDeclaration;

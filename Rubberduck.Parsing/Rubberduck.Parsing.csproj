@@ -143,6 +143,8 @@
     <Compile Include="ComReflection\ComMember.cs" />
     <Compile Include="ComReflection\ComModule.cs" />
     <Compile Include="ComReflection\ComProject.cs" />
+    <Compile Include="Symbols\CodeInspectionSeverity.cs" />
+    <Compile Include="Symbols\CodeInspectionType.cs" />
     <Compile Include="Symbols\SpecialFormDeclarations.cs" />
     <Compile Include="Symbols\CommentNode.cs" />
     <Compile Include="ComReflection\ComParameter.cs" />

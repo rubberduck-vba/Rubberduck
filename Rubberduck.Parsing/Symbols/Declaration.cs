@@ -13,6 +13,63 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
+    public interface IInspection : IComparable, IComparable<IInspection>
+    {
+        /// <summary>
+        /// Runs code inspection and returns inspection results.
+        /// </summary>
+        /// <returns>Returns inspection results, if any.</returns>
+        IEnumerable<IInspectionResult> GetInspectionResults();
+
+        /// <summary>
+        /// Gets a value indicating the type of the code inspection.
+        /// </summary>
+        CodeInspectionType InspectionType { get; }
+
+        /// <summary>
+        /// Gets a value indicating the default severity level of the code inspection.
+        /// </summary>
+        CodeInspectionSeverity DefaultSeverity { get; }
+
+        /// <summary>
+        /// Gets a value indicating the severity level of the code inspection.
+        /// </summary>
+        CodeInspectionSeverity Severity { get; set; }
+
+        /// <summary>
+        /// Gets the text used with @Ignore annotations to ignore this inspection.
+        /// </summary>
+        string AnnotationName { get; }
+
+        /// <summary>
+        /// Gets the inspection name.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Gets a short description for the code inspection.
+        /// </summary>
+        string Description { get; }
+
+        /// <summary>
+        /// Gets a string that contains additional/meta information about an inspection.
+        /// </summary>
+        string Meta { get; }
+    }
+
+    public interface IInspectionResult : IComparable<IInspectionResult>, IComparable
+    {
+        Declaration Target { get; }
+        string Description { get; }
+        QualifiedSelection QualifiedSelection { get; }
+        IInspection Inspection { get; }
+    }
+
+    public interface IInspectionResultAnnotatable
+    {
+        IReadOnlyList<IInspectionResult> InspectionResults { get; set; }
+    }
+
     /// <summary>
     /// Defines a declared identifier.
     /// </summary>

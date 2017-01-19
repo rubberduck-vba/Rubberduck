@@ -57,7 +57,7 @@ End Function
             var inspection = new UnassignedVariableUsageInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             var actualCode = module.Content();
 

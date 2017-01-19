@@ -7,6 +7,8 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
+using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -29,13 +31,13 @@ namespace Rubberduck.Inspections
             _results = results;
         }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             if (ParseTreeResults == null)
             {
                 return new InspectionResultBase[] { };
             }
-            return ParseTreeResults.OfType<QualifiedContext<VBAParser.LetStmtContext>>()
+            return ParseTreeResults
                 .Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
                 .Select(context => new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }

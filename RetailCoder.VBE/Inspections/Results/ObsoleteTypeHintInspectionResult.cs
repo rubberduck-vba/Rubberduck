@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections.Results
         private readonly Declaration _declaration;
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public ObsoleteTypeHintInspectionResult(IInspection inspection, string result, QualifiedContext qualifiedContext, Declaration declaration)
+        public ObsoleteTypeHintInspectionResult(Parsing.Symbols.IInspection inspection, string result, QualifiedContext qualifiedContext, Declaration declaration)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _result = result;

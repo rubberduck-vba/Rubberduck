@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections.Results
     {
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public MultilineParameterInspectionResult(IInspection inspection, Declaration target)
+        public MultilineParameterInspectionResult(Parsing.Symbols.IInspection inspection, Declaration target)
             : base(inspection, target)
         { }
 

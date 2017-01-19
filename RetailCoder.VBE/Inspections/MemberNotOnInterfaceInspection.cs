@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -30,7 +31,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.MemberNotOnInterfaceInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null &&
                                                      decl.ParentDeclaration.DeclarationType != DeclarationType.Project &&

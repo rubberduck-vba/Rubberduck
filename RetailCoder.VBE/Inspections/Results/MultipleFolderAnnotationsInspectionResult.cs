@@ -7,7 +7,7 @@ namespace Rubberduck.Inspections.Results
 {
     public class MultipleFolderAnnotationsInspectionResult : InspectionResultBase
     {
-        public MultipleFolderAnnotationsInspectionResult(IInspection inspection, Declaration target) 
+        public MultipleFolderAnnotationsInspectionResult(Parsing.Symbols.IInspection inspection, Declaration target) 
             : base(inspection, target)
         {
         }

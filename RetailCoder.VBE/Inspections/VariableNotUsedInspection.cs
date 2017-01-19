@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -19,7 +20,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.VariableNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var declarations = UserDeclarations.Where(declaration =>
                 !declaration.IsWithEvents

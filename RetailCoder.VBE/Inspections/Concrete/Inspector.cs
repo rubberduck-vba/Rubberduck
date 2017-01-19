@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Symbols;
+using IInspectionResult = Rubberduck.Inspections.Abstract.IInspectionResult;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -53,11 +54,11 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
 
-            public async Task<IEnumerable<IInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token)
+            public async Task<IEnumerable<Parsing.Symbols.IInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token)
             {
                 if (state == null || !state.AllUserDeclarations.Any())
                 {
-                    return new IInspectionResult[] { };
+                    return new Parsing.Symbols.IInspectionResult[] { };
                 }
 
                 state.OnStatusMessageUpdate(RubberduckUI.CodeInspections_Inspecting);
@@ -65,7 +66,7 @@ namespace Rubberduck.Inspections.Concrete
                 var config = _configService.LoadConfiguration();
                 UpdateInspectionSeverity(config);
 
-                var allIssues = new ConcurrentBag<IInspectionResult>();
+                var allIssues = new ConcurrentBag<Parsing.Symbols.IInspectionResult>();
 
                 // Prepare ParseTreeWalker based inspections
                 var parseTreeWalkResults = GetParseTreeResults(config, state);
@@ -102,7 +103,7 @@ namespace Rubberduck.Inspections.Concrete
                 return issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
                     .SelectMany(kv => kv.Value)
                     .Union(issuesByType.Where(kv => kv.Value.Count > AGGREGATION_THRESHOLD)
-                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).First(), kv.Value.Count)));
+                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).OfType<IInspectionResult>().First(), kv.Value.Count)));
                 //return allIssues;
             }
 

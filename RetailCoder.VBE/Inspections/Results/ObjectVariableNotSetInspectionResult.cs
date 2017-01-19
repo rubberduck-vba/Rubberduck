@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections.Results
         private readonly IdentifierReference _reference;
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public ObjectVariableNotSetInspectionResult(IInspection inspection, IdentifierReference reference)
+        public ObjectVariableNotSetInspectionResult(Parsing.Symbols.IInspection inspection, IdentifierReference reference)
             : base(inspection, reference.QualifiedModuleName, reference.Context)
         {
             _reference = reference;

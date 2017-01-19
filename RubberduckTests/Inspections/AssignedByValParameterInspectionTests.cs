@@ -4,12 +4,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using IInspectionResult = Rubberduck.Inspections.Abstract.IInspectionResult;
 
 namespace RubberduckTests.Inspections
 {
@@ -206,7 +207,7 @@ End Sub";
             var inspection = new AssignedByValParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            inspectionResults.OfType<IInspectionResult>().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -242,7 +243,7 @@ End Sub";
             var inspection = new AssignedByValParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspectionResults.OfType<IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }

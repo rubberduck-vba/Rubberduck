@@ -8,6 +8,8 @@ using NLog;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Symbols;
+using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -32,7 +34,7 @@ namespace Rubberduck.Inspections
             _results = results;
         }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             if (ParseTreeResults == null)
             {

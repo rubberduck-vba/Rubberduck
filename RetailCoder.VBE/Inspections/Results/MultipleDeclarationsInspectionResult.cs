@@ -6,6 +6,7 @@ using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results

@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -19,7 +20,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.HostSpecificExpressionInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Declarations.Where(item => item.DeclarationType == DeclarationType.BracketedExpression)
                 .Select(item => new HostSpecificExpressionInspectionResult(this, item)).ToList();

@@ -7,6 +7,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -21,7 +22,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ObsoleteGlobalInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
                          where item.Accessibility == Accessibility.Global && item.Context != null

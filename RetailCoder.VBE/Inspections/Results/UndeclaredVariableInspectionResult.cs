@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.Results
     {
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public UndeclaredVariableInspectionResult(IInspection inspection, Declaration target)
+        public UndeclaredVariableInspectionResult(Parsing.Symbols.IInspection inspection, Declaration target)
             : base(inspection, target)
         { }
 

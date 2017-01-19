@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections.Results
     {
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public UnassignedVariableUsageInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedModuleName qualifiedName, Declaration declaration)
+        public UnassignedVariableUsageInspectionResult(Parsing.Symbols.IInspection inspection, ParserRuleContext context, QualifiedModuleName qualifiedName, Declaration declaration)
             : base(inspection, qualifiedName, context, declaration)
         { }
 

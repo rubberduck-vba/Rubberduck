@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections.Results
         private readonly Declaration _asTypeDeclaration;
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public MemberNotOnInterfaceInspectionResult(IInspection inspection, Declaration target, ParserRuleContext member, Declaration asTypeDeclaration)
+        public MemberNotOnInterfaceInspectionResult(Parsing.Symbols.IInspection inspection, Declaration target, ParserRuleContext member, Declaration asTypeDeclaration)
             : base(inspection, target)
         {
             _member = member;

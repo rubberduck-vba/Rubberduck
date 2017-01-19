@@ -8,6 +8,6 @@ namespace Rubberduck.Inspections.Abstract
 {
     public interface IInspector : IDisposable
     {
-        Task<IEnumerable<IInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token);
+        Task<IEnumerable<Parsing.Symbols.IInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token);
     }
 }
