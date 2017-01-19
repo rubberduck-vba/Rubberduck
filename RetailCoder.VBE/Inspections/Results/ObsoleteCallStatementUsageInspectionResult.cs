@@ -10,19 +10,23 @@ namespace Rubberduck.Inspections.Results
 {
     public class ObsoleteCallStatementUsageInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public ObsoleteCallStatementUsageInspectionResult(IInspection inspection, QualifiedContext<VBAParser.CallStmtContext> qualifiedContext)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
-        {
-            _quickFixes = new QuickFixBase[]
-            {
-                new RemoveExplicitCallStatmentQuickFix(Context, QualifiedSelection), 
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
-            };
-        }
+        { }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new RemoveExplicitCallStatmentQuickFix(Context, QualifiedSelection), 
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
 
         public override string Description
         {

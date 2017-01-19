@@ -9,10 +9,11 @@ namespace Rubberduck.Inspections.Results
 {
     public class WriteOnlyPropertyInspectionResult : InspectionResultBase
     {
+        private IEnumerable<QuickFixBase> _quickFixes;
+
         public WriteOnlyPropertyInspectionResult(IInspection inspection, Declaration target) 
             : base(inspection, target)
-        {
-        }
+        { }
 
         public override string Description
         {
@@ -23,11 +24,11 @@ namespace Rubberduck.Inspections.Results
         {
             get
             {
-                return new QuickFixBase[]
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
                 {
                     new WriteOnlyPropertyQuickFix(Context, Target),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
-                };
+                });
             }
         }
     }
