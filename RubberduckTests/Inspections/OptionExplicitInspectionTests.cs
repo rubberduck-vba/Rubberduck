@@ -3,7 +3,6 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -144,7 +143,7 @@ namespace RubberduckTests.Inspections
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionExplicitInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().AsFixable();
+            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -170,7 +169,7 @@ namespace RubberduckTests.Inspections
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionExplicitInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().AsFixable();
+            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
 
             Assert.IsFalse(inspectionResults.ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
         }

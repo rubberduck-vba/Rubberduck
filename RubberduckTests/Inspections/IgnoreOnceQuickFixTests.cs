@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
@@ -58,7 +57,7 @@ End Function
             var inspection = new UnassignedVariableUsageInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.AsFixable().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             var actualCode = module.Content();
 

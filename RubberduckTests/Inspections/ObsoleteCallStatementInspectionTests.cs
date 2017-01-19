@@ -6,7 +6,6 @@ using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Symbols;
@@ -327,7 +326,7 @@ End Sub";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result
-                .AsFixable();
+                .OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
 
             foreach (var inspectionResult in inspectionResults)
             {
@@ -383,7 +382,7 @@ End Sub";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result
-                .AsFixable();
+                .OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
 
             foreach (var inspectionResult in inspectionResults)
             {

@@ -10,7 +10,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class InspectionResultBase : IFixableResult, INavigateSource
+    public abstract class InspectionResultBase : IInspectionResult, INavigateSource
     {
         protected InspectionResultBase(IInspection inspection, Declaration target)
             : this(inspection, target.QualifiedName.QualifiedModuleName, target.Context)
@@ -91,7 +91,7 @@ namespace Rubberduck.Inspections.Abstract
 
         public virtual QuickFixBase DefaultQuickFix { get { return QuickFixes.FirstOrDefault(); } }
 
-        public virtual int CompareTo(IFixableResult other)
+        public virtual int CompareTo(IInspectionResult other)
         {
             return Inspection.CompareTo(other.Inspection);
         }
@@ -121,7 +121,7 @@ namespace Rubberduck.Inspections.Abstract
 
         public int CompareTo(object obj)
         {
-            return CompareTo(obj as IFixableResult);
+            return CompareTo(obj as IInspectionResult);
         }
 
         public object[] ToArray()

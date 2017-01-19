@@ -3,7 +3,6 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -190,7 +189,7 @@ Rem test";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().AsFixable();
+            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -221,7 +220,7 @@ Rem test";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().AsFixable();
+            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
 
             inspectionResults.First().QuickFixes.ElementAt(1).Fix();
 
@@ -252,7 +251,7 @@ Rem test";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().AsFixable();
+            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -283,7 +282,7 @@ Rem test";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().AsFixable();
+            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
 
             inspectionResults.First().QuickFixes.ElementAt(1).Fix();
 
@@ -315,7 +314,7 @@ Rem test1";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().AsFixable();
+            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 

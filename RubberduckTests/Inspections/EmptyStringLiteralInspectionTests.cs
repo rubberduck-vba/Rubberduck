@@ -6,7 +6,6 @@ using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Symbols;
@@ -187,7 +186,7 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            inspectionResults.AsFixable().First().QuickFixes.First().Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -229,7 +228,7 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            inspectionResults.AsFixable().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
