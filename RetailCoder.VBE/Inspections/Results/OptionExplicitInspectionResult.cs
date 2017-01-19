@@ -10,18 +10,22 @@ namespace Rubberduck.Inspections.Results
 {
     public class OptionExplicitInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes; 
+        private IEnumerable<QuickFixBase> _quickFixes; 
 
         public OptionExplicitInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName) 
             : base(inspection, new CommentNode(string.Empty, Tokens.CommentMarker, new QualifiedSelection(qualifiedName, Selection.Home)))
-        {
-            _quickFixes = new[]
-            {
-                new OptionExplicitQuickFix(Context, QualifiedSelection), 
-            };
-        }
+        { }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new OptionExplicitQuickFix(Context, QualifiedSelection)
+                });
+            }
+        }
 
         public override string Description
         {

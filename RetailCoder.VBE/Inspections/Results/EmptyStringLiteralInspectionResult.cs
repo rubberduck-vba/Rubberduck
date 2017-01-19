@@ -10,19 +10,23 @@ namespace Rubberduck.Inspections.Results
 {
     public class EmptyStringLiteralInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public EmptyStringLiteralInspectionResult(IInspection inspection, QualifiedContext<VBAParser.LiteralExpressionContext> qualifiedContext)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
+        { }
+
+        public override IEnumerable<QuickFixBase> QuickFixes
         {
-            _quickFixes = new QuickFixBase[]
+            get
             {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
                 new RepaceEmptyStringLiteralStatementQuickFix(Context, QualifiedSelection),
                 new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
-            };
+                });
+            }
         }
-
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
 
         public override string Description
         {

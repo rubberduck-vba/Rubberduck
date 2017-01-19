@@ -14,20 +14,25 @@ namespace Rubberduck.Inspections.Results
     public class UntypedFunctionUsageInspectionResult : InspectionResultBase
     {
         private readonly IdentifierReference _reference;
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public UntypedFunctionUsageInspectionResult(IInspection inspection, IdentifierReference reference) 
             : base(inspection, reference.QualifiedModuleName, reference.Context)
         {
             _reference = reference;
-            _quickFixes = new QuickFixBase[]
-            {
-                new UntypedFunctionUsageQuickFix((ParserRuleContext)GetFirst(typeof(VBAParser.IdentifierContext)).Parent, QualifiedSelection), 
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
-            };
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new UntypedFunctionUsageQuickFix((ParserRuleContext)GetFirst(typeof(VBAParser.IdentifierContext)).Parent, QualifiedSelection), 
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
 
         public override string Description
         {

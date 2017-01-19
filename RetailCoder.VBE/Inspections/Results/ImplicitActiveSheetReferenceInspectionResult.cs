@@ -10,19 +10,24 @@ namespace Rubberduck.Inspections.Results
     public class ImplicitActiveSheetReferenceInspectionResult : InspectionResultBase
     {
         private readonly IdentifierReference _reference;
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public ImplicitActiveSheetReferenceInspectionResult(IInspection inspection, IdentifierReference reference)
             : base(inspection, reference.QualifiedModuleName, reference.Context)
         {
             _reference = reference;
-            _quickFixes = new QuickFixBase[]
-            {
-                new IgnoreOnceQuickFix(reference.Context, QualifiedSelection, Inspection.AnnotationName), 
-            };
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new IgnoreOnceQuickFix(_reference.Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
 
         public override string Description
         {

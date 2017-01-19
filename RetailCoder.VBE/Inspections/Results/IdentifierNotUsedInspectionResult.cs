@@ -12,20 +12,28 @@ namespace Rubberduck.Inspections.Results
 {
     public class IdentifierNotUsedInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
+        private readonly ParserRuleContext _context;
 
         public IdentifierNotUsedInspectionResult(IInspection inspection, Declaration target,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
             : base(inspection, qualifiedName, context, target)
         {
-            _quickFixes = new QuickFixBase[]
-            {
-                new RemoveUnusedDeclarationQuickFix(context, QualifiedSelection, Target), 
-                new IgnoreOnceQuickFix(context, QualifiedSelection, Inspection.AnnotationName), 
-            };
+            _context = context;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new RemoveUnusedDeclarationQuickFix(_context, QualifiedSelection, Target), 
+                    new IgnoreOnceQuickFix(_context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
+
         public override string Description 
         {
             get

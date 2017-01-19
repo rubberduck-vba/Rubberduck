@@ -12,27 +12,31 @@ namespace Rubberduck.Inspections.Results
     public sealed class ImplicitVariantReturnTypeInspectionResult : InspectionResultBase
     {
         private readonly string _identifierName;
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string identifierName, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration target)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, target)
         {
             _identifierName = identifierName;
-            _quickFixes = new QuickFixBase[]
-            {
-                new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, InspectionsUI.SetExplicitVariantReturnTypeQuickFix), 
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
-            };
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get {return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, InspectionsUI.SetExplicitVariantReturnTypeQuickFix), 
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
 
         public override string Description
         {
             get
             {
-                return string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat,
-                    _identifierName);
+                return string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat, _identifierName);
             }
         }
 

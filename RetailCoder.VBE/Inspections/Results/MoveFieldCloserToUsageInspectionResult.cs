@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Castle.DynamicProxy.Generators;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
@@ -11,16 +12,15 @@ namespace Rubberduck.Inspections.Results
 {
     public class MoveFieldCloserToUsageInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public MoveFieldCloserToUsageInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
             : base(inspection, target)
         {
-            _quickFixes = new QuickFixBase[]
-            {
-                new MoveFieldCloserToUsageQuickFix(target.Context, target.QualifiedSelection, target, state, messageBox),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
-            };
+            _state = state;
+            _messageBox = messageBox;
         }
 
         public override string Description
@@ -31,6 +31,16 @@ namespace Rubberduck.Inspections.Results
             }
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new MoveFieldCloserToUsageQuickFix(Target.Context, Target.QualifiedSelection, Target, _state, _messageBox),
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
     }
 }

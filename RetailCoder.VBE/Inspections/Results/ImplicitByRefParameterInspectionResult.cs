@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
@@ -11,19 +12,20 @@ namespace Rubberduck.Inspections.Results
 {
     public class ImplicitByRefParameterInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private Lazy<IEnumerable<QuickFixBase>> _quickFixes;
 
         public ImplicitByRefParameterInspectionResult(IInspection inspection, Declaration declaration)
             : base(inspection, declaration)
         {
-            _quickFixes = new QuickFixBase[]
+            _quickFixes = new Lazy<IEnumerable<QuickFixBase>>(() =>
+                new QuickFixBase[]
                 {
-                    new ChangeParameterByRefByValQuickFix(Context, declaration.QualifiedSelection, InspectionsUI.ImplicitByRefParameterQuickFix, Tokens.ByRef), 
-                    new IgnoreOnceQuickFix(declaration.Context, declaration.QualifiedSelection, Inspection.AnnotationName), 
-                };
+                    new ChangeParameterByRefByValQuickFix(Context, QualifiedSelection, InspectionsUI.ImplicitByRefParameterQuickFix, Tokens.ByRef),
+                    new IgnoreOnceQuickFix(Target.Context, QualifiedSelection, Inspection.AnnotationName)
+                });
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes.Value; } }
 
         public override string Description
         {

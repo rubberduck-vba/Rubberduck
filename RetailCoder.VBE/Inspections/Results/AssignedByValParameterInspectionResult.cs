@@ -9,17 +9,9 @@ namespace Rubberduck.Inspections.Results
 {
     public class AssignedByValParameterInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
-        public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target)
-            : base(inspection, target)
-        {
-            _quickFixes = new QuickFixBase[]
-            {
-                new PassParameterByReferenceQuickFix(target.Context, QualifiedSelection),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, inspection.AnnotationName)
-            };
-        }
+        public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target) : base(inspection, target) { }
 
         public override string Description
         {
@@ -29,6 +21,16 @@ namespace Rubberduck.Inspections.Results
             }
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new PassParameterByReferenceQuickFix(Target.Context, QualifiedSelection),
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
     }
 }
