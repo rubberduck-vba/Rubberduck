@@ -8,19 +8,20 @@ namespace Rubberduck.Inspections.Results
 {
     public class OptionBaseInspectionResult : InspectionResultBase
     {
+        private IEnumerable<QuickFixBase> _quickFixes;
+
         public OptionBaseInspectionResult(IInspection inspection, Declaration target)
             : base(inspection, target)
-        {
-        }
+        { }
 
         public override IEnumerable<QuickFixBase> QuickFixes
         {
             get
             {
-                return new QuickFixBase[]
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
                 {
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
-                };
+                });
             }
         }
 

@@ -9,21 +9,22 @@ namespace Rubberduck.Inspections.Results
 {
     public class UndeclaredVariableInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public UndeclaredVariableInspectionResult(IInspection inspection, Declaration target)
             : base(inspection, target)
-        {
-            _quickFixes = new QuickFixBase[]
-            {
-                new IntroduceLocalVariableQuickFix(target), 
-                new IgnoreOnceQuickFix(target.Context, target.QualifiedSelection, inspection.AnnotationName), 
-            };
-        }
+        { }
 
         public override IEnumerable<QuickFixBase> QuickFixes
         {
-            get { return _quickFixes; }
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new IntroduceLocalVariableQuickFix(Target), 
+                    new IgnoreOnceQuickFix(Target.Context, Target.QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
         }
 
         public override string Description { get { return string.Format(InspectionsUI.UndeclaredVariableInspectionResultFormat, Target.IdentifierName).Captialize(); } }

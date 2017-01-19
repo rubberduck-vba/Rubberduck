@@ -12,26 +12,32 @@ namespace Rubberduck.Inspections.Results
 {
     public sealed class NonReturningFunctionInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
+        private readonly bool _canConvertToProcedure;
 
-        public NonReturningFunctionInspectionResult(IInspection inspection,
-            QualifiedContext<ParserRuleContext> qualifiedContext, 
-            Declaration target, bool canConvertToProcedure)
+        public NonReturningFunctionInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration target, bool canConvertToProcedure)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, target)
         {
-            _quickFixes = canConvertToProcedure
-                ? new QuickFixBase[] 
-                {
-                    new ConvertToProcedureQuickFix(Context, QualifiedSelection, target),
-                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
-                }
-                : new QuickFixBase[]
-                {
-                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
-                };
+            _canConvertToProcedure = canConvertToProcedure;            
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = _canConvertToProcedure ? 
+                    new QuickFixBase[]
+                    {
+                        new ConvertToProcedureQuickFix(Context, QualifiedSelection, Target),
+                        new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
+                    }
+                    : 
+                    new QuickFixBase[]
+                    {
+                        new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
+                    });
+            }
+        }
 
         public override string Description
         {
