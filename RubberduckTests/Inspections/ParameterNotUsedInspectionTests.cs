@@ -189,18 +189,18 @@ End Sub";
         [TestCategory("Inspections")]
         public void GivenPrivateSub_DefaultQuickFixRemovesParameter()
         {
-            const string inputCode =
-@"Private Sub Foo(ByVal arg1 as Integer)
+            const string inputCode =@"
+Private Sub Foo(ByVal arg1 as Integer)
 End Sub";
 
-            const string expectedCode =
-@"Private Sub Foo()
+            const string expectedCode = @"
+Private Sub Foo()
 End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, new Selection(1, 25, 1, 25));
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, new Selection(2, 25, 2, 25));
             var project = vbe.Object.VBProjects[0];
             var module = project.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();

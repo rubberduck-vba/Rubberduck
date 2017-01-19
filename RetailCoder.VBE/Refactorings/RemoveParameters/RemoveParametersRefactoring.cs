@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Common;
@@ -93,10 +94,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public void QuickFix(RubberduckParserState state, QualifiedSelection selection)
         {
             _model = new RemoveParametersModel(state, selection, new MessageBox());
-            var target = _model.Declarations.FindTarget(selection, new[] { DeclarationType.Parameter });
+            var target = _model.Parameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
+            Debug.Assert(target != null, "Target was not found");
 
-            // ReSharper disable once PossibleUnintendedReferenceComparison
-            _model.Parameters.Find(param => param.Declaration == target).IsRemoved = true;
+            target.IsRemoved = true;
             RemoveParameters();
         }
 
