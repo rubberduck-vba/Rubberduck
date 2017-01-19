@@ -243,6 +243,46 @@ Rem test";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ObsoleteCommentSyntax_QuickFixWorks_UpdateCommentHasContinuation()
+        {
+            const string inputCode =
+@"Rem this is _
+a comment";
+
+            const string expectedCode =
+@"' this is _
+a comment";
+
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+            var builder = new MockVbeBuilder();
+            IVBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+
+            inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
+
+            var actualCode = module.Content();
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteCommentSyntax_QuickFixWorks_RemoveComment()
         {
             const string inputCode =
@@ -325,6 +365,46 @@ continued";
 
             const string expectedCode =
 @"Dim Foo As Integer: ' This is a comment";
+
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+            var builder = new MockVbeBuilder();
+            IVBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+
+            inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
+
+            var actualCode = module.Content();
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment_LineHasCodeAndContinuation()
+        {
+            const string inputCode =
+@"Dim Foo As Integer: Rem This is _
+a comment";
+
+            const string expectedCode =
+@"Dim Foo As Integer: ' This is _
+a comment";
 
             //Arrange
             var settings = new Mock<IGeneralConfigService>();
