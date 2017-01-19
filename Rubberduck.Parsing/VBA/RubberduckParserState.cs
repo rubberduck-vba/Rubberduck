@@ -719,12 +719,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     continue;
                 }
-                
-                foreach (var reference in declaration.References)
-                {
-                    declaration.ClearReferences();
-                    break;
-                }
+                declaration.ClearReferences();
             }
         }
 

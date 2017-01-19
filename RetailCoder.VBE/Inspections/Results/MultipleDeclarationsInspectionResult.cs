@@ -12,16 +12,13 @@ namespace Rubberduck.Inspections.Results
 {
     public class MultipleDeclarationsInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
+        private readonly QualifiedContext<ParserRuleContext> _qualifiedContext;
 
         public MultipleDeclarationsInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _quickFixes = new QuickFixBase[]
-            {
-                new SplitMultipleDeclarationsQuickFix(Context, QualifiedSelection), 
-                new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
-            };
+            _qualifiedContext = qualifiedContext;
         }
 
         public override string Description
@@ -29,7 +26,17 @@ namespace Rubberduck.Inspections.Results
             get { return InspectionsUI.MultipleDeclarationsInspectionResultFormat.Captialize(); }
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get {return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new SplitMultipleDeclarationsQuickFix(Context, QualifiedSelection), 
+                    new IgnoreOnceQuickFix(_qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
 
         private new QualifiedSelection QualifiedSelection
         {

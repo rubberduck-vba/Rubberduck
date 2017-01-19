@@ -10,17 +10,12 @@ namespace Rubberduck.Inspections.Results
 {
     public class IdentifierNotAssignedInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
+        private readonly ParserRuleContext _context;
 
-        public IdentifierNotAssignedInspectionResult(IInspection inspection, Declaration target,
-            ParserRuleContext context)
-            : base(inspection, target)
+        public IdentifierNotAssignedInspectionResult(IInspection inspection, Declaration target, ParserRuleContext context) : base(inspection, target)
         {
-            _quickFixes = new QuickFixBase[]
-            {
-                new RemoveUnassignedIdentifierQuickFix(Context, QualifiedSelection, target), 
-                new IgnoreOnceQuickFix(context, QualifiedSelection, Inspection.AnnotationName), 
-            };
+            _context = context;
         }
 
         public override string Description
@@ -28,6 +23,16 @@ namespace Rubberduck.Inspections.Results
             get { return string.Format(InspectionsUI.VariableNotAssignedInspectionResultFormat, Target.IdentifierName).Captialize(); }
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new RemoveUnassignedIdentifierQuickFix(Context, QualifiedSelection, Target), 
+                    new IgnoreOnceQuickFix(_context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
     }
 }

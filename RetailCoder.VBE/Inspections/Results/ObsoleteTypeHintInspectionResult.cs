@@ -10,20 +10,27 @@ namespace Rubberduck.Inspections.Results
     public class ObsoleteTypeHintInspectionResult : InspectionResultBase
     {
         private readonly string _result;
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private readonly Declaration _declaration;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public ObsoleteTypeHintInspectionResult(IInspection inspection, string result, QualifiedContext qualifiedContext, Declaration declaration)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _result = result;
-            _quickFixes = new QuickFixBase[]
-            {
-                new RemoveTypeHintsQuickFix(Context, QualifiedSelection, declaration), 
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
-            };
+            _declaration = declaration;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new RemoveTypeHintsQuickFix(Context, QualifiedSelection, _declaration), 
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
 
         public override string Description
         {

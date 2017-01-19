@@ -13,20 +13,32 @@ namespace Rubberduck.Inspections.Results
 {
     public class IdentifierNameInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
+        private readonly RubberduckParserState _parserState;
+        private readonly IMessageBox _messageBox;
+        private readonly IPersistanceService<CodeInspectionSettings> _settings;
 
-        public IdentifierNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, IMessageBox messageBox, IPersistanceService<CodeInspectionSettings> settings)
+        public IdentifierNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, IMessageBox messageBox, 
+                                              IPersistanceService<CodeInspectionSettings> settings)
             : base(inspection, target)
         {
-            _quickFixes = new QuickFixBase[]
-            {
-                new RenameDeclarationQuickFix(target.Context, target.QualifiedSelection, target, parserState, messageBox),
-                new IgnoreOnceQuickFix(Context, target.QualifiedSelection, Inspection.AnnotationName), 
-                new AddIdentifierToWhiteListQuickFix(Context, target.QualifiedSelection, target, settings)
-            };
+            _parserState = parserState;
+            _messageBox = messageBox;
+            _settings = settings;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new RenameDeclarationQuickFix(Target.Context, Target.QualifiedSelection, Target, _parserState, _messageBox),
+                    new IgnoreOnceQuickFix(Context, Target.QualifiedSelection, Inspection.AnnotationName), 
+                    new AddIdentifierToWhiteListQuickFix(Context, Target.QualifiedSelection, Target, _settings)
+                });
+            }
+        }
 
         public override string Description
         {

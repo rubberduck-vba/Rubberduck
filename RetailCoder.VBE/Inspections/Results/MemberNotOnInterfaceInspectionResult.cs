@@ -11,6 +11,7 @@ namespace Rubberduck.Inspections.Results
     {
         private readonly ParserRuleContext _member;
         private readonly Declaration _asTypeDeclaration;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public MemberNotOnInterfaceInspectionResult(IInspection inspection, Declaration target, ParserRuleContext member, Declaration asTypeDeclaration)
             : base(inspection, target)
@@ -21,7 +22,13 @@ namespace Rubberduck.Inspections.Results
 
         public override IEnumerable<QuickFixBase> QuickFixes
         {
-            get { return new List<QuickFixBase> { new IgnoreOnceQuickFix(_member, QualifiedSelection, Inspection.AnnotationName) }; }
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new IgnoreOnceQuickFix(_member, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
         }
 
         public override string Description
