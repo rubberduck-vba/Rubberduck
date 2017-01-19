@@ -19,7 +19,6 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
-using IInspectionResult = Rubberduck.Inspections.Abstract.IInspectionResult;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -84,8 +83,8 @@ namespace Rubberduck.UI.Inspections
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
 
-        private ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
-        public ObservableCollection<IInspectionResult> Results
+        private ObservableCollection<IFixableResult> _results = new ObservableCollection<IFixableResult>();
+        public ObservableCollection<IFixableResult> Results
         {
             get { return _results; }
             private set
@@ -146,7 +145,7 @@ namespace Rubberduck.UI.Inspections
 
                 if (value)
                 {
-                    Results = new ObservableCollection<IInspectionResult>(
+                    Results = new ObservableCollection<IFixableResult>(
                             Results.OrderBy(o => o.Inspection.InspectionType)
                                 .ThenBy(t => t.Inspection.Name)
                                 .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
@@ -170,7 +169,7 @@ namespace Rubberduck.UI.Inspections
 
                 if (value)
                 {
-                    Results = new ObservableCollection<IInspectionResult>(
+                    Results = new ObservableCollection<IFixableResult>(
                             Results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
                                 .ThenBy(t => t.Inspection.Name)
                                 .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
@@ -262,7 +261,7 @@ namespace Rubberduck.UI.Inspections
             var stopwatch = Stopwatch.StartNew();
             IsBusy = true;
 
-            var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).OfType<IInspectionResult>().ToList();
+            var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).OfType<IFixableResult>().ToList();
             if (GroupByInspectionType)
             {
                 results = results.OrderBy(o => o.Inspection.InspectionType)
@@ -283,7 +282,7 @@ namespace Rubberduck.UI.Inspections
 
             UiDispatcher.Invoke(() =>
             {
-                Results = new ObservableCollection<IInspectionResult>(results);
+                Results = new ObservableCollection<IFixableResult>(results);
 
                 IsBusy = false;
                 SelectedItem = null;

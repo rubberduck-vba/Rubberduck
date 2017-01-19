@@ -9,10 +9,10 @@ namespace Rubberduck.Inspections.Results
 {
     public class AggregateInspectionResult: InspectionResultBase
     {
-        private readonly IInspectionResult _result;
+        private readonly IFixableResult _result;
         private readonly int _count;
 
-        public AggregateInspectionResult(IInspectionResult firstResult, int count)
+        public AggregateInspectionResult(IFixableResult firstResult, int count)
             : base(firstResult.Inspection, firstResult.QualifiedSelection.QualifiedName, ParserRuleContext.EmptyContext)
         {
             _result = firstResult;
@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Results
 
         public override QuickFixBase DefaultQuickFix { get { return _result.QuickFixes == null ? null : _result.QuickFixes.FirstOrDefault(); } }
 
-        public override int CompareTo(IInspectionResult other)
+        public override int CompareTo(IFixableResult other)
         {
             if (other == this)
             {

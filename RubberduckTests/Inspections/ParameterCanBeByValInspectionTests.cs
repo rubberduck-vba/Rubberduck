@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -482,7 +483,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
+            var inspectionResults = inspection.GetInspectionResults().AsFixable();
             
             Assert.AreEqual("a", inspectionResults.Single().Target.IdentifierName);
         }
@@ -659,7 +660,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -690,7 +691,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -721,7 +722,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -754,7 +755,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -787,7 +788,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -851,7 +852,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().Single().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+            inspectionResults.AsFixable().Single().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
 
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
@@ -915,7 +916,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().Single()
+            inspectionResults.AsFixable().Single()
                 .QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
 
             Assert.AreEqual(expectedCode1, module1.Content());
@@ -952,7 +953,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -986,7 +987,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -1020,7 +1021,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -1064,7 +1065,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterCanBeByValInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }

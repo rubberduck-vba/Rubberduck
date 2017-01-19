@@ -14,7 +14,6 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
-using IInspectionResult = Rubberduck.Inspections.Abstract.IInspectionResult;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -103,7 +102,7 @@ namespace Rubberduck.Inspections.Concrete
                 return issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
                     .SelectMany(kv => kv.Value)
                     .Union(issuesByType.Where(kv => kv.Value.Count > AGGREGATION_THRESHOLD)
-                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).OfType<IInspectionResult>().First(), kv.Value.Count)));
+                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).OfType<IFixableResult>().First(), kv.Value.Count)));
                 //return allIssues;
             }
 

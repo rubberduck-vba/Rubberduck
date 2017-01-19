@@ -365,6 +365,7 @@
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
+    <Compile Include="Inspections\Abstract\IInspectionResultExtensions.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspection.cs" />
     <Compile Include="Inspections\HungarianNotationInspection.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspection.cs" />
@@ -599,7 +600,7 @@
     <Compile Include="Inspections\ConstantNotUsedInspection.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspection.cs" />
     <Compile Include="Inspections\Results\DefaultProjectNameInspectionResult.cs" />
-    <Compile Include="Inspections\Abstract\IInspectionResult.cs" />
+    <Compile Include="Inspections\Abstract\IFixableResult.cs" />
     <Compile Include="Inspections\Abstract\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Inspections\Results\ImplicitPublicMemberInspectionResult.cs" />

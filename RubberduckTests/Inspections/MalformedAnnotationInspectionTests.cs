@@ -6,6 +6,7 @@ using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Symbols;
@@ -201,7 +202,7 @@ namespace RubberduckTests.Inspections
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
+            Assert.IsFalse(inspectionResults.AsFixable().ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
         }
 
         [TestMethod]

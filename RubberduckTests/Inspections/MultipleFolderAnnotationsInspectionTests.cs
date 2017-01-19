@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -127,7 +128,7 @@ End Sub";
             var inspection = new MultipleFolderAnnotationsInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
+            Assert.IsFalse(inspectionResults.AsFixable().ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
         }
 
         [TestMethod]

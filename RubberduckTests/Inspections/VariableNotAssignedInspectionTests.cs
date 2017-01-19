@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -180,7 +181,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -214,7 +215,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -247,7 +248,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+            inspection.GetInspectionResults().AsFixable().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -280,7 +281,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+            inspection.GetInspectionResults().AsFixable().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -314,7 +315,7 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new VariableNotAssignedInspection(parser.State);
-            inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspection.GetInspectionResults().AsFixable().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
