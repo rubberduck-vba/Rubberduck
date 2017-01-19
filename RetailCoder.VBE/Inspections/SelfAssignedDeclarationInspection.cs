@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections
             Tokens.String
         };
 
-        public override IEnumerable<Parsing.Symbols.IInspectionResult> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             return UserDeclarations
                 .Where(declaration => declaration.IsSelfAssigned 

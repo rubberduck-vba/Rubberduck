@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 
@@ -17,12 +16,12 @@ namespace RubberduckTests.Settings
             {
                 CodeInspections = new HashSet<CodeInspectionSetting>(new[]
                 {
-                    new CodeInspectionSetting("DoNotShowInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.DoNotShow, CodeInspectionSeverity.DoNotShow),
-                    new CodeInspectionSetting("HintInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint, CodeInspectionSeverity.Hint),
-                    new CodeInspectionSetting("SuggestionInspection", CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Suggestion, CodeInspectionSeverity.Suggestion),
-                    new CodeInspectionSetting("WarningInspection", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Warning),
-                    new CodeInspectionSetting("ErrorInspection", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error, CodeInspectionSeverity.Error),
-                    new CodeInspectionSetting("NondefaultSeverityInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning, CodeInspectionSeverity.DoNotShow)
+                    new CodeInspectionSetting("DoNotShowInspection", "Do not show me", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.DoNotShow, CodeInspectionSeverity.DoNotShow),
+                    new CodeInspectionSetting("HintInspection", "I'm a hint", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint, CodeInspectionSeverity.Hint),
+                    new CodeInspectionSetting("SuggestionInspection", "I'm a suggestion", CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Suggestion, CodeInspectionSeverity.Suggestion),
+                    new CodeInspectionSetting("WarningInspection", "I'm a warning", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Warning),
+                    new CodeInspectionSetting("ErrorInspection", "FIX ME!", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error, CodeInspectionSeverity.Error),
+                    new CodeInspectionSetting("NondefaultSeverityInspection", "I do not have my original severity", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning, CodeInspectionSeverity.DoNotShow)
                 })
             };
 
@@ -36,12 +35,12 @@ namespace RubberduckTests.Settings
             {
                 CodeInspections = new HashSet<CodeInspectionSetting>(new[]
                 {
-                    new CodeInspectionSetting("DoNotShowInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.DoNotShow, CodeInspectionSeverity.Warning),
-                    new CodeInspectionSetting("HintInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint, CodeInspectionSeverity.Suggestion),
-                    new CodeInspectionSetting("SuggestionInspection", CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Suggestion, CodeInspectionSeverity.Hint),
-                    new CodeInspectionSetting("WarningInspection", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Error),
-                    new CodeInspectionSetting("ErrorInspection", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error, CodeInspectionSeverity.DoNotShow),
-                    new CodeInspectionSetting("NondefaultSeverityInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Error)
+                    new CodeInspectionSetting("DoNotShowInspection", "Do not show me", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.DoNotShow, CodeInspectionSeverity.Warning),
+                    new CodeInspectionSetting("HintInspection", "I'm a hint", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint, CodeInspectionSeverity.Suggestion),
+                    new CodeInspectionSetting("SuggestionInspection", "I'm a suggestion", CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Suggestion, CodeInspectionSeverity.Hint),
+                    new CodeInspectionSetting("WarningInspection", "I'm a warning", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Error),
+                    new CodeInspectionSetting("ErrorInspection", "FIX ME!", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error, CodeInspectionSeverity.DoNotShow),
+                    new CodeInspectionSetting("NondefaultSeverityInspection", "I do not have my original severity", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Error)
                 })
             };
 

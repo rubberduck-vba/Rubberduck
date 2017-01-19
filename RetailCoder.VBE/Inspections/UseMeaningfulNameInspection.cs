@@ -9,7 +9,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
-using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -28,7 +27,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.UseMeaningfulNameInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
             var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToList();

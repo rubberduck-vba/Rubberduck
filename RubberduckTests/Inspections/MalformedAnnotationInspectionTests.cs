@@ -6,9 +6,10 @@ using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -201,7 +202,7 @@ namespace RubberduckTests.Inspections
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
+            Assert.IsFalse(inspectionResults.ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
         }
 
         [TestMethod]
@@ -227,6 +228,7 @@ namespace RubberduckTests.Inspections
             var settings = new CodeInspectionSettings();
             settings.CodeInspections.Add(new CodeInspectionSetting
             {
+                Description = new MissingAnnotationArgumentInspection(null).Description,
                 Severity = CodeInspectionSeverity.Error
             });
             return new Configuration

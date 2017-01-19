@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
-using IInspection = Rubberduck.Parsing.Symbols.IInspection;
 
 namespace Rubberduck.Inspections.Results
 {

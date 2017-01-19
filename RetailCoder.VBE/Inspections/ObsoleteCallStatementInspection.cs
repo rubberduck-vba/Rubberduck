@@ -5,9 +5,7 @@ using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -27,7 +25,7 @@ namespace Rubberduck.Inspections
         public IEnumerable<QualifiedContext<VBAParser.CallStmtContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.CallStmtContext>>(); } }
         public void SetResults(IEnumerable<QualifiedContext> results) { _parseTreeResults = results; } 
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             if (ParseTreeResults == null)
             {

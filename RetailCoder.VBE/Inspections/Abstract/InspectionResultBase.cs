@@ -96,11 +96,6 @@ namespace Rubberduck.Inspections.Abstract
             return Inspection.CompareTo(other.Inspection);
         }
 
-        public virtual int CompareTo(Parsing.Symbols.IInspectionResult other)
-        {
-            return Inspection.CompareTo(other.Inspection);
-        }
-
         public override string ToString()
         {
             var module = QualifiedSelection.QualifiedName;

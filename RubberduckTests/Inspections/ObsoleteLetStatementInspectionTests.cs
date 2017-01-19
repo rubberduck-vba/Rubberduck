@@ -6,9 +6,10 @@ using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -236,8 +237,7 @@ End Sub";
             var inspection = new ObsoleteLetStatementInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result
-                .OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -285,8 +285,7 @@ End Sub";
             var inspection = new ObsoleteLetStatementInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result
-                .OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
@@ -316,6 +315,7 @@ End Sub";
             var settings = new CodeInspectionSettings();
             settings.CodeInspections.Add(new CodeInspectionSetting
             {
+                Description = new ObsoleteLetStatementInspection(null).Description,
                 Severity = CodeInspectionSeverity.Suggestion
             });
             return new Configuration

@@ -9,7 +9,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.VBEditor;
-using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -24,7 +23,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.FunctionReturnValueNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             // Note: This inspection does not find dictionary calls (e.g. foo!bar) since we do not know what the
             // default member is of a class.

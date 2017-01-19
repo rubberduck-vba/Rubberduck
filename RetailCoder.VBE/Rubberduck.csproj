@@ -530,6 +530,7 @@
     <Compile Include="Inspections\QuickFixes\ConvertToProcedureQuickFix.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspection.cs" />
     <Compile Include="Inspections\Results\FunctionReturnValueNotUsedInspectionResult.cs" />
+    <Compile Include="Inspections\Abstract\IInspection.cs" />
     <Compile Include="Inspections\Abstract\IInspectionModel.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
     <Compile Include="Inspections\QuickFixes\SelfAssignedDeclarationInspectionResult.cs" />
@@ -951,6 +952,8 @@
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="Settings\CodeInspectionSettings.cs" />
     <Compile Include="Inspections\Abstract\InspectionResultBase.cs" />
+    <Compile Include="Inspections\Resources\CodeInspectionSeverity.cs" />
+    <Compile Include="Inspections\Resources\CodeInspectionType.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspection.cs" />
     <Compile Include="Inspections\Results\ImplicitByRefParameterInspectionResult.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspection.cs" />

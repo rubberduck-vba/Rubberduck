@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections.Results
         private IEnumerable<QuickFixBase> _quickFixes;
         private readonly RubberduckParserState _state;
 
-        public ParameterCanBeByValInspectionResult(Parsing.Symbols.IInspection inspection, RubberduckParserState state, Declaration target, ParserRuleContext context, QualifiedMemberName qualifiedName)
+        public ParameterCanBeByValInspectionResult(IInspection inspection, RubberduckParserState state, Declaration target, ParserRuleContext context, QualifiedMemberName qualifiedName)
             : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
             _state = state;

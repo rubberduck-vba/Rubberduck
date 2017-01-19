@@ -5,7 +5,6 @@ using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
@@ -168,7 +167,7 @@ Public fizz As Boolean";
             var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }

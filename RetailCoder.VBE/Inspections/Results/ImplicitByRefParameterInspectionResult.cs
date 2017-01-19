@@ -12,16 +12,16 @@ namespace Rubberduck.Inspections.Results
 {
     public class ImplicitByRefParameterInspectionResult : InspectionResultBase
     {
-        private readonly Lazy<IEnumerable<QuickFixBase>> _quickFixes;
+        private Lazy<IEnumerable<QuickFixBase>> _quickFixes;
 
-        public ImplicitByRefParameterInspectionResult(Parsing.Symbols.IInspection inspection, Declaration declaration)
+        public ImplicitByRefParameterInspectionResult(IInspection inspection, Declaration declaration)
             : base(inspection, declaration)
         {
             _quickFixes = new Lazy<IEnumerable<QuickFixBase>>(() =>
                 new QuickFixBase[]
                 {
                     new ChangeParameterByRefByValQuickFix(Context, QualifiedSelection, InspectionsUI.ImplicitByRefParameterQuickFix, Tokens.ByRef),
-                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                    new IgnoreOnceQuickFix(Target.Context, QualifiedSelection, Inspection.AnnotationName)
                 });
         }
 

@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections.Results
         private IEnumerable<QuickFixBase> _quickFixes;
         private readonly bool _canConvertToProcedure;
 
-        public NonReturningFunctionInspectionResult(Parsing.Symbols.IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration target, bool canConvertToProcedure)
+        public NonReturningFunctionInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration target, bool canConvertToProcedure)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, target)
         {
             _canConvertToProcedure = canConvertToProcedure;            

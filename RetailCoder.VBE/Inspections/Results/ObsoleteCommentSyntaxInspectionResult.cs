@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.Results
         private IEnumerable<QuickFixBase> _quickFixes;
         private readonly CommentNode _comment;
 
-        public ObsoleteCommentSyntaxInspectionResult(Parsing.Symbols.IInspection inspection, CommentNode comment) 
+        public ObsoleteCommentSyntaxInspectionResult(IInspection inspection, CommentNode comment) 
             : base(inspection, comment)
         {
             _comment = comment;

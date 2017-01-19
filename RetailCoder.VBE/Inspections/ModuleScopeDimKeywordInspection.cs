@@ -6,7 +6,6 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -29,7 +28,7 @@ namespace Rubberduck.Inspections
             DeclarationType.Document, 
         };
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var moduleVariables = State.AllUserDeclarations
                 .Where(declaration => declaration.DeclarationType == DeclarationType.Variable

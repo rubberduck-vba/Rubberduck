@@ -6,9 +6,10 @@ using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -361,7 +362,7 @@ End Function";
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -401,7 +402,7 @@ End Function";
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -451,7 +452,7 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -498,7 +499,7 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -545,7 +546,7 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -595,7 +596,7 @@ End Function";
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -645,7 +646,7 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.First().Fix();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -685,7 +686,7 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -712,6 +713,7 @@ End Sub";
             var settings = new CodeInspectionSettings();
             settings.CodeInspections.Add(new CodeInspectionSetting
             {
+                Description = new ProcedureCanBeWrittenAsFunctionInspection(null).Description,
                 Severity = CodeInspectionSeverity.Suggestion
             });
             return new Configuration

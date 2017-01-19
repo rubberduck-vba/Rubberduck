@@ -10,9 +10,9 @@ namespace Rubberduck.Inspections.Results
 {
     public class OptionExplicitInspectionResult : InspectionResultBase
     {
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes; 
 
-        public OptionExplicitInspectionResult(Parsing.Symbols.IInspection inspection, QualifiedModuleName qualifiedName) 
+        public OptionExplicitInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName) 
             : base(inspection, new CommentNode(string.Empty, Tokens.CommentMarker, new QualifiedSelection(qualifiedName, Selection.Home)))
         { }
 

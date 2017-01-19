@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.Results
     {
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public ModuleScopeDimKeywordInspectionResult(Parsing.Symbols.IInspection inspection, Declaration target) 
+        public ModuleScopeDimKeywordInspectionResult(IInspection inspection, Declaration target) 
             : base(inspection, target)
         { }
 

@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ConstantNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<Parsing.Symbols.IInspectionResult> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var results = State.DeclarationFinder
                 .UserDeclarations(DeclarationType.Constant)

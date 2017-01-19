@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Results
         private readonly IMessageBox _messageBox;
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public MoveFieldCloserToUsageInspectionResult(Parsing.Symbols.IInspection inspection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
+        public MoveFieldCloserToUsageInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
             : base(inspection, target)
         {
             _state = state;

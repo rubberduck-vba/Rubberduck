@@ -250,7 +250,7 @@ End Sub";
             var inspection = new ObjectVariableNotSetInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -290,7 +290,7 @@ End Function";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObjectVariableNotSetInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().ToList();
+            var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(2, inspectionResults.Count);
             foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is UseSetKeywordForObjectAssignmentQuickFix)))
@@ -329,7 +329,7 @@ End Property
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObjectVariableNotSetInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>().ToList();
+            var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(1, inspectionResults.Count);
             foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is UseSetKeywordForObjectAssignmentQuickFix)))

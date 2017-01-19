@@ -4,9 +4,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -21,7 +19,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ObsoleteTypeHintInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var results = UserDeclarations.ToList();
 

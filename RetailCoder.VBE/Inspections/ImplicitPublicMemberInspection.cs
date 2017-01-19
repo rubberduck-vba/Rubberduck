@@ -7,7 +7,6 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using IInspectionResult = Rubberduck.Parsing.Symbols.IInspectionResult;
 
 namespace Rubberduck.Inspections
 {
@@ -31,7 +30,7 @@ namespace Rubberduck.Inspections
             DeclarationType.PropertySet
         };
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
                          where ProcedureTypes.Contains(item.DeclarationType)

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Symbols;
-using IInspection = Rubberduck.Parsing.Symbols.IInspection;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
@@ -50,7 +50,7 @@ namespace Rubberduck.Settings
                 var proto = Convert.ChangeType(Activator.CreateInstance(inspection), inspection);
                 var existing = CodeInspections.FirstOrDefault(s => proto.GetType().ToString().Equals(s.Name));
                 if (existing != null) return existing;
-                var setting = new CodeInspectionSetting(proto as IInspection);
+                var setting = new CodeInspectionSetting(proto as IInspectionModel);
                 CodeInspections.Add(setting);
                 return setting;
             }
@@ -68,10 +68,57 @@ namespace Rubberduck.Settings
         public string Name { get; set; }
 
         [XmlIgnore]
+        public string Description { get; set; } // not serialized because culture-dependent
+
+        [XmlIgnore]
+        public string LocalizedName
+        {
+            get
+            {
+                return InspectionsUI.ResourceManager.GetString(Name + "Name", UI.Settings.Settings.Culture);
+            }
+        } // not serialized because culture-dependent
+
+        [XmlIgnore]
+        public string AnnotationName { get; set; }
+
+        [XmlIgnore]
         public CodeInspectionSeverity DefaultSeverity { get; private set; }
 
         [XmlAttribute]
         public CodeInspectionSeverity Severity { get; set; }
+
+        [XmlIgnore]
+        public string Meta
+        {
+            get
+            {
+                return InspectionsUI.ResourceManager.GetString(Name + "Meta", UI.Settings.Settings.Culture);
+            }
+        }
+
+        [XmlIgnore]
+        public string TypeLabel
+        {
+            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, UI.Settings.Settings.Culture); }
+        }
+
+        [XmlIgnore]
+        public string SeverityLabel
+        {
+            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, UI.Settings.Settings.Culture); }
+            set
+            {
+                foreach (var severity in Enum.GetValues(typeof (CodeInspectionSeverity)))
+                {
+                    if (value == RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, UI.Settings.Settings.Culture))
+                    {
+                        Severity = (CodeInspectionSeverity)severity;
+                        return;
+                    }
+                }
+            }
+        }
 
         [XmlAttribute]
         public CodeInspectionType InspectionType { get; set; }
@@ -81,16 +128,17 @@ namespace Rubberduck.Settings
             //default constructor required for serialization
         }
 
-        public CodeInspectionSetting(string name, CodeInspectionType type, CodeInspectionSeverity defaultSeverity, CodeInspectionSeverity severity)
+        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity defaultSeverity, CodeInspectionSeverity severity)
         {
             Name = name;
+            Description = description;
             InspectionType = type;
             Severity = severity;
             DefaultSeverity = defaultSeverity;
         }
 
-        public CodeInspectionSetting(IInspection inspection)
-            : this(inspection.Name, inspection.InspectionType, inspection.DefaultSeverity, inspection.Severity)
+        public CodeInspectionSetting(IInspectionModel inspection)
+            : this(inspection.Name, inspection.Description, inspection.InspectionType, inspection.DefaultSeverity, inspection.Severity)
         { }
 
         public override bool Equals(object obj)

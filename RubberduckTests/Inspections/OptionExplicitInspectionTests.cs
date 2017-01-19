@@ -5,7 +5,6 @@ using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
@@ -143,7 +142,7 @@ namespace RubberduckTests.Inspections
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionExplicitInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
+            var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -169,7 +168,7 @@ namespace RubberduckTests.Inspections
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionExplicitInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults().OfType<Rubberduck.Inspections.Abstract.IInspectionResult>();
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
         }

@@ -11,15 +11,14 @@ using System.Windows;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
-using IInspectionResult = Rubberduck.Inspections.Abstract.IInspectionResult;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -262,7 +261,7 @@ namespace Rubberduck.UI.Inspections
             var stopwatch = Stopwatch.StartNew();
             IsBusy = true;
 
-            var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).OfType<IInspectionResult>().ToList();
+            var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();
             if (GroupByInspectionType)
             {
                 results = results.OrderBy(o => o.Inspection.InspectionType)

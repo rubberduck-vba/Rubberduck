@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.Results
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public ParameterNotUsedInspectionResult(Parsing.Symbols.IInspection inspection, Declaration target,
+        public ParameterNotUsedInspectionResult(IInspection inspection, Declaration target,
             bool isInterfaceImplementation, IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
             : base(inspection, target)
         {
