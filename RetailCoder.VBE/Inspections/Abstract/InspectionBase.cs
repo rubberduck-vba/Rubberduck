@@ -76,7 +76,7 @@ namespace Rubberduck.Inspections.Abstract
         /// </summary>
         protected virtual IEnumerable<Declaration> Declarations
         {
-            get { return State.AllDeclarations.Where(declaration => !IsInspectionDisabled(declaration, AnnotationName)); }
+            get { return State.AllDeclarations.Where(declaration => !IsIgnoringInspectionResultFor(declaration, AnnotationName)); }
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Rubberduck.Inspections.Abstract
         /// </summary>
         protected virtual IEnumerable<Declaration> UserDeclarations
         {
-            get { return State.AllUserDeclarations.Where(declaration => !IsInspectionDisabled(declaration, AnnotationName)); }
+            get { return State.AllUserDeclarations.Where(declaration => !IsIgnoringInspectionResultFor(declaration, AnnotationName)); }
         }
 
         protected virtual IEnumerable<Declaration> BuiltInDeclarations
@@ -92,7 +92,7 @@ namespace Rubberduck.Inspections.Abstract
             get { return State.AllDeclarations.Where(declaration => declaration.IsBuiltIn); }
         }
 
-        protected bool IsInspectionDisabled(IVBComponent component, int line)
+        protected bool IsIgnoringInspectionResultFor(IVBComponent component, int line)
         {
             var annotations = State.GetModuleAnnotations(component).ToList();
 
@@ -114,7 +114,7 @@ namespace Rubberduck.Inspections.Abstract
             return false;
         }
 
-        protected bool IsInspectionDisabled(Declaration declaration, string inspectionName)
+        protected bool IsIgnoringInspectionResultFor(Declaration declaration, string inspectionName)
         {
             if (declaration.DeclarationType == DeclarationType.Parameter)
             {
@@ -128,7 +128,7 @@ namespace Rubberduck.Inspections.Abstract
                 && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
-        protected bool IsInspectionDisabled(IdentifierReference reference, string inspectionName)
+        protected bool IsIgnoringInspectionResultFor(IdentifierReference reference, string inspectionName)
         {
             if (reference == null)
             {

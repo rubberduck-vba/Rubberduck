@@ -228,7 +228,7 @@ End Sub";
             var vbaDeclaration = new ProjectDeclaration(
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "VBA"), "VBA"),
                 "VBA",
-                true);
+                true, null);
 
             var conversionModule = new ProceduralModuleDeclaration(
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Conversion"), "Conversion"),

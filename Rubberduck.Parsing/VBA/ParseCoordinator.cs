@@ -64,8 +64,6 @@ namespace Rubberduck.Parsing.VBA
             state.ParseRequest += ReparseRequested;
         }
 
-        public DeclarationFinder DeclarationFinder { get; private set; }
-
         // Do not access this from anywhere but ReparseRequested.
         // ReparseRequested needs to have a reference to all the cancellation tokens,
         // but the cancelees need to use their own token.
@@ -302,13 +300,20 @@ namespace Rubberduck.Parsing.VBA
                 State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
             }
 
-            DeclarationFinder = new DeclarationFinder(State.AllDeclarations, State.AllAnnotations, _hostApp);
+            try
+            {
+                State.RefreshFinder(_hostApp);
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+            }
             var passes = new List<ICompilationPass>
                 {
                     // This pass has to come first because the type binding resolution depends on it.
-                    new ProjectReferencePass(DeclarationFinder),
-                    new TypeHierarchyPass(DeclarationFinder, new VBAExpressionParser()),
-                    new TypeAnnotationPass(DeclarationFinder, new VBAExpressionParser())
+                    new ProjectReferencePass(State.DeclarationFinder),
+                    new TypeHierarchyPass(State.DeclarationFinder, new VBAExpressionParser()),
+                    new TypeAnnotationPass(State.DeclarationFinder, new VBAExpressionParser())
                 };
             passes.ForEach(p => p.Execute());
 
@@ -326,11 +331,11 @@ namespace Rubberduck.Parsing.VBA
                 {
                     State.SetModuleState(kvp.Key.Component, ParserState.ResolvingReferences);
 
-                    ResolveReferences(DeclarationFinder, kvp.Key.Component, kvp.Value);
+                    ResolveReferences(State.DeclarationFinder, kvp.Key.Component, kvp.Value);
                 }, token)
                 .ContinueWith(t =>
                 {
-                    var undeclared = DeclarationFinder.Undeclared.ToList();
+                    var undeclared = State.DeclarationFinder.Undeclared.ToList();
                     foreach (var declaration in undeclared)
                     {
                         State.AddDeclaration(declaration);
@@ -345,9 +350,16 @@ namespace Rubberduck.Parsing.VBA
         {
             foreach (var customDeclarationLoader in _customDeclarationLoaders)
             {
-                foreach (var declaration in customDeclarationLoader.Load())
+                try
                 {
-                    State.AddDeclaration(declaration);
+                    foreach (var declaration in customDeclarationLoader.Load())
+                    {
+                        State.AddDeclaration(declaration);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception);
                 }
             }
         }
@@ -628,7 +640,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
             var projectId = qualifiedName.QualifiedModuleName.ProjectId;
-            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name, isBuiltIn: false);
+            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name, false, project);
 
             var references = new List<ReferencePriorityMap>();
             foreach (var item in _projectReferences)

@@ -26,13 +26,14 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var issues = UserDeclarations
-                            .Where(declaration => declaration.DeclarationType == DeclarationType.Variable
-                                                && declaration.Accessibility == Accessibility.Public)
-                            .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue, State, _indenter))
-                            .ToList();
+            var fields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                .Where(item => !IsIgnoringInspectionResultFor(item, AnnotationName)
+                               && item.Accessibility == Accessibility.Public)
+                .ToList();
 
-            return issues;
+            return fields
+                .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue, State, _indenter))
+                .ToList();
         }
     }
 }

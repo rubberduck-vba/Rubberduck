@@ -25,18 +25,25 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var matches = BuiltInDeclarations.Where(item =>
-                        item.ProjectName == "Excel" &&
-                        Targets.Contains(item.IdentifierName) &&
-                        (item.ParentDeclaration.ComponentName == "_Global" || item.ParentDeclaration.ComponentName == "Global") &&
-                        item.AsTypeName == "Range").ToList();
+            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => item.IsBuiltIn && item.IdentifierName == "Excel");
+            if (excel == null) { return Enumerable.Empty<InspectionResultBase>(); }
 
-            var issues = matches.Where(item => item.References.Any())
-                .SelectMany(declaration => declaration.References.Distinct());
+            var globalModules = new[]
+            {
+                State.DeclarationFinder.FindClassModule("Global", excel, true),
+                State.DeclarationFinder.FindClassModule("_Global", excel, true)
+            };
 
-            return issues
-                .Where(issue => !issue.IsInspectionDisabled(AnnotationName))
-                .Select(issue => new ImplicitActiveSheetReferenceInspectionResult(this, issue));
+            var members = Targets
+                .SelectMany(target => globalModules.SelectMany(global =>
+                    State.DeclarationFinder.FindMemberMatches(global, target))
+                .Where(member => member.AsTypeName == "Range" && member.References.Any()));
+
+            return members
+                .SelectMany(declaration => declaration.References)
+                .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName))
+                .Select(issue => new ImplicitActiveSheetReferenceInspectionResult(this, issue))
+                .ToList();
         }
     }
 }

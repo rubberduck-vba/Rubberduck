@@ -22,7 +22,7 @@ namespace Rubberduck.VBEditor.Application
         }
         protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
-            var moduleName = qualifiedMemberName.QualifiedModuleName.Component.Name;
+            var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;
             return string.Concat(moduleName, ".", qualifiedMemberName.MemberName);
         }
     }

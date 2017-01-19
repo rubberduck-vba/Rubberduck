@@ -141,6 +141,7 @@ namespace Rubberduck.Parsing.Symbols
             Attributes attributes = null)
         {
             _qualifiedName = qualifiedName;
+            _project = qualifiedName.QualifiedModuleName.Project;
             _parentDeclaration = parentDeclaration;
             _parentScopeDeclaration = _parentDeclaration;
             _parentScope = parentScope ?? string.Empty;
@@ -174,22 +175,23 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public Declaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module) : this(
-                module.QualifyMemberName(enumeration.Name),
-                parent,
-                parent,
-                "Long",     //Match the VBA default type declaration.  Technically these *can* be a LongLong on 64 bit systems, but would likely crash the VBE... 
-                null,
-                false,
-                false,
-                Accessibility.Global,
-                DeclarationType.Enumeration,
-                null,
-                Selection.Home,
-                false,
-                null,
-                true,
-                null,
-                new Attributes()) { }
+            module.QualifyMemberName(enumeration.Name),
+            parent,
+            parent,
+            "Long",
+            //Match the VBA default type declaration.  Technically these *can* be a LongLong on 64 bit systems, but would likely crash the VBE... 
+            null,
+            false,
+            false,
+            Accessibility.Global,
+            DeclarationType.Enumeration,
+            null,
+            Selection.Home,
+            false,
+            null,
+            true,
+            null,
+            new Attributes()) { }
 
         public Declaration(ComStruct structure, Declaration parent, QualifiedModuleName module)
             : this(
@@ -247,9 +249,9 @@ namespace Rubberduck.Parsing.Symbols
                 string result;
                 if (@namespace == null)
                 {
-                    result = _qualifiedName.QualifiedModuleName.Project == null
+                    result = string.IsNullOrEmpty(_qualifiedName.QualifiedModuleName.ProjectName)
                         ? _projectId
-                        : _qualifiedName.QualifiedModuleName.Project.Name;
+                        : _qualifiedName.QualifiedModuleName.ProjectName;
                 }
                 else
                 {
@@ -404,13 +406,14 @@ namespace Rubberduck.Parsing.Symbols
 
         public QualifiedSelection QualifiedSelection { get { return new QualifiedSelection(_qualifiedName.QualifiedModuleName, _selection); } }
 
+        private readonly IVBProject _project;
         /// <summary>
         /// Gets a reference to the VBProject the declaration is made in.
         /// </summary>
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public IVBProject Project { get { return _qualifiedName.QualifiedModuleName.Project; } }
+        public virtual IVBProject Project { get { return _project ?? _parentDeclaration.Project; } }
 
         private readonly string _projectId;
         /// <summary>

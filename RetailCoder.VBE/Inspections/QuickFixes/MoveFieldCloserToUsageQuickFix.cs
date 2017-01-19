@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix()
         {
-            var vbe = Selection.QualifiedName.Project.VBE;
+            var vbe = _target.Project.VBE;
 
             var refactoring = new MoveCloserToUsageRefactoring(vbe, _state, _messageBox);
 

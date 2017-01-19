@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
                 return new InspectionResultBase[] { };
             }
             return ParseTreeResults
-                .Where(result => !IsInspectionDisabled(result.ModuleName.Component, result.Context.Start.Line))
+                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
                 .Select(result => new EmptyStringLiteralInspectionResult(this, result));
         }
 

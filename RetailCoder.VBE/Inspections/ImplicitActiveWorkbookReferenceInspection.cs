@@ -23,26 +23,28 @@ namespace Rubberduck.Inspections
             "Worksheets", "Sheets", "Names", "_Default"
         };
 
-        private static readonly string[] ParentScopes =
-        {
-            "_Global",
-            "Global",
-            "_Application",
-            "Application",
-            "Sheets",
-            //"Worksheets",
-        };
-
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var issues = BuiltInDeclarations
-                .Where(item => item.ProjectName == "Excel" && ParentScopes.Contains(item.ComponentName) 
-                    && item.References.Any(r => Targets.Contains(r.IdentifierName)))
-                .SelectMany(declaration => declaration.References.Distinct())
+            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => item.IsBuiltIn && item.IdentifierName == "Excel");
+            if (excel == null) { return Enumerable.Empty<InspectionResultBase>(); }
+
+            var modules = new[]
+            {
+                State.DeclarationFinder.FindClassModule("_Global", excel, true),
+                State.DeclarationFinder.FindClassModule("_Application", excel, true),
+                State.DeclarationFinder.FindClassModule("Global", excel, true),
+                State.DeclarationFinder.FindClassModule("Application", excel, true),
+                State.DeclarationFinder.FindClassModule("Sheets", excel, true),
+            };
+
+            var members = Targets
+                .SelectMany(target => modules.SelectMany(module =>
+                    State.DeclarationFinder.FindMemberMatches(module, target)))
+                .Where(item => item.References.Any())
+                .SelectMany(item => item.References.Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName)))
                 .ToList();
                 
-            var filtered = issues.Where(item => Targets.Contains(item.IdentifierName));
-            return filtered.Select(issue => new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
+            return members.Select(issue => new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
         }
     }
 }

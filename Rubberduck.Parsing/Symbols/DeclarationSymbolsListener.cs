@@ -51,9 +51,9 @@ namespace Rubberduck.Parsing.Symbols
             if (declarationType == DeclarationType.ProceduralModule)
             {
                 _moduleDeclaration = new ProceduralModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.Component.Name,
+                    _qualifiedName.ComponentName,
                     false,
                     FindAnnotations(),
                     moduleAttributes);
@@ -97,9 +97,9 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 _moduleDeclaration = new ClassModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.Component.Name,
+                    _qualifiedName.ComponentName,
                     false,
                     FindAnnotations(),
                     moduleAttributes,
@@ -207,7 +207,7 @@ namespace Rubberduck.Parsing.Symbols
                 var argContext = (VBAParser.ArgContext)context;
                 var isOptional = argContext.OPTIONAL() != null;
 
-                var isByRef = argContext.BYREF() != null;
+                var isByRef = argContext.BYREF() != null || argContext.BYVAL() == null;
                 var isParamArray = argContext.PARAMARRAY() != null;
                 result = new ParameterDeclaration(
                     new QualifiedMemberName(_qualifiedName, identifierName),

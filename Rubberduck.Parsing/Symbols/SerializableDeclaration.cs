@@ -223,7 +223,7 @@ namespace Rubberduck.Parsing.Symbols
             switch (DeclarationType)
             {
                 case DeclarationType.Project:
-                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, true);                    
+                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, true, null);                    
                 case DeclarationType.ClassModule:
                     return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes) { IsExtensible = IsExtensible };
                 case DeclarationType.ProceduralModule:

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
@@ -7,7 +6,6 @@ using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.Results
@@ -17,14 +15,13 @@ namespace Rubberduck.Inspections.Results
         private readonly IEnumerable<QuickFixBase> _quickFixes;
 
         public ParameterNotUsedInspectionResult(IInspection inspection, Declaration target,
-            ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
-            IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
-            : base(inspection, qualifiedName.QualifiedModuleName, context, target)
+            bool isInterfaceImplementation, IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
+            : base(inspection, target)
         {
             _quickFixes = isInterfaceImplementation ? new QuickFixBase[] {} : new QuickFixBase[]
             {
-                new RemoveUnusedParameterQuickFix(Context, QualifiedSelection, vbe, state, messageBox),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
+                new RemoveUnusedParameterQuickFix(Context, target.QualifiedSelection, vbe, state, messageBox),
+                new IgnoreOnceQuickFix(Context, target.QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

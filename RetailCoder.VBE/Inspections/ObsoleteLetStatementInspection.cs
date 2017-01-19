@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
                 return new InspectionResultBase[] { };
             }
             return ParseTreeResults.OfType<QualifiedContext<VBAParser.LetStmtContext>>()
-                .Where(context => !IsInspectionDisabled(context.ModuleName.Component, context.Context.Start.Line))
+                .Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
                 .Select(context => new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
 
