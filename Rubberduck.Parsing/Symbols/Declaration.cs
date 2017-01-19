@@ -639,11 +639,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void ClearReferences()
         {
-            while (!_references.IsEmpty)
-            {
-                IdentifierReference reference;
-                _references.TryTake(out reference);
-            }
+            _references = new ConcurrentBag<IdentifierReference>();
         }
     }
 }
