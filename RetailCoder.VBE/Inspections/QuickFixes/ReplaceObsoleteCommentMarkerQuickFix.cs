@@ -28,7 +28,12 @@ namespace Rubberduck.Inspections.QuickFixes
             var newComment = commentLine.Substring(0, Context.Start.Column) +
                              Tokens.CommentMarker +
                              comment.Substring(Tokens.Rem.Length, comment.Length - Tokens.Rem.Length);
-                   
+
+            var lines = Selection.Selection.LineCount;
+            if (lines > 1)
+            {
+                module.DeleteLines(start + 1, lines - 1);
+            }
             module.ReplaceLine(start, newComment);
         }
     }
