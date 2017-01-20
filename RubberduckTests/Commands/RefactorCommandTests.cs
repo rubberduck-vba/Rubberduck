@@ -16,6 +16,7 @@ namespace RubberduckTests.Commands
     [TestClass]
     public class RefactorCommandTests
     {
+        [TestCategory("Commands")]
         [TestMethod]
         public void EncapsulateField_CanExecute_NullActiveCodePane()
         {
@@ -37,6 +38,7 @@ namespace RubberduckTests.Commands
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void EncapsulateField_CanExecute_NonReadyState()
         {
@@ -58,6 +60,7 @@ namespace RubberduckTests.Commands
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void EncapsulateField_CanExecute_LocalVariable()
         {
@@ -83,6 +86,7 @@ End Sub";
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void EncapsulateField_CanExecute_Proc()
         {
@@ -108,6 +112,7 @@ End Sub";
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void EncapsulateField_CanExecute_Field()
         {
@@ -133,6 +138,7 @@ End Sub";
             Assert.IsTrue(encapsulateFieldCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_NullActiveCodePane()
         {
@@ -154,6 +160,7 @@ End Sub";
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_NonReadyState()
         {
@@ -175,6 +182,7 @@ End Sub";
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_NoMembers()
         {
@@ -195,6 +203,7 @@ End Sub";
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_Proc_StdModule()
         {
@@ -219,6 +228,7 @@ End Sub";
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_Field()
         {
@@ -239,6 +249,7 @@ End Sub";
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void CanExecuteNameCollision_ActiveCodePane_EmptyClass()
         {
@@ -278,6 +289,7 @@ End Sub
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_ClassWithMembers_SameNameAsClassWithMembers()
         {
@@ -310,6 +322,7 @@ End Sub";
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_Proc()
         {
@@ -335,6 +348,7 @@ End Sub";
             Assert.IsTrue(canExecute);
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_Function()
         {
@@ -359,6 +373,7 @@ End Function";
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_PropertyGet()
         {
@@ -383,6 +398,7 @@ End Property";
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_PropertyLet()
         {
@@ -407,6 +423,7 @@ End Property";
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ExtractInterface_CanExecute_PropertySet()
         {
@@ -431,6 +448,7 @@ End Property";
             Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ImplementInterface_CanExecute_NullActiveCodePane()
         {
@@ -452,6 +470,7 @@ End Property";
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ImplementInterface_CanExecute_NonReadyState()
         {
@@ -473,6 +492,7 @@ End Property";
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ImplementInterface_CanExecute_ImplementsInterfaceNotSelected()
         {
@@ -493,6 +513,7 @@ End Property";
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ImplementInterface_CanExecute_ImplementsInterfaceSelected()
         {
@@ -517,6 +538,7 @@ End Property";
             Assert.IsTrue(implementInterfaceCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IntroduceField_CanExecute_NullActiveCodePane()
         {
@@ -539,6 +561,7 @@ End Property";
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IntroduceField_CanExecute_NonReadyState()
         {
@@ -561,6 +584,7 @@ End Property";
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IntroduceField_CanExecute_Field()
         {
@@ -582,6 +606,7 @@ End Property";
             Assert.IsFalse(introduceFieldCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IntroduceField_CanExecute_LocalVariable()
         {
@@ -608,6 +633,7 @@ End Property";
             Assert.IsTrue(introduceFieldCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IntroduceParameter_CanExecute_NullActiveCodePane()
         {
@@ -630,6 +656,7 @@ End Property";
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IntroduceParameter_CanExecute_NonReadyState()
         {
@@ -652,6 +679,7 @@ End Property";
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IntroduceParameter_CanExecute_Field()
         {
@@ -673,6 +701,7 @@ End Property";
             Assert.IsFalse(introduceParameterCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IntroduceParameter_CanExecute_LocalVariable()
         {
@@ -699,6 +728,7 @@ End Property";
             Assert.IsTrue(introduceParameterCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void MoveCloserToUsage_CanExecute_NullActiveCodePane()
         {
@@ -720,6 +750,7 @@ End Property";
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void MoveCloserToUsage_CanExecute_NonReadyState()
         {
@@ -741,6 +772,7 @@ End Property";
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void MoveCloserToUsage_CanExecute_Field_NoReferences()
         {
@@ -761,6 +793,7 @@ End Property";
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void MoveCloserToUsage_CanExecute_LocalVariable_NoReferences()
         {
@@ -786,6 +819,7 @@ End Property";
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void MoveCloserToUsage_CanExecute_Const_NoReferences()
         {
@@ -806,6 +840,7 @@ End Property";
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void MoveCloserToUsage_CanExecute_Field()
         {
@@ -832,6 +867,7 @@ End Sub";
             Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void MoveCloserToUsage_CanExecute_LocalVariable()
         {
@@ -858,6 +894,7 @@ End Property";
             Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void MoveCloserToUsage_CanExecute_Const()
         {
@@ -885,6 +922,7 @@ End Sub";
             Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_NullActiveCodePane()
         {
@@ -906,6 +944,7 @@ End Sub";
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_NonReadyState()
         {
@@ -927,6 +966,7 @@ End Sub";
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_Event_NoParams()
         {
@@ -950,6 +990,7 @@ End Sub";
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_Proc_NoParams()
         {
@@ -974,6 +1015,7 @@ End Sub";
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_Function_NoParams()
         {
@@ -998,6 +1040,7 @@ End Function";
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_PropertyGet_NoParams()
         {
@@ -1022,6 +1065,7 @@ End Property";
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_PropertyLet_OneParam()
         {
@@ -1046,6 +1090,7 @@ End Property";
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_PropertySet_OneParam()
         {
@@ -1070,6 +1115,7 @@ End Property";
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_Event_OneParam()
         {
@@ -1093,6 +1139,7 @@ End Property";
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_Proc_OneParam()
         {
@@ -1117,6 +1164,7 @@ End Sub";
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_Function_OneParam()
         {
@@ -1141,6 +1189,7 @@ End Function";
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_PropertyGet_OneParam()
         {
@@ -1165,6 +1214,7 @@ End Property";
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_PropertyLet_TwoParams()
         {
@@ -1189,6 +1239,7 @@ End Property";
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void RemoveParameters_CanExecute_PropertySet_TwoParams()
         {
@@ -1213,6 +1264,7 @@ End Property";
             Assert.IsTrue(removeParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_NullActiveCodePane()
         {
@@ -1234,6 +1286,7 @@ End Property";
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_NonReadyState()
         {
@@ -1255,6 +1308,7 @@ End Property";
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_Event_OneParam()
         {
@@ -1278,6 +1332,7 @@ End Property";
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_Proc_OneParam()
         {
@@ -1302,6 +1357,7 @@ End Sub";
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_Function_OneParam()
         {
@@ -1326,6 +1382,7 @@ End Function";
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_PropertyGet_OneParam()
         {
@@ -1350,6 +1407,7 @@ End Property";
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_PropertyLet_TwoParams()
         {
@@ -1374,6 +1432,7 @@ End Property";
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_PropertySet_TwoParams()
         {
@@ -1398,6 +1457,7 @@ End Property";
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_Event_TwoParams()
         {
@@ -1421,6 +1481,7 @@ End Property";
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_Proc_TwoParams()
         {
@@ -1445,6 +1506,7 @@ End Sub";
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_Function_TwoParams()
         {
@@ -1469,6 +1531,7 @@ End Function";
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_PropertyGet_TwoParams()
         {
@@ -1493,6 +1556,7 @@ End Property";
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_PropertyLet_ThreeParams()
         {
@@ -1517,6 +1581,7 @@ End Property";
             Assert.IsTrue(reorderParametersCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void ReorderParameters_CanExecute_PropertySet_ThreeParams()
         {
