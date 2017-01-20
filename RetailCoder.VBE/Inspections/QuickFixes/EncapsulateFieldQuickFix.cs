@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix()
         {
-            var vbe = Selection.QualifiedName.Project.VBE;
+            var vbe = _target.Project.VBE;
 
             using (var view = new EncapsulateFieldDialog(_state, _indenter))
             {

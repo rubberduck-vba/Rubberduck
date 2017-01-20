@@ -17,7 +17,7 @@ namespace Rubberduck.Parsing.ComReflection
     {
         public bool IsHidden { get; private set; }
         public bool IsRestricted { get; private set; }
-        public bool IsEventHandler { get; private set; }
+        public bool ReturnsWithEventsObject { get; private set; }
         public bool IsDefault { get; private set; }
         public bool IsEnumerator { get; private set; }
         public ComParameter ReturnType { get; private set; }
@@ -29,7 +29,7 @@ namespace Rubberduck.Parsing.ComReflection
             var flags = (FUNCFLAGS)funcDesc.wFuncFlags;
             IsHidden = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN);
             IsRestricted = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FRESTRICTED);
-            IsEventHandler = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FSOURCE);
+            ReturnsWithEventsObject = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FSOURCE);
             IsDefault = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FUIDEFAULT);
             IsEnumerator = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FNONBROWSABLE) && Name.Equals("_NewEnum");
             SetDeclarationType(funcDesc, info);
@@ -37,10 +37,6 @@ namespace Rubberduck.Parsing.ComReflection
 
         private void SetDeclarationType(FUNCDESC funcDesc, ITypeInfo info)
         {
-            if (IsEventHandler)
-            {
-                Type = DeclarationType.Event;
-            }
             if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET))
             {
                 Type = DeclarationType.PropertyGet;

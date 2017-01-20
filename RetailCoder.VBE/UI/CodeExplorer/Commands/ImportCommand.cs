@@ -48,18 +48,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
             }
 
-            if (_openFileDialog.ShowDialog() == DialogResult.OK)
+            if (project == null || _openFileDialog.ShowDialog() != DialogResult.OK)
             {
-                var fileExts = _openFileDialog.FileNames.Select(s => s.Split('.').Last());
-                if (fileExts.Any(fileExt => !new[] {"bas", "cls", "frm"}.Contains(fileExt)))
-                {
-                    return;
-                }
+                return;
+            }
 
-                foreach (var filename in _openFileDialog.FileNames)
-                {
-                    project.VBComponents.Import(filename);
-                }
+            var fileExts = _openFileDialog.FileNames.Select(s => s.Split('.').Last());
+            if (fileExts.Any(fileExt => !new[] {"bas", "cls", "frm"}.Contains(fileExt)))
+            {
+                return;
+            }
+
+            foreach (var filename in _openFileDialog.FileNames)
+            {
+                project.VBComponents.Import(filename);
             }
         }
 
@@ -67,7 +69,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             if (parameter is ICodeExplorerDeclarationViewModel)
             {
-                return parameter.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Project;
+                return parameter.GetSelectedDeclaration().Project;
             }
 
             var node = parameter.Parent;
@@ -76,7 +78,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 node = node.Parent;
             }
 
-            return ((ICodeExplorerDeclarationViewModel)node).Declaration.QualifiedName.QualifiedModuleName.Project;
+            return ((ICodeExplorerDeclarationViewModel)node).Declaration.Project;
         }
 
         public void Dispose()

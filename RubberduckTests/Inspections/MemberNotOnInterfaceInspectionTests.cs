@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.API;
 using Rubberduck.Inspections;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
-using Accessibility = Rubberduck.Parsing.Symbols.Accessibility;
 using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
 namespace RubberduckTests.Inspections
@@ -23,152 +15,261 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class MemberNotOnInterfaceInspectionTests
     {
-        private static void AddTestBuiltInLibrary(RubberduckParserState state)
+        private static ParseCoordinator ArrangeParser(string inputCode)
         {
-            var projectName = new QualifiedModuleName("TestLib", string.Empty, "TestLib");
-            var library = new ProjectDeclaration(projectName.QualifyMemberName("TestLib"), "TestLib", true);
-            state.AddDeclaration(library);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("Codez", ComponentType.StandardModule, inputCode)
+                .AddReference("Scripting", MockVbeBuilder.LibraryPathScripting, 1, 0, true)
+                .Build();
 
-            var attributes = new Attributes();
-            attributes.AddPredeclaredIdTypeAttribute();
-            attributes.AddGlobalClassAttribute();
+            var vbe = builder.AddProject(project).Build();
 
-            var extensible = new ClassModuleDeclaration(projectName.QualifyMemberName("Extensible"), 
-                                                        library, 
-                                                        "Extensible", 
-                                                        true, 
-                                                        null,
-                                                        attributes,
-                                                        true) { IsExtensible = true };
-            state.AddDeclaration(extensible);
-            
-            var nonExtensible = new ClassModuleDeclaration(projectName.QualifyMemberName("NonExtensible"), 
-                                                           library, 
-                                                           "NonExtensible", 
-                                                           true, 
-                                                           null,
-                                                           attributes,
-                                                           true);
-            state.AddDeclaration(nonExtensible);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
-            var member = new SubroutineDeclaration(extensible.QualifiedName.QualifiedModuleName.QualifyMemberName("ExtensibleMember"), 
-                                                   extensible, 
-                                                   extensible,
-                                                   string.Empty, 
-                                                   Accessibility.Global, 
-                                                   null, 
-                                                   Selection.Home, 
-                                                   true, 
-                                                   null,
-                                                   new Attributes());
-            state.AddDeclaration(member);
-            state.CoClasses.TryAdd(new List<string> { member.IdentifierName }, extensible);
-
-            member = new SubroutineDeclaration(nonExtensible.QualifiedName.QualifiedModuleName.QualifyMemberName("NonExtensibleMember"),
-                                               nonExtensible,
-                                               nonExtensible,
-                                               string.Empty,
-                                               Accessibility.Global,
-                                               null,
-                                               Selection.Home,
-                                               true,
-                                               null,
-                                               new Attributes());
-            state.AddDeclaration(member);
-            state.CoClasses.TryAdd(new List<string> { member.IdentifierName }, nonExtensible);
+            parser.State.AddTestLibrary("Scripting.1.0.xml");
+            return parser;
         }
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MemberNotOnInterface_ReturnsResult_GlobalReference()
-//        {
-//            const string inputCode =
-//@"Sub MemberTest()
-//    Extensible.Foo
-//End Sub";
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_ReturnsResult_UnDeclaredMember()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim dict As Dictionary
+    Set dict = New Dictionary
+    dict.NonMember
+End Sub";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-//                .AddComponent("Codez", ComponentType.StandardModule, inputCode)
-//                .Build();
-//            var vbe = builder.AddProject(project).Build();
+            //Arrange
+            var parser = ArrangeParser(inputCode);
 
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-//            AddTestBuiltInLibrary(parser.State);
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var inspection = new MemberNotOnInterfaceInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_ReturnsResult_UnDeclaredInterfaceMember()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim dict As Dictionary
+    Set dict = New Dictionary
+    dict.NonMember
+End Sub";
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            //Arrange
+            var parser = ArrangeParser(inputCode);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MemberNotOnInterface_DoesNotReturnResult_DeclaredMember()
-//        {
-//            const string inputCode =
-//@"Sub MemberTest()
-//    Extensible.ExtensibleMember
-//End Sub";
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-//                .AddComponent("Codez", ComponentType.StandardModule, inputCode)
-//                .Build();
-//            var vbe = builder.AddProject(project).Build();
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_ReturnsResult_UnDeclaredMemberOnParameter()
+        {
+            const string inputCode =
+@"Sub Foo(dict As Dictionary)
+    dict.NonMember
+End Sub";
 
-//            AddTestBuiltInLibrary(parser.State);
+            //Arrange
+            var parser = ArrangeParser(inputCode);
 
-//            var inspection = new MemberNotOnInterfaceInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-//            Assert.IsFalse(inspectionResults.Any());
-//        }
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MemberNotOnInterface_DoesNotReturnResult_NonExtensible()
-//        {
-//            const string inputCode =
-//@"Sub MemberTest()
-//    NonExtensible.Foo
-//End Sub";
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-//                .AddComponent("Codez", ComponentType.StandardModule, inputCode)
-//                .Build();
-//            var vbe = builder.AddProject(project).Build();
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_DoesNotReturnResult_DeclaredMember()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim dict As Dictionary
+    Set dict = New Dictionary
+    Debug.Print dict.Count
+End Sub";
 
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            //Arrange
+            var parser = ArrangeParser(inputCode);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-//            AddTestBuiltInLibrary(parser.State);
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var inspection = new MemberNotOnInterfaceInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            Assert.IsFalse(inspectionResults.Any());
+        }
 
-//            Assert.IsFalse(inspectionResults.Any());
-//        }
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_DoesNotReturnResult_NonExtensible()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim x As File
+    Debug.Print x.NonMember
+End Sub";
+
+            //Arrange
+            var parser = ArrangeParser(inputCode);
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_ReturnsResult_WithBlock()
+        {
+            Assert.Inconclusive("This is currently not working.");
+            const string inputCode =
+@"Sub Foo()
+    Dim dict As New Dictionary
+    With dict
+        .NonMember
+    End With
+End Sub";
+
+            //Arrange
+            var parser = ArrangeParser(inputCode);
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_DoesNotReturnResult_BangNotation()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim dict As Dictionary
+    Set dict = New Dictionary
+    dict!SomeIdentifier = 42
+End Sub";
+
+            //Arrange
+            var parser = ArrangeParser(inputCode);
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_DoesNotReturnResult_WithBlockBangNotation()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim dict As New Dictionary
+    With dict
+        !SomeIdentifier = 42
+    End With
+End Sub";
+
+            //Arrange
+            var parser = ArrangeParser(inputCode);
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_DoesNotReturnResult_ProjectReference()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim dict As Scripting.Dictionary
+End Sub";
+
+            //Arrange
+            var parser = ArrangeParser(inputCode);
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Sub Foo(dict As Dictionary)
+    Dim dict As Dictionary
+    Set dict = New Dictionary
+    '@Ignore MemberNotOnInterface
+    dict.NonMember
+End Sub";
+
+            //Arrange
+            var parser = ArrangeParser(inputCode);
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
     }
 }

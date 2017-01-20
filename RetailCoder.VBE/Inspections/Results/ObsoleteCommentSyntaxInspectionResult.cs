@@ -1,27 +1,32 @@
 ﻿using System.Collections.Generic;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections.Results
 {
     public class ObsoleteCommentSyntaxInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
-        public ObsoleteCommentSyntaxInspectionResult(IInspection inspection, CommentNode comment) 
-            : base(inspection, comment)
+        public ObsoleteCommentSyntaxInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
+        { }
+
+        public override IEnumerable<QuickFixBase> QuickFixes
         {
-            _quickFixes = new QuickFixBase[]
+            get
             {
-                new ReplaceObsoleteCommentMarkerQuickFix(Context, QualifiedSelection, comment),
-                new RemoveCommentQuickFix(Context, QualifiedSelection, comment), 
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
-            };
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new ReplaceObsoleteCommentMarkerQuickFix(Context, QualifiedSelection),
+                    new RemoveCommentQuickFix(Context, QualifiedSelection), 
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
         }
-
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
 
         public override string Description
         {

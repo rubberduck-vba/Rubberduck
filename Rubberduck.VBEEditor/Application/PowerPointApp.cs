@@ -25,7 +25,7 @@
                 // if project isn't saved yet, we can't qualify the method call: this only works with the active project.
                 return qualifiedMemberName.QualifiedModuleName.Component.VBE.ActiveVBProject.IsWrappingNullReference
                     ? null // if there's no active project, we can't generate the call
-                    : qualifiedMemberName.QualifiedModuleName.Component.Name + "." + qualifiedMemberName.MemberName;
+                    : qualifiedMemberName.QualifiedModuleName.ComponentName + "." + qualifiedMemberName.MemberName;
             }
 
             var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;

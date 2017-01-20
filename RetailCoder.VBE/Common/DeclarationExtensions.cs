@@ -364,8 +364,7 @@ namespace Rubberduck.Common
             var items = state.AllDeclarations.ToList();
 
             var forms = items.Where(item => item.DeclarationType == DeclarationType.ClassModule
-                && item.QualifiedName.QualifiedModuleName.Component != null
-                && item.QualifiedName.QualifiedModuleName.Component.Type == ComponentType.UserForm)
+                && item.QualifiedName.QualifiedModuleName.ComponentType == ComponentType.UserForm)
                 .ToList();
 
             var result = new List<Declaration>();
@@ -426,9 +425,7 @@ namespace Rubberduck.Common
             }
 
             var items = declarations as IList<Declaration> ?? declarations.ToList();
-            var type = items.SingleOrDefault(item => item.DeclarationType == DeclarationType.ClassModule
-                                                             && item.Project != null
-                                                             && item.IdentifierName == withEventsDeclaration.AsTypeName.Split('.').Last());
+            var type = withEventsDeclaration.AsTypeDeclaration;
 
             if (type == null)
             {
@@ -449,7 +446,7 @@ namespace Rubberduck.Common
 
         private static IEnumerable<Declaration> GetTypeMembers(this IEnumerable<Declaration> declarations, Declaration type)
         {
-            return declarations.Where(item => item.Project != null && item.ProjectId == type.ProjectId && item.ParentScope == type.Scope);
+            return declarations.Where(item => Equals(item.ParentScopeDeclaration, type));
         }
 
         /// <summary>

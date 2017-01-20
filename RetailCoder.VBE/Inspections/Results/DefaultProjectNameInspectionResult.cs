@@ -9,18 +9,25 @@ namespace Rubberduck.Inspections.Results
 {
     public class DefaultProjectNameInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes; 
+        private IEnumerable<QuickFixBase> _quickFixes;
+        private readonly RubberduckParserState _state;
 
         public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state)
             : base(inspection, target)
         {
-            _quickFixes = new[]
-            {
-                new RenameProjectQuickFix(target.Context, target.QualifiedSelection, target, state),
-            };
+            _state = state;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new RenameProjectQuickFix(Target.Context, Target.QualifiedSelection, Target, _state)
+                });
+            }
+        }
 
         public override string Description
         {

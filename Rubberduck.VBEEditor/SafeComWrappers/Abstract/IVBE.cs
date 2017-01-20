@@ -1,4 +1,5 @@
 using System;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
@@ -17,6 +18,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         ICodePanes CodePanes { get; }
         ICommandBars CommandBars { get; }
         IWindows Windows { get; }
+
+        IHostApplication HostApplication();
 
         bool IsInDesignMode { get; }
     }

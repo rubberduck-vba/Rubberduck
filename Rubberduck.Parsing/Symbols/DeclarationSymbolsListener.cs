@@ -51,9 +51,9 @@ namespace Rubberduck.Parsing.Symbols
             if (declarationType == DeclarationType.ProceduralModule)
             {
                 _moduleDeclaration = new ProceduralModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.Component.Name,
+                    _qualifiedName.ComponentName,
                     false,
                     FindAnnotations(),
                     moduleAttributes);
@@ -97,9 +97,9 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 _moduleDeclaration = new ClassModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.Component.Name,
+                    _qualifiedName.ComponentName,
                     false,
                     FindAnnotations(),
                     moduleAttributes,
@@ -470,7 +470,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
             var typeHint = Identifier.GetTypeHintValue(identifier);
-            var isArray = asTypeClause != null && asTypeClause.type().LPAREN() != null;
+            var isArray = asTypeName.EndsWith("()");
             var declaration = CreateDeclaration(
                 name,
                 asTypeName,

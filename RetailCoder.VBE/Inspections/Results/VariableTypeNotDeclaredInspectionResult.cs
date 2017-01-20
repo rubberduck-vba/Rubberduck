@@ -9,17 +9,11 @@ namespace Rubberduck.Inspections.Results
 {
     public class VariableTypeNotDeclaredInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public VariableTypeNotDeclaredInspectionResult(IInspection inspection, Declaration target)
             : base(inspection, target)
-        {
-            _quickFixes = new QuickFixBase[]
-            {
-                new DeclareAsExplicitVariantQuickFix(Context, QualifiedSelection), 
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
-            };
-        }
+        { }
 
         public override string Description
         {
@@ -31,6 +25,16 @@ namespace Rubberduck.Inspections.Results
             }
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get {return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new DeclareAsExplicitVariantQuickFix(Context, QualifiedSelection), 
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
     }
 }

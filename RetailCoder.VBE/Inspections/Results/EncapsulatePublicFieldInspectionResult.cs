@@ -11,19 +11,28 @@ namespace Rubberduck.Inspections.Results
 {
     public class EncapsulatePublicFieldInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
+        private readonly RubberduckParserState _state;
+        private readonly IIndenter _indenter;
 
         public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, IIndenter indenter)
             : base(inspection, target)
         {
-            _quickFixes = new QuickFixBase[]
-            {
-                new EncapsulateFieldQuickFix(target.Context, target.QualifiedSelection, target, state, indenter),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
-            };
+            _state = state;
+            _indenter = indenter;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new EncapsulateFieldQuickFix(Target.Context, Target.QualifiedSelection, Target, _state, _indenter),
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
 
         public override string Description
         {

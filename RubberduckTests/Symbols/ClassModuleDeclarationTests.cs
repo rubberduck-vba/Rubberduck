@@ -23,7 +23,7 @@ namespace RubberduckTests.Symbols
             private static ProjectDeclaration GetTestProject(string name)
             {
                 var qualifiedProjectName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new ProjectDeclaration(qualifiedProjectName, name, false);
+                return new ProjectDeclaration(qualifiedProjectName, name, false, null);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
