@@ -143,13 +143,13 @@
     <Compile Include="ComReflection\ComMember.cs" />
     <Compile Include="ComReflection\ComModule.cs" />
     <Compile Include="ComReflection\ComProject.cs" />
-    <Compile Include="Symbols\SpecialFormDeclarations.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\SpecialFormDeclarations.cs" />
     <Compile Include="Symbols\CommentNode.cs" />
     <Compile Include="ComReflection\ComParameter.cs" />
-    <Compile Include="Symbols\DebugDeclarations.cs" />
-    <Compile Include="Symbols\AliasDeclarations.cs" />
-    <Compile Include="Symbols\FormEventDeclarations.cs" />
-    <Compile Include="Symbols\ICustomDeclarationLoader.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\DebugDeclarations.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\AliasDeclarations.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\FormEventDeclarations.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\ICustomDeclarationLoader.cs" />
     <Compile Include="Symbols\Identifier.cs" />
     <Compile Include="Binding\IBindingContext.cs" />
     <Compile Include="Binding\IBoundExpression.cs" />
@@ -257,6 +257,7 @@
     <Compile Include="Symbols\PropertySetDeclaration.cs" />
     <Compile Include="Symbols\PropertyGetDeclaration.cs" />
     <Compile Include="Symbols\FunctionDeclaration.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\RubberduckApiDeclarations.cs" />
     <Compile Include="Symbols\SerializableDeclaration.cs" />
     <Compile Include="Symbols\SquareBracketedNameComparer.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
