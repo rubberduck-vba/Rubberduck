@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections
             {
                 return new InspectionResultBase[] { };
             }
-            return ParseTreeResults.Where(context => !IsInspectionDisabled(context.ModuleName.Component, context.Context.Start.Line))
+            return ParseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
                 .Select(context => new ObsoleteCommentSyntaxInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
 
