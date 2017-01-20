@@ -21,31 +21,29 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Creates a comment inspection result.
         /// </summary>
-        protected InspectionResultBase(IInspection inspection, CommentNode comment)
-            : this(inspection, comment.QualifiedSelection.QualifiedName, null, comment)
+        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName)
+            : this(inspection, qualifiedName, null)
         { }
 
         /// <summary>
         /// Creates an inspection result.
         /// </summary>
-        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
+        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context)
         {
             _inspection = inspection;
             _qualifiedName = qualifiedName;
             _context = context;
-            _comment = comment;
         }
 
         /// <summary>
         /// Creates an inspection result.
         /// </summary>
-        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration declaration, CommentNode comment = null)
+        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration declaration)
         {
             _inspection = inspection;
             _qualifiedName = qualifiedName;
             _context = context;
             _target = declaration;
-            _comment = comment;
         }
 
         private readonly IInspection _inspection;
@@ -59,9 +57,6 @@ namespace Rubberduck.Inspections.Abstract
         private readonly ParserRuleContext _context;
         public ParserRuleContext Context { get { return _context; } }
 
-        private readonly CommentNode _comment;
-        public CommentNode Comment { get { return _comment; } }
-
         private readonly Declaration _target;
         public Declaration Target { get { return _target; } }
 
@@ -72,12 +67,8 @@ namespace Rubberduck.Inspections.Abstract
         {
             get
             {
-                if (_context == null && _comment == null)
-                {
-                    return _target.QualifiedSelection;
-                }
                 return _context == null
-                    ? _comment.QualifiedSelection
+                    ? _target.QualifiedSelection
                     : new QualifiedSelection(_qualifiedName, _context.GetSelection());
             }
         }

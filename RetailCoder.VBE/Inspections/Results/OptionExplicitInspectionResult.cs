@@ -12,8 +12,8 @@ namespace Rubberduck.Inspections.Results
     {
         private IEnumerable<QuickFixBase> _quickFixes; 
 
-        public OptionExplicitInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName) 
-            : base(inspection, new CommentNode(string.Empty, Tokens.CommentMarker, new QualifiedSelection(qualifiedName, Selection.Home)))
+        public OptionExplicitInspectionResult(IInspection inspection, Declaration target)
+            : base(inspection, target)
         { }
 
         public override IEnumerable<QuickFixBase> QuickFixes
