@@ -10,46 +10,26 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public class ReplaceObsoleteCommentMarkerQuickFix : QuickFixBase
     {
-        private readonly CommentNode _comment;
-
-        public ReplaceObsoleteCommentMarkerQuickFix(ParserRuleContext context, QualifiedSelection selection, CommentNode comment)
-            : base(context, selection, InspectionsUI.ReplaceCommentMarkerQuickFix)
-        {
-            _comment = comment;
-        }
+        public ReplaceObsoleteCommentMarkerQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.RemoveObsoleteStatementQuickFix)
+        { }
 
         public override void Fix()
         {
             var module = Selection.QualifiedName.Component.CodeModule;
+
+            if (module.IsWrappingNullReference)
             {
-                if (module.IsWrappingNullReference)
-                {
-                    return;
-                }
-
-                var content = module.GetLines(Selection.Selection.StartLine, Selection.Selection.LineCount);
-
-                int markerPosition;
-                if (!content.HasComment(out markerPosition))
-                {
-                    return;
-                }
-
-                var code = string.Empty;
-                if (markerPosition > 0)
-                {
-                    code = content.Substring(0, markerPosition);
-                }
-
-                var newContent = code + Tokens.CommentMarker + " " + _comment.CommentText;
-
-                if (_comment.QualifiedSelection.Selection.LineCount > 1)
-                {
-                    module.DeleteLines(_comment.QualifiedSelection.Selection.StartLine + 1, _comment.QualifiedSelection.Selection.LineCount);
-                }
-
-                module.ReplaceLine(Selection.Selection.StartLine, newContent);
+                return;
             }
+            var comment = Context.GetText();
+            var start = Context.Start.Line;           
+            var commentLine = module.GetLines(start, 1);
+            var newComment = commentLine.Substring(0, Context.Start.Column) +
+                             Tokens.CommentMarker +
+                             comment.Substring(Tokens.Rem.Length, comment.Length - Tokens.Rem.Length);
+                   
+            module.ReplaceLine(start, newComment);
         }
     }
 }

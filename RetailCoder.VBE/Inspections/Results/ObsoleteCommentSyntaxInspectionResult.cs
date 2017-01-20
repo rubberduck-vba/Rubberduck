@@ -1,21 +1,19 @@
 ﻿using System.Collections.Generic;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections.Results
 {
     public class ObsoleteCommentSyntaxInspectionResult : InspectionResultBase
     {
         private IEnumerable<QuickFixBase> _quickFixes;
-        private readonly CommentNode _comment;
 
-        public ObsoleteCommentSyntaxInspectionResult(IInspection inspection, CommentNode comment) 
-            : base(inspection, comment)
-        {
-            _comment = comment;
-        }
+        public ObsoleteCommentSyntaxInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
+        { }
 
         public override IEnumerable<QuickFixBase> QuickFixes
         {
@@ -23,8 +21,8 @@ namespace Rubberduck.Inspections.Results
             {
                 return _quickFixes ?? (_quickFixes = new QuickFixBase[]
                 {
-                    new ReplaceObsoleteCommentMarkerQuickFix(Context, QualifiedSelection, _comment),
-                    new RemoveCommentQuickFix(Context, QualifiedSelection, _comment), 
+                    new ReplaceObsoleteCommentMarkerQuickFix(Context, QualifiedSelection),
+                    new RemoveCommentQuickFix(Context, QualifiedSelection), 
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
                 });
             }
