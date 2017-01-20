@@ -1,6 +1,8 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -9,43 +11,27 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public class RemoveCommentQuickFix : QuickFixBase
     {
-        private readonly CommentNode _comment;
-
-        public RemoveCommentQuickFix(ParserRuleContext context, QualifiedSelection selection, CommentNode comment)
-            : base(context, selection, InspectionsUI.RemoveCommentQuickFix)
-        {
-            _comment = comment;
-        }
+        public RemoveCommentQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.RemoveObsoleteStatementQuickFix)
+        { }
 
         public override void Fix()
         {
             var module = Selection.QualifiedName.Component.CodeModule;
+
+            if (module.IsWrappingNullReference)
             {
-                if (module.IsWrappingNullReference)
-                {
-                    return;
-                }
+                return;                
+            }
 
-                var content = module.GetLines(Selection.Selection.StartLine, Selection.Selection.LineCount);
+            var start = Context.Start.Line;
+            var commentLine = module.GetLines(start, Selection.Selection.LineCount);
+            var newLine = commentLine.Substring(0, Context.Start.Column).TrimEnd();
 
-                int markerPosition;
-                if (!content.HasComment(out markerPosition))
-                {
-                    return;
-                }
-
-                var code = string.Empty;
-                if (markerPosition > 0)
-                {
-                    code = content.Substring(0, markerPosition).TrimEnd();
-                }
-
-                if (_comment.QualifiedSelection.Selection.LineCount > 1)
-                {
-                    module.DeleteLines(_comment.QualifiedSelection.Selection.StartLine, _comment.QualifiedSelection.Selection.LineCount);
-                }
-
-                module.ReplaceLine(_comment.QualifiedSelection.Selection.StartLine, code);
+            module.DeleteLines(start, Selection.Selection.LineCount);
+            if (newLine.TrimStart().Length > 0)
+            {
+                module.InsertLines(start, newLine);
             }
         }
     }
