@@ -77,7 +77,7 @@ namespace Rubberduck.API
                     new SpecialFormDeclarations(_state),
                     new FormEventDeclarations(_state),
                     new AliasDeclarations(_state),
-                    new RubberduckApiDeclarations(_state)
+                    //new RubberduckApiDeclarations(_state)
                 });
         }
 
