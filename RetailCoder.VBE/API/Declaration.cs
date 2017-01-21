@@ -10,14 +10,18 @@ namespace Rubberduck.API
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
     public interface IDeclaration
     {
+        [ComVisible(true)]
         string Name { get; }
+        [ComVisible(true)]
         Accessibility Accessibility { get; }
+        [ComVisible(true)]
         DeclarationType DeclarationType { get; }
         string TypeName { get; }
+        [ComVisible(true)]
         bool IsArray { get; }
-
+        [ComVisible(true)]
         Declaration ParentDeclaration { get; }
-
+        [ComVisible(true)]
         IdentifierReference[] References { get; }
     }
 
