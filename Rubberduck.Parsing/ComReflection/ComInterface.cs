@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
@@ -16,6 +17,7 @@ namespace Rubberduck.Parsing.ComReflection
     {
         private readonly List<ComInterface> _inherited = new List<ComInterface>();
         private readonly List<ComMember> _members = new List<ComMember>();
+        private ComMember _defaultMember;
 
         public bool IsExtensible { get; private set; }
 
@@ -27,6 +29,11 @@ namespace Rubberduck.Parsing.ComReflection
         public IEnumerable<ComMember> Members
         {
             get { return _members; }
+        }
+
+        public ComMember DefaultMember
+        {
+            get { return _defaultMember; }
         }
 
         public ComInterface(ITypeInfo info, TYPEATTR attrib) : base(info, attrib)
@@ -78,7 +85,12 @@ namespace Rubberduck.Parsing.ComReflection
                 {
                     continue;
                 }
-                _members.Add(new ComMember(info, member));
+                var comMember = new ComMember(info, member);
+                _members.Add(comMember);
+                if (comMember.IsDefault)
+                {
+                    _defaultMember = comMember;
+                }
                 info.ReleaseFuncDesc(memberPtr);
             }
         }

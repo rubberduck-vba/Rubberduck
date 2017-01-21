@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Net.Configuration;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.ComReflection;
@@ -157,11 +158,11 @@ namespace Rubberduck.Parsing.Symbols
                 var membered = module as IComTypeWithMembers;
                 if (membered != null)
                 {
-                    CreateMemberDeclarations(membered.Members, moduleName, declaration, moduleTree);
+                    CreateMemberDeclarations(membered.Members, moduleName, declaration, moduleTree, membered.DefaultMember);
                     var coClass = membered as ComCoClass;
                     if (coClass != null)
                     {
-                        CreateMemberDeclarations(coClass.SourceMembers, moduleName, declaration, moduleTree, true);
+                        CreateMemberDeclarations(coClass.SourceMembers, moduleName, declaration, moduleTree, coClass.DefaultMember, true);
                     }
                 }
 
@@ -205,7 +206,7 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         private void CreateMemberDeclarations(IEnumerable<ComMember> members, QualifiedModuleName moduleName, Declaration declaration,
-                                              SerializableDeclarationTree moduleTree, bool eventHandlers = false)
+                                              SerializableDeclarationTree moduleTree, ComMember defaultMember, bool eventHandlers = false)
         {
             foreach (var item in members.Where(m => !m.IsRestricted && !IgnoredInterfaceMembers.Contains(m.Name)))
             {
@@ -222,7 +223,7 @@ namespace Rubberduck.Parsing.Symbols
                     memberTree.AddChildren(hasParams.Parameters);
                 }
                 var coClass = memberDeclaration as ClassModuleDeclaration;
-                if (coClass != null && item.IsDefault)
+                if (coClass != null && item == defaultMember)
                 {
                     coClass.DefaultMember = memberDeclaration;
                 }

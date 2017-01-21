@@ -30,8 +30,8 @@ namespace Rubberduck.Parsing.ComReflection
             IsHidden = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN);
             IsRestricted = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FRESTRICTED);
             ReturnsWithEventsObject = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FSOURCE);
-            IsDefault = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FUIDEFAULT);
-            IsEnumerator = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FNONBROWSABLE) && Name.Equals("_NewEnum");
+            IsDefault = Index == 0;
+            IsEnumerator = Index == -4;
             SetDeclarationType(funcDesc, info);
         }
 

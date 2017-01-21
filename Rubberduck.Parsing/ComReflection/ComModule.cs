@@ -20,6 +20,11 @@ namespace Rubberduck.Parsing.ComReflection
             get { return _members; }
         }
 
+        public ComMember DefaultMember
+        {
+            get { return null; }
+        }
+
         private readonly List<ComField> _fields = new List<ComField>();
         public IEnumerable<ComField> Fields
         {
