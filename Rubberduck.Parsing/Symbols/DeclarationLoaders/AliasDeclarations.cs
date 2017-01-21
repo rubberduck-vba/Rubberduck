@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Parsing.Symbols
+namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
     public class AliasDeclarations : ICustomDeclarationLoader
     {

@@ -7,6 +7,7 @@ using Ninject.Extensions.Conventions;
 using Ninject.Modules;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;

@@ -532,17 +532,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public IEnumerable<CommentNode> GetModuleComments(IVBComponent component)
-        {
-            ModuleState state;
-            if (_moduleStates.TryGetValue(new QualifiedModuleName(component), out state))
-            {
-                return state.Comments;
-            }
-
-            return new List<CommentNode>();
-        }
-
         public void SetModuleComments(IVBComponent component, IEnumerable<CommentNode> comments)
         {
             _moduleStates[new QualifiedModuleName(component)].SetComments(new List<CommentNode>(comments));
