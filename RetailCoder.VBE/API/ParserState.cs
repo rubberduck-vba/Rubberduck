@@ -4,12 +4,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.API
@@ -72,7 +71,14 @@ namespace Rubberduck.API
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
             _parser = new ParseCoordinator(_vbe, _state, _attributeParser, preprocessorFactory,
-                new List<ICustomDeclarationLoader> { new DebugDeclarations(_state), new SpecialFormDeclarations(_state), new FormEventDeclarations(_state), new AliasDeclarations(_state) });
+                new List<ICustomDeclarationLoader>
+                {
+                    new DebugDeclarations(_state),
+                    new SpecialFormDeclarations(_state),
+                    new FormEventDeclarations(_state),
+                    new AliasDeclarations(_state),
+                    //new RubberduckApiDeclarations(_state)
+                });
         }
 
         /// <summary>
@@ -97,7 +103,7 @@ namespace Rubberduck.API
         public event Action OnReady;
         public event Action OnError;
 
-        private void _state_StateChanged(object sender, System.EventArgs e)
+        private void _state_StateChanged(object sender, EventArgs e)
         {
             _allDeclarations = _state.AllDeclarations
                                      .Select(item => new Declaration(item))

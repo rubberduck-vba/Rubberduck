@@ -1,9 +1,9 @@
 using System.Collections.Generic;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Annotations;
 
-namespace Rubberduck.Parsing.Symbols
+namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
     public class FormEventDeclarations : ICustomDeclarationLoader
     {
