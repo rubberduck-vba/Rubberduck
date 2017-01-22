@@ -15,6 +15,7 @@ namespace RubberduckTests.Commands
     [TestClass]
     public class IndentCommandTests
     {
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddNoIndentAnnotation()
         {
@@ -37,6 +38,7 @@ namespace RubberduckTests.Commands
             Assert.AreEqual("'@NoIndent\r\n", module.Content());
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddNoIndentAnnotation_ModuleContainsCode()
         {
@@ -75,6 +77,7 @@ End Sub";
             Assert.AreEqual(expected, module.Content());
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddNoIndentAnnotation_CanExecute_NullActiveCodePane()
         {
@@ -96,6 +99,7 @@ End Sub";
             Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void AddNoIndentAnnotation_CanExecute_ModuleAlreadyHasAnnotation()
         {
@@ -117,6 +121,7 @@ End Sub";
             Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IndentModule_IndentsModule()
         {
@@ -179,6 +184,7 @@ End Sub
             Assert.AreEqual(expected, module2.Content());
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IndentModule_CanExecute_NullActiveCodePane()
         {
@@ -201,6 +207,7 @@ End Sub
             Assert.IsFalse(indentCommand.CanExecute(null));
         }
 
+        [TestCategory("Commands")]
         [TestMethod]
         public void IndentModule_CanExecute()
         {

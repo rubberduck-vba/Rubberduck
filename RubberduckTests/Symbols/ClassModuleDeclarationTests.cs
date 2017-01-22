@@ -10,6 +10,7 @@ namespace RubberduckTests.Symbols
     [TestClass]
     public class ClassModuleDeclarationTests
     {
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesHaveDeclarationTypeClassModule()
         {
@@ -37,6 +38,7 @@ namespace RubberduckTests.Symbols
             }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ByDefaultSubtypesIsEmpty()
         {
@@ -47,6 +49,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void AddSubtypeAddsClassToSubtypes()
         {
@@ -59,6 +62,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ByDefaultSupertypesIsEmpty()
         {
@@ -69,6 +73,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void AddSupertypeForDeclarationsAddsClassToSupertypes()
         {
@@ -81,6 +86,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ByDefaultSupertypeNamesIsEmpty()
         {
@@ -91,6 +97,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void AddSupertypeForStringsAddsTypenameToSupertypeNames()
         {
@@ -103,6 +110,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void AddSupertypeForDeclarationsHasNoEffectOnSupertypeNames()
         {
@@ -115,6 +123,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void AddSupertypeForStringsHasNoEffectsOnSupertypes()
         {
@@ -127,6 +136,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GetSupertypesReturnsAnEmptyEnumerableForProceduralModules()
         {
@@ -143,6 +153,7 @@ namespace RubberduckTests.Symbols
             }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GetSupertypesReturnsTheSupertypesOfAClassModule()
         {
@@ -153,8 +164,9 @@ namespace RubberduckTests.Symbols
 
             Assert.AreEqual(supertype, ClassModuleDeclaration.GetSupertypes(classModule).First());
         }
-        
 
+
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GetSupertypesReturnsAnEmptyEnumerableForDeclarationsWithDeclarationTypeClassModuleWhichAreNoClassModuleDeclarations()
         {
@@ -172,6 +184,7 @@ namespace RubberduckTests.Symbols
 
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ByDefaultDefaultMemberIsNull()
         {
@@ -182,6 +195,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ByDefaultClassModulesNotBuiltInAreNotExposed()
         {
@@ -194,6 +208,7 @@ namespace RubberduckTests.Symbols
 
         // TODO: Find out if there's info about "being exposed" in type libraries.
         // We take the conservative approach of treating all type library modules as exposed.
+        [TestCategory("Resolver")]
         [TestMethod]
         public void BuiltInClassesAreExposed()
         {
@@ -204,6 +219,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesWithTheExposedAttributeAreExposed()
         {
@@ -216,6 +232,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ByDefaultClassModulesAreNotGlobalClasses()
         {
@@ -226,6 +243,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesWithTheGlobalNamespaceAttributeAreGlobalClasses()
         {
@@ -238,6 +256,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesWithASubtypeBelowInTheHiearchyThatIsAGlobalClassAndThatHasBeenAddedBeforeCallingIsGlobalClassTheFirstTimeIsAGlobalClass()
         {
@@ -254,6 +273,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesDoNotBecomeAGlobalClassIfASubtypeBelowInTheHiearchyIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
         {
@@ -271,6 +291,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesDoNotBecomeAGlobalClassIfBelowInTheHierarchyASubtypeIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
         {
@@ -288,6 +309,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ByDefaultClassModulesDoNotHaveAPredeclaredID()
         {
@@ -298,6 +320,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesHaveAPredeclaredIDIfStatedInTheConstructorThatTheyHaveADefaultInstanceVariable()
         {
@@ -308,6 +331,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesWithThePredeclaredIDAttributeHaveAPredeclaredID()
         {
@@ -320,6 +344,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ByDefaultClassModulesDoNotHaveADefaultInstanceVariable()
         {
@@ -330,6 +355,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesThatAreGlobalClassesHaveADefaultInstanceVariable()
         {
@@ -342,6 +368,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesWithThePredeclaredIDAttributeHaveADefaultInstanceVariable()
         {
@@ -354,6 +381,7 @@ namespace RubberduckTests.Symbols
         }
 
 
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ClassModulesHaveADefaultInstanceVariableIfThisIsStated()
         {
