@@ -258,7 +258,7 @@
     <Compile Include="Symbols\PropertyGetDeclaration.cs" />
     <Compile Include="Symbols\FunctionDeclaration.cs" />
     <Compile Include="Symbols\DeclarationLoaders\RubberduckApiDeclarations.cs" />
-    <Compile Include="Symbols\SerializableDeclaration.cs" />
+    <Compile Include="ComReflection\SerializableDeclaration.cs" />
     <Compile Include="Symbols\SquareBracketedNameComparer.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
     <Compile Include="Symbols\ProjectReferencePass.cs" />
@@ -272,7 +272,7 @@
     <Compile Include="Symbols\ProceduralModuleDeclaration.cs" />
     <Compile Include="Symbols\ProjectDeclaration.cs" />
     <Compile Include="Symbols\ProjectReference.cs" />
-    <Compile Include="Symbols\ReferencedDeclarationsCollector.cs" />
+    <Compile Include="ComReflection\ReferencedDeclarationsCollector.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -284,7 +284,7 @@
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\ConstantDeclaration.cs" />
-    <Compile Include="Symbols\XmlPersistableDeclarations.cs" />
+    <Compile Include="ComReflection\XmlPersistableDeclarations.cs" />
     <Compile Include="Syntax\SyntaxTree.cs" />
     <Compile Include="Syntax\TextSpan.cs" />
     <Compile Include="VBA\AttributeParser.cs" />

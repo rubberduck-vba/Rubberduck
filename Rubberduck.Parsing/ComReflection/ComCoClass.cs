@@ -41,6 +41,11 @@ namespace Rubberduck.Parsing.ComReflection
             get { return ImplementedInterfaces.Where(x => !_events.Contains(x)).SelectMany(i => i.Members); }
         }
 
+        public ComMember DefaultMember
+        {
+            get { return DefaultInterface.DefaultMember; }
+        }
+
         public IEnumerable<ComMember> SourceMembers
         {
             get { return _events.SelectMany(i => i.Members); }

@@ -77,7 +77,6 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList();
             _supertypes = new HashSet<Declaration>();
             _subtypes = new HashSet<Declaration>();
-            IsExtensible = coClass.IsExtensible;
         }
 
         public ClassModuleDeclaration(ComInterface intrface, Declaration parent, QualifiedModuleName module,
@@ -89,9 +88,7 @@ namespace Rubberduck.Parsing.Symbols
                 true,
                 new List<IAnnotation>(),
                 attributes)
-        {
-            IsExtensible = intrface.IsExtensible;
-        }
+        { }
 
         public static IEnumerable<Declaration> GetSupertypes(Declaration type)
         {
@@ -109,7 +106,14 @@ namespace Rubberduck.Parsing.Symbols
             return classModule != null && classModule.DefaultMember != null;
         }
 
-        public bool IsExtensible { get; set; }
+        private bool? _isExtensible;
+        public bool IsExtensible
+        {
+            get
+            {
+                return _isExtensible.HasValue ? _isExtensible.Value : (_isExtensible = HasAttribute("VB_Customizable")).Value;
+            }
+        }
 
         private bool? _isExposed;
         /// <summary>
@@ -134,24 +138,24 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-            // TODO: Find out if there's info about "being exposed" in type libraries.
-            // We take the conservative approach of treating all type library modules as exposed.
-            private static bool IsExposedForBuiltInModules()
-            {
-                return true;
-            }
+        // TODO: This should only be a boolean in VBA ('Private' (false) and 'PublicNotCreatable' (true)) . For VB6 it will also need to support
+        // 'SingleUse', 'GlobalSingleUse', 'MultiUse', and 'GlobalMultiUse'. See https://msdn.microsoft.com/en-us/library/aa234184%28v=vs.60%29.aspx
+        // All built-ins are public (by definition).
+        private static bool IsExposedForBuiltInModules()
+        {
+            return true;
+        }
 
-            private bool HasAttribute(string attributeName)
+        private bool HasAttribute(string attributeName)
+        {
+            var hasAttribute = false;
+            IEnumerable<string> value;
+            if (Attributes.TryGetValue(attributeName, out value))
             {
-                var hasAttribute = false;
-                IEnumerable<string> value;
-                if (Attributes.TryGetValue(attributeName, out value))
-                {
-                    hasAttribute = value.Single() == "True";
-                }
-                return hasAttribute;
+                hasAttribute = value.Single() == "True";
             }
-              
+            return hasAttribute;
+        }             
 
         private bool? _isGlobal;
         public bool IsGlobalClassModule

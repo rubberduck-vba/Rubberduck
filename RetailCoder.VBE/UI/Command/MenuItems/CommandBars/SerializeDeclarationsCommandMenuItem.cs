@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using NLog;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SettingsProvider;

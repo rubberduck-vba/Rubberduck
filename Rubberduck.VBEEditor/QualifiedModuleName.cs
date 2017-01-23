@@ -121,7 +121,7 @@ namespace Rubberduck.VBEditor
         public string ComponentName { get { return _componentName ?? string.Empty; } }
 
         public string Name { get { return ToString(); } }
-        
+
         private readonly string _projectName;
         public string ProjectName { get { return _projectName; } }
 
