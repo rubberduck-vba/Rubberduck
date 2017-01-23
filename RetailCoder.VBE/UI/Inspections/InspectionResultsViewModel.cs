@@ -359,10 +359,10 @@ namespace Rubberduck.UI.Inspections
                               && result.QualifiedSelection.QualifiedName == selectedResult.QualifiedSelection.QualifiedName)
                 .ToList();
 
-            var items = filteredResults.Where(result => !(result is AggregateInspectionResult))
+            var items = filteredResults
+                .Where(result => !(result is AggregateInspectionResult))
                 .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
-                .Union(filteredResults.OfType<AggregateInspectionResult>()
-                               .SelectMany(aggregate => aggregate.IndividualResults.Select(result => result.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))))
+                .Union(filteredResults.OfType<AggregateInspectionResult>().Select(aggregate => aggregate.DefaultQuickFix))
                 .OrderByDescending(fix => fix.Selection);
             ExecuteQuickFixes(items);
         }

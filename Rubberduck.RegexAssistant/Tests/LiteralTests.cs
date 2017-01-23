@@ -7,6 +7,7 @@ namespace Rubberduck.RegexAssistant.Tests
     [TestClass]
     public class LiteralTests
     {
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void EscapedLiteralTests()
         {
@@ -18,6 +19,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void EscapeSequences()
         {
@@ -29,6 +31,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void CodePoints()
         {
@@ -40,6 +43,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void SimpleLiterals()
         {
@@ -51,6 +55,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void EverythingElseBlowsUp()
         {
@@ -73,6 +78,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void SingleEscapedCharsAreNotParsedAsLiteral()
         {

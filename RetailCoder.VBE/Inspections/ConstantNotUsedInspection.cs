@@ -21,8 +21,11 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var results = UserDeclarations.Where(declaration =>
-                    declaration.DeclarationType == DeclarationType.Constant && !declaration.References.Any());
+            var results = State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Constant)
+                .Where(declaration => !declaration.References.Any()
+                    && !IsIgnoringInspectionResultFor(declaration, AnnotationName))
+                .ToList();
 
             return results.Select(issue => 
                 new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName));

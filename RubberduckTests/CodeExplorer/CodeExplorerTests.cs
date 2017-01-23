@@ -24,6 +24,7 @@ namespace RubberduckTests.CodeExplorer
     [TestClass]
     public class CodeExplorerTests
     {
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void AddStdModule()
         {
@@ -52,6 +53,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Add(ComponentType.StandardModule), Times.Once);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void AddClassModule()
         {
@@ -80,6 +82,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Add(ComponentType.ClassModule), Times.Once);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void AddUserForm()
         {
@@ -108,6 +111,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Add(ComponentType.UserForm), Times.Once);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void AddTestModule()
         {
@@ -144,6 +148,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Add(ComponentType.StandardModule), Times.Once);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void ImportModule()
         {
@@ -186,6 +191,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void ImportMultipleModules()
         {
@@ -229,6 +235,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\ClsModule1.cls"), Times.Once);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void ImportModule_Cancel()
         {
@@ -271,6 +278,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Never);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void ExportModule()
         {
@@ -305,6 +313,7 @@ namespace RubberduckTests.CodeExplorer
             component.Verify(c => c.Export("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void ExportModule_Cancel()
         {
@@ -339,6 +348,7 @@ namespace RubberduckTests.CodeExplorer
             component.Verify(c => c.Export("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Never);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void OpenDesigner()
         {
@@ -369,6 +379,7 @@ namespace RubberduckTests.CodeExplorer
             Assert.IsTrue(component.Object.DesignerWindow().IsVisible);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void RemoveCommand_RemovesModuleWhenPromptOk()
         {
@@ -414,6 +425,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Remove(component), Times.Once);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void RemoveCommand_CancelsWhenFilePromptCancels()
         {
@@ -457,6 +469,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Remove(component), Times.Never);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void RemoveCommand_GivenMsgBoxNO_RemovesModuleNoExport()
         {
@@ -500,6 +513,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Remove(component), Times.Once);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void RemoveModule_Cancel()
         {
@@ -542,6 +556,7 @@ namespace RubberduckTests.CodeExplorer
             components.Verify(c => c.Remove(component), Times.Never);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void IndentModule()
         {
@@ -584,6 +599,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Content());
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void IndentModule_DisabledWithNoIndentAnnotation()
         {
@@ -618,6 +634,7 @@ End Sub";
             Assert.IsFalse(vm.IndenterCommand.CanExecute(vm.SelectedItem));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void IndentProject()
         {
@@ -666,6 +683,7 @@ End Sub
             Assert.AreEqual(expectedCode, module2.Content());
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void IndentProject_IndentsModulesWithoutNoIndentAnnotation()
         {
@@ -722,6 +740,7 @@ End Sub
             Assert.AreEqual(inputCode2, module2.Content());
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void IndentProject_DisabledWhenAllModulesHaveNoIndentAnnotation()
         {
@@ -759,6 +778,7 @@ End Sub";
             Assert.IsFalse(vm.IndenterCommand.CanExecute(vm.SelectedItem));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void IndentFolder()
         {
@@ -811,6 +831,7 @@ End Sub
             Assert.AreEqual(expectedCode, module2.Content());
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void IndentFolder_IndentsModulesWithoutNoIndentAnnotation()
         {
@@ -872,6 +893,7 @@ End Sub
             Assert.AreEqual(inputCode2, module2.Content());
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void IndentFolder_DisabledWhenAllModulesHaveNoIndentAnnotation()
         {
@@ -908,6 +930,7 @@ End Sub";
             Assert.IsFalse(vm.IndenterCommand.CanExecute(vm.SelectedItem));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void RenameProcedure()
         {
@@ -962,6 +985,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Content());
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void ExpandAllNodes()
         {
@@ -991,6 +1015,7 @@ End Sub";
             Assert.IsTrue(vm.Projects.Single().Items.Single().Items.Single().Items.Single().IsExpanded);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void ExpandAllNodes_StartingWithSubnode()
         {
@@ -1019,6 +1044,7 @@ End Sub";
             Assert.IsFalse(vm.Projects.Single().Items.Last().IsExpanded);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CollapseAllNodes()
         {
@@ -1048,6 +1074,7 @@ End Sub";
             Assert.IsFalse(vm.Projects.Single().Items.Single().Items.Single().Items.Single().IsExpanded);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CollapseAllNodes_StartingWithSubnode()
         {
@@ -1076,6 +1103,7 @@ End Sub";
             Assert.IsTrue(vm.Projects.Single().Items.Last().IsExpanded);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByName_ReturnsZeroForIdenticalNodes()
         {
@@ -1083,6 +1111,7 @@ End Sub";
             Assert.AreEqual(0, new CompareByName().Compare(folderNode, folderNode));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByName_ReturnsZeroForIdenticalNames()
         {
@@ -1093,6 +1122,7 @@ End Sub";
             Assert.AreEqual(0, new CompareByName().Compare(folderNode1, folderNode2));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByName_ReturnsCorrectOrdering()
         {
@@ -1103,6 +1133,7 @@ End Sub";
             Assert.IsTrue(new CompareByName().Compare(folderNode1, folderNode2) < 0);
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByType_ReturnsZeroForIdenticalNodes()
         {
@@ -1110,6 +1141,7 @@ End Sub";
             Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByType_ReturnsEventAboveConst()
         {
@@ -1137,6 +1169,7 @@ Public Const Bar = 0";
             Assert.AreEqual(-1, new CompareByType().Compare(eventNode, constNode));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByType_ReturnsConstAboveField()
         {
@@ -1164,6 +1197,7 @@ Public Bar As Boolean";
             Assert.AreEqual(-1, new CompareByType().Compare(constNode, fieldNode));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByType_ReturnsFieldAbovePropertyGet()
         {
@@ -1194,6 +1228,7 @@ End Property
             Assert.AreEqual(-1, new CompareByType().Compare(fieldNode, propertyGetNode));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByType_ReturnsPropertyGetAbovePropertyLet()
         {
@@ -1225,6 +1260,7 @@ End Property
             Assert.AreEqual(-1, new CompareByType().Compare(propertyGetNode, propertyLetNode));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByType_ReturnsPropertyLetAbovePropertySet()
         {
@@ -1256,6 +1292,7 @@ End Property
             Assert.AreEqual(-1, new CompareByType().Compare(propertyLetNode, propertySetNode));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByType_ReturnsPropertySetAboveFunction()
         {
@@ -1287,6 +1324,7 @@ End Function
             Assert.AreEqual(-1, new CompareByType().Compare(propertySetNode, functionNode));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByType_ReturnsFunctionAboveSub()
         {
@@ -1318,6 +1356,7 @@ End Sub
             Assert.AreEqual(-1, new CompareByType().Compare(functionNode, subNode));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByType_ReturnsClassModuleBelowDocument()
         {
@@ -1350,6 +1389,7 @@ End Sub
             Assert.AreEqual(-1, new CompareByType().Compare(docNode, clsNode));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareBySelection_ReturnsZeroForIdenticalNodes()
         {
@@ -1381,6 +1421,7 @@ End Sub";
             Assert.AreEqual(0, new CompareByName().Compare(vm.SelectedItem, vm.SelectedItem));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByNodeType_ReturnsCorrectMemberFirst_MemberPassedFirst()
         {
@@ -1412,6 +1453,7 @@ End Sub";
             Assert.AreEqual(-1, new CompareBySelection().Compare(memberNode1, memberNode2));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByNodeType_ReturnsZeroForIdenticalNodes()
         {
@@ -1443,6 +1485,7 @@ End Sub";
             Assert.AreEqual(0, new CompareByNodeType().Compare(vm.SelectedItem, vm.SelectedItem));
         }
 
+        [TestCategory("Code Explorer")]
         [TestMethod]
         public void CompareByNodeType_FoldersAreSortedByName()
         {
@@ -1478,47 +1521,6 @@ End Sub";
             var userSettings = new UserSettings(settings, null, null, null, null, null, null);
             return new Configuration(userSettings);
         }
-
-        //private IIndenterSettings Settings.IndenterSettingsTests.GetMockIndenterSettings()()
-        //{
-        //    var indenterSettings = new IndenterSettings
-        //    {
-        //        IndentEntireProcedureBody = true,
-        //        IndentFirstCommentBlock = true,
-        //        IndentFirstDeclarationBlock = true,
-        //        AlignCommentsWithCode = true,
-        //        AlignContinuations = true,
-        //        IgnoreOperatorsInContinuations = true,
-        //        IndentCase = false,
-        //        ForceDebugStatementsInColumn1 = false,
-        //        ForceCompilerDirectivesInColumn1 = false,
-        //        IndentCompilerDirectives = true,
-        //        AlignDims = false,
-        //        AlignDimColumn = 15,
-        //        EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn,
-        //        EndOfLineCommentColumnSpaceAlignment = 50,
-        //        IndentSpaces = 4
-        //    };
-
-        //    var settings = new Mock<IndenterSettings>();
-        //    settings.Setup(s => s.IndentEntireProcedureBody).Returns(true);
-        //    settings.Setup(s => s.IndentFirstCommentBlock).Returns(true);
-        //    settings.Setup(s => s.IndentFirstDeclarationBlock).Returns(true);
-        //    settings.Setup(s => s.AlignCommentsWithCode).Returns(true);
-        //    settings.Setup(s => s.AlignContinuations).Returns(true);
-        //    settings.Setup(s => s.IgnoreOperatorsInContinuations).Returns(true);
-        //    settings.Setup(s => s.IndentCase).Returns(false);
-        //    settings.Setup(s => s.ForceDebugStatementsInColumn1).Returns(false);
-        //    settings.Setup(s => s.ForceCompilerDirectivesInColumn1).Returns(false);
-        //    settings.Setup(s => s.IndentCompilerDirectives).Returns(true);
-        //    settings.Setup(s => s.AlignDims).Returns(false);
-        //    settings.Setup(s => s.AlignDimColumn).Returns(15);
-        //    settings.Setup(s => s.EndOfLineCommentStyle).Returns(EndOfLineCommentStyle.AlignInColumn);
-        //    settings.Setup(s => s.EndOfLineCommentColumnSpaceAlignment).Returns(50);
-        //    settings.Setup(s => s.IndentSpaces).Returns(4);
-
-        //    return indenterSettings;
-        //}
 
         private ConfigurationLoader GetDelimiterConfigLoader()
         {
