@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using System.Xml.Schema;
 using Rubberduck.Parsing.Symbols;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using VARFLAGS = System.Runtime.InteropServices.ComTypes.VARFLAGS;

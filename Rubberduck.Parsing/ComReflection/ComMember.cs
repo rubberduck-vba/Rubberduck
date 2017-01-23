@@ -12,6 +12,18 @@ using FUNCFLAGS = System.Runtime.InteropServices.ComTypes.FUNCFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    internal enum DispId
+    {
+        Collect = -8,           //The method you are calling through Invoke is an accessor function. 
+        Destructor = -7,        //The C++ destructor function for the object. 
+        Construtor = -6,        //The C++ constructor function for the object. 
+        Evaluate = -5,          //This method is implicitly invoked when the ActiveX client encloses the arguments in square brackets.
+        NewEnum = -4,           //It returns an enumerator object that supports IEnumVARIANT.
+        PropertyPut = -3,       //The parameter that receives the value of an assignment in a PROPERTYPUT. 
+        Unknown = -1,           //The value returned by IDispatch::GetIDsOfNames to indicate that a member or parameter name was not found.
+        Value = 0               //The default member for the object.
+    }
+
     [DebuggerDisplay("{MemberDeclaration}")]
     public class ComMember : ComBase
     {
@@ -20,6 +32,8 @@ namespace Rubberduck.Parsing.ComReflection
         public bool ReturnsWithEventsObject { get; private set; }
         public bool IsDefault { get; private set; }
         public bool IsEnumerator { get; private set; }
+        //This member is called on an interface when a bracketed expression is dereferenced.
+        public bool IsEvaluateFunction { get; private set; }
         public ComParameter ReturnType { get; private set; }
         public List<ComParameter> Parameters { get; set; }
 
@@ -30,8 +44,9 @@ namespace Rubberduck.Parsing.ComReflection
             IsHidden = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN);
             IsRestricted = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FRESTRICTED);
             ReturnsWithEventsObject = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FSOURCE);
-            IsDefault = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FUIDEFAULT);
-            IsEnumerator = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FNONBROWSABLE) && Name.Equals("_NewEnum");
+            IsDefault = Index == (int)DispId.Value;
+            IsEnumerator = Index == (int)DispId.NewEnum;
+            IsEvaluateFunction = Index == (int)DispId.Evaluate;
             SetDeclarationType(funcDesc, info);
         }
 

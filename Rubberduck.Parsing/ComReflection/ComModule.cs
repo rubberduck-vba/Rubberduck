@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
@@ -18,6 +17,11 @@ namespace Rubberduck.Parsing.ComReflection
         public IEnumerable<ComMember> Members
         {
             get { return _members; }
+        }
+
+        public ComMember DefaultMember
+        {
+            get { return null; }
         }
 
         private readonly List<ComField> _fields = new List<ComField>();

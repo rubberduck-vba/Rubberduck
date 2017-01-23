@@ -178,6 +178,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ObjectVariableNotSet_FunctionReturnsArrayOfType_ReturnsNoResult()
         {
+            Assert.Inconclusive("Pending reserialization.");
             const string inputCode = @"
 Private Function GetSomeDictionaries() As Dictionary()
     Dim temp(0 To 1) As Worksheet
