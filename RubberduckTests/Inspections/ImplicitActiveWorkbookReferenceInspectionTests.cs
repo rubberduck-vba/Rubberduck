@@ -39,6 +39,7 @@ End Sub";
             mockHost.SetupAllProperties();
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            parser.State.AddTestLibrary("Excel.1.7.xml");
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -85,6 +86,7 @@ End Sub";
         }
 
         [TestMethod]
+        [DeploymentItem(@"TestFiles\")]
         public void ImplicitActiveWorkbookReference_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -115,6 +117,7 @@ End Sub";
             mockHost.SetupAllProperties();
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            parser.State.AddTestLibrary("Excel.1.7.xml");
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
