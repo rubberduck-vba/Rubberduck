@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Net.Configuration;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.ComReflection;
@@ -140,17 +139,7 @@ namespace Rubberduck.Parsing.Symbols
                         ? string.Format("_{0}", module.Name)
                         : module.Name);
 
-                var attributes = new Attributes();
-                if (module.IsPreDeclared)
-                {
-                    attributes.AddPredeclaredIdTypeAttribute();
-                }
-                if (module.IsAppObject)
-                {
-                    attributes.AddGlobalClassAttribute();
-                }
-
-                var declaration = CreateModuleDeclaration(module, moduleName, project, attributes);
+                var declaration = CreateModuleDeclaration(module, moduleName, project, GetModuleAttributes(module));
                 var moduleTree = new SerializableDeclarationTree(declaration);
                 _declarations.Add(declaration);
                 _serialized.AddDeclaration(moduleTree);
@@ -203,6 +192,24 @@ namespace Rubberduck.Parsing.Symbols
             }
             _state.BuiltInDeclarationTrees.TryAdd(_serialized);
             return _declarations;
+        }
+
+        private static Attributes GetModuleAttributes(IComType module)
+        {
+            var attributes = new Attributes();
+            if (module.IsPreDeclared)
+            {
+                attributes.AddPredeclaredIdTypeAttribute();
+            }
+            if (module.IsAppObject)
+            {
+                attributes.AddGlobalClassAttribute();
+            }
+            if (module as ComInterface != null && ((ComInterface)module).IsExtensible)
+            {
+                attributes.AddExtensibledClassAttribute();
+            }
+            return attributes;
         }
 
         private void CreateMemberDeclarations(IEnumerable<ComMember> members, QualifiedModuleName moduleName, Declaration declaration,
@@ -263,20 +270,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration CreateMemberDeclaration(ComMember member, QualifiedModuleName module, Declaration parent, bool handler)
         {
-            var attributes = new Attributes();
-            if (member.IsEnumerator)
-            {
-                attributes.AddEnumeratorMemberAttribute(member.Name);
-            }
-            else if (member.IsDefault)
-            {
-                attributes.AddDefaultMemberAttribute(member.Name);
-            }
-            else if (member.IsHidden)
-            {
-                attributes.AddHiddenMemberAttribute(member.Name);
-            }
-
+            var attributes = GetMemberAttibutes(member);
             switch (member.Type)
             {
                 case DeclarationType.Procedure:
@@ -292,6 +286,28 @@ namespace Rubberduck.Parsing.Symbols
                 default:
                     throw new InvalidEnumArgumentException(string.Format("Unexpected DeclarationType {0} encountered.", member.Type));
             }
+        }
+
+        private static Attributes GetMemberAttibutes(ComMember member)
+        {
+            var attributes = new Attributes();
+            if (member.IsEnumerator)
+            {
+                attributes.AddEnumeratorMemberAttribute(member.Name);
+            }
+            else if (member.IsDefault)
+            {
+                attributes.AddDefaultMemberAttribute(member.Name);
+            }
+            else if (member.IsHidden)
+            {
+                attributes.AddHiddenMemberAttribute(member.Name);
+            }
+            else if (member.IsEvaluateFunction)
+            {
+                attributes.AddEvaluateMemberAttribute(member.Name);
+            }
+            return attributes;
         }
     }
 }

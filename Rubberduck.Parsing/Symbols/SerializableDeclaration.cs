@@ -176,12 +176,6 @@ namespace Rubberduck.Parsing.Symbols
                 IsByRefParam = param.IsByRef;
                 IsParamArray = param.IsParamArray;
             }
-
-            var canExtend = declaration as ClassModuleDeclaration;
-            if (canExtend != null)
-            {
-                IsExtensible = canExtend.IsExtensible;
-            }
         }
 
         public List<SerializableMemberAttribute> Attributes { get; set; }
@@ -225,7 +219,7 @@ namespace Rubberduck.Parsing.Symbols
                 case DeclarationType.Project:
                     return new ProjectDeclaration(QualifiedMemberName, IdentifierName, true, null);                    
                 case DeclarationType.ClassModule:
-                    return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes) { IsExtensible = IsExtensible };
+                    return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
                 case DeclarationType.ProceduralModule:
                     return new ProceduralModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
                 case DeclarationType.Procedure:
