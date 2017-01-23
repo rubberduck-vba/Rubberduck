@@ -20,7 +20,6 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void ImplicitActiveWorkbookReference_ReportsWorksheets()
         {
-            Assert.Inconclusive("Pending reserialization.");
             const string inputCode =
                 @"
 Sub foo()
@@ -32,7 +31,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 7, true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -40,7 +39,7 @@ End Sub";
             mockHost.SetupAllProperties();
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-            parser.State.AddTestLibrary("Excel.1.7.xml");
+            parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -68,7 +67,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 7, true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -90,7 +89,6 @@ End Sub";
         [DeploymentItem(@"TestFiles\")]
         public void ImplicitActiveWorkbookReference_IgnoreQuickFixWorks()
         {
-            Assert.Inconclusive("Pending reserialization.");
             const string inputCode =
                 @"
 Sub foo()
@@ -110,7 +108,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 7, true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
             var module = project.Object.VBComponents[0].CodeModule;
             var vbe = builder.AddProject(project).Build();
@@ -119,7 +117,7 @@ End Sub";
             mockHost.SetupAllProperties();
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-            parser.State.AddTestLibrary("Excel.1.7.xml");
+            parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }

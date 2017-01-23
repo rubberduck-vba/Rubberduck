@@ -17,7 +17,6 @@ namespace RubberduckTests.Inspections
     {
         private static ParseCoordinator ArrangeParser(string inputCode)
         {
-            Assert.Inconclusive("Pending re-serialization of Scripting.1.0.xml");
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Codez", ComponentType.StandardModule, inputCode)
