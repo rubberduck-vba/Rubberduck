@@ -20,6 +20,7 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void ImplicitActiveWorkbookReference_ReportsWorksheets()
         {
+            Assert.Inconclusive("Pending reserialization.");
             const string inputCode =
                 @"
 Sub foo()
@@ -89,6 +90,7 @@ End Sub";
         [DeploymentItem(@"TestFiles\")]
         public void ImplicitActiveWorkbookReference_IgnoreQuickFixWorks()
         {
+            Assert.Inconclusive("Pending reserialization.");
             const string inputCode =
                 @"
 Sub foo()
