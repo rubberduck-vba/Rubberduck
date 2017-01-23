@@ -85,8 +85,8 @@ End Sub
         public void ExtractInterfaceRefactoring_ImplementProcAndFuncAndPropGetSetLet()
         {
             //Input
-            const string inputCode =
-@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+            const string inputCode = @"
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
 Public Function Fizz(b) As Variant
@@ -104,8 +104,8 @@ End Property";
             var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
-            const string expectedCode =
-@"Implements ITestModule1
+            const string expectedCode = @"
+Implements ITestModule1
 
 
 Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
