@@ -7,35 +7,27 @@ using Antlr4.Runtime;
 
 namespace Rubberduck.Inspections.Results
 {
-    class AggregateInspectionResult: InspectionResultBase
+    public class AggregateInspectionResult: InspectionResultBase
     {
-        private readonly List<IInspectionResult> _results;
         private readonly IInspectionResult _result;
+        private readonly int _count;
 
-        public AggregateInspectionResult(List<IInspectionResult> results)
-            : base(results[0].Inspection, results[0].QualifiedSelection.QualifiedName, ParserRuleContext.EmptyContext)
+        public AggregateInspectionResult(IInspectionResult firstResult, int count)
+            : base(firstResult.Inspection, firstResult.QualifiedSelection.QualifiedName, ParserRuleContext.EmptyContext)
         {
-            _results = results;
-            _result = results[0];
+            _result = firstResult;
+            _count = count;
         }
 
-        public IReadOnlyList<IInspectionResult> IndividualResults { get { return _results; } }
-        
         public override string Description
         {
             get
             {
-                return string.Format(InspectionsUI.AggregateInspectionResultFormat, _result.Inspection.Description, _results.Count);
+                return string.Format(InspectionsUI.AggregateInspectionResultFormat, _result.Inspection.Description, _count);
             }
         }
 
-        public override QualifiedSelection QualifiedSelection
-        {
-            get
-            {
-                return _result.QualifiedSelection;
-            }
-        }
+        public override QualifiedSelection QualifiedSelection { get { return _result.QualifiedSelection; } }
 
         public override IEnumerable<QuickFixBase> QuickFixes
         {
@@ -55,14 +47,14 @@ namespace Rubberduck.Inspections.Results
             {
                 return -1;
             }
-            if (_results.Count != aggregated._results.Count) {
-                return _results.Count - aggregated._results.Count;
+            if (_count != aggregated._count) {
+                return _count - aggregated._count;
             }
-            for (var i = 0; i < _results.Count; i++)
+            for (var i = 0; i < _count; i++)
             {
-                if (_results[i].CompareTo(aggregated._results[i]) != 0)
+                if (_result.CompareTo(aggregated._result) != 0)
                 {
-                    return _results[i].CompareTo(aggregated._results[i]);
+                    return _result.CompareTo(aggregated._result);
                 }
             }
             return 0;

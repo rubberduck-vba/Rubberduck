@@ -38,6 +38,7 @@ namespace RubberduckTests.Settings
             return new Configuration(userSettings);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SaveConfigWorks()
         {
@@ -50,6 +51,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(config.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SetDefaultsWorks()
         {
@@ -61,6 +63,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void TodoMarkersAreSetInCtor()
         {
@@ -70,6 +73,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void AddTodoMarker()
         {
@@ -83,6 +87,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(todoMarkersList.SequenceEqual(viewModel.TodoSettings));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void DeleteTodoMarker()
         {
@@ -96,6 +101,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(todoMarkersList.SequenceEqual(viewModel.TodoSettings));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void AddTodoMarker_ReusesAction()
         {
@@ -105,6 +111,7 @@ namespace RubberduckTests.Settings
             Assert.AreSame(initialAddTodoCommand, viewModel.AddTodoCommand);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void DeleteTodoMarker_ReusesAction()
         {
@@ -115,6 +122,7 @@ namespace RubberduckTests.Settings
         }
 
         //Somewhat related to https://github.com/rubberduck-vba/Rubberduck/issues/1623
+        [TestCategory("Settings")]
         [TestMethod]
         public void DuplicateToDoMarkersAreIgnored()
         {

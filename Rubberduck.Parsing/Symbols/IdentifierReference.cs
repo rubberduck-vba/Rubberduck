@@ -71,7 +71,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IEnumerable<IAnnotation> _annotations;
         public IEnumerable<IAnnotation> Annotations { get { return _annotations; } }
 
-        public bool IsInspectionDisabled(string inspectionName)
+        public bool IsIgnoringInspectionResultFor(string inspectionName)
         {
             return Annotations.Any(annotation =>
                 annotation.AnnotationType == AnnotationType.Ignore

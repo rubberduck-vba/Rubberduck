@@ -22,6 +22,7 @@ namespace RubberduckTests.SourceControl
             _provider.SetupGet(git => git.CurrentBranch).Returns(branch);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ProviderCommitIsCalledOnCommit()
         {
@@ -43,6 +44,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Commit(It.IsAny<string>()));
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ProviderStagesBeforeCommit()
         {
@@ -65,6 +67,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Commit(It.IsAny<string>()));
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ProviderCommits_NotificationOnSuccess()
         {
@@ -106,6 +109,7 @@ namespace RubberduckTests.SourceControl
             }
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ProviderCommitsAndPushes()
         {
@@ -129,6 +133,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Push());
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ProviderCommitsAndSyncs()
         {
@@ -153,6 +158,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Push());
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void RefreshDisplaysChangedFiles()
         {
@@ -181,6 +187,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(@"C:\path\to\untracked.frx", vm.UntrackedFiles[0].FilePath);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void CommitEnabledAfterActionSelectedAndMessageEntered()
         {
@@ -201,6 +208,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(vm.CommitCommand.CanExecute(null));
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void RefreshChangesAfterCommit()
         {
@@ -227,6 +235,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.IncludedChanges.Any());
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ExcludedIsNotClearedAfterRefresh()
         {
@@ -252,6 +261,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(vm.ExcludedChanges.Any());
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ExcludeFileExcludesFile()
         {
@@ -279,6 +289,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(1, vm.ExcludedChanges.Count);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ChangesPresenter_WhenCommitFails_ActionFailedEventIsRaised()
         {
@@ -312,6 +323,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void Undo_UndoesChanges()
         {
@@ -342,6 +354,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Undo(localLocation + fileStatusEntries[0].FilePath));
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void IncludeChanges_AddsUntrackedFile()
         {
@@ -369,6 +382,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.AddFile(fileStatusEntries.Last().FilePath));
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void IncludeChanges_IncludesExcludedFile()
         {
@@ -399,6 +413,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(0, vm.ExcludedChanges.Count);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void UndoFails_ActionFailedEventIsRaised()
         {
