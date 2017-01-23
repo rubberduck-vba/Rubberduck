@@ -1,12 +1,11 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using Rubberduck.SettingsProvider;
 
-namespace Rubberduck.Parsing.Symbols
+namespace Rubberduck.Parsing.ComReflection
 {
     public class XmlPersistableDeclarations : IPersistable<SerializableProject>
     {
