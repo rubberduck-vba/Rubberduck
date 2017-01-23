@@ -23,15 +23,16 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var assignedByValParameters = UserDeclarations.Where(declaration => 
-                    declaration.DeclarationType == DeclarationType.Parameter
-                    && ((VBAParser.ArgContext)declaration.Context).BYVAL() != null
-                    && declaration.References.Any(reference => reference.IsAssignment));
+            var parameters = State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                .OfType<ParameterDeclaration>()
+                .Where(item => !item.IsByRef 
+                    && !IsIgnoringInspectionResultFor(item, AnnotationName)
+                    && item.References.Any(reference => reference.IsAssignment))
+                .ToList();
 
-            var issues = assignedByValParameters
-                .Select(param => new AssignedByValParameterInspectionResult(this, param));
-
-            return issues;
+            return parameters
+                .Select(param => new AssignedByValParameterInspectionResult(this, param))
+                .ToList();
         }
     }
 }

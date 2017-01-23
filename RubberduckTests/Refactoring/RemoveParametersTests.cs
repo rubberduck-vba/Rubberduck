@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
@@ -539,20 +540,19 @@ End Property";
         public void RemoveParametersRefactoring_QuickFix()
         {
             //Input
-            const string inputCode =
-@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
+            const string inputCode = @"
+Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
 End Property";
-            var selection = new Selection(1, 38, 1, 38);
 
             //Expectation
-            const string expectedCode =
-@"Private Property Set Foo(ByVal arg2 As String)
+            const string expectedCode = @"
+Private Property Set Foo(ByVal arg2 As String)
 End Property";
 
             //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var module = component.CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -561,7 +561,11 @@ End Property";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var parameter = parser.State.AllUserDeclarations.SingleOrDefault(p => 
+                p.DeclarationType == DeclarationType.Parameter && p.IdentifierName == "arg1");
+            if (parameter == null) { Assert.Inconclusive("Can't find 'arg1' parameter/target."); }
+
+            var qualifiedSelection = parameter.QualifiedSelection;
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);

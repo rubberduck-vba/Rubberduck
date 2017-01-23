@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -58,6 +59,14 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
+
+        public DeclarationFinder DeclarationFinder { get; private set; }
+
+        internal void RefreshFinder(IHostApplication host)
+        {
+            DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, host);
+        }
+
 
         public RubberduckParserState(ISinks sinks)
         {

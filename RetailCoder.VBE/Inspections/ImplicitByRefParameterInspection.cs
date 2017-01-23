@@ -4,8 +4,6 @@ using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -24,21 +22,19 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var interfaceMembersScope = UserDeclarations.FindInterfaceImplementationMembers().Select(m => m.Scope);
+            var interfaceMembers = UserDeclarations.FindInterfaceImplementationMembers();
             var builtinEventHandlers = Declarations.FindBuiltInEventHandlers();
 
-            var issues = (from item in UserDeclarations
-                where item.DeclarationType == DeclarationType.Parameter
-                    // ParamArray parameters do not allow an explicit "ByRef" parameter mechanism.               
-                    && !((ParameterDeclaration)item).IsParamArray
-                    && !interfaceMembersScope.Contains(item.ParentScope)
-                    && !builtinEventHandlers.Contains(item.ParentDeclaration)
-                let arg = item.Context as VBAParser.ArgContext
-                where arg != null && arg.BYREF() == null && arg.BYVAL() == null
-                select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
-                .Select(issue => new ImplicitByRefParameterInspectionResult(this, issue.Context.unrestrictedIdentifier().GetText(), issue));
+            var issues = State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Parameter)
+                .OfType<ParameterDeclaration>()
+                .Where(item => item.IsImplicitByRef && !item.IsParamArray
+                    && !IsIgnoringInspectionResultFor(item, AnnotationName)
+                    && !interfaceMembers.Contains(item.ParentDeclaration)
+                    && !builtinEventHandlers.Contains(item.ParentDeclaration))
+                .ToList();
 
-            return issues;
+            return issues.Select(issue => new ImplicitByRefParameterInspectionResult(this, issue));
         }
     }
 }

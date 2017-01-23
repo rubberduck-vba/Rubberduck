@@ -29,7 +29,10 @@ namespace Rubberduck.Inspections
             // default member is of a class.
             var interfaceMembers = UserDeclarations.FindInterfaceMembers().ToList();
             var interfaceImplementationMembers = UserDeclarations.FindInterfaceImplementationMembers();
-            var functions = UserDeclarations.Where(function => function.DeclarationType == DeclarationType.Function).ToList();
+            var functions = State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Function)
+                .Where(item => !IsIgnoringInspectionResultFor(item, AnnotationName))
+                .ToList();
             var interfaceMemberIssues = GetInterfaceMemberIssues(interfaceMembers);
             var nonInterfaceFunctions = functions.Except(interfaceMembers.Union(interfaceImplementationMembers));
             var nonInterfaceIssues = GetNonInterfaceIssues(nonInterfaceFunctions);

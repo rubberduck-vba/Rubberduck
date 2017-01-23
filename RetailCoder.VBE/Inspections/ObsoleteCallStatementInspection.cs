@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections
 
             var results = new List<ObsoleteCallStatementUsageInspectionResult>();
 
-            foreach (var context in ParseTreeResults.Where(context => !IsInspectionDisabled(context.ModuleName.Component, context.Context.Start.Line)))
+            foreach (var context in ParseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line)))
             {
                 var module = context.ModuleName.Component.CodeModule;
                 {
