@@ -10,22 +10,22 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
-        public static Guid GetProjectId(IVBProject project)
+        public static string GetProjectId(IVBProject project)
         {
             if (project.IsWrappingNullReference)
             {
-                return Guid.Empty;
+                return string.Empty;
             }
 
             if (string.IsNullOrEmpty(project.HelpFile))
             {
-                project.HelpFile = GetGuidFromHashCode(project.GetHashCode()).ToString();
+                project.HelpFile = project.GetHashCode().ToString();
             }
 
-            return new Guid(project.HelpFile);
+            return project.HelpFile;
         }
 
-        public static Guid GetProjectId(IReference reference)
+        public static string GetProjectId(IReference reference)
         {
             var projectName = reference.Name;
             return new QualifiedModuleName(projectName, reference.FullPath, projectName).ProjectId;
@@ -90,7 +90,7 @@ namespace Rubberduck.VBEditor
             _projectName = projectName;
             _projectDisplayName = null;
             _projectPath = projectPath;
-            _projectId = GetGuidFromHashCode(string.Format("{0};{1}", _projectName, _projectPath).GetHashCode());
+            _projectId = string.Format("{0};{1}", _projectName, _projectPath).GetHashCode().ToString();
             _componentName = componentName;
             _component = null;
             _componentType = ComponentType.ComComponent;
@@ -114,14 +114,14 @@ namespace Rubberduck.VBEditor
         private readonly int _contentHashCode;
         public int ContentHashCode { get { return _contentHashCode; } }
 
-        private readonly Guid _projectId;
-        public Guid ProjectId { get { return _projectId; } }
+        private readonly string _projectId;
+        public string ProjectId { get { return _projectId; } }
 
         private readonly string _componentName;
         public string ComponentName { get { return _componentName ?? string.Empty; } }
 
         public string Name { get { return ToString(); } }
-        
+
         private readonly string _projectName;
         public string ProjectName { get { return _projectName; } }
 
@@ -208,13 +208,6 @@ namespace Rubberduck.VBEditor
         public static bool operator !=(QualifiedModuleName a, QualifiedModuleName b)
         {
             return !a.Equals(b);
-        }
-
-        // Start all project IDs with the Rubberduck GUID as defined in AssemblyInfo.cs, add hashcode as last 12 bytes.
-        private const string ProjectGuidFormat = "E07C841C-14B4-4890-83E9-{0}";
-        public static Guid GetGuidFromHashCode(int hash)
-        {
-            return new Guid(string.Format(ProjectGuidFormat, hash.ToString("X12")));
         }
     }
 }
