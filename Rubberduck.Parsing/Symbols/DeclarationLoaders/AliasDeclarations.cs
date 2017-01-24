@@ -56,7 +56,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 
         private IReadOnlyList<Declaration> AddAliasDeclarations()
         {
-            var finder = new DeclarationFinder(_state.AllDeclarations, new IAnnotation[] { });
+            var finder = _state.DeclarationFinder;;
 
             if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder))
             {

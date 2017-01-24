@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 
         public IReadOnlyList<Declaration> Load()
         {
-            var finder = new DeclarationFinder(_state.AllDeclarations, new IAnnotation[] { });
+            var finder = _state.DeclarationFinder;
 
             if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder))
             {
