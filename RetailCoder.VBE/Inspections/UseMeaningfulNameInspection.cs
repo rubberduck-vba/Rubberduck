@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Castle.Core.Internal;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
@@ -44,7 +45,7 @@ namespace Rubberduck.Inspections
             var handlers = Declarations.FindBuiltInEventHandlers();
 
             var issues = UserDeclarations
-                            .Where(declaration => 
+                            .Where(declaration => !string.IsNullOrEmpty(declaration.IdentifierName) &&
                                 !IgnoreDeclarationTypes.Contains(declaration.DeclarationType) &&
                                 (declaration.ParentDeclaration == null || 
                                     !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
