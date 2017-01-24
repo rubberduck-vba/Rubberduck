@@ -185,7 +185,6 @@
     <Compile Include="Settings\InspectionSettingsTests.cs" />
     <Compile Include="Settings\GeneralSettingsTests.cs" />
     <Compile Include="Settings\IndenterSettingsTests.cs" />
-    <Compile Include="Settings\SettingsControlTests.cs" />
     <Compile Include="Settings\TodoSettingsTests.cs" />
     <Compile Include="Settings\UnitTestSettingsTests.cs" />
     <Compile Include="SmartIndenter\EndOfLineCommentTests.cs" />
@@ -197,7 +196,6 @@
     <Compile Include="SourceControl\BranchesViewModelTests.cs" />
     <Compile Include="SourceControl\ChangesViewModelTests.cs" />
     <Compile Include="SourceControl\SettingsViewModelTests.cs" />
-    <Compile Include="SourceControl\SourceControlTests.cs" />
     <Compile Include="SourceControl\SourceControlViewModelTests.cs" />
     <Compile Include="SourceControl\UnsyncedCommitsViewModelTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
