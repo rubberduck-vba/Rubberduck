@@ -53,6 +53,7 @@ End Sub
         }
 
         [TestMethod]
+        [DeploymentItem(@"TestFiles\")]
         [TestCategory("Inspections")]
         public void ImplicitActiveSheetReference_Ignored_DoesNotReportRange()
         {
@@ -87,8 +88,8 @@ End Sub
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [DeploymentItem(@"TestFiles\")]
         [TestMethod]
+        [DeploymentItem(@"TestFiles\")]
         public void ImplicitActiveSheetReference_IgnoreQuickFixWorks()
         {
             const string inputCode =

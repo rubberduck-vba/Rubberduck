@@ -17,6 +17,7 @@ namespace RubberduckTests.Inspections
     public class ImplicitActiveWorkbookReferenceInspectionTests
     {
         [TestMethod]
+        [DeploymentItem(@"TestFiles\")]
         [TestCategory("Inspections")]
         public void ImplicitActiveWorkbookReference_ReportsWorksheets()
         {
@@ -51,6 +52,7 @@ End Sub";
         }
 
         [TestMethod]
+        [DeploymentItem(@"TestFiles\")]
         [TestCategory("Inspections")]
         public void ImplicitActiveWorkbookReference_Ignored_DoesNotReportRange()
         {
@@ -75,6 +77,7 @@ End Sub";
             mockHost.SetupAllProperties();
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
