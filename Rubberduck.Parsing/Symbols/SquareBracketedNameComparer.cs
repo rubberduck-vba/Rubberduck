@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private string ApplyBrackets(string value)
         {
-            if (value == null) return null;
+            if (string.IsNullOrEmpty(value)) return string.Empty;
 
             return value[0] == '[' && value[value.Length - 1] == ']'
                 ? value
