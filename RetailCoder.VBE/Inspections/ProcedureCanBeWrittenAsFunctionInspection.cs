@@ -43,13 +43,13 @@ namespace Rubberduck.Inspections
             }
 
             var userDeclarations = UserDeclarations.ToList();
-            var allDeclarations = State.AllDeclarations.ToList();
+            var builtinHandlers = State.DeclarationFinder.FindBuiltinEventHandlers().ToList();
 
             var contextLookup = userDeclarations.Where(decl => decl.Context != null).ToDictionary(decl => decl.Context);
 
             var ignored = new HashSet<Declaration>( State.DeclarationFinder.FindAllInterfaceMembers()
                 .Concat(State.DeclarationFinder.FindAllInterfaceImplementingMembers())
-                .Concat(allDeclarations.FindBuiltInEventHandlers())
+                .Concat(builtinHandlers)
                 .Concat(userDeclarations.Where(item => item.IsWithEvents)));
 
             return ParseTreeResults.Where(context => context.Context.Parent is VBAParser.SubStmtContext)
@@ -58,7 +58,7 @@ namespace Rubberduck.Inspections
                                                   !ignored.Contains(decl) &&
                                                   userDeclarations.Where(item => item.IsWithEvents)
                                                                   .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&
-                                                                  !allDeclarations.FindBuiltInEventHandlers().Contains(decl))
+                                                                  !builtinHandlers.Contains(decl))
                                    .Select(result => new ProcedureCanBeWrittenAsFunctionInspectionResult(
                                                          this, 
                                                          State, 
