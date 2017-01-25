@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections
             var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers();
             var interfaceImplementationMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers();
 
-            var builtInHandlers = State.AllDeclarations.FindBuiltInEventHandlers();
+            var builtInHandlers = State.DeclarationFinder.FindBuiltinEventHandlers();
 
             var parameters = State.DeclarationFinder
                 .UserDeclarations(DeclarationType.Parameter)

@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections
             var handlers = State.DeclarationFinder.UserDeclarations(DeclarationType.Control)
                 .SelectMany(control => declarations.FindEventHandlers(control)).ToList();
 
-            var builtInHandlers = State.AllDeclarations.FindBuiltInEventHandlers();
+            var builtInHandlers = State.DeclarationFinder.FindBuiltinEventHandlers();
             handlers.AddRange(builtInHandlers);
 
             var withEventFields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Where(item => item.IsWithEvents).ToList();
@@ -60,7 +60,7 @@ namespace Rubberduck.Inspections
                 handlers.AddRange(forms.SelectMany(form => State.FindFormEventHandlers(form)));
             }
 
-            handlers.AddRange(Declarations.FindBuiltInEventHandlers());
+            //handlers.AddRange(builtInHandlers);
 
             var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToList();
             var implementingMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers().ToList();
