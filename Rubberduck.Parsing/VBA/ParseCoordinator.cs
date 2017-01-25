@@ -107,7 +107,10 @@ namespace Rubberduck.Parsing.VBA
             }
 
             SyncComReferences(State.Projects);
+            State.RefreshFinder(_hostApp);
+
             AddBuiltInDeclarations();
+            State.RefreshFinder(_hostApp);
 
             foreach (var component in components)
             {
@@ -229,7 +232,10 @@ namespace Rubberduck.Parsing.VBA
             }
 
             SyncComReferences(State.Projects);
+            State.RefreshFinder(_hostApp);
+
             AddBuiltInDeclarations();
+            State.RefreshFinder(_hostApp);
 
             // invalidation cleanup should go into ParseAsync?
             foreach (var key in _componentAttributes.Keys)

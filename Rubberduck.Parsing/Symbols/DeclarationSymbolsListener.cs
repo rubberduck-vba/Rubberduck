@@ -69,7 +69,7 @@ namespace Rubberduck.Parsing.Symbols
                     {
                         try
                         {
-                            if (coclass.Key.Count != _qualifiedName.Component.Properties.Count)
+                            if (_qualifiedName.Component == null || coclass.Key.Count != _qualifiedName.Component.Properties.Count)
                             {
                                 continue;
                             }
