@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections
 
             var eventMembers = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event).ToList();
             var formEventHandlerScopes = State.FindFormEventHandlers().Select(handler => handler.Scope);
-            var eventHandlerScopes = State.AllDeclarations.FindBuiltInEventHandlers().Concat(declarations.FindUserEventHandlers()).Select(e => e.Scope);
+            var eventHandlerScopes = State.DeclarationFinder.FindBuiltinEventHandlers().Concat(declarations.FindUserEventHandlers()).Select(e => e.Scope);
             var eventScopes = eventMembers.Select(s => s.Scope)
                 .Concat(formEventHandlerScopes)
                 .Concat(eventHandlerScopes);

@@ -40,7 +40,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly ConcurrentDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly ConcurrentDictionary<Declaration, Declaration[]> _parametersByParent;
         private readonly ConcurrentDictionary<DeclarationType, Declaration[]> _userDeclarationsByType;
-
+       
         private readonly Lazy<ConcurrentDictionary<Declaration, Declaration[]>> _handlersByWithEventsField;
         private readonly Lazy<ConcurrentDictionary<VBAParser.ImplementsStmtContext, Declaration[]>> _membersByImplementsContext;
         private readonly Lazy<ConcurrentDictionary<Declaration, Declaration[]>> _interfaceMembers;
@@ -66,6 +66,7 @@ namespace Rubberduck.Parsing.Symbols
                 declarations.Where(declaration => !declaration.IsBuiltIn)
                             .GroupBy(declaration => declaration.DeclarationType)
                             .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray()));
+            _builtinEvents = new ConcurrentBag<Declaration>(FindBuiltInEventHandlers(declarations));
 
             _projects = _projects = declarations.Where(d => d.DeclarationType == DeclarationType.Project).ToList();
             _classes = _declarations.AllValues().Where(d => d.DeclarationType == DeclarationType.ClassModule).ToList();
@@ -142,6 +143,15 @@ namespace Rubberduck.Parsing.Symbols
                             && !d.AsTypeIsBaseType
                             && d.DeclarationType != DeclarationType.Project
                             && d.DeclarationType != DeclarationType.ProceduralModule).ToList());
+            }
+        }
+
+        private readonly ConcurrentBag<Declaration> _builtinEvents; 
+        public IEnumerable<Declaration> FindBuiltinEventHandlers()
+        {
+            lock (ThreadLock)
+            {
+                return _builtinEvents.ToList();
             }
         }
 
@@ -610,6 +620,44 @@ namespace Rubberduck.Parsing.Symbols
                     yield return match;
                 }
             }
+        }
+
+        public static IEnumerable<Declaration> FindBuiltInEventHandlers(IEnumerable<Declaration> declarations)
+        {
+            var declarationList = declarations.ToList();
+
+            var handlerNames = declarationList.Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
+                                           .SelectMany(e =>
+                                           {
+                                               var parentModuleSubtypes = ((ClassModuleDeclaration)e.ParentDeclaration).Subtypes;
+                                               return parentModuleSubtypes.Any()
+                                                   ? parentModuleSubtypes.Select(v => v.IdentifierName + "_" + e.IdentifierName)
+                                                   : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
+                                           });
+
+            var user = declarationList.FirstOrDefault(decl => !decl.IsBuiltIn);
+            var host = user != null ? user.Project.VBE.HostApplication() : null;
+
+            var handlers = declarationList.Where(item =>
+                // class module built-in events
+                        (item.DeclarationType == DeclarationType.Procedure &&
+                        item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule && (
+                            item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
+                            item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase))) ||
+                            // standard module built-in handlers (Excel specific):
+                        (host != null &&
+                        host.ApplicationName.Equals("Excel", StringComparison.InvariantCultureIgnoreCase) &&
+                        item.DeclarationType == DeclarationType.Procedure &&
+                        item.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule && (
+                            item.IdentifierName.Equals("auto_open", StringComparison.InvariantCultureIgnoreCase) ||
+                            item.IdentifierName.Equals("auto_close", StringComparison.InvariantCultureIgnoreCase))) ||
+                            // user handlers:
+                        (!item.IsBuiltIn &&
+                         item.DeclarationType == DeclarationType.Procedure &&
+                         handlerNames.Contains(item.IdentifierName))
+                        ).ToList();
+
+            return handlers;
         }
     }
 }
