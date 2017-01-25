@@ -24,6 +24,11 @@ namespace Rubberduck.Parsing.ComReflection
             get { return null; }
         }
 
+        public bool IsExtensible
+        {
+            get { return false; }
+        }
+
         private readonly List<ComField> _fields = new List<ComField>();
         public IEnumerable<ComField> Fields
         {

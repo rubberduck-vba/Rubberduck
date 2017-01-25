@@ -9,13 +9,14 @@ namespace Rubberduck.Parsing.ComReflection
         bool IsAppObject { get; }
         bool IsPreDeclared { get; }
         bool IsHidden { get; }
-        bool IsRestricted { get; }       
+        bool IsRestricted { get; }
     }
 
     public interface IComTypeWithMembers : IComType
     {
         IEnumerable<ComMember> Members { get; }
         ComMember DefaultMember { get; }
+        bool IsExtensible { get; }
     }
 
     public interface IComTypeWithFields : IComType

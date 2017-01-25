@@ -205,7 +205,7 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 attributes.AddGlobalClassAttribute();
             }
-            if (module as ComInterface != null && ((ComInterface)module).IsExtensible)
+            if (module as IComTypeWithMembers != null && ((IComTypeWithMembers)module).IsExtensible)
             {
                 attributes.AddExtensibledClassAttribute();
             }
