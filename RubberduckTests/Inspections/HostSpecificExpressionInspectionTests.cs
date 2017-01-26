@@ -17,6 +17,7 @@ namespace RubberduckTests.Inspections
     {
         [TestMethod]
         [TestCategory("Inspections")]
+        [DeploymentItem(@"TestFiles\")]
         public void ReturnsResultForExpressionOnLeftHandSide()
         {
             const string code = @"
@@ -27,6 +28,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, code)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 7, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -35,6 +37,8 @@ End Sub
             vbe.Setup(m => m.HostApplication()).Returns(() => mockHost.Object);
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            parser.State.AddTestLibrary("VBA.4.2.xml");
+            parser.State.AddTestLibrary("Excel.1.8.xml");
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
