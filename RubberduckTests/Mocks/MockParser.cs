@@ -39,7 +39,7 @@ namespace RubberduckTests.Mocks
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
         {
             var attributeParser = new Mock<IAttributeParser>();
-            attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>()))
+            attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>(), It.IsAny<CancellationToken>()))
                            .Returns(() => new Dictionary<Tuple<string, DeclarationType>, Attributes>());
             return Create(vbe, state, attributeParser.Object, serializedDeclarationsPath);
         }

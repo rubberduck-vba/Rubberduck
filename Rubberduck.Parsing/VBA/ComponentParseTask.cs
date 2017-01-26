@@ -30,8 +30,12 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParseFailureArgs> ParseFailure;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        private readonly Guid _taskId;
+
         public ComponentParseTask(IVBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
         {
+            _taskId = Guid.NewGuid();
+
             _attributeParser = attributeParser;
             _preprocessor = preprocessor;
             _component = vbComponent;
@@ -44,12 +48,12 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
-                var code = RewriteAndPreprocess();
+                Logger.Trace("Starting ParseTaskID {0} on thread {1}.", _taskId, Thread.CurrentThread.ManagedThreadId);
+
+                var code = RewriteAndPreprocess(token);
                 token.ThrowIfCancellationRequested();
 
-                var attributes = _attributeParser.Parse(_component);
-
-                token.ThrowIfCancellationRequested();
+                var attributes = _attributeParser.Parse(_component, token);
 
                 // temporal coupling... comments must be acquired before we walk the parse tree for declarations
                 // otherwise none of the annotations get associated to their respective Declaration
@@ -60,12 +64,13 @@ namespace Rubberduck.Parsing.VBA
                 ITokenStream stream;
                 var tree = ParseInternal(_component.Name, code, new IParseTreeListener[]{ commentListener, annotationListener }, out stream);
                 stopwatch.Stop();
+                token.ThrowIfCancellationRequested();
 
                 var comments = QualifyAndUnionComments(_qualifiedName, commentListener.Comments, commentListener.RemComments);
                 token.ThrowIfCancellationRequested();
 
                 var completedHandler = ParseCompleted;
-                if (completedHandler != null)
+                if (completedHandler != null && !token.IsCancellationRequested)
                     completedHandler.Invoke(this, new ParseCompletionArgs
                     {
                         ParseTree = tree,
@@ -77,7 +82,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (COMException exception)
             {
-                Logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
+                Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
                 var failedHandler = ParseFailure;
                 if (failedHandler != null)
                     failedHandler.Invoke(this, new ParseFailureArgs
@@ -88,7 +93,7 @@ namespace Rubberduck.Parsing.VBA
             catch (SyntaxErrorException exception)
             {
                 //System.Diagnostics.Debug.Assert(false, "A RecognitionException should be notified of, not thrown as a SyntaxErrorException. This lets the parser recover from parse errors.");
-                Logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
+                Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
                 var failedHandler = ParseFailure;
                 if (failedHandler != null)
                     failedHandler.Invoke(this, new ParseFailureArgs
@@ -157,10 +162,10 @@ namespace Rubberduck.Parsing.VBA
             return false;
         }
 
-        private string RewriteAndPreprocess()
+        private string RewriteAndPreprocess(CancellationToken token)
         {
             var code = _rewriter == null ? string.Join(Environment.NewLine, GetSanitizedCode(_component.CodeModule)) : _rewriter.GetText();
-            var processed = _preprocessor.Execute(_component.Name, code);
+            var processed = _preprocessor.Execute(_component.Name, code, token);
             return processed;
         }
 
@@ -169,16 +174,6 @@ namespace Rubberduck.Parsing.VBA
             //var errorNotifier = new SyntaxErrorNotificationListener();
             //errorNotifier.OnSyntaxError += ParserSyntaxError;
             return _parser.Parse(moduleName, code, listeners, new ExceptionErrorListener(), out outStream);
-        }
-
-        private void ParserSyntaxError(object sender, SyntaxErrorEventArgs e)
-        {
-            var handler = ParseFailure;
-            if (handler != null)
-            {
-                var args = new ParseFailureArgs {Cause = new SyntaxErrorException(e.Info)}; // todo: refactor. exceptions should be thrown, not passed around as data
-                handler.Invoke(this, args);
-            }
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

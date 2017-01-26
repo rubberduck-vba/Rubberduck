@@ -488,10 +488,7 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration OnBracketedExpression(string expression, ParserRuleContext context)
         {
             var hostApp = FindProject(_hostApp == null ? "VBA" : _hostApp.ApplicationName);
-            if (hostApp == null)
-            {
-                
-            }
+            Debug.Assert(hostApp != null, "Host application project can't be null. Make sure VBA standard library is included if host is unknown.");
 
             var qualifiedName = hostApp.QualifiedName.QualifiedModuleName.QualifyMemberName(expression);
 
