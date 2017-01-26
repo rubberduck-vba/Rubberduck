@@ -95,15 +95,17 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     LogManager.GetCurrentClassLogger().Error(e);
                 }
-                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
 
                 var issuesByType = allIssues.GroupBy(issue => issue.GetType())
                                             .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
-                return issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
+                var results = issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
                     .SelectMany(kv => kv.Value)
                     .Union(issuesByType.Where(kv => kv.Value.Count > AGGREGATION_THRESHOLD)
-                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).First(), kv.Value.Count)));
-                //return allIssues;
+                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).First(), kv.Value.Count)))
+                    .ToList();
+
+                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
+                return results;
             }
 
             private IReadOnlyList<QualifiedContext> GetParseTreeResults(Configuration config, RubberduckParserState state)
