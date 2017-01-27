@@ -36,48 +36,35 @@ namespace Rubberduck.VBEditor
             _component = null;
             _componentName = null;
             _componentType = ComponentType.Undefined;
-            _project = project;
             _projectName = project.Name;
             _projectPath = string.Empty;
-            _projectId = GetProjectId(project);
-            _projectDisplayName = string.Empty;
+            _projectId = GetProjectId(project);           
             _contentHashCode = 0;
+            _projectDisplayName = string.Empty;
+            SetProjectDisplayName(project);
         }
 
         public QualifiedModuleName(IVBComponent component)
         {
-            _project = null; // field is only assigned when the instance refers to a VBProject.
-
             _componentType = component.Type;
             _component = component;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
-            var components = component.Collection;
-            {
-                _project = components.Parent;
-                _projectName = _project == null ? string.Empty : _project.Name;
-                _projectPath = string.Empty;
-                _projectId = GetProjectId(_project);
-                _projectDisplayName = string.Empty;
-            }
-
-            _projectName = _project == null ? string.Empty : _project.Name;
-            _projectPath = string.Empty;
-            _projectId = GetProjectId(_project);
-            _projectDisplayName = string.Empty;
-
             _contentHashCode = 0;
-            if (component.IsWrappingNullReference)
+            if (!component.IsWrappingNullReference)
             {
-                return;
-            }
-
-            var module = component.CodeModule;
-            {
+                var module = _component.CodeModule;
                 _contentHashCode = module.CountOfLines > 0
                     ? module.GetLines(1, module.CountOfLines).GetHashCode()
                     : 0;
             }
+
+            var project = component.Collection.Parent;
+            _projectName = project == null ? string.Empty : project.Name;
+            _projectPath = string.Empty;
+            _projectId = GetProjectId(project);
+            _projectDisplayName = string.Empty;
+            SetProjectDisplayName(project);
         }
 
         /// <summary>
@@ -86,7 +73,6 @@ namespace Rubberduck.VBEditor
         /// </summary>
         public QualifiedModuleName(string projectName, string projectPath, string componentName)
         {
-            _project = null;
             _projectName = projectName;
             _projectDisplayName = null;
             _projectPath = projectPath;
@@ -107,9 +93,6 @@ namespace Rubberduck.VBEditor
 
         private readonly ComponentType _componentType;
         public ComponentType ComponentType { get { return _componentType; } }
-
-        private readonly IVBProject _project;
-        public IVBProject Project { get { return _project; } }
 
         private readonly int _contentHashCode;
         public int ContentHashCode { get { return _contentHashCode; } }
@@ -137,37 +120,37 @@ namespace Rubberduck.VBEditor
         private string _projectDisplayName;
         public string ProjectDisplayName
         {
-            get
+            get { return _projectDisplayName; }
+        }
+
+        private void SetProjectDisplayName(IVBProject project)
+        {
+            if (project == null)
             {
-                if (_projectDisplayName != string.Empty)
+                return;
+            }
+            var vbe = project.VBE;
+            var activeProject = vbe.ActiveVBProject;
+            var mainWindow = vbe.MainWindow;
+            {
+                try
                 {
-                    return _projectDisplayName;
-                }
-
-                var vbe = _project.VBE;
-                var activeProject = vbe.ActiveVBProject;
-                var mainWindow = vbe.MainWindow;
-                {
-                    try
+                    if (project.HelpFile != activeProject.HelpFile)
                     {
-                        if (_project.HelpFile != activeProject.HelpFile)
-                        {
-                            vbe.ActiveVBProject = _project;
-                        }
-
-                        var caption = mainWindow.Caption;
-                        if (CaptionProjectRegex.IsMatch(caption))
-                        {
-                            caption = CaptionProjectRegex.Matches(caption)[0].Groups["project"].Value;
-                            _projectDisplayName = OpenModuleRegex.IsMatch(caption)
-                                ? OpenModuleRegex.Matches(caption)[0].Groups["project"].Value
-                                : caption;
-                        }
+                        vbe.ActiveVBProject = project;
                     }
-                    // ReSharper disable once EmptyGeneralCatchClause
-                    catch { }
-                    return _projectDisplayName;
+
+                    var caption = mainWindow.Caption;
+                    if (CaptionProjectRegex.IsMatch(caption))
+                    {
+                        caption = CaptionProjectRegex.Matches(caption)[0].Groups["project"].Value;
+                        _projectDisplayName = OpenModuleRegex.IsMatch(caption)
+                            ? OpenModuleRegex.Matches(caption)[0].Groups["project"].Value
+                            : caption;
+                    }
                 }
+                // ReSharper disable once EmptyGeneralCatchClause
+                catch { }
             }
         }
 

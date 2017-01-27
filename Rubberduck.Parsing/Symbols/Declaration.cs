@@ -119,8 +119,7 @@ namespace Rubberduck.Parsing.Symbols
                   isBuiltIn,
                   annotations,
                   attributes)
-        {
-        }
+        { }
 
         public Declaration(
             QualifiedMemberName qualifiedName,
@@ -140,8 +139,7 @@ namespace Rubberduck.Parsing.Symbols
             IEnumerable<IAnnotation> annotations = null,
             Attributes attributes = null)
         {
-            _qualifiedName = qualifiedName;
-            _project = qualifiedName.QualifiedModuleName.Project;
+            _qualifiedName = qualifiedName;            
             _parentDeclaration = parentDeclaration;
             _parentScopeDeclaration = _parentDeclaration;
             _parentScope = parentScope ?? string.Empty;
@@ -158,7 +156,7 @@ namespace Rubberduck.Parsing.Symbols
             _attributes = attributes ?? new Attributes();
 
             _projectId = _qualifiedName.QualifiedModuleName.ProjectId;
-            var projectDeclaration = Declaration.GetProjectParent(parentDeclaration);
+            var projectDeclaration = GetProjectParent(parentDeclaration);
             if (projectDeclaration != null)
             {
                 _projectName = projectDeclaration.IdentifierName;
@@ -406,14 +404,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public QualifiedSelection QualifiedSelection { get { return new QualifiedSelection(_qualifiedName.QualifiedModuleName, _selection); } }
 
-        private readonly IVBProject _project;
         /// <summary>
         /// Gets a reference to the VBProject the declaration is made in.
         /// </summary>
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public virtual IVBProject Project { get { return _project ?? _parentDeclaration.Project; } }
+        public virtual IVBProject Project { get { return _parentDeclaration.Project; } }
 
         private readonly string _projectId;
         /// <summary>

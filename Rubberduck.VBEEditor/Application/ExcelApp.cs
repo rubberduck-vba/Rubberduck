@@ -1,6 +1,4 @@
 ﻿using Path = System.IO.Path;
-using System.Runtime.InteropServices;
-using Microsoft.Office.Interop.Visio;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Application
@@ -20,11 +18,13 @@ namespace Rubberduck.VBEditor.Application
         {
             var module = qualifiedMemberName.QualifiedModuleName;
 
-            var documentName = string.IsNullOrEmpty(module.Project.FileName)
+            var documentName = string.IsNullOrEmpty(module.ProjectPath)
                 ? module.ProjectDisplayName
-                : Path.GetFileName(module.Project.FileName);
+                : Path.GetFileName(module.ProjectPath);
 
-            return string.Format("'{0}'!{1}", documentName.Replace("'", "''"), qualifiedMemberName);
+            return string.IsNullOrEmpty(documentName)
+                ? qualifiedMemberName.ToString()
+                : string.Format("'{0}'!{1}", documentName.Replace("'", "''"), qualifiedMemberName);
         }
     }
 }

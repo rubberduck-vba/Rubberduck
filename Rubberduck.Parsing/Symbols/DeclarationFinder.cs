@@ -619,7 +619,7 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public static ConcurrentBag<Declaration> FindBuiltInEventHandlers(IEnumerable<Declaration> declarations)
+        public ConcurrentBag<Declaration> FindBuiltInEventHandlers(IEnumerable<Declaration> declarations)
         {
             var declarationList = declarations.ToList();
 
@@ -632,9 +632,6 @@ namespace Rubberduck.Parsing.Symbols
                                                    : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
                                            });
 
-            var user = declarationList.FirstOrDefault(decl => !decl.IsBuiltIn);
-            var host = user != null ? user.Project.VBE.HostApplication() : null;
-
             var handlers = declarationList.Where(item =>
                 // class module built-in events
                 (item.DeclarationType == DeclarationType.Procedure &&
@@ -642,8 +639,8 @@ namespace Rubberduck.Parsing.Symbols
                      item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
                      item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase))) ||
                 // standard module built-in handlers (Excel specific):
-                (host != null &&
-                 host.ApplicationName.Equals("Excel", StringComparison.InvariantCultureIgnoreCase) &&
+                (_hostApp != null &&
+                 _hostApp.ApplicationName.Equals("Excel", StringComparison.InvariantCultureIgnoreCase) &&
                  item.DeclarationType == DeclarationType.Procedure &&
                  item.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule && (
                      item.IdentifierName.Equals("auto_open", StringComparison.InvariantCultureIgnoreCase) ||

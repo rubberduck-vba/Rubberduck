@@ -19,7 +19,7 @@
             /* Note: Powerpoint supports a `FileName.ppt!Module.method` syntax
             ** http://msdn.microsoft.com/en-us/library/office/ff744221(v=office.15).aspx
             */
-            var path = qualifiedMemberName.QualifiedModuleName.Project.FileName;
+            var path = qualifiedMemberName.QualifiedModuleName.ProjectPath;
             if (string.IsNullOrEmpty(path))
             {
                 // if project isn't saved yet, we can't qualify the method call: this only works with the active project.
