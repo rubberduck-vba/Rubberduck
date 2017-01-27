@@ -30,7 +30,6 @@ using System.Globalization;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.Application;
@@ -191,17 +190,17 @@ namespace Rubberduck.Root
 
             Bind<IPersistable<SerializableProject>>().To<XmlPersistableDeclarations>().InCallScope();
 
-            Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InCallScope();
-            Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InCallScope();
-            Bind<IPersistanceService<HotkeySettings>>().To<XmlPersistanceService<HotkeySettings>>().InCallScope();
-            Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InCallScope();
-            Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InCallScope();
-            Bind<IPersistanceService<WindowSettings>>().To<XmlPersistanceService<WindowSettings>>().InCallScope();
-            Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InCallScope();
-            Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InCallScope();
+            Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InSingletonScope();
+            Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InSingletonScope();
+            Bind<IPersistanceService<HotkeySettings>>().To<XmlPersistanceService<HotkeySettings>>().InSingletonScope();
+            Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InSingletonScope();
+            Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InSingletonScope();
+            Bind<IPersistanceService<WindowSettings>>().To<XmlPersistanceService<WindowSettings>>().InSingletonScope();
+            Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InSingletonScope();
+            Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InSingletonScope();
 
-            Bind<IConfigProvider<IndenterSettings>>().To<IndenterConfigProvider>().InCallScope();
-            Bind<IConfigProvider<SourceControlSettings>>().To<SourceControlConfigProvider>().InCallScope();
+            Bind<IConfigProvider<IndenterSettings>>().To<IndenterConfigProvider>().InSingletonScope();
+            Bind<IConfigProvider<SourceControlSettings>>().To<SourceControlConfigProvider>().InSingletonScope();
 
             Bind<ICodeInspectionSettings>().To<CodeInspectionSettings>().InCallScope();
             Bind<IGeneralSettings>().To<GeneralSettings>().InCallScope();
@@ -434,7 +433,7 @@ namespace Rubberduck.Root
                 GetSmartIndenterParentMenu(),
                 GetToolsParentMenu(),
                 GetRefactoringsParentMenu(),
-                GetNavigateParentMenu(),
+                GetNavigateParentMenu()
             };
         }
 
@@ -446,7 +445,7 @@ namespace Rubberduck.Root
                 KernelInstance.Get<TestExplorerCommandMenuItem>(),
                 KernelInstance.Get<AddTestModuleCommandMenuItem>(),
                 KernelInstance.Get<AddTestMethodCommandMenuItem>(),
-                KernelInstance.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
+                KernelInstance.Get<AddTestMethodExpectedErrorCommandMenuItem>()
             };
             return new UnitTestingParentMenu(items);
         }
@@ -477,7 +476,7 @@ namespace Rubberduck.Root
                 //KernelInstance.Get<RegexSearchReplaceCommandMenuItem>(),
                 KernelInstance.Get<FindSymbolCommandMenuItem>(),
                 KernelInstance.Get<FindAllReferencesCommandMenuItem>(),
-                KernelInstance.Get<FindAllImplementationsCommandMenuItem>(),
+                KernelInstance.Get<FindAllImplementationsCommandMenuItem>()
             };
             return new NavigateParentMenu(items);
         }
@@ -502,7 +501,7 @@ namespace Rubberduck.Root
                 GetSmartIndenterParentMenu(),
                 KernelInstance.Get<FindSymbolCommandMenuItem>(),
                 KernelInstance.Get<FindAllReferencesCommandMenuItem>(),
-                KernelInstance.Get<FindAllImplementationsCommandMenuItem>(),
+                KernelInstance.Get<FindAllImplementationsCommandMenuItem>()
             };
         }
 
@@ -512,7 +511,7 @@ namespace Rubberduck.Root
             {
                 KernelInstance.Get<ShowSourceControlPanelCommandMenuItem>(),
                 KernelInstance.Get<RegexAssistantCommandMenuItem>(),
-                KernelInstance.Get<ToDoExplorerCommandMenuItem>(),
+                KernelInstance.Get<ToDoExplorerCommandMenuItem>()
             };
 
             return new ToolsParentMenu(items);
@@ -522,7 +521,7 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                KernelInstance.Get<FormDesignerRefactorRenameCommandMenuItem>(),
+                KernelInstance.Get<FormDesignerRefactorRenameCommandMenuItem>()
             };
         }
 
@@ -533,7 +532,7 @@ namespace Rubberduck.Root
                 KernelInstance.Get<ProjectExplorerRefactorRenameCommandMenuItem>(),
                 KernelInstance.Get<FindSymbolCommandMenuItem>(),
                 KernelInstance.Get<FindAllReferencesCommandMenuItem>(),
-                KernelInstance.Get<FindAllImplementationsCommandMenuItem>(),
+                KernelInstance.Get<FindAllImplementationsCommandMenuItem>()
             };
         }
     }

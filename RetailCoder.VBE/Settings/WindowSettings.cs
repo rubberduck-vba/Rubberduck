@@ -1,5 +1,5 @@
-﻿using System.Xml.Serialization;
-using Rubberduck.Properties;
+﻿using System;
+using System.Xml.Serialization;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.Inspections;
@@ -21,7 +21,7 @@ namespace Rubberduck.Settings
     }
 
     [XmlType(AnonymousType = true)]
-    public class WindowSettings : IWindowSettings
+    public class WindowSettings : IWindowSettings, IEquatable<WindowSettings>
     {
         public WindowSettings()
             : this(false, false, false, false, false)
@@ -70,6 +70,16 @@ namespace Rubberduck.Settings
             }
             //Oh. Hello. I have no clue who you are...
             return false;
+        }
+
+        public bool Equals(WindowSettings other)
+        {
+            return other != null &&
+                   CodeExplorerVisibleOnStartup == other.CodeExplorerVisibleOnStartup &&
+                   CodeInspectionsVisibleOnStartup == other.CodeInspectionsVisibleOnStartup &&
+                   SourceControlVisibleOnStartup == other.SourceControlVisibleOnStartup &&
+                   TestExplorerVisibleOnStartup == other.TestExplorerVisibleOnStartup &&
+                   TodoExplorerVisibleOnStartup == other.TodoExplorerVisibleOnStartup;
         }
     }
 }

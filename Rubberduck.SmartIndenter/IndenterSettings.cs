@@ -5,7 +5,7 @@ using Microsoft.Win32;
 namespace Rubberduck.SmartIndenter
 {
     [XmlType(AnonymousType = true)]
-    public class IndenterSettings : IIndenterSettings
+    public class IndenterSettings : IIndenterSettings, IEquatable<IndenterSettings>
     {
         public const int MinimumVerticalSpacing = 0;
         public const int MaximumVerticalSpacing = 2;
@@ -85,6 +85,29 @@ namespace Rubberduck.SmartIndenter
             VerticallySpaceProcedures = true;
             LinesBetweenProcedures = 1;
             // ReSharper restore DoNotCallOverridableMethodsInConstructor
+        }
+
+        public bool Equals(IndenterSettings other)
+        {
+            return other != null &&
+                   IndentEntireProcedureBody == other.IndentEntireProcedureBody &&
+                   IndentFirstCommentBlock == other.IndentFirstCommentBlock &&
+                   IndentEnumTypeAsProcedure == other.IndentEnumTypeAsProcedure &&
+                   IndentFirstDeclarationBlock == other.IndentFirstDeclarationBlock &&
+                   AlignCommentsWithCode == other.AlignCommentsWithCode &&
+                   AlignContinuations == other.AlignContinuations &&
+                   IgnoreOperatorsInContinuations == other.IgnoreOperatorsInContinuations &&
+                   IndentCase == other.IndentCase &&
+                   ForceDebugStatementsInColumn1 == other.ForceDebugStatementsInColumn1 &&
+                   ForceCompilerDirectivesInColumn1 == other.ForceCompilerDirectivesInColumn1 &&
+                   IndentCompilerDirectives == other.IndentCompilerDirectives &&
+                   AlignDims == other.AlignDims &&
+                   AlignDimColumn == other.AlignDimColumn &&
+                   EndOfLineCommentStyle == other.EndOfLineCommentStyle &&
+                   EndOfLineCommentColumnSpaceAlignment == other.EndOfLineCommentColumnSpaceAlignment &&
+                   IndentSpaces == other.IndentSpaces &&
+                   VerticallySpaceProcedures == other.VerticallySpaceProcedures &&
+                   LinesBetweenProcedures == other.LinesBetweenProcedures;
         }
 
         private const string LegacySettingsSubKey = @"Software\VB and VBA Program Settings\Office Automation Ltd.\Smart Indenter";

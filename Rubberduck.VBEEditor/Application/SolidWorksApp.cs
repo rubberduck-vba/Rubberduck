@@ -10,7 +10,7 @@ namespace Rubberduck.VBEditor.Application
 		
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            var projectFileName = qualifiedMemberName.QualifiedModuleName.Project.FileName;
+            var projectFileName = qualifiedMemberName.QualifiedModuleName.ProjectPath;
             if (Application == null || string.IsNullOrEmpty(projectFileName)) { return; }
 
             var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;
