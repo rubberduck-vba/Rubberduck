@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.UI;
@@ -11,7 +12,7 @@ namespace Rubberduck.Settings
     }
 
     [XmlType(AnonymousType = true)]
-    public class ToDoListSettings : IToDoListSettings
+    public class ToDoListSettings : IToDoListSettings, IEquatable<ToDoListSettings>
     {
         private IEnumerable<ToDoMarker> _markers;
 
@@ -38,6 +39,11 @@ namespace Rubberduck.Settings
         public ToDoListSettings(IEnumerable<ToDoMarker> markers)
         {
             _markers = markers;
+        }
+
+        public bool Equals(ToDoListSettings other)
+        {
+            return other != null && ToDoMarkers.SequenceEqual(other.ToDoMarkers);
         }
     }
 }

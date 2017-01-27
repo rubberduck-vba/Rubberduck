@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.SourceControl
 {
@@ -11,7 +13,7 @@ namespace Rubberduck.SourceControl
         string CommandPromptLocation { get; set; }
     }
 
-    public class SourceControlSettings : ISourceControlSettings
+    public class SourceControlSettings : ISourceControlSettings, IEquatable<SourceControlSettings>
     {
         public string UserName { get; set; }
         public string EmailAddress { get; set; }
@@ -35,6 +37,16 @@ namespace Rubberduck.SourceControl
             DefaultRepositoryLocation = defaultRepoLocation;
             Repositories = repositories;
             CommandPromptLocation = commandPromptLocation;
+        }
+
+        public bool Equals(SourceControlSettings other)
+        {
+            return other != null &&
+                   UserName.Equals(other.UserName) &&
+                   EmailAddress.Equals(other.EmailAddress) &&
+                   DefaultRepositoryLocation.Equals(other.DefaultRepositoryLocation) &&
+                   Repositories.SequenceEqual(other.Repositories) &&
+                   CommandPromptLocation.Equals(other.CommandPromptLocation);
         }
     }
 }
