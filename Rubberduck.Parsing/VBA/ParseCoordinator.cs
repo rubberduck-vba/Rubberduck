@@ -551,30 +551,50 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseAsyncInternal(IVBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
+            State.SetModuleState(component, ParserState.Parsing);
+            
             var preprocessor = _preprocessorFactory();
             var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
-            parser.ParseFailure += (sender, e) =>
+            
+            var finishedParseTask = FinishedComponentParseTask(parser, token);  //This runs synchronously.
+            
+            if (finishedParseTask.IsFaulted)
             {
-                State.SetModuleState(component, ParserState.Error, e.Cause as SyntaxErrorException);
-            };
-            parser.ParseCompleted += (sender, e) =>
+                State.SetModuleState(component, ParserState.Error, finishedParseTask.Exception.InnerException as SyntaxErrorException);
+            }
+            else if (finishedParseTask.IsCompleted) 
             {
+                var result = finishedParseTask.Result;
                 lock (State)
+                {
                     lock (component)
                     {
-                        State.SetModuleAttributes(component, e.Attributes);
-                        State.AddParseTree(component, e.ParseTree);
-                        State.AddTokenStream(component, e.Tokens);
-                        State.SetModuleComments(component, e.Comments);
-                        State.SetModuleAnnotations(component, e.Annotations);
+                        State.SetModuleAttributes(component, result.Attributes);
+                        State.AddParseTree(component, result.ParseTree);
+                        State.AddTokenStream(component, result.Tokens);
+                        State.SetModuleComments(component, result.Comments);
+                        State.SetModuleAnnotations(component, result.Annotations);
 
                         // This really needs to go last
                         State.SetModuleState(component, ParserState.Parsed);
                     }
+                }
+            }
+        }
+
+        private Task<ComponentParseTask.ParseCompletionArgs> FinishedComponentParseTask(ComponentParseTask parser, CancellationToken token)
+        {
+            var tcs = new TaskCompletionSource<ComponentParseTask.ParseCompletionArgs>();
+            parser.ParseFailure += (sender, e) =>
+            {
+                tcs.SetException(e.Cause);
             };
-            State.SetModuleState(component, ParserState.Parsing);
-                
+            parser.ParseCompleted += (sender, e) =>
+            {
+                tcs.SetResult(e);
+            };
             parser.Start(token);
+            return tcs.Task;
         }
 
         private readonly ConcurrentDictionary<string, Declaration> _projectDeclarations = new ConcurrentDictionary<string, Declaration>();
