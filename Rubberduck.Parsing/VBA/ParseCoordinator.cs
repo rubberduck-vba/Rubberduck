@@ -27,8 +27,7 @@ namespace Rubberduck.Parsing.VBA
     {
         public RubberduckParserState State { get { return _state; } }
 
-        private readonly ConcurrentDictionary<IVBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks =
-            new ConcurrentDictionary<IVBComponent, Tuple<Task, CancellationTokenSource>>();
+        private const int _maxDegreeOfParserParallelism = 8;
 
         private readonly IDictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
@@ -84,6 +83,20 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private void Cancel(bool createNewTokenSource = true)
+        {
+            lock (_cancellationTokens[0])
+            {
+                _cancellationTokens[0].Cancel();
+                _cancellationTokens[0].Dispose();
+                if (createNewTokenSource)
+                {
+                    _cancellationTokens.Add(new CancellationTokenSource());
+                }
+                _cancellationTokens.RemoveAt(0);
+            }
+        }
+
         /// <summary>
         /// For the use of tests only
         /// </summary>
@@ -96,21 +109,40 @@ namespace Rubberduck.Parsing.VBA
             // tests do not fire events when components are removed--clear components
             ClearComponentStateCacheForTests();
 
-            SyncComReferences(State.Projects);
-            State.RefreshFinder(_hostApp);
-            
-            AddBuiltInDeclarations();
-            State.RefreshFinder(_hostApp);
+            ExecuteCommenParseActivities(components, token);
 
+        }
+
+        private void ExecuteCommenParseActivities(List<IVBComponent> components, CancellationTokenSource token)
+        {
             SetModuleStates(components, ParserState.Pending);
+
+            SyncComReferences(State.Projects);
+            RefreshDeclarationFinder();
+
+            AddBuiltInDeclarations();
+            RefreshDeclarationFinder();
 
             // invalidation cleanup should go into ParseAsync?
             CleanUpComponentAttributes(components);
 
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
             _projectDeclarations.Clear();
             State.ClearBuiltInReferences();
 
-            ParseComponents(components, token);
+            ParseComponents(components, token.Token);
+
+            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            {
+                return;
+            }
+
+            ResolveAllDeclarations(components, token.Token);
+            RefreshDeclarationFinder();
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
@@ -120,9 +152,13 @@ namespace Rubberduck.Parsing.VBA
             State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             ResolveReferences(token.Token);
-            
-            State.RebuildSelectionCache();
 
+            State.RebuildSelectionCache();
+        }
+
+        private void RefreshDeclarationFinder()
+        {
+            State.RefreshFinder(_hostApp);
         }
 
         private void SetModuleStates(List<IVBComponent> components, ParserState parserState)
@@ -152,35 +188,91 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ParseComponents(List<IVBComponent> components, CancellationTokenSource token)
+        private void ParseComponents(List<IVBComponent> components, CancellationToken token)
         {
-            var parseTasks = new Task[components.Count];
-            for (var i = 0; i < components.Count; i++)
-            {
-                var index = i;
-                parseTasks[i] = new Task(() =>
+            var options = new ParallelOptions();
+            options.CancellationToken = token;
+            options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
+
+            Parallel.ForEach(components,
+                options,
+                component =>
                 {
-                    ParseAsync(components[index], token).Wait(token.Token);
+                    State.ClearStateCache(component);
+                    State.SetModuleState(component, ParserState.Parsing);
+                    var finishedParseTask = FinishedParseComponentTask(component, token);
+                    ProcessComponentParseResults(component, finishedParseTask);
+                }
+            );
+        }
 
-                    if (token.IsCancellationRequested)
+        private Task<ComponentParseTask.ParseCompletionArgs> FinishedParseComponentTask(IVBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
+        {
+            var tcs = new TaskCompletionSource<ComponentParseTask.ParseCompletionArgs>();
+
+            var preprocessor = _preprocessorFactory();
+            var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
+
+            parser.ParseFailure += (sender, e) =>
+            {
+                tcs.SetException(e.Cause);
+            };
+            parser.ParseCompleted += (sender, e) =>
+            {
+                tcs.SetResult(e);
+            };
+
+            parser.Start(token);
+
+            return tcs.Task;
+        }
+
+
+        private void ProcessComponentParseResults(IVBComponent component, Task<ComponentParseTask.ParseCompletionArgs> finishedParseTask)
+        {
+            finishedParseTask.Wait();
+            if (finishedParseTask.IsFaulted)
+            {
+                State.SetModuleState(component, ParserState.Error, finishedParseTask.Exception.InnerException as SyntaxErrorException);
+            }
+            else if (finishedParseTask.IsCompleted)
+            {
+                var result = finishedParseTask.Result;
+                lock (State)
+                {
+                    lock (component)
                     {
-                        return;
+                        State.SetModuleAttributes(component, result.Attributes);
+                        State.AddParseTree(component, result.ParseTree);
+                        State.AddTokenStream(component, result.Tokens);
+                        State.SetModuleComments(component, result.Comments);
+                        State.SetModuleAnnotations(component, result.Annotations);
+
+                        // This really needs to go last
+                        State.SetModuleState(component, ParserState.Parsed);
                     }
+                }
+            }
+        }
 
-                    if (State.Status == ParserState.Error) { return; }
+        private void ResolveAllDeclarations(List<IVBComponent> components, CancellationToken token)
+        {
+            var options = new ParallelOptions();
+            options.CancellationToken = token;
+            options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
 
-                    var qualifiedName = new QualifiedModuleName(components[index]);
-
-                    State.SetModuleState(components[index], ParserState.ResolvingDeclarations);
-
+            Parallel.ForEach(components,
+                options,
+                component =>
+                {
+                    var qualifiedName = new QualifiedModuleName(component);
+                    State.SetModuleState(component, ParserState.ResolvingDeclarations);
                     ResolveDeclarations(qualifiedName.Component,
                         State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
-                });
-
-                parseTasks[i].Start();
-            }
-            Task.WaitAll(parseTasks);
+                }
+            );
         }
+
 
         private void ResolveReferences(CancellationToken token)
         {
@@ -212,39 +304,7 @@ namespace Rubberduck.Parsing.VBA
                 //return; // returning here leaves state in 'ResolvedDeclarations' when a module is removed, which disables refresh
             }
 
-            SetModuleStates(toParse, ParserState.Pending);
-
-            SyncComReferences(State.Projects);
-            State.RefreshFinder(_hostApp);
-
-            AddBuiltInDeclarations();
-            State.RefreshFinder(_hostApp);
-
-            // invalidation cleanup should go into ParseAsync?
-            CleanUpComponentAttributes(components);
-
-            if (token.IsCancellationRequested)
-            {
-                return;
-            }
-
-            _projectDeclarations.Clear();
-            State.ClearBuiltInReferences();
-
-            ParseComponents(toParse, token);
-
-            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-            {
-                return;
-            }
-
-            Debug.Assert(State.ParseTrees.Count == components.Count, string.Format("ParserState has {0} parse trees for {1} components.", State.ParseTrees.Count, components.Count));
-                
-            State.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations);
-            
-            ResolveReferences(token.Token);
-            
-            State.RebuildSelectionCache();
+            ExecuteCommenParseActivities(components, token);
         }
 
         /// <summary>
@@ -521,81 +581,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private Task ParseAsync(IVBComponent component, CancellationTokenSource token, TokenStreamRewriter rewriter = null)
-        {
-            State.ClearStateCache(component);
-
-            var task = new Task(() => ParseAsyncInternal(component, token.Token, rewriter));
-            _currentTasks.TryAdd(component, Tuple.Create(task, token));
-
-            Tuple<Task, CancellationTokenSource> removedTask;
-            task.ContinueWith(t => _currentTasks.TryRemove(component, out removedTask), token.Token); // default also executes on cancel
-            // See http://stackoverflow.com/questions/6800705/why-is-taskscheduler-current-the-default-taskscheduler
-            task.Start(TaskScheduler.Default);
-            return task;
-        }
-
-        private void Cancel(bool createNewTokenSource = true)
-        {
-            lock (_cancellationTokens[0])
-            {
-                _cancellationTokens[0].Cancel();
-                _cancellationTokens[0].Dispose();
-                if (createNewTokenSource)
-                {
-                    _cancellationTokens.Add(new CancellationTokenSource());
-                }
-                _cancellationTokens.RemoveAt(0);
-            }
-        }
-
-        private void ParseAsyncInternal(IVBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
-        {
-            State.SetModuleState(component, ParserState.Parsing);
-            
-            var preprocessor = _preprocessorFactory();
-            var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
-            
-            var finishedParseTask = FinishedComponentParseTask(parser, token);  //This runs synchronously.
-            
-            if (finishedParseTask.IsFaulted)
-            {
-                State.SetModuleState(component, ParserState.Error, finishedParseTask.Exception.InnerException as SyntaxErrorException);
-            }
-            else if (finishedParseTask.IsCompleted) 
-            {
-                var result = finishedParseTask.Result;
-                lock (State)
-                {
-                    lock (component)
-                    {
-                        State.SetModuleAttributes(component, result.Attributes);
-                        State.AddParseTree(component, result.ParseTree);
-                        State.AddTokenStream(component, result.Tokens);
-                        State.SetModuleComments(component, result.Comments);
-                        State.SetModuleAnnotations(component, result.Annotations);
-
-                        // This really needs to go last
-                        State.SetModuleState(component, ParserState.Parsed);
-                    }
-                }
-            }
-        }
-
-        private Task<ComponentParseTask.ParseCompletionArgs> FinishedComponentParseTask(ComponentParseTask parser, CancellationToken token)
-        {
-            var tcs = new TaskCompletionSource<ComponentParseTask.ParseCompletionArgs>();
-            parser.ParseFailure += (sender, e) =>
-            {
-                tcs.SetException(e.Cause);
-            };
-            parser.ParseCompleted += (sender, e) =>
-            {
-                tcs.SetResult(e);
-            };
-            parser.Start(token);
-            return tcs.Task;
-        }
 
         private readonly ConcurrentDictionary<string, Declaration> _projectDeclarations = new ConcurrentDictionary<string, Declaration>();
         private void ResolveDeclarations(IVBComponent component, IParseTree tree)
