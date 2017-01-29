@@ -7,9 +7,9 @@ namespace Rubberduck.VBEditor.Application
         public ProjectApp() : base("MSProject") { }
         public ProjectApp(IVBE vbe) : base(vbe, "MSProject") { }
 
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+        public override void Run(dynamic declaration)
         {
-            var call = GenerateMethodCall(qualifiedMemberName);
+            var call = GenerateMethodCall(declaration.QualifiedName);
             Application.Macro(call);
         }
 

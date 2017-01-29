@@ -5,10 +5,11 @@ namespace Rubberduck.VBEditor.Application
     public interface IHostApplication : IDisposable
     {
         /// <summary>
-        /// Runs VBA procedure specified by name.
+        /// Runs VBA procedure specified by name. WARNING: The parameter is declared as dynamic to prevent circular referencing.
+        /// This should ONLY be passed a Declaration object.
         /// </summary>
-        /// <param name="qualifiedMemberName">The method to be executed.</param>
-        void Run(QualifiedMemberName qualifiedMemberName);
+        /// <param name="declaration">The Declaration object for the method to be executed.</param>
+        void Run(dynamic declaration);
 
         /// <summary>
         /// Gets the name of the application.

@@ -19,8 +19,9 @@ namespace Rubberduck.VBEditor.Application
             _runButton = (ICommandBarButton)mainCommandBar.FindControl(RunMacroCommand);
         }
 
-        public void Run(QualifiedMemberName qualifiedMemberName)
+        public void Run(dynamic declaration)
         {
+            var qualifiedMemberName = declaration.QualifiedName;
             var component = qualifiedMemberName.QualifiedModuleName.Component;
             var module = component.CodeModule;
             {
@@ -35,11 +36,11 @@ namespace Rubberduck.VBEditor.Application
             // note: this can't work... because the .Execute() call isn't blocking, so method returns before test method actually runs.
         }
 
-        public TimeSpan TimedMethodCall(QualifiedMemberName qualifiedMemberName)
+        public TimeSpan TimedMethodCall(dynamic declaration)
         {
             var stopwatch = Stopwatch.StartNew();
 
-            Run(qualifiedMemberName);
+            Run(declaration);
 
             stopwatch.Stop();
             return stopwatch.Elapsed;
