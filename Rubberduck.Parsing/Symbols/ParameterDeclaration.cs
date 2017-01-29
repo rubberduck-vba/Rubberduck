@@ -40,6 +40,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             _isOptional = isOptional;
             _isByRef = isByRef;
+            _isImplicitByRef = false;
             IsParamArray = isParamArray;
         }
 
@@ -56,7 +57,8 @@ namespace Rubberduck.Parsing.Symbols
             bool isOptional,
             bool isByRef,
             bool isArray = false, 
-            bool isParamArray = false)
+            bool isParamArray = false,
+            bool isBuiltIn = false)
             : base(
                   qualifiedName, 
                   parentDeclaration, 
@@ -71,7 +73,7 @@ namespace Rubberduck.Parsing.Symbols
                   selection,
                   isArray,
                   asTypeContext,
-                  false)
+                  isBuiltIn)
         {
             _isOptional = isOptional;
             _isByRef = isByRef;
@@ -88,12 +90,10 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 parameter.IsOptional,
                 parameter.IsByRef,
-                parameter.IsArray)
-        {
-            IsParamArray = parameter.IsParamArray;
-        }
-            
-  
+                parameter.IsArray,
+                parameter.IsParamArray)
+        { }
+             
         public bool IsOptional { get { return _isOptional; } }
         public bool IsByRef { get { return _isByRef; } }
         public bool IsImplicitByRef { get { return _isImplicitByRef; } }
