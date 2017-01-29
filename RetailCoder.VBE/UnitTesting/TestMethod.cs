@@ -44,7 +44,7 @@ namespace Rubberduck.UnitTesting
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                _hostApp.Run(Declaration.QualifiedName);
+                _hostApp.Run(Declaration);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 
                 result = EvaluateResults();
