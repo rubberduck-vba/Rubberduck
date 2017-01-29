@@ -20,6 +20,11 @@ namespace Rubberduck.Inspections.Results
             _qualifiedSelection = qualifiedSelection;
         }
 
+        public override QualifiedSelection QualifiedSelection
+        {
+            get { return _qualifiedSelection; }
+        }
+
         public override IEnumerable<QuickFixBase> QuickFixes
         {
             get
