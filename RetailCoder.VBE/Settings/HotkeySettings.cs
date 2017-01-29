@@ -10,7 +10,7 @@ namespace Rubberduck.Settings
         HotkeySetting[] Settings { get; set; }
     }
 
-    public class HotkeySettings : IHotkeySettings
+    public class HotkeySettings : IHotkeySettings, IEquatable<HotkeySettings>
     {
         private static readonly HotkeySetting[] Defaults = 
         {
@@ -77,6 +77,11 @@ namespace Rubberduck.Settings
                     s.HasAltModifier == candidate.HasAltModifier &&
                     s.HasCtrlModifier == candidate.HasCtrlModifier &&
                     s.HasShiftModifier == candidate.HasShiftModifier) != null;
+        }
+
+        public bool Equals(HotkeySettings other)
+        {
+            return other != null && Settings.SequenceEqual(other.Settings);
         }
 
         private static bool IsValid(HotkeySetting candidate)

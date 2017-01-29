@@ -181,7 +181,7 @@ namespace Rubberduck.SourceControl
                         directory += directory.EndsWith("\\") ? string.Empty : "\\";
                         components.Import(directory + filePath);
 
-                        VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
+                        VBE.SetSelection(component.Collection.Parent, selection.Selection, name);
                     }
                 }
                 else
@@ -224,7 +224,7 @@ namespace Rubberduck.SourceControl
                             throw new SourceControlException("Unknown exception.", ex);
                         }
 
-                        VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
+                        VBE.SetSelection(component.Collection.Parent, selection.Selection, name);
                     }
                 }
                 else

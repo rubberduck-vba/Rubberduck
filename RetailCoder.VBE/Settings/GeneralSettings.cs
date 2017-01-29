@@ -5,7 +5,7 @@ using Rubberduck.Common;
 
 namespace Rubberduck.Settings
 {
-    public interface IGeneralSettings
+    public interface IGeneralSettings 
     {
         DisplayLanguageSetting Language { get; set; }
         bool ShowSplash { get; set; }
@@ -17,7 +17,7 @@ namespace Rubberduck.Settings
     }
 
     [XmlType(AnonymousType = true)]
-    public class GeneralSettings : IGeneralSettings
+    public class GeneralSettings : IGeneralSettings, IEquatable<GeneralSettings>
     {
         public DisplayLanguageSetting Language { get; set; }
         public bool ShowSplash { get; set; }
@@ -56,6 +56,18 @@ namespace Rubberduck.Settings
             AutoSavePeriod = 10;
             Delimiter = '.';
             MinimumLogLevel = LogLevel.Off.Ordinal;
+        }
+
+        public bool Equals(GeneralSettings other)
+        {
+            return other != null &&
+                   Language.Equals(other.Language) &&
+                   ShowSplash == other.ShowSplash &&
+                   SmartIndenterPrompted == other.SmartIndenterPrompted &&
+                   AutoSaveEnabled == other.AutoSaveEnabled &&
+                   AutoSavePeriod == other.AutoSavePeriod &&
+                   Delimiter.Equals(other.Delimiter) &&
+                   MinimumLogLevel == other.MinimumLogLevel;
         }
     }
 }
