@@ -424,6 +424,12 @@ namespace Rubberduck.Parsing.Symbols
             get { return _projectName; }
         }
 
+        /// <summary>
+        /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
+        /// This should only be called if it is *absolutely* necessary.
+        /// </summary>
+        public virtual string ProjectDisplayName { get { return _parentDeclaration.ProjectDisplayName; } }
+
         public object[] ToArray()
         {
             return new object[] { ProjectName, CustomFolder, ComponentName, DeclarationType.ToString(), Scope, IdentifierName, AsTypeName };

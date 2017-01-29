@@ -87,18 +87,18 @@ namespace Rubberduck.Inspections.Abstract
             return Inspection.CompareTo(other.Inspection);
         }
 
-        public override string ToString()
-        {
-            var module = QualifiedSelection.QualifiedName;
-            return string.Format(
-                InspectionsUI.QualifiedSelectionInspection,
-                Inspection.Severity,
-                Description,
-                "(" + module.ProjectDisplayName + ")",
-                module.ProjectName,
-                module.ComponentName,
-                QualifiedSelection.Selection.StartLine);
-        }
+        //public override string ToString()
+        //{
+        //    var module = QualifiedSelection.QualifiedName;
+        //    return string.Format(
+        //        InspectionsUI.QualifiedSelectionInspection,
+        //        Inspection.Severity,
+        //        Description,
+        //        "(" + module.ProjectDisplayName + ")",
+        //        module.ProjectName,
+        //        module.ComponentName,
+        //        QualifiedSelection.Selection.StartLine);
+        //}
 
         public virtual NavigateCodeEventArgs GetNavigationArgs()
         {
