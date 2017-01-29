@@ -70,7 +70,7 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Excel Application object does not implement the WorksheetFunction interface directly. All calls made to WorksheetFunction members are handled as late bound and errors in the called member will be returned wrapped in a Variant of VbVarType.vbError. This makes errors un-trappable with error handlers and adds a performance penalty in comparison to early bound calls. Consider calling Application.WorksheetFunction explicitly..
+        ///   Looks up a localized string similar to The Excel Application object does not implement the WorksheetFunction interface directly. All calls made to WorksheetFunction members are handled as late bound and errors in the called member will be returned wrapped in a Variant of VbVarType.vbError. This makes errors un-trappable with error handlers and adds a performance penalty in comparison to early bound calls. Consider calling Application.WorksheetFunction explicitly. Note: If this call generated errors in the past, those errors were ignored. If appl [rest of string was truncated]&quot;;.
         /// </summary>
         public static string ApplicationWorksheetFunctionInspectionMeta {
             get {

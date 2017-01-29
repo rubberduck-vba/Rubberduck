@@ -635,7 +635,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Expression '{0}' cannot be validated at compile-time.</value>
   </data>
   <data name="ApplicationWorksheetFunctionInspectionMeta" xml:space="preserve">
-    <value>The Excel Application object does not implement the WorksheetFunction interface directly. All calls made to WorksheetFunction members are handled as late bound and errors in the called member will be returned wrapped in a Variant of VbVarType.vbError. This makes errors un-trappable with error handlers and adds a performance penalty in comparison to early bound calls. Consider calling Application.WorksheetFunction explicitly.</value>
+    <value>The Excel Application object does not implement the WorksheetFunction interface directly. All calls made to WorksheetFunction members are handled as late bound and errors in the called member will be returned wrapped in a Variant of VbVarType.vbError. This makes errors un-trappable with error handlers and adds a performance penalty in comparison to early bound calls. Consider calling Application.WorksheetFunction explicitly. Note: If this call generated errors in the past, those errors were ignored. If applying the quick fix, proper error handling should be in place.</value>
   </data>
   <data name="ApplicationWorksheetFunctionInspectionName" xml:space="preserve">
     <value>Late bound WorksheetFunction call.</value>
