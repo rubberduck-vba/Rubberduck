@@ -109,22 +109,22 @@ namespace Rubberduck.Parsing.VBA
             // tests do not fire events when components are removed--clear components
             ClearComponentStateCacheForTests();
 
-            ExecuteCommenParseActivities(components, token);
+            // invalidation cleanup should go into ParseAsync?
+            CleanUpComponentAttributes(components);
+
+            ExecuteCommonParseActivities(components, token);
 
         }
 
-        private void ExecuteCommenParseActivities(List<IVBComponent> components, CancellationTokenSource token)
+        private void ExecuteCommonParseActivities(List<IVBComponent> toParse, CancellationTokenSource token)
         {
-            SetModuleStates(components, ParserState.Pending);
+            SetModuleStates(toParse, ParserState.Pending);
 
             SyncComReferences(State.Projects);
             RefreshDeclarationFinder();
 
             AddBuiltInDeclarations();
             RefreshDeclarationFinder();
-
-            // invalidation cleanup should go into ParseAsync?
-            CleanUpComponentAttributes(components);
 
             if (token.IsCancellationRequested)
             {
@@ -134,14 +134,14 @@ namespace Rubberduck.Parsing.VBA
             _projectDeclarations.Clear();
             State.ClearBuiltInReferences();
 
-            ParseComponents(components, token.Token);
+            ParseComponents(toParse, token.Token);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
                 return;
             }
 
-            ResolveAllDeclarations(components, token.Token);
+            ResolveAllDeclarations(toParse, token.Token);
             RefreshDeclarationFinder();
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
@@ -198,8 +198,8 @@ namespace Rubberduck.Parsing.VBA
                 options,
                 component =>
                 {
-                    State.ClearStateCache(component);
                     State.SetModuleState(component, ParserState.Parsing);
+                    State.ClearStateCache(component);
                     var finishedParseTask = FinishedParseComponentTask(component, token);
                     ProcessComponentParseResults(component, finishedParseTask);
                 }
@@ -255,6 +255,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+
         private void ResolveAllDeclarations(List<IVBComponent> components, CancellationToken token)
         {
             var options = new ParallelOptions();
@@ -288,9 +289,12 @@ namespace Rubberduck.Parsing.VBA
             State.RefreshProjects(_vbe);
            
             var components = State.Projects.SelectMany(project => project.VBComponents).ToList();
-            
+
             var componentsRemoved = ClearStateCashForRemovedComponents(components);
-           
+
+            // invalidation cleanup should go into ParseAsync?
+            CleanUpComponentAttributes(components);
+
             var toParse = components.Where(component => State.IsNewOrModified(component)).ToList();     
             
             if (toParse.Count == 0)
@@ -304,7 +308,7 @@ namespace Rubberduck.Parsing.VBA
                 //return; // returning here leaves state in 'ResolvedDeclarations' when a module is removed, which disables refresh
             }
 
-            ExecuteCommenParseActivities(components, token);
+            ExecuteCommonParseActivities(toParse, token);
         }
 
         /// <summary>
