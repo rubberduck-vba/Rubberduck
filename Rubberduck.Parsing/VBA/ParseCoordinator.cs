@@ -28,6 +28,7 @@ namespace Rubberduck.Parsing.VBA
         public RubberduckParserState State { get { return _state; } }
 
         private const int _maxDegreeOfParserParallelism = -1;
+        private const int _maxDegreeOfModuleStateChangeParallelism = -1;
 
         private readonly IDictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
@@ -163,10 +164,12 @@ namespace Rubberduck.Parsing.VBA
 
         private void SetModuleStates(List<IVBComponent> components, ParserState parserState)
         {
-            foreach (var component in components)
-            {
-                State.SetModuleState(component, parserState);
-            }
+            var options = new ParallelOptions();
+            options.MaxDegreeOfParallelism = _maxDegreeOfModuleStateChangeParallelism;
+
+            Parallel.ForEach(components, options, component => State.SetModuleState(component, parserState, null, false));
+            
+            State.EvaluateParserState();
         }
 
         private void CleanUpComponentAttributes(List<IVBComponent> components)
@@ -190,6 +193,8 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseComponents(List<IVBComponent> components, CancellationToken token)
         {
+            SetModuleStates(components, ParserState.Parsing);
+
             var options = new ParallelOptions();
             options.CancellationToken = token;
             options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
@@ -198,12 +203,12 @@ namespace Rubberduck.Parsing.VBA
                 options,
                 component =>
                 {
-                    State.SetModuleState(component, ParserState.Parsing);
                     State.ClearStateCache(component);
                     var finishedParseTask = FinishedParseComponentTask(component, token);
                     ProcessComponentParseResults(component, finishedParseTask);
                 }
             );
+            State.EvaluateParserState();
         }
 
         private Task<ComponentParseTask.ParseCompletionArgs> FinishedParseComponentTask(IVBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
@@ -233,6 +238,7 @@ namespace Rubberduck.Parsing.VBA
             finishedParseTask.Wait();
             if (finishedParseTask.IsFaulted)
             {
+                //In contrast to the situation in the success scenario, the overall parser state is reevaluated immediately.
                 State.SetModuleState(component, ParserState.Error, finishedParseTask.Exception.InnerException as SyntaxErrorException);
             }
             else if (finishedParseTask.IsCompleted)
@@ -249,7 +255,9 @@ namespace Rubberduck.Parsing.VBA
                         State.SetModuleAnnotations(component, result.Annotations);
 
                         // This really needs to go last
-                        State.SetModuleState(component, ParserState.Parsed);
+                        //It does not reevaluate the overall parer state to avoid concurrent evaluation of all module states and for performance reasons.
+                        //The evaluation has to be triggered manually in the calling procedure.
+                        State.SetModuleState(component, ParserState.Parsed, null, false);
                     }
                 }
             }
@@ -258,6 +266,8 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveAllDeclarations(List<IVBComponent> components, CancellationToken token)
         {
+            SetModuleStates(components, ParserState.ResolvingDeclarations);
+
             var options = new ParallelOptions();
             options.CancellationToken = token;
             options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
@@ -267,7 +277,6 @@ namespace Rubberduck.Parsing.VBA
                 component =>
                 {
                     var qualifiedName = new QualifiedModuleName(component);
-                    State.SetModuleState(component, ParserState.ResolvingDeclarations);
                     ResolveDeclarations(qualifiedName.Component,
                         State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
                 }
