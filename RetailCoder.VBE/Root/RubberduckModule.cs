@@ -120,7 +120,9 @@ namespace Rubberduck.Root
                 .InSingletonScope();
 
             Bind<IDockablePresenter>().To<TestExplorerDockablePresenter>()
-                .WhenInjectedInto<TestExplorerCommand>()
+                .WhenInjectedInto(
+                    typeof (RunAllTestsCommand), 
+                    typeof (TestExplorerCommand))
                 .InSingletonScope();
 
             Bind<IDockablePresenter>().To<CodeInspectionsDockablePresenter>()

@@ -45,7 +45,7 @@ namespace Rubberduck.UI.UnitTesting
 
             _navigateCommand = new NavigateCommand();
 
-            _runAllTestsCommand = new RunAllTestsCommand(vbe, state, testEngine, model);
+            _runAllTestsCommand = new RunAllTestsCommand(vbe, state, testEngine, model, null);
             _runAllTestsCommand.RunCompleted += RunCompleted;
 
             _addTestModuleCommand = new AddTestModuleCommand(vbe, state, configService);
