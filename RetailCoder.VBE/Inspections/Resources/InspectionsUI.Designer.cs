@@ -70,6 +70,42 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Excel Application object does not implement the WorksheetFunction interface directly. All calls made to WorksheetFunction members are handled as late bound and errors in the called member will be returned wrapped in a Variant of VbVarType.vbError. This makes errors un-trappable with error handlers and adds a performance penalty in comparison to early bound calls. Consider calling Application.WorksheetFunction explicitly. Note: If this call generated errors in the past, those errors were ignored. If appl [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string ApplicationWorksheetFunctionInspectionMeta {
+            get {
+                return ResourceManager.GetString("ApplicationWorksheetFunctionInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Late bound WorksheetFunction call..
+        /// </summary>
+        public static string ApplicationWorksheetFunctionInspectionName {
+            get {
+                return ResourceManager.GetString("ApplicationWorksheetFunctionInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of late bound Application.{0} member..
+        /// </summary>
+        public static string ApplicationWorksheetFunctionInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ApplicationWorksheetFunctionInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Application.WorksheetFunction explicitly..
+        /// </summary>
+        public static string ApplicationWorksheetFunctionQuickFix {
+            get {
+                return ResourceManager.GetString("ApplicationWorksheetFunctionQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead if the caller isn&apos;t supposed to know the new value. If the caller should see the new value, the parameter should be passed ByRef instead, and you have a bug..
         /// </summary>
         public static string AssignedByValParameterInspectionMeta {

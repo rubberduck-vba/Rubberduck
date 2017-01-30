@@ -65,7 +65,7 @@ namespace Rubberduck.VBEditor.Application
             get { return _applicationName; }
         }
 
-        public abstract void Run(QualifiedMemberName qualifiedMemberName);
+        public abstract void Run(dynamic declaration);
 
         public void Dispose()
         {

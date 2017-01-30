@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -168,12 +169,13 @@ namespace Rubberduck.Parsing.Symbols
 
             foreach (var control in form.Controls)
             {
+                var typeName = control.TypeName();
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(
                     _qualifiedName.QualifyMemberName(control.Name),
                     _parentDeclaration,
                     _currentScopeDeclaration,
-                    "Control",
+                    string.IsNullOrEmpty(typeName) ? "Control" : typeName,
                     null,
                     true,
                     true,

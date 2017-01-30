@@ -4,9 +4,9 @@ namespace Rubberduck.VBEditor.Application
     {
         public AutoCADApp() : base("AutoCAD") { }
 
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+        public override void Run(dynamic declaration)
         {
-            Application.RunMacro(qualifiedMemberName.ToString());
+            Application.RunMacro(declaration.QualifiedName.ToString());
         }
     }
 }

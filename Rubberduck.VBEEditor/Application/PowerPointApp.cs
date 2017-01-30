@@ -4,9 +4,9 @@
     {
         public PowerPointApp() : base("PowerPoint") { }
 
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+        public override void Run(dynamic declaration)
         {
-            var methodCall = GenerateMethodCall(qualifiedMemberName);
+            var methodCall = GenerateMethodCall(declaration.QualifiedName);
             if (methodCall == null) { return; }
 
             //PowerPoint requires a paramarray, so we pass it an empty array:

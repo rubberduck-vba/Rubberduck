@@ -1,5 +1,5 @@
 using System;
-using System.Text.RegularExpressions;
+using System.Globalization;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -19,7 +19,7 @@ namespace Rubberduck.VBEditor
 
             if (string.IsNullOrEmpty(project.HelpFile))
             {
-                project.HelpFile = project.GetHashCode().ToString();
+                project.HelpFile = project.GetHashCode().ToString(CultureInfo.InvariantCulture);
             }
 
             return project.HelpFile;
@@ -40,8 +40,6 @@ namespace Rubberduck.VBEditor
             _projectPath = string.Empty;
             _projectId = GetProjectId(project);           
             _contentHashCode = 0;
-            _projectDisplayName = string.Empty;
-            SetProjectDisplayName(project);
         }
 
         public QualifiedModuleName(IVBComponent component)
@@ -63,8 +61,6 @@ namespace Rubberduck.VBEditor
             _projectName = project == null ? string.Empty : project.Name;
             _projectPath = string.Empty;
             _projectId = GetProjectId(project);
-            _projectDisplayName = string.Empty;
-            SetProjectDisplayName(project);
         }
 
         /// <summary>
@@ -74,9 +70,8 @@ namespace Rubberduck.VBEditor
         public QualifiedModuleName(string projectName, string projectPath, string componentName)
         {
             _projectName = projectName;
-            _projectDisplayName = null;
             _projectPath = projectPath;
-            _projectId = string.Format("{0};{1}", _projectName, _projectPath).GetHashCode().ToString();
+            _projectId = string.Format("{0};{1}", _projectName, _projectPath).GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
             _component = null;
             _componentType = ComponentType.ComComponent;
@@ -110,49 +105,6 @@ namespace Rubberduck.VBEditor
 
         private readonly string _projectPath;
         public string ProjectPath { get { return _projectPath; } }
-
-        private static readonly Regex CaptionProjectRegex = new Regex(@"^(?:[^-]+)(?:\s-\s)(?<project>.+)(?:\s-\s.*)?$");
-        private static readonly Regex OpenModuleRegex = new Regex(@"^(?<project>.+)(?<module>\s-\s\[.*\((Code|UserForm)\)\])$");
-
-        // because this causes a flicker in the VBE, we only want to do it once.
-        // we also want to defer it as long as possible because it is only
-        // needed in a couple places, and QualifiedModuleName is used in many places.
-        private string _projectDisplayName;
-        public string ProjectDisplayName
-        {
-            get { return _projectDisplayName; }
-        }
-
-        private void SetProjectDisplayName(IVBProject project)
-        {
-            if (project == null)
-            {
-                return;
-            }
-            var vbe = project.VBE;
-            var activeProject = vbe.ActiveVBProject;
-            var mainWindow = vbe.MainWindow;
-            {
-                try
-                {
-                    if (project.HelpFile != activeProject.HelpFile)
-                    {
-                        vbe.ActiveVBProject = project;
-                    }
-
-                    var caption = mainWindow.Caption;
-                    if (CaptionProjectRegex.IsMatch(caption))
-                    {
-                        caption = CaptionProjectRegex.Matches(caption)[0].Groups["project"].Value;
-                        _projectDisplayName = OpenModuleRegex.IsMatch(caption)
-                            ? OpenModuleRegex.Matches(caption)[0].Groups["project"].Value
-                            : caption;
-                    }
-                }
-                // ReSharper disable once EmptyGeneralCatchClause
-                catch { }
-            }
-        }
 
         public override string ToString()
         {

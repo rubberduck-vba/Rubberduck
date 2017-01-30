@@ -128,8 +128,8 @@ End Sub";
             var initMethods = qualifiedModuleName.FindTestInitializeMethods(parser.State).ToList();
 
             Assert.AreEqual(1, initMethods.Count);
-            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedModuleName.ComponentName);
-            Assert.AreEqual("TestInitialize", initMethods.ElementAt(0).MemberName);
+            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
+            Assert.AreEqual("TestInitialize", initMethods.ElementAt(0).QualifiedName.MemberName);
         }
 
         [TestMethod]
@@ -154,8 +154,8 @@ End Sub";
             var initMethods = qualifiedModuleName.FindTestCleanupMethods(parser.State).ToList();
 
             Assert.AreEqual(1, initMethods.Count);
-            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedModuleName.ComponentName);
-            Assert.AreEqual("TestCleanup", initMethods.ElementAt(0).MemberName);
+            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
+            Assert.AreEqual("TestCleanup", initMethods.ElementAt(0).QualifiedName.MemberName);
         }
 
         [TestMethod]
@@ -268,8 +268,8 @@ End Sub";
             var initMethods = qualifiedModuleName.FindModuleInitializeMethods(parser.State).ToList();
 
             Assert.AreEqual(1, initMethods.Count);
-            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedModuleName.ComponentName);
-            Assert.AreEqual("ModuleInitialize", initMethods.ElementAt(0).MemberName);
+            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
+            Assert.AreEqual("ModuleInitialize", initMethods.ElementAt(0).QualifiedName.MemberName);
         }
 
         [TestMethod]
@@ -294,8 +294,8 @@ End Sub";
             var initMethods = qualifiedModuleName.FindModuleCleanupMethods(parser.State).ToList();
 
             Assert.AreEqual(1, initMethods.Count);
-            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedModuleName.ComponentName);
-            Assert.AreEqual("ModuleCleanup", initMethods.ElementAt(0).MemberName);
+            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
+            Assert.AreEqual("ModuleCleanup", initMethods.ElementAt(0).QualifiedName.MemberName);
         }
 
         [TestMethod]

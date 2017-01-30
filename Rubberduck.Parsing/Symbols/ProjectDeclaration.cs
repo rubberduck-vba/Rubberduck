@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.ComReflection;
+﻿using System.Text.RegularExpressions;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,6 +70,58 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
             _projectReferences.Add(new ProjectReference(referencedProjectId, priority));
+        }
+
+        private static readonly Regex CaptionProjectRegex = new Regex(@"^(?:[^-]+)(?:\s-\s)(?<project>.+)(?:\s-\s.*)?$");
+        private static readonly Regex OpenModuleRegex = new Regex(@"^(?<project>.+)(?<module>\s-\s\[.*\((Code|UserForm)\)\])$");
+
+        private string _displayName;
+        /// <summary>
+        /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
+        /// This should only be called if it is *absolutely* necessary.
+        /// </summary>
+        public override string ProjectDisplayName
+        {
+            get
+            {
+                if (_displayName != null)
+                {
+                    return _displayName;
+                }
+
+                if (_project == null)
+                {
+                    _displayName = string.Empty;
+                    return _displayName;
+                }
+
+                var vbe = _project.VBE;
+                var activeProject = vbe.ActiveVBProject;
+                var mainWindow = vbe.MainWindow;
+                {
+                    try
+                    {
+                        if (_project.HelpFile != activeProject.HelpFile)
+                        {
+                            vbe.ActiveVBProject = _project;
+                        }
+
+                        var caption = mainWindow.Caption;
+                        if (CaptionProjectRegex.IsMatch(caption))
+                        {
+                            caption = CaptionProjectRegex.Matches(caption)[0].Groups["project"].Value;
+                            _displayName = OpenModuleRegex.IsMatch(caption)
+                                ? OpenModuleRegex.Matches(caption)[0].Groups["project"].Value
+                                : caption;
+                        }
+                    }
+                    catch
+                    {
+                        _displayName = string.Empty;
+                    }
+                    return _displayName;
+                }
+            }
         }
     }
 }

@@ -141,6 +141,9 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 null,
                 string.Empty,
                 false,
+                true,
+                false,
+                false,
                 true);
         }
 
@@ -154,6 +157,9 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 "Integer",
                 null,
                 string.Empty,
+                false,
+                true,
+                false,
                 false,
                 true);
         }

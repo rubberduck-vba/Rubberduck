@@ -7,12 +7,12 @@ namespace Rubberduck.VBEditor.Application
         public VisioApp() : base("Visio") { }
         public VisioApp(IVBE vbe) : base(vbe, "Visio") { }
 
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+        public override void Run(dynamic declaration)
         {
             try
             {
-                Microsoft.Office.Interop.Visio.Document doc = Application.Documents[qualifiedMemberName.QualifiedModuleName.ProjectDisplayName];
-                var call = GenerateMethodCall(qualifiedMemberName);
+                Microsoft.Office.Interop.Visio.Document doc = Application.Documents[declaration.ProjectDisplayName];
+                var call = GenerateMethodCall(declaration.QualifiedName);
                 doc.ExecuteLine(call);
             }
             catch 

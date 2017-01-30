@@ -8,18 +8,19 @@ namespace Rubberduck.VBEditor.Application
         public ExcelApp() : base("Excel") { }
         public ExcelApp(IVBE vbe) : base(vbe, "Excel") { }
 
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+        public override void Run(dynamic declaration)
         {
-            var call = GenerateMethodCall(qualifiedMemberName);
+            var call = GenerateMethodCall(declaration);
             Application.Run(call);
         }
 
-        protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
+        protected virtual string GenerateMethodCall(dynamic declaration)
         {
+            var qualifiedMemberName = declaration.QualifiedName;
             var module = qualifiedMemberName.QualifiedModuleName;
 
             var documentName = string.IsNullOrEmpty(module.ProjectPath)
-                ? module.ProjectDisplayName
+                ? declaration.ProjectDisplayName
                 : Path.GetFileName(module.ProjectPath);
 
             return string.IsNullOrEmpty(documentName)
