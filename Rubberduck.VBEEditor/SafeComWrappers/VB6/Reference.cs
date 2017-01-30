@@ -12,22 +12,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
+            get { return IsBroken ? string.Empty : Target.Name; }
         }
 
         public string Guid
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Guid; }
+            get { return IsBroken ? string.Empty : Target.Guid; }
         }
 
         public int Major
         {
-            get { return IsWrappingNullReference ? 0 : Target.Major; }
+            get { return IsBroken ? 0 : Target.Major; }
         }
 
         public int Minor
         {
-            get { return IsWrappingNullReference ? 0 : Target.Minor; }
+            get { return IsBroken ? 0 : Target.Minor; }
         }
 
         public string Version
@@ -37,17 +37,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public string Description
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Description; }
+            get { return IsBroken ? string.Empty : Target.Description; }
         }
 
         public string FullPath
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.FullPath; }
+            get { return IsBroken ? string.Empty : Target.FullPath; }
         }
 
         public bool IsBuiltIn
         {
-            get { return !IsWrappingNullReference && Target.BuiltIn; }
+            get { return !IsBroken && Target.BuiltIn; }
         }
 
         public bool IsBroken
@@ -57,17 +57,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public ReferenceKind Type
         {
-            get { return IsWrappingNullReference ? 0 : (ReferenceKind)Target.Type; }
+            get { return IsBroken ? 0 : (ReferenceKind)Target.Type; }
         }
 
         public IReferences Collection
         {
-            get { return new References(IsWrappingNullReference ? null : Target.Collection); }
+            get { return new References(IsBroken ? null : Target.Collection); }
         }
 
         public IVBE VBE
         {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
+            get { return new VBE(IsBroken ? null : Target.VBE); }
         }
 
         public override bool Equals(ISafeComWrapper<VB.Reference> other)
@@ -89,7 +89,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : HashCode.Compute(Type, Name, Guid, FullPath, Major, Minor);
+            return IsBroken ? 0 : HashCode.Compute(Type, Name, Guid, FullPath, Major, Minor);
         }
     }
 }
