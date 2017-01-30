@@ -80,7 +80,8 @@ namespace Rubberduck.Parsing.VBA
             }
             else
             {
-                Parse(_cancellationTokens[0]);
+                Cancel();
+                ParseInternal(_cancellationTokens[0]);
             }
         }
 
@@ -101,7 +102,28 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// For the use of tests only
         /// </summary>
+        /// 
         public void Parse(CancellationTokenSource token)
+        {
+            SetSavedCancellationTokenSource(token);
+            ParseInternal(token);
+        }
+
+        private void SetSavedCancellationTokenSource(CancellationTokenSource token)
+        {
+            if (_cancellationTokens.Any())
+            {
+                _cancellationTokens[0].Cancel();
+                _cancellationTokens[0].Dispose();
+                _cancellationTokens[0] = token;
+            }
+            else
+            {
+                _cancellationTokens.Add(token);
+            }
+        }
+
+        private void ParseInternal(CancellationTokenSource token)
         {
             State.RefreshProjects(_vbe);
 
