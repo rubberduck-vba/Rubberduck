@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
@@ -99,7 +98,7 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        private void Run(IEnumerable<QualifiedMemberName> members)
+        private void Run(IEnumerable<Declaration> members)
         {
             if (_hostApplication == null)
             {

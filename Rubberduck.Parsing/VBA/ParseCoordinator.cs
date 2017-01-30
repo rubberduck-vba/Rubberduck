@@ -489,6 +489,10 @@ namespace Rubberduck.Parsing.VBA
                     for (var priority = 1; priority <= references.Count; priority++)
                     {
                         var reference = references[priority];
+                        if (reference.IsBroken)
+                        {
+                            continue;                           
+                        }
 
                         // skip loading Rubberduck.tlb (GUID is defined in AssemblyInfo.cs)
                         if (reference.Guid == "{E07C841C-14B4-4890-83E9-8C80B06DD59D}")

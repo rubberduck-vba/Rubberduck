@@ -11,8 +11,9 @@ namespace Rubberduck.VBEditor.Application
     {
         public AccessApp() : base("Access") { }
 
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+        public override void Run(dynamic declaration)
         {
+            var qualifiedMemberName = declaration.QualifiedName;
             var call = GenerateMethodCall(qualifiedMemberName);
             Application.Run(call);
         }

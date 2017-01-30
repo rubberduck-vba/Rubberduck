@@ -10,7 +10,7 @@ namespace Rubberduck.VBEditor.Application
         {
         }
 
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+        public override void Run(dynamic declaration)
         {
             // note: does not work. http://stackoverflow.com/q/31954364/1188513
             //var app = Application.GetType();
@@ -28,7 +28,7 @@ namespace Rubberduck.VBEditor.Application
                 var exp = app.ActiveExplorer();
                 CommandBar cb = exp.CommandBars.Add("RubberduckCallbackProxy", Temporary: true);
                 CommandBarControl btn = cb.Controls.Add(MsoControlType.msoControlButton, 1);
-                btn.OnAction = qualifiedMemberName.ToString();
+                btn.OnAction = declaration.QualifiedName.ToString();
                 btn.Execute();
                 cb.Delete();
             }

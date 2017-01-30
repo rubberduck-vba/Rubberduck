@@ -1,5 +1,6 @@
 using NLog;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Binding;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Concurrent;
@@ -37,6 +38,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly ConcurrentDictionary<string, Declaration[]> _declarationsByName;
         private readonly ConcurrentDictionary<QualifiedModuleName, Declaration[]> _declarations;
         private readonly ConcurrentDictionary<QualifiedMemberName, IList<Declaration>> _undeclared;
+        private readonly ConcurrentBag<UnboundMemberDeclaration> _unresolved;
         private readonly ConcurrentDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly ConcurrentDictionary<Declaration, Declaration[]> _parametersByParent;
         private readonly ConcurrentDictionary<DeclarationType, Declaration[]> _userDeclarationsByType;
@@ -94,6 +96,7 @@ namespace Rubberduck.Parsing.Symbols
                     ));
 
             _undeclared = new ConcurrentDictionary<QualifiedMemberName, IList<Declaration>>(new Dictionary<QualifiedMemberName, IList<Declaration>>());
+            _unresolved = new ConcurrentBag<UnboundMemberDeclaration>(new List<UnboundMemberDeclaration>());
             _annotationService = new AnnotationService(this);
 
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule).SelectMany(cls => 
@@ -172,6 +175,14 @@ namespace Rubberduck.Parsing.Symbols
                     .ToArray();
             }
             return result;
+        }
+
+        public IEnumerable<UnboundMemberDeclaration> UnresolvedMemberDeclarations()
+        {
+            lock (ThreadLock)
+            {
+                return _unresolved.ToArray();
+            }            
         }
 
         public IEnumerable<Declaration> FindHandlersForWithEventsField(Declaration field)
@@ -485,6 +496,27 @@ namespace Rubberduck.Parsing.Symbols
             return undeclaredLocal;
         }
 
+        public void AddUnboundContext(Declaration parentDeclaration, VBAParser.LExprContext context, IBoundExpression withExpression)
+        {
+            
+            //The only forms we care about right now are MemberAccessExprContext or WithMemberAccessExprContext.
+            var access = (ParserRuleContext)context.GetChild<VBAParser.MemberAccessExprContext>(0)
+                         ?? context.GetChild<VBAParser.WithMemberAccessExprContext>(0);
+            if (access == null)
+            {
+                return;
+            }
+
+            var identifier = access.GetChild<VBAParser.UnrestrictedIdentifierContext>(0);
+            var annotations = _annotationService.FindAnnotations(parentDeclaration.QualifiedName.QualifiedModuleName, context.Start.Line);
+
+            var declaration = new UnboundMemberDeclaration(parentDeclaration, identifier,
+                (access is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)access.children[0] : withExpression.Context, 
+                annotations);
+
+            _unresolved.Add(declaration);
+        }
+
         public Declaration OnBracketedExpression(string expression, ParserRuleContext context)
         {
             var hostApp = FindProject(_hostApp == null ? "VBA" : _hostApp.ApplicationName);
@@ -619,7 +651,7 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public static ConcurrentBag<Declaration> FindBuiltInEventHandlers(IEnumerable<Declaration> declarations)
+        public ConcurrentBag<Declaration> FindBuiltInEventHandlers(IEnumerable<Declaration> declarations)
         {
             var declarationList = declarations.ToList();
 
@@ -632,9 +664,6 @@ namespace Rubberduck.Parsing.Symbols
                                                    : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
                                            });
 
-            var user = declarationList.FirstOrDefault(decl => !decl.IsBuiltIn);
-            var host = user != null ? user.Project.VBE.HostApplication() : null;
-
             var handlers = declarationList.Where(item =>
                 // class module built-in events
                 (item.DeclarationType == DeclarationType.Procedure &&
@@ -642,8 +671,8 @@ namespace Rubberduck.Parsing.Symbols
                      item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
                      item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase))) ||
                 // standard module built-in handlers (Excel specific):
-                (host != null &&
-                 host.ApplicationName.Equals("Excel", StringComparison.InvariantCultureIgnoreCase) &&
+                (_hostApp != null &&
+                 _hostApp.ApplicationName.Equals("Excel", StringComparison.InvariantCultureIgnoreCase) &&
                  item.DeclarationType == DeclarationType.Procedure &&
                  item.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule && (
                      item.IdentifierName.Equals("auto_open", StringComparison.InvariantCultureIgnoreCase) ||
