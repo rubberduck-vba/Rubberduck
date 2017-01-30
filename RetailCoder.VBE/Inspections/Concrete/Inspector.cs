@@ -95,15 +95,17 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     LogManager.GetCurrentClassLogger().Error(e);
                 }
-                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
 
                 var issuesByType = allIssues.GroupBy(issue => issue.GetType())
                                             .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
-                return issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
+                var results = issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
                     .SelectMany(kv => kv.Value)
                     .Union(issuesByType.Where(kv => kv.Value.Count > AGGREGATION_THRESHOLD)
-                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).ToList())));
-                //return allIssues;
+                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).First(), kv.Value.Count)))
+                    .ToList();
+
+                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, UI.Settings.Settings.Culture)); // should be "Ready"
+                return results;
             }
 
             private IReadOnlyList<QualifiedContext> GetParseTreeResults(Configuration config, RubberduckParserState state)
@@ -119,6 +121,7 @@ namespace Rubberduck.Inspections.Concrete
                     */
                     var obsoleteCallStatementListener = IsDisabled<ObsoleteCallStatementInspection>(settings) ? null : new ObsoleteCallStatementInspection.ObsoleteCallStatementListener();
                     var obsoleteLetStatementListener = IsDisabled<ObsoleteLetStatementInspection>(settings) ? null : new ObsoleteLetStatementInspection.ObsoleteLetStatementListener();
+                    var obsoleteCommentSyntaxListener = IsDisabled<ObsoleteCommentSyntaxInspection>(settings) ? null : new ObsoleteCommentSyntaxInspection.ObsoleteCommentSyntaxListener();
                     var emptyStringLiteralListener = IsDisabled<EmptyStringLiteralInspection>(settings) ? null : new EmptyStringLiteralInspection.EmptyStringLiteralListener();
                     var argListWithOneByRefParamListener = IsDisabled<ProcedureCanBeWrittenAsFunctionInspection>(settings) ? null : new ProcedureCanBeWrittenAsFunctionInspection.SingleByRefParamArgListListener();
                     var invalidAnnotationListener = IsDisabled<MissingAnnotationArgumentInspection>(settings) ? null : new MissingAnnotationArgumentInspection.InvalidAnnotationStatementListener();
@@ -126,6 +129,7 @@ namespace Rubberduck.Inspections.Concrete
                     var combinedListener = new CombinedParseTreeListener(new IParseTreeListener[]{
                         obsoleteCallStatementListener,
                         obsoleteLetStatementListener,
+                        obsoleteCommentSyntaxListener,
                         emptyStringLiteralListener,
                         argListWithOneByRefParamListener,
                         invalidAnnotationListener
@@ -133,11 +137,30 @@ namespace Rubberduck.Inspections.Concrete
 
                     ParseTreeWalker.Default.Walk(combinedListener, componentTreePair.Value);
 
-                    result.AddRange(argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext<VBAParser.ArgListContext>(componentTreePair.Key, context)));
-                    result.AddRange(emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext<VBAParser.LiteralExpressionContext>(componentTreePair.Key, context)));
-                    result.AddRange(obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext<VBAParser.LetStmtContext>(componentTreePair.Key, context)));
-                    result.AddRange(obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext<VBAParser.CallStmtContext>(componentTreePair.Key, context)));
-                    result.AddRange(invalidAnnotationListener.Contexts.Select(context => new QualifiedContext<VBAParser.AnnotationContext>(componentTreePair.Key, context)));
+                    if (argListWithOneByRefParamListener != null)
+                    {
+                        result.AddRange(argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext<VBAParser.ArgListContext>(componentTreePair.Key, context)));
+                    }
+                    if (emptyStringLiteralListener != null)
+                    {
+                        result.AddRange(emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext<VBAParser.LiteralExpressionContext>(componentTreePair.Key, context)));
+                    }
+                    if (obsoleteLetStatementListener != null)
+                    {
+                        result.AddRange(obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext<VBAParser.LetStmtContext>(componentTreePair.Key, context)));
+                    }
+                    if (obsoleteCommentSyntaxListener != null)
+                    {
+                        result.AddRange(obsoleteCommentSyntaxListener.Contexts.Select(context => new QualifiedContext<VBAParser.RemCommentContext>(componentTreePair.Key, context)));
+                    }
+                    if (obsoleteCallStatementListener != null)
+                    {
+                        result.AddRange(obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext<VBAParser.CallStmtContext>(componentTreePair.Key, context)));
+                    }
+                    if (invalidAnnotationListener != null)
+                    {
+                        result.AddRange(invalidAnnotationListener.Contexts.Select(context => new QualifiedContext<VBAParser.AnnotationContext>(componentTreePair.Key, context)));
+                    }
                 }
                 return result;
             }

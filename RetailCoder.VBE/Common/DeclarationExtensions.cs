@@ -280,44 +280,6 @@ namespace Rubberduck.Common
             return handlers;
         }
 
-        public static IEnumerable<Declaration> FindBuiltInEventHandlers(this IEnumerable<Declaration> declarations)
-        {
-            var declarationList = declarations.ToList();
-
-            var handlerNames = declarationList.Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
-                                           .SelectMany(e =>
-                                           {
-                                               var parentModuleSubtypes = ((ClassModuleDeclaration) e.ParentDeclaration).Subtypes;
-                                               return parentModuleSubtypes.Any()
-                                                   ? parentModuleSubtypes.Select(v => v.IdentifierName + "_" + e.IdentifierName)
-                                                   : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
-                                           });
-
-            var user = declarationList.FirstOrDefault(decl => !decl.IsBuiltIn);
-            var host = user != null ? user.Project.VBE.HostApplication() : null ;
-
-            var handlers = declarationList.Where(item =>
-                        // class module built-in events
-                        (item.DeclarationType == DeclarationType.Procedure &&
-                        item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule && (
-                            item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
-                            item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase))) ||
-                        // standard module built-in handlers (Excel specific):
-                        (host != null &&
-                        host.ApplicationName.Equals("Excel", StringComparison.InvariantCultureIgnoreCase) &&
-                        item.DeclarationType == DeclarationType.Procedure &&
-                        item.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule && (
-                            item.IdentifierName.Equals("auto_open", StringComparison.InvariantCultureIgnoreCase) ||
-                            item.IdentifierName.Equals("auto_close", StringComparison.InvariantCultureIgnoreCase))) ||
-                        // user handlers:
-                        (!item.IsBuiltIn &&
-                         item.DeclarationType == DeclarationType.Procedure &&
-                         handlerNames.Contains(item.IdentifierName))
-                        ).ToList();
-
-            return handlers;
-        }
-
         /// <summary>
         /// Gets the <see cref="Declaration"/> of the specified <see cref="DeclarationType"/>, 
         /// at the specified <see cref="QualifiedSelection"/>.
@@ -364,8 +326,7 @@ namespace Rubberduck.Common
             var items = state.AllDeclarations.ToList();
 
             var forms = items.Where(item => item.DeclarationType == DeclarationType.ClassModule
-                && item.QualifiedName.QualifiedModuleName.Component != null
-                && item.QualifiedName.QualifiedModuleName.Component.Type == ComponentType.UserForm)
+                && item.QualifiedName.QualifiedModuleName.ComponentType == ComponentType.UserForm)
                 .ToList();
 
             var result = new List<Declaration>();

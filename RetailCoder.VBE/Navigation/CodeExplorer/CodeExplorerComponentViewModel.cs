@@ -123,7 +123,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 
-        private ComponentType ComponentType { get { return _declaration.QualifiedName.QualifiedModuleName.Component.Type; } }
+        private ComponentType ComponentType { get { return _declaration.QualifiedName.QualifiedModuleName.ComponentType; } }
 
         private static readonly IDictionary<ComponentType, DeclarationType> DeclarationTypes = new Dictionary<ComponentType, DeclarationType>
         {

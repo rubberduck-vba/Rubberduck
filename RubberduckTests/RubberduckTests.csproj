@@ -89,9 +89,15 @@
     <Compile Include="Commands\RefactorCommandTests.cs" />
     <Compile Include="Commands\IndentCommandTests.cs" />
     <Compile Include="Commands\UnitTestCommandTests.cs" />
+    <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
+    <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
+    <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
+    <Compile Include="Inspections\IgnoreOnceQuickFixTests.cs" />
+    <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
+    <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
     <Compile Include="Symbols\ProjectDeclarationTests.cs" />
@@ -180,7 +186,6 @@
     <Compile Include="Settings\InspectionSettingsTests.cs" />
     <Compile Include="Settings\GeneralSettingsTests.cs" />
     <Compile Include="Settings\IndenterSettingsTests.cs" />
-    <Compile Include="Settings\SettingsControlTests.cs" />
     <Compile Include="Settings\TodoSettingsTests.cs" />
     <Compile Include="Settings\UnitTestSettingsTests.cs" />
     <Compile Include="SmartIndenter\EndOfLineCommentTests.cs" />
@@ -192,7 +197,6 @@
     <Compile Include="SourceControl\BranchesViewModelTests.cs" />
     <Compile Include="SourceControl\ChangesViewModelTests.cs" />
     <Compile Include="SourceControl\SettingsViewModelTests.cs" />
-    <Compile Include="SourceControl\SourceControlTests.cs" />
     <Compile Include="SourceControl\SourceControlViewModelTests.cs" />
     <Compile Include="SourceControl\UnsyncedCommitsViewModelTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
@@ -316,7 +320,40 @@
     <Content Include="Testfiles\Preprocessor\Reference_Module_1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Testfiles\Resolver\ADODB.6.1.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\ADOR.6.0.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\Excel.1.8.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\MSForms.2.0.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\MSXML2.6.0.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\Office.2.7.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Testfiles\Resolver\Scripting.1.0.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\SHDocVw.1.1.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\stdole.2.0.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\VBA.4.2.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\VBIDE.5.3.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Resolver\VBScript_RegExp_55.5.5.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

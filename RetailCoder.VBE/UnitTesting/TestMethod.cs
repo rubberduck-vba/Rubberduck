@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
@@ -43,7 +44,7 @@ namespace Rubberduck.UnitTesting
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                _hostApp.Run(Declaration.QualifiedName);
+                _hostApp.Run(Declaration);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 
                 result = EvaluateResults();
@@ -88,16 +89,7 @@ namespace Rubberduck.UnitTesting
 
         public NavigateCodeEventArgs GetNavigationArgs()
         {
-            var moduleName = Declaration.QualifiedName.QualifiedModuleName;
-            var methodName = Declaration.IdentifierName;
-            var module = moduleName.Component.CodeModule;
-
-            var startLine = module.GetProcBodyStartLine(methodName, ProcKind.Procedure);
-            var endLine = startLine + module.GetProcCountLines(methodName, ProcKind.Procedure);
-            var endLineColumns = module.GetLines(endLine, 1).Length;
-
-            var selection = new Selection(startLine, 1, endLine, endLineColumns == 0 ? 1 : endLineColumns);
-            return new NavigateCodeEventArgs(new QualifiedSelection(moduleName, selection));
+            return new NavigateCodeEventArgs(new QualifiedSelection(Declaration.QualifiedName.QualifiedModuleName, Declaration.Context.GetSelection()));
         }
 
         public object[] ToArray()

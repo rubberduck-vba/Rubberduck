@@ -6,7 +6,7 @@ namespace Rubberduck.VBEditor.Application
     {
         public PublisherApp() : base("Publisher") { }
 
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+        public override void Run(dynamic declaration)
         {
             //Publisher does not support the Run method
             throw new NotImplementedException("Unit Testing not supported for Publisher");

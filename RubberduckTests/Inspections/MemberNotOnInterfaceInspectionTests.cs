@@ -15,12 +15,16 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class MemberNotOnInterfaceInspectionTests
     {
-        private static ParseCoordinator ArrangeParser(string inputCode)
+        private static ParseCoordinator ArrangeParser(string inputCode, string library = "Scripting")
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Codez", ComponentType.StandardModule, inputCode)
-                .AddReference("Scripting", @"C:\Windows\SysWOW64\scrrun.dll", true)
+                .AddReference(library, 
+                              library.Equals("Scripting") ? MockVbeBuilder.LibraryPathScripting : MockVbeBuilder.LibraryPathMsExcel,
+                              1,
+                              library.Equals("Scripting") ? 0 : 8,
+                              true)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
@@ -29,7 +33,7 @@ namespace RubberduckTests.Inspections
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
 
-            parser.State.AddTestLibrary("Scripting.1.0.xml");
+            parser.State.AddTestLibrary(library.Equals("Scripting") ? "Scripting.1.0.xml" : "Excel.1.8.xml");
             return parser;
         }
 
@@ -64,13 +68,35 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim dict As IDictionary
+    Dim dict As Dictionary
     Set dict = New Dictionary
-    dict.Foo
+    dict.NonMember
 End Sub";
 
             //Arrange
             var parser = ArrangeParser(inputCode);
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new MemberNotOnInterfaceInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Inspections")]
+        public void MemberNotOnInterface_ReturnsResult_ApplicationObject()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Application.NonMember
+End Sub";
+
+            //Arrange
+            var parser = ArrangeParser(inputCode, "Excel");
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -107,7 +133,7 @@ End Sub";
         [DeploymentItem(@"Testfiles\")]
         [TestCategory("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_DeclaredMember()
-        {
+        {            
             const string inputCode =
 @"Sub Foo()
     Dim dict As Dictionary
@@ -155,7 +181,6 @@ End Sub";
         [TestCategory("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_WithBlock()
         {
-            Assert.Inconclusive("This is currently not working.");
             const string inputCode =
 @"Sub Foo()
     Dim dict As New Dictionary

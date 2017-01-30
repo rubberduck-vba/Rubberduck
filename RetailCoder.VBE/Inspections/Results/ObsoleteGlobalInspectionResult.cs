@@ -10,19 +10,23 @@ namespace Rubberduck.Inspections.Results
 {
     public class ObsoleteGlobalInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
 
         public ObsoleteGlobalInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> context)
             : base(inspection, context.ModuleName, context.Context)
-        {
-            _quickFixes = new QuickFixBase[]
-            {
-                new ReplaceGlobalModifierQuickFix(Context, QualifiedSelection),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
-            };
-        }
+        { }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new ReplaceGlobalModifierQuickFix(Context, QualifiedSelection),
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
 
         public override string Description
         {

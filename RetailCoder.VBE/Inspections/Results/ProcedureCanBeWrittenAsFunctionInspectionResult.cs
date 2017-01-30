@@ -15,25 +15,34 @@ namespace Rubberduck.Inspections.Results
 {
     public class ProcedureCanBeWrittenAsFunctionInspectionResult : InspectionResultBase
     {
-       private readonly IEnumerable<QuickFixBase> _quickFixes;
+       private IEnumerable<QuickFixBase> _quickFixes;
+       private readonly QualifiedContext<VBAParser.ArgListContext> _argListQualifiedContext;
+       private readonly QualifiedContext<VBAParser.SubStmtContext> _subStmtQualifiedContext;
+       private readonly RubberduckParserState _state;
 
-       public ProcedureCanBeWrittenAsFunctionInspectionResult(IInspection inspection, RubberduckParserState state, QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
-           : base(inspection,
-                subStmtQualifiedContext.ModuleName,
-                subStmtQualifiedContext.Context.subroutineName())
+       public ProcedureCanBeWrittenAsFunctionInspectionResult(IInspection inspection, RubberduckParserState state, 
+           QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
+           : base(inspection, subStmtQualifiedContext.ModuleName, subStmtQualifiedContext.Context.subroutineName())
         {
-           _target = state.AllUserDeclarations.Single(declaration => 
-               declaration.DeclarationType == DeclarationType.Procedure
-               && declaration.Context == subStmtQualifiedContext.Context);
+            _target = state.AllUserDeclarations.Single(declaration => declaration.DeclarationType == DeclarationType.Procedure
+                                                       && declaration.Context == subStmtQualifiedContext.Context);
 
-            _quickFixes = new QuickFixBase[]
-            {
-                new ChangeProcedureToFunction(state, argListQualifiedContext, subStmtQualifiedContext, QualifiedSelection),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, inspection.AnnotationName)
-            };
+           _argListQualifiedContext = argListQualifiedContext;
+           _subStmtQualifiedContext = subStmtQualifiedContext;
+           _state = state;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+       public override IEnumerable<QuickFixBase> QuickFixes
+       {
+           get
+           {
+               return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new ChangeProcedureToFunction(_state, _argListQualifiedContext, _subStmtQualifiedContext, QualifiedSelection),
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+           }
+       }
 
         private readonly Declaration _target;
         public override string Description

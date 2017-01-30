@@ -1,6 +1,4 @@
 ﻿using Path = System.IO.Path;
-using System.Runtime.InteropServices;
-using Microsoft.Office.Interop.Visio;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Application
@@ -10,21 +8,24 @@ namespace Rubberduck.VBEditor.Application
         public ExcelApp() : base("Excel") { }
         public ExcelApp(IVBE vbe) : base(vbe, "Excel") { }
 
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+        public override void Run(dynamic declaration)
         {
-            var call = GenerateMethodCall(qualifiedMemberName);
+            var call = GenerateMethodCall(declaration);
             Application.Run(call);
         }
 
-        protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
+        protected virtual string GenerateMethodCall(dynamic declaration)
         {
+            var qualifiedMemberName = declaration.QualifiedName;
             var module = qualifiedMemberName.QualifiedModuleName;
 
-            var documentName = string.IsNullOrEmpty(module.Project.FileName)
-                ? module.ProjectDisplayName
-                : Path.GetFileName(module.Project.FileName);
+            var documentName = string.IsNullOrEmpty(module.ProjectPath)
+                ? declaration.ProjectDisplayName
+                : Path.GetFileName(module.ProjectPath);
 
-            return string.Format("'{0}'!{1}", documentName.Replace("'", "''"), qualifiedMemberName);
+            return string.IsNullOrEmpty(documentName)
+                ? qualifiedMemberName.ToString()
+                : string.Format("'{0}'!{1}", documentName.Replace("'", "''"), qualifiedMemberName);
         }
     }
 }

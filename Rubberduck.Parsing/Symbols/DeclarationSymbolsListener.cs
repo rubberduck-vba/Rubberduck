@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -51,9 +52,9 @@ namespace Rubberduck.Parsing.Symbols
             if (declarationType == DeclarationType.ProceduralModule)
             {
                 _moduleDeclaration = new ProceduralModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.Component.Name,
+                    _qualifiedName.ComponentName,
                     false,
                     FindAnnotations(),
                     moduleAttributes);
@@ -69,7 +70,7 @@ namespace Rubberduck.Parsing.Symbols
                     {
                         try
                         {
-                            if (coclass.Key.Count != _qualifiedName.Component.Properties.Count)
+                            if (_qualifiedName.Component == null || coclass.Key.Count != _qualifiedName.Component.Properties.Count)
                             {
                                 continue;
                             }
@@ -97,9 +98,9 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 _moduleDeclaration = new ClassModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.Component.Name,
+                    _qualifiedName.ComponentName,
                     false,
                     FindAnnotations(),
                     moduleAttributes,
@@ -168,12 +169,13 @@ namespace Rubberduck.Parsing.Symbols
 
             foreach (var control in form.Controls)
             {
+                var typeName = control.TypeName();
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(
                     _qualifiedName.QualifyMemberName(control.Name),
                     _parentDeclaration,
                     _currentScopeDeclaration,
-                    "Control",
+                    string.IsNullOrEmpty(typeName) ? "Control" : typeName,
                     null,
                     true,
                     true,
@@ -207,7 +209,7 @@ namespace Rubberduck.Parsing.Symbols
                 var argContext = (VBAParser.ArgContext)context;
                 var isOptional = argContext.OPTIONAL() != null;
 
-                var isByRef = argContext.BYREF() != null;
+                var isByRef = argContext.BYREF() != null || argContext.BYVAL() == null;
                 var isParamArray = argContext.PARAMARRAY() != null;
                 result = new ParameterDeclaration(
                     new QualifiedMemberName(_qualifiedName, identifierName),
@@ -470,7 +472,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
             var typeHint = Identifier.GetTypeHintValue(identifier);
-            var isArray = asTypeClause != null && asTypeClause.type().LPAREN() != null;
+            var isArray = asTypeName.EndsWith("()");
             var declaration = CreateDeclaration(
                 name,
                 asTypeName,

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.Inspections.Abstract;
@@ -16,7 +17,7 @@ namespace Rubberduck.Settings
     }
 
     [XmlType(AnonymousType = true)]
-    public class CodeInspectionSettings : ICodeInspectionSettings
+    public class CodeInspectionSettings : ICodeInspectionSettings, IEquatable<CodeInspectionSettings>
     {
         [XmlArrayItem("CodeInspection", IsNullable = false)]
         public HashSet<CodeInspectionSetting> CodeInspections { get; set; }
@@ -39,7 +40,7 @@ namespace Rubberduck.Settings
 
         public CodeInspectionSetting GetSetting<TInspection>() where TInspection : IInspection
         {
-            return CodeInspections.FirstOrDefault(s => typeof(TInspection).Name.ToString().Equals(s.Name))
+            return CodeInspections.FirstOrDefault(s => typeof(TInspection).Name.ToString(CultureInfo.InvariantCulture).Equals(s.Name))
                 ?? GetSetting(typeof(TInspection));
         }
 
@@ -58,6 +59,14 @@ namespace Rubberduck.Settings
             {
                 return null;
             }
+        }
+
+        public bool Equals(CodeInspectionSettings other)
+        {
+            return other != null &&
+                   CodeInspections.SequenceEqual(other.CodeInspections) &&
+                   WhitelistedIdentifiers.SequenceEqual(other.WhitelistedIdentifiers) &&
+                   RunInspectionsOnSuccessfulParse == other.RunInspectionsOnSuccessfulParse;
         }
     }
 

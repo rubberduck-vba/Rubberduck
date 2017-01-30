@@ -12,19 +12,26 @@ namespace Rubberduck.Inspections.Results
 {
     public class ParameterCanBeByValInspectionResult : InspectionResultBase
     {
-        private readonly IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<QuickFixBase> _quickFixes;
+        private readonly RubberduckParserState _state;
 
         public ParameterCanBeByValInspectionResult(IInspection inspection, RubberduckParserState state, Declaration target, ParserRuleContext context, QualifiedMemberName qualifiedName)
             : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
-            _quickFixes = new QuickFixBase[]
-            {
-                new PassParameterByValueQuickFix(state, Target, Context, QualifiedSelection),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, inspection.AnnotationName)
-            };
+            _state = state;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<QuickFixBase> QuickFixes
+        {
+            get
+            {
+                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                {
+                    new PassParameterByValueQuickFix(_state, Target, Context, QualifiedSelection),
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
+                });
+            }
+        }
 
         public override string Description
         {

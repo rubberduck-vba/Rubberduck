@@ -194,6 +194,23 @@
                                                    NumValue="{Binding IndentSpaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                    MinNumber="0"/>
                         </StackPanel>
+                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_VerticalSpacingLabel}"
+                               FontWeight="SemiBold" />
+                        <WrapPanel Orientation="Horizontal">
+                            <CheckBox Name="SpaceProcedures"
+                                      IsChecked="{Binding VerticallySpaceProcedures, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      Margin="5,0,0,5"
+                                      HorizontalAlignment="Left">
+                                <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_VerticalSpacing}"
+                                            TextWrapping="WrapWithOverflow" />
+                            </CheckBox>
+                            <controls:NumberPicker Margin="0,-6,0,0"
+                                                   IsEnabled="{Binding ElementName=SpaceProcedures, Path=IsChecked}"
+                                                   NumValue="{Binding LinesBetweenProcedures, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                   HorizontalAlignment="Left"
+                                                   MinNumber="0"
+                                                   MaxNumber="2"/>
+                        </WrapPanel>
                     </StackPanel>
                 </Grid>
             </StackPanel>

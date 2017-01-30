@@ -62,6 +62,7 @@ namespace RubberduckTests.Settings
             return new Configuration(userSettings);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SaveConfigWorks()
         {
@@ -79,6 +80,7 @@ namespace RubberduckTests.Settings
                 () => Assert.AreEqual(config.UserSettings.GeneralSettings.Delimiter, (char)viewModel.Delimiter));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SetDefaultsWorks()
         {
@@ -95,6 +97,7 @@ namespace RubberduckTests.Settings
                 () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Delimiter, (char)viewModel.Delimiter));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void LanguageIsSetInCtor()
         {
@@ -104,6 +107,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void HotkeysAreSetInCtor()
         {
@@ -113,6 +117,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void AutoSaveEnabledIsSetInCtor()
         {
@@ -122,6 +127,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void AutoSavePeriodIsSetInCtor()
         {
@@ -131,6 +137,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void DelimiterIsSetInCtor()
         {

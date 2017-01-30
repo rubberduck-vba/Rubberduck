@@ -23,10 +23,11 @@ namespace RubberduckTests.Settings
         private const bool DefaultIndentCompilerDirectives = true;
         private const bool DefaultAlignDims = false;
         private const int DefaultAlignDimColumn = 15;
-        private const bool DefaultEnableUndo = true;
         private const EndOfLineCommentStyle DefaultEndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn;
         private const int DefaultEndOfLineCommentColumnSpaceAlignment = 50;
         private const int DefaultIndentSpaces = 4;
+        private const bool DefaultVerticallySpaceProcedures = true;
+        private const int DefaultLinesBetweenProcedures = 1;
         #endregion
 
         #region Nondefaults
@@ -43,10 +44,11 @@ namespace RubberduckTests.Settings
         private const bool NondefaultIndentCompilerDirectives = false;
         private const bool NondefaultAlignDims = true;
         private const int NondefaultAlignDimColumn = 16;
-        private const bool NondefaultEnableUndo = false;
         private const EndOfLineCommentStyle NondefaultEndOfLineCommentStyle = EndOfLineCommentStyle.Absolute;
         private const int NondefaultEndOfLineCommentColumnSpaceAlignment = 60;
         private const int NondefaultIndentSpaces = 2;
+        private const bool NondefaultVerticallySpaceProcedures = false;
+        private const int NondefaultLinesBetweenProcedures = 2;
         #endregion
 
         public static Rubberduck.SmartIndenter.IndenterSettings GetMockIndenterSettings(bool nondefault = false)
@@ -69,6 +71,8 @@ namespace RubberduckTests.Settings
             output.SetupProperty(s => s.EndOfLineCommentStyle);
             output.SetupProperty(s => s.EndOfLineCommentColumnSpaceAlignment);
             output.SetupProperty(s => s.IndentSpaces);
+            output.SetupProperty(s => s.VerticallySpaceProcedures);
+            output.SetupProperty(s => s.LinesBetweenProcedures);
 
             output.Object.IndentEntireProcedureBody = nondefault ? NondefaultIndentEntireProcedureBody : DefaultIndentEntireProcedureBody;
             output.Object.IndentFirstCommentBlock = nondefault ? NondefaultIndentFirstCommentBlock : DefaultIndentFirstCommentBlock;
@@ -86,6 +90,8 @@ namespace RubberduckTests.Settings
             output.Object.EndOfLineCommentStyle = nondefault ? NondefaultEndOfLineCommentStyle : DefaultEndOfLineCommentStyle;
             output.Object.EndOfLineCommentColumnSpaceAlignment = nondefault ? NondefaultEndOfLineCommentColumnSpaceAlignment : DefaultEndOfLineCommentColumnSpaceAlignment;
             output.Object.IndentSpaces = nondefault ? NondefaultIndentSpaces : DefaultIndentSpaces;
+            output.Object.VerticallySpaceProcedures = nondefault ? NondefaultVerticallySpaceProcedures : DefaultVerticallySpaceProcedures;
+            output.Object.LinesBetweenProcedures = nondefault ? NondefaultLinesBetweenProcedures : DefaultLinesBetweenProcedures;
 
             return output.Object;
         }
@@ -102,6 +108,7 @@ namespace RubberduckTests.Settings
             return new Configuration(userSettings);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SaveConfigWorks()
         {
@@ -127,9 +134,12 @@ namespace RubberduckTests.Settings
                 () => Assert.AreEqual(config.UserSettings.IndenterSettings.IndentEntireProcedureBody, viewModel.IndentEntireProcedureBody),
                 () => Assert.AreEqual(config.UserSettings.IndenterSettings.IndentFirstCommentBlock, viewModel.IndentFirstCommentBlock),
                 () => Assert.AreEqual(config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock, viewModel.IndentFirstDeclarationBlock),
-                () => Assert.AreEqual(config.UserSettings.IndenterSettings.IndentSpaces, viewModel.IndentSpaces));
+                () => Assert.AreEqual(config.UserSettings.IndenterSettings.IndentSpaces, viewModel.IndentSpaces),
+                () => Assert.AreEqual(config.UserSettings.IndenterSettings.VerticallySpaceProcedures, viewModel.VerticallySpaceProcedures),
+                () => Assert.AreEqual(config.UserSettings.IndenterSettings.LinesBetweenProcedures, viewModel.LinesBetweenProcedures));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SetDefaultsWorks()
         {
@@ -154,9 +164,12 @@ namespace RubberduckTests.Settings
                 () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentEntireProcedureBody, viewModel.IndentEntireProcedureBody),
                 () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentFirstCommentBlock, viewModel.IndentFirstCommentBlock),
                 () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentFirstDeclarationBlock, viewModel.IndentFirstDeclarationBlock),
-                () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentSpaces, viewModel.IndentSpaces));
+                () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentSpaces, viewModel.IndentSpaces),
+                () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.VerticallySpaceProcedures, viewModel.VerticallySpaceProcedures),
+                () => Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.LinesBetweenProcedures, viewModel.LinesBetweenProcedures));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void AlignCommentsWithCodeIsSetInCtor()
         {
@@ -166,6 +179,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignCommentsWithCode, viewModel.AlignCommentsWithCode);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void AlignContinuationsIsSetInCtor()
         {
@@ -175,6 +189,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignContinuations, viewModel.AlignContinuations);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void AlignDimColumnIsSetInCtor()
         {
@@ -184,6 +199,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignDimColumn, viewModel.AlignDimColumn);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void AlignDimsIsSetInCtor()
         {
@@ -193,6 +209,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignDims, viewModel.AlignDims);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void EndOfLineCommentColumnSpaceAlignmentIsSetInCtor()
         {
@@ -202,6 +219,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment, viewModel.EndOfLineCommentColumnSpaceAlignment);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void EndOfLineCommentStyleIsSetInCtor()
         {
@@ -211,6 +229,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EndOfLineCommentStyle, viewModel.EndOfLineCommentStyle);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void ForceCompilerDirectivesInColumn1IsSetInCtor()
         {
@@ -220,6 +239,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1, viewModel.ForceCompilerDirectivesInColumn1);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void ForceDebugStatementsInColumn1IsSetInCtor()
         {
@@ -229,6 +249,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1, viewModel.ForceDebugStatementsInColumn1);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void IgnoreOperatorsInContinuationsIsSetInCtor()
         {
@@ -238,6 +259,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations, viewModel.IgnoreOperatorsInContinuations);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void IndentCaseIsSetInCtor()
         {
@@ -247,6 +269,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentCase, viewModel.IndentCase);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void IndentEnumTypeAsProcedureIsSetInCtor()
         {
@@ -256,6 +279,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentEnumTypeAsProcedure, viewModel.IndentEnumTypeAsProcedure);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void IndentCompilerDirectivesIsSetInCtor()
         {
@@ -265,6 +289,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentCompilerDirectives, viewModel.IndentCompilerDirectives);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void IndentEntireProcedureBodyIsSetInCtor()
         {
@@ -274,6 +299,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentEntireProcedureBody, viewModel.IndentEntireProcedureBody);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void IndentFirstCommentBlockIsSetInCtor()
         {
@@ -283,6 +309,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentFirstCommentBlock, viewModel.IndentFirstCommentBlock);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void IndentFirstDeclarationBlockIsSetInCtor()
         {
@@ -292,13 +319,23 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentFirstDeclarationBlock, viewModel.IndentFirstDeclarationBlock);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
-        public void IndentSpacesIsSetInCtor()
+        public void VerticallySpaceProceduresIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
             var viewModel = new IndenterSettingsViewModel(defaultConfig);
 
-            Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentSpaces, viewModel.IndentSpaces);
+            Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.VerticallySpaceProcedures, viewModel.VerticallySpaceProcedures);
+        }
+
+        [TestMethod]
+        public void LinesBetweenProceduresIsSetInCtor()
+        {
+            var defaultConfig = GetDefaultConfig();
+            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+
+            Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.LinesBetweenProcedures, viewModel.LinesBetweenProcedures);
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             var node = (CodeExplorerComponentViewModel)parameter;
-            var componentType = node.Declaration.QualifiedName.QualifiedModuleName.Component.Type;
+            var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
             return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
         }
 
@@ -64,7 +64,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             // I know this will never be null because of the CanExecute
             var declaration = ((CodeExplorerComponentViewModel)parameter).Declaration;
 
-            var components = declaration.QualifiedName.QualifiedModuleName.Project.VBComponents;
+            var components = declaration.Project.VBComponents;
             components.Remove(declaration.QualifiedName.QualifiedModuleName.Component);
         }
 

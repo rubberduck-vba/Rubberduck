@@ -21,6 +21,7 @@ namespace RubberduckTests.UnitTesting
             AssertHandler.OnAssertCompleted -= AssertHandler_OnAssertCompleted;
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void IsTrueSucceedsWithTrueExpression()
         {
@@ -30,6 +31,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void IsTrueFailsWithFalseExpression()
         {
@@ -39,6 +41,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void IsFalseSucceedsWithFalseExpression()
         {
@@ -48,6 +51,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void IsFalseFailsWithTrueExpression()
         {
@@ -57,6 +61,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreSameShouldSucceedWithSameReferences()
         {
@@ -68,6 +73,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreSameShouldFailWithDifferentReferences()
         {
@@ -79,6 +85,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreSameShouldSucceedWithTwoNullReferences()
         {
@@ -88,6 +95,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreSameShouldFailWithActualNullReference()
         {
@@ -97,6 +105,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreSameShouldFailWithExpectedNullReference()
         {
@@ -106,6 +115,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreNotSameShouldSucceedWithDifferentReferences()
         {
@@ -117,6 +127,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreNotSameShouldSuccedWithOneNullReference()
         {
@@ -126,6 +137,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreNotSameShouldFailWithBothNullReferences()
         {
@@ -135,6 +147,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreNotSameShouldFailWithSameReferences()
         {
@@ -146,6 +159,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreEqualShouldSucceedWithSameValues()
         {
@@ -155,6 +169,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreEqualShouldFailWithDifferentValues()
         {
@@ -164,6 +179,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreNotEqualShouldSucceedWithDifferentValues()
         {
@@ -173,6 +189,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreNotEqualShouldFailWithSameValues()
         {
@@ -182,6 +199,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void AreNotEqualShouldBeInconclusiveWithDifferentTypes()
         {
@@ -194,6 +212,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void IsNothingShouldSucceedWithNullValue()
         {
@@ -203,6 +222,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void IsNothingShouldFailWithNonNullValue()
         {
@@ -212,6 +232,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void IsNotNothingShouldFailWithNullValue()
         {
@@ -221,6 +242,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void IsNotNothingShouldSucceedWithNonNullValue()
         {
@@ -230,6 +252,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void FailShouldFail()
         {
@@ -239,6 +262,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void InconclusiveShouldBeInconclusive()
         {
@@ -253,6 +277,7 @@ namespace RubberduckTests.UnitTesting
             _args = e;
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void NullValuesAreEqual()
         {
@@ -262,6 +287,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void NullAndEmptyStringAreEqual()
         {
@@ -271,6 +297,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void NullIsNotComparableWithValues()
         {
@@ -280,6 +307,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void DifferentTypesEqualityIsNotConclusive()
         {
@@ -289,6 +317,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void OnAssertSucceeded_ReturnsResultSuccess()
         {
@@ -297,6 +326,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void OnAssertFailed_ReturnsResultFailed()
         {
@@ -305,6 +335,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void OnAssertInconclusive_ReturnsResultInconclusive()
         {
@@ -313,6 +344,7 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
         }
 
+        [TestCategory("Unit Testing")]
         [TestMethod]
         public void OnAssertIgnored_ReturnsResultIgnored()
         {

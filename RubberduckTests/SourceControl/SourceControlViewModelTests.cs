@@ -124,6 +124,7 @@ namespace RubberduckTests.SourceControl
                 _configService.Object, views, new Mock<IMessageBox>().Object);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void StatusIsOfflineWhenNoRepoIsFoundInConfig()
         {
@@ -140,6 +141,7 @@ namespace RubberduckTests.SourceControl
             VerifyOffline();
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void StatusIsOfflineWhenRepoListIsEmpty()
         {
@@ -156,6 +158,7 @@ namespace RubberduckTests.SourceControl
             VerifyOffline();
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void StatusIsOfflineIfNoMatchingRepoExists()
         {
@@ -174,6 +177,7 @@ namespace RubberduckTests.SourceControl
             VerifyOffline();
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void StatusIsOfflineWhenMultipleReposAreFound()
         {
@@ -194,6 +198,7 @@ namespace RubberduckTests.SourceControl
 
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void StatusIsOnlineWhenRepoIsFound()
         {
@@ -210,6 +215,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual("Online", _vm.Status);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ChildPresentersHaveValidProviderIfRepoIsFoundInConfig()
         {
@@ -226,6 +232,7 @@ namespace RubberduckTests.SourceControl
             VerifyChildPresentersHaveProviders();
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void InitRepository_WhenUserCancels_RepoIsNotAddedToConfig()
         {
@@ -240,6 +247,7 @@ namespace RubberduckTests.SourceControl
             _configService.Verify(c => c.Save(It.IsAny<SourceControlSettings>()), Times.Never);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void InitRepository_WhenUserCancels_RepoIsNotCreated()
         {
@@ -254,6 +262,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.InitVBAProject(It.IsAny<string>()), Times.Never);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void InitRepository_WhenUserConfirms_RepoIsAddedToConfig()
         {
@@ -272,6 +281,7 @@ namespace RubberduckTests.SourceControl
             _configService.Verify(c => c.Save(It.IsAny<SourceControlSettings>()), Times.Once);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void InitRepository_WhenUserConfirms_RepoIsInitalized()
         {
@@ -290,6 +300,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.InitVBAProject(It.IsAny<string>()), Times.Once);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OpenWorkingDir_WhenUserCancels_RepoIsNotAddedToConfig()
         {
@@ -305,6 +316,7 @@ namespace RubberduckTests.SourceControl
             _configService.Verify(c => c.Save(It.IsAny<SourceControlSettings>()), Times.Never);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OpenWorkingDir_WhenUserConfirms_RepoIsAddedToConfig()
         {
@@ -325,6 +337,7 @@ namespace RubberduckTests.SourceControl
             _configService.Verify(c => c.Save(It.IsAny<SourceControlSettings>()), Times.Once);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void InitRepository_WhenUserConfirms_StatusIsOnline()
         {
@@ -345,6 +358,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual("Online", _vm.Status);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OpenWorkingDir_WhenUserConfirms_StatusIsOnline()
         {
@@ -365,6 +379,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual("Online", _vm.Status);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void InitRepository_WhenUserConfirms_ChildPresenterSourceControlProvidersAreSet()
         {
@@ -385,6 +400,7 @@ namespace RubberduckTests.SourceControl
             VerifyChildPresentersHaveProviders();
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OpenWorkingDir_WhenUserConfirms_ChildPresenterSourceControlProvidersAreSet()
         {
@@ -405,6 +421,7 @@ namespace RubberduckTests.SourceControl
             VerifyChildPresentersHaveProviders();
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void BranchesPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
@@ -432,6 +449,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expectedMessage, _vm.ErrorMessage);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ChangesPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
@@ -464,6 +482,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expectedMessage, _vm.ErrorMessage);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void UnsyncedPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
@@ -491,6 +510,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expectedMessage, _vm.ErrorMessage);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OpenWorkingDir_WhenProviderCreationFails_MessageIsShown()
         {
@@ -520,6 +540,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expectedMessage, _vm.ErrorMessage);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void MergeStatusSuccess_MessageIsShown()
         {
@@ -549,6 +570,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expectedMessage, _vm.ErrorMessage);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void ActionFailed_DismissingHidesMessage()
         {
@@ -563,6 +585,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void UnsyncedPresenter_WhenNotAuthorized_LoginIsShown()
         {
@@ -588,6 +611,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_vm.DisplayLoginGrid);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void UnsyncedPresenter_AfterLogin_NewPresenterIsCreatedWithCredentials()
         {
@@ -613,6 +637,7 @@ namespace RubberduckTests.SourceControl
             _providerFactory.Verify(f => f.CreateProvider(It.IsAny<IVBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()));
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void Login_HideGridOnCancel()
         {
@@ -626,6 +651,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_vm.DisplayLoginGrid);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void CloneRepo_DisplaysGrid()
         {
@@ -640,6 +666,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_vm.DisplayCloneRepoGrid);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void CloneRepo_ClonesRepo()
         {
@@ -661,6 +688,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Clone(remotePath, localDirectory, null));
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void CloneRepo_HideGridOnClone()
         {
@@ -682,6 +710,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_vm.DisplayCloneRepoGrid);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void CloneRepo_HideGridOnCancel()
         {
@@ -703,6 +732,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_vm.DisplayCloneRepoGrid);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void CloneRepo_ClearsRemoteOnClone()
         {
@@ -724,6 +754,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(string.Empty, _vm.CloneRemotePath);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void CloneRepo_ClearsRemoteOnClose()
         {
@@ -745,6 +776,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(string.Empty, _vm.CloneRemotePath);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void CloneRepo_ActionFailedEventIsRaised()
         {
@@ -765,6 +797,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_vm.DisplayErrorMessageGrid, "ActionFailedEvent was not raised.");
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void Publish_DisplaysGrid()
         {
@@ -779,6 +812,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_vm.DisplayPublishRepoGrid);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void Publish_AddsOrigin()
         {
@@ -799,6 +833,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.AddOrigin(remotePath, branchName));
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void Publish_HideGridOnClone()
         {
@@ -818,6 +853,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_vm.DisplayPublishRepoGrid);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void Publish_HideGridOnCancel()
         {
@@ -837,6 +873,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_vm.DisplayPublishRepoGrid);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void Publish_ClearsRemoteOnCreate()
         {
@@ -856,6 +893,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(string.Empty, _vm.PublishRemotePath);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void Publish_ClearsRemoteOnClose()
         {
@@ -875,6 +913,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(string.Empty, _vm.PublishRemotePath);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void Publish_NoOpenRepo_ErrorReported()
         {
@@ -897,6 +936,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_vm.DisplayErrorMessageGrid, "ActionFailedEvent was not raised.");
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void Publish_ActionFailedEventIsRaised()
         {
@@ -919,6 +959,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_vm.DisplayErrorMessageGrid, "ActionFailedEvent was not raised.");
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OpenDirAssignedToRepo_WhenProviderCreationFails_MessageIsShown()
         {
@@ -949,6 +990,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expectedMessage, _vm.ErrorMessage);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OnBrowseDefaultRepoLocation_WhenUserConfirms_LocalDirectoryDoesChanges()
         {
@@ -966,6 +1008,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(newPath, _vm.LocalDirectory);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void OnBrowseDefaultRepoLocation_WhenUserCancels_LocalDirectoryDoesNotChange()
         {
@@ -986,6 +1029,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(originalPath, _vm.LocalDirectory);
         }
 
+        [TestCategory("SourceControl")]
         [TestMethod]
         public void NullProject_DisplaysError()
         {

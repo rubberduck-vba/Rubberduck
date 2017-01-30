@@ -119,8 +119,7 @@ namespace Rubberduck.Parsing.Symbols
                   isBuiltIn,
                   annotations,
                   attributes)
-        {
-        }
+        { }
 
         public Declaration(
             QualifiedMemberName qualifiedName,
@@ -140,7 +139,7 @@ namespace Rubberduck.Parsing.Symbols
             IEnumerable<IAnnotation> annotations = null,
             Attributes attributes = null)
         {
-            _qualifiedName = qualifiedName;
+            _qualifiedName = qualifiedName;            
             _parentDeclaration = parentDeclaration;
             _parentScopeDeclaration = _parentDeclaration;
             _parentScope = parentScope ?? string.Empty;
@@ -157,7 +156,7 @@ namespace Rubberduck.Parsing.Symbols
             _attributes = attributes ?? new Attributes();
 
             _projectId = _qualifiedName.QualifiedModuleName.ProjectId;
-            var projectDeclaration = Declaration.GetProjectParent(parentDeclaration);
+            var projectDeclaration = GetProjectParent(parentDeclaration);
             if (projectDeclaration != null)
             {
                 _projectName = projectDeclaration.IdentifierName;
@@ -174,22 +173,23 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public Declaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module) : this(
-                module.QualifyMemberName(enumeration.Name),
-                parent,
-                parent,
-                "Long",     //Match the VBA default type declaration.  Technically these *can* be a LongLong on 64 bit systems, but would likely crash the VBE... 
-                null,
-                false,
-                false,
-                Accessibility.Global,
-                DeclarationType.Enumeration,
-                null,
-                Selection.Home,
-                false,
-                null,
-                true,
-                null,
-                new Attributes()) { }
+            module.QualifyMemberName(enumeration.Name),
+            parent,
+            parent,
+            "Long",
+            //Match the VBA default type declaration.  Technically these *can* be a LongLong on 64 bit systems, but would likely crash the VBE... 
+            null,
+            false,
+            false,
+            Accessibility.Global,
+            DeclarationType.Enumeration,
+            null,
+            Selection.Home,
+            false,
+            null,
+            true,
+            null,
+            new Attributes()) { }
 
         public Declaration(ComStruct structure, Declaration parent, QualifiedModuleName module)
             : this(
@@ -247,9 +247,9 @@ namespace Rubberduck.Parsing.Symbols
                 string result;
                 if (@namespace == null)
                 {
-                    result = _qualifiedName.QualifiedModuleName.Project == null
+                    result = string.IsNullOrEmpty(_qualifiedName.QualifiedModuleName.ProjectName)
                         ? _projectId
-                        : _qualifiedName.QualifiedModuleName.Project.Name;
+                        : _qualifiedName.QualifiedModuleName.ProjectName;
                 }
                 else
                 {
@@ -410,7 +410,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public IVBProject Project { get { return _qualifiedName.QualifiedModuleName.Project; } }
+        public virtual IVBProject Project { get { return _parentDeclaration.Project; } }
 
         private readonly string _projectId;
         /// <summary>
@@ -423,6 +423,12 @@ namespace Rubberduck.Parsing.Symbols
         {
             get { return _projectName; }
         }
+
+        /// <summary>
+        /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
+        /// This should only be called if it is *absolutely* necessary.
+        /// </summary>
+        public virtual string ProjectDisplayName { get { return _parentDeclaration.ProjectDisplayName; } }
 
         public object[] ToArray()
         {
@@ -636,11 +642,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void ClearReferences()
         {
-            while (!_references.IsEmpty)
-            {
-                IdentifierReference reference;
-                _references.TryTake(out reference);
-            }
+            _references = new ConcurrentBag<IdentifierReference>();
         }
     }
 }

@@ -5,8 +5,11 @@ using Microsoft.Win32;
 namespace Rubberduck.SmartIndenter
 {
     [XmlType(AnonymousType = true)]
-    public class IndenterSettings : IIndenterSettings
+    public class IndenterSettings : IIndenterSettings, IEquatable<IndenterSettings>
     {
+        public const int MinimumVerticalSpacing = 0;
+        public const int MaximumVerticalSpacing = 2;
+
         public virtual bool IndentEntireProcedureBody { get; set; }
         public virtual bool IndentFirstCommentBlock { get; set; }
         public virtual bool IndentEnumTypeAsProcedure { get; set; }
@@ -23,6 +26,28 @@ namespace Rubberduck.SmartIndenter
         public virtual EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
         public virtual int EndOfLineCommentColumnSpaceAlignment { get; set; }
         public virtual int IndentSpaces { get; set; }
+        public virtual bool VerticallySpaceProcedures { get; set; }
+
+        private int _procedureSpacing;
+        public virtual int LinesBetweenProcedures
+        {
+            get { return _procedureSpacing; }
+            set
+            {
+                if (value < MinimumVerticalSpacing)
+                {
+                    _procedureSpacing = MinimumVerticalSpacing;
+                }
+                else if (value > MaximumVerticalSpacing)
+                {
+                    _procedureSpacing = MaximumVerticalSpacing;
+                }
+                else
+                {
+                    _procedureSpacing = value;
+                }
+            }
+        }
 
         public IndenterSettings()
         {
@@ -57,7 +82,32 @@ namespace Rubberduck.SmartIndenter
             EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn;
             EndOfLineCommentColumnSpaceAlignment = 50;
             IndentSpaces = tabWidth;
+            VerticallySpaceProcedures = true;
+            LinesBetweenProcedures = 1;
             // ReSharper restore DoNotCallOverridableMethodsInConstructor
+        }
+
+        public bool Equals(IndenterSettings other)
+        {
+            return other != null &&
+                   IndentEntireProcedureBody == other.IndentEntireProcedureBody &&
+                   IndentFirstCommentBlock == other.IndentFirstCommentBlock &&
+                   IndentEnumTypeAsProcedure == other.IndentEnumTypeAsProcedure &&
+                   IndentFirstDeclarationBlock == other.IndentFirstDeclarationBlock &&
+                   AlignCommentsWithCode == other.AlignCommentsWithCode &&
+                   AlignContinuations == other.AlignContinuations &&
+                   IgnoreOperatorsInContinuations == other.IgnoreOperatorsInContinuations &&
+                   IndentCase == other.IndentCase &&
+                   ForceDebugStatementsInColumn1 == other.ForceDebugStatementsInColumn1 &&
+                   ForceCompilerDirectivesInColumn1 == other.ForceCompilerDirectivesInColumn1 &&
+                   IndentCompilerDirectives == other.IndentCompilerDirectives &&
+                   AlignDims == other.AlignDims &&
+                   AlignDimColumn == other.AlignDimColumn &&
+                   EndOfLineCommentStyle == other.EndOfLineCommentStyle &&
+                   EndOfLineCommentColumnSpaceAlignment == other.EndOfLineCommentColumnSpaceAlignment &&
+                   IndentSpaces == other.IndentSpaces &&
+                   VerticallySpaceProcedures == other.VerticallySpaceProcedures &&
+                   LinesBetweenProcedures == other.LinesBetweenProcedures;
         }
 
         private const string LegacySettingsSubKey = @"Software\VB and VBA Program Settings\Office Automation Ltd.\Smart Indenter";

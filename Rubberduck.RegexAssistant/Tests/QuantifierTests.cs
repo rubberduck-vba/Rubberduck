@@ -5,6 +5,7 @@ namespace Rubberduck.RegexAssistant.Tests
     [TestClass]
     public class QuantifierTests
     {
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void AsteriskQuantifier()
         {
@@ -14,6 +15,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void QuestionMarkQuantifier()
         {
@@ -23,6 +25,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void PlusQuantifier()
         {
@@ -32,6 +35,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ExactQuantifier()
         {
@@ -41,6 +45,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(QuantifierKind.Expression, cut.Kind);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void FullRangeQuantifier()
         {
@@ -50,6 +55,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(QuantifierKind.Expression, cut.Kind);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void OpenRangeQuantifier()
         {

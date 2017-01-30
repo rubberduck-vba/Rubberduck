@@ -18,7 +18,8 @@
         EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
         int EndOfLineCommentColumnSpaceAlignment { get; set; }
         int IndentSpaces { get; set; }
-
+        bool VerticallySpaceProcedures { get; set; }
+        int LinesBetweenProcedures { get; set; }
         bool LegacySettingsExist();
         void LoadLegacyFromRegistry();
     }

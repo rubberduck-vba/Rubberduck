@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,10 +6,12 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -59,6 +60,14 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
+
+        public DeclarationFinder DeclarationFinder { get; private set; }
+
+        internal void RefreshFinder(IHostApplication host)
+        {
+            DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, host);
+        }
+
 
         public RubberduckParserState(ISinks sinks)
         {
@@ -355,7 +364,7 @@ namespace Rubberduck.Parsing.VBA
             var moduleStates = new List<ParserState>();
             foreach (var moduleState in _moduleStates)
             {
-                if (moduleState.Key.Component == null || moduleState.Key.ComponentName == string.Empty)
+                if (moduleState.Key.Component == null || string.IsNullOrEmpty(moduleState.Key.ComponentName))
                 {
                     continue;
                 }
@@ -533,17 +542,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public IEnumerable<CommentNode> GetModuleComments(IVBComponent component)
-        {
-            ModuleState state;
-            if (_moduleStates.TryGetValue(new QualifiedModuleName(component), out state))
-            {
-                return state.Comments;
-            }
-
-            return new List<CommentNode>();
-        }
-
         public void SetModuleComments(IVBComponent component, IEnumerable<CommentNode> comments)
         {
             _moduleStates[new QualifiedModuleName(component)].SetComments(new List<CommentNode>(comments));
@@ -711,12 +709,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     continue;
                 }
-                
-                foreach (var reference in declaration.References)
-                {
-                    declaration.ClearReferences();
-                    break;
-                }
+                declaration.ClearReferences();
             }
         }
 
