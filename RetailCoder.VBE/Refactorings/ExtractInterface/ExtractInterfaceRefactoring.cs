@@ -65,8 +65,6 @@ namespace Rubberduck.Refactorings.ExtractInterface
                     pane.Selection = oldSelection.Value.Selection;
                 }
             }
-
-            _state.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
@@ -124,7 +122,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private int _insertionLine;
         private void _state_StateChanged(object sender, EventArgs e)
         {
-            if (_state.Status != ParserState.Ready)
+            if (_state.Status != ParserState.ResolvedDeclarations)
             {
                 return;
             }
