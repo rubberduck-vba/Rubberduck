@@ -215,7 +215,14 @@ namespace Rubberduck.Parsing.VBA
 
             parser.ParseFailure += (sender, e) =>
             {
-                tcs.SetException(e.Cause);
+                if (e.Cause is OperationCanceledException)
+                {
+                    tcs.SetCanceled();
+                }
+                else
+                {
+                    tcs.SetException(e.Cause);
+                }
             };
             parser.ParseCompleted += (sender, e) =>
             {
@@ -230,7 +237,6 @@ namespace Rubberduck.Parsing.VBA
 
         private void ProcessComponentParseResults(IVBComponent component, Task<ComponentParseTask.ParseCompletionArgs> finishedParseTask)
         {
-            finishedParseTask.Wait();
             if (finishedParseTask.IsFaulted)
             {
                 State.SetModuleState(component, ParserState.Error, finishedParseTask.Exception.InnerException as SyntaxErrorException);
