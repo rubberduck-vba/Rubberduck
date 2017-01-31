@@ -101,9 +101,15 @@ namespace Rubberduck.Parsing.VBA
                         Cause = exception
                     });
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException exception)
             {
-                // no results to be used, so no results "returned"
+                //We return this, so that the calling code knows that the operation actually has been cancelled.
+                var failedHandler = ParseFailure;
+                if (failedHandler != null)
+                    failedHandler.Invoke(this, new ParseFailureArgs
+                    {
+                        Cause = exception
+                    });
             }
         }
 
