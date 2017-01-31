@@ -221,15 +221,27 @@ namespace Rubberduck.Parsing.VBA
             options.CancellationToken = token;
             options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
 
-            Parallel.ForEach(components,
-                options,
-                component =>
+            try
+            {
+                Parallel.ForEach(components,
+                    options,
+                    component =>
+                    {
+                        State.ClearStateCache(component);
+                        var finishedParseTask = FinishedParseComponentTask(component, token);
+                        ProcessComponentParseResults(component, finishedParseTask);
+                    }
+                );
+            }
+            catch (AggregateException exception)
+            {
+                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    State.ClearStateCache(component);
-                    var finishedParseTask = FinishedParseComponentTask(component, token);
-                    ProcessComponentParseResults(component, finishedParseTask);
+                    return;
                 }
-            );
+                throw;
+            }
+
             State.EvaluateParserState();
         }
 
@@ -299,22 +311,43 @@ namespace Rubberduck.Parsing.VBA
             var options = new ParallelOptions();
             options.CancellationToken = token;
             options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
-
-            Parallel.ForEach(components,
-                options,
-                component =>
+            try
+            {
+                Parallel.ForEach(components,
+                    options,
+                    component =>
+                    {
+                        var qualifiedName = new QualifiedModuleName(component);
+                        ResolveDeclarations(qualifiedName.Component,
+                            State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
+                    }
+                );
+            }
+            catch (AggregateException exception)
+            {
+                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    var qualifiedName = new QualifiedModuleName(component);
-                    ResolveDeclarations(qualifiedName.Component,
-                        State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
+                    return;
                 }
-            );
+                throw;
+            }
         }
 
 
         private void ResolveReferences(CancellationToken token)
         {
-            Task.WaitAll(ResolveReferencesAsync(token));
+            try
+            {
+                Task.WaitAll(ResolveReferencesAsync(token));
+            }
+            catch (AggregateException exception)
+            {
+                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
+                {
+                    return;
+                }
+                throw;
+            }
         }
 
 
