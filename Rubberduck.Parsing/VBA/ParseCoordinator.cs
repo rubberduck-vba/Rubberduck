@@ -239,7 +239,6 @@ namespace Rubberduck.Parsing.VBA
         {
             if (finishedParseTask.IsFaulted)
             {
-                var exception = finishedParseTask.Exception.InnerException;
                 State.SetModuleState(component, ParserState.Error, finishedParseTask.Exception.InnerException as SyntaxErrorException);
             }
             else if (finishedParseTask.IsCompleted)
