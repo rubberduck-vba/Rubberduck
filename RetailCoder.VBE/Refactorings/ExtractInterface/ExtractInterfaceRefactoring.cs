@@ -122,7 +122,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private int _insertionLine;
         private void _state_StateChanged(object sender, EventArgs e)
         {
-            if (_state.Status != ParserState.ResolvedDeclarations)
+            if (_state.Status != ParserState.Ready)
             {
                 return;
             }
