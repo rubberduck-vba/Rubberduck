@@ -67,6 +67,11 @@ namespace Rubberduck.VBEditor.Application
 
         public abstract void Run(dynamic declaration);
 
+        public virtual object Run(string name, params object[] args)
+        {
+            return null;
+        }
+
         public void Dispose()
         {
             Dispose(true);

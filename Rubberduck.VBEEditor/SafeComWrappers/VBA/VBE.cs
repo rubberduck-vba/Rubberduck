@@ -151,9 +151,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {"SLDWORKS.EXE", typeof(SolidWorksApp)},
         };
 
+        private static IHostApplication _host;
+
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>
         public IHostApplication HostApplication()
         {
+            // host app isn't going to change between calls. cache it.
+            if (_host != null)
+            {
+                return _host;
+            }
+
             var host = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath).ToUpperInvariant();
             //This needs the VBE as a ctor argument.
             if (host.Equals("SLDWORKS.EXE"))
@@ -225,6 +233,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                             }
                         }
 
+                        _host = result;
                         return result;
                     }
                 }

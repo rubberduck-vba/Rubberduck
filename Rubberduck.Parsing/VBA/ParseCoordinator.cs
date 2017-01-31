@@ -18,6 +18,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -138,6 +139,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
+                _state.IsEnabled = true;
                 return;
             }
 
@@ -146,6 +148,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
+                _state.IsEnabled = true;
                 return;
             }
 
@@ -611,7 +614,14 @@ namespace Rubberduck.Parsing.VBA
                 }
                 Logger.Debug("Creating declarations for module {0}.", qualifiedModuleName.Name);
                 
-                var declarationsListener = new DeclarationSymbolsListener(State, qualifiedModuleName, component.Type, State.GetModuleAnnotations(component), State.GetModuleAttributes(component), projectDeclaration);
+                var emitter = new Emitter(_state);
+                string typeName = null;
+                if (component.Type == ComponentType.Document)
+                {
+                    //typeName = emitter.ExecuteWithResult<string>(project, emitter.GetTypeNameFunctionBody(component.Name), "GetTypeName");
+                }
+
+                var declarationsListener = new DeclarationSymbolsListener(State, qualifiedModuleName, component.Type, State.GetModuleAnnotations(component), State.GetModuleAttributes(component), projectDeclaration, typeName);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
                 foreach (var createdDeclaration in declarationsListener.CreatedDeclarations)
                 {
