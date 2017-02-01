@@ -28,6 +28,7 @@ namespace Rubberduck.Parsing.VBA
         public RubberduckParserState State { get { return _state; } }
 
         private const int _maxDegreeOfParserParallelism = -1;
+        private const int _maxDegreeOfModuleStateChangeParallelism = -1;
 
         private readonly IDictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
@@ -79,7 +80,8 @@ namespace Rubberduck.Parsing.VBA
             }
             else
             {
-                Parse(_cancellationTokens[0]);
+                Cancel();
+                ParseInternal(_cancellationTokens[0]);
             }
         }
 
@@ -100,7 +102,28 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// For the use of tests only
         /// </summary>
+        /// 
         public void Parse(CancellationTokenSource token)
+        {
+            SetSavedCancellationTokenSource(token);
+            ParseInternal(token);
+        }
+
+        private void SetSavedCancellationTokenSource(CancellationTokenSource token)
+        {
+            if (_cancellationTokens.Any())
+            {
+                _cancellationTokens[0].Cancel();
+                _cancellationTokens[0].Dispose();
+                _cancellationTokens[0] = token;
+            }
+            else
+            {
+                _cancellationTokens.Add(token);
+            }
+        }
+
+        private void ParseInternal(CancellationTokenSource token)
         {
             State.RefreshProjects(_vbe);
 
@@ -163,10 +186,12 @@ namespace Rubberduck.Parsing.VBA
 
         private void SetModuleStates(List<IVBComponent> components, ParserState parserState)
         {
-            foreach (var component in components)
-            {
-                State.SetModuleState(component, parserState);
-            }
+            var options = new ParallelOptions();
+            options.MaxDegreeOfParallelism = _maxDegreeOfModuleStateChangeParallelism;
+
+            Parallel.ForEach(components, options, component => State.SetModuleState(component, parserState, null, false));
+            
+            State.EvaluateParserState();
         }
 
         private void CleanUpComponentAttributes(List<IVBComponent> components)
@@ -190,20 +215,34 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseComponents(List<IVBComponent> components, CancellationToken token)
         {
+            SetModuleStates(components, ParserState.Parsing);
+
             var options = new ParallelOptions();
             options.CancellationToken = token;
             options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
 
-            Parallel.ForEach(components,
-                options,
-                component =>
+            try
+            {
+                Parallel.ForEach(components,
+                    options,
+                    component =>
+                    {
+                        State.ClearStateCache(component);
+                        var finishedParseTask = FinishedParseComponentTask(component, token);
+                        ProcessComponentParseResults(component, finishedParseTask);
+                    }
+                );
+            }
+            catch (AggregateException exception)
+            {
+                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    State.SetModuleState(component, ParserState.Parsing);
-                    State.ClearStateCache(component);
-                    var finishedParseTask = FinishedParseComponentTask(component, token);
-                    ProcessComponentParseResults(component, finishedParseTask);
+                    return;
                 }
-            );
+                throw;
+            }
+
+            State.EvaluateParserState();
         }
 
         private Task<ComponentParseTask.ParseCompletionArgs> FinishedParseComponentTask(IVBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
@@ -215,7 +254,14 @@ namespace Rubberduck.Parsing.VBA
 
             parser.ParseFailure += (sender, e) =>
             {
-                tcs.SetException(e.Cause);
+                if (e.Cause is OperationCanceledException)
+                {
+                    tcs.SetCanceled();
+                }
+                else
+                {
+                    tcs.SetException(e.Cause);
+                }
             };
             parser.ParseCompleted += (sender, e) =>
             {
@@ -230,9 +276,9 @@ namespace Rubberduck.Parsing.VBA
 
         private void ProcessComponentParseResults(IVBComponent component, Task<ComponentParseTask.ParseCompletionArgs> finishedParseTask)
         {
-            finishedParseTask.Wait();
             if (finishedParseTask.IsFaulted)
             {
+                //In contrast to the situation in the success scenario, the overall parser state is reevaluated immediately.
                 State.SetModuleState(component, ParserState.Error, finishedParseTask.Exception.InnerException as SyntaxErrorException);
             }
             else if (finishedParseTask.IsCompleted)
@@ -249,7 +295,9 @@ namespace Rubberduck.Parsing.VBA
                         State.SetModuleAnnotations(component, result.Annotations);
 
                         // This really needs to go last
-                        State.SetModuleState(component, ParserState.Parsed);
+                        //It does not reevaluate the overall parer state to avoid concurrent evaluation of all module states and for performance reasons.
+                        //The evaluation has to be triggered manually in the calling procedure.
+                        State.SetModuleState(component, ParserState.Parsed, null, false);
                     }
                 }
             }
@@ -258,26 +306,48 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveAllDeclarations(List<IVBComponent> components, CancellationToken token)
         {
+            SetModuleStates(components, ParserState.ResolvingDeclarations);
+
             var options = new ParallelOptions();
             options.CancellationToken = token;
             options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
-
-            Parallel.ForEach(components,
-                options,
-                component =>
+            try
+            {
+                Parallel.ForEach(components,
+                    options,
+                    component =>
+                    {
+                        var qualifiedName = new QualifiedModuleName(component);
+                        ResolveDeclarations(qualifiedName.Component,
+                            State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
+                    }
+                );
+            }
+            catch (AggregateException exception)
+            {
+                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    var qualifiedName = new QualifiedModuleName(component);
-                    State.SetModuleState(component, ParserState.ResolvingDeclarations);
-                    ResolveDeclarations(qualifiedName.Component,
-                        State.ParseTrees.Find(s => s.Key == qualifiedName).Value);
+                    return;
                 }
-            );
+                throw;
+            }
         }
 
 
         private void ResolveReferences(CancellationToken token)
         {
-            Task.WaitAll(ResolveReferencesAsync(token));
+            try
+            {
+                Task.WaitAll(ResolveReferencesAsync(token));
+            }
+            catch (AggregateException exception)
+            {
+                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
+                {
+                    return;
+                }
+                throw;
+            }
         }
 
 
