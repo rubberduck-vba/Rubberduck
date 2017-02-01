@@ -363,7 +363,7 @@ namespace Rubberduck.Parsing.VBA
            
             var components = State.Projects.SelectMany(project => project.VBComponents).ToList();
 
-            var componentsRemoved = ClearStateCashForRemovedComponents(components);
+            var componentsRemoved = ClearStateCacheForRemovedComponents(components);
 
             // invalidation cleanup should go into ParseAsync?
             CleanUpComponentAttributes(components);
@@ -385,10 +385,10 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
-        /// Clears state cach for removed components.
+        /// Clears state cache for removed components.
         /// Returns whether components have been removed.
         /// </summary>
-        private bool ClearStateCashForRemovedComponents(List<IVBComponent> components)
+        private bool ClearStateCacheForRemovedComponents(List<IVBComponent> components)
         {
             var removedModuledecalrations = RemovedModuleDeclarations(components);
             var componentRemoved = removedModuledecalrations.Any();
