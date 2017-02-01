@@ -65,8 +65,6 @@ namespace Rubberduck.Refactorings.ExtractInterface
                     pane.Selection = oldSelection.Value.Selection;
                 }
             }
-
-            _state.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)

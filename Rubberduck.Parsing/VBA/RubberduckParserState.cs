@@ -315,7 +315,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void SetModuleState(IVBComponent component, ParserState state, SyntaxErrorException parserError = null)
+        public void SetModuleState(IVBComponent component, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
             if (AllUserDeclarations.Count > 0)
             {
@@ -343,7 +343,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     // ghost component shouldn't even exist
                     ClearStateCache(component);
-                    Status = EvaluateParserState();
+                    EvaluateParserState();
                     return;
                 }
             }
@@ -355,10 +355,18 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates.AddOrUpdate(key, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
             Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state, oldState);
-            Status = EvaluateParserState();
+            if (evaluateOverallState)
+            {
+                EvaluateParserState();
+            }
         }
 
-        private ParserState EvaluateParserState()
+        public void EvaluateParserState()
+        {
+            lock (_statusLockObject) Status = OverallParserStateFromModuleStates();
+        }
+
+        private ParserState OverallParserStateFromModuleStates()
         {
             if (_moduleStates.IsEmpty)
             {
@@ -501,6 +509,7 @@ namespace Rubberduck.Parsing.VBA
             return _moduleStates.GetOrAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending)).State;
         }
 
+        private readonly object _statusLockObject = new object(); 
         private ParserState _status;
         public ParserState Status
         {
