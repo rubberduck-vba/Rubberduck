@@ -7,7 +7,7 @@ namespace Rubberduck.SmartIndenter
 {
     internal class LogicalCodeLine
     {
-        private List<AbsoluteCodeLine> _lines = new List<AbsoluteCodeLine>();
+        private readonly List<AbsoluteCodeLine> _lines = new List<AbsoluteCodeLine>();
         private AbsoluteCodeLine _rebuilt;
         private readonly IIndenterSettings _settings;
 
@@ -186,6 +186,7 @@ namespace Rubberduck.SmartIndenter
         //The splitNamed parameter is a straight up hack for fixing https://github.com/rubberduck-vba/Rubberduck/issues/2402
         private int FunctionAlign(string line, bool splitNamed)
         {
+            line = new StringLiteralAndBracketEscaper(line).EscapedString;
             var stackPos = _alignment.Count;
 
             for (var index = StartIgnoreRegex.Match(line).Length + 1; index <= line.Length; index++)
@@ -194,10 +195,8 @@ namespace Rubberduck.SmartIndenter
                 switch (character)
                 {
                     case "\a":
-                        while (!line.Substring(index++, 1).Equals("\a")) { }
-                        break;
                     case "\x2":
-                        while (!line.Substring(index++, 1).Equals("\x2")) { }
+                        index++;
                         break;
                     case "(":
                         //Start of another function => remember this position

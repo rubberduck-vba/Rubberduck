@@ -10,10 +10,8 @@ namespace Rubberduck.SmartIndenter
     internal class AbsoluteCodeLine
     {
         private const string StupidLineEnding = ": _";
-        private const char StringPlaceholder = '\a';
-        private const char BracketPlaceholder = '\x2';
-        private static readonly Regex StringReplaceRegex = new Regex(StringPlaceholder.ToString(CultureInfo.InvariantCulture));
-        private static readonly Regex BracketReplaceRegex = new Regex(BracketPlaceholder.ToString(CultureInfo.InvariantCulture));
+        private static readonly Regex StringReplaceRegex = new Regex(StringLiteralAndBracketEscaper.StringPlaceholder.ToString(CultureInfo.InvariantCulture));
+        private static readonly Regex BracketReplaceRegex = new Regex(StringLiteralAndBracketEscaper.BracketPlaceholder.ToString(CultureInfo.InvariantCulture));
         private static readonly Regex LineNumberRegex = new Regex(@"^(?<number>(-?\d+)|(&H[0-9A-F]{1,8}))\s+(?<code>.*)", RegexOptions.ExplicitCapture);
         private static readonly Regex EndOfLineCommentRegex = new Regex(@"^(?!(Rem\s)|('))(?<code>[^']*)(\s(?<comment>'.*))$", RegexOptions.ExplicitCapture);      
         private static readonly Regex ProcedureStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Sub|Function|Property\s(Let|Get|Set))\s");
@@ -34,8 +32,9 @@ namespace Rubberduck.SmartIndenter
         private string _code;
         private readonly bool _stupidLineEnding;
         private readonly string[] _segments;
-        private List<string> _strings;
-        private List<string> _brackets;
+        private readonly StringLiteralAndBracketEscaper _escaper;
+        //private List<string> _strings;
+        //private List<string> _brackets;
 
         public AbsoluteCodeLine(string code, IIndenterSettings settings) : this(code, settings, null) { }
 
@@ -56,70 +55,15 @@ namespace Rubberduck.SmartIndenter
             
             Original = code;
 
-            ExtractStringLiteralsAndBrackets();
+            _escaper = new StringLiteralAndBracketEscaper(_code);
+            _code = _escaper.EscapedString;
+
             ExtractLineNumber();
             ExtractEndOfLineComment();
 
-            _code = Regex.Replace(_code, StringPlaceholder + "+", StringPlaceholder.ToString(CultureInfo.InvariantCulture));
-            _code = Regex.Replace(_code, BracketPlaceholder + "+", BracketPlaceholder.ToString(CultureInfo.InvariantCulture)).Trim();
+            _code = Regex.Replace(_code, StringLiteralAndBracketEscaper.StringPlaceholder + "+", StringLiteralAndBracketEscaper.StringPlaceholder.ToString(CultureInfo.InvariantCulture));
+            _code = Regex.Replace(_code, StringLiteralAndBracketEscaper.BracketPlaceholder + "+", StringLiteralAndBracketEscaper.BracketPlaceholder.ToString(CultureInfo.InvariantCulture)).Trim();
             _segments = _code.Split(new[] { ": " }, StringSplitOptions.None);
-        }
-
-        //TODO: This should be a class.
-        private void ExtractStringLiteralsAndBrackets()
-        {
-            _strings = new List<string>();
-            _brackets = new List<string>();
-
-            var chars = _code.ToCharArray();
-            var quoted = false;
-            var bracketed = false;
-            var ins = 0;
-            var strpos = 0;
-            var brkpos = 0;
-            for (var c = 0; c < chars.Length; c++)
-            {
-                if (chars[c] == '"' && !bracketed)
-                {
-                    if (!quoted)
-                    {
-                        strpos = c;
-                        quoted = true;
-                        continue;
-                    }
-                    if (c + 1 < chars.Length && chars[c] == '"')
-                    {
-                        c++;
-                    }
-                    quoted = false;
-                    _strings.Add(new string(chars.Skip(strpos).Take(c - strpos).ToArray()));
-                    for (var e = strpos; e < c; e++)
-                    {
-                        chars[e] = StringPlaceholder;
-                    }
-                }
-                else if (!quoted && !bracketed && chars[c] == '[')
-                {
-                    bracketed = true;
-                    brkpos = c;
-                    ins++;
-                }
-                else if (!quoted && bracketed && chars[c] == ']')
-                {
-                    ins--;
-                    if (ins != 0)
-                    {
-                        continue;
-                    }
-                    bracketed = false;
-                    _brackets.Add(new string(chars.Skip(brkpos).Take(c - brkpos).ToArray()));
-                    for (var e = brkpos; e < c; e++)
-                    {
-                        chars[e] = BracketPlaceholder;
-                    }
-                }
-            }
-            _code = new string(chars);            
         }
 
         private void ExtractLineNumber()
@@ -162,15 +106,18 @@ namespace Rubberduck.SmartIndenter
         {
             get
             {
+                // ReSharper disable LoopCanBeConvertedToQuery
                 var output = Original;
-                foreach (var item in _strings)
+                foreach (var item in _escaper.EscapedStrings)
+
                 {
-                    output = output.Replace(item, new string(StringPlaceholder, item.Length));
+                    output = output.Replace(item, new string(StringLiteralAndBracketEscaper.StringPlaceholder, item.Length));
                 }
-                foreach (var item in _brackets)
+                foreach (var item in _escaper.EscapedBrackets)
                 {
-                    output = output.Replace(item, new string(BracketPlaceholder, item.Length));
+                    output = output.Replace(item, new string(StringLiteralAndBracketEscaper.BracketPlaceholder, item.Length));
                 }
+                // ReSharper restore LoopCanBeConvertedToQuery
                 return output;
             }
         }
@@ -320,13 +267,13 @@ namespace Rubberduck.SmartIndenter
             }
 
             var code = string.Join(": ", _segments);
-            if (_strings.Any())
+            if (_escaper.EscapedStrings.Any())
             {
-                code = _strings.Aggregate(code, (current, literal) => StringReplaceRegex.Replace(current, literal, 1));
+                code = _escaper.EscapedStrings.Aggregate(code, (current, literal) => StringReplaceRegex.Replace(current, literal, 1));
             }
-            if (_brackets.Any())
+            if (_escaper.EscapedBrackets.Any())
             {
-                code = _brackets.Aggregate(code, (current, expr) => BracketReplaceRegex.Replace(current, expr, 1));
+                code = _escaper.EscapedBrackets.Aggregate(code, (current, expr) => BracketReplaceRegex.Replace(current, expr, 1));
             }
 
             code = string.Join(string.Empty, number, new string(' ', gap), code);
