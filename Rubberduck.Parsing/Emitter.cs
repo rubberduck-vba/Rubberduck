@@ -16,8 +16,6 @@ namespace Rubberduck.Parsing
             _state = state;
         }
 
-        private static readonly string TempModuleName = "Rubberduck___0";
-
         private static readonly string GetTypeNameFunctionTemplate = @"
 Public Function GetTypeName() As String
     GetTypeName = TypeName({0})
@@ -53,7 +51,6 @@ End Function
                 try
                 {
                     component = project.VBComponents.Add(ComponentType.StandardModule);
-                    component.Name = TempModuleName;
                     component.CodeModule.AddFromString(content);
                     var host = project.VBE.HostApplication();
                     result = host.Run(name, args);
