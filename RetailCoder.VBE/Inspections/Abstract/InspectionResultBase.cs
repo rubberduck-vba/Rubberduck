@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Resources;
@@ -87,18 +88,33 @@ namespace Rubberduck.Inspections.Abstract
             return Inspection.CompareTo(other.Inspection);
         }
 
-        //public override string ToString()
-        //{
-        //    var module = QualifiedSelection.QualifiedName;
-        //    return string.Format(
-        //        InspectionsUI.QualifiedSelectionInspection,
-        //        Inspection.Severity,
-        //        Description,
-        //        "(" + module.ProjectDisplayName + ")",
-        //        module.ProjectName,
-        //        module.ComponentName,
-        //        QualifiedSelection.Selection.StartLine);
-        //}
+        /// <summary>
+        /// WARNING: This property can have side effects. It can change the ActiveVBProject if the result has a null Declaration, 
+        /// which causes a flicker in the VBE. This should only be called if it is *absolutely* necessary.
+        /// </summary>
+        public string ToClipboardString()
+        {           
+            var module = QualifiedSelection.QualifiedName;
+            var documentName = _target != null ? _target.ProjectDisplayName : string.Empty;
+            if (string.IsNullOrEmpty(documentName))
+            {
+                var component = module.Component;
+                documentName = component != null ? component.ParentProject.ProjectDisplayName : string.Empty;
+            }
+            if (string.IsNullOrEmpty(documentName))
+            {
+                documentName = Path.GetFileName(module.ProjectPath);
+            }
+
+            return string.Format(
+                InspectionsUI.QualifiedSelectionInspection,
+                Inspection.Severity,
+                Description,
+                "(" + documentName + ")",
+                module.ProjectName,
+                module.ComponentName,
+                QualifiedSelection.Selection.StartLine);
+        }
 
         public virtual NavigateCodeEventArgs GetNavigationArgs()
         {
