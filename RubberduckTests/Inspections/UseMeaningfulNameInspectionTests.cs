@@ -20,30 +20,36 @@ namespace RubberduckTests.Inspections
     {
         [TestMethod]
         [TestCategory("Inspections")]
+        public void UseMeaningfulName_ReturnsResult_NameWithAllTheSameLetters()
+        {
+            const string inputCode =
+@"
+Private aaa As String
+Private bbb As String 
+Private ccc As String
+Private ddd As String
+Private eee As String
+Private iii As String
+Private ooo As String
+Private uuu As String
+
+Sub Eeeeee()
+Dim a2z as String       'This is the only declaration that should pass
+Dim gGGG as String
+End Sub";
+
+            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 10);
+        }
+
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameWithoutVowels()
         {
             const string inputCode = 
 @"Sub Ffffff()
 End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
         }
 
         [TestMethod]
@@ -53,25 +59,7 @@ End Sub";
             const string inputCode =
 @"Sub Oo()
 End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
         }
 
         [TestMethod]
@@ -82,24 +70,7 @@ End Sub";
 @"Sub Foo1()
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
         }
 
         [TestMethod]
@@ -110,24 +81,7 @@ End Sub";
 @"Sub FooBar()
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
+            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
         [TestMethod]
@@ -138,24 +92,7 @@ End Sub";
 @"Sub FOOBAR()
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
+            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
         [TestMethod]
@@ -165,24 +102,7 @@ End Sub";
             const string inputCode =
 @"Option Base 1";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
+            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
         [TestMethod]
@@ -193,24 +113,7 @@ End Sub";
 @"Sub sss()
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
         [TestMethod]
@@ -222,24 +125,7 @@ End Sub";
 Sub Ffffff()
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
         [TestMethod]
@@ -272,7 +158,6 @@ End Sub";
 
             var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
-
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, module.Content());
@@ -294,6 +179,26 @@ End Sub";
             var inspection = new UseMeaningfulNameInspection(null, null, null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        private void AssertVbaFragmentYieldsExpectedInspectionResultCount(string inputCode, int expectedCount)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspectionResults = inspection.GetInspectionResults();
+            Assert.AreEqual(expectedCount, inspectionResults.Count());
         }
 
         internal static Mock<IPersistanceService<CodeInspectionSettings>> GetInspectionSettings()
