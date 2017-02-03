@@ -232,6 +232,9 @@
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="Infralution.Localization.Wpf">
       <HintPath>..\libs\Infralution.Localization.Wpf.dll</HintPath>
     </Reference>
@@ -504,6 +507,7 @@
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\ToolsParentMenu.cs" />
+    <Compile Include="UI\Controls\BindableTextEditor.cs" />
     <Compile Include="UI\Controls\LinkButton.xaml.cs">
       <DependentUpon>LinkButton.xaml</DependentUpon>
     </Compile>
@@ -1155,6 +1159,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <EmbeddedResource Include="UI\Controls\vba.xshd" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\minus-circle.png" />

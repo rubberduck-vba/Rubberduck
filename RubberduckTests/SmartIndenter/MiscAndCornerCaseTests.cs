@@ -745,5 +745,43 @@ namespace RubberduckTests.SmartIndenter
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2604
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void AlignmentAnchorsInStringLiteralsAreIgnored()
+        {
+            var code = new[]
+            {
+                "Sub Test()",
+                "Dim LoremIpsum As String",
+               @"LoremIpsum = ""Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam dictum,"" & vbCrLf _",
+               @"& ""felis in tempor finibus, arcu lectus molestie urna, eget interdum turpis"" & vbCrLf _",
+               @"& ""tellus ac diam. Nulla mauris lectus, vulputate et fringilla ac, iaculis eget urna."" & vbCrLf _",
+               @"& ""Ut feugiat felis lacinia eros vestibulum facilisis. Ut euismod dapibus augue,"" & vbCrLf _",
+               @"& ""lacinia elementum elit dictum in. Nam in imperdiet tortor. Curabitur efficitur libero"" & vbCrLf _",
+               @"& ""lacus, et placerat metus sodales sit amet.""",
+                "Debug.Print LoremIpsum",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub Test()",
+                "    Dim LoremIpsum As String",
+               @"    LoremIpsum = ""Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam dictum,"" & vbCrLf _",
+               @"               & ""felis in tempor finibus, arcu lectus molestie urna, eget interdum turpis"" & vbCrLf _",
+               @"               & ""tellus ac diam. Nulla mauris lectus, vulputate et fringilla ac, iaculis eget urna."" & vbCrLf _",
+               @"               & ""Ut feugiat felis lacinia eros vestibulum facilisis. Ut euismod dapibus augue,"" & vbCrLf _",
+               @"               & ""lacinia elementum elit dictum in. Nam in imperdiet tortor. Curabitur efficitur libero"" & vbCrLf _",
+               @"               & ""lacus, et placerat metus sodales sit amet.""",
+                "    Debug.Print LoremIpsum",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
     }
 }

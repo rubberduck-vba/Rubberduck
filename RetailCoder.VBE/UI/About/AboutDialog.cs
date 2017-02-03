@@ -21,5 +21,19 @@ namespace Rubberduck.UI.About
                 AboutControl.DataContext = _viewModel;
             }
         }
+
+        private void AboutDialog_Load(object sender, System.EventArgs e)
+        {
+
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
     }
 }
