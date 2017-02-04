@@ -61,7 +61,7 @@ namespace Rubberduck.Parsing.VBA
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
             _isTestScope = isTestScope;
-            _serializedDeclarationsPath = serializedDeclarationsPath 
+            _serializedDeclarationsPath = serializedDeclarationsPath
                 ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
             _hostApp = _vbe.HostApplication();
 
@@ -71,7 +71,7 @@ namespace Rubberduck.Parsing.VBA
         // Do not access this from anywhere but ReparseRequested.
         // ReparseRequested needs to have a reference to all the cancellation tokens,
         // but the cancelees need to use their own token.
-        private readonly List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource> {new CancellationTokenSource()};
+        private readonly List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource> { new CancellationTokenSource() };
 
         private void ReparseRequested(object sender, EventArgs e)
         {
@@ -221,7 +221,7 @@ namespace Rubberduck.Parsing.VBA
             options.MaxDegreeOfParallelism = _maxDegreeOfModuleStateChangeParallelism;
 
             Parallel.ForEach(components, options, component => State.SetModuleState(component, parserState, null, false));
-            
+
             State.EvaluateParserState();
         }
 
@@ -410,7 +410,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var components = State.ParseTrees.Select(kvp => kvp.Key.Component).ToList();
             SetModuleStates(components, ParserState.ResolvingReferences);
-            
+
             ExecuteCompilationPasses();
 
             var options = new ParallelOptions();
@@ -471,7 +471,7 @@ namespace Rubberduck.Parsing.VBA
                         watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
 
                     //Evaluation of the overall status has to be defered to allow processing of undeclared variables before setting the ready state.
-                    State.SetModuleState(component, ParserState.Ready,null,false); 
+                    State.SetModuleState(component, ParserState.Ready, null, false);
                 }
                 catch (Exception exception)
                 {
@@ -497,7 +497,7 @@ namespace Rubberduck.Parsing.VBA
         private void ParseAll(object requestor, CancellationTokenSource token)
         {
             State.RefreshProjects(_vbe);
-           
+
             var components = State.Projects.SelectMany(project => project.VBComponents).ToList();
 
             var componentsRemoved = ClearStateCashForRemovedComponents(components);
@@ -505,8 +505,8 @@ namespace Rubberduck.Parsing.VBA
             // invalidation cleanup should go into ParseAsync?
             CleanUpComponentAttributes(components);
 
-            var toParse = components.Where(component => State.IsNewOrModified(component)).ToList();     
-            
+            var toParse = components.Where(component => State.IsNewOrModified(component)).ToList();
+
             if (toParse.Count == 0)
             {
                 if (componentsRemoved)  // trigger UI updates
@@ -588,7 +588,7 @@ namespace Rubberduck.Parsing.VBA
                     Logger.Warn(e);
                 }
             }
-            
+
             if (project != null)
             {
                 if (string.IsNullOrEmpty(project.ProjectId))
@@ -617,7 +617,7 @@ namespace Rubberduck.Parsing.VBA
                         var reference = references[priority];
                         if (reference.IsBroken)
                         {
-                            continue;                           
+                            continue;
                         }
 
                         // skip loading Rubberduck.tlb (GUID is defined in AssemblyInfo.cs)
@@ -639,7 +639,7 @@ namespace Rubberduck.Parsing.VBA
 
                         if (map == null)
                         {
-                            map = new ReferencePriorityMap(referencedProjectId) {{projectId, priority}};
+                            map = new ReferencePriorityMap(referencedProjectId) { { projectId, priority } };
                             _projectReferences.Add(map);
                         }
                         else
@@ -731,7 +731,7 @@ namespace Rubberduck.Parsing.VBA
                     map = map != null ? null : item;
                 }
             }
-            
+
             if (map == null || !map.IsLoaded)
             {
                 // we're removing a reference we weren't tracking? ...this shouldn't happen.

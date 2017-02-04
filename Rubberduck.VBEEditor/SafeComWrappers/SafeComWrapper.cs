@@ -22,16 +22,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 return;
             }
 
-            if (final)
+            try
             {
-                Marshal.FinalReleaseComObject(Target);
+                if (final)
+                {
+                    Marshal.FinalReleaseComObject(Target);
+                }
+                else
+                {
+                    Marshal.ReleaseComObject(Target);
+                }
             }
-            else
+            finally
             {
-                Marshal.ReleaseComObject(Target);
+                _isReleased = true;
             }
-
-            _isReleased = true;
         }
 
         public bool IsWrappingNullReference { get { return _target == null; } }

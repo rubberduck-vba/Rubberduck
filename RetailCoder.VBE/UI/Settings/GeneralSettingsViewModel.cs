@@ -96,6 +96,20 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _checkVersionAtStartup;
+        public bool CheckVersionAtStartup
+        {
+            get { return _checkVersionAtStartup; }
+            set
+            {
+                if (_checkVersionAtStartup != value)
+                {
+                    _checkVersionAtStartup = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private int _autoSavePeriod;
         public int AutoSavePeriod
         {
@@ -167,6 +181,7 @@ namespace Rubberduck.UI.Settings
             {
                 Language = SelectedLanguage,
                 ShowSplash = ShowSplashAtStartup,
+                CheckVersion = CheckVersionAtStartup,
                 SmartIndenterPrompted = _indenterPrompted,
                 AutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
@@ -180,6 +195,7 @@ namespace Rubberduck.UI.Settings
             SelectedLanguage = Languages.First(l => l.Code == general.Language.Code);
             Hotkeys = new ObservableCollection<HotkeySetting>(hottkey.Settings);
             ShowSplashAtStartup = general.ShowSplash;
+            CheckVersionAtStartup = general.CheckVersion;
             _indenterPrompted = general.SmartIndenterPrompted;
             AutoSaveEnabled = general.AutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;

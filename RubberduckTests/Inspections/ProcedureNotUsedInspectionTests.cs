@@ -170,8 +170,7 @@ End Sub";
         public void ProcedureNotUsed_HandlerIsIgnoredForUnraisedEvent()
         {
             //Input
-            const string inputCode1 =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)";
+            const string inputCode1 = @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)";
             const string inputCode2 =
 @"Private WithEvents abc As Class1
 
