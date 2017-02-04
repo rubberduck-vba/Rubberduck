@@ -37,17 +37,18 @@ namespace Rubberduck.UI.Command
             _process = process;
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override async void ExecuteImpl(object parameter)
         {
-            _versionCheck.GetLatestVersionAsync().ContinueWith(Execute);
-        }
-
-        private void Execute(Version latestVersion)
-        {
-            if (_versionCheck.CurrentVersion < latestVersion)
-            {
-                PromptAndBrowse(latestVersion);
-            }
+            Logger.Info("Executing version check.");
+            await _versionCheck
+                .GetLatestVersionAsync()
+                .ContinueWith(t =>
+                {
+                    if (_versionCheck.CurrentVersion != t.Result)
+                    {
+                        PromptAndBrowse(t.Result);
+                    }
+                });
         }
 
         private void PromptAndBrowse(Version latestVersion)

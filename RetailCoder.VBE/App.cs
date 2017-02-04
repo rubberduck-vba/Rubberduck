@@ -13,6 +13,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VersionCheck;
@@ -30,6 +31,7 @@ namespace Rubberduck
         private readonly RubberduckCommandBar _stateBar;
         private readonly IRubberduckHooks _hooks;
         private readonly IVersionCheck _version;
+        private readonly CommandBase _checkVersionCommand;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
@@ -42,7 +44,8 @@ namespace Rubberduck
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
             IRubberduckHooks hooks,
-            IVersionCheck version)
+            IVersionCheck version,
+            CommandBase checkVersionCommand)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -53,6 +56,7 @@ namespace Rubberduck
             _stateBar = stateBar;
             _hooks = hooks;
             _version = version;
+            _checkVersionCommand = checkVersionCommand;
 
             _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -162,6 +166,11 @@ namespace Rubberduck
             _stateBar.SetStatusLabelCaption(ParserState.Pending);
             _stateBar.EvaluateCanExecute(_parser.State);
             UpdateLoggingLevel();
+
+            if (_config.UserSettings.GeneralSettings.CheckVersion)
+            {
+                _checkVersionCommand.Execute(null);
+            }
         }
 
         public void Shutdown()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading;
@@ -29,7 +30,10 @@ namespace Rubberduck.VersionCheck
             {
                 var url = new Uri("http://rubberduckvba.com/Build/Version/Stable");
                 var response = await client.GetAsync(url, token);
-                var version = await response.Content.ReadAsStringAsync();
+                var content = await response.Content.ReadAsStringAsync();
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(content);
+                var version = doc.DocumentNode.Descendants("body").Single().InnerText.Trim();
                 return _latestVersion = new Version(version);
             }
         }

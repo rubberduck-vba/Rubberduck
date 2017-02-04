@@ -1471,6 +1471,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check if a newer version is available at startup.
+        /// </summary>
+        public static string GeneralSettings_CheckVersion {
+            get {
+                return ResourceManager.GetString("GeneralSettings_CheckVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Debug.
         /// </summary>
         public static string GeneralSettings_DebugLogLevel {

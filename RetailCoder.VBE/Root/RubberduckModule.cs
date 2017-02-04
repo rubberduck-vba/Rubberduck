@@ -70,6 +70,7 @@ namespace Rubberduck.Root
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
 
+            Bind<CommandBase>().To<VersionCheckCommand>().WhenInjectedExactlyInto<App>();
             BindCodeInspectionTypes();
 
             var assemblies = new[]

@@ -1916,4 +1916,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
     <value>Rubberduck version {0} is now available! Would you like to review the release notes now?</value>
   </data>
+  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
+    <value>Check if a newer version is available at startup</value>
+  </data>
 </root>
