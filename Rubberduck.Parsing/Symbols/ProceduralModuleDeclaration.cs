@@ -49,18 +49,18 @@ namespace Rubberduck.Parsing.Symbols
         //These are the pseudo-module ctor for COM enumerations and types.
         public ProceduralModuleDeclaration(ComEnumeration pseudo, Declaration parent, QualifiedModuleName module)
             : this(
-                module.QualifyMemberName(pseudo.Name),
+                module.QualifyMemberName(string.Format("_{0}", pseudo.Name)),
                 parent,
-                pseudo.Name,
+                string.Format("_{0}", pseudo.Name),
                 true,
                 new List<IAnnotation>(),
                 new Attributes()) { }
 
         public ProceduralModuleDeclaration(ComStruct pseudo, Declaration parent, QualifiedModuleName module)
             : this(
-                module.QualifyMemberName(pseudo.Name),
+                module.QualifyMemberName(string.Format("_{0}", pseudo.Name)),
                 parent,
-                pseudo.Name,
+                string.Format("_{0}", pseudo.Name),
                 true,
                 new List<IAnnotation>(),
                 new Attributes()) { }
