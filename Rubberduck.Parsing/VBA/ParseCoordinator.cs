@@ -18,7 +18,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -62,7 +61,7 @@ namespace Rubberduck.Parsing.VBA
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
             _isTestScope = isTestScope;
-            _serializedDeclarationsPath = serializedDeclarationsPath 
+            _serializedDeclarationsPath = serializedDeclarationsPath
                 ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
             _hostApp = _vbe.HostApplication();
 
@@ -72,7 +71,7 @@ namespace Rubberduck.Parsing.VBA
         // Do not access this from anywhere but ReparseRequested.
         // ReparseRequested needs to have a reference to all the cancellation tokens,
         // but the cancelees need to use their own token.
-        private readonly List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource> {new CancellationTokenSource()};
+        private readonly List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource> { new CancellationTokenSource() };
 
         private void ReparseRequested(object sender, EventArgs e)
         {
@@ -183,7 +182,6 @@ namespace Rubberduck.Parsing.VBA
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
-                _state.IsEnabled = true;
                 return;
             }
 
@@ -192,7 +190,6 @@ namespace Rubberduck.Parsing.VBA
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
-                _state.IsEnabled = true;
                 return;
             }
 
@@ -224,7 +221,7 @@ namespace Rubberduck.Parsing.VBA
             options.MaxDegreeOfParallelism = _maxDegreeOfModuleStateChangeParallelism;
 
             Parallel.ForEach(components, options, component => State.SetModuleState(component, parserState, null, false));
-            
+
             State.EvaluateParserState();
         }
 
@@ -413,7 +410,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var components = State.ParseTrees.Select(kvp => kvp.Key.Component).ToList();
             SetModuleStates(components, ParserState.ResolvingReferences);
-            
+
             ExecuteCompilationPasses();
 
             var options = new ParallelOptions();
@@ -474,7 +471,7 @@ namespace Rubberduck.Parsing.VBA
                         watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
 
                     //Evaluation of the overall status has to be defered to allow processing of undeclared variables before setting the ready state.
-                    State.SetModuleState(component, ParserState.Ready,null,false); 
+                    State.SetModuleState(component, ParserState.Ready, null, false);
                 }
                 catch (Exception exception)
                 {
@@ -500,16 +497,16 @@ namespace Rubberduck.Parsing.VBA
         private void ParseAll(object requestor, CancellationTokenSource token)
         {
             State.RefreshProjects(_vbe);
-           
+
             var components = State.Projects.SelectMany(project => project.VBComponents).ToList();
 
-            var componentsRemoved = ClearStateCacheForRemovedComponents(components);
+            var componentsRemoved = ClearStateCashForRemovedComponents(components);
 
             // invalidation cleanup should go into ParseAsync?
             CleanUpComponentAttributes(components);
 
-            var toParse = components.Where(component => State.IsNewOrModified(component)).ToList();     
-            
+            var toParse = components.Where(component => State.IsNewOrModified(component)).ToList();
+
             if (toParse.Count == 0)
             {
                 if (componentsRemoved)  // trigger UI updates
@@ -525,10 +522,10 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
-        /// Clears state cache for removed components.
+        /// Clears state cach for removed components.
         /// Returns whether components have been removed.
         /// </summary>
-        private bool ClearStateCacheForRemovedComponents(List<IVBComponent> components)
+        private bool ClearStateCashForRemovedComponents(List<IVBComponent> components)
         {
             var removedModuledecalrations = RemovedModuleDeclarations(components);
             var componentRemoved = removedModuledecalrations.Any();
@@ -591,7 +588,7 @@ namespace Rubberduck.Parsing.VBA
                     Logger.Warn(e);
                 }
             }
-            
+
             if (project != null)
             {
                 if (string.IsNullOrEmpty(project.ProjectId))
@@ -620,7 +617,7 @@ namespace Rubberduck.Parsing.VBA
                         var reference = references[priority];
                         if (reference.IsBroken)
                         {
-                            continue;                           
+                            continue;
                         }
 
                         // skip loading Rubberduck.tlb (GUID is defined in AssemblyInfo.cs)
@@ -642,7 +639,7 @@ namespace Rubberduck.Parsing.VBA
 
                         if (map == null)
                         {
-                            map = new ReferencePriorityMap(referencedProjectId) {{projectId, priority}};
+                            map = new ReferencePriorityMap(referencedProjectId) { { projectId, priority } };
                             _projectReferences.Add(map);
                         }
                         else
@@ -734,7 +731,7 @@ namespace Rubberduck.Parsing.VBA
                     map = map != null ? null : item;
                 }
             }
-            
+
             if (map == null || !map.IsLoaded)
             {
                 // we're removing a reference we weren't tracking? ...this shouldn't happen.
@@ -749,104 +746,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-
-        private readonly ConcurrentDictionary<string, Declaration> _projectDeclarations = new ConcurrentDictionary<string, Declaration>();
-        private void ResolveDeclarations(IVBComponent component, IParseTree tree)
-        {
-            if (component == null) { return; }
-
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var stopwatch = Stopwatch.StartNew();
-            try
-            {
-                var project = component.Collection.Parent;
-                var projectQualifiedName = new QualifiedModuleName(project);
-                Declaration projectDeclaration;
-                if (!_projectDeclarations.TryGetValue(projectQualifiedName.ProjectId, out projectDeclaration))
-                {
-                    projectDeclaration = CreateProjectDeclaration(projectQualifiedName, project);
-                    _projectDeclarations.AddOrUpdate(projectQualifiedName.ProjectId, projectDeclaration, (s, c) => projectDeclaration);
-                    State.AddDeclaration(projectDeclaration);
-                }
-                Logger.Debug("Creating declarations for module {0}.", qualifiedModuleName.Name);
-                
-                var emitter = new Emitter(_state);
-                string typeName = null;
-                if (component.Type == ComponentType.Document)
-                {
-                    //typeName = emitter.ExecuteWithResult<string>(project, emitter.GetTypeNameFunctionBody(component.Name), "GetTypeName");
-                }
-
-                var declarationsListener = new DeclarationSymbolsListener(State, qualifiedModuleName, component.Type, State.GetModuleAnnotations(component), State.GetModuleAttributes(component), projectDeclaration, typeName);
-                ParseTreeWalker.Default.Walk(declarationsListener, tree);
-                foreach (var createdDeclaration in declarationsListener.CreatedDeclarations)
-                {
-                    State.AddDeclaration(createdDeclaration);
-                }
-            }
-            catch (Exception exception)
-            {
-                Logger.Error(exception, "Exception thrown acquiring declarations for '{0}' (thread {1}).", component.Name, Thread.CurrentThread.ManagedThreadId);
-                State.SetModuleState(component, ParserState.ResolverError);
-            }
-            stopwatch.Stop();
-            Logger.Debug("{0}ms to resolve declarations for component {1}", stopwatch.ElapsedMilliseconds, component.Name);
-        }
-
-        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, IVBProject project)
-        {
-            var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
-            var projectId = qualifiedName.QualifiedModuleName.ProjectId;
-            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name, false, project);
-
-            var references = new List<ReferencePriorityMap>();
-            foreach (var item in _projectReferences)
-            {
-                if (item.ContainsKey(projectId))
-                {
-                    references.Add(item);
-                }
-            }
-
-            foreach (var reference in references)
-            {
-                int priority = reference[projectId];
-                projectDeclaration.AddProjectReference(reference.ReferencedProjectId, priority);
-            }
-            return projectDeclaration;
-        }
-
-        private void ResolveReferences(DeclarationFinder finder, IVBComponent component, IParseTree tree)
-        {
-            Debug.Assert(State.GetModuleState(component) == ParserState.ResolvingReferences);
-            
-            var qualifiedName = new QualifiedModuleName(component);
-            Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
-
-            var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
-            var listener = new IdentifierReferenceListener(resolver);
-
-            if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
-            {
-                var walker = new ParseTreeWalker();
-                try
-                {
-                    var watch = Stopwatch.StartNew();
-                    walker.Walk(listener, tree);
-                    watch.Stop();
-                    Logger.Debug("Binding resolution done for component '{0}' in {1}ms (thread {2})", component.Name,
-                        watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
-
-                    State.SetModuleState(component, ParserState.Ready);
-                }
-                catch (Exception exception)
-                {
-                    Logger.Error(exception, "Exception thrown resolving '{0}' (thread {1}).", component.Name, Thread.CurrentThread.ManagedThreadId);
-                    State.SetModuleState(component, ParserState.ResolverError);
-                }
-            }
-        }
 
         public void Dispose()
         {
