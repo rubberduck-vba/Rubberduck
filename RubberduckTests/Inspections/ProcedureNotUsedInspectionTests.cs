@@ -166,7 +166,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ProcedureNotUsed_DoesNotReturnResult_EventImplementation()
+        public void ProcedureNotUsed_HandlerIsIgnoredForUnraisedEvent()
         {
             //Input
             const string inputCode1 =
@@ -195,7 +195,7 @@ End Sub";
             var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
