@@ -5,6 +5,7 @@ using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
@@ -195,7 +196,7 @@ End Sub";
             var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+            Assert.AreEqual(1, inspectionResults.Count(result => result.Target.DeclarationType == DeclarationType.Procedure));
         }
 
         [TestMethod]
