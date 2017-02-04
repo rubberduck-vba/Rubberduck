@@ -5,6 +5,7 @@ using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
@@ -166,7 +167,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ProcedureNotUsed_DoesNotReturnResult_EventImplementation()
+        public void ProcedureNotUsed_HandlerIsIgnoredForUnraisedEvent()
         {
             //Input
             const string inputCode1 =
@@ -195,7 +196,7 @@ End Sub";
             var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+            Assert.AreEqual(1, inspectionResults.Count(result => result.Target.DeclarationType == DeclarationType.Procedure));
         }
 
         [TestMethod]
