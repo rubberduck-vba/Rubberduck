@@ -44,7 +44,7 @@ namespace Rubberduck.UI.Command
                 .GetLatestVersionAsync()
                 .ContinueWith(t =>
                 {
-                    if (_versionCheck.CurrentVersion != t.Result)
+                    if (_versionCheck.CurrentVersion < t.Result)
                     {
                         PromptAndBrowse(t.Result);
                     }
