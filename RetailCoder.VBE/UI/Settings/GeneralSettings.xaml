@@ -119,6 +119,9 @@
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ShowSplash}"
                               IsChecked="{Binding ShowSplashAtStartup}" />
 
+                    <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_CheckVersion}"
+                              IsChecked="{Binding CheckVersionAtStartup}" />
+
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveLabel}" FontWeight="SemiBold" />
                     <StackPanel Orientation="Horizontal">
                         <CheckBox Name="AutoSaveButton"
