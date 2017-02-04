@@ -15,6 +15,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VersionCheck;
 
 namespace Rubberduck
 {
@@ -28,6 +29,7 @@ namespace Rubberduck
         private readonly IAppMenu _appMenus;
         private readonly RubberduckCommandBar _stateBar;
         private readonly IRubberduckHooks _hooks;
+        private readonly IVersionCheck _version;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
@@ -39,7 +41,8 @@ namespace Rubberduck
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
-            IRubberduckHooks hooks)
+            IRubberduckHooks hooks,
+            IVersionCheck version)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -49,6 +52,7 @@ namespace Rubberduck
             _appMenus = appMenus;
             _stateBar = stateBar;
             _hooks = hooks;
+            _version = version;
 
             _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -229,8 +233,8 @@ namespace Rubberduck
 
         private void LogRubberduckSart()
         {
-            var version = GetType().Assembly.GetName().Version.ToString();
-            GlobalDiagnosticsContext.Set("RubberduckVersion", version);
+            var version = _version.CurrentVersion;
+            GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
             var headers = new List<string>
             {
                 string.Format("Rubberduck version {0} loading:", version),

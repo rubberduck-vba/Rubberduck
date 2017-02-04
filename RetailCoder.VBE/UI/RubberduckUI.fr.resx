@@ -375,8 +375,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Une erreur est survenue lors du chargement du complément Rubberduck.</value>
   </data>
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
-    <value>Version {0} ({1})</value>
-    <comment>0: Version; 1: ProcessorArchitecture</comment>
+    <value>Version {0}</value>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG </value>
@@ -1309,7 +1308,7 @@ Icônes "Fugue" par Yusuke Kamiyamane</value>
     <value>Clé invalide</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>cette procédure s'exécute une seule fois par module</value>

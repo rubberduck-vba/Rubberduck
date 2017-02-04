@@ -117,7 +117,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to © Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan.
+        ///   Looks up a localized string similar to © Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan.
         /// </summary>
         public static string AboutWindow_Copyright {
             get {
@@ -3138,7 +3138,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Build {0} ({1}).
+        ///   Looks up a localized string similar to Version {0}.
         /// </summary>
         public static string Rubberduck_AboutBuild {
             get {
