@@ -1914,4 +1914,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
     <value>Indented Code Sample</value>
   </data>
+  <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
+    <value>Rubberduck version {0} is now available! Would you like to review the release notes now?</value>
+  </data>
 </root>

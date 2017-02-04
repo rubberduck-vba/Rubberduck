@@ -1867,4 +1867,7 @@ End Sub</value>
   <data name="SettingsCaption_ImportSettings" xml:space="preserve">
     <value>Import</value>
   </data>
+  <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
+    <value>La version {0} de Rubberduck est maintenant disponible! Souhaitez-vous consulter les notes de mise à jour maintenant?</value>
+  </data>
 </root>
