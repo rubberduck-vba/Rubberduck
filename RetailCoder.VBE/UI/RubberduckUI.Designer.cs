@@ -1921,6 +1921,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Indented Code Sample.
+        /// </summary>
+        public static string IndenterSettings_CodeSampleHeader {
+            get {
+                return ResourceManager.GetString("IndenterSettings_CodeSampleHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable Options.
         /// </summary>
         public static string IndenterSettings_EnableOptionsLabel {

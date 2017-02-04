@@ -1,0 +1,230 @@
+﻿<?xml version="1.0"?>
+
+<!-- Syntaxdefinition for VBA -->
+<!-- Adapted from ICSharpCode.AvalonEdit VB.NET Syntaxdefinition by Siegfried Oleg Pammer et.al. -->
+<!-- https://github.com/icsharpcode/AvalonEdit -->
+<SyntaxDefinition name="VBA" extensions=".vb" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Comment" foreground="Green" exampleText="' comment" />
+  <Color name="String" exampleText="text = &quot;Hello, World!&quot;" />
+  <Color name="DateLiteral" foreground="Black" exampleText="endOfWorld = #2012-12-21#" />
+  <Color name="Preprocessor" foreground="DarkBlue" exampleText="#If WIN32 Then" />
+  <Color name="DataTypes" foreground="DarkBlue" exampleText="Dim foo As Boolean" />
+  <Color name="Operators" foreground="Black" exampleText="If foo And bar Then"/>
+  <Color name="Constants" foreground="Black" exampleText="bar = False" />
+  <Color name="Keywords" foreground="DarkBlue" exampleText="Select Case foo" />
+  <Color name="DebugCommands" foreground="DarkBlue" exampleText="Debug.Print foo" />
+  <Color name="ConversionFunctions" foreground="DarkBlue" exampleText="CInt(foo)" />
+  <Color name="ContextKeywords" foreground="DarkBlue" exampleText="Option Explicit" />
+
+  <Property name="DocCommentMarker" value="'''" />
+
+  <RuleSet ignoreCase="true">
+    <Span color="String">
+      <Begin>"</Begin>
+      <End>"</End>
+      <RuleSet>
+        <Span begin="&quot;&quot;" end="" />
+      </RuleSet>
+    </Span>
+
+    <Span color="Preprocessor" ruleSet="PreprocessorSet">
+      <Begin>(?&lt;=(^\s*))\#</Begin>
+    </Span>
+
+    <Span color="DateLiteral">
+      <Begin>(?&lt;!(^\s*))\#</Begin>
+      <End>\#</End>
+    </Span>
+
+    <Span color="Comment" multiline="true">
+      <Begin>'|^\s*Rem</Begin>
+      <End>(?&lt;!\s_)$</End>
+    </Span>
+
+    <Keywords color="DebugCommands">
+      <Word>Assert</Word>
+      <Word>Debug</Word>
+      <Word>Print</Word>
+      <Word>Stop</Word>
+    </Keywords>
+
+    <Keywords color="DataTypes">
+      <Word>Any</Word>
+      <Word>Boolean</Word>
+      <Word>Byte</Word>
+      <Word>Currency</Word>
+      <Word>Date</Word>
+      <Word>Decimal</Word>
+      <Word>Double</Word>
+      <Word>Integer</Word>
+      <Word>Long</Word>
+      <Word>LongLong</Word>
+      <Word>LongPtr</Word>
+      <Word>Object</Word>
+      <Word>Short</Word>
+      <Word>Single</Word>
+      <Word>String</Word>
+      <Word>Variant</Word>
+    </Keywords>
+
+    <Keywords color="Operators">
+      <Word>AddressOf</Word>
+      <Word>And</Word>
+      <Word>Eqv</Word>
+      <Word>Imp</Word>
+      <Word>Is</Word>
+      <Word>Like</Word>
+      <Word>Mod</Word>
+      <Word>New</Word>
+      <Word>Not</Word>
+      <Word>Or</Word>
+      <Word>TypeOf</Word>
+      <Word>Xor</Word>
+    </Keywords>
+
+    <Keywords color="Constants">
+      <Word>Empty</Word>
+      <Word>False</Word>
+      <Word>Nothing</Word>
+      <Word>Null</Word>
+      <Word>True</Word>
+    </Keywords>
+
+    <Keywords color="ConversionFunctions">
+      <Word>CBool</Word>
+      <Word>CByte</Word>
+      <Word>CCur</Word>
+      <Word>CDate</Word>
+      <Word>CDbl</Word>
+      <Word>CDec</Word>
+      <Word>CInt</Word>
+      <Word>CLng</Word>
+      <Word>CLngLng</Word>
+      <Word>CLngPtr</Word>
+      <Word>CObj</Word>
+      <Word>CSng</Word>
+      <Word>CStr</Word>
+      <Word>CVar</Word>
+      <Word>CVErr</Word>
+    </Keywords>
+
+    <Keywords color="Keywords">
+      <Word>Alias</Word>
+      <Word>Append</Word>
+      <Word>As</Word>
+      <Word>ByRef</Word>
+      <Word>ByVal</Word>
+      <Word>Call</Word>
+      <Word>Case</Word>
+      <Word>Close</Word>
+      <Word>Const</Word>
+      <Word>Command</Word>
+      <Word>Declare</Word>
+      <Word>DefBool</Word>
+      <Word>DefByte</Word>
+      <Word>DefCur</Word>
+      <Word>DefDate</Word>
+      <Word>DefDbl</Word>
+      <Word>DefInt</Word>
+      <Word>DefLng</Word>
+      <Word>DefObj</Word>
+      <Word>DefSng</Word>
+      <Word>DefStr</Word>
+      <Word>DefVar</Word>
+      <Word>Dim</Word>
+      <Word>Do</Word>
+      <Word>Each</Word>
+      <Word>Else</Word>
+      <Word>ElseIf</Word>
+      <Word>End</Word>
+      <Word>EndIf</Word>
+      <Word>Enum</Word>
+      <Word>EOF</Word>
+      <Word>Erase</Word>
+      <Word>Error</Word>
+      <Word>Event</Word>
+      <Word>Exit</Word>
+      <Word>For</Word>
+      <Word>Friend</Word>
+      <Word>Function</Word>
+      <Word>Get</Word>
+      <Word>Global</Word>
+      <Word>GoSub</Word>
+      <Word>GoTo</Word>
+      <Word>If</Word>
+      <Word>Implements</Word>
+      <Word>In</Word>
+      <Word>Input</Word>
+      <Word>Let</Word>
+      <Word>Lib</Word>
+      <Word>Line</Word>
+      <Word>LOC</Word>
+      <Word>Lock</Word>
+      <Word>LOF</Word>
+      <Word>Loop</Word>
+      <Word>LSet</Word>
+      <Word>Name</Word>
+      <Word>New</Word>
+      <Word>Next</Word>
+      <Word>On</Word>
+      <Word>Open</Word>
+      <Word>Optional</Word>
+      <Word>Output</Word>
+      <Word>ParamArray</Word>
+      <Word>Private</Word>
+      <Word>Property</Word>
+      <Word>Public</Word>
+      <Word>Put</Word>
+      <Word>RaiseEvent</Word>
+      <Word>Random</Word>
+      <Word>Read</Word>
+      <Word>ReDim</Word>
+      <Word>Resume</Word>
+      <Word>Return</Word>
+      <Word>RSet</Word>
+      <Word>Seek</Word>
+      <Word>Select</Word>
+      <Word>Set</Word>
+      <Word>Shared</Word>
+      <Word>Spc</Word>
+      <Word>Static</Word>
+      <Word>Step</Word>
+      <Word>Sub</Word>
+      <Word>Tab</Word>
+      <Word>Then</Word>
+      <Word>To</Word>
+      <Word>Type</Word>
+      <Word>Unlock</Word>
+      <Word>Until</Word>
+      <Word>Wend</Word>
+      <Word>While</Word>
+      <Word>Width</Word>
+      <Word>With</Word>
+      <Word>WithEvents</Word>
+      <Word>Write</Word>
+    </Keywords>
+
+    <Keywords color="ContextKeywords">
+      <Word>Base</Word>
+      <Word>Binary</Word>
+      <Word>Compare</Word>
+      <Word>Database</Word>
+      <Word>Explicit</Word>
+      <Word>Module</Word>
+      <Word>Option</Word>
+      <Word>Preserve</Word>
+      <Word>Text</Word>
+    </Keywords>
+  </RuleSet>
+
+  <RuleSet name="PreprocessorSet" ignoreCase="true">
+    <Keywords>
+      <Word>Const</Word>
+      <Word>Else</Word>
+      <Word>ElseIf</Word>
+      <Word>End</Word>
+      <Word>If</Word>
+    </Keywords>
+  </RuleSet>
+
+</SyntaxDefinition>

@@ -28,6 +28,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         void SaveAs(string fileName);
         void MakeCompiledFile();
         void ExportSourceFiles(string folder);
+        string ProjectDisplayName { get; }
 
         IReadOnlyList<string> ComponentNames();
     }

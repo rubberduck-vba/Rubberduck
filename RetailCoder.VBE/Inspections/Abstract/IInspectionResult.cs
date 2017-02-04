@@ -11,5 +11,6 @@ namespace Rubberduck.Inspections.Abstract
         QualifiedSelection QualifiedSelection { get; }
         IInspection Inspection { get; }
         object[] ToArray();
+        string ToClipboardString();
     }
 }

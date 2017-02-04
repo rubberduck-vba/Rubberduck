@@ -167,5 +167,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
         }
 
+        public string ProjectDisplayName { get; private set; }
     }
 }

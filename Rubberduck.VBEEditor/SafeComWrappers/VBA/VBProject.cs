@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
@@ -180,5 +181,55 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
+        private static readonly Regex CaptionProjectRegex = new Regex(@"^(?:[^-]+)(?:\s-\s)(?<project>.+)(?:\s-\s.*)?$");
+        private static readonly Regex OpenModuleRegex = new Regex(@"^(?<project>.+)(?<module>\s-\s\[.*\((Code|UserForm)\)\])$");
+        private string _displayName;
+        /// <summary>
+        /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
+        /// This should only be called if it is *absolutely* necessary.
+        /// </summary>
+        public string ProjectDisplayName
+        {
+            get
+            {
+                if (_displayName != null)
+                {
+                    return _displayName;
+                }
+
+                if (IsWrappingNullReference)
+                {
+                    _displayName = string.Empty;
+                    return _displayName;
+                }
+
+                var vbe = VBE;
+                var activeProject = vbe.ActiveVBProject;
+                var mainWindow = vbe.MainWindow;
+                {
+                    try
+                    {
+                        if (Target.HelpFile != activeProject.HelpFile)
+                        {
+                            vbe.ActiveVBProject = this;
+                        }
+
+                        var caption = mainWindow.Caption;
+                        if (CaptionProjectRegex.IsMatch(caption))
+                        {
+                            caption = CaptionProjectRegex.Matches(caption)[0].Groups["project"].Value;
+                            _displayName = OpenModuleRegex.IsMatch(caption)
+                                ? OpenModuleRegex.Matches(caption)[0].Groups["project"].Value
+                                : caption;
+                        }
+                    }
+                    catch
+                    {
+                        _displayName = string.Empty;
+                    }
+                    return _displayName;
+                }
+            }
+        }
     }
 }
