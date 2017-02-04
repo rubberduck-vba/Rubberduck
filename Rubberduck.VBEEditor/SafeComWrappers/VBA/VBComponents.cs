@@ -42,7 +42,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Remove(IVBComponent item)
         {
-            if (!IsWrappingNullReference) Target.Remove((VB.VBComponent)item.Target);
+            if (item != null && item.Target != null && !IsWrappingNullReference)
+            {
+                Target.Remove((VB.VBComponent)item.Target);
+            }
         }
 
         public IVBComponent Add(ComponentType type)
