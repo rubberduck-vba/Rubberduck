@@ -81,6 +81,14 @@ LibGit2Sharp is the library that has allowed us to integrate Git right into the 
 
 Which basically means it's a reimplementation of Git in C. It also [happens to be the technology Microsoft uses for their own Git integration with Visual Studio](http://www.hanselman.com/blog/GitSupportForVisualStudioGitTFSAndVSPutIntoContext.aspx).
 
+###[AvalonEdit](http://avalonedit.net)
+
+Source code looks a lot better with syntax highlighting, and AvalonEdit excels at it. 
+
+> AvalonEdit is a WPF-based text editor component. It was written by [Daniel Grunwald](https://github.com/dgrunwald) for the [SharpDevelop](http://www.icsharpcode.net/OpenSource/SD/) IDE. Starting with version 5.0, AvalonEdit is released under the [MIT license](http://opensource.org/licenses/MIT).
+
+We're currently only using a tiny bit of this code editor's functionality (more to come!).
+
 ###[WPF Localization Using RESX Files](http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files)
 
 This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
