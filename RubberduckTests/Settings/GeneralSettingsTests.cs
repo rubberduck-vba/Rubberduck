@@ -23,7 +23,7 @@ namespace RubberduckTests.Settings
                 Language = new DisplayLanguageSetting("en-US"),
                 AutoSaveEnabled = false,
                 AutoSavePeriod = 10,
-                Delimiter = '.'
+                //Delimiter = '.'
             };
 
             var hotkeySettings = new HotkeySettings()
@@ -46,7 +46,7 @@ namespace RubberduckTests.Settings
                 Language = new DisplayLanguageSetting("fr-CA"),
                 AutoSaveEnabled = true,
                 AutoSavePeriod = 5,
-                Delimiter = '/'
+                //Delimiter = '/'
             };
 
             var hotkeySettings = new HotkeySettings()
@@ -76,8 +76,7 @@ namespace RubberduckTests.Settings
                 () => Assert.AreEqual(config.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage),
                 () => Assert.IsTrue(config.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys)),
                 () => Assert.AreEqual(config.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled),
-                () => Assert.AreEqual(config.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod),
-                () => Assert.AreEqual(config.UserSettings.GeneralSettings.Delimiter, (char)viewModel.Delimiter));
+                () => Assert.AreEqual(config.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod));
         }
 
         [TestCategory("Settings")]
@@ -93,8 +92,7 @@ namespace RubberduckTests.Settings
                 () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage),
                 () => Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys)),
                 () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled),
-                () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod),
-                () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Delimiter, (char)viewModel.Delimiter));
+                () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod));
         }
 
         [TestCategory("Settings")]
@@ -137,14 +135,14 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod);
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
-        public void DelimiterIsSetInCtor()
-        {
-            var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
+        //[TestCategory("Settings")]
+        //[TestMethod]
+        //public void DelimiterIsSetInCtor()
+        //{
+        //    var defaultConfig = GetDefaultConfig();
+        //    var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
 
-            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Delimiter, (char)viewModel.Delimiter);
-        }
+        //    Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Delimiter, (char)viewModel.Delimiter);
+        //}
     }
 }
