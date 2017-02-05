@@ -185,7 +185,7 @@ namespace Rubberduck.UI.Settings
                 SmartIndenterPrompted = _indenterPrompted,
                 AutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
-                Delimiter = (char)Delimiter,
+                //Delimiter = (char)Delimiter,
                 MinimumLogLevel = SelectedLogLevel.Ordinal
             };
         }
@@ -199,7 +199,7 @@ namespace Rubberduck.UI.Settings
             _indenterPrompted = general.SmartIndenterPrompted;
             AutoSaveEnabled = general.AutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;
-            Delimiter = (DelimiterOptions)general.Delimiter;
+            //Delimiter = (DelimiterOptions)general.Delimiter;
             SelectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
         }
 
