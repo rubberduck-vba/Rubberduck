@@ -12,6 +12,17 @@ namespace Rubberduck.VBEditor.Application
         void Run(dynamic declaration);
 
         /// <summary>
+        /// Executes a VBA function by name, with specified parameters, and returns a result.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// May not be available in all host applications.
+        /// </remarks>
+        object Run(string name, params object[] args);
+
+        /// <summary>
         /// Gets the name of the application.
         /// </summary>
         /// <remarks>

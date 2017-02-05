@@ -119,6 +119,7 @@
     <Compile Include="ComReflection\ComStruct.cs" />
     <Compile Include="ComReflection\ComType.cs" />
     <Compile Include="ComReflection\ComVariant.cs" />
+    <Compile Include="Emitter.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />

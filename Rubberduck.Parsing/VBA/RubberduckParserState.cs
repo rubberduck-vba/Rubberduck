@@ -61,6 +61,8 @@ namespace Rubberduck.Parsing.VBA
 
         public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
+        public bool IsEnabled { get; internal set; }
+
         public DeclarationFinder DeclarationFinder { get; private set; }
 
         internal void RefreshFinder(IHostApplication host)
@@ -87,6 +89,8 @@ namespace Rubberduck.Parsing.VBA
                 _sinks.ComponentRemoved += Sinks_ComponentRemoved;
                 _sinks.ComponentRenamed += Sinks_ComponentRenamed;
             }
+
+            IsEnabled = true;
         }
 
         private bool _started;
@@ -897,7 +901,7 @@ namespace Rubberduck.Parsing.VBA
         public void OnParseRequested(object requestor, IVBComponent component = null)
         {
             var handler = ParseRequest;
-            if (handler != null)
+            if (handler != null && IsEnabled)
             {
                 var args = EventArgs.Empty;
                 handler.Invoke(requestor, args);

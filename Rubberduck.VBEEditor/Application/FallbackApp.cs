@@ -36,6 +36,11 @@ namespace Rubberduck.VBEditor.Application
             // note: this can't work... because the .Execute() call isn't blocking, so method returns before test method actually runs.
         }
 
+        public object Run(string name, object[] args)
+        {
+            return null;
+        }
+
         public TimeSpan TimedMethodCall(dynamic declaration)
         {
             var stopwatch = Stopwatch.StartNew();

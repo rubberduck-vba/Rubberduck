@@ -8,7 +8,8 @@ namespace Rubberduck.UI.About
         {
             InitializeComponent();
 
-            ViewModel = new AboutControlViewModel();
+            // todo: inject these dependencies?
+            ViewModel = new AboutControlViewModel(new VersionCheck.VersionCheck());
         }
 
         private AboutControlViewModel _viewModel;
@@ -22,10 +23,6 @@ namespace Rubberduck.UI.About
             }
         }
 
-        private void AboutDialog_Load(object sender, System.EventArgs e)
-        {
-
-        }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Escape)
