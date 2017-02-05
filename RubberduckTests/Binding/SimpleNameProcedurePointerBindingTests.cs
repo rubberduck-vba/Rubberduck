@@ -49,6 +49,7 @@ namespace RubberduckTests.Binding
 
             var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.IdentifierName == BINDING_TARGET_NAME);
 
+            Assert.AreEqual(state.Status, ParserState.Ready);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
