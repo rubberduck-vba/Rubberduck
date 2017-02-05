@@ -66,6 +66,8 @@ End Sub", BindingTargetName);
             var vbe = builder.Build();
             var state = Parse(vbe);
             var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.IdentifierName == BindingTargetName);
+
+            Assert.AreEqual(state.Status, ParserState.Ready);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
