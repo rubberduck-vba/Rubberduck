@@ -410,17 +410,32 @@ namespace Rubberduck.Parsing.VBA
         {
             var components = State.ParseTrees.Select(kvp => kvp.Key.Component).ToList();
             SetModuleStates(components, ParserState.ResolvingReferences);
-            
+
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
             ExecuteCompilationPasses();
+
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
 
             var options = new ParallelOptions();
             options.CancellationToken = token;
             options.MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism;
 
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
             try
             {
                 Parallel.For(0, State.ParseTrees.Count, options,
-                    (index) => ResolveReferences(State.DeclarationFinder, State.ParseTrees[index].Key.Component, State.ParseTrees[index].Value)
+                    (index) => ResolveReferences(State.DeclarationFinder, State.ParseTrees[index].Key, State.ParseTrees[index].Value, token)
                 );
             }
             catch (AggregateException exception)
@@ -432,7 +447,20 @@ namespace Rubberduck.Parsing.VBA
                 throw;
             }
 
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
             AddUndeclaredVariablesToDeclarations();
+
+            //This is here and not in the calling method because it has to happen before the ready state is reached.
+            //RefreshDeclarationFinder(); //Commented out because it breaks the unresolved and undeclared collections.
+
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
 
             State.EvaluateParserState();
         }
@@ -449,11 +477,15 @@ namespace Rubberduck.Parsing.VBA
             passes.ForEach(p => p.Execute());
         }
 
-        private void ResolveReferences(DeclarationFinder finder, IVBComponent component, IParseTree tree)
+        private void ResolveReferences(DeclarationFinder finder, QualifiedModuleName qualifiedName, IParseTree tree, CancellationToken token)
         {
-            Debug.Assert(State.GetModuleState(component) == ParserState.ResolvingReferences);
+            Debug.Assert(State.GetModuleState(qualifiedName.Component) == ParserState.ResolvingReferences || token.IsCancellationRequested);
 
-            var qualifiedName = new QualifiedModuleName(component);
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
             Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
 
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
@@ -467,16 +499,20 @@ namespace Rubberduck.Parsing.VBA
                     var watch = Stopwatch.StartNew();
                     walker.Walk(listener, tree);
                     watch.Stop();
-                    Logger.Debug("Binding resolution done for component '{0}' in {1}ms (thread {2})", component.Name,
+                    Logger.Debug("Binding resolution done for component '{0}' in {1}ms (thread {2})", qualifiedName.Name,
                         watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
 
                     //Evaluation of the overall status has to be defered to allow processing of undeclared variables before setting the ready state.
-                    State.SetModuleState(component, ParserState.Ready,null,false); 
+                    State.SetModuleState(qualifiedName.Component, ParserState.Ready, null, false);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;  //We do not want to set an error state if the exception was just caused by some cancellation.
                 }
                 catch (Exception exception)
                 {
-                    Logger.Error(exception, "Exception thrown resolving '{0}' (thread {1}).", component.Name, Thread.CurrentThread.ManagedThreadId);
-                    State.SetModuleState(component, ParserState.ResolverError);
+                    Logger.Error(exception, "Exception thrown resolving '{0}' (thread {1}).", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
+                    State.SetModuleState(qualifiedName.Component, ParserState.ResolverError);
                 }
             }
         }
