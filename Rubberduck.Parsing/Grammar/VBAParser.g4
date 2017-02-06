@@ -522,7 +522,7 @@ subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 subscript : (expression whiteSpace TO whiteSpace)? expression;
 
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
-identifier : untypedIdentifier | typedIdentifier;
+identifier : typedIdentifier | untypedIdentifier;
 untypedIdentifier : identifierValue;
 typedIdentifier : identifierValue typeHint;
 identifierValue : IDENTIFIER | keyword | foreignName | BF;
