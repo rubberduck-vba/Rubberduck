@@ -60,8 +60,6 @@ namespace Rubberduck.Inspections
                 handlers.AddRange(forms.SelectMany(form => State.FindFormEventHandlers(form)));
             }
 
-            //handlers.AddRange(builtInHandlers);
-
             var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToList();
             var implementingMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers().ToList();
 
@@ -78,7 +76,10 @@ namespace Rubberduck.Inspections
         private static readonly DeclarationType[] ProcedureTypes =
         {
             DeclarationType.Procedure,
-            DeclarationType.Function
+            DeclarationType.Function,
+            DeclarationType.LibraryProcedure,
+            DeclarationType.LibraryFunction,
+            DeclarationType.Event
         };
 
         private bool IsIgnoredDeclaration(Declaration declaration, IEnumerable<Declaration> interfaceMembers, IEnumerable<Declaration> interfaceImplementingMembers , IEnumerable<Declaration> handlers, IEnumerable<Declaration> classes, IEnumerable<Declaration> modules)

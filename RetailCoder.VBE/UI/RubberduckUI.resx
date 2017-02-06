@@ -385,8 +385,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Rubberduck Add-In could not be loaded</value>
   </data>
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
-    <value>Build {0} ({1})</value>
-    <comment>0: Version; 1: ProcessorArchitecture</comment>
+    <value>Version {0}</value>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG </value>
@@ -723,7 +722,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>About Rubberduck</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Special Thanks</value>
@@ -1910,5 +1909,14 @@ Would you like to import them to Rubberduck?</value>
   </data>
   <data name="DeclarationType_BracketedExpression" xml:space="preserve">
     <value>runtime expression</value>
+  </data>
+  <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
+    <value>Indented Code Sample</value>
+  </data>
+  <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
+    <value>Rubberduck version {0} is now available! Would you like to review the release notes now?</value>
+  </data>
+  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
+    <value>Check if a newer version is available at startup</value>
   </data>
 </root>

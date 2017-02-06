@@ -172,6 +172,7 @@ namespace Rubberduck
             {
                 splash = new Splash
                 {
+                    // note: IVersionCheck.CurrentVersion could return this string.
                     Version = string.Format("version {0}", Assembly.GetExecutingAssembly().GetName().Version)
                 };
                 splash.Show();

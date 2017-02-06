@@ -61,6 +61,8 @@ namespace Rubberduck.Parsing.VBA
 
         public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
+        public bool IsEnabled { get; internal set; }
+
         public DeclarationFinder DeclarationFinder { get; private set; }
 
         internal void RefreshFinder(IHostApplication host)
@@ -87,6 +89,8 @@ namespace Rubberduck.Parsing.VBA
                 _sinks.ComponentRemoved += Sinks_ComponentRemoved;
                 _sinks.ComponentRenamed += Sinks_ComponentRenamed;
             }
+
+            IsEnabled = true;
         }
 
         private bool _started;
@@ -301,6 +305,7 @@ namespace Rubberduck.Parsing.VBA
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
+        //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
         private void OnModuleStateChanged(IVBComponent component, ParserState state, ParserState oldState)
         {
             var handler = ModuleStateChanged;
@@ -311,7 +316,27 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void SetModuleState(IVBComponent component, ParserState state, SyntaxErrorException parserError = null)
+
+        public void SetModuleState(IVBComponent component, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
+        {
+            lock (component)
+            {
+                SetModuleStateInternal(component, state, parserError, evaluateOverallState);
+            }
+        }
+
+        public void SetModuleState(IVBComponent component, ParserState state, CancellationToken token, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
+        {
+            lock (component)
+            {
+                if (!token.IsCancellationRequested)
+                {
+                    SetModuleStateInternal(component, state, parserError, evaluateOverallState);
+                }
+            }
+        }
+        
+        public void SetModuleStateInternal(IVBComponent component, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
             if (AllUserDeclarations.Count > 0)
             {
@@ -339,7 +364,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     // ghost component shouldn't even exist
                     ClearStateCache(component);
-                    Status = EvaluateParserState();
+                    EvaluateParserState();
                     return;
                 }
             }
@@ -351,10 +376,19 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates.AddOrUpdate(key, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
             Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state, oldState);
-            Status = EvaluateParserState();
+            if (evaluateOverallState)
+            {
+                EvaluateParserState();
+            }
         }
 
-        private ParserState EvaluateParserState()
+
+        public void EvaluateParserState()
+        {
+            lock (_statusLockObject) Status = OverallParserStateFromModuleStates();
+        }
+
+        private ParserState OverallParserStateFromModuleStates()
         {
             if (_moduleStates.IsEmpty)
             {
@@ -497,6 +531,7 @@ namespace Rubberduck.Parsing.VBA
             return _moduleStates.GetOrAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending)).State;
         }
 
+        private readonly object _statusLockObject = new object(); 
         private ParserState _status;
         public ParserState Status
         {
@@ -866,7 +901,7 @@ namespace Rubberduck.Parsing.VBA
         public void OnParseRequested(object requestor, IVBComponent component = null)
         {
             var handler = ParseRequest;
-            if (handler != null)
+            if (handler != null && IsEnabled)
             {
                 var args = EventArgs.Empty;
                 handler.Invoke(requestor, args);

@@ -65,19 +65,11 @@
                                FontWeight="SemiBold"
                                FontSize="10" />
                     <TextBlock FontSize="10"
-                               xml:space="preserve">Code Review Stack Exchange
-JetBrains ReSharper Community Team
+                               xml:space="preserve">JetBrains ReSharper Community Team
+Code Review Stack Exchange
 Stack Overflow
                     </TextBlock>
-                    
-                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_BlogsHeader}"
-                               FontWeight="SemiBold"
-                               FontSize="10" />
-                    <TextBlock FontSize="10"
-                               xml:space="preserve">Michal Krzych (vba4all.com)
-Knjname developer blog (clockahead.blogspot.jp)
-                    </TextBlock>
-                    
+                                        
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_ContributorsHeader}"
                                FontWeight="SemiBold"
                                FontSize="10" />
@@ -86,7 +78,7 @@ Knjname developer blog (clockahead.blogspot.jp)
 Andrew Jackson
 Andrin Meier
 Bruno Costa
-Carlos J. Quintero (MZ-Tools articles &amp; help with VBE API)
+Carlos J. Quintero (MZ-Tools)
 @Comintern
 @daFreeMan
 @Duga SE chat bot
@@ -95,13 +87,14 @@ Frank Van Heeswijk
 Gareth Leachman
 @Heslacher
 Jeroen Vannevel
+Michal Krzych (vba4all.com)
 @mjolka
 Philip Wales
-Rob Bovey
+Rob Bovey (Smart Indenter)
 Ross McLean
 Ross Knudsen
 Simon Forsberg
-Stephen Bullen
+Stephen Bullen (Smart Indenter)
                     </TextBlock>
 
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_GeneralThanks}"

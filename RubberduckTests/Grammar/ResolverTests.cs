@@ -2213,6 +2213,7 @@ End Property
             var usages = declaration.References.Where(item =>
                 item.ParentNonScoping.IdentifierName == "DoSomething");
 
+            Assert.AreEqual(state.Status, ParserState.Ready);
             Assert.AreEqual(1, usages.Count());
         }
 
