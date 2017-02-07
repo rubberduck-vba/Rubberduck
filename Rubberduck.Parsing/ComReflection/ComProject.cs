@@ -119,11 +119,6 @@ namespace Rubberduck.Parsing.ComReflection
                             _classes.Add(coclass as ComCoClass);
                             if (type != null) KnownTypes.TryAdd(typeAttributes.guid, coclass);
                             break;
-                        case TYPEKIND.TKIND_ALIAS:
-                        //The current handling of this is wrong - these don't have to be classes or interfaces. In the VBE module for example,
-                            //"LongPtr" is defined as an alias to "Long" (at least on a 32 bit system) - RD is currently treating is like a class.  
-                            //Unclear if these can *also* define alternative names for interfaces as well, but all the ones I've seen have been basically
-                            //a C typedef.  So... this needs work. Don't make any assumptions about these elsewhere in the code until this is nailed down.
                         case TYPEKIND.TKIND_DISPATCH:
                         case TYPEKIND.TKIND_INTERFACE:
                             var intface = type ?? new ComInterface(typeLibrary, info, typeAttributes, index);
@@ -139,6 +134,8 @@ namespace Rubberduck.Parsing.ComReflection
                             _modules.Add(module as ComModule);
                             if (type != null) KnownTypes.TryAdd(typeAttributes.guid, module);
                             break;
+                        case TYPEKIND.TKIND_ALIAS:
+                            //TKIND_ALIAS does not appear to be a supported member type in VBA.
                         case TYPEKIND.TKIND_UNION:
                             //TKIND_UNION is not a supported member type in VBA.
                             break;
