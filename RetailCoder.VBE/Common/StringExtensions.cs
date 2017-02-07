@@ -21,6 +21,7 @@ namespace Rubberduck.Common
             {
                 return string.Empty;
             }
+            return input.Captialize().Substring(0, 1) + input.Substring(1);
          }
     }
 }
