@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing
             Tokens.Variant,            
         };
 
-        public static readonly IReadOnlyList<string> ValueTypesUpper = new[]
+        public static readonly IReadOnlyList<string> BaseTypes = new[]
         {
             Tokens.Boolean.ToUpper(),
             Tokens.Byte.ToUpper(),
@@ -40,7 +40,9 @@ namespace Rubberduck.Parsing
             Tokens.LongPtr.ToUpper(),
             Tokens.Single.ToUpper(),
             Tokens.String.ToUpper(),
-            Tokens.Variant   
+            Tokens.Variant.ToUpper(),
+            "OBJECT",
+            "ANY"
         };
 
         public static readonly IDictionary<string, string> TypeHintToTypeName = new Dictionary<string, string>

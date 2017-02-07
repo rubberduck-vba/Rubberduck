@@ -457,7 +457,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                return string.IsNullOrWhiteSpace(AsTypeName) || SymbolList.ValueTypesUpper.Contains(_asTypeName.ToUpperInvariant());
+                return string.IsNullOrWhiteSpace(AsTypeName) || SymbolList.BaseTypes.Contains(_asTypeName.ToUpperInvariant());
             }
         }
 
