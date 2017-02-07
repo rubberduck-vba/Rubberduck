@@ -52,7 +52,7 @@ namespace Rubberduck.Parsing.Symbols
                 var typeContext = declaration.AsTypeContext;
                 typeExpression = typeContext.type().complexType().GetText();
             }
-            else if (!string.IsNullOrWhiteSpace(declaration.AsTypeNameWithoutArrayDesignator) && !Declaration.BaseTypes.Contains(declaration.AsTypeNameWithoutArrayDesignator.ToUpperInvariant()))
+            else if (!string.IsNullOrWhiteSpace(declaration.AsTypeNameWithoutArrayDesignator) && !SymbolList.ValueTypesUpper.Contains(declaration.AsTypeNameWithoutArrayDesignator.ToUpperInvariant()))
             {
                 typeExpression = declaration.AsTypeNameWithoutArrayDesignator;
             }

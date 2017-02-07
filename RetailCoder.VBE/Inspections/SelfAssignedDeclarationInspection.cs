@@ -3,7 +3,7 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Symbols;
 
@@ -20,27 +20,12 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.SelfAssignedDeclarationInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        private static readonly IReadOnlyList<string> ValueTypes = new[]
-        {
-            Tokens.Boolean,
-            Tokens.Byte,
-            Tokens.Currency,
-            Tokens.Date,
-            Tokens.Decimal,
-            Tokens.Double,
-            Tokens.Integer,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.Single,
-            Tokens.String
-        };
-
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             return UserDeclarations
                 .Where(declaration => declaration.IsSelfAssigned 
                     && declaration.IsTypeSpecified
-                    && !ValueTypes.Contains(declaration.AsTypeName)
+                    && !SymbolList.ValueTypes.Contains(declaration.AsTypeName)
                     && declaration.DeclarationType == DeclarationType.Variable
                     && (declaration.AsTypeDeclaration == null
                         || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
