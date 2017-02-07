@@ -3,19 +3,22 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.Rename;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.UI.Refactorings
 {
     public partial class AssignedByValParameterQuickFixDialog : Form, IDialogView
     {
-        private const string _INVALID_ENTRY = "Invalid Name:";
-        private const string _QUESTIONABLE_ENTRY = "Note: Inspections for Maintainability and Readability will recommend changing a name like";
+        private const string _INVALID_ENTRY_PROLOGUE = "Invalid Name:";
 
         private string[] _moduleLines;
+        private bool _userInputIsValid;
+
         public AssignedByValParameterQuickFixDialog(string[] moduleLines)
         {
             _moduleLines = moduleLines;
+            _userInputIsValid = false;
             InitializeComponent();
             InitializeCaptions();
         }
@@ -42,7 +45,7 @@ namespace Rubberduck.UI.Refactorings
                 _target = value;
                 if (_target == null)
                 {
-                    return;
+                   return;
                 }
 
                 var declarationType =
@@ -58,127 +61,65 @@ namespace Rubberduck.UI.Refactorings
             set
             {
                 NewNameBox.Text = value;
-                ValidateNewName();
+                FeedbackLabel.Text = !value.Equals(string.Empty) ? GetVariableNameFeedback() : string.Empty;
+                _userInputIsValid = !FeedbackLabel.Text.StartsWith(_INVALID_ENTRY_PROLOGUE)
+                                    && !value.Equals(string.Empty);
+                SetControlsProperties();
             }
         }
-
-        private void ValidateNewName()
+        private string GetVariableNameFeedback()
         {
-
-            bool isValidName = true;
-            bool isMeaningfulName = true;
-          
-            if (IsEmpty())
-            {
-                isValidName = false;
-            }
-            else
-            {
-                isValidName = IsValidName(NewName);
-                if (isValidName)
-                {
-                    isMeaningfulName = IsMeaningfulName(NewName);
-                    if (!isMeaningfulName)
-                    {
-                        FeedbackLabel.Text = _QUESTIONABLE_ENTRY + " " + NewNameInQuotes();
-                    }
-                }
-            }
-            OkButton.Visible = isValidName;
-            OkButton.Enabled = isValidName;
-            InvalidNameValidationIcon.Visible = !isValidName;
-            FeedbackLabel.Visible = !(isValidName  && isMeaningfulName);
+            var validator = new VariableNameValidator(NewName);
+            if (UserInputIsBlank()) { return string.Empty; }
+            if (validator.StartsWithNumber) { return InvalidEntryMsg("VBA variable names must start with a letter"); }
+            if (validator.ContainsSpecialCharacters) { return InvalidEntryMsg("VBA variable names cannot include special character(s) except for '_'"); }
+            if (validator.IsReservedName) { return InvalidEntryMsg(NewNameInQuotes() + " is a reserved VBA Word"); }
+            if (NewNameAlreadyUsed()) { return InvalidEntryMsg(NewNameInQuotes() + " is already used in this code block"); }
+            if (IsByValIdentifier()) { return InvalidEntryMsg(NewNameInQuotes() + " is the ByVal parameter name"); }
+            if (!validator.IsMeaningfulName()) { return QuestionableEntryMsg(); }
+            return string.Empty;
         }
-        private bool IsValidName(string identifier)
+        private void SetControlsProperties()
         {
-            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-            return !IsSameName()
-                               && !FirstLetterIsDigit()
-                               && !IsReservedToken(tokenValues)
-                               && !UsesSpecialCharacters()
-                               && !NewNameAlreadyUsed();
+            OkButton.Visible = _userInputIsValid;
+            OkButton.Enabled = _userInputIsValid;
+            InvalidNameValidationIcon.Visible = !_userInputIsValid;
         }
-        private bool IsMeaningfulName(string identifier)
+        private bool UserInputIsBlank()
         {
-            return HasVowels()
-                    && !NameIsASingleRepeatedLetter()
-                    && !(NewName.Length < 3);
-        }
-        private bool IsEmpty()
-        {
-            if(NewName.Equals(string.Empty))
-            {
-                FeedbackLabel.Text = string.Empty;
-            }
             return NewName.Equals(string.Empty);
         }
-        private bool IsSameName()
+        private bool IsByValIdentifier()
         {
-            if( NewName == Target.IdentifierName)
-            {
-                FeedbackLabel.Text = _INVALID_ENTRY + " " + NewNameInQuotes() + " is the ByVal parameter name";
-                return true;
-            }
-            return false;
-        }
-        private bool FirstLetterIsDigit()
-        {
-            if (!char.IsLetter(NewName.FirstOrDefault()))
-            {
-                if (!NewName.Equals(string.Empty))
-                {
-                    FeedbackLabel.Text = _INVALID_ENTRY + "VBA variable names must start with a letter";
-                }
-                return true;
-            }
-            return false;
-        }
-        private bool IsReservedToken(System.Collections.Generic.IEnumerable<string> tokenValues)
-        {
-            if (tokenValues.Contains(NewName, StringComparer.InvariantCultureIgnoreCase))
-            {
-                FeedbackLabel.Text = _INVALID_ENTRY + " " + NewNameInQuotes() + " is a reserved VBA Word";
-                return true;
-            }
-            return false;
-        }
-        private bool UsesSpecialCharacters()
-        {
-            if (NewName.Any(c => !char.IsLetterOrDigit(c) && c != '_'))
-            {
-                FeedbackLabel.Text = _INVALID_ENTRY + " " + "The variable name cannot include special character(s) except for '_'";
-                return true;
-            }
-            return false;
+            return NewName.Equals(Target.IdentifierName,StringComparison.OrdinalIgnoreCase);
         }
         private bool NewNameAlreadyUsed()
         {
             for(int idx = 0; idx < _moduleLines.Count();idx++)
             {
-                string[] splitLine = _moduleLines[idx].Split(new char[] { ' ', ',' });
-                if (splitLine.Contains(Tokens.Dim) && splitLine.Contains(NewName))
+                string[] splitLine = _moduleLines[idx].ToUpper().Split(new char[] { ' ', ',' });
+                if( splitLine.Contains(Tokens.Dim.ToUpper()) && splitLine.Contains(NewName.ToUpper()))
                 {
-                    FeedbackLabel.Text = _INVALID_ENTRY + NewNameInQuotes() + " is alread used in this code block";
                     return true;
                 }
             }
-           return false;
-        }
-        private bool HasVowels()
-        {
-            const string vowels = "aeiouyàâäéèêëïîöôùûü";
-            return NewName.Any(character => vowels.Any(vowel =>
-                   string.Compare(vowel.ToString(), character.ToString(), StringComparison.OrdinalIgnoreCase) == 0));
-        }
-        private bool NameIsASingleRepeatedLetter()
-        {
-            string firstLetter = NewName.First().ToString();
-            return NewName.All(a => string.Compare(a.ToString(), firstLetter,
-                StringComparison.OrdinalIgnoreCase) == 0);
+            return false;
         }
         private string NewNameInQuotes()
         {
             return "'" + NewName + "'";
+        }
+        private string InvalidEntryMsg(string message)
+        {
+            return _INVALID_ENTRY_PROLOGUE + " " + message;
+        }
+        private string QuestionableEntryMsg()
+        {
+            const string _QUESTIONABLE_ENTRY = "Note: A name like '{0}' will be"
+                    + " identified as a 'Maintainability and Readability Issue'."
+                    + "  Consider choosing a different name.";
+
+            return string.Format(_QUESTIONABLE_ENTRY, NewName);
         }
     }
 }
