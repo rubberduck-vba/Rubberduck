@@ -25,6 +25,12 @@ namespace Rubberduck.Parsing.ComReflection
         // ReSharper disable once NotAccessedField.Local
         private TypeLibTypeFlags _flags;
 
+        private readonly List<ComAlias> _aliases = new List<ComAlias>();
+        public IEnumerable<ComAlias> Aliases
+        {
+            get { return _aliases; }
+        }
+
         private readonly List<ComInterface> _interfaces = new List<ComInterface>();
         public IEnumerable<ComInterface> Interfaces
         {
@@ -119,6 +125,7 @@ namespace Rubberduck.Parsing.ComReflection
                             _classes.Add(coclass as ComCoClass);
                             if (type != null) KnownTypes.TryAdd(typeAttributes.guid, coclass);
                             break;
+                        case TYPEKIND.TKIND_ALIAS:
                         case TYPEKIND.TKIND_DISPATCH:
                         case TYPEKIND.TKIND_INTERFACE:
                             var intface = type ?? new ComInterface(typeLibrary, info, typeAttributes, index);
@@ -134,8 +141,11 @@ namespace Rubberduck.Parsing.ComReflection
                             _modules.Add(module as ComModule);
                             if (type != null) KnownTypes.TryAdd(typeAttributes.guid, module);
                             break;
-                        case TYPEKIND.TKIND_ALIAS:
-                            //TKIND_ALIAS does not appear to be a supported member type in VBA.
+                        //case TYPEKIND.TKIND_ALIAS:
+                        //    //TKIND_ALIAS does not appear to be a supported member type in VBA - cache it internally to use the aliased type.
+                        //    var alias = new ComAlias(typeLibrary, info, index, typeAttributes);
+                        //    _aliases.Add(alias);
+                        //    break;
                         case TYPEKIND.TKIND_UNION:
                             //TKIND_UNION is not a supported member type in VBA.
                             break;
