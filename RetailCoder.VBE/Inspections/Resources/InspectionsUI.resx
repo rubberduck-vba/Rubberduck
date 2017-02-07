@@ -647,4 +647,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ApplicationWorksheetFunctionQuickFix" xml:space="preserve">
     <value>Use Application.WorksheetFunction explicitly.</value>
   </data>
+  <data name="AssignedByValParameterQuickFix" xml:space="preserve">
+    <value>Create and use a local copy of the parameter</value>
+  </data>
 </root>
