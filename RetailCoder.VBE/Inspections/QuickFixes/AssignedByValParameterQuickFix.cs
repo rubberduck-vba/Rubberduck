@@ -23,8 +23,8 @@ namespace Rubberduck.Inspections.QuickFixes
             : base(target.Context, selection, InspectionsUI.AssignedByValParameterQuickFix)
         {
             _target = target;
-            _localCopyVariableName = "local" + CapitalizeFirstLetter(_target.IdentifierName);
             _forceUseOfSuggestedName = false;
+            _localCopyVariableName = string.Empty;
 
             _originalCodeLines = GetMethodLines();
         }
@@ -40,7 +40,16 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix()
         {
-            GetLocalCopyVariableNameFromUser();
+            if (_forceUseOfSuggestedName)
+            {
+                _localCopyVariableName = AutoSuggestedName();
+                IsCancelled = false;
+            }
+            else
+            {
+                GetLocalCopyVariableNameFromUser();
+            }
+
 
             if (!IsCancelled)
             {
@@ -50,13 +59,6 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void GetLocalCopyVariableNameFromUser()
         {
-            if (_forceUseOfSuggestedName)
-            {
-                _localCopyVariableName = AutoSuggestedName();
-                IsCancelled = false;
-                return;
-            }
-
             using (var view = new AssignedByValParameterQuickFixDialog(_originalCodeLines))
             {
                 view.Target = _target;
@@ -139,7 +141,6 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             int zbIndex; //zero-based index
             zbIndex = Selection.Selection.StartLine - 1;
-            //int startLine = Selection.Selection.StartLine;
             string[] allLines = GetModuleLines();
 
             string endStatement = GetEndOfScopeStatementForDeclaration(allLines[zbIndex]);
