@@ -205,6 +205,11 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(referencedProjectEnumType, ExpressionClassification.Type, _expression);
             }
+            var referencedProjectAliasType = _declarationFinder.FindMemberReferencedProject(_project, _module, _parent, name, DeclarationType.ComAlias);
+            if (referencedProjectAliasType != null)
+            {
+                return new SimpleNameExpression(referencedProjectAliasType, ExpressionClassification.Type, _expression);
+            }
             return null;
         }
     }

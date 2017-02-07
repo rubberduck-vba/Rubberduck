@@ -13,6 +13,7 @@ namespace Rubberduck.Parsing.ComReflection
             {VarEnum.VT_DISPATCH, Tokens.Object},
             {VarEnum.VT_VOID, string.Empty},
             {VarEnum.VT_VARIANT, Tokens.Variant},
+            {VarEnum.VT_UNKNOWN, Tokens.Object},
             {VarEnum.VT_BLOB_OBJECT, Tokens.Object},
             {VarEnum.VT_STORED_OBJECT, Tokens.Object},
             {VarEnum.VT_STREAMED_OBJECT, Tokens.Object},
@@ -35,7 +36,7 @@ namespace Rubberduck.Parsing.ComReflection
             {VarEnum.VT_DECIMAL, Tokens.Decimal},
             {VarEnum.VT_EMPTY, Tokens.Empty},
             {VarEnum.VT_R4, Tokens.Single},
-            {VarEnum.VT_R8, Tokens.Double},
+            {VarEnum.VT_R8, Tokens.Double}
         };
 
 
