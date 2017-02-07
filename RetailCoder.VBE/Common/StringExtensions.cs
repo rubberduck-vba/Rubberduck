@@ -15,5 +15,12 @@ namespace Rubberduck.Common
             tokens[0] = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(tokens[0]);
             return string.Join(" ", tokens);
         }
+        public static string CapitalizeFirstLetter(this string input)
+         {
+            if (input.Length == 0)
+            {
+                return string.Empty;
+            }
+         }
     }
 }

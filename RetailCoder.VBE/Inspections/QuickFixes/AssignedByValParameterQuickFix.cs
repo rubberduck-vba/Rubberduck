@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System.Windows.Forms;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.Common;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -175,12 +176,7 @@ namespace Rubberduck.Inspections.QuickFixes
         };
         private string AutoSuggestedName()
         {
-            return "local" + CapitalizeFirstLetter(_target.IdentifierName);
+            return "local" + this._target.IdentifierName.CapitalizeFirstLetter();
         }
-        private string CapitalizeFirstLetter(string name)
-        {
-            return name.Substring(0, 1).ToUpper() + name.Substring(1);
-        }
-
     }
 }
