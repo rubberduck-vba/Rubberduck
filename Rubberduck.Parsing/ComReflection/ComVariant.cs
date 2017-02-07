@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -9,32 +10,32 @@ namespace Rubberduck.Parsing.ComReflection
     {
         internal static readonly IDictionary<VarEnum, string> TypeNames = new Dictionary<VarEnum, string>
         {
-            {VarEnum.VT_DISPATCH, "Object"},
+            {VarEnum.VT_DISPATCH, Tokens.Object},
             {VarEnum.VT_VOID, string.Empty},
-            {VarEnum.VT_VARIANT, "Variant"},
-            {VarEnum.VT_BLOB_OBJECT, "Object"},
-            {VarEnum.VT_STORED_OBJECT, "Object"},
-            {VarEnum.VT_STREAMED_OBJECT, "Object"},
-            {VarEnum.VT_BOOL, "Boolean"},
-            {VarEnum.VT_BSTR, "String"},
-            {VarEnum.VT_LPSTR, "String"},
-            {VarEnum.VT_LPWSTR, "String"},
-            {VarEnum.VT_I1, "Variant"}, // no signed byte type in VBA
-            {VarEnum.VT_UI1, "Byte"},
-            {VarEnum.VT_I2, "Integer"},
-            {VarEnum.VT_UI2, "Variant"}, // no unsigned integer type in VBA
-            {VarEnum.VT_I4, "Long"},
-            {VarEnum.VT_UI4, "Variant"}, // no unsigned long integer type in VBA
-            {VarEnum.VT_I8, "Variant"}, // LongLong on 64-bit VBA
-            {VarEnum.VT_UI8, "Variant"}, // no unsigned LongLong integer type in VBA
-            {VarEnum.VT_INT, "Long"}, // same as I4
-            {VarEnum.VT_UINT, "Variant"}, // same as UI4
-            {VarEnum.VT_DATE, "Date"},
-            {VarEnum.VT_CY, "Currency"},
-            {VarEnum.VT_DECIMAL, "Currency"}, // best match?
-            {VarEnum.VT_EMPTY, "Empty"},
-            {VarEnum.VT_R4, "Single"},
-            {VarEnum.VT_R8, "Double"},
+            {VarEnum.VT_VARIANT, Tokens.Variant},
+            {VarEnum.VT_BLOB_OBJECT, Tokens.Object},
+            {VarEnum.VT_STORED_OBJECT, Tokens.Object},
+            {VarEnum.VT_STREAMED_OBJECT, Tokens.Object},
+            {VarEnum.VT_BOOL, Tokens.Boolean},
+            {VarEnum.VT_BSTR, Tokens.String},
+            {VarEnum.VT_LPSTR, Tokens.LongPtr},
+            {VarEnum.VT_LPWSTR, Tokens.LongPtr},
+            {VarEnum.VT_I1, Tokens.Variant}, // no signed byte type in VBA
+            {VarEnum.VT_UI1, Tokens.Byte},
+            {VarEnum.VT_I2, Tokens.Integer},
+            {VarEnum.VT_UI2, Tokens.Variant}, // no unsigned integer type in VBA
+            {VarEnum.VT_I4, Tokens.Long},
+            {VarEnum.VT_UI4, Tokens.Variant}, // no unsigned long integer type in VBA
+            {VarEnum.VT_I8, Tokens.Variant}, // LongLong on 64-bit VBA
+            {VarEnum.VT_UI8, Tokens.Variant}, // no unsigned LongLong integer type in VBA
+            {VarEnum.VT_INT, Tokens.Long}, // same as I4
+            {VarEnum.VT_UINT, Tokens.Variant}, // same as UI4
+            {VarEnum.VT_DATE, Tokens.Date},
+            {VarEnum.VT_CY, Tokens.Currency},
+            {VarEnum.VT_DECIMAL, Tokens.Decimal},
+            {VarEnum.VT_EMPTY, Tokens.Empty},
+            {VarEnum.VT_R4, Tokens.Single},
+            {VarEnum.VT_R8, Tokens.Double},
         };
 
 

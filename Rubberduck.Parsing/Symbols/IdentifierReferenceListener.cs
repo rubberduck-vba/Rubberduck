@@ -169,6 +169,11 @@ namespace Rubberduck.Parsing.Symbols
             _resolver.Resolve(context);
         }
 
+        public override void EnterNameStmt(VBAParser.NameStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
         public override void EnterEraseStmt(VBAParser.EraseStmtContext context)
         {
             _resolver.Resolve(context);
