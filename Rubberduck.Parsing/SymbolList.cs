@@ -41,8 +41,8 @@ namespace Rubberduck.Parsing
             Tokens.Single.ToUpper(),
             Tokens.String.ToUpper(),
             Tokens.Variant.ToUpper(),
-            "OBJECT",
-            "ANY"
+            Tokens.Object.ToUpper(),
+            Tokens.Any.ToUpper()
         };
 
         public static readonly IDictionary<string, string> TypeHintToTypeName = new Dictionary<string, string>
