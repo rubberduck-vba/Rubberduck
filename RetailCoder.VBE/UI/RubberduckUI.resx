@@ -1929,4 +1929,26 @@ Would you like to import them to Rubberduck?</value>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Check if a newer version is available at startup</value>
   </data>
+  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
+    <value>Variable names must begin with a letter.</value>
+  </data>
+  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
+    <value>Variable names cannot contain special characters other than underscores.</value>
+  </data>
+  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
+    <value>The local variable cannot be the same as the '{0}' parameter it replaces</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
+    <value>'{0}' is already used in this scope.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
+    <value>The identifier '{0}' will trigger a "Use meaningful name" inspection result. Consider choosing a different name.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' is a reserved keyword.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
 </root>
