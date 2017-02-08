@@ -430,7 +430,7 @@ namespace Rubberduck.UI.Inspections
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
 
-            var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(aResults, title,ColumnInfos);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title,ColumnInfos);
             var rtfResults = ExportFormatter.RTF(aResults, title);

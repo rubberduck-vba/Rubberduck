@@ -129,6 +129,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return fullPath;
         }
 
+        public IVBProject ParentProject
+        {
+            get { return Collection.Parent; }
+        }
+
         private void ExportUserFormModule(string path)
         {
             // VBIDE API inserts an extra newline when exporting a UserForm module.

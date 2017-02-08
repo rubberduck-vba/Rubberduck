@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
 using Rubberduck.Navigation.Folders;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -201,7 +202,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 var typeName = declaration.HasTypeHint
-                    ? Declaration.TypeHintToTypeName[declaration.TypeHint]
+                    ? SymbolList.TypeHintToTypeName[declaration.TypeHint]
                     : declaration.AsTypeName;
 
                 return nameWithDeclarationType + ": " + typeName;

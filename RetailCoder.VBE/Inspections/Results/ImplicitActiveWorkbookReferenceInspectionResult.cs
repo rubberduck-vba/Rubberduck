@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Results
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.ImplicitActiveSheetReferenceInspectionResultFormat, Context.GetText() /*_reference.Declaration.IdentifierName*/); }
+            get { return string.Format(InspectionsUI.ImplicitActiveWorkbookReferenceInspectionResultFormat, Context.GetText() /*_reference.Declaration.IdentifierName*/); }
         }
     }
 }

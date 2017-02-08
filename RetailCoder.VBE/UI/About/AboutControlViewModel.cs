@@ -3,17 +3,24 @@ using System.Diagnostics;
 using System.Reflection;
 using NLog;
 using Rubberduck.UI.Command;
+using Rubberduck.VersionCheck;
 
 namespace Rubberduck.UI.About
 {
     public class AboutControlViewModel
     {
+        private readonly IVersionCheck _version;
+
+        public AboutControlViewModel(IVersionCheck version)
+        {
+            _version = version;
+        }
+
         public string Version
         {
             get
             {
-                var name = Assembly.GetExecutingAssembly().GetName();
-                return string.Format(RubberduckUI.Rubberduck_AboutBuild, name.Version, name.ProcessorArchitecture);
+                return string.Format(RubberduckUI.Rubberduck_AboutBuild, _version.CurrentVersion);
             }
         }
 

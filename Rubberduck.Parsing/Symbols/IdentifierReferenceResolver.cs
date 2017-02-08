@@ -380,6 +380,14 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        public void Resolve(VBAParser.NameStmtContext context)
+        {
+            foreach (var expr in context.expression())
+            {
+                ResolveDefault(expr);
+            }
+        }
+
         private void ResolveFileNumber(VBAParser.FileNumberContext fileNumber)
         {
             if (fileNumber.markedFileNumber() != null)

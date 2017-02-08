@@ -117,7 +117,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to © Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan.
+        ///   Looks up a localized string similar to © Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan.
         /// </summary>
         public static string AboutWindow_Copyright {
             get {
@@ -1498,6 +1498,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check if a newer version is available at startup.
+        /// </summary>
+        public static string GeneralSettings_CheckVersion {
+            get {
+                return ResourceManager.GetString("GeneralSettings_CheckVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Debug.
         /// </summary>
         public static string GeneralSettings_DebugLogLevel {
@@ -1944,6 +1953,15 @@ namespace Rubberduck.UI {
         public static string IndenterSettings_AlignmentOptionsLabel {
             get {
                 return ResourceManager.GetString("IndenterSettings_AlignmentOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indented Code Sample.
+        /// </summary>
+        public static string IndenterSettings_CodeSampleHeader {
+            get {
+                return ResourceManager.GetString("IndenterSettings_CodeSampleHeader", resourceCulture);
             }
         }
         
@@ -3156,7 +3174,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Build {0} ({1}).
+        ///   Looks up a localized string similar to Version {0}.
         /// </summary>
         public static string Rubberduck_AboutBuild {
             get {
@@ -5232,6 +5250,15 @@ namespace Rubberduck.UI {
         public static string UnitTestSettings_TestModuleTemplateHeader {
             get {
                 return ResourceManager.GetString("UnitTestSettings_TestModuleTemplateHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck version {0} is now available! Would you like to review the release notes now?.
+        /// </summary>
+        public static string VersionCheck_NewVersionAvailable {
+            get {
+                return ResourceManager.GetString("VersionCheck_NewVersionAvailable", resourceCulture);
             }
         }
         

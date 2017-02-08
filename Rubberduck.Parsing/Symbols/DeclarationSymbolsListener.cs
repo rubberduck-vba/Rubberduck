@@ -34,7 +34,7 @@ namespace Rubberduck.Parsing.Symbols
             ComponentType type,
             IEnumerable<IAnnotation> annotations,
             IDictionary<Tuple<string, DeclarationType>, Attributes> attributes,
-            Declaration projectDeclaration)
+            Declaration projectDeclaration, string asTypeName = null)
         {
             _qualifiedName = qualifiedName;
             _annotations = annotations;
@@ -66,33 +66,41 @@ namespace Rubberduck.Parsing.Symbols
                 Declaration superType = null;
                 if (type == ComponentType.Document)
                 {
-                    foreach (var coclass in state.CoClasses)
+                    if (!string.IsNullOrEmpty(asTypeName))
                     {
-                        try
+                        superType = state.CoClasses.FirstOrDefault(cls => cls.Value.IdentifierName == asTypeName).Value;
+                    }
+                    else
+                    {
+                        foreach (var coclass in state.CoClasses)
                         {
-                            if (_qualifiedName.Component == null || coclass.Key.Count != _qualifiedName.Component.Properties.Count)
+                            try
                             {
-                                continue;
-                            }
-
-                            var allNamesMatch = true;
-                            for (var i = 0; i < coclass.Key.Count; i++)
-                            {
-                                if (coclass.Key[i] != _qualifiedName.Component.Properties[i + 1].Name)
+                                if (_qualifiedName.Component == null ||
+                                    coclass.Key.Count != _qualifiedName.Component.Properties.Count)
                                 {
-                                    allNamesMatch = false;
+                                    continue;
+                                }
+
+                                var allNamesMatch = true;
+                                for (var i = 0; i < coclass.Key.Count; i++)
+                                {
+                                    if (coclass.Key[i] != _qualifiedName.Component.Properties[i + 1].Name)
+                                    {
+                                        allNamesMatch = false;
+                                        break;
+                                    }
+                                }
+
+                                if (allNamesMatch)
+                                {
+                                    superType = coclass.Value;
                                     break;
                                 }
                             }
-                            
-                            if (allNamesMatch)
+                            catch (COMException)
                             {
-                                superType = coclass.Value;
-                                break;
                             }
-                        }
-                        catch (COMException)
-                        {
                         }
                     }
                 }
