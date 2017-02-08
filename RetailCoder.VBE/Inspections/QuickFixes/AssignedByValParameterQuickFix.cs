@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Grammar;
@@ -14,11 +15,10 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public class AssignedByValParameterQuickFix : QuickFixBase
     {
-
-        private Declaration _target;
+        private readonly Declaration _target;
         private string _localCopyVariableName;
         private bool _forceUseOfSuggestedName;
-        private string[] _originalCodeLines;
+        private readonly string[] _originalCodeLines;
 
         public AssignedByValParameterQuickFix(Declaration target, QualifiedSelection selection)
             : base(target.Context, selection, InspectionsUI.AssignedByValParameterQuickFix)
@@ -29,6 +29,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             _originalCodeLines = GetMethodLines();
         }
+
         public override bool CanFixInModule { get { return false; } }
         public override bool CanFixInProject { get { return false; } }
 
@@ -51,10 +52,9 @@ namespace Rubberduck.Inspections.QuickFixes
                 GetLocalCopyVariableNameFromUser();
             }
 
-
             if (!IsCancelled)
             {
-                modifyBlockToUseLocalCopyVariable();
+                ModifyBlockToUseLocalCopyVariable();
             }
         }
 
@@ -70,38 +70,40 @@ namespace Rubberduck.Inspections.QuickFixes
                 if (!IsCancelled) { _localCopyVariableName = view.NewName; }
             }
         }
-        private void modifyBlockToUseLocalCopyVariable()
+
+        private void ModifyBlockToUseLocalCopyVariable()
         {
             if(ProposedNameIsInUse()) { return; }
 
             var module = Selection.QualifiedName.Component.CodeModule;
-            int startLine = Selection.Selection.StartLine;
+            var startLine = Selection.Selection.StartLine;
 
-            module.InsertLines(++startLine, buildLocalCopyDeclaration());
-            module.InsertLines(++startLine, buildLocalCopyAssignment());
+            module.InsertLines(++startLine, BuildLocalCopyDeclaration());
+            module.InsertLines(++startLine, BuildLocalCopyAssignment());
             var moduleLines = GetModuleLines();
             //moduleLines array index is zero-based 
-            string endOfScopeStatement = GetEndOfScopeStatementForDeclaration(moduleLines[Selection.Selection.StartLine - 1]);
+            var endOfScopeStatement = GetEndOfScopeStatementForDeclaration(moduleLines[Selection.Selection.StartLine - 1]);
 
-            bool IsInScope = true;
-            int obIndex; //One-Based index for module object
+            var isInScope = true;
             int zbIndex; //Zero-Based index for moduleLines array
             //starts with lines after the above inserts
-            for (zbIndex = startLine ; IsInScope && zbIndex < module.CountOfLines; zbIndex++)
+            for (zbIndex = startLine ; isInScope && zbIndex < module.CountOfLines; zbIndex++)
             {
-                obIndex = zbIndex + 1;
+                var obIndex = zbIndex + 1; //One-Based index for module object
                 if (LineRequiresUpdate(moduleLines[zbIndex]))
                 {
-                    string newStatement = moduleLines[zbIndex].Replace(_target.IdentifierName, _localCopyVariableName);
+                    var newStatement = moduleLines[zbIndex].Replace(_target.IdentifierName, _localCopyVariableName);
                     module.ReplaceLine(obIndex, newStatement);
                 }
-                IsInScope = !moduleLines[zbIndex].Contains(endOfScopeStatement);
+                isInScope = !moduleLines[zbIndex].Contains(endOfScopeStatement);
             }
         }
+
         private bool ProposedNameIsInUse()
         {
             return GetMethodLines().Any(c => c.Contains(Tokens.Dim + " " + _localCopyVariableName + " "));
         }
+
         private bool LineRequiresUpdate(string line)
         {
             return line.Contains(" " + _target.IdentifierName + " ")
@@ -120,63 +122,51 @@ namespace Rubberduck.Inspections.QuickFixes
         private string NameAsSubOrFunctionParamFirst() { return "(" + _target.IdentifierName; }
         private string NameAsSubOrFunctionParamLast() { return _target.IdentifierName + ")"; }
 
-
-        private string buildLocalCopyDeclaration()
+        private string BuildLocalCopyDeclaration()
         {
             return Tokens.Dim + " " + _localCopyVariableName + " " + Tokens.As 
                 + " " + _target.AsTypeName;
         }
-        private string buildLocalCopyAssignment()
+
+        private string BuildLocalCopyAssignment()
         {
-            return (ValueTypes.Contains(_target.AsTypeName) ? string.Empty : Tokens.Set + " ") 
-                + _localCopyVariableName + " = " + _target.IdentifierName; ;
+            return (SymbolList.ValueTypes.Contains(_target.AsTypeName) ? string.Empty : Tokens.Set + " ") 
+                + _localCopyVariableName + " = " + _target.IdentifierName;
         }
+
         private string[] GetModuleLines()
         {
             var module = Selection.QualifiedName.Component.CodeModule;
             var lines = module.GetLines(1, module.CountOfLines);
-            string[] newLine = new string[] { "\r\n" };
+            string[] newLine = { "\r\n" };
             return lines.Split(newLine, StringSplitOptions.None);
         }
+
         private string[] GetMethodLines()
         {
-            int zbIndex; //zero-based index
-            zbIndex = Selection.Selection.StartLine - 1;
-            string[] allLines = GetModuleLines();
+            var zbIndex = Selection.Selection.StartLine - 1;
+            var allLines = GetModuleLines();
 
-            string endStatement = GetEndOfScopeStatementForDeclaration(allLines[zbIndex]);
+            var endStatement = GetEndOfScopeStatementForDeclaration(allLines[zbIndex]);
 
-            bool IsInScope = true;
+            var isInScope = true;
             var codeBlockLines = new List<string>();
-            for ( ; IsInScope && zbIndex < allLines.Count(); zbIndex++)
+            for ( ; isInScope && zbIndex < allLines.Count(); zbIndex++)
             {
                 codeBlockLines.Add(allLines[zbIndex]);
-                IsInScope = !allLines[zbIndex].Contains(endStatement);
+                isInScope = !allLines[zbIndex].Contains(endStatement);
             }
             return codeBlockLines.ToArray();
         }
+
         private string GetEndOfScopeStatementForDeclaration(string declaration)
         {
             return declaration.Contains("Sub ") ? "End Sub" : "End Function";
         }
-        private static readonly IReadOnlyList<string> ValueTypes = new[]
-        {
-            Tokens.Boolean,
-            Tokens.Byte,
-            Tokens.Currency,
-            Tokens.Date,
-            Tokens.Decimal,
-            Tokens.Double,
-            Tokens.Integer,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.Single,
-            Tokens.String,
-            Tokens.Variant
-        };
+
         private string AutoSuggestedName()
         {
-            return "local" + this._target.IdentifierName.CapitalizeFirstLetter();
+            return "local" + _target.IdentifierName.CapitalizeFirstLetter();
         }
     }
 }

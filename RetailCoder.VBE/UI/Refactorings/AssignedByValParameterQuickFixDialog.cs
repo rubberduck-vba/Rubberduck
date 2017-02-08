@@ -3,16 +3,13 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections;
 
 namespace Rubberduck.UI.Refactorings
 {
     public partial class AssignedByValParameterQuickFixDialog : Form, IDialogView
     {
-        private const string _INVALID_ENTRY_PROLOGUE = "Invalid Name:";
-
-        private string[] _moduleLines;
+        private readonly string[] _moduleLines;
         private bool _userInputIsValid;
 
         public AssignedByValParameterQuickFixDialog(string[] moduleLines)
@@ -32,10 +29,12 @@ namespace Rubberduck.UI.Refactorings
             InstructionsLabel.Text = RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText;
             NameLabel.Text = RubberduckUI.NameLabelText;
         }
+
         private void NewNameBox_TextChanged(object sender, EventArgs e)
         {
             NewName = NewNameBox.Text;
         }
+
         private Declaration _target;
         public Declaration Target
         {
@@ -49,7 +48,7 @@ namespace Rubberduck.UI.Refactorings
                 }
 
                 var declarationType =
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + _target.DeclarationType, UI.Settings.Settings.Culture);
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + _target.DeclarationType, Settings.Settings.Culture);
                 InstructionsLabel.Text = string.Format(RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText, declarationType,
                     _target.IdentifierName);
             }
@@ -62,64 +61,74 @@ namespace Rubberduck.UI.Refactorings
             {
                 NewNameBox.Text = value;
                 FeedbackLabel.Text = !value.Equals(string.Empty) ? GetVariableNameFeedback() : string.Empty;
-                _userInputIsValid = !FeedbackLabel.Text.StartsWith(_INVALID_ENTRY_PROLOGUE)
-                                    && !value.Equals(string.Empty);
                 SetControlsProperties();
             }
         }
+
         private string GetVariableNameFeedback()
         {
             var validator = new VariableNameValidator(NewName);
-            if (UserInputIsBlank()) { return string.Empty; }
-            if (validator.StartsWithNumber) { return InvalidEntryMsg("VBA variable names must start with a letter"); }
-            if (validator.ContainsSpecialCharacters) { return InvalidEntryMsg("VBA variable names cannot include special character(s) except for '_'"); }
-            if (validator.IsReservedName) { return InvalidEntryMsg(NewNameInQuotes() + " is a reserved VBA Word"); }
-            if (NewNameAlreadyUsed()) { return InvalidEntryMsg(NewNameInQuotes() + " is already used in this code block"); }
-            if (IsByValIdentifier()) { return InvalidEntryMsg(NewNameInQuotes() + " is the ByVal parameter name"); }
-            if (!validator.IsMeaningfulName()) { return QuestionableEntryMsg(); }
+            _userInputIsValid = validator.IsValidName();
+
+            if (UserInputIsBlank())
+            {
+                return string.Empty;
+            }
+            if (validator.StartsWithNumber)
+            {
+                return RubberduckUI.AssignedByValDialog_DoesNotStartWithLetter;
+            }
+            if (validator.ContainsSpecialCharacters)
+            {
+                return RubberduckUI.AssignedByValDialog_InvalidCharacters;
+            }
+            if (validator.IsReservedName)
+            {
+                return string.Format(RubberduckUI.AssignedByValDialog_ReservedKeywordFormat, NewName);
+            }
+            if (NewNameAlreadyUsed())
+            {
+                return string.Format(RubberduckUI.AssignedByValDialog_NewNameAlreadyUsedFormat, NewName);
+            }
+            if (IsByValIdentifier())
+            {
+                return string.Format(RubberduckUI.AssignedByValDialog_IsByValIdentifierFormat, NewName);
+            }
+            if (!validator.IsMeaningfulName())
+            {
+                return string.Format(RubberduckUI.AssignedByValDialog_QuestionableEntryFormat, NewName);
+            }
             return string.Empty;
         }
+
         private void SetControlsProperties()
         {
             OkButton.Visible = _userInputIsValid;
             OkButton.Enabled = _userInputIsValid;
             InvalidNameValidationIcon.Visible = !_userInputIsValid;
         }
+
         private bool UserInputIsBlank()
         {
             return NewName.Equals(string.Empty);
         }
+
         private bool IsByValIdentifier()
         {
             return NewName.Equals(Target.IdentifierName,StringComparison.OrdinalIgnoreCase);
         }
+
         private bool NewNameAlreadyUsed()
         {
             for(int idx = 0; idx < _moduleLines.Count();idx++)
             {
-                string[] splitLine = _moduleLines[idx].ToUpper().Split(new char[] { ' ', ',' });
+                string[] splitLine = _moduleLines[idx].ToUpper().Split(new[] { ' ', ',' });
                 if( splitLine.Contains(Tokens.Dim.ToUpper()) && splitLine.Contains(NewName.ToUpper()))
                 {
                     return true;
                 }
             }
             return false;
-        }
-        private string NewNameInQuotes()
-        {
-            return "'" + NewName + "'";
-        }
-        private string InvalidEntryMsg(string message)
-        {
-            return _INVALID_ENTRY_PROLOGUE + " " + message;
-        }
-        private string QuestionableEntryMsg()
-        {
-            const string _QUESTIONABLE_ENTRY = "Note: A name like '{0}' will be"
-                    + " identified as a 'Maintainability and Readability Issue'."
-                    + "  Consider choosing a different name.";
-
-            return string.Format(_QUESTIONABLE_ENTRY, NewName);
         }
     }
 }
