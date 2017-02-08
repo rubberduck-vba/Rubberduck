@@ -41,7 +41,9 @@ namespace Rubberduck.Parsing.Symbols
 
         private void AnnotateType(Declaration declaration)
         {
-            if (declaration.DeclarationType == DeclarationType.ClassModule || declaration.DeclarationType == DeclarationType.UserDefinedType)
+            if (declaration.DeclarationType == DeclarationType.ClassModule || 
+                declaration.DeclarationType == DeclarationType.UserDefinedType || 
+                declaration.DeclarationType == DeclarationType.ComAlias)
             {
                 declaration.AsTypeDeclaration = declaration;
                 return;

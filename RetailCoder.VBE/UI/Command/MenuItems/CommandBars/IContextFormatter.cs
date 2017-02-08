@@ -84,6 +84,12 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                     declaration.IdentifierName,
                     typeName);
             }
+            else if (declaration.DeclarationType == DeclarationType.ComAlias)
+            {
+                formattedDeclaration = string.Format("{0};{1}.{2} (alias:{3})",
+                    System.IO.Path.GetFileName(moduleName.ProjectPath), moduleName.ProjectName,
+                    declaration.IdentifierName, declaration.AsTypeName);
+            }
 
             var subscripts = declaration.IsArray ? "()" : string.Empty;
             if (declaration.ParentDeclaration != null && declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member))

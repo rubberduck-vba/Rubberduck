@@ -132,6 +132,12 @@ namespace Rubberduck.Parsing.ComReflection
             _serialized = new SerializableProject(project);
             _declarations.Add(project);
 
+            foreach (var alias in type.Aliases.Select(item => new AliasDeclaration(item, project, projectName)))
+            {
+                _declarations.Add(alias);
+                _serialized.AddDeclaration(new SerializableDeclarationTree(alias));
+            }
+
             foreach (var module in type.Members)
             {
                 var moduleName = new QualifiedModuleName(_referenceName, _path,
