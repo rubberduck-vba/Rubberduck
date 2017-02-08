@@ -380,6 +380,7 @@
     <Compile Include="Inspections\MemberNotOnInterfaceInspection.cs" />
     <Compile Include="Inspections\QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
+    <Compile Include="Inspections\QuickFixes\AssignedByValParameterQuickFix.cs" />
     <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -442,6 +443,7 @@
     <Compile Include="Inspections\QuickFixes\SpecifyExplicitPublicModifierQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\WriteOnlyPropertyQuickFix.cs" />
     <Compile Include="Inspections\Results\WriteOnlyPropertyInspectionResult.cs" />
+    <Compile Include="Inspections\VariableNameValidator.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
@@ -754,6 +756,12 @@
     <Compile Include="UI\IOpenFileDialog.cs" />
     <Compile Include="UI\ISaveFileDialog.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
+    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.Designer.cs">
+      <DependentUpon>AssignedByValParameterQuickFixDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Refactorings\EncapsulateFieldDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1097,6 +1105,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.resx">
+      <DependentUpon>AssignedByValParameterQuickFixDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\EncapsulateFieldDialog.resx">
       <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
