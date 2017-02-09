@@ -708,6 +708,9 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>Renaming to '{0}' clashes with '{1}' in the same scope.
 Are you sure you want to proceed with this rename?</value>
+  </data> 
+  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
+    <value>Please ensure that exactly 1 control is selected before renaming.</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Rename {0}</value>
