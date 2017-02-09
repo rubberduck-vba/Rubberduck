@@ -144,7 +144,7 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
 
-                continuing = code.EndsWith("_");
+                continuing = code.EndsWith(" _");
             }
         }
 

@@ -26,15 +26,22 @@ namespace Rubberduck.VersionCheck
         {
             if (_latestVersion != default(Version)) { return _latestVersion; }
 
-            using (var client = new HttpClient())
+            try
             {
-                var url = new Uri("http://rubberduckvba.com/Build/Version/Stable");
-                var response = await client.GetAsync(url, token);
-                var content = await response.Content.ReadAsStringAsync();
-                var doc = new HtmlAgilityPack.HtmlDocument();
-                doc.LoadHtml(content);
-                var version = doc.DocumentNode.Descendants("body").Single().InnerText.Trim();
-                return _latestVersion = new Version(version);
+                using (var client = new HttpClient())
+                {
+                    var url = new Uri("http://rubberduckvba.com/Build/Version/Stable");
+                    var response = await client.GetAsync(url, token);
+                    var content = await response.Content.ReadAsStringAsync();
+                    var doc = new HtmlAgilityPack.HtmlDocument();
+                    doc.LoadHtml(content);
+                    var version = doc.DocumentNode.Descendants("body").Single().InnerText.Trim();
+                    return _latestVersion = new Version(version);
+                }
+            }
+            catch
+            {
+                return _latestVersion;
             }
         }
 

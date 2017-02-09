@@ -41,7 +41,9 @@ namespace Rubberduck.Parsing.Symbols
 
         private void AnnotateType(Declaration declaration)
         {
-            if (declaration.DeclarationType == DeclarationType.ClassModule || declaration.DeclarationType == DeclarationType.UserDefinedType)
+            if (declaration.DeclarationType == DeclarationType.ClassModule || 
+                declaration.DeclarationType == DeclarationType.UserDefinedType || 
+                declaration.DeclarationType == DeclarationType.ComAlias)
             {
                 declaration.AsTypeDeclaration = declaration;
                 return;
@@ -52,7 +54,7 @@ namespace Rubberduck.Parsing.Symbols
                 var typeContext = declaration.AsTypeContext;
                 typeExpression = typeContext.type().complexType().GetText();
             }
-            else if (!string.IsNullOrWhiteSpace(declaration.AsTypeNameWithoutArrayDesignator) && !Declaration.BaseTypes.Contains(declaration.AsTypeNameWithoutArrayDesignator.ToUpperInvariant()))
+            else if (!string.IsNullOrWhiteSpace(declaration.AsTypeNameWithoutArrayDesignator) && !SymbolList.BaseTypes.Contains(declaration.AsTypeNameWithoutArrayDesignator.ToUpperInvariant()))
             {
                 typeExpression = declaration.AsTypeNameWithoutArrayDesignator;
             }

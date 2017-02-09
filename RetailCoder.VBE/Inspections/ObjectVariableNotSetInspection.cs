@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -20,29 +21,13 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ObjectVariableNotSetInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        private static readonly IReadOnlyList<string> ValueTypes = new[]
-        {
-            Tokens.Boolean,
-            Tokens.Byte,
-            Tokens.Currency,
-            Tokens.Date,
-            Tokens.Decimal,
-            Tokens.Double,
-            Tokens.Integer,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.Single,
-            Tokens.String,
-            Tokens.Variant
-        };
-
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var interestingDeclarations =
                 State.AllUserDeclarations.Where(item =>
                         !item.IsSelfAssigned &&
                         !item.IsArray &&
-                        !ValueTypes.Contains(item.AsTypeName) &&
+                        !SymbolList.ValueTypes.Contains(item.AsTypeName) &&
                         (item.AsTypeDeclaration == null || (!ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration) &&
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration &&
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)) &&
@@ -54,7 +39,7 @@ namespace Rubberduck.Inspections
                     (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
                     && !item.IsArray
                     && item.IsTypeSpecified
-                    && !ValueTypes.Contains(item.AsTypeName) 
+                    && !SymbolList.ValueTypes.Contains(item.AsTypeName) 
                     && (item.AsTypeDeclaration == null // null if unresolved (e.g. in unit tests)
                         || (item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
                             && item.AsTypeDeclaration != null 

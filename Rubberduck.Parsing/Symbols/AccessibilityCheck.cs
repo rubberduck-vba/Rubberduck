@@ -45,10 +45,15 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return true;
             }
+            if (calleeMember.IsBuiltIn && calleeMember.Accessibility > Accessibility.Friend)
+            {
+                return true;
+            }
             var memberModule = Declaration.GetModuleParent(calleeMember);
             return IsModuleAccessible(callingProject, callingModule, memberModule)
                     && (calleeMember.DeclarationType.HasFlag(DeclarationType.EnumerationMember)
                         || calleeMember.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember)
+                        || calleeMember.DeclarationType.HasFlag(DeclarationType.ComAlias)
                         || HasPublicScope(calleeMember)
                         || (IsEnclosingProject(callingProject, memberModule) && IsAccessibleThroughoutTheSameProject(calleeMember)));
         }

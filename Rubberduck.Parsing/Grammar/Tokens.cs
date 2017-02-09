@@ -5,6 +5,7 @@
         public static readonly string Abs = "Abs";
         public static readonly string AddressOf = "AddressOf";
         public static readonly string And = "And";
+        public static readonly string Any = "Any";
         public static readonly string As = "As";
         public static readonly string Asc = "Asc";
         public static readonly string Attribute = "Attribute";
@@ -58,6 +59,7 @@
         public static readonly string Each = "Each";
         public static readonly string Else = "Else";
         public static readonly string ElseIf = "ElseIf";
+        public static readonly string Empty = "Empty";
         public static readonly string End = "End";
         public static readonly string Enum = "Enum";
         public static readonly string Environ = "Environ";
@@ -125,6 +127,7 @@
         public static readonly string Nothing = "Nothing";
         public static readonly string Now = "Now";
         public static readonly string Null = "Null";
+        public static readonly string Object = "Object";
         public static readonly string Oct = "Oct";
         public static readonly string On = "On";
         public static readonly string Open = "Open";
