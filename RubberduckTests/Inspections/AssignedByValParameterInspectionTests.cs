@@ -217,6 +217,60 @@ End Sub"
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherProperty()
+        {
+            //Make sure the modified code stays within the specific method under repair
+            const string inputCode =
+@"
+Option Explicit
+
+Public Property Let Foo(ByVal bar As Long)
+    bar = 42
+    bar = bar * 2
+    Dim barBell as long
+    barBell = 6
+    Dim candy as string
+    candy = ""candy"" & CStr(bar) & CStr(barBell)
+End Property
+
+Public Property Get Foo() As Long
+    Foo = bar
+End Property
+
+Public Function bar() As Long
+    bar = 42
+End Function
+";
+            const string expectedCode =
+@"
+Option Explicit
+
+Public Property Let Foo(ByVal bar As Long)
+Dim localBar As Long
+localBar = bar
+    localBar = 42
+    localBar = localBar * 2
+    Dim barBell as long
+    barBell = 6
+    Dim candy as string
+    candy = ""candy"" & CStr(localBar) & CStr(barBell)
+End Property
+
+Public Property Get Foo() As Long
+    Foo = bar
+End Property
+
+Public Function bar() As Long
+    bar = 42
+End Function
+";
+
+            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void AssignedByValParameter_LocalVariableAssignment_FunctionReturn()
         {
             const string inputCode =

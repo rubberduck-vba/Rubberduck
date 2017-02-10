@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using System.Windows.Forms;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.Common;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -73,7 +74,65 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void ModifyBlockToUseLocalCopyVariable()
         {
-            if(ProposedNameIsInUse()) { return; }
+            if (ProposedNameIsInUse()) { return; }
+
+            var module = Selection.QualifiedName.Component.CodeModule;
+            var context = _target.Context;
+
+            var references = _target.References;
+            IdentifierReference idRefx = references.FirstOrDefault();
+            var firstLine = idRefx.Selection.StartLine;
+            var moduleLines = GetModuleLines();
+            foreach ( IdentifierReference idRef in references)
+            {
+                var lineNumber = idRef.Selection.StartLine;
+                var newStatement = ReplaceByValReference(moduleLines[lineNumber - 1]);
+                module.ReplaceLine(lineNumber, newStatement);
+            }
+            var startLine = Selection.Selection.StartLine;
+
+            module.InsertLines(++startLine, BuildLocalCopyDeclaration());
+            module.InsertLines(++startLine, BuildLocalCopyAssignment());
+        }
+
+        private string ReplaceByValReference(string input)
+        {
+            int startOfReferenceIndex = 0;
+            for (int idx = 0; startOfReferenceIndex >=0 && idx < input.Length; idx++)
+            {
+                startOfReferenceIndex = input.IndexOf(_target.IdentifierName, idx);
+                if (startOfReferenceIndex >= 0)
+                {
+                    var preceedingChar = input.Substring(startOfReferenceIndex == 0 ? 0 : startOfReferenceIndex - 1, 1);
+                    if(!char.IsLetter(preceedingChar, 0))
+                    {
+                        var endOfReferenceIndex = startOfReferenceIndex + _target.IdentifierName.Length - 1;
+                        if(endOfReferenceIndex >= input.Length - 1)
+                        {
+                            input = input.Replace(preceedingChar + _target.IdentifierName, preceedingChar + _localCopyVariableName);
+                        }
+                        else
+                        {
+                            var followingChar = endOfReferenceIndex >= input.Length - 1 ? string.Empty : input.Substring(endOfReferenceIndex + 1, 1);
+                            if (!char.IsLetter(followingChar, 0))
+                            {
+                                input = input.Replace(preceedingChar + _target.IdentifierName + followingChar, preceedingChar + _localCopyVariableName + followingChar);
+                            }
+                        }
+                    }
+                    idx = startOfReferenceIndex + _target.IdentifierName.Length;
+                }
+                else
+                {
+                    idx = input.Length;
+                }
+            }
+
+            return input;
+        }
+        private void ModifyBlockToUseLocalCopyVariable(int i)
+        {
+            if (ProposedNameIsInUse()) { return; }
 
             var module = Selection.QualifiedName.Component.CodeModule;
             var startLine = Selection.Selection.StartLine;
