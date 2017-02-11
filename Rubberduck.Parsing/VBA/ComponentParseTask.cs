@@ -62,7 +62,7 @@ namespace Rubberduck.Parsing.VBA
 
                 var stopwatch = Stopwatch.StartNew();
                 ITokenStream stream;
-                var tree = ParseInternal(_component.Name, code, new IParseTreeListener[] { commentListener, annotationListener }, out stream);
+                var tree = ParseInternal(_component.Name, code, new IParseTreeListener[]{ commentListener, annotationListener }, out stream);
                 stopwatch.Stop();
                 token.ThrowIfCancellationRequested();
 

@@ -78,19 +78,20 @@ namespace Rubberduck.Parsing.VBA
 
         private void ReparseRequested(object sender, EventArgs e)
         {
+            CancellationToken token;
             lock (_cancellationSyncObject)
             {
                 Cancel();
-                var token = _cancellationTokens[0].Token;
+                token = _cancellationTokens[0].Token;
             }
 
             if (!_isTestScope)
             {
-                Task.Run(() => ParseAll(sender, _cancellationTokens[0].Token));
+                Task.Run(() => ParseAll(sender, token));
             }
             else
             {
-                ParseInternal(_cancellationTokens[0].Token);
+                ParseInternal(token);
             }
         }
 
@@ -676,7 +677,7 @@ namespace Rubberduck.Parsing.VBA
                 }
                 catch (Exception exception)
                 {
-                    Logger.Error(exception);
+                    Logger.Error(exception, "Exception thrown adding built-in declarations. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
                 }
             }
         }
