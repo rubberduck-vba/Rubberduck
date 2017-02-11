@@ -568,20 +568,33 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private void ParseAll(object requestor, CancellationToken token)
         {
+            Stopwatch watch = null;
             var lockTaken = false;
             try
             {
                 Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
+                
+                watch = Stopwatch.StartNew();
+                Logger.Debug("Parsing run started. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
+                
                 ParseAllInternal(requestor, token);
             }
             catch (OperationCanceledException)
             {
                 //This is the point to which the cancellation should break.
+                Logger.Debug("Parsing run got canceled. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception, "Unexpected exception thrown in parsing run. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
+                State.SetStatusAndFireStateChanged(this, ParserState.Error);
             }
             finally
             {
+                if (watch != null && watch.IsRunning) watch.Stop();
                 if (lockTaken) Monitor.Exit(_parsingRunSyncObject);
             }
+            if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.Seconds, Thread.CurrentThread.ManagedThreadId);
         }
 
 
