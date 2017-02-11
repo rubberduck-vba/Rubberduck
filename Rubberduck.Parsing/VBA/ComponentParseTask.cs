@@ -62,7 +62,7 @@ namespace Rubberduck.Parsing.VBA
 
                 var stopwatch = Stopwatch.StartNew();
                 ITokenStream stream;
-                var tree = ParseInternal(_component.Name, code, new IParseTreeListener[]{ commentListener, annotationListener }, out stream);
+                var tree = ParseInternal(_component.Name, code, new IParseTreeListener[] { commentListener, annotationListener }, out stream);
                 stopwatch.Stop();
                 token.ThrowIfCancellationRequested();
 
@@ -104,6 +104,16 @@ namespace Rubberduck.Parsing.VBA
             catch (OperationCanceledException exception)
             {
                 //We return this, so that the calling code knows that the operation actually has been cancelled.
+                var failedHandler = ParseFailure;
+                if (failedHandler != null)
+                    failedHandler.Invoke(this, new ParseFailureArgs
+                    {
+                        Cause = exception
+                    });
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
                 var failedHandler = ParseFailure;
                 if (failedHandler != null)
                     failedHandler.Invoke(this, new ParseFailureArgs
