@@ -601,28 +601,28 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseAllInternal(object requestor, CancellationToken token)
         {
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             State.RefreshProjects(_vbe);
 
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             var components = State.Projects.SelectMany(project => project.VBComponents).ToList();
 
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             var componentsRemoved = ClearStateCashForRemovedComponents(components);
 
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             // invalidation cleanup should go into ParseAsync?
             CleanUpComponentAttributes(components);
 
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             var toParse = components.Where(component => State.IsNewOrModified(component)).ToList();
 
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             if (toParse.Count == 0)
             {
@@ -635,7 +635,7 @@ namespace Rubberduck.Parsing.VBA
                 //return; // returning here leaves state in 'ResolvedDeclarations' when a module is removed, which disables refresh
             }
 
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             ExecuteCommonParseActivities(toParse, token);
         }
