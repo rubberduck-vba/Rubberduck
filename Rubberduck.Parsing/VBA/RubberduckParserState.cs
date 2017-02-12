@@ -330,26 +330,15 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        public void SetModuleState(IVBComponent component, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
-        {
-            lock (component)
-            {
-                SetModuleStateInternal(component, state, parserError, evaluateOverallState);
-            }
-        }
-
         public void SetModuleState(IVBComponent component, ParserState state, CancellationToken token, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
-            lock (component)
+            if (!token.IsCancellationRequested)
             {
-                if (!token.IsCancellationRequested)
-                {
-                    SetModuleStateInternal(component, state, parserError, evaluateOverallState);
-                }
+                SetModuleState(component, state, parserError, evaluateOverallState);
             }
         }
         
-        public void SetModuleStateInternal(IVBComponent component, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
+        public void SetModuleState(IVBComponent component, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
             if (AllUserDeclarations.Count > 0)
             {
