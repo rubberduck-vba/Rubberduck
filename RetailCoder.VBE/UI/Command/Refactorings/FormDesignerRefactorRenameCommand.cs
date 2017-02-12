@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
@@ -53,22 +54,22 @@ namespace Rubberduck.UI.Command.Refactorings
                 {
                     var designer = ((dynamic)component.Target).Designer;
 
-                    foreach (var control in designer.Controls)
+                    if (designer.selected.count == 1)
                     {
-                        if (!control.InSelection)
-                        {
-                            Marshal.ReleaseComObject(control);
-                            continue;
-                        }
-
+                        var control = designer.selected.item(0);
                         var result = _state.AllUserDeclarations
                             .FirstOrDefault(item => item.DeclarationType == DeclarationType.Control
                                                     && project.HelpFile == item.ProjectId
                                                     && item.ComponentName == component.Name
                                                     && item.IdentifierName == control.Name);
+
                         Marshal.ReleaseComObject(control);
                         Marshal.ReleaseComObject(designer);
                         return result;
+                    } else {
+                        var message = string.Format(RubberduckUI.RenameDialog_AmbiguousSelection);
+                        _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
+                            MessageBoxIcon.Exclamation);
                     }
                 }
             }
