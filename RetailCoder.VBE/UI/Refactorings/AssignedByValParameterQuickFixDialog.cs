@@ -68,7 +68,7 @@ namespace Rubberduck.UI.Refactorings
         private string GetVariableNameFeedback()
         {
             var validator = new VariableNameValidator(NewName);
-            _userInputIsValid = validator.IsValidName();
+            _userInputIsValid = validator.IsValidName() && !NewNameAlreadyUsed();
 
             if (UserInputIsBlank())
             {
@@ -120,15 +120,8 @@ namespace Rubberduck.UI.Refactorings
 
         private bool NewNameAlreadyUsed()
         {
-            for(int idx = 0; idx < _moduleLines.Count();idx++)
-            {
-                string[] splitLine = _moduleLines[idx].ToUpper().Split(new[] { ' ', ',' });
-                if( splitLine.Contains(Tokens.Dim.ToUpper()) && splitLine.Contains(NewName.ToUpper()))
-                {
-                    return true;
-                }
-            }
-            return false;
+            var validator = new VariableNameValidator(NewName);
+            return _moduleLines.Any(codeLine => validator.IsReferencedIn(codeLine));
         }
     }
 }
