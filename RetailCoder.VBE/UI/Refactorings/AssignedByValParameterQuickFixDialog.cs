@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections;
 
@@ -9,12 +8,12 @@ namespace Rubberduck.UI.Refactorings
 {
     public partial class AssignedByValParameterQuickFixDialog : Form, IDialogView
     {
-        private readonly string[] _moduleLines;
+        private readonly string[] _procedureLines;
         private bool _userInputIsValid;
 
-        public AssignedByValParameterQuickFixDialog(string[] moduleLines)
+        public AssignedByValParameterQuickFixDialog(string[] procedureLines)
         {
-            _moduleLines = moduleLines;
+            _procedureLines = procedureLines;
             _userInputIsValid = false;
             InitializeComponent();
             InitializeCaptions();
@@ -68,7 +67,7 @@ namespace Rubberduck.UI.Refactorings
         private string GetVariableNameFeedback()
         {
             var validator = new VariableNameValidator(NewName);
-            _userInputIsValid = validator.IsValidName();
+            _userInputIsValid = validator.IsValidName() && !NewNameAlreadyUsed();
 
             if (UserInputIsBlank())
             {
@@ -120,15 +119,8 @@ namespace Rubberduck.UI.Refactorings
 
         private bool NewNameAlreadyUsed()
         {
-            for(int idx = 0; idx < _moduleLines.Count();idx++)
-            {
-                string[] splitLine = _moduleLines[idx].ToUpper().Split(new[] { ' ', ',' });
-                if( splitLine.Contains(Tokens.Dim.ToUpper()) && splitLine.Contains(NewName.ToUpper()))
-                {
-                    return true;
-                }
-            }
-            return false;
+            var validator = new VariableNameValidator(NewName);
+            return _procedureLines.Any(codeLine => validator.IsFoundIn(codeLine));
         }
     }
 }

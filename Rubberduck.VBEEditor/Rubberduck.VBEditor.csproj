@@ -122,14 +122,10 @@
   <ItemGroup>
     <Compile Include="Events\ComponentEventArgs.cs" />
     <Compile Include="Events\ComponentRenamedEventArgs.cs" />
-    <Compile Include="Events\ConnectionPointInfo.cs" />
-    <Compile Include="Events\ISinks.cs" />
     <Compile Include="Events\ProjectEventArgs.cs" />
     <Compile Include="Events\ProjectRenamedEventArgs.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
-    <Compile Include="SafeComWrappers\Abstract\IVBComponentsEventsSink.cs" />
-    <Compile Include="SafeComWrappers\Abstract\IVBProjectsEventsSink.cs" />
     <Compile Include="SafeComWrappers\DispatcherEventArgs.cs" />
     <Compile Include="SafeComWrappers\MSAccessComponentType.cs" />
     <Compile Include="SafeComWrappers\MSForms\ControlType.cs" />
@@ -177,11 +173,9 @@
     <Compile Include="SafeComWrappers\VB6\References.cs" />
     <Compile Include="SafeComWrappers\VB6\VBComponent.cs" />
     <Compile Include="SafeComWrappers\VB6\VBComponents.cs" />
-    <Compile Include="SafeComWrappers\VB6\VBComponentsEventsSink.cs" />
     <Compile Include="SafeComWrappers\VB6\VBE.cs" />
     <Compile Include="SafeComWrappers\VB6\VBProject.cs" />
     <Compile Include="SafeComWrappers\VB6\VBProjects.cs" />
-    <Compile Include="SafeComWrappers\VB6\VBProjectsEventsSink.cs" />
     <Compile Include="SafeComWrappers\VB6\Window.cs" />
     <Compile Include="SafeComWrappers\VB6\Windows.cs" />
     <Compile Include="SafeComWrappers\VBA\AddIn.cs" />
@@ -220,11 +214,9 @@
     <Compile Include="SafeComWrappers\VBA\References.cs" />
     <Compile Include="SafeComWrappers\VBA\VBComponent.cs" />
     <Compile Include="SafeComWrappers\VBA\VBComponents.cs" />
-    <Compile Include="SafeComWrappers\VBA\VBComponentsEventsSink.cs" />
     <Compile Include="SafeComWrappers\VBA\VBProject.cs" />
     <Compile Include="SafeComWrappers\ComWrapperEnumerator.cs" />
     <Compile Include="SafeComWrappers\VBA\VBProjects.cs" />
-    <Compile Include="SafeComWrappers\VBA\VBProjectsEventsSink.cs" />
     <Compile Include="SafeComWrappers\VBA\Window.cs" />
     <Compile Include="SafeComWrappers\MSForms\WindowKind.cs" />
     <Compile Include="SafeComWrappers\VBA\Windows.cs" />
@@ -237,7 +229,6 @@
     <Compile Include="QualifiedSelection.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Events\Sinks.cs" />
     <Compile Include="SubClassingWindowEventArgs.cs" />
     <Compile Include="Extensions\ComponentTypeExtensions.cs" />
     <Compile Include="Extensions\IDEExtensions.cs" />

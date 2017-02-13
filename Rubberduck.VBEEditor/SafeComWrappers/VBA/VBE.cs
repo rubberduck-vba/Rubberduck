@@ -19,6 +19,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
+        public object HardReference
+        {
+            get { return Target; }
+        }
+
         public string Version
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Version; }
