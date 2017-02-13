@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections
 {
@@ -83,6 +84,21 @@ namespace Rubberduck.Inspections
                 && !IsSingleRepeatedLetter
                 && !IsTooShort
                 && !EndsWithNumber;
+        }
+
+        public bool IsFoundIn(string input)
+        {
+            const string noAdjacentLettersNumbersOrUnderscores = "([^0-9a-zA-Z_])";
+
+            Regex rgxSurroundedBySpacesOrEndsTheString = new Regex("(\\s)" + _identifier.ToUpper() + "(\\s|\\z)");
+
+            Regex rgxNoAdjacentLettersNumbersOrUnderscores = new Regex(noAdjacentLettersNumbersOrUnderscores + _identifier.ToUpper() + noAdjacentLettersNumbersOrUnderscores);
+
+            Regex rgxStartsTheString = new Regex("^" + _identifier.ToUpper() + noAdjacentLettersNumbersOrUnderscores);
+
+            return rgxSurroundedBySpacesOrEndsTheString.IsMatch(input.ToUpper()) 
+                || rgxNoAdjacentLettersNumbersOrUnderscores.IsMatch(input.ToUpper()) 
+                || rgxStartsTheString.IsMatch(input.ToUpper());
         }
 
         private bool FirstLetterIsDigit()
