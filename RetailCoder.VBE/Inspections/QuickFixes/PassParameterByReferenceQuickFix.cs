@@ -3,6 +3,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -19,7 +20,15 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix()
         {
             var parameter = Context.GetText();
-            var newContent = string.Concat(Tokens.ByRef, " ", parameter.Replace(Tokens.ByVal, string.Empty).Trim());
+
+            var parts = parameter.Split(new char[]{' '},2);
+            if (1 != parts.GetUpperBound(0))
+            {
+                return;
+            }
+            parts[0] = parts[0].Replace(Tokens.ByVal, Tokens.ByRef);
+            var newContent = parts[0] + " " + parts[1];
+
             var selection = Selection.Selection;
 
             var module = Selection.QualifiedName.Component.CodeModule;

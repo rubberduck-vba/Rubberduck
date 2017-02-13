@@ -1900,6 +1900,10 @@ End Sub</value>
     <value>references</value>
     <comment>Used to display number of references in commandbar's context selection</comment>
   </data>
+  <data name="ContextMultipleControlsSelection" xml:space="preserve">
+    <value>multiple controls</value>
+    <comment>Used to display description of multiple control selection in commandbar's context selection</comment>
+  </data>
   <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Smart Indenter settings were found in your registry.
 Would you like to import them to Rubberduck?</value>

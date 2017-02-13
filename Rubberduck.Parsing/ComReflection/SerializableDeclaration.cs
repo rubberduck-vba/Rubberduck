@@ -177,6 +177,11 @@ namespace Rubberduck.Parsing.ComReflection
                 IsByRefParam = param.IsByRef;
                 IsParamArray = param.IsParamArray;
             }
+            var coclass = declaration as ClassModuleDeclaration;
+            if (coclass != null)
+            {
+                IsControl = coclass.IsControl;
+            }
         }
 
         public List<SerializableMemberAttribute> Attributes { get; set; }
@@ -199,6 +204,7 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsSelfAssigned { get; set; }
         public bool IsWithEvents { get; set; }
         public bool IsExtensible { get; set; }
+        public bool IsControl { get; set; }
         public Accessibility Accessibility { get; set; }
         public DeclarationType DeclarationType { get; set; }
 
@@ -220,7 +226,7 @@ namespace Rubberduck.Parsing.ComReflection
                 case DeclarationType.Project:
                     return new ProjectDeclaration(QualifiedMemberName, IdentifierName, true, null);                    
                 case DeclarationType.ClassModule:
-                    return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
+                    return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes, false, IsControl);
                 case DeclarationType.ProceduralModule:
                     return new ProceduralModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
                 case DeclarationType.Procedure:
