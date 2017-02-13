@@ -940,6 +940,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to multiple controls.
+        /// </summary>
+        public static string ContextMultipleControlsSelection {
+            get {
+                return ResourceManager.GetString("ContextMultipleControlsSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to references.
         /// </summary>
         public static string ContextReferences {
