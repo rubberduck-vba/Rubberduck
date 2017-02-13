@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -47,7 +48,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var line = module.GetLines(selection.StartLine, 1);
 
-            var asTypeClause = ' ' + Tokens.As + ' ' + Declaration.TypeHintToTypeName[hint];
+            var asTypeClause = ' ' + Tokens.As + ' ' + SymbolList.TypeHintToTypeName[hint];
 
             string fix;
 

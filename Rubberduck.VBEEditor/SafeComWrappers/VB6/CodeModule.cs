@@ -128,7 +128,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                     }
                 }
 
-                continuing = code.EndsWith("_");
+                continuing = code.EndsWith(" _");
             }
         }
 

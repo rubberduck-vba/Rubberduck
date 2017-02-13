@@ -232,6 +232,10 @@
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit">
       <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
@@ -281,6 +285,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Printing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
@@ -375,6 +380,7 @@
     <Compile Include="Inspections\MemberNotOnInterfaceInspection.cs" />
     <Compile Include="Inspections\QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
+    <Compile Include="Inspections\QuickFixes\AssignedByValParameterQuickFix.cs" />
     <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -437,6 +443,7 @@
     <Compile Include="Inspections\QuickFixes\SpecifyExplicitPublicModifierQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\WriteOnlyPropertyQuickFix.cs" />
     <Compile Include="Inspections\Results\WriteOnlyPropertyInspectionResult.cs" />
+    <Compile Include="Inspections\VariableNameValidator.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
@@ -493,6 +500,8 @@
     <Compile Include="UI\CodeExplorer\Commands\AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
+    <Compile Include="UI\SubclassingWindow.cs" />
+    <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\IContextFormatter.cs" />
@@ -507,6 +516,7 @@
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\ToolsParentMenu.cs" />
+    <Compile Include="UI\Command\VersionCheckCommand.cs" />
     <Compile Include="UI\Controls\BindableTextEditor.cs" />
     <Compile Include="UI\Controls\LinkButton.xaml.cs">
       <DependentUpon>LinkButton.xaml</DependentUpon>
@@ -747,6 +757,12 @@
     <Compile Include="UI\IOpenFileDialog.cs" />
     <Compile Include="UI\ISaveFileDialog.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
+    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.Designer.cs">
+      <DependentUpon>AssignedByValParameterQuickFixDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Refactorings\EncapsulateFieldDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1090,6 +1106,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.resx">
+      <DependentUpon>AssignedByValParameterQuickFixDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\EncapsulateFieldDialog.resx">
       <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>

@@ -63,6 +63,8 @@ namespace Rubberduck.Parsing.Symbols
         UnresolvedMember = 1 << 26,
         [DebuggerDisplay("BracketedExpression")]
         BracketedExpression = 1 << 27,
+        [DebuggerDisplay("ComAlias")]
+        ComAlias = 1 << 28
     }
 
     public interface IIdentifier { IdentifierNode Identifier { get; } }

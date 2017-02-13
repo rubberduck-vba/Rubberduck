@@ -33,7 +33,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using ReparseCommandMenuItem = Rubberduck.UI.Command.MenuItems.CommandBars.ReparseCommandMenuItem;
@@ -62,7 +61,6 @@ namespace Rubberduck.Root
             // bind VBE and AddIn dependencies to host-provided instances.
             Bind<IVBE>().ToConstant(_vbe);
             Bind<IAddIn>().ToConstant(_addin);
-            Bind<Sinks>().ToSelf().InSingletonScope();
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             Bind<ISourceControlProvider>().To<GitProvider>();
@@ -70,6 +68,7 @@ namespace Rubberduck.Root
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
 
+            Bind<CommandBase>().To<VersionCheckCommand>().WhenInjectedExactlyInto<App>();
             BindCodeInspectionTypes();
 
             var assemblies = new[]
@@ -86,7 +85,6 @@ namespace Rubberduck.Root
 
             BindCommandsToMenuItems();
 
-            Rebind<ISinks>().To<Sinks>().InSingletonScope();
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);

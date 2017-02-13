@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Antlr4.Runtime;
@@ -70,8 +71,8 @@ namespace Rubberduck.Parsing.VBA
             DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, host);
         }
 
-
-        public RubberduckParserState(ISinks sinks)
+        private IVBE _vbe;
+        public RubberduckParserState(IVBE vbe)
         {
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
@@ -79,28 +80,36 @@ namespace Rubberduck.Parsing.VBA
                 States.Add((ParserState)value);
             }
 
-            _sinks = sinks;
-            if (sinks != null)
+            _vbe = vbe;
+
+            if (_vbe != null && _vbe.VBProjects != null)
             {
-                _sinks.ProjectAdded += Sinks_ProjectAdded;
-                _sinks.ProjectRemoved += Sinks_ProjectRemoved;
-                _sinks.ProjectRenamed += Sinks_ProjectRenamed;
-                _sinks.ComponentAdded += Sinks_ComponentAdded;
-                _sinks.ComponentRemoved += Sinks_ComponentRemoved;
-                _sinks.ComponentRenamed += Sinks_ComponentRenamed;
+                _vbe.VBProjects.ProjectAdded += Sinks_ProjectAdded;
+                _vbe.VBProjects.ProjectRemoved += Sinks_ProjectRemoved;
+                _vbe.VBProjects.ProjectRenamed += Sinks_ProjectRenamed;
+                foreach (var project in _vbe.VBProjects.Where(proj => proj.VBComponents != null))
+                {
+                    AddComponentEventHandlers(project);
+                }
             }
 
             IsEnabled = true;
         }
 
-        private bool _started;
-        public void StartEventSinks()
+        #region Event Handling
+
+        private void AddComponentEventHandlers(IVBProject project)
         {
-            if (!_started && _sinks != null)
-            {
-                _sinks.Start();
-                _started = true;
-            }
+            project.VBComponents.ComponentAdded += Sinks_ComponentAdded;
+            project.VBComponents.ComponentRemoved += Sinks_ComponentRemoved;
+            project.VBComponents.ComponentRenamed += Sinks_ComponentRenamed;           
+        }
+
+        private void RemoveComponentEventHandlers(IVBProject project)
+        {
+            project.VBComponents.ComponentAdded -= Sinks_ComponentAdded;
+            project.VBComponents.ComponentRemoved -= Sinks_ComponentRemoved;
+            project.VBComponents.ComponentRenamed -= Sinks_ComponentRenamed;
         }
 
         private void Sinks_ProjectAdded(object sender, ProjectEventArgs e)
@@ -108,8 +117,9 @@ namespace Rubberduck.Parsing.VBA
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
             Logger.Debug("Project '{0}' was added.", e.ProjectId);
+            AddComponentEventHandlers(e.Project);
 
-            RefreshProjects(e.Project.VBE); // note side-effect: assigns ProjectId/HelpFile
+            RefreshProjects(_vbe); // note side-effect: assigns ProjectId/HelpFile
             OnParseRequested(sender);
         }
 
@@ -118,6 +128,7 @@ namespace Rubberduck.Parsing.VBA
             if (!e.Project.VBE.IsInDesignMode) { return; }
             
             Debug.Assert(e.ProjectId != null);
+            RemoveComponentEventHandlers(e.Project);
 
             RemoveProject(e.ProjectId, true);
             OnParseRequested(sender);
@@ -222,6 +233,8 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        #endregion
+
         /// <summary>
         /// Refreshes our list of cached projects.
         /// Be sure to reparse after calling this in case there
@@ -305,6 +318,7 @@ namespace Rubberduck.Parsing.VBA
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
+        //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
         private void OnModuleStateChanged(IVBComponent component, ParserState state, ParserState oldState)
         {
             var handler = ModuleStateChanged;
@@ -315,6 +329,15 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+
+        public void SetModuleState(IVBComponent component, ParserState state, CancellationToken token, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
+        {
+            if (!token.IsCancellationRequested)
+            {
+                SetModuleState(component, state, parserError, evaluateOverallState);
+            }
+        }
+        
         public void SetModuleState(IVBComponent component, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
             if (AllUserDeclarations.Count > 0)
@@ -360,6 +383,7 @@ namespace Rubberduck.Parsing.VBA
                 EvaluateParserState();
             }
         }
+
 
         public void EvaluateParserState()
         {
@@ -1067,7 +1091,6 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private bool _isDisposed;
-        private readonly ISinks _sinks;
 
         public void Dispose()
         {
@@ -1086,14 +1109,15 @@ namespace Rubberduck.Parsing.VBA
                 CoClasses.Clear();
             }
 
-            if (_sinks != null)
+            if (_vbe != null && _vbe.VBProjects != null)
             {
-                _sinks.ComponentAdded -= Sinks_ComponentAdded;
-                _sinks.ComponentRemoved -= Sinks_ComponentRemoved;
-                _sinks.ComponentRenamed -= Sinks_ComponentRenamed;
-                _sinks.ProjectAdded -= Sinks_ProjectAdded;
-                _sinks.ProjectRemoved -= Sinks_ProjectRemoved;
-                _sinks.ProjectRenamed -= Sinks_ProjectRenamed;
+                _vbe.VBProjects.ProjectAdded -= Sinks_ProjectAdded;
+                _vbe.VBProjects.ProjectRemoved -= Sinks_ProjectRemoved;
+                _vbe.VBProjects.ProjectRenamed -= Sinks_ProjectRenamed;
+                foreach (var project in _vbe.VBProjects.Where(proj => proj.VBComponents != null))
+                {
+                    RemoveComponentEventHandlers(project);
+                }
             }
 
             _moduleStates.Clear();

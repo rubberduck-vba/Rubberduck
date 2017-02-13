@@ -371,8 +371,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Konnte das Rubberduck Add-In nicht laden</value>
   </data>
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
-    <value>Build {0} ({1})</value>
-    <comment>0: Version; 1: Architektur</comment>
+    <value>Version</value>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG</value>
@@ -1051,7 +1050,7 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Über Rubberduck</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Spezieller Dank</value>
@@ -1824,43 +1823,43 @@ End Sub</value>
   <data name="ContextReferences" xml:space="preserve">
     <value>Referenzen</value>
   </data>
-  <data name="DialogCaption_SaveInspectionSettings">
+  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
     <value>Einstellungen für Inspektionen speichern</value>
   </data>
-  <data name="DialogCaption_SaveToDoSettings">
+  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
     <value>Einstellungen für Todo-Liste speichern</value>
   </data>
-  <data name="DialogMask_XmlFilesOnly">
+  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
     <value>XML Datei (.xml)|*.xml|Rubberduck config file|*.config</value>
   </data>
-  <data name="DialogCaption_SaveGeneralSettings">
+  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
     <value>Allgemeine Einstellungen speichern</value>
   </data>
-  <data name="DialogCaption_LoadToDoSettings">
+  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
     <value>Einstellungen für Todo-Liste Laden</value>
   </data>
-  <data name="DialogCaption_SaveUnitTestSettings">
+  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
     <value>Einstellungen für Unit-Tests speichern</value>
   </data>
-  <data name="DialogCaption_LoadUnitTestSettings">
+  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
     <value>Einstellungen für Unit-Tests laden</value>
   </data>
-  <data name="DialogCaption_LoadInspectionSettings">
+  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
     <value>Einstellungen für Inspektionen laden</value>
   </data>
-  <data name="SettingsCaption_ExportSettings">
+  <data name="SettingsCaption_ExportSettings" xml:space="preserve">
     <value>Export</value>
   </data>
-  <data name="DialogCaption_SaveIndenterSettings">
+  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
     <value>Einstellungen für Einrückung speichern</value>
   </data>
-  <data name="DialogCaption_LoadIndenterSettings">
+  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
     <value>Einstellungen für Einrückung laden</value>
   </data>
-  <data name="DialogCaption_LoadGeneralSettings">
+  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
     <value>Allgemeine Einstellungen Laden</value>
   </data>
-  <data name="SettingsCaption_ImportSettings">
+  <data name="SettingsCaption_ImportSettings" xml:space="preserve">
     <value>Import</value>
   </data>
 </root>

@@ -66,6 +66,8 @@ End Sub", BindingTargetName);
             var vbe = builder.Build();
             var state = Parse(vbe);
             var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.IdentifierName == BindingTargetName);
+
+            Assert.AreEqual(state.Status, ParserState.Ready);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
@@ -149,7 +151,7 @@ End Sub", BindingTargetName);
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)
         {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
             {

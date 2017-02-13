@@ -19,34 +19,6 @@ namespace Rubberduck.Parsing.Symbols
     [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
     public class Declaration : IEquatable<Declaration>
     {
-        public static readonly string[] BaseTypes =
-        {
-                "BOOLEAN",
-                "BYTE",
-                "CURRENCY",
-                "DATE",
-                "DOUBLE",
-                "INTEGER",
-                "LONG",
-                "LONGLONG",
-                "LONGPTR",
-                "SINGLE",
-                "STRING",
-                "VARIANT",
-                "OBJECT",
-                "ANY"
-        };
-
-        public static readonly IDictionary<string, string> TypeHintToTypeName = new Dictionary<string, string>
-        {
-            { "%", Tokens.Integer },
-            { "&", Tokens.Long },
-            { "@", Tokens.Decimal },
-            { "!", Tokens.Single },
-            { "#", Tokens.Double },
-            { "$", Tokens.String }
-        };
-
         public Declaration(
             QualifiedMemberName qualifiedName,
             Declaration parentDeclaration,
@@ -485,7 +457,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                return string.IsNullOrWhiteSpace(AsTypeName) || BaseTypes.Contains(_asTypeName.ToUpperInvariant());
+                return string.IsNullOrWhiteSpace(AsTypeName) || SymbolList.BaseTypes.Contains(_asTypeName.ToUpperInvariant());
             }
         }
 

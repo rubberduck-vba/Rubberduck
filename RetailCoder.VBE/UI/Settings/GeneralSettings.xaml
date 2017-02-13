@@ -119,6 +119,9 @@
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ShowSplash}"
                               IsChecked="{Binding ShowSplashAtStartup}" />
 
+                    <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_CheckVersion}"
+                              IsChecked="{Binding CheckVersionAtStartup}" />
+
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveLabel}" FontWeight="SemiBold" />
                     <StackPanel Orientation="Horizontal">
                         <CheckBox Name="AutoSaveButton"
@@ -133,13 +136,13 @@
                                        HorizontalAlignment="Left" />
                     </StackPanel>
 
-                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_FolderDelimiterLabel}" FontWeight="SemiBold" />
+                    <!--<Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_FolderDelimiterLabel}" FontWeight="SemiBold" />
                     <ComboBox Width="210"
                       HorizontalAlignment="Left"
                       Margin="5"
                       SelectedIndex="0"
                       ItemsSource="{Binding Source={StaticResource Delimiters}, Converter={StaticResource DelimiterToText}, UpdateSourceTrigger=PropertyChanged}"
-                      SelectedItem="{Binding Delimiter, Mode=TwoWay, Converter={StaticResource DelimiterValueToText}}" />
+                      SelectedItem="{Binding Delimiter, Mode=TwoWay, Converter={StaticResource DelimiterValueToText}}" />-->
 
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_MinimumLogLevelLabel}" FontWeight="SemiBold" />
                     <StackPanel Orientation="Horizontal">

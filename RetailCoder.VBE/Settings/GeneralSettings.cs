@@ -9,10 +9,11 @@ namespace Rubberduck.Settings
     {
         DisplayLanguageSetting Language { get; set; }
         bool ShowSplash { get; set; }
+        bool CheckVersion { get; set; }
         bool SmartIndenterPrompted { get; set; }
         bool AutoSaveEnabled { get; set; }
         int AutoSavePeriod { get; set; }
-        char Delimiter { get; set; }
+        //char Delimiter { get; set; }
         int MinimumLogLevel { get; set; }
     }
 
@@ -21,10 +22,11 @@ namespace Rubberduck.Settings
     {
         public DisplayLanguageSetting Language { get; set; }
         public bool ShowSplash { get; set; }
+        public bool CheckVersion { get; set; }
         public bool SmartIndenterPrompted { get; set; }
         public bool AutoSaveEnabled { get; set; }
         public int AutoSavePeriod { get; set; }
-        public char Delimiter { get; set; }
+        //public char Delimiter { get; set; }
 
         private int _logLevel;
         public int MinimumLogLevel
@@ -51,10 +53,11 @@ namespace Rubberduck.Settings
         {
             Language = new DisplayLanguageSetting("en-US");
             ShowSplash = true;
+            CheckVersion = true;
             SmartIndenterPrompted = false;
             AutoSaveEnabled = false;
             AutoSavePeriod = 10;
-            Delimiter = '.';
+            //Delimiter = '.';
             MinimumLogLevel = LogLevel.Off.Ordinal;
         }
 
@@ -63,10 +66,11 @@ namespace Rubberduck.Settings
             return other != null &&
                    Language.Equals(other.Language) &&
                    ShowSplash == other.ShowSplash &&
+                   CheckVersion == other.CheckVersion &&
                    SmartIndenterPrompted == other.SmartIndenterPrompted &&
                    AutoSaveEnabled == other.AutoSaveEnabled &&
                    AutoSavePeriod == other.AutoSavePeriod &&
-                   Delimiter.Equals(other.Delimiter) &&
+                   //Delimiter.Equals(other.Delimiter) &&
                    MinimumLogLevel == other.MinimumLogLevel;
         }
     }

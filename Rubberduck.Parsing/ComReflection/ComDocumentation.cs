@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.ComReflection
             }
 
             //See http://chat.stackexchange.com/transcript/message/30119269#30119269
-            Name = name.Equals("LONG_PTR") ? "LongPtr" : name;
+            Name = name;
             DocString = docString;
             HelpContext = helpContext;
             HelpFile = helpFile;            

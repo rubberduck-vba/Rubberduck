@@ -60,23 +60,8 @@ namespace Rubberduck.Inspections
 
         private static bool IsBadIdentifier(string identifier)
         {
-            return identifier.Length < 3 ||
-                   char.IsDigit(identifier.Last()) ||
-                   !HasVowels(identifier) ||
-                    NameIsASingleRepeatedLetter(identifier);
-        }
-
-        private static bool HasVowels(string identifier)
-        {
-            const string vowels = "aeiouyàâäéèêëïîöôùûü";
-            return  identifier.Any(character => vowels.Any(vowel => 
-                    string.Compare(vowel.ToString(), character.ToString(), StringComparison.OrdinalIgnoreCase) == 0));
-        }
-        private static bool NameIsASingleRepeatedLetter(string identifierName)
-        {
-            string firstLetter = identifierName.First().ToString();
-            return identifierName.All(a => string.Compare(a.ToString(), firstLetter,
-                StringComparison.OrdinalIgnoreCase) == 0);
+            var validator = new VariableNameValidator(identifier);
+            return !validator.IsMeaningfulName();
         }
     }
 }

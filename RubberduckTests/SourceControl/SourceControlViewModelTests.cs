@@ -120,7 +120,7 @@ namespace RubberduckTests.SourceControl
                 new SettingsView(_settingsVM)
             };
 
-            _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object), new Mock<ISinks>().Object, _providerFactory.Object, _folderBrowserFactory.Object,
+            _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(_vbe.Object), _providerFactory.Object, _folderBrowserFactory.Object,
                 _configService.Object, views, new Mock<IMessageBox>().Object);
         }
 

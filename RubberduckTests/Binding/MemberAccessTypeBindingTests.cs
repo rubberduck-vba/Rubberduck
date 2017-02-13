@@ -148,6 +148,8 @@ namespace RubberduckTests.Binding
             var vbe = builder.Build();
             var state = Parse(vbe);
 
+            Assert.AreEqual(state.Status, ParserState.Ready);
+
             var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.ProjectName == projectName);
             Assert.AreEqual(1, declaration.References.Count(), "Project reference expected");
 
@@ -160,7 +162,7 @@ namespace RubberduckTests.Binding
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)
         {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
             {

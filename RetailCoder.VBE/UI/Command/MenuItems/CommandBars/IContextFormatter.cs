@@ -1,4 +1,5 @@
 using System.Linq;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -39,7 +40,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             var formattedDeclaration = string.Empty;
             var moduleName = declaration.QualifiedName.QualifiedModuleName;
             var typeName = declaration.HasTypeHint
-                ? Declaration.TypeHintToTypeName[declaration.TypeHint]
+                ? SymbolList.TypeHintToTypeName[declaration.TypeHint]
                 : declaration.AsTypeName;
             var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture);
 
@@ -82,6 +83,12 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                     declaration.ParentDeclaration.IdentifierName, 
                     declaration.IdentifierName,
                     typeName);
+            }
+            else if (declaration.DeclarationType == DeclarationType.ComAlias)
+            {
+                formattedDeclaration = string.Format("{0};{1}.{2} (alias:{3})",
+                    System.IO.Path.GetFileName(moduleName.ProjectPath), moduleName.ProjectName,
+                    declaration.IdentifierName, declaration.AsTypeName);
             }
 
             var subscripts = declaration.IsArray ? "()" : string.Empty;
