@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             _target = target;
             _isQuickFixUnitTest = false;
-            _localCopyVariableName = AutoSuggestedName();
+            _localCopyVariableName = SuggestedName();
             _originalProcCodeLines = GetProcedureLines();
         }
 
@@ -54,28 +54,25 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void SetLocalCopyVariableName()
         {
-            if (_isQuickFixUnitTest)
-            {
-                IsCancelled = false;
-                _localCopyVariableName = AutoSuggestedName();
-                return;
-            }
-
             using (var view = new AssignedByValParameterQuickFixDialog(_originalProcCodeLines))
             {
                 view.Target = _target;
-                view.NewName = AutoSuggestedName();
-                view.ShowDialog();
-
-                IsCancelled = view.DialogResult == DialogResult.Cancel;
-                _localCopyVariableName =  view.NewName;
+                view.NewName = SuggestedName();
+                if (!_isQuickFixUnitTest)
+                {
+                    view.ShowDialog();
+                    IsCancelled = view.DialogResult == DialogResult.Cancel;
+                }
+                if (!IsCancelled)
+                {
+                    _localCopyVariableName = view.NewName;
+                }
             }
         }
 
         private void ModifyBlockToUseLocalCopyVariable()
         {
-            var validator = new VariableNameValidator(_localCopyVariableName);
-            if (_originalProcCodeLines.Any(c => validator.IsReferencedIn(c)))
+            if(!CheckLocalVariableNameIsValidForUpdate())
             {
                 return;
             }
@@ -83,6 +80,19 @@ namespace Rubberduck.Inspections.QuickFixes
             ReplaceAssignedByValParameterReferences();
 
             AddDeclarationAndAssignment();
+        }
+        private bool CheckLocalVariableNameIsValidForUpdate()
+        {
+            if (_localCopyVariableName.Equals(string.Empty))
+            {
+                return false;
+            }
+            var validator = new VariableNameValidator(_localCopyVariableName);
+            if (_originalProcCodeLines.Any(c => validator.IsFoundIn(c)))
+            {
+                return false;
+            }
+            return validator.IsValidName();
         }
 
         private void ReplaceAssignedByValParameterReferences()
@@ -122,7 +132,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rgx = new Regex(pattern);
             newStatement = rgx.Replace(newStatement, replacement);
 
-            //variables surrounded by braces, brackets, etc
+            //variable name is surrounded by braces, brackets, etc
             pattern = noAdjacentLettersNumbersOrUnderscores + _target.IdentifierName + noAdjacentLettersNumbersOrUnderscores;
             replacement = "$1" + _localCopyVariableName + "$2";
             rgx = new Regex(pattern);
@@ -168,7 +178,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return procLines.ToArray();
         }
 
-        private string AutoSuggestedName()
+        private string SuggestedName()
         {
             return "x" + _target.IdentifierName.CapitalizeFirstLetter();
         }

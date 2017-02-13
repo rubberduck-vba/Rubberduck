@@ -98,12 +98,12 @@ End Sub";
         public void AssignedByValParameter_QuickFixWorks()
         {
             const string inputCode =
-@"Public Sub Foo(ByVal arg1 As String)
-    Let arg1 = ""test""
+@"Public Sub Foo(ByVal barByVal As String)
+    Let barByVal = ""test""
 End Sub";
             const string expectedCode =
-@"Public Sub Foo(ByRef arg1 As String)
-    Let arg1 = ""test""
+@"Public Sub Foo(ByRef barByVal As String)
+    Let barByVal = ""test""
 End Sub";
 
             var quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);

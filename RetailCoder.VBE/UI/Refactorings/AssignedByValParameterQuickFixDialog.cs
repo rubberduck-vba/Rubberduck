@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections;
 
@@ -9,12 +8,12 @@ namespace Rubberduck.UI.Refactorings
 {
     public partial class AssignedByValParameterQuickFixDialog : Form, IDialogView
     {
-        private readonly string[] _moduleLines;
+        private readonly string[] _procedureLines;
         private bool _userInputIsValid;
 
-        public AssignedByValParameterQuickFixDialog(string[] moduleLines)
+        public AssignedByValParameterQuickFixDialog(string[] procedureLines)
         {
-            _moduleLines = moduleLines;
+            _procedureLines = procedureLines;
             _userInputIsValid = false;
             InitializeComponent();
             InitializeCaptions();
@@ -121,7 +120,7 @@ namespace Rubberduck.UI.Refactorings
         private bool NewNameAlreadyUsed()
         {
             var validator = new VariableNameValidator(NewName);
-            return _moduleLines.Any(codeLine => validator.IsReferencedIn(codeLine));
+            return _procedureLines.Any(codeLine => validator.IsFoundIn(codeLine));
         }
     }
 }

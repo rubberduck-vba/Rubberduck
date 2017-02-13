@@ -86,7 +86,7 @@ namespace Rubberduck.Inspections
                 && !EndsWithNumber;
         }
 
-        public bool IsReferencedIn(string input)
+        public bool IsFoundIn(string input)
         {
             const string noAdjacentLettersNumbersOrUnderscores = "([^0-9a-zA-Z_])";
 
