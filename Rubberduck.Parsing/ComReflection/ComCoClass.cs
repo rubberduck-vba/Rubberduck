@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
+using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -14,6 +15,8 @@ namespace Rubberduck.Parsing.ComReflection
     {
         private readonly Dictionary<ComInterface, bool> _interfaces = new Dictionary<ComInterface, bool>();
         private readonly List<ComInterface> _events = new List<ComInterface>();
+
+        public bool IsControl { get; private set; }
 
         public bool IsExtensible
         {
@@ -68,6 +71,7 @@ namespace Rubberduck.Parsing.ComReflection
         {
             Type = DeclarationType.ClassModule;
             GetImplementedInterfaces(info, attrib);
+            IsControl = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FAPPOBJECT);
             Debug.Assert(attrib.cFuncs == 0);
         }
 

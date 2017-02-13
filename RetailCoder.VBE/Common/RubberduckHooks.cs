@@ -220,6 +220,8 @@ namespace Rubberduck.Common
                         }
                         break;
                     case WM.CLOSE:
+                    case WM.RUBBERDUCK_SINKING:
+                        suppress = true;
                         Detach();
                         break;
                 }
