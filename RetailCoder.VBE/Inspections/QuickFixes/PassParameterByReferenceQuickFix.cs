@@ -19,22 +19,19 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix()
         {
-            var parameter = Context.GetText();
+            string pattern = "^\\s*" + Tokens.ByVal + "(\\s+)";
+            string rgxReplacement = Tokens.ByRef + "$1";
+            Regex rgx = new Regex(pattern);
 
-            var parts = parameter.Split(new char[]{' '},2);
-            if (1 != parts.GetUpperBound(0))
-            {
-                return;
-            }
-            parts[0] = parts[0].Replace(Tokens.ByVal, Tokens.ByRef);
-            var newContent = parts[0] + " " + parts[1];
+            var parameter = Context.GetText();
+            var newParameter = rgx.Replace(parameter, rgxReplacement);
 
             var selection = Selection.Selection;
 
             var module = Selection.QualifiedName.Component.CodeModule;
             {
                 var lines = module.GetLines(selection.StartLine, selection.LineCount);
-                var result = lines.Replace(parameter, newContent);
+                var result = lines.Replace(parameter, newParameter);
                 module.ReplaceLine(selection.StartLine, result);
             }
         }
