@@ -31,6 +31,7 @@ namespace Rubberduck.Parsing.VBA
         private const int _maxDegreeOfDeclarationResolverParallelism = -1;
         private const int _maxDegreeOfReferenceResolverParallelism = -1;
         private const int _maxDegreeOfModuleStateChangeParallelism = -1;
+        private const int _maxReferenceLoadingConcurrency = -1;
 
         private readonly IDictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
@@ -721,116 +722,47 @@ namespace Rubberduck.Parsing.VBA
 
         private void SyncComReferences(IReadOnlyList<IVBProject> projects, CancellationToken token)
         {
+            var unmapped = new ConcurrentBag<IReference>();
+
+            var referencesToLoad = GetReferencesToLoadAndSaveReferencePriority(projects);
+                            
+            State.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
+
+            var referenceLoadingTaskScheduler = ThrottelingTaskScheduler(_maxReferenceLoadingConcurrency); 
+
+            //Parallel.ForEach is not used because loading the references can contain IO-bound operations.
             var loadTasks = new List<Task>();
-            var unmapped = new List<IReference>();
-
-            foreach (var vbProject in projects)
+            foreach(var reference in referencesToLoad)
             {
-                var projectId = QualifiedModuleName.GetProjectId(vbProject);
-                var references = vbProject.References;
+                var localReference = reference;
+                loadTasks.Add(Task.Factory.StartNew(
+                                    () => LoadReference(localReference, unmapped), 
+                                    token, 
+                                    TaskCreationOptions.None, 
+                                    referenceLoadingTaskScheduler
+                                ));
+            }
+
+            var notMappedReferences = NonMappedReferences(projects);
+            foreach (var item in notMappedReferences)
+            {
+                unmapped.Add(item);
+            }
+
+            try
+            {
+                Task.WaitAll(loadTasks.ToArray(), token);
+            }
+            catch (AggregateException exception)
+            {
+                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    // use a 'for' loop to store the order of references as a 'priority'.
-                    // reference resolver needs this to know which declaration to prioritize when a global identifier exists in multiple libraries.
-                    for (var priority = 1; priority <= references.Count; priority++)
-                    {
-                        var reference = references[priority];
-                        if (reference.IsBroken)
-                        {
-                            continue;
-                        }
-
-                        // skip loading Rubberduck.tlb (GUID is defined in AssemblyInfo.cs)
-                        if (reference.Guid == "{E07C841C-14B4-4890-83E9-8C80B06DD59D}")
-                        {
-                            // todo: figure out why Rubberduck.tlb *sometimes* throws
-                            //continue;
-                        }
-                        var referencedProjectId = GetReferenceProjectId(reference, projects);
-
-                        ReferencePriorityMap map = null;
-                        foreach (var item in _projectReferences)
-                        {
-                            if (item.ReferencedProjectId == referencedProjectId)
-                            {
-                                map = map != null ? null : item;
-                            }
-                        }
-
-                        if (map == null)
-                        {
-                            map = new ReferencePriorityMap(referencedProjectId) { { projectId, priority } };
-                            _projectReferences.Add(map);
-                        }
-                        else
-                        {
-                            map[projectId] = priority;
-                        }
-
-                        if (!map.IsLoaded)
-                        {
-                            State.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
-
-                            var localReference = reference;
-
-                            loadTasks.Add(
-                                Task.Run(() =>
-                                {
-                                    try
-                                    {
-                                        Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
-
-                                        var comReflector = new ReferencedDeclarationsCollector(State, localReference, _serializedDeclarationsPath);
-                                        if (comReflector.SerializedVersionExists)
-                                        {
-                                            Logger.Trace(string.Format("Deserializing reference '{0}'.", localReference.Name));
-                                            foreach (var declaration in comReflector.LoadDeclarationsFromXml())
-                                            {
-                                                State.AddDeclaration(declaration);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Logger.Trace(string.Format("COM reflecting reference '{0}'.", localReference.Name));
-                                            foreach (var declaration in comReflector.LoadDeclarationsFromLibrary())
-                                            {
-                                                State.AddDeclaration(declaration);
-                                            }
-                                        }
-                                    }
-                                    catch (Exception exception)
-                                    {
-                                        unmapped.Add(reference);
-                                        Logger.Warn(string.Format("Types were not loaded from referenced type library '{0}'.", reference.Name));
-                                        Logger.Error(exception);
-                                    }
-                                }));
-                            map.IsLoaded = true;
-                        }
-                    }
+                    throw exception.InnerException; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
+                State.SetStatusAndFireStateChanged(this, ParserState.Error);
+                throw;
             }
-
-            var mappedIds = new List<string>();
-            foreach (var item in _projectReferences)
-            {
-                mappedIds.Add(item.ReferencedProjectId);
-            }
-
-            foreach (var project in projects)
-            {
-                var references = project.References;
-                {
-                    foreach (var item in references)
-                    {
-                        if (!mappedIds.Contains(GetReferenceProjectId(item, projects)))
-                        {
-                            unmapped.Add(item);
-                        }
-                    }
-                }
-            }
-
-            Task.WaitAll(loadTasks.ToArray(), token);
+            token.ThrowIfCancellationRequested();
 
             foreach (var reference in unmapped)
             {
@@ -838,25 +770,140 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private List<IReference> GetReferencesToLoadAndSaveReferencePriority(IReadOnlyList<IVBProject> projects)
+        {
+            var referencesToLoad = new List<IReference>();
+
+            foreach (var vbProject in projects)
+            {
+                var projectId = QualifiedModuleName.GetProjectId(vbProject);
+                var references = vbProject.References;
+
+                // use a 'for' loop to store the order of references as a 'priority'.
+                // reference resolver needs this to know which declaration to prioritize when a global identifier exists in multiple libraries.
+                for (var priority = 1; priority <= references.Count; priority++)
+                {
+                    var reference = references[priority];
+                    if (reference.IsBroken)
+                    {
+                        continue;
+                    }
+
+                    // skip loading Rubberduck.tlb (GUID is defined in AssemblyInfo.cs)
+                    if (reference.Guid == "{E07C841C-14B4-4890-83E9-8C80B06DD59D}")
+                    {
+                        // todo: figure out why Rubberduck.tlb *sometimes* throws
+                        //continue;
+                    }
+                    var referencedProjectId = GetReferenceProjectId(reference, projects);
+
+                    var map = _projectReferences.FirstOrDefault(item => item.ReferencedProjectId == referencedProjectId);
+
+                    if (map == null)
+                    {
+                        map = new ReferencePriorityMap(referencedProjectId) { { projectId, priority } };
+                        _projectReferences.Add(map);
+                    }
+                    else
+                    {
+                        map[projectId] = priority;
+                    }
+
+                    if (!map.IsLoaded)
+                    {
+                        referencesToLoad.Add(reference);
+                        map.IsLoaded = true;
+                    }
+                }
+            }
+            return referencesToLoad;
+        }
+
+        private TaskScheduler ThrottelingTaskScheduler(int maxLevelOfConcurrency)
+        {
+            if (maxLevelOfConcurrency <= 0)
+            {
+                return TaskScheduler.Default;
+            }
+            else
+            {
+                var taskSchedulerPair = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, maxLevelOfConcurrency);
+                return taskSchedulerPair.ConcurrentScheduler;
+            }
+        }
+
+        private void LoadReference(IReference localReference, ConcurrentBag<IReference> unmapped)
+        {
+            Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
+            var comReflector = new ReferencedDeclarationsCollector(State, localReference, _serializedDeclarationsPath);
+            try
+            {
+                if (comReflector.SerializedVersionExists)
+                {
+                    LoadReferenceByDeserialization(localReference, comReflector);
+                }
+                else
+                {
+                    LoadReferenceByCOMReflection(localReference, comReflector);
+                }
+            }
+            catch (Exception exception)
+            {
+                unmapped.Add(localReference);
+                Logger.Warn(string.Format("Types were not loaded from referenced type library '{0}'.", localReference.Name));
+                Logger.Error(exception);
+            }
+        }
+
+        private void LoadReferenceByDeserialization(IReference localReference, ReferencedDeclarationsCollector comReflector)
+        {
+            Logger.Trace(string.Format("Deserializing reference '{0}'.", localReference.Name));
+            var declarations = comReflector.LoadDeclarationsFromXml();
+            foreach (var declaration in declarations)
+            {
+                State.AddDeclaration(declaration);
+            }
+        }
+
+        private void LoadReferenceByCOMReflection(IReference localReference, ReferencedDeclarationsCollector comReflector)
+        {
+            Logger.Trace(string.Format("COM reflecting reference '{0}'.", localReference.Name));
+            var declarations = comReflector.LoadDeclarationsFromLibrary();
+            foreach (var declaration in declarations)
+            {
+                State.AddDeclaration(declaration);
+            }
+        }
+        
+        private List<IReference> NonMappedReferences(IReadOnlyList<IVBProject> projects)
+        {
+            var mappedIds = _projectReferences.Select(item => item.ReferencedProjectId).ToHashSet();
+            var references = projects.SelectMany(project => project.References);
+            return references.Where(item => !mappedIds.Contains(GetReferenceProjectId(item, projects))).ToList();
+        }
+
         private void UnloadComReference(IReference reference, IReadOnlyList<IVBProject> projects)
         {
             var referencedProjectId = GetReferenceProjectId(reference, projects);
 
             ReferencePriorityMap map = null;
-            foreach (var item in _projectReferences)
+            try
             {
-                if (item.ReferencedProjectId == referencedProjectId)
-                {
-                    map = map != null ? null : item;
-                }
+                map = _projectReferences.SingleOrDefault(item => item.ReferencedProjectId == referencedProjectId);
+            }
+            catch (InvalidOperationException exception)
+            {
+                //There are multiple maps with the same referencedProjectId. That should not happen. (ghost?).
+                Logger.Error(exception, "Failed To unload com reference with referencedProjectID {0} because RD stores multiple instances of it.", referencedProjectId);
+                return;
             }
 
             if (map == null || !map.IsLoaded)
             {
                 // we're removing a reference we weren't tracking? ...this shouldn't happen.
-                //Debug.Assert(false);
                 return;
             }
+
             map.Remove(referencedProjectId);
             if (map.Count == 0)
             {
