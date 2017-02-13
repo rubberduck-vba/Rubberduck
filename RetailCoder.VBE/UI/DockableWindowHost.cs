@@ -59,6 +59,12 @@ namespace Rubberduck.UI
             _subClassingWindow = new ParentWindow(vbeHwnd, new IntPtr(GetHashCode()), _parentHandle);
             _subClassingWindow.CallBackEvent += OnCallBackEvent;
 
+            //DO NOT REMOVE THIS CALL. Dockable windows are instantiated by the VBE, not directly by RD.  On top of that,
+            //since we have to inherit from UserControl we don't have to keep handling window messages until the VBE gets
+            //around to destroying the control's host or it results in an access violation when the base class is disposed.
+            //We need to manually call base.Dispose() ONLY in response to a WM_DESTROY message.
+            GC.KeepAlive(this);
+
             if (control != null)
             {
                 control.Dock = DockStyle.Fill;
@@ -130,6 +136,17 @@ namespace Rubberduck.UI
                 result = base.ProcessKeyPreview(ref m);
             }
             return result;
+        }
+
+        protected override void DefWndProc(ref Message m)
+        {
+            //See the comment in the ctor for why we have to listen for this.
+            if (m.Msg == (int) WM.DESTROY)
+            {
+                base.Dispose(true);
+                return;
+            }
+            base.DefWndProc(ref m);
         }
 
         [ComVisible(false)]
