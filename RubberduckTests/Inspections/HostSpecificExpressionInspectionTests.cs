@@ -36,7 +36,7 @@ End Sub
             mockHost.SetupGet(m => m.ApplicationName).Returns("Excel");
             vbe.Setup(m => m.HostApplication()).Returns(() => mockHost.Object);
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
             parser.State.AddTestLibrary("VBA.4.2.xml");
             parser.State.AddTestLibrary("Excel.1.8.xml");
             parser.Parse(new CancellationTokenSource());

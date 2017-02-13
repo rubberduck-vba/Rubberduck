@@ -33,7 +33,6 @@ namespace Rubberduck.UI.Command
         protected override void ExecuteImpl(object parameter)
         {
             _state.OnParseRequested(this);
-            _state.StartEventSinks(); // no-op if already started
         }
     }
 }

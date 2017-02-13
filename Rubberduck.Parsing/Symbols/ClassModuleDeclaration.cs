@@ -20,7 +20,8 @@ namespace Rubberduck.Parsing.Symbols
                   bool isBuiltIn,
                   IEnumerable<IAnnotation> annotations,
                   Attributes attributes,
-                  bool hasDefaultInstanceVariable = false)
+                  bool hasDefaultInstanceVariable = false,
+                  bool isControl = false)
             : base(
                   qualifiedName,
                   projectDeclaration,
@@ -46,6 +47,7 @@ namespace Rubberduck.Parsing.Symbols
             _supertypeNames = new List<string>();
             _supertypes = new HashSet<Declaration>();
             _subtypes = new HashSet<Declaration>();
+            IsControl = isControl;
         }
 
         // skip IDispatch.. just about everything implements it and RD doesn't need to care about it; don't care about IUnknown either
@@ -77,6 +79,7 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList();
             _supertypes = new HashSet<Declaration>();
             _subtypes = new HashSet<Declaration>();
+            IsControl = coClass.IsControl;
         }
 
         public ClassModuleDeclaration(ComInterface intrface, Declaration parent, QualifiedModuleName module,
@@ -145,6 +148,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             return true;
         }
+
+        public bool IsControl { get; private set; }
 
         private bool HasAttribute(string attributeName)
         {
