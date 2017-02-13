@@ -8,6 +8,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
     public interface IVBE : ISafeComWrapper, IEquatable<IVBE>
     {
         string Version { get; }
+        object HardReference { get; }
         IWindow ActiveWindow { get; }
         ICodePane ActiveCodePane { get; set; }
         IVBProject ActiveVBProject { get; set; }

@@ -40,7 +40,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -72,7 +72,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -107,7 +107,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -147,7 +147,7 @@ End Sub";
             var module = project.Object.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -190,7 +190,7 @@ End Sub";
             var module = project.Object.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 

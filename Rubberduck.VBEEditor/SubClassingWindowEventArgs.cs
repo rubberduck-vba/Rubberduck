@@ -5,16 +5,18 @@ namespace Rubberduck.VBEditor
 {
     public class SubClassingWindowEventArgs : EventArgs
     {
-        private readonly Message _msg;
+        private readonly IntPtr _lparam;
 
-        public Message Message
+        public IntPtr LParam
         {
-            get { return _msg; }
+            get { return _lparam; }
         }
 
-        public SubClassingWindowEventArgs(Message msg)
+        public bool Closing { get; set; }
+
+        public SubClassingWindowEventArgs(IntPtr lparam)
         {
-            _msg = msg;
+            _lparam = lparam;
         }
     }
 }

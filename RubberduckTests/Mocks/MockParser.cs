@@ -28,7 +28,7 @@ namespace RubberduckTests.Mocks
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             qualifiedModuleName = new QualifiedModuleName(component);
-            var parser = Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
