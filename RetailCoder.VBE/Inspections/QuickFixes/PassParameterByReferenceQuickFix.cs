@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using System.Text.RegularExpressions;
+using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -19,21 +20,26 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix()
         {
-            string pattern = "^\\s*" + Tokens.ByVal + "(\\s+)";
-            string rgxReplacement = Tokens.ByRef + "$1";
-            Regex rgx = new Regex(pattern);
+            var byValParameter = Context.GetText();
 
-            var parameter = Context.GetText();
-            var newParameter = rgx.Replace(parameter, rgxReplacement);
+            var byRefParameter = BuildByRefParameter(byValParameter);
 
+            ReplaceByValParameterInModule(byValParameter, byRefParameter);
+        }
+
+        private string BuildByRefParameter(string originalParameter)
+        {
+            var everythingAfterTheByValToken = originalParameter.Substring(Tokens.ByVal.Length);
+            return Tokens.ByRef + everythingAfterTheByValToken;
+        }
+        private void ReplaceByValParameterInModule( string byValParameter, string byRefParameter)
+        {
             var selection = Selection.Selection;
-
             var module = Selection.QualifiedName.Component.CodeModule;
-            {
-                var lines = module.GetLines(selection.StartLine, selection.LineCount);
-                var result = lines.Replace(parameter, newParameter);
-                module.ReplaceLine(selection.StartLine, result);
-            }
+
+            var lines = module.GetLines(selection.StartLine, selection.LineCount);
+            var result = lines.Replace(byValParameter, byRefParameter);
+            module.ReplaceLine(selection.StartLine, result);
         }
     }
 }

@@ -97,16 +97,29 @@ End Sub";
         [TestCategory("Inspections")]
         public void AssignedByValParameter_QuickFixWorks()
         {
-            const string inputCode =
+            string inputCode =
 @"Public Sub Foo(ByVal barByVal As String)
     Let barByVal = ""test""
 End Sub";
-            const string expectedCode =
+            string expectedCode =
 @"Public Sub Foo(ByRef barByVal As String)
     Let barByVal = ""test""
 End Sub";
 
             var quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+
+            //check when ByVal argument is one of several parameters
+            inputCode =
+@"Public Sub Foo(ByRef firstArg As Long, ByVal barByVal As String, secondArg as Double)
+    Let barByVal = ""test""
+End Sub";
+            expectedCode =
+@"Public Sub Foo(ByRef firstArg As Long, ByRef barByVal As String, secondArg as Double)
+    Let barByVal = ""test""
+End Sub";
+
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
@@ -507,9 +520,6 @@ End Function
         {
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            //TODO: removal of the two lines below have no effect on the outcome of any test...remove?
-            //var mockHost = new Mock<IHostApplication>();
-            //mockHost.SetupAllProperties();
             return builder.BuildFromSingleStandardModule(inputCode, out component);
 
         }
