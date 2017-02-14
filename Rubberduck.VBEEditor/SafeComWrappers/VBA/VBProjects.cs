@@ -130,7 +130,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private static void DetatchEvents()
         {
-            if (!_eventsAttached)
+            if (!_eventsAttached && _projects != null)
             {
                 ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
                 ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);

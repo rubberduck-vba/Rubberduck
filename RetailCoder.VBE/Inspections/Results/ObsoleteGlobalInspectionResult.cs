@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.Results
 {
@@ -12,8 +13,8 @@ namespace Rubberduck.Inspections.Results
     {
         private IEnumerable<QuickFixBase> _quickFixes;
 
-        public ObsoleteGlobalInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> context)
-            : base(inspection, context.ModuleName, context.Context)
+        public ObsoleteGlobalInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> context, Declaration target)
+            : base(inspection, context.ModuleName, context.Context, target)
         { }
 
         public override IEnumerable<QuickFixBase> QuickFixes
