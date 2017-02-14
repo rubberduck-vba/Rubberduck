@@ -27,7 +27,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public VBComponents(VB.VBComponents target) : base(target)
         {
-            AttachEvents();
+            AttachEvents(Target);
         }
 
         public int Count
@@ -96,7 +96,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             if (!IsWrappingNullReference)
             {
-                DetatchEvents();
+                DetatchEvents(Target);
                 for (var i = 1; i <= Count; i++)
                 {
                     this[i].Release();
@@ -192,10 +192,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         #region Events
 
-        private bool _eventsAttached;
-        private void AttachEvents()
+        private static bool _eventsAttached;
+        private static void AttachEvents(VB.VBComponents components)
         {
-            if (!_eventsAttached && !IsWrappingNullReference)
+            if (!_eventsAttached)
             {
                 _componentAdded = OnComponentAdded;
                 _componentRemoved = OnComponentRemoved;
@@ -203,88 +203,92 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 _componentSelected = OnComponentSelected;
                 _componentActivated = OnComponentActivated;
                 _componentReloaded = OnComponentReloaded;
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
+                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
+                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
+                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
+                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
+                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
+                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
                 _eventsAttached = true;
             }
         }
 
-        private void DetatchEvents()
+        private static void DetatchEvents(VB.VBComponents components)
         {
-            if (!_eventsAttached && !IsWrappingNullReference)
+            if (!_eventsAttached)
             {
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
+                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
+                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
+                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
+                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
+                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
+                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
                 _eventsAttached = false;
             }
         }
 
         private delegate void ItemAddedDelegate(VB.VBComponent vbComponent);
-        private ItemAddedDelegate _componentAdded;
-        public event EventHandler<ComponentEventArgs> ComponentAdded;
-        private void OnComponentAdded(VB.VBComponent vbComponent)
+        private static ItemAddedDelegate _componentAdded;
+        public static event EventHandler<ComponentEventArgs> ComponentAdded;
+        private static void OnComponentAdded(VB.VBComponent vbComponent)
         {
             OnDispatch(ComponentAdded, vbComponent);
         }
 
         private delegate void ItemRemovedDelegate(VB.VBComponent vbComponent);
-        private ItemRemovedDelegate _componentRemoved;
-        public event EventHandler<ComponentEventArgs> ComponentRemoved;
-        private void OnComponentRemoved(VB.VBComponent vbComponent)
+        private static ItemRemovedDelegate _componentRemoved;
+        public static event EventHandler<ComponentEventArgs> ComponentRemoved;
+        private static void OnComponentRemoved(VB.VBComponent vbComponent)
         {
             OnDispatch(ComponentRemoved, vbComponent);
         }
 
         private delegate void ItemRenamedDelegate(VB.VBComponent vbComponent, string oldName);
-        private ItemRenamedDelegate _componentRenamed;
-        public event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
-        private void OnComponentRenamed(VB.VBComponent vbComponent, string oldName)
+        private static ItemRenamedDelegate _componentRenamed;
+        public static event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
+        private static void OnComponentRenamed(VB.VBComponent vbComponent, string oldName)
         {
             var handler = ComponentRenamed;
             if (handler != null)
             {
-                handler.Invoke(this, new ComponentRenamedEventArgs(Parent.ProjectId, Parent, new VBComponent(vbComponent), oldName));
+                var component = new VBComponent(vbComponent);
+                var project = component.Collection.Parent;
+                handler.Invoke(component, new ComponentRenamedEventArgs(project.ProjectId, project, new VBComponent(vbComponent), oldName));
             }
         }
 
         private delegate void ItemSelectedDelegate(VB.VBComponent vbComponent);
-        private ItemSelectedDelegate _componentSelected;
-        public event EventHandler<ComponentEventArgs> ComponentSelected;
-        private void OnComponentSelected(VB.VBComponent vbComponent)
+        private static ItemSelectedDelegate _componentSelected;
+        public static event EventHandler<ComponentEventArgs> ComponentSelected;
+        private static void OnComponentSelected(VB.VBComponent vbComponent)
         {
             OnDispatch(ComponentSelected, vbComponent);
         }
 
         private delegate void ItemActivatedDelegate(VB.VBComponent vbComponent);
-        private ItemActivatedDelegate _componentActivated;
-        public event EventHandler<ComponentEventArgs> ComponentActivated;
-        private void OnComponentActivated(VB.VBComponent vbComponent)
+        private static ItemActivatedDelegate _componentActivated;
+        public static event EventHandler<ComponentEventArgs> ComponentActivated;
+        private static void OnComponentActivated(VB.VBComponent vbComponent)
         {
             OnDispatch(ComponentActivated, vbComponent);
         }
 
         private delegate void ItemReloadedDelegate(VB.VBComponent vbComponent);
-        private ItemReloadedDelegate _componentReloaded;
-        public event EventHandler<ComponentEventArgs> ComponentReloaded;
-        private void OnComponentReloaded(VB.VBComponent vbComponent)
+        private static ItemReloadedDelegate _componentReloaded;
+        public static event EventHandler<ComponentEventArgs> ComponentReloaded;
+        private static void OnComponentReloaded(VB.VBComponent vbComponent)
         {
             OnDispatch(ComponentReloaded, vbComponent);
         }
 
-        private void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent component)
+        private static void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent vbComponent)
         {
             var handler = dispatched;
             if (handler != null)
             {
-                handler.Invoke(this, new ComponentEventArgs(Parent.ProjectId, Parent, new VBComponent(component)));
+                var component = new VBComponent(vbComponent);
+                var project = component.Collection.Parent;
+                handler.Invoke(component, new ComponentEventArgs(project.ProjectId, project, component));
             }
         }
 
