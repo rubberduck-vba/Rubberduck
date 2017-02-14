@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
     public class VBComponents : SafeComWrapper<VB.VBComponents>, IVBComponents
     {
         private static readonly Guid VBComponentsEventsGuid = new Guid("0002E116-0000-0000-C000-000000000046");
+        private static HashSet<VB.VBComponents> _handlers = new HashSet<VB.VBComponents>();
+        private static object _lockObject = new object();
 
         private enum ComponentEventDispId
         {
@@ -192,38 +195,43 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         #region Events
 
-        private static bool _eventsAttached;
         private static void AttachEvents(VB.VBComponents components)
         {
-            if (!_eventsAttached)
+            lock (_lockObject)
             {
-                _componentAdded = OnComponentAdded;
-                _componentRemoved = OnComponentRemoved;
-                _componentRenamed = OnComponentRenamed;
-                _componentSelected = OnComponentSelected;
-                _componentActivated = OnComponentActivated;
-                _componentReloaded = OnComponentReloaded;
-                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
-                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
-                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
-                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
-                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
-                ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
-                _eventsAttached = true;
+                if (!_handlers.Contains(components))
+                {
+                    _componentAdded = OnComponentAdded;
+                    _componentRemoved = OnComponentRemoved;
+                    _componentRenamed = OnComponentRenamed;
+                    _componentSelected = OnComponentSelected;
+                    _componentActivated = OnComponentActivated;
+                    _componentReloaded = OnComponentReloaded;
+                    ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
+                    ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
+                    ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
+                    ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
+                    ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
+                    ComEventsHelper.Combine(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
+                    _handlers.Add(components);
+                }               
             }
         }
 
         private static void DetatchEvents(VB.VBComponents components)
         {
-            if (!_eventsAttached)
+            lock (_lockObject)
             {
-                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
-                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
-                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
-                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
-                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
-                ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
-                _eventsAttached = false;
+                if (_handlers.Contains(components))
+                {
+                    ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int) ComponentEventDispId.ItemAdded, _componentAdded);
+                    ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int) ComponentEventDispId.ItemRemoved, _componentRemoved);
+                    ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int) ComponentEventDispId.ItemRenamed, _componentRenamed);
+                    ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int) ComponentEventDispId.ItemSelected, _componentSelected);
+                    ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int) ComponentEventDispId.ItemActivated, _componentActivated);
+                    ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int) ComponentEventDispId.ItemReloaded, _componentReloaded);
+                    _handlers.Remove(components);
+                }
             }
         }
 
