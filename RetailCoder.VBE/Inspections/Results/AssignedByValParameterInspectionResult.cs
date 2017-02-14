@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Results
                 return _quickFixes ?? (_quickFixes = new QuickFixBase[]
                 {
                     new AssignedByValParameterQuickFix(Target, QualifiedSelection),
-                    new PassParameterByReferenceQuickFix(Target.Context, QualifiedSelection),
+                    new PassParameterByReferenceQuickFix(Target, QualifiedSelection),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
                 });
             }
