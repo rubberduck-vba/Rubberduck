@@ -139,7 +139,7 @@ namespace Rubberduck.Inspections.Concrete
 
                     if (argListWithOneByRefParamListener != null)
                     {
-                        result.AddRange(argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext<VBAParser.ArgListContext>(componentTreePair.Key, context)));
+                        result.AddRange(argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext<VBAParser.SubstmtContext>(componentTreePair.Key, context)));
                     }
                     if (emptyStringLiteralListener != null)
                     {

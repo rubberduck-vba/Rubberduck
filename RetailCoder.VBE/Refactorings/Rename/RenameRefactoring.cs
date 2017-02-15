@@ -335,7 +335,7 @@ namespace Rubberduck.Refactorings.Rename
 
                 if (target.DeclarationType == DeclarationType.Parameter)
                 {
-                    var argList = (VBAParser.ArgListContext)target.Context.Parent;
+                    var argList = (VBAParser.SubstmtContext)target.Context.Parent;
                     var lineNum = argList.GetSelection().LineCount;
 
                     // delete excess lines to prevent removing our own changes

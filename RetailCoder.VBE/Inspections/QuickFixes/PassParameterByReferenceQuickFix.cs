@@ -99,10 +99,11 @@ namespace Rubberduck.Inspections.QuickFixes
 
             var positionOfLineContinuation = procLineWithByValToken.LastIndexOf(Tokens.LineContinuation);
             var positionOfLastByValToken = procLineWithByValToken.LastIndexOf(Tokens.ByVal);
-            return  procLineWithByValToken.Substring(positionOfLastByValToken, positionOfLineContinuation - positionOfLastByValToken + 2);
+            return  procLineWithByValToken.Substring(positionOfLastByValToken, positionOfLineContinuation - positionOfLastByValToken + Tokens.LineContinuation.Length);
         }
         private void SetMemberLineValues(string[] procedureLines)
         {
+
             string line;
             bool byValTokenFound = false;
             bool byValIdentifierNameFound = false;
@@ -116,17 +117,108 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
                 if (byValTokenFound)
                 {
+                    int lineNum = GetIdentifierLineNumber(_target.IdentifierName);
+                    if(lineNum > 0)
+                    {
+                        _byValIdentifierNameProcLine = lineNum;
+                        byValIdentifierNameFound = true;
+                    }
+                    /*
                     if (line.Contains(_target.IdentifierName))
                     {
                         _byValIdentifierNameProcLine = zbIndexByValLine + 1;
                         byValIdentifierNameFound = true;
                     }
+                    */
                 }
             }
 
             System.Diagnostics.Debug.Assert(_byValTokenProcLine > 0);
             System.Diagnostics.Debug.Assert(_byValIdentifierNameProcLine > 0);
             return;
+        }
+        private int GetIdentifierLineNumber(string identifier)
+        {
+            var names = new List<string>();
+            var test = (SubStmtContext)Context.Parent.Parent;
+            var next = test.children;
+            for (int idx = 0; idx < next.Count; idx++)
+            {
+                if (next[idx] is SubstmtContext)
+                {
+                    var child = (SubstmtContext)next[idx];
+                    var arg = child.children;
+                    for (int idx2 = 0; idx2 < arg.Count; idx2++)
+                    {
+                        if (arg[idx2] is ArgContext)
+                        {
+                            var asdf = (ArgContext)arg[idx2];
+                            var kids = asdf.children;
+                            for (int idx3 = 0; idx3 < kids.Count; idx3++)
+                            {
+                                var _start = (ParserRuleContext)kids[0];
+                                var _stop = (ParserRuleContext)kids[kids.Count-1];
+                                int startCol = _start.Start.Column;
+                                int stopCol = _start.Stop.Column;
+
+                                if (kids[idx3] is UnrestrictedIdentifierContext)
+                                {
+                                    var idRef = (UnrestrictedIdentifierContext)kids[idx3];
+                                    var name = idRef.Start.Text;
+                                    if (name.Equals(identifier))
+                                    {
+                                        int lineNum = idRef.Start.Line;
+                                        return lineNum;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return -1;
+        }
+        private int GetIdentifierStartIndex(string identifier, out int stopIndex)
+        {
+            var names = new List<string>();
+            var test = (SubStmtContext)Context.Parent.Parent;
+            var next = test.children;
+            for (int idx = 0; idx < next.Count; idx++)
+            {
+                if (next[idx] is SubstmtContext)
+                {
+                    var child = (SubstmtContext)next[idx];
+                    var arg = child.children;
+                    for (int idx2 = 0; idx2 < arg.Count; idx2++)
+                    {
+                        if (arg[idx2] is ArgContext)
+                        {
+                            var asdf = (ArgContext)arg[idx2];
+                            var kids = asdf.children;
+                            for (int idx3 = 0; idx3 < kids.Count; idx3++)
+                            {
+                                var _start = (ParserRuleContext)kids[0];
+                                var _stop = (ParserRuleContext)kids[kids.Count - 1];
+                                stopIndex = _start.Stop.Column;
+                                return _start.Start.Column;
+
+                                if (kids[idx3] is UnrestrictedIdentifierContext)
+                                {
+                                    var idRef = (UnrestrictedIdentifierContext)kids[idx3];
+                                    var name = idRef.Start.Text;
+                                    if (name.Equals(identifier))
+                                    {
+                                        int lineNum = idRef.Start.Line;
+                                        return lineNum;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            stopIndex = -1;
+            return -1;
         }
     }
 }

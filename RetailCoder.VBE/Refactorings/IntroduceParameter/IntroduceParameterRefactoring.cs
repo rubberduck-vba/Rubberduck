@@ -142,7 +142,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var functionDeclaration = _declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
 
             var proc = (dynamic)functionDeclaration.Context;
-            var paramList = (VBAParser.ArgListContext)proc.argList();
+            var paramList = (VBAParser.SubstmtContext)proc.argList();
             var module = functionDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
@@ -182,14 +182,14 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         private void UpdateSignature(Declaration targetMethod, Declaration targetVariable)
         {
             var proc = (dynamic)targetMethod.Context;
-            var paramList = (VBAParser.ArgListContext)proc.argList();
+            var paramList = (VBAParser.SubstmtContext)proc.argList();
             var module = targetMethod.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 AddParameter(targetMethod, targetVariable, paramList, module);
             }
         }
 
-        private void AddParameter(Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList, ICodeModule module)
+        private void AddParameter(Declaration targetMethod, Declaration targetVariable, VBAParser.SubstmtContext paramList, ICodeModule module)
         {
             var argList = paramList.arg();
             var lastParam = argList.LastOrDefault();

@@ -664,7 +664,7 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
         }
 
-        public override void EnterArgList(VBAParser.ArgListContext context)
+        public override void EnterArgList(VBAParser.SubstmtContext context)
         {
             var args = context.arg();
             foreach (var argContext in args)

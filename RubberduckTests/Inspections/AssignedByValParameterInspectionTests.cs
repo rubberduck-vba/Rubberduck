@@ -175,6 +175,44 @@ End Sub
             Assert.AreEqual(expectedCode, quickFixResult);
 
             inputCode =
+@"Private Sub Foo(ByVal barByVal As Long, ByVal barTwoon As Long,  ByVal _
+    barTwo _
+    As _
+    Long)
+barTwo = 42
+End Sub
+";
+            expectedCode =
+@"Private Sub Foo(ByVal barByVal As Long, ByVal barTwoon As Long,  ByRef _
+    barTwo _
+    As _
+    Long)
+barTwo = 42
+End Sub
+";
+
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+
+            inputCode =
+@"Private Sub Foo(ByVal barByVal As Long, ByVal barTwoon As Long,  ByVal barTwo _
+    As _
+    Long)
+barTwo = 42
+End Sub
+";
+            expectedCode =
+@"Private Sub Foo(ByVal barByVal As Long, ByVal barTwoon As Long,  ByRef barTwo _
+    As _
+    Long)
+barTwo = 42
+End Sub
+";
+
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+
+            inputCode =
 @"Sub DoSomething(_
     ByVal foo As Long, _
     ByRef _

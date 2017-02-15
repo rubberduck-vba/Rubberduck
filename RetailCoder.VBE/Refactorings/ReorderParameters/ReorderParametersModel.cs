@@ -50,7 +50,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             Parameters.Clear();
 
             var procedure = (dynamic)TargetDeclaration.Context;
-            var argList = (VBAParser.ArgListContext)procedure.argList();
+            var argList = (VBAParser.SubstmtContext)procedure.argList();
             var args = argList.arg();
 
             var index = 0;

@@ -16,12 +16,12 @@ namespace Rubberduck.Inspections.Results
     public class ProcedureCanBeWrittenAsFunctionInspectionResult : InspectionResultBase
     {
        private IEnumerable<QuickFixBase> _quickFixes;
-       private readonly QualifiedContext<VBAParser.ArgListContext> _argListQualifiedContext;
+       private readonly QualifiedContext<VBAParser.SubstmtContext> _argListQualifiedContext;
        private readonly QualifiedContext<VBAParser.SubStmtContext> _subStmtQualifiedContext;
        private readonly RubberduckParserState _state;
 
        public ProcedureCanBeWrittenAsFunctionInspectionResult(IInspection inspection, RubberduckParserState state, 
-           QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
+           QualifiedContext<VBAParser.SubstmtContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
            : base(inspection, subStmtQualifiedContext.ModuleName, subStmtQualifiedContext.Context.subroutineName())
         {
             _target = state.AllUserDeclarations.Single(declaration => declaration.DeclarationType == DeclarationType.Procedure
@@ -57,14 +57,14 @@ namespace Rubberduck.Inspections.Results
         public override bool CanFixInProject { get { return false; } }
 
         private readonly RubberduckParserState _state;
-        private readonly QualifiedContext<VBAParser.ArgListContext> _argListQualifiedContext;
+        private readonly QualifiedContext<VBAParser.SubstmtContext> _argListQualifiedContext;
         private readonly QualifiedContext<VBAParser.SubStmtContext> _subStmtQualifiedContext;
         private readonly QualifiedContext<VBAParser.ArgContext> _argQualifiedContext;
 
         private int _lineOffset;
 
         public ChangeProcedureToFunction(RubberduckParserState state,
-                                         QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext,
+                                         QualifiedContext<VBAParser.SubstmtContext> argListQualifiedContext,
                                          QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext,
                                          QualifiedSelection selection)
             : base(subStmtQualifiedContext.Context, selection, InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix)

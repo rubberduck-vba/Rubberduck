@@ -68,9 +68,9 @@ namespace Rubberduck.Inspections.QuickFixes
             var fix = string.Empty;
             foreach (var child in memberContext.children)
             {
-                if (child is VBAParser.ArgListContext)
+                if (child is VBAParser.SubstmtContext)
                 {
-                    foreach (var tree in ((VBAParser.ArgListContext) child).children)
+                    foreach (var tree in ((VBAParser.SubstmtContext) child).children)
                     {
                         if (tree.Equals(context))
                         {
