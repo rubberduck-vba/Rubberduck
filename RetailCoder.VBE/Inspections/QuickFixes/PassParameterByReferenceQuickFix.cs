@@ -41,8 +41,8 @@ namespace Rubberduck.Inspections.QuickFixes
             {
                 if (procStmtCtxChildren[idx] is ArgListContext)
                 {
-                    var procStmtCtxChild = (ArgListContext)procStmtCtxChildren[idx];
-                    var arg = procStmtCtxChild.children;
+                    var argListContext = (ArgListContext)procStmtCtxChildren[idx];
+                    var arg = argListContext.children;
                     for (int idx2 = 0; idx2 < arg.Count; idx2++)
                     {
                         if (arg[idx2] is ArgContext)
@@ -99,13 +99,13 @@ namespace Rubberduck.Inspections.QuickFixes
 
             return ReplaceAtIndex(byValTokenLine, Tokens.ByVal, Tokens.ByRef, terminalNodeImpl.Symbol.Column);
         }
-        private string ReplaceAtIndex(string input, string toReplace, string replacement, int index)
+        private string ReplaceAtIndex(string input, string toReplace, string replacement, int startIndex)
         {
-            int stopIndex = index + toReplace.Length;
-            var prefix = input.Substring(0, index);
+            int stopIndex = startIndex + toReplace.Length;
+            var prefix = input.Substring(0, startIndex);
             var suffix = input.Substring(stopIndex + 1);
-            var target = input.Substring(index, stopIndex - index + 1);
-            return prefix + target.Replace(toReplace, replacement) + suffix;
+            var tokenToBeReplaced = input.Substring(startIndex, stopIndex - startIndex + 1);
+            return prefix + tokenToBeReplaced.Replace(toReplace, replacement) + suffix;
         }
         private void ReplaceModuleLine(int lineNumber, string replacementLine)
         {
