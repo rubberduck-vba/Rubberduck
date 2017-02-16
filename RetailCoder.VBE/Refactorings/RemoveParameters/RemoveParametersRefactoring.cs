@@ -279,7 +279,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private void AdjustSignatures()
         {
             var proc = (dynamic)_model.TargetDeclaration.Context;
-            var paramList = (VBAParser.SubstmtContext)proc.argList();
+            var paramList = (VBAParser.ArgListContext)proc.argList();
             var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 // if we are adjusting a property getter, check if we need to adjust the letter/setter too
@@ -336,23 +336,23 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var proc = (dynamic)declaration.Context.Parent;
             var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
-                VBAParser.SubstmtContext paramList;
+                VBAParser.ArgListContext paramList;
 
                 if (declaration.DeclarationType == DeclarationType.PropertySet
                     || declaration.DeclarationType == DeclarationType.PropertyLet)
                 {
-                    paramList = (VBAParser.SubstmtContext)proc.children[0].argList();
+                    paramList = (VBAParser.ArgListContext)proc.children[0].argList();
                 }
                 else
                 {
-                    paramList = (VBAParser.SubstmtContext)proc.subStmt().argList();
+                    paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
                 }
 
                 RemoveSignatureParameters(declaration, paramList, module);
             }
         }
 
-        private void RemoveSignatureParameters(Declaration target, VBAParser.SubstmtContext paramList, ICodeModule module)
+        private void RemoveSignatureParameters(Declaration target, VBAParser.ArgListContext paramList, ICodeModule module)
         {
             // property set/let have one more parameter than is listed in the getter parameters
             var nonRemovedParamNames = paramList.arg().Where((a, s) => s >= _model.Parameters.Count || !_model.Parameters[s].IsRemoved).Select(s => s.GetText());

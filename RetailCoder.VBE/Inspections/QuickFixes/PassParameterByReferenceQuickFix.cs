@@ -39,9 +39,9 @@ namespace Rubberduck.Inspections.QuickFixes
             var procStmtCtxChildren = procStmtCtx.children;
             for (int idx = 0; idx < procStmtCtxChildren.Count; idx++)
             {
-                if (procStmtCtxChildren[idx] is SubstmtContext)
+                if (procStmtCtxChildren[idx] is ArgListContext)
                 {
-                    var procStmtCtxChild = (SubstmtContext)procStmtCtxChildren[idx];
+                    var procStmtCtxChild = (ArgListContext)procStmtCtxChildren[idx];
                     var arg = procStmtCtxChild.children;
                     for (int idx2 = 0; idx2 < arg.Count; idx2++)
                     {

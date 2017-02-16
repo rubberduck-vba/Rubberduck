@@ -1410,7 +1410,7 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitArgList([NotNull] VBAParser.SubstmtContext context);
+	Result VisitArgList([NotNull] VBAParser.ArgListContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.arrayDim"/>.

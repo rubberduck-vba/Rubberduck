@@ -2207,12 +2207,12 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// Enter a parse tree produced by <see cref="VBAParser.argList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterArgList([NotNull] VBAParser.SubstmtContext context);
+	void EnterArgList([NotNull] VBAParser.ArgListContext context);
 	/// <summary>
 	/// Exit a parse tree produced by <see cref="VBAParser.argList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitArgList([NotNull] VBAParser.SubstmtContext context);
+	void ExitArgList([NotNull] VBAParser.ArgListContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.arrayDim"/>.

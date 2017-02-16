@@ -189,7 +189,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private void AdjustSignatures()
         {
             var proc = (dynamic)_model.TargetDeclaration.Context;
-            var paramList = (VBAParser.SubstmtContext)proc.argList();
+            var paramList = (VBAParser.ArgListContext)proc.argList();
             var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
             // if we are reordering a property getter, check if we need to reorder a letter/setter too
@@ -242,22 +242,22 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var proc = (dynamic)declaration.Context.Parent;
             var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
-                VBAParser.SubstmtContext paramList;
+                VBAParser.ArgListContext paramList;
 
                 if (declaration.DeclarationType == DeclarationType.PropertySet || declaration.DeclarationType == DeclarationType.PropertyLet)
                 {
-                    paramList = (VBAParser.SubstmtContext)proc.children[0].argList();
+                    paramList = (VBAParser.ArgListContext)proc.children[0].argList();
                 }
                 else
                 {
-                    paramList = (VBAParser.SubstmtContext)proc.subStmt().argList();
+                    paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
                 }
 
                 RewriteSignature(declaration, paramList, module);
             }
         }
 
-        private void RewriteSignature(Declaration target, VBAParser.SubstmtContext paramList, ICodeModule module)
+        private void RewriteSignature(Declaration target, VBAParser.ArgListContext paramList, ICodeModule module)
         {
             var parameters = paramList.arg().Select((s, i) => new {Index = i, Text = s.GetText()}).ToList();
 

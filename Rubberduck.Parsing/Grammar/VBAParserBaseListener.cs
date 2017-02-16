@@ -2534,13 +2534,13 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterArgList([NotNull] VBAParser.SubstmtContext context) { }
+	public virtual void EnterArgList([NotNull] VBAParser.ArgListContext context) { }
 	/// <summary>
 	/// Exit a parse tree produced by <see cref="VBAParser.argList"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitArgList([NotNull] VBAParser.SubstmtContext context) { }
+	public virtual void ExitArgList([NotNull] VBAParser.ArgListContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.arrayDim"/>.

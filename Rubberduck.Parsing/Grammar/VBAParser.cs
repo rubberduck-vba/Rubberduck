@@ -5512,8 +5512,8 @@ public partial class VBAParser : Parser {
 		public VisibilityContext visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
-		public SubstmtContext argList() {
-			return GetRuleContext<SubstmtContext>(0);
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
 		}
 		public ITerminalNode LIB() { return GetToken(VBAParser.LIB, 0); }
 		public ITerminalNode FUNCTION() { return GetToken(VBAParser.FUNCTION, 0); }
@@ -5631,7 +5631,7 @@ public partial class VBAParser : Parser {
 		return _localctx;
 	}
 
-	public partial class SubstmtContext : ParserRuleContext {
+	public partial class ArgListContext : ParserRuleContext {
 		public ArgContext arg(int i) {
 			return GetRuleContext<ArgContext>(i);
 		}
@@ -5650,7 +5650,7 @@ public partial class VBAParser : Parser {
 		public ITerminalNode COMMA(int i) {
 			return GetToken(VBAParser.COMMA, i);
 		}
-		public SubstmtContext(ParserRuleContext parent, int invokingState)
+		public ArgListContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
@@ -5671,8 +5671,8 @@ public partial class VBAParser : Parser {
 	}
 
 	[RuleVersion(0)]
-	public SubstmtContext argList() {
-		SubstmtContext _localctx = new SubstmtContext(_ctx, State);
+	public ArgListContext argList() {
+		ArgListContext _localctx = new ArgListContext(_ctx, State);
 		EnterRule(_localctx, 140, RULE_argList);
 		int _la;
 		try {
@@ -7041,8 +7041,8 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class EventStmtContext : ParserRuleContext {
-		public SubstmtContext argList() {
-			return GetRuleContext<SubstmtContext>(0);
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
 		}
 		public WhiteSpaceContext whiteSpace(int i) {
 			return GetRuleContext<WhiteSpaceContext>(i);
@@ -7350,8 +7350,8 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class FunctionStmtContext : ParserRuleContext {
-		public SubstmtContext argList() {
-			return GetRuleContext<SubstmtContext>(0);
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
 		}
 		public FunctionNameContext functionName() {
 			return GetRuleContext<FunctionNameContext>(0);
@@ -8930,8 +8930,8 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class PropertyGetStmtContext : ParserRuleContext {
-		public SubstmtContext argList() {
-			return GetRuleContext<SubstmtContext>(0);
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
 		}
 		public FunctionNameContext functionName() {
 			return GetRuleContext<FunctionNameContext>(0);
@@ -9048,8 +9048,8 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class PropertySetStmtContext : ParserRuleContext {
-		public SubstmtContext argList() {
-			return GetRuleContext<SubstmtContext>(0);
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
 		}
 		public WhiteSpaceContext whiteSpace(int i) {
 			return GetRuleContext<WhiteSpaceContext>(i);
@@ -9155,8 +9155,8 @@ public partial class VBAParser : Parser {
 
 	public partial class PropertyLetStmtContext : ParserRuleContext {
 		public ITerminalNode PROPERTY_LET() { return GetToken(VBAParser.PROPERTY_LET, 0); }
-		public SubstmtContext argList() {
-			return GetRuleContext<SubstmtContext>(0);
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
 		}
 		public WhiteSpaceContext whiteSpace(int i) {
 			return GetRuleContext<WhiteSpaceContext>(i);
@@ -10999,8 +10999,8 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SubStmtContext : ParserRuleContext {
-		public SubstmtContext argList() {
-			return GetRuleContext<SubstmtContext>(0);
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
 		}
 		public WhiteSpaceContext whiteSpace(int i) {
 			return GetRuleContext<WhiteSpaceContext>(i);

@@ -117,7 +117,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 var context =
-                    _declaration.Context.children.FirstOrDefault(d => d is VBAParser.SubstmtContext) as VBAParser.SubstmtContext;
+                    _declaration.Context.children.FirstOrDefault(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
 
                 if (context == null)
                 {
