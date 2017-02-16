@@ -1388,7 +1388,7 @@
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
-    <Resource Include="Resources\RD-AboutWindow.png" />
+    <Resource Include="Resources\AboutBanner.png" />
     <Resource Include="Resources\twitter_circle_black-512.png" />
     <Resource Include="Resources\RD-InstallWindow.png" />
     <Resource Include="Resources\minus-circle1.png" />
