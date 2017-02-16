@@ -97,18 +97,113 @@ End Sub";
         [TestCategory("Inspections")]
         public void AssignedByValParameter_QuickFixWorks()
         {
-            const string inputCode =
-@"Public Sub Foo(ByVal barByVal As String)
+
+            string inputCode =
+@"Public Sub Foo(Optional ByVal barByVal As String = ""XYZ"")
     Let barByVal = ""test""
 End Sub";
-            const string expectedCode =
-@"Public Sub Foo(ByRef barByVal As String)
+            string expectedCode =
+@"Public Sub Foo(Optional ByRef barByVal As String = ""XYZ"")
     Let barByVal = ""test""
 End Sub";
 
             var quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
+
+            //check when ByVal argument is one of several parameters
+            inputCode =
+@"Public Sub Foo(ByRef firstArg As Long, Optional ByVal barByVal As String = """", secondArg as Double)
+    Let barByVal = ""test""
+End Sub";
+            expectedCode =
+@"Public Sub Foo(ByRef firstArg As Long, Optional ByRef barByVal As String = """", secondArg as Double)
+    Let barByVal = ""test""
+End Sub";
+
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+
+            inputCode =
+@"
+Private Sub Foo(Optional ByVal  _
+    bar _
+    As _
+    Long = 4, _
+    ByVal _
+    barTwo _
+    As _
+    Long)
+bar = 42
+End Sub
+"
+;
+            expectedCode =
+@"
+Private Sub Foo(Optional ByRef  _
+    bar _
+    As _
+    Long = 4, _
+    ByVal _
+    barTwo _
+    As _
+    Long)
+bar = 42
+End Sub
+"
+;
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+
+            inputCode =
+@"Private Sub Foo(ByVal barByVal As Long, ByVal _xByValbar As Long,  ByVal _
+    barTwo _
+    As _
+    Long)
+barTwo = 42
+End Sub
+";
+            expectedCode =
+@"Private Sub Foo(ByVal barByVal As Long, ByVal _xByValbar As Long,  ByRef _
+    barTwo _
+    As _
+    Long)
+barTwo = 42
+End Sub
+";
+            
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+
+            inputCode =
+@"Sub DoSomething(_
+    ByVal foo As Long, _
+    ByRef _
+        bar, _
+    ByRef barbecue _
+                    )
+    foo = 4
+    bar = barbecue * _
+               bar + foo / barbecue
+End Sub
+";
+
+            expectedCode =
+@"Sub DoSomething(_
+    ByRef foo As Long, _
+    ByRef _
+        bar, _
+    ByRef barbecue _
+                    )
+    foo = 4
+    bar = barbecue * _
+               bar + foo / barbecue
+End Sub
+";
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+
         }
+
 
         [TestMethod]
         [TestCategory("Inspections")]
@@ -507,9 +602,6 @@ End Function
         {
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            //TODO: removal of the two lines below have no effect on the outcome of any test...remove?
-            //var mockHost = new Mock<IHostApplication>();
-            //mockHost.SetupAllProperties();
             return builder.BuildFromSingleStandardModule(inputCode, out component);
 
         }
