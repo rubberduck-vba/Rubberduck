@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Rubberduck.VBEditor
+namespace Rubberduck.VBEditor.WindowsApi
 {
     /// <summary>
     /// Collection of WinAPI methods and extensions to handle native windows.
@@ -48,18 +48,12 @@ namespace Rubberduck.VBEditor
         [DllImport("user32", EntryPoint = "GetWindowTextW", ExactSpelling = true, CharSet = CharSet.Unicode)]
         internal static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
-        /// <summary>   Gets the parent window of this item. </summary>
-        ///
-        /// <param name="hWnd"> The window handle. </param>
-        /// <returns>   The parent window IntPtr handle. </returns>
-        [DllImport("User32.dll")]
-        internal static extern IntPtr GetParent(IntPtr hWnd);
 
         /// <summary>   Gets window caption text by handle. </summary>
         ///
         /// <param name="windowHandle"> Handle of the window to be activated. </param>
         /// <returns>   The window caption text. </returns>
-        internal static string GetWindowTextByHwnd(IntPtr windowHandle)
+        public static string GetWindowText(this IntPtr windowHandle)
         {
             const int MAX_BUFFER = 300;
 
@@ -74,6 +68,15 @@ namespace Rubberduck.VBEditor
 
             return result;
         }
+
+        /// <summary>   Gets the parent window of this item. </summary>
+        ///
+        /// <param name="hWnd"> The window handle. </param>
+        /// <returns>   The parent window IntPtr handle. </returns>
+        [DllImport("User32.dll")]
+        internal static extern IntPtr GetParent(IntPtr hWnd);
+
+
 
         /// <summary>Activates the window by simulating a click.</summary>
         ///
@@ -94,43 +97,6 @@ namespace Rubberduck.VBEditor
             if (result != 0)
             {
                 Debug.WriteLine("EnumChildWindows failed");
-            }
-        }
-
-        internal class ChildWindowFinder
-        {
-            private IntPtr _resultHandle = IntPtr.Zero;
-            private readonly string _caption;
-
-            internal ChildWindowFinder(string caption)
-            {
-                _caption = caption;
-            }
-
-            public int EnumWindowsProcToChildWindowByCaption(IntPtr windowHandle, IntPtr param)
-            {
-                // By default it will continue enumeration after this call
-                var result = 1;
-                var caption = GetWindowTextByHwnd(windowHandle);
-
-
-                if (_caption == caption)
-                {
-                    // Found
-                    _resultHandle = windowHandle;
-
-                    // Stop enumeration after this call
-                    result = 0;
-                }
-                return result;
-            }
-
-            public IntPtr ResultHandle
-            {
-                get
-                {
-                    return _resultHandle;
-                }
             }
         }
     }

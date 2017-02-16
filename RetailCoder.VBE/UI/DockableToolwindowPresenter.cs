@@ -130,16 +130,6 @@ namespace Rubberduck.UI
             }
             if (disposing && _window != null)
             {
-                if (_userControlObject != null)
-                {
-                    ((_DockableWindowHost)_userControlObject).Dispose();
-                }
-                _userControlObject = null;
-
-                if (_userControl != null)
-                {
-                    _userControl.Dispose();
-                }
                 // cleanup unmanaged resource wrappers
                 _window.Close();
                 _window.Release(true);

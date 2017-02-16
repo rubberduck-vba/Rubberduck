@@ -124,6 +124,9 @@
     <Compile Include="Events\ComponentRenamedEventArgs.cs" />
     <Compile Include="Events\ProjectEventArgs.cs" />
     <Compile Include="Events\ProjectRenamedEventArgs.cs" />
+    <Compile Include="Events\SelectionChangedEventArgs.cs" />
+    <Compile Include="Events\VBEEvents.cs" />
+    <Compile Include="Events\WindowChangedEventArgs.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\DispatcherEventArgs.cs" />
@@ -223,7 +226,12 @@
     <Compile Include="SafeComWrappers\MSForms\WindowState.cs" />
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\VBA\VBE.cs" />
-    <Compile Include="NativeMethods.cs" />
+    <Compile Include="WindowsApi\ChildWindowFinder.cs" />
+    <Compile Include="WindowsApi\CodePaneSubclass.cs" />
+    <Compile Include="WindowsApi\DesignerWindowSubclass.cs" />
+    <Compile Include="WindowsApi\FocusSource.cs" />
+    <Compile Include="WindowsApi\IWindowEventProvider.cs" />
+    <Compile Include="WindowsApi\NativeMethods.cs" />
     <Compile Include="QualifiedMemberName.cs" />
     <Compile Include="QualifiedModuleName.cs" />
     <Compile Include="QualifiedSelection.cs" />
@@ -253,6 +261,11 @@
     <Compile Include="Application\AutoCADApp.cs" />
     <Compile Include="Extensions\VBProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WindowsApi\SubclassingWindow.cs" />
+    <Compile Include="WindowsApi\User32.cs" />
+    <Compile Include="WindowsApi\WinEvent.cs" />
+    <Compile Include="WindowsApi\WinEventFlags.cs" />
+    <Compile Include="WindowsApi\WM.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VBEEditorText.fr.resx" />
