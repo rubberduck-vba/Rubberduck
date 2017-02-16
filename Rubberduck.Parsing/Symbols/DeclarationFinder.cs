@@ -63,10 +63,10 @@ namespace Rubberduck.Parsing.Symbols
             _parametersByParent = declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
                 .GroupBy(declaration => declaration.ParentDeclaration).ToConcurrentDictionary();
             _userDeclarationsByType = declarations.Where(declaration => !declaration.IsBuiltIn).GroupBy(declaration => declaration.DeclarationType).ToConcurrentDictionary();
-            _builtinEvents = new Lazy<ConcurrentBag<Declaration>>(() => FindBuiltInEventHandlers(declarations));
+            _builtinEvents = new Lazy<ConcurrentBag<Declaration>>(() => FindBuiltInEventHandlers(declarations), true);
 
-            _projects = _projects = new Lazy<ConcurrentBag<Declaration>>(() => new ConcurrentBag<Declaration>(declarations.Where(d => d.DeclarationType == DeclarationType.Project)));
-            _classes = new Lazy<ConcurrentBag<Declaration>>(() => new ConcurrentBag<Declaration>(declarations.Where(d => d.DeclarationType == DeclarationType.ClassModule)));
+            _projects = _projects = new Lazy<ConcurrentBag<Declaration>>(() => new ConcurrentBag<Declaration>(declarations.Where(d => d.DeclarationType == DeclarationType.Project)), true);
+            _classes = new Lazy<ConcurrentBag<Declaration>>(() => new ConcurrentBag<Declaration>(declarations.Where(d => d.DeclarationType == DeclarationType.ClassModule)), true);
 
             var withEventsFields = UserDeclarations(DeclarationType.Variable).Where(item => item.IsWithEvents).ToArray();
             var events = withEventsFields.Select(field =>
@@ -88,7 +88,7 @@ namespace Rubberduck.Parsing.Symbols
                                                   && member.IdentifierName == item.WithEventsField.IdentifierName + "_" + evnt.IdentifierName))
                         })
                         .ToDictionary(item => item.WithEventsField, item => item.Handlers.ToArray())
-                    ));
+                    ), true);
 
             _undeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>(new Dictionary<QualifiedMemberName, ConcurrentBag<Declaration>>());
             _unresolved = new ConcurrentBag<UnboundMemberDeclaration>(new List<UnboundMemberDeclaration>());
@@ -106,12 +106,12 @@ namespace Rubberduck.Parsing.Symbols
                 });
 
             _interfaceMembers = new Lazy<ConcurrentDictionary<Declaration, Declaration[]>>(() =>
-               new ConcurrentDictionary<Declaration, Declaration[]>(interfaceMembers.ToDictionary(item => item.InterfaceModule, item => item.InterfaceMembers.ToArray())));
+               new ConcurrentDictionary<Declaration, Declaration[]>(interfaceMembers.ToDictionary(item => item.InterfaceModule, item => item.InterfaceMembers.ToArray())), true);
 
             var implementingNames = new Lazy<IEnumerable<string>>(() => implementsInstructions.SelectMany(item =>
                     _declarations[item.IdentifierReference.Declaration.QualifiedName.QualifiedModuleName]
                         .Where(member => member.DeclarationType.HasFlag(DeclarationType.Member))
-                        .Select(member => item.IdentifierReference.Declaration.IdentifierName + "_" + member.IdentifierName)));
+                        .Select(member => item.IdentifierReference.Declaration.IdentifierName + "_" + member.IdentifierName)), true);
 
             var implementableMembers = implementsInstructions.Select(item =>
                 new
@@ -123,7 +123,7 @@ namespace Rubberduck.Parsing.Symbols
 
             _membersByImplementsContext = new Lazy<ConcurrentDictionary<VBAParser.ImplementsStmtContext, Declaration[]>>(() =>
             new ConcurrentDictionary<VBAParser.ImplementsStmtContext, Declaration[]>(
-                implementableMembers.ToDictionary(item => item.Context, item => item.Members)));
+                implementableMembers.ToDictionary(item => item.Context, item => item.Members)), true);
         }
 
         public IEnumerable<Declaration> Undeclared
