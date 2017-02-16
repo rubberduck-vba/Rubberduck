@@ -64,7 +64,7 @@ namespace Rubberduck
             _checkVersionCommand = checkVersionCommand;
 
             VBEEvents.SelectionChanged += _vbe_SelectionChanged;
-            VBEEvents.ForgroundWindowChanged += _vbe_ForegroundWindowChanged;
+            VBEEvents.WindowFocusChange += _vbe_FocusChanged;
 
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
@@ -90,9 +90,12 @@ namespace Rubberduck
             RefreshSelection(e.CodePane);
         }
 
-        private void _vbe_ForegroundWindowChanged(object sender, WindowChangedEventArgs e)
+        private void _vbe_FocusChanged(object sender, WindowChangedEventArgs e)
         {
-            RefreshSelection(e.Window);
+            if (e.EventType == WindowChangedEventArgs.FocusType.GotFocus)
+            {
+                RefreshSelection(e.Window);
+            }          
         }
 
         private ParserState _lastStatus;
@@ -356,7 +359,7 @@ namespace Rubberduck
             }
 
             VBEEvents.SelectionChanged += _vbe_SelectionChanged;
-            VBEEvents.ForgroundWindowChanged += _vbe_ForegroundWindowChanged;
+            VBEEvents.WindowFocusChange += _vbe_FocusChanged;
 
             if (_configService != null)
             {

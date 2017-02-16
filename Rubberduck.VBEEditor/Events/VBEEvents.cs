@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.VBEditor.Events
@@ -13,19 +14,22 @@ namespace Rubberduck.VBEditor.Events
         private static User32.WinEventProc _eventProc;
         private static IntPtr _eventHandle;
         private static IVBE _vbe;
-
+  
         public struct WindowInfo
         {
             private readonly IntPtr _handle;
             private readonly IWindow _window;
+            private readonly IWindowEventProvider _subclass;
 
             public IntPtr Hwnd { get { return _handle; } } 
             public IWindow Window { get { return _window; } }
+            internal IWindowEventProvider Subclass { get { return _subclass; } }
 
-            public WindowInfo(IntPtr handle, IWindow window)
+            internal WindowInfo(IntPtr handle, IWindow window, IWindowEventProvider source)
             {
                 _handle = handle;
-                _window = window;                            
+                _window = window;
+                _subclass = source;
             }
         }
 
@@ -48,7 +52,15 @@ namespace Rubberduck.VBEditor.Events
 
         public static void UnhookEvents()
         {
-            User32.UnhookWinEvent(_eventHandle);
+            lock (ThreadLock)
+            {
+                User32.UnhookWinEvent(_eventHandle);
+                foreach (var info in TrackedWindows.Values)
+                {
+                    info.Subclass.FocusChange -= FocusDispatcher;
+                    info.Subclass.Dispose();
+                }
+            }
         }
 
         public static void VbeEventCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild,
@@ -80,7 +92,9 @@ namespace Rubberduck.VBEditor.Events
                 Debug.Assert(!TrackedWindows.ContainsKey(hwnd));
                 var window = GetWindowFromHwnd(hwnd);
                 if (window == null) return;
-                var info = new WindowInfo(hwnd, window);
+                var source = window.Type == WindowKind.CodeWindow ? new CodePaneSubclass(hwnd) as IWindowEventProvider: new DesignerWindowSubclass(hwnd);
+                var info = new WindowInfo(hwnd, window, source);
+                source.FocusChange += FocusDispatcher;
                 TrackedWindows.Add(hwnd, info);
             }           
         }
@@ -90,8 +104,28 @@ namespace Rubberduck.VBEditor.Events
             lock (ThreadLock)
             {
                 Debug.Assert(TrackedWindows.ContainsKey(hwnd));
+                var info = TrackedWindows[hwnd];
+                info.Subclass.FocusChange -= FocusDispatcher;
+                info.Subclass.Dispose();
                 TrackedWindows.Remove(hwnd);
             }             
+        }
+
+        private static void FocusDispatcher(object sender, WindowChangedEventArgs eventArgs)
+        {
+            OnWindowFocusChange(sender, eventArgs);
+        }
+
+        public static WindowInfo? GetWindowInfoFromHwnd(IntPtr hwnd)
+        {
+            lock (ThreadLock)
+            {
+                if (!TrackedWindows.ContainsKey(hwnd))
+                {
+                    return null;
+                }
+                return TrackedWindows[hwnd];
+            }
         }
 
         public static event EventHandler<SelectionChangedEventArgs> SelectionChanged;
@@ -104,13 +138,12 @@ namespace Rubberduck.VBEditor.Events
             }
         }
 
-        //Pending location of a suitable event - might need a subclass here instead.
-        public static event EventHandler<WindowChangedEventArgs> ForgroundWindowChanged;
-        private static void OnForgroundWindowChanged(WindowInfo info)
+        public static event EventHandler<WindowChangedEventArgs> WindowFocusChange;
+        private static void OnWindowFocusChange(object sender, WindowChangedEventArgs eventArgs)
         {
-            if (ForgroundWindowChanged != null)
+            if (WindowFocusChange != null)
             {
-                ForgroundWindowChanged.Invoke(_vbe, new WindowChangedEventArgs(info.Hwnd, info.Window));
+                WindowFocusChange.Invoke(sender, eventArgs);
             }
         } 
 

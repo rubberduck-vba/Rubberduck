@@ -227,6 +227,10 @@
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\VBA\VBE.cs" />
     <Compile Include="WindowsApi\ChildWindowFinder.cs" />
+    <Compile Include="WindowsApi\CodePaneSubclass.cs" />
+    <Compile Include="WindowsApi\DesignerWindowSubclass.cs" />
+    <Compile Include="WindowsApi\FocusSource.cs" />
+    <Compile Include="WindowsApi\IWindowEventProvider.cs" />
     <Compile Include="WindowsApi\NativeMethods.cs" />
     <Compile Include="QualifiedMemberName.cs" />
     <Compile Include="QualifiedModuleName.cs" />
