@@ -43,14 +43,14 @@ namespace Rubberduck.Inspections.QuickFixes
                 {
                     var argListContext = (ArgListContext)procStmtCtxChildren[idx];
                     var arg = argListContext.children;
-                    for (int idx2 = 0; idx2 < arg.Count; idx2++)
+                    for (int idxArgListCtx = 0; idxArgListCtx < arg.Count; idxArgListCtx++)
                     {
-                        if (arg[idx2] is ArgContext)
+                        if (arg[idxArgListCtx] is ArgContext)
                         {
-                            var name = GetIdentifierNameFor((ArgContext)arg[idx2]);
+                            var name = GetIdentifierNameFor((ArgContext)arg[idxArgListCtx]);
                             if (name.Equals(identifier))
                             {
-                                return (ArgContext)arg[idx2];
+                                return (ArgContext)arg[idxArgListCtx];
                             }
                         }
                     }
