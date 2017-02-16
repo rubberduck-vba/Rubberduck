@@ -31,7 +31,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         [DllImport("ComCtl32.dll", CharSet = CharSet.Auto)]
         private static extern int DefSubclassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam);
 
-        public IntPtr Hwnd { get; set; }
+        public IntPtr Hwnd { get { return _hwnd; } }
 
         protected SubclassingWindow(IntPtr subclassId, IntPtr hWnd)
         {
@@ -91,8 +91,9 @@ namespace Rubberduck.VBEditor.WindowsApi
             }
 
             Debug.Assert(IsWindow(_hwnd));
+            //TODO: This should change to  WM.DESTROY once subclassing\hooking consolidation is complete.
             if ((uint)msg == (uint)WM.RUBBERDUCK_SINKING)
-            {
+            {                
                 ReleaseHandle();
             }
             return DefSubclassProc(hWnd, msg, wParam, lParam);
