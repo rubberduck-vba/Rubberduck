@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Rubberduck.Common.WinAPI;
 
-namespace Rubberduck.UI
+namespace Rubberduck.VBEditor.WindowsApi
 {
     public abstract class SubclassingWindow : IDisposable
     {
