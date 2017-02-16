@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<QualifiedContext<VBAParser.ArgListContext>> ParseTreeResults { get { return _results.OfType<QualifiedContext<VBAParser.ArgListContext>>(); } }
+        public IEnumerable<QualifiedContext<VBAParser.SubstmtContext>> ParseTreeResults { get { return _results.OfType<QualifiedContext<VBAParser.SubstmtContext>>(); } }
 
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
@@ -62,17 +62,17 @@ namespace Rubberduck.Inspections
                                    .Select(result => new ProcedureCanBeWrittenAsFunctionInspectionResult(
                                                          this, 
                                                          State, 
-                                                         new QualifiedContext<VBAParser.ArgListContext>(result.QualifiedName,result.Context.GetChild<VBAParser.ArgListContext>(0)),
+                                                         new QualifiedContext<VBAParser.SubstmtContext>(result.QualifiedName,result.Context.GetChild<VBAParser.SubstmtContext>(0)),
                                                          new QualifiedContext<VBAParser.SubStmtContext>(result.QualifiedName, (VBAParser.SubStmtContext)result.Context))
                                    );                   
         }
 
         public class SingleByRefParamArgListListener : VBAParserBaseListener
         {
-            private readonly IList<VBAParser.ArgListContext> _contexts = new List<VBAParser.ArgListContext>();
-            public IEnumerable<VBAParser.ArgListContext> Contexts { get { return _contexts; } }
+            private readonly IList<VBAParser.SubstmtContext> _contexts = new List<VBAParser.SubstmtContext>();
+            public IEnumerable<VBAParser.SubstmtContext> Contexts { get { return _contexts; } }
 
-            public override void ExitArgList(VBAParser.ArgListContext context)
+            public override void ExitArgList(VBAParser.SubstmtContext context)
             {
                 var args = context.arg();
                 if (args != null && args.All(a => a.PARAMARRAY() == null && a.LPAREN() == null) && args.Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)

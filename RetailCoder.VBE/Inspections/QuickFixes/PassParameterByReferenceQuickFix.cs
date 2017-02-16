@@ -1,9 +1,11 @@
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using System.Text.RegularExpressions;
+using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -12,31 +14,104 @@ namespace Rubberduck.Inspections.QuickFixes
     /// </summary>
     public class PassParameterByReferenceQuickFix : QuickFixBase
     {
-        public PassParameterByReferenceQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
+        private Declaration _target;
+
+        public PassParameterByReferenceQuickFix(Declaration target, QualifiedSelection selection)
+            : base(target.Context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
         {
+            _target = target;
         }
 
         public override void Fix()
         {
-            var parameter = Context.GetText();
+            var argCtxt = GetArgContextForIdentifier(Context, _target.IdentifierName);
 
-            var parts = parameter.Split(new char[]{' '},2);
-            if (1 != parts.GetUpperBound(0))
+            var terminalNodeImpl = GetByValNodeForArgCtx(argCtxt);
+
+            var replacementLine = GenerateByRefReplacementLine(terminalNodeImpl);
+
+            ReplaceModuleLine(terminalNodeImpl.Symbol.Line, replacementLine);
+
+        }
+        private ArgContext GetArgContextForIdentifier(ParserRuleContext context, string identifier)
+        {
+            var procStmtCtx = (ParserRuleContext)context.Parent.Parent;
+            var procStmtCtxChildren = procStmtCtx.children;
+            for (int idx = 0; idx < procStmtCtxChildren.Count; idx++)
             {
-                return;
+                if (procStmtCtxChildren[idx] is SubstmtContext)
+                {
+                    var procStmtCtxChild = (SubstmtContext)procStmtCtxChildren[idx];
+                    var arg = procStmtCtxChild.children;
+                    for (int idx2 = 0; idx2 < arg.Count; idx2++)
+                    {
+                        if (arg[idx2] is ArgContext)
+                        {
+                            var name = GetIdentifierNameFor((ArgContext)arg[idx2]);
+                            if (name.Equals(identifier))
+                            {
+                                return (ArgContext)arg[idx2];
+                            }
+                        }
+                    }
+                }
             }
-            parts[0] = parts[0].Replace(Tokens.ByVal, Tokens.ByRef);
-            var newContent = parts[0] + " " + parts[1];
-
-            var selection = Selection.Selection;
-
+            return null;
+        }
+        private string GetIdentifierNameFor(ArgContext argCtxt)
+        {
+            var argCtxtChild = argCtxt.children;
+            var idRef = GetUnRestrictedIdentifierCtx(argCtxt);
+            return idRef.GetText();
+        }
+        private UnrestrictedIdentifierContext GetUnRestrictedIdentifierCtx(ArgContext argCtxt)
+        {
+            var argCtxtChild = argCtxt.children;
+            for (int idx = 0; idx < argCtxtChild.Count; idx++)
+            {
+                if (argCtxtChild[idx] is UnrestrictedIdentifierContext)
+                {
+                    return (UnrestrictedIdentifierContext)argCtxtChild[idx];
+                }
+            }
+            return null;
+        }
+        private TerminalNodeImpl GetByValNodeForArgCtx(ArgContext argCtxt)
+        {
+            var argCtxtChild = argCtxt.children;
+            for (int idx = 0; idx < argCtxtChild.Count; idx++)
+            {
+                if (argCtxtChild[idx] is TerminalNodeImpl)
+                {
+                    var candidate = (TerminalNodeImpl)argCtxtChild[idx];
+                    if (candidate.Symbol.Text.Equals(Tokens.ByVal))
+                    {
+                        return candidate;
+                    }
+                }
+            }
+            return null;
+        }
+        private string GenerateByRefReplacementLine(TerminalNodeImpl terminalNodeImpl)
+        {
             var module = Selection.QualifiedName.Component.CodeModule;
-            {
-                var lines = module.GetLines(selection.StartLine, selection.LineCount);
-                var result = lines.Replace(parameter, newContent);
-                module.ReplaceLine(selection.StartLine, result);
-            }
+            var byValTokenLine = module.GetLines(terminalNodeImpl.Symbol.Line, 1);
+
+            return ReplaceAtIndex(byValTokenLine, Tokens.ByVal, Tokens.ByRef, terminalNodeImpl.Symbol.Column);
+        }
+        private string ReplaceAtIndex(string input, string toReplace, string replacement, int index)
+        {
+            int stopIndex = index + toReplace.Length;
+            var prefix = input.Substring(0, index);
+            var suffix = input.Substring(stopIndex + 1);
+            var target = input.Substring(index, stopIndex - index + 1);
+            return prefix + target.Replace(toReplace, replacement) + suffix;
+        }
+        private void ReplaceModuleLine(int lineNumber, string replacementLine)
+        {
+            var module = Selection.QualifiedName.Component.CodeModule;
+            module.DeleteLines(lineNumber);
+            module.InsertLines(lineNumber, replacementLine);
         }
     }
 }
