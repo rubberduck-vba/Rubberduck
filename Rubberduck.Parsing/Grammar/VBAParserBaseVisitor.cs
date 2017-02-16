@@ -2153,7 +2153,7 @@ public partial class VBAParserBaseVisitor<Result> : AbstractParseTreeVisitor<Res
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitArgList([NotNull] VBAParser.ArgListContext context) { return VisitChildren(context); }
+	public virtual Result VisitArgList([NotNull] VBAParser.SubstmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.arrayDim"/>.
