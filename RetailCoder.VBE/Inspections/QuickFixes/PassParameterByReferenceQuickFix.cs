@@ -37,8 +37,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var argList = GetArgListForContext(context);
             return argList.arg().SingleOrDefault(parameter =>
-                    Identifier.GetName(parameter).Equals(identifier)
-                    || Identifier.GetName(parameter).Equals("[" + identifier + "]"));
+                    Identifier.GetName(parameter).Equals(identifier));
         }
         private string GenerateByRefReplacementLine(ITerminalNode terminalNode)
         {

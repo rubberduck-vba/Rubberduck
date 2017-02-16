@@ -240,19 +240,6 @@ End Sub
             quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
 
-            inputCode =
-@"Private Sub Foo(ByVal barByVal As Long, ByVal barTwoon As Long,  ByVal [barTwo] As Long)
-barTwo = 42
-End Sub
-";
-            expectedCode =
-@"Private Sub Foo(ByVal barByVal As Long, ByVal barTwoon As Long,  ByRef [barTwo] As Long)
-barTwo = 42
-End Sub
-";
-
-            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
-            Assert.AreEqual(expectedCode, quickFixResult);
         }
 
 
