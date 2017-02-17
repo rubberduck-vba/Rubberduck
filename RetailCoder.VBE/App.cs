@@ -146,16 +146,18 @@ namespace Rubberduck
 
             Declaration selectedDeclaration = null;
 
-            //TODO - I doubt this is the best way to check if the SelectedVBComponent and the ActiveCodePane are the same component.
-            if (windowKind == WindowKind.CodeWindow || (!_vbe.SelectedVBComponent.IsWrappingNullReference
-                                                        && component.ParentProject.ProjectId == pane.CodeModule.Parent.ParentProject.ProjectId
-                                                        && component.Name == pane.CodeModule.Parent.Name))
-            {
-                selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
-                refCount = selectedDeclaration == null ? 0 : selectedDeclaration.References.Count();
-                caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
-            }
-            else if (windowKind == WindowKind.Designer)
+            //TODO - Reinstate these lines once the host stops crashing - need to theck ParentProject doesn't return null
+            ////TODO - I doubt this is the best way to check if the SelectedVBComponent and the ActiveCodePane are the same component.
+            //if (windowKind == WindowKind.CodeWindow || (!_vbe.SelectedVBComponent.IsWrappingNullReference
+            //                                            && component.ParentProject.ProjectId == pane.CodeModule.Parent.ParentProject.ProjectId
+            //                                            && component.Name == pane.CodeModule.Parent.Name))
+            //{
+            //    selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
+            //    refCount = selectedDeclaration == null ? 0 : selectedDeclaration.References.Count();
+            //    caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
+            //}
+            //else
+            if (windowKind == WindowKind.Designer)
             {
                 caption = GetComponentControlsCaption(component);
             }
