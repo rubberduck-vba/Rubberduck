@@ -1,12 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.SmartIndenter
 {
     internal class StringLiteralAndBracketEscaper
     {
         public const char StringPlaceholder = '\a';
-        public const char BracketPlaceholder = '\x2';
+        public const char BracketPlaceholder = '\x02';
+
+        private static readonly Regex StringReplaceRegex = new Regex("\a+");
+        private static readonly Regex BracketReplaceRegex = new Regex("\x02+");
 
         private readonly List<string> _strings = new List<string>();
         private readonly List<string> _brackets = new List<string>();
@@ -17,6 +22,20 @@ namespace Rubberduck.SmartIndenter
         public string OriginalString { get { return _unescaped; } } 
         public IEnumerable<string> EscapedStrings { get { return _strings; } }
         public IEnumerable<string> EscapedBrackets { get { return _brackets; } }
+
+        public string UnescapeIndented(string indented)
+        {
+            var code = indented;
+            if (_strings.Any())
+            {
+                code = _strings.Aggregate(code, (current, literal) => StringReplaceRegex.Replace(current, literal, 1));
+            }
+            if (_brackets.Any())
+            {
+                code = _brackets.Aggregate(code, (current, expr) => BracketReplaceRegex.Replace(current, expr, 1));
+            }
+            return code;
+        }
 
         public StringLiteralAndBracketEscaper(string code)
         {
@@ -63,8 +82,8 @@ namespace Rubberduck.SmartIndenter
                         continue;
                     }
                     bracketed = false;
-                    _brackets.Add(new string(chars.Skip(brkpos).Take(c - brkpos).ToArray()));
-                    for (var e = brkpos; e < c; e++)
+                    _brackets.Add(new string(chars.Skip(brkpos).Take(c - brkpos + 1).ToArray()));
+                    for (var e = brkpos; e <= c; e++)
                     {
                         chars[e] = BracketPlaceholder;
                     }
