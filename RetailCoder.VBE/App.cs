@@ -142,6 +142,7 @@ namespace Rubberduck
             WindowKind windowKind = _vbe.ActiveWindow.Type;
             var pane = _vbe.ActiveCodePane;
             var component = _vbe.SelectedVBComponent;
+            var activeMDI = _vbe.ActiveMDIChild();
 
             Declaration selectedDeclaration = null;
 
@@ -170,7 +171,9 @@ namespace Rubberduck
                 }
                 else
                 {
-                    caption = component.Type == ComponentType.UserForm && component.HasOpenDesigner
+                    caption = component.Type == ComponentType.UserForm
+                        && component.HasOpenDesigner
+                        && component.DesignerWindow().Caption == activeMDI.Caption
                         ? GetComponentControlsCaption(component)
                         : String.Format("{0}.{1} ({2})", component.ParentProject.Name, component.Name, component.Type);
                 }
