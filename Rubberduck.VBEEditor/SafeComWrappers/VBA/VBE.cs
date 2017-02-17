@@ -299,7 +299,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 try
                 {
-                    return Windows[mdiChildCaption];
+                    return Windows.FirstOrDefault(win => win.Caption == mdiChildCaption.ToString());
                 }
                 catch
                 {
