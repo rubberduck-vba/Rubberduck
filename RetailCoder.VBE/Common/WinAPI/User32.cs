@@ -190,36 +190,5 @@ namespace Rubberduck.Common.WinAPI
         public delegate int WindowEnumProc(IntPtr hwnd, IntPtr lparam);
         [DllImport("user32.dll")]
         public static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc func, IntPtr lParam);
-
-        /// <summary>
-        /// A helper function that returns <c>true</c> when the specified handle is that of the foreground window.
-        /// </summary>
-        /// <param name="mainWindowHandle">The handle for the VBE's MainWindow.</param>
-        /// <returns></returns>
-        public static bool IsVbeWindowActive(IntPtr mainWindowHandle)
-        {
-            uint vbeThread;
-            GetWindowThreadProcessId(mainWindowHandle, out vbeThread);
-
-            uint hThread;
-            GetWindowThreadProcessId(GetForegroundWindow(), out hThread);
-
-            return (IntPtr)hThread == (IntPtr)vbeThread;
-        }
-
-        public enum WindowType
-        {
-            Indeterminate,
-            VbaWindow,
-            DesignerWindow
-        }
-
-        public static WindowType ToWindowType(this IntPtr hwnd)
-        {
-            var name = new StringBuilder(128);
-            GetClassName(hwnd, name, name.Capacity);
-            WindowType id;
-            return Enum.TryParse(name.ToString(), out id) ? id : WindowType.Indeterminate;
-        }
     }
 }

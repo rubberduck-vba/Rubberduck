@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.Common.WinAPI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.WindowsApi;
+using User32 = Rubberduck.Common.WinAPI.User32;
 
 namespace Rubberduck.UI
 {
@@ -52,6 +54,7 @@ namespace Rubberduck.UI
 
         private IntPtr _parentHandle;
         private ParentWindow _subClassingWindow;
+        private GCHandle _thisHandle;
 
         internal void AddUserControl(UserControl control, IntPtr vbeHwnd)
         {
@@ -63,7 +66,7 @@ namespace Rubberduck.UI
             //since we have to inherit from UserControl we don't have to keep handling window messages until the VBE gets
             //around to destroying the control's host or it results in an access violation when the base class is disposed.
             //We need to manually call base.Dispose() ONLY in response to a WM_DESTROY message.
-            GC.KeepAlive(this);
+            _thisHandle = GCHandle.Alloc(this, GCHandleType.Normal);
 
             if (control != null)
             {
@@ -143,7 +146,7 @@ namespace Rubberduck.UI
             //See the comment in the ctor for why we have to listen for this.
             if (m.Msg == (int) WM.DESTROY)
             {
-                base.Dispose(true);
+                _thisHandle.Free();
                 return;
             }
             base.DefWndProc(ref m);

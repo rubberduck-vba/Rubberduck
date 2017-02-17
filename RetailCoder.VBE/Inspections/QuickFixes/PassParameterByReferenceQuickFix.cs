@@ -1,9 +1,11 @@
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -12,31 +14,75 @@ namespace Rubberduck.Inspections.QuickFixes
     /// </summary>
     public class PassParameterByReferenceQuickFix : QuickFixBase
     {
-        public PassParameterByReferenceQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
+        private Declaration _target;
+
+        public PassParameterByReferenceQuickFix(Declaration target, QualifiedSelection selection)
+            : base(target.Context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
         {
+            _target = target;
         }
 
         public override void Fix()
         {
-            var parameter = Context.GetText();
+            var argCtxt = GetArgContextForIdentifier(Context.Parent.Parent, _target.IdentifierName);
 
-            var parts = parameter.Split(new char[]{' '},2);
-            if (1 != parts.GetUpperBound(0))
-            {
-                return;
-            }
-            parts[0] = parts[0].Replace(Tokens.ByVal, Tokens.ByRef);
-            var newContent = parts[0] + " " + parts[1];
+            var terminalNode = argCtxt.BYVAL();
 
-            var selection = Selection.Selection;
+            var replacementLine = GenerateByRefReplacementLine(terminalNode);
 
+            ReplaceModuleLine(terminalNode.Symbol.Line, replacementLine);
+
+        }
+        private VBAParser.ArgContext GetArgContextForIdentifier(RuleContext context, string identifier)
+        {
+            var argList = GetArgListForContext(context);
+            return argList.arg().SingleOrDefault(parameter =>
+                    Identifier.GetName(parameter).Equals(identifier));
+        }
+        private string GenerateByRefReplacementLine(ITerminalNode terminalNode)
+        {
             var module = Selection.QualifiedName.Component.CodeModule;
+            var byValTokenLine = module.GetLines(terminalNode.Symbol.Line, 1);
+
+            return ReplaceAtIndex(byValTokenLine, Tokens.ByVal, Tokens.ByRef, terminalNode.Symbol.Column);
+        }
+        private void ReplaceModuleLine(int lineNumber, string replacementLine)
+        {
+            var module = Selection.QualifiedName.Component.CodeModule;
+            module.DeleteLines(lineNumber);
+            module.InsertLines(lineNumber, replacementLine);
+        }
+        private string ReplaceAtIndex(string input, string toReplace, string replacement, int startIndex)
+        {
+            int stopIndex = startIndex + toReplace.Length;
+            var prefix = input.Substring(0, startIndex);
+            var suffix = input.Substring(stopIndex + 1);
+            var tokenToBeReplaced = input.Substring(startIndex, stopIndex - startIndex + 1);
+            return prefix + tokenToBeReplaced.Replace(toReplace, replacement) + suffix;
+        }
+        private VBAParser.ArgListContext GetArgListForContext(RuleContext context)
+        {
+            if (context is VBAParser.SubStmtContext)
             {
-                var lines = module.GetLines(selection.StartLine, selection.LineCount);
-                var result = lines.Replace(parameter, newContent);
-                module.ReplaceLine(selection.StartLine, result);
+                return ((VBAParser.SubStmtContext)context).argList();
             }
+            else if (context is VBAParser.FunctionStmtContext)
+            {
+                return ((VBAParser.FunctionStmtContext)context).argList();
+            }
+            else if (context is VBAParser.PropertyLetStmtContext)
+            {
+                return ((VBAParser.PropertyLetStmtContext)context).argList();
+            }
+            else if (context is VBAParser.PropertyGetStmtContext)
+            {
+                return ((VBAParser.PropertyGetStmtContext)context).argList();
+            }
+            else if (context is VBAParser.PropertySetStmtContext)
+            {
+                return ((VBAParser.PropertySetStmtContext)context).argList();
+            }
+            return null;
         }
     }
 }
