@@ -21,6 +21,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IWindows Windows { get; }
 
         IHostApplication HostApplication();
+        IWindow ActiveMDIChild();
 
         bool IsInDesignMode { get; }
     }

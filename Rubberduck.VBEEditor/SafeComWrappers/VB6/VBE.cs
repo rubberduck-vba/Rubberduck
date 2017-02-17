@@ -109,6 +109,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             return null;
         }
 
+        public IWindow ActiveMDIChild()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsInDesignMode
         {
             get { return VBProjects.All(project => project.Mode == EnvironmentMode.Design); }
