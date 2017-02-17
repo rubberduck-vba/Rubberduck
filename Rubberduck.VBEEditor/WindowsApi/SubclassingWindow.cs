@@ -13,8 +13,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         private readonly SubClassCallback _wndProc;
         private bool _listening;
 
-        private static readonly ConcurrentBag<SubClassCallback> RubberduckProcs = new ConcurrentBag<SubClassCallback>();
-        private static readonly object SubclassLock = new object();
+        private readonly object _subclassLock = new object();
 
         public delegate int SubClassCallback(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData);
 
@@ -40,10 +39,6 @@ namespace Rubberduck.VBEditor.WindowsApi
             _wndProc = SubClassProc;
             AssignHandle();
         }
-        ~SubclassingWindow()
-        {
-            Debug.Assert(false, "Dispose() not called.");
-        }
 
         public void Dispose()
         {
@@ -53,9 +48,8 @@ namespace Rubberduck.VBEditor.WindowsApi
 
         private void AssignHandle()
         {
-            lock (SubclassLock)
+            lock (_subclassLock)
             {
-                RubberduckProcs.Add(_wndProc);
                 var result = SetWindowSubclass(_hwnd, _wndProc, _subclassId, IntPtr.Zero);
                 if (result != 1)
                 {
@@ -67,13 +61,13 @@ namespace Rubberduck.VBEditor.WindowsApi
 
         private void ReleaseHandle()
         {
-            if (!_listening)
+            lock (_subclassLock)
             {
-                return;
-            }
+                if (!_listening)
+                {
+                    return;
+                }
 
-            lock (SubclassLock)
-            {
                 var result = RemoveWindowSubclass(_hwnd, _wndProc, _subclassId);
                 if (result != 1)
                 {
