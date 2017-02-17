@@ -1,5 +1,6 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
@@ -105,7 +106,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             var window = VBE.MainWindow;
             var mainWindowHandle = window.Handle();
             var caption = Window.Caption;
-            var childWindowFinder = new NativeMethods.ChildWindowFinder(caption);
+            var childWindowFinder = new ChildWindowFinder(caption);
 
             NativeMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
             var handle = childWindowFinder.ResultHandle;

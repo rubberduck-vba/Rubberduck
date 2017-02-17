@@ -72,7 +72,7 @@ namespace Rubberduck.Parsing.VBA
             DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, host);
         }
 
-        private IVBE _vbe;
+        private readonly IVBE _vbe;
         public RubberduckParserState(IVBE vbe)
         {
             var values = Enum.GetValues(typeof(ParserState));
@@ -82,32 +82,27 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _vbe = vbe;
-
-            if (_vbe != null && _vbe.VBProjects != null)
-            {
-                VBProjects.ProjectAdded += Sinks_ProjectAdded;
-                VBProjects.ProjectRemoved += Sinks_ProjectRemoved;
-                VBProjects.ProjectRenamed += Sinks_ProjectRenamed;
-                foreach (var project in _vbe.VBProjects.Where(proj => proj.VBComponents != null))
-                {
-                    AddComponentEventHandlers(project);
-                }
-            }
-
+            AddEventHandlers();
             IsEnabled = true;
         }
 
         #region Event Handling
 
-        private void AddComponentEventHandlers(IVBProject project)
+        private void AddEventHandlers()
         {
+            VBProjects.ProjectAdded += Sinks_ProjectAdded;
+            VBProjects.ProjectRemoved += Sinks_ProjectRemoved;
+            VBProjects.ProjectRenamed += Sinks_ProjectRenamed;
             VBComponents.ComponentAdded += Sinks_ComponentAdded;
             VBComponents.ComponentRemoved += Sinks_ComponentRemoved;
             VBComponents.ComponentRenamed += Sinks_ComponentRenamed;           
         }
 
-        private void RemoveComponentEventHandlers(IVBProject project)
+        private void RemoveEventHandlers()
         {
+            VBProjects.ProjectAdded += Sinks_ProjectAdded;
+            VBProjects.ProjectRemoved += Sinks_ProjectRemoved;
+            VBProjects.ProjectRenamed += Sinks_ProjectRenamed;
             VBComponents.ComponentAdded -= Sinks_ComponentAdded;
             VBComponents.ComponentRemoved -= Sinks_ComponentRemoved;
             VBComponents.ComponentRenamed -= Sinks_ComponentRenamed;
@@ -118,8 +113,6 @@ namespace Rubberduck.Parsing.VBA
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
             Logger.Debug("Project '{0}' was added.", e.ProjectId);
-            AddComponentEventHandlers(e.Project);
-
             RefreshProjects(_vbe); // note side-effect: assigns ProjectId/HelpFile
             OnParseRequested(sender);
         }
@@ -129,8 +122,6 @@ namespace Rubberduck.Parsing.VBA
             if (!e.Project.VBE.IsInDesignMode) { return; }
             
             Debug.Assert(e.ProjectId != null);
-            RemoveComponentEventHandlers(e.Project);
-
             RemoveProject(e.ProjectId, true);
             OnParseRequested(sender);
         }
@@ -1110,16 +1101,7 @@ namespace Rubberduck.Parsing.VBA
                 CoClasses.Clear();
             }
 
-            if (_vbe != null && _vbe.VBProjects != null)
-            {
-                VBProjects.ProjectAdded -= Sinks_ProjectAdded;
-                VBProjects.ProjectRemoved -= Sinks_ProjectRemoved;
-                VBProjects.ProjectRenamed -= Sinks_ProjectRenamed;
-                foreach (var project in _vbe.VBProjects.Where(proj => proj.VBComponents != null))
-                {
-                    RemoveComponentEventHandlers(project);
-                }
-            }
+            RemoveEventHandlers();
 
             _moduleStates.Clear();
             _declarationSelections.Clear();
