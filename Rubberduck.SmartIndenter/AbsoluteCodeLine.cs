@@ -10,8 +10,6 @@ namespace Rubberduck.SmartIndenter
     internal class AbsoluteCodeLine
     {
         private const string StupidLineEnding = ": _";
-        private static readonly Regex StringReplaceRegex = new Regex(StringLiteralAndBracketEscaper.StringPlaceholder.ToString(CultureInfo.InvariantCulture));
-        private static readonly Regex BracketReplaceRegex = new Regex(StringLiteralAndBracketEscaper.BracketPlaceholder.ToString(CultureInfo.InvariantCulture));
         private static readonly Regex LineNumberRegex = new Regex(@"^(?<number>(-?\d+)|(&H[0-9A-F]{1,8}))\s+(?<code>.*)", RegexOptions.ExplicitCapture);
         private static readonly Regex EndOfLineCommentRegex = new Regex(@"^(?!(Rem\s)|('))(?<code>[^']*)(\s(?<comment>'.*))$", RegexOptions.ExplicitCapture);      
         private static readonly Regex ProcedureStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Sub|Function|Property\s(Let|Get|Set))\s");
@@ -33,8 +31,6 @@ namespace Rubberduck.SmartIndenter
         private readonly bool _stupidLineEnding;
         private readonly string[] _segments;
         private readonly StringLiteralAndBracketEscaper _escaper;
-        //private List<string> _strings;
-        //private List<string> _brackets;
 
         public AbsoluteCodeLine(string code, IIndenterSettings settings) : this(code, settings, null) { }
 
@@ -61,8 +57,6 @@ namespace Rubberduck.SmartIndenter
             ExtractLineNumber();
             ExtractEndOfLineComment();
 
-            _code = Regex.Replace(_code, StringLiteralAndBracketEscaper.StringPlaceholder + "+", StringLiteralAndBracketEscaper.StringPlaceholder.ToString(CultureInfo.InvariantCulture));
-            _code = Regex.Replace(_code, StringLiteralAndBracketEscaper.BracketPlaceholder + "+", StringLiteralAndBracketEscaper.BracketPlaceholder.ToString(CultureInfo.InvariantCulture)).Trim();
             _segments = _code.Split(new[] { ": " }, StringSplitOptions.None);
         }
 
@@ -267,38 +261,29 @@ namespace Rubberduck.SmartIndenter
             }
 
             var code = string.Join(": ", _segments);
-            if (_escaper.EscapedStrings.Any())
-            {
-                code = _escaper.EscapedStrings.Aggregate(code, (current, literal) => StringReplaceRegex.Replace(current, literal, 1));
-            }
-            if (_escaper.EscapedBrackets.Any())
-            {
-                code = _escaper.EscapedBrackets.Aggregate(code, (current, expr) => BracketReplaceRegex.Replace(current, expr, 1));
-            }
-
             code = string.Join(string.Empty, number, new string(' ', gap), code);
             if (string.IsNullOrEmpty(EndOfLineComment))
             {
-                return code + (_stupidLineEnding ? StupidLineEnding : string.Empty);
+                return _escaper.UnescapeIndented(code + (_stupidLineEnding ? StupidLineEnding : string.Empty));
             }
 
             var position = Original.LastIndexOf(EndOfLineComment, StringComparison.Ordinal);
             switch (_settings.EndOfLineCommentStyle)
             {
                 case EndOfLineCommentStyle.Absolute:
-                    return string.Format("{0}{1}{2}{3}", code, new string(' ', Math.Max(position - code.Length, 1)),
-                                                         EndOfLineComment, _stupidLineEnding ? StupidLineEnding : string.Empty);
+                    return _escaper.UnescapeIndented(string.Format("{0}{1}{2}{3}", code, new string(' ', Math.Max(position - code.Length, 1)),
+                                                     EndOfLineComment, _stupidLineEnding ? StupidLineEnding : string.Empty));
                 case EndOfLineCommentStyle.SameGap:
                     var uncommented = Original.Substring(0, position - 1);
-                    return string.Format("{0}{1}{2}{3}", code, new string(' ', uncommented.Length - uncommented.TrimEnd().Length + 1), 
-                                                         EndOfLineComment, _stupidLineEnding ? StupidLineEnding : string.Empty);
+                    return _escaper.UnescapeIndented(string.Format("{0}{1}{2}{3}", code, new string(' ', uncommented.Length - uncommented.TrimEnd().Length + 1), 
+                                                     EndOfLineComment, _stupidLineEnding ? StupidLineEnding : string.Empty));
                 case EndOfLineCommentStyle.StandardGap:
-                    return string.Format("{0}{1}{2}{3}", code, new string(' ', _settings.IndentSpaces * 2), EndOfLineComment,
-                                                        _stupidLineEnding ? StupidLineEnding : string.Empty);
+                    return _escaper.UnescapeIndented(string.Format("{0}{1}{2}{3}", code, new string(' ', _settings.IndentSpaces * 2), EndOfLineComment,
+                                                     _stupidLineEnding ? StupidLineEnding : string.Empty));
                 case EndOfLineCommentStyle.AlignInColumn:
                     var align = _settings.EndOfLineCommentColumnSpaceAlignment - code.Length;
-                    return string.Format("{0}{1}{2}{3}", code, new string(' ', Math.Max(align - 1, 1)), EndOfLineComment,
-                                                        _stupidLineEnding ? StupidLineEnding : string.Empty);
+                    return _escaper.UnescapeIndented(string.Format("{0}{1}{2}{3}", code, new string(' ', Math.Max(align - 1, 1)), EndOfLineComment,
+                                                     _stupidLineEnding ? StupidLineEnding : string.Empty));
                 default:
                     throw new InvalidEnumArgumentException();
             }

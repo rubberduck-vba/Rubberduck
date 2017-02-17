@@ -1,10 +1,29 @@
 ﻿using System;
+using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
+    //Stub for code pane replacement.  :-)
     internal class CodePaneSubclass : FocusSource
     {
-        //Stub for code pane replacement.  :-)
-        internal CodePaneSubclass(IntPtr hwnd) : base(hwnd) { }
+        private readonly ICodePane _pane;
+
+        public ICodePane CodePane { get { return _pane; } }
+
+        internal CodePaneSubclass(IntPtr hwnd, ICodePane pane) : base(hwnd)
+        {
+            _pane = pane;
+        }
+
+        protected override void DispatchFocusEvent(WindowChangedEventArgs.FocusType type)
+        {
+            var window = VBEEvents.GetWindowInfoFromHwnd(Hwnd);
+            if (window == null)
+            {
+                return;
+            }
+            OnFocusChange(new WindowChangedEventArgs(window.Value.Hwnd, window.Value.Window, _pane, type));
+        }
     }
 }

@@ -94,7 +94,15 @@ namespace Rubberduck
         {
             if (e.EventType == WindowChangedEventArgs.FocusType.GotFocus)
             {
-                RefreshSelection(e.Window);
+                switch (e.Window.Type)
+                {
+                    case WindowKind.Designer:
+                        RefreshSelection(e.Window);
+                        break;
+                    case WindowKind.CodeWindow:
+                        RefreshSelection(e.CodePane);
+                        break;
+                }              
             }          
         }
 

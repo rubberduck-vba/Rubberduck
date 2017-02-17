@@ -9,28 +9,34 @@ namespace Rubberduck.VBEditor.WindowsApi
         protected FocusSource(IntPtr hwnd) : base(hwnd, hwnd) { }
 
         public event EventHandler<WindowChangedEventArgs> FocusChange;
-        private void OnFocusChange(WindowChangedEventArgs.FocusType type)
+        protected void OnFocusChange(WindowChangedEventArgs eventArgs)
         {
             if (FocusChange != null)
             {
-                var window = VBEEvents.GetWindowInfoFromHwnd(Hwnd);
-                if (window == null)
-                {
-                    return;
-                }
-                FocusChange.Invoke(this, new WindowChangedEventArgs(window.Value.Hwnd, window.Value.Window, type));
+                FocusChange.Invoke(this, eventArgs);
             }
-        } 
+        }
+
+        protected virtual void DispatchFocusEvent(WindowChangedEventArgs.FocusType type)
+        {
+            var window = VBEEvents.GetWindowInfoFromHwnd(Hwnd);
+            if (window == null)
+            {
+                return;
+            }
+            OnFocusChange(new WindowChangedEventArgs(Hwnd, window.Value.Window, null, type));
+        }
 
         public override int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
         {
             switch ((uint)msg)
             {
                 case (uint)WM.SETFOCUS:
-                    OnFocusChange(WindowChangedEventArgs.FocusType.GotFocus);
+
+                    DispatchFocusEvent(WindowChangedEventArgs.FocusType.GotFocus);
                     break;
                 case (uint)WM.KILLFOCUS:
-                    OnFocusChange(WindowChangedEventArgs.FocusType.LostFocus);
+                    DispatchFocusEvent(WindowChangedEventArgs.FocusType.LostFocus);
                     break;
             }
             return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);

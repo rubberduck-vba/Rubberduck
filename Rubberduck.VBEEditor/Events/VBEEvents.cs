@@ -92,7 +92,9 @@ namespace Rubberduck.VBEditor.Events
                 Debug.Assert(!TrackedWindows.ContainsKey(hwnd));
                 var window = GetWindowFromHwnd(hwnd);
                 if (window == null) return;
-                var source = window.Type == WindowKind.CodeWindow ? new CodePaneSubclass(hwnd) as IWindowEventProvider: new DesignerWindowSubclass(hwnd);
+                var source = window.Type == WindowKind.CodeWindow
+                    ? new CodePaneSubclass(hwnd, GetCodePaneFromHwnd(hwnd)) as IWindowEventProvider
+                    : new DesignerWindowSubclass(hwnd);
                 var info = new WindowInfo(hwnd, window, source);
                 source.FocusChange += FocusDispatcher;
                 TrackedWindows.Add(hwnd, info);
