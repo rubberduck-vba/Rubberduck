@@ -15,11 +15,13 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using Rubberduck.VersionCheck;
+using Application = System.Windows.Forms.Application;
 
 namespace Rubberduck
 {
@@ -61,7 +63,9 @@ namespace Rubberduck
             _version = version;
             _checkVersionCommand = checkVersionCommand;
 
-            _hooks.MessageReceived += _hooks_MessageReceived;
+            VBEEvents.SelectionChanged += _vbe_SelectionChanged;
+            VBEEvents.WindowFocusChange += _vbe_FocusChanged;
+
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
@@ -81,17 +85,57 @@ namespace Rubberduck
             _stateBar.SetStatusLabelCaption(message, _parser.State.ModuleExceptions.Count);
         }
 
-        private void _hooks_MessageReceived(object sender, HookEventArgs e)
+        private void _vbe_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            RefreshSelection();
+            RefreshSelection(e.CodePane);
+        }
+
+        private void _vbe_FocusChanged(object sender, WindowChangedEventArgs e)
+        {
+            if (e.EventType == WindowChangedEventArgs.FocusType.GotFocus)
+            {
+                switch (e.Window.Type)
+                {
+                    case WindowKind.Designer:
+                        RefreshSelection(e.Window);
+                        break;
+                    case WindowKind.CodeWindow:
+                        RefreshSelection(e.CodePane);
+                        break;
+                }              
+            }          
         }
 
         private ParserState _lastStatus;
         private Declaration _lastSelectedDeclaration;
-
-        private void RefreshSelection()
+        private void RefreshSelection(ICodePane pane)
         {
+            Declaration selectedDeclaration = null;
+            if (!pane.IsWrappingNullReference)
+            {
+                selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
+                var refCount = selectedDeclaration == null ? 0 : selectedDeclaration.References.Count();
+                var caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
+                _stateBar.SetContextSelectionCaption(caption, refCount);
+            }
 
+            var currentStatus = _parser.State.Status;
+            if (ShouldEvaluateCanExecute(selectedDeclaration, currentStatus))
+            {
+                _appMenus.EvaluateCanExecute(_parser.State);
+                _stateBar.EvaluateCanExecute(_parser.State);
+            }
+
+            _lastStatus = currentStatus;
+            _lastSelectedDeclaration = selectedDeclaration;
+        }
+
+        private void RefreshSelection(IWindow window)
+        {
+            if (window.IsWrappingNullReference || window.Type != WindowKind.Designer)
+            {
+                return;
+            }
             var caption = String.Empty;
             var refCount = 0;
 
@@ -103,7 +147,7 @@ namespace Rubberduck
 
             //TODO - I doubt this is the best way to check if the SelectedVBComponent and the ActiveCodePane are the same component.
             if (windowKind == WindowKind.CodeWindow || (!_vbe.SelectedVBComponent.IsWrappingNullReference
-                                                        && component.ParentProject.ProjectId == pane.CodeModule.Parent.ParentProject.ProjectId 
+                                                        && component.ParentProject.ProjectId == pane.CodeModule.Parent.ParentProject.ProjectId
                                                         && component.Name == pane.CodeModule.Parent.Name))
             {
                 selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
@@ -120,13 +164,13 @@ namespace Rubberduck
                 {
                     //The user might have selected the project node in Project Explorer
                     //If they've chosen a folder, we'll return the project anyway
-                    caption =  !_vbe.ActiveVBProject.IsWrappingNullReference
+                    caption = !_vbe.ActiveVBProject.IsWrappingNullReference
                         ? _vbe.ActiveVBProject.Name
                         : null;
                 }
                 else
                 {
-                    caption = component.Type == ComponentType.UserForm &&  component.HasOpenDesigner
+                    caption = component.Type == ComponentType.UserForm && component.HasOpenDesigner
                         ? GetComponentControlsCaption(component)
                         : String.Format("{0}.{1} ({2})", component.ParentProject.Name, component.Name, component.Type);
                 }
@@ -322,10 +366,8 @@ namespace Rubberduck
                 _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
             }
 
-            if (_hooks != null)
-            {
-                _hooks.MessageReceived -= _hooks_MessageReceived;
-            }
+            VBEEvents.SelectionChanged += _vbe_SelectionChanged;
+            VBEEvents.WindowFocusChange += _vbe_FocusChanged;
 
             if (_configService != null)
             {

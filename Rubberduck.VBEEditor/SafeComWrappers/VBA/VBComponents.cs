@@ -199,7 +199,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             lock (_lockObject)
             {
-                if (!_handlers.Contains(components))
+                if (components != null && !_handlers.Contains(components))
                 {
                     _componentAdded = OnComponentAdded;
                     _componentRemoved = OnComponentRemoved;
@@ -222,7 +222,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             lock (_lockObject)
             {
-                if (_handlers.Contains(components))
+                if (components != null && _handlers.Contains(components))
                 {
                     ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int) ComponentEventDispId.ItemAdded, _componentAdded);
                     ComEventsHelper.Remove(components, VBComponentsEventsGuid, (int) ComponentEventDispId.ItemRemoved, _componentRemoved);

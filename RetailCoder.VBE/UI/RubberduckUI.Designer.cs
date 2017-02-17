@@ -63,7 +63,10 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to Parsing powered by ANTLR
         ///GitHub integration powered by LibGit2Sharp
-        ///Fugue icons by Yusuke Kamiyamane.
+        ///Syntax highlighting powered by AvalonEdit
+        ///Fugue icons by Yusuke Kamiyamane
+        ///IDE icons from SharpDevelop
+        ///WPF localization support by Grant Frisken.
         /// </summary>
         public static string AboutWindow_AttributionList {
             get {
