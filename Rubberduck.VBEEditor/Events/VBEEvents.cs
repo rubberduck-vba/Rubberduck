@@ -136,7 +136,7 @@ namespace Rubberduck.VBEditor.Events
             if (SelectionChanged != null)
             {
                 var pane = GetCodePaneFromHwnd(hwnd);
-                SelectionChanged.Invoke(_vbe, new SelectionChangedEventArgs(pane));
+                if (pane != null) SelectionChanged.Invoke(_vbe, new SelectionChangedEventArgs(pane));
             }
         }
 
