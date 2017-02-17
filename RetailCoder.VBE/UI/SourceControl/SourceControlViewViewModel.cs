@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SettingsProvider;
@@ -17,7 +16,6 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using resx = Rubberduck.UI.SourceControl.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
@@ -82,11 +80,8 @@ namespace Rubberduck.UI.SourceControl
 
             _openCommandPromptCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenCommandPrompt());
 
-            Rubberduck.VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved += ProjectRemoved;
-            foreach (var project in _vbe.VBProjects.Where(proj => proj.VBComponents != null))
-            {
-                AddComponentEventHandlers(project);
-            }
+            
+            AddComponentEventHandlers();
 
             TabItems = new ObservableCollection<IControlView>(views);
             SetTab(SourceControlTab.Changes);
@@ -108,15 +103,17 @@ namespace Rubberduck.UI.SourceControl
 
         private bool _listening = true;
 
-        private void AddComponentEventHandlers(IVBProject project)
+        private void AddComponentEventHandlers()
         {
+            VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved += ProjectRemoved;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded += ComponentAdded;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved += ComponentRemoved;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed += ComponentRenamed;
         }
 
-        private void RemoveComponentEventHandlers(IVBProject project)
+        private void RemoveComponentEventHandlers()
         {
+            VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved -= ProjectRemoved;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded -= ComponentAdded;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved -= ComponentRemoved;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed -= ComponentRenamed;
@@ -185,8 +182,6 @@ namespace Rubberduck.UI.SourceControl
 
         private void ProjectRemoved(object sender, ProjectEventArgs e)
         {
-            RemoveComponentEventHandlers(e.Project);
-
             if (Provider == null || !Provider.HandleVbeSinkEvents)
             {
                 return;
@@ -1090,11 +1085,7 @@ namespace Rubberduck.UI.SourceControl
                 _fileSystemWatcher.Dispose();
             }
 
-            VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved -= ProjectRemoved;
-            foreach (var project in _vbe.VBProjects.Where(proj => proj.VBComponents != null))
-            {
-                RemoveComponentEventHandlers(project);
-            }
+            RemoveComponentEventHandlers();
         }
     }
 }
