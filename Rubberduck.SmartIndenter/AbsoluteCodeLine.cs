@@ -31,8 +31,6 @@ namespace Rubberduck.SmartIndenter
         private readonly bool _stupidLineEnding;
         private readonly string[] _segments;
         private readonly StringLiteralAndBracketEscaper _escaper;
-        //private List<string> _strings;
-        //private List<string> _brackets;
 
         public AbsoluteCodeLine(string code, IIndenterSettings settings) : this(code, settings, null) { }
 
@@ -59,8 +57,6 @@ namespace Rubberduck.SmartIndenter
             ExtractLineNumber();
             ExtractEndOfLineComment();
 
-            //_code = Regex.Replace(_code, StringLiteralAndBracketEscaper.StringPlaceholder + "+", StringLiteralAndBracketEscaper.StringPlaceholder.ToString(CultureInfo.InvariantCulture));
-            //_code = Regex.Replace(_code, StringLiteralAndBracketEscaper.BracketPlaceholder + "+", StringLiteralAndBracketEscaper.BracketPlaceholder.ToString(CultureInfo.InvariantCulture)).Trim();
             _segments = _code.Split(new[] { ": " }, StringSplitOptions.None);
         }
 
