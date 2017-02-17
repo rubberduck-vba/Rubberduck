@@ -72,7 +72,7 @@ namespace Rubberduck.Parsing.VBA
             DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, host);
         }
 
-        private IVBE _vbe;
+        private readonly IVBE _vbe;
         public RubberduckParserState(IVBE vbe)
         {
             var values = Enum.GetValues(typeof(ParserState));
