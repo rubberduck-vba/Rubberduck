@@ -69,15 +69,6 @@ namespace Rubberduck.VBEditor.WindowsApi
             return result;
         }
 
-        /// <summary>   Gets the parent window of this item. </summary>
-        ///
-        /// <param name="hWnd"> The window handle. </param>
-        /// <returns>   The parent window IntPtr handle. </returns>
-        [DllImport("User32.dll")]
-        internal static extern IntPtr GetParent(IntPtr hWnd);
-
-
-
         /// <summary>Activates the window by simulating a click.</summary>
         ///
         /// <param name="windowHandle">         Handle of the window to be activated. </param>

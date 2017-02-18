@@ -16,9 +16,9 @@ namespace Rubberduck.VBEditor.WindowsApi
             _pane = pane;
         }
 
-        protected override void DispatchFocusEvent(WindowChangedEventArgs.FocusType type)
+        protected override void DispatchFocusEvent(FocusType type)
         {
-            var window = VBEEvents.GetWindowInfoFromHwnd(Hwnd);
+            var window = VBENativeServices.GetWindowInfoFromHwnd(Hwnd);
             if (window == null)
             {
                 return;
