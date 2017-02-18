@@ -9,7 +9,7 @@ using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.VBEditor.Events
 {
-    public static class VBEEvents
+    public static class VBENativeServices
     {
         private static User32.WinEventProc _eventProc;
         private static IntPtr _eventHandle;
@@ -66,7 +66,10 @@ namespace Rubberduck.VBEditor.Events
         public static void VbeEventCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild,
             uint dwEventThread, uint dwmsEventTime)
         {
-            if (hwnd != IntPtr.Zero && idObject == (int)ObjId.Caret && eventType == (uint)WinEvent.ObjectLocationChange && hwnd.ToWindowType() == WindowType.VbaWindow)
+            if (hwnd != IntPtr.Zero && 
+                idObject == (int)ObjId.Caret && 
+                (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate) && 
+                hwnd.ToWindowType() == WindowType.VbaWindow)
             {
                 OnSelectionChanged(hwnd);             
             }
@@ -83,6 +86,17 @@ namespace Rubberduck.VBEditor.Events
                     DetachWindow(hwnd);
                 }
             }
+            else if (eventType == (uint)WinEvent.ObjectFocus && idObject == (int)ObjId.Client)
+            {
+                //Test to see if it was a selection change in the project window.
+                var parent = User32.GetParent(hwnd);
+                if (parent != IntPtr.Zero && parent.ToWindowType() == WindowType.Project)
+                {
+                    FocusDispatcher(_vbe, new WindowChangedEventArgs(parent, null, null, FocusType.ChildFocus));
+                }                
+            }
+            //This is an output window firehose, leave this here, but comment it out when done.
+            //if (idObject != (int)ObjId.Cursor) Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild);
         }
 
         private static void AttachWindow(IntPtr hwnd)
@@ -176,15 +190,21 @@ namespace Rubberduck.VBEditor.Events
         {
             Indeterminate,
             VbaWindow,
-            DesignerWindow
+            DesignerWindow,
+            Project
         }
 
         public static WindowType ToWindowType(this IntPtr hwnd)
         {
+            WindowType id;
+            return Enum.TryParse(hwnd.ToClassName(), true, out id) ? id : WindowType.Indeterminate;
+        }
+
+        public static string ToClassName(this IntPtr hwnd)
+        {
             var name = new StringBuilder(128);
             User32.GetClassName(hwnd, name, name.Capacity);
-            WindowType id;
-            return Enum.TryParse(name.ToString(), out id) ? id : WindowType.Indeterminate;
+            return name.ToString();
         }
     }
 }

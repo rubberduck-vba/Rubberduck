@@ -3,14 +3,15 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Events
 {
+    public enum FocusType
+    {
+        GotFocus,
+        LostFocus,
+        ChildFocus
+    }
+
     public class WindowChangedEventArgs : EventArgs
     {
-        public enum FocusType
-        {
-            GotFocus,
-            LostFocus
-        }
-
         public IntPtr Hwnd { get; private set; }
         public IWindow Window { get; private set; }
         public ICodePane CodePane { get; private set; }

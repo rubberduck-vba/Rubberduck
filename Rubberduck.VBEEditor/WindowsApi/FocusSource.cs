@@ -17,9 +17,9 @@ namespace Rubberduck.VBEditor.WindowsApi
             }
         }
 
-        protected virtual void DispatchFocusEvent(WindowChangedEventArgs.FocusType type)
+        protected virtual void DispatchFocusEvent(FocusType type)
         {
-            var window = VBEEvents.GetWindowInfoFromHwnd(Hwnd);
+            var window = VBENativeServices.GetWindowInfoFromHwnd(Hwnd);
             if (window == null)
             {
                 return;
@@ -33,10 +33,10 @@ namespace Rubberduck.VBEditor.WindowsApi
             {
                 case (uint)WM.SETFOCUS:
 
-                    DispatchFocusEvent(WindowChangedEventArgs.FocusType.GotFocus);
+                    DispatchFocusEvent(FocusType.GotFocus);
                     break;
                 case (uint)WM.KILLFOCUS:
-                    DispatchFocusEvent(WindowChangedEventArgs.FocusType.LostFocus);
+                    DispatchFocusEvent(FocusType.LostFocus);
                     break;
             }
             return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
