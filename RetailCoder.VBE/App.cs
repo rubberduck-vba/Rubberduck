@@ -63,8 +63,8 @@ namespace Rubberduck
             _version = version;
             _checkVersionCommand = checkVersionCommand;
 
-            VBEEvents.SelectionChanged += _vbe_SelectionChanged;
-            VBEEvents.WindowFocusChange += _vbe_FocusChanged;
+            VBENativeServices.SelectionChanged += _vbe_SelectionChanged;
+            VBENativeServices.WindowFocusChange += _vbe_FocusChanged;
 
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
@@ -72,6 +72,9 @@ namespace Rubberduck
 
             UiDispatcher.Initialize();
         }
+
+        //TODO - This should be able to move to the appropriate handling classes now.
+        #region Statusbar 
 
         private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
         {
@@ -92,95 +95,79 @@ namespace Rubberduck
 
         private void _vbe_FocusChanged(object sender, WindowChangedEventArgs e)
         {
-            if (e.EventType == WindowChangedEventArgs.FocusType.GotFocus)
+            if (e.EventType == FocusType.GotFocus)
             {
                 switch (e.Window.Type)
                 {
                     case WindowKind.Designer:
+                        //Designer or control on designer form selected.
                         RefreshSelection(e.Window);
                         break;
                     case WindowKind.CodeWindow:
+                        //Caret changed in a code pane.
                         RefreshSelection(e.CodePane);
                         break;
                 }              
-            }          
+            }
+            else if (e.EventType == FocusType.ChildFocus)
+            {
+                //Treeview selection changed in project window.
+                RefreshSelection();
+            }
         }
 
         private ParserState _lastStatus;
         private Declaration _lastSelectedDeclaration;
         private void RefreshSelection(ICodePane pane)
         {
-            Declaration selectedDeclaration = null;
-            if (!pane.IsWrappingNullReference)
+            if (pane == null || pane.IsWrappingNullReference)
             {
-                selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
-                var refCount = selectedDeclaration == null ? 0 : selectedDeclaration.References.Count();
-                var caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
-                _stateBar.SetContextSelectionCaption(caption, refCount);
+                return;
             }
 
-            var currentStatus = _parser.State.Status;
-            if (ShouldEvaluateCanExecute(selectedDeclaration, currentStatus))
-            {
-                _appMenus.EvaluateCanExecute(_parser.State);
-                _stateBar.EvaluateCanExecute(_parser.State);
-            }
-
-            _lastStatus = currentStatus;
-            _lastSelectedDeclaration = selectedDeclaration;
+            var selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
+            var caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
+            UpdateStatusbarAndCommandState(caption, selectedDeclaration);
         }
 
         private void RefreshSelection(IWindow window)
         {
-            if (window.IsWrappingNullReference || window.Type != WindowKind.Designer)
+            if (window == null || window.IsWrappingNullReference || window.Type != WindowKind.Designer)
             {
                 return;
             }
-            var caption = String.Empty;
-            var refCount = 0;
 
-            WindowKind windowKind = _vbe.ActiveWindow.Type;
-            var pane = _vbe.ActiveCodePane;
             var component = _vbe.SelectedVBComponent;
-            var activeMDI = _vbe.ActiveMDIChild();
+            var caption = GetComponentControlsCaption(component);
+            //TODO: Need to find the selected declaration for the Form\Control.
+            UpdateStatusbarAndCommandState(caption, null);
+        }
 
-            Declaration selectedDeclaration = null;
-
-            //TODO - Reinstate these lines once the host stops crashing - need to theck ParentProject doesn't return null
-            ////TODO - I doubt this is the best way to check if the SelectedVBComponent and the ActiveCodePane are the same component.
-            //if (windowKind == WindowKind.CodeWindow || (!_vbe.SelectedVBComponent.IsWrappingNullReference
-            //                                            && component.ParentProject.ProjectId == pane.CodeModule.Parent.ParentProject.ProjectId
-            //                                            && component.Name == pane.CodeModule.Parent.Name))
-            //{
-            //    selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
-            //    refCount = selectedDeclaration == null ? 0 : selectedDeclaration.References.Count();
-            //    caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
-            //}
-            //else
-            if (windowKind == WindowKind.Designer)
+        private void RefreshSelection()
+        {
+            var caption = string.Empty;
+            var component = _vbe.SelectedVBComponent;
+            if (component == null || component.IsWrappingNullReference)
             {
-                caption = GetComponentControlsCaption(component);
+                //The user might have selected the project node in Project Explorer
+                //If they've chosen a folder, we'll return the project anyway
+                caption = !_vbe.ActiveVBProject.IsWrappingNullReference
+                    ? _vbe.ActiveVBProject.Name
+                    : null;
             }
             else
             {
-                if (_vbe.SelectedVBComponent.IsWrappingNullReference)
-                {
-                    //The user might have selected the project node in Project Explorer
-                    //If they've chosen a folder, we'll return the project anyway
-                    caption = !_vbe.ActiveVBProject.IsWrappingNullReference
-                        ? _vbe.ActiveVBProject.Name
-                        : null;
-                }
-                else
-                {
-                    caption = component.Type == ComponentType.UserForm
-                        && component.HasOpenDesigner
-                        && component.DesignerWindow().Caption == activeMDI.Caption
-                        ? GetComponentControlsCaption(component)
-                        : String.Format("{0}.{1} ({2})", component.ParentProject.Name, component.Name, component.Type);
-                }
+                caption = component.Type == ComponentType.UserForm && component.HasOpenDesigner
+                    ? GetComponentControlsCaption(component)
+                    : string.Format("{0}.{1} ({2})", component.ParentProject.Name, component.Name, component.Type);
             }
+            //TODO: Need to find the selected declaration for the selected treeview item.
+            UpdateStatusbarAndCommandState(caption, null);
+        }
 
+        private void UpdateStatusbarAndCommandState(string caption, Declaration selectedDeclaration)
+        {
+            var refCount = selectedDeclaration == null ? 0 : selectedDeclaration.References.Count();
             _stateBar.SetContextSelectionCaption(caption, refCount);
 
             var currentStatus = _parser.State.Status;
@@ -191,7 +178,7 @@ namespace Rubberduck
             }
 
             _lastStatus = currentStatus;
-            _lastSelectedDeclaration = selectedDeclaration;
+            _lastSelectedDeclaration = selectedDeclaration;            
         }
 
         private string GetComponentControlsCaption(IVBComponent component)
@@ -219,6 +206,8 @@ namespace Rubberduck
                    (selectedDeclaration != null && !selectedDeclaration.Equals(_lastSelectedDeclaration)) ||
                    (selectedDeclaration == null && _lastSelectedDeclaration != null);
         }
+
+        #endregion
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
@@ -371,8 +360,8 @@ namespace Rubberduck
                 _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
             }
 
-            VBEEvents.SelectionChanged += _vbe_SelectionChanged;
-            VBEEvents.WindowFocusChange += _vbe_FocusChanged;
+            VBENativeServices.SelectionChanged += _vbe_SelectionChanged;
+            VBENativeServices.WindowFocusChange += _vbe_FocusChanged;
 
             if (_configService != null)
             {

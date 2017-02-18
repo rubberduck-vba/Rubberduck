@@ -56,7 +56,7 @@ namespace Rubberduck
                 {
                     var vbe = (Microsoft.Vbe.Interop.VBE) Application;                  
                     _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
-                    VBEEvents.HookEvents(_ide);
+                    VBENativeServices.HookEvents(_ide);
                     
                     var addin = (Microsoft.Vbe.Interop.AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
@@ -221,7 +221,7 @@ namespace Rubberduck
 
         private void ShutdownAddIn()
         {
-            VBEEvents.UnhookEvents();
+            VBENativeServices.UnhookEvents();
 
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.AssemblyResolve -= LoadFromSameFolder;

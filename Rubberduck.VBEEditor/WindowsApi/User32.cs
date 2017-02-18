@@ -66,5 +66,12 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <returns>The length of the returned class name (without the null terminator), zero on error.</returns>
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        /// <summary>   Gets the parent window of this item. </summary>
+        ///
+        /// <param name="hWnd"> The window handle. </param>
+        /// <returns>   The parent window IntPtr handle. </returns>
+        [DllImport("User32.dll")]
+        internal static extern IntPtr GetParent(IntPtr hWnd);
     }
 }
