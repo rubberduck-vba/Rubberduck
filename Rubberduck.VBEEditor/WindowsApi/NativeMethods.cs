@@ -49,6 +49,16 @@ namespace Rubberduck.VBEditor.WindowsApi
         internal static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
 
+        /// <summary>   Gets the child window at the top of the Z order. </summary>
+        ///
+        /// <param name="hWnd"> The window handle. </param>
+        /// <returns>   The child window IntPtr handle. </returns>
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetTopWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        internal static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
+
         /// <summary>   Gets window caption text by handle. </summary>
         ///
         /// <param name="windowHandle"> Handle of the window to be activated. </param>
