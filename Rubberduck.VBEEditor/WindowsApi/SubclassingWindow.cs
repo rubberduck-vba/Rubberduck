@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Rubberduck.Common.WinAPI;
@@ -12,6 +11,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         private readonly IntPtr _hwnd;
         private readonly SubClassCallback _wndProc;
         private bool _listening;
+        private GCHandle _thisHandle;
 
         private readonly object _subclassLock = new object();
 
@@ -43,7 +43,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         public void Dispose()
         {
             ReleaseHandle();
-            GC.SuppressFinalize(this);
+            //GC.SuppressFinalize(this);
         }
 
         private void AssignHandle()
@@ -55,6 +55,11 @@ namespace Rubberduck.VBEditor.WindowsApi
                 {
                     throw new Exception("SetWindowSubClass Failed");
                 }
+                //DO NOT REMOVE THIS CALL. Dockable windows are instantiated by the VBE, not directly by RD.  On top of that,
+                //since we have to inherit from UserControl we don't have to keep handling window messages until the VBE gets
+                //around to destroying the control's host or it results in an access violation when the base class is disposed.
+                //We need to manually call base.Dispose() ONLY in response to a WM_DESTROY message.
+                _thisHandle = GCHandle.Alloc(this, GCHandleType.Normal);
                 _listening = true;
             }
         }
@@ -85,10 +90,10 @@ namespace Rubberduck.VBEditor.WindowsApi
             }
 
             Debug.Assert(IsWindow(_hwnd));
-            //TODO: This should change to  WM.DESTROY once subclassing\hooking consolidation is complete.
-            if ((uint)msg == (uint)WM.RUBBERDUCK_SINKING)
+            if ((uint)msg == (uint)WM.RUBBERDUCK_SINKING || (uint)msg == (uint)WM.DESTROY)
             {                
                 ReleaseHandle();
+                _thisHandle.Free();
             }
             return DefSubclassProc(hWnd, msg, wParam, lParam);
         }
