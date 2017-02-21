@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
@@ -276,6 +278,33 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 }
             }
 
+            return null;
+        }
+
+        /// <summary> Returns the topmost MDI child window. </summary>
+        public IWindow ActiveMDIChild()
+        {
+            const string mdiClientClass = "MDIClient";
+            const int maxCaptionLength = 512;
+
+            IntPtr mainWindow = (IntPtr)MainWindow.HWnd;
+
+            IntPtr mdiClient = NativeMethods.FindWindowEx(mainWindow, IntPtr.Zero, mdiClientClass, string.Empty);
+
+            IntPtr mdiChild = NativeMethods.GetTopWindow(mdiClient);
+            StringBuilder mdiChildCaption = new StringBuilder();
+            int captionLength = NativeMethods.GetWindowText(mdiChild, mdiChildCaption, maxCaptionLength);
+
+            if (captionLength > 0)
+            {
+                try
+                {
+                    return Windows.FirstOrDefault(win => win.Caption == mdiChildCaption.ToString());
+                }
+                catch
+                {
+                }
+            }
             return null;
         }
 
