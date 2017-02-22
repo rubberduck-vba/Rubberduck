@@ -23,8 +23,8 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Column="0" Grid.Row="0" Background="White" Margin="5,5,0,0">
-            <TextBlock Margin="10" Text="{Binding Version}" Foreground="Black"
-                   FontWeight="Bold" FontSize="14"
+            <TextBlock Margin="0,10,0,10" Text="{Binding Version}" Foreground="Black"
+                   FontWeight="Bold" FontSize="12"
                    VerticalAlignment="Top" HorizontalAlignment="Left" />
         </Border>
         
