@@ -21,9 +21,9 @@ namespace Rubberduck.Common
         // This can't be local - otherwise RawInput can't call it in the subclassing chain.
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly User32.WndProc _newWndProc;
-        private RawInput _rawinput;
-        private RawKeyboard _kb;
-        private RawMouse _mouse;
+        //private RawInput _rawinput;
+        //private RawKeyboard _kb;
+        //private RawMouse _mouse;
         private readonly IGeneralConfigService _config;
         private readonly IEnumerable<CommandBase> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
@@ -56,17 +56,17 @@ namespace Rubberduck.Common
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.HotkeySettings;
 
-            _rawinput = new RawInput(_mainWindowHandle);
+            //_rawinput = new RawInput(_mainWindowHandle);
 
-            var kb = (RawKeyboard)_rawinput.CreateKeyboard();
-            _rawinput.AddDevice(kb);
-            kb.RawKeyInputReceived += Keyboard_RawKeyboardInputReceived;
-            _kb = kb;
+            //var kb = (RawKeyboard)_rawinput.CreateKeyboard();
+            //_rawinput.AddDevice(kb);
+            //kb.RawKeyInputReceived += Keyboard_RawKeyboardInputReceived;
+            //_kb = kb;
 
-            var mouse = (RawMouse)_rawinput.CreateMouse();
-            _rawinput.AddDevice(mouse);
-            mouse.RawMouseInputReceived += Mouse_RawMouseInputReceived;
-            _mouse = mouse;
+            //var mouse = (RawMouse)_rawinput.CreateMouse();
+            //_rawinput.AddDevice(mouse);
+            //mouse.RawMouseInputReceived += Mouse_RawMouseInputReceived;
+            //_mouse = mouse;
 
             foreach (var hotkey in settings.Settings.Where(hotkey => hotkey.IsEnabled))
             {
@@ -82,28 +82,28 @@ namespace Rubberduck.Common
             Attach();
         }
 
-        private void Mouse_RawMouseInputReceived(object sender, RawMouseEventArgs e)
-        {
-            if (e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_LEFT_BUTTON_UP) || e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_RIGHT_BUTTON_UP))
-            {
-                OnMessageReceived(this, HookEventArgs.Empty);
-            }
-        }
+        //private void Mouse_RawMouseInputReceived(object sender, RawMouseEventArgs e)
+        //{
+        //    if (e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_LEFT_BUTTON_UP) || e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_RIGHT_BUTTON_UP))
+        //    {
+        //        OnMessageReceived(this, HookEventArgs.Empty);
+        //    }
+        //}
 
-        // keys that change the current selection.
-        private static readonly HashSet<Keys> NavKeys = new HashSet<Keys>
-        {
-            Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.PageDown, Keys.PageUp, Keys.Enter
-        };
+        //// keys that change the current selection.
+        //private static readonly HashSet<Keys> NavKeys = new HashSet<Keys>
+        //{
+        //    Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.PageDown, Keys.PageUp, Keys.Enter
+        //};
 
-        private void Keyboard_RawKeyboardInputReceived(object sender, RawKeyEventArgs e)
-        {
-            // note: handling *all* keys causes annoying RTrim of current line, making editing code a PITA.
-            if (e.Message == WM.KEYUP && NavKeys.Contains((Keys)e.VKey))
-            {
-                OnMessageReceived(this, HookEventArgs.Empty);
-            }
-        }
+        //private void Keyboard_RawKeyboardInputReceived(object sender, RawKeyEventArgs e)
+        //{
+        //    // note: handling *all* keys causes annoying RTrim of current line, making editing code a PITA.
+        //    if (e.Message == WM.KEYUP && NavKeys.Contains((Keys)e.VKey))
+        //    {
+        //        OnMessageReceived(this, HookEventArgs.Empty);
+        //    }
+        //}
 
         public IEnumerable<IAttachable> Hooks { get { return _hooks; } }
 
@@ -186,8 +186,8 @@ namespace Rubberduck.Common
         {
             Detach();
             User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _oldWndProc);
-            _mouse.RawMouseInputReceived -= Mouse_RawMouseInputReceived;
-            _kb.RawKeyInputReceived -= Keyboard_RawKeyboardInputReceived;
+            //_mouse.RawMouseInputReceived -= Mouse_RawMouseInputReceived;
+            //_kb.RawKeyInputReceived -= Keyboard_RawKeyboardInputReceived;
         }
 
         private IntPtr WindowProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam)
