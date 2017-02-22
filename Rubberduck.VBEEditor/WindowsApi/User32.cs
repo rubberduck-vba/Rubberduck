@@ -56,6 +56,12 @@ namespace Rubberduck.VBEditor.WindowsApi
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetActiveWindow();
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetFocus();
+
         /// <summary>
         /// Gets the underlying class name for a window handle.
         /// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633582(v=vs.85).aspx

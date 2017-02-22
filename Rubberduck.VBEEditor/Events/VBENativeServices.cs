@@ -73,10 +73,13 @@ namespace Rubberduck.VBEditor.Events
             {
                 OnSelectionChanged(hwnd);             
             }
-            else if (idObject == (int)ObjId.Window &&
-                     (eventType == (uint)WinEvent.ObjectCreate || eventType == (uint)WinEvent.ObjectDestroy) && 
-                     hwnd.ToWindowType() != WindowType.Indeterminate)
+            else if (idObject == (int)ObjId.Window && (eventType == (uint)WinEvent.ObjectCreate || eventType == (uint)WinEvent.ObjectDestroy))
             {
+                var type = hwnd.ToWindowType();
+                if (type != WindowType.DesignerWindow && type != WindowType.VbaWindow)
+                {
+                    return;                   
+                }
                 if (eventType == (uint) WinEvent.ObjectCreate)
                 {
                     AttachWindow(hwnd);
@@ -90,7 +93,7 @@ namespace Rubberduck.VBEditor.Events
             {
                 //Test to see if it was a selection change in the project window.
                 var parent = User32.GetParent(hwnd);
-                if (parent != IntPtr.Zero && parent.ToWindowType() == WindowType.Project)
+                if (parent != IntPtr.Zero && parent.ToWindowType() == WindowType.Project && hwnd == User32.GetFocus())
                 {
                     FocusDispatcher(_vbe, new WindowChangedEventArgs(parent, null, null, FocusType.ChildFocus));
                 }                
