@@ -131,6 +131,11 @@ namespace Rubberduck.Parsing.Symbols
             get { return _undeclared.AllValues(); }
         }
 
+        public IEnumerable<Declaration> Members(Declaration module)
+        {
+            return _declarations[module.QualifiedName.QualifiedModuleName];
+        }
+
         private IEnumerable<Declaration> _nonBaseAsType;
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
         {
