@@ -21,7 +21,6 @@ namespace Rubberduck.UI.ToDoItems
             {
                 components.Dispose();
             }
-            base.Dispose(disposing);
         }
 
         #region Component Designer generated code

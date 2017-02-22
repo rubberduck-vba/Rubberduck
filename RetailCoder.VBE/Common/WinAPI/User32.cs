@@ -157,30 +157,6 @@ namespace Rubberduck.Common.WinAPI
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool KillTimer(IntPtr hWnd, IntPtr uIDEvent);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern int GetRawInputData(IntPtr hRawInput, DataCommand command, [Out] out InputData buffer, [In, Out] ref int size, int cbSizeHeader);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern int GetRawInputData(IntPtr hRawInput, DataCommand command, [Out] IntPtr pData, [In, Out] ref int size, int sizeHeader);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern uint GetRawInputDeviceInfo(IntPtr hDevice, RawInputDeviceInfo command, IntPtr pData, ref uint size);
-
-        [DllImport("user32.dll")]
-        private static extern uint GetRawInputDeviceInfo(IntPtr hDevice, uint command, ref DeviceInfo data, ref uint dataSize);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern uint GetRawInputDeviceList(IntPtr pRawInputDeviceList, ref uint numberDevices, uint size);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool RegisterRawInputDevices(RawInputDevice[] pRawInputDevice, uint numberDevices, uint size);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern IntPtr RegisterDeviceNotification(IntPtr hRecipient, IntPtr notificationFilter, DeviceNotification flags);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool UnregisterDeviceNotification(IntPtr handle);
-
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         internal static extern IntPtr SendMessage(IntPtr hWnd, WM msg, IntPtr wParam, IntPtr lParam);
 
