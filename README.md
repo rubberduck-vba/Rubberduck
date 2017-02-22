@@ -95,12 +95,6 @@ This library makes localizing WPF applications at runtime using resx files a bre
 
 > Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx) with the [author's permission](http://www.codeproject.com/Messages/5272045/Re-License.aspx) to re-release under the GPLv3.
 
-###[Using Raw Input from C# to handle multiple keyboards](http://www.codeproject.com/Articles/17123/Using-Raw-Input-from-C-to-handle-multiple-keyboard)
-
-A library using the Raw Input API for reacting to low level keyboard/mouse events.
-
-> Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx).
-
 ##Icons
 
 We didn't come up with these icons ourselves! Here's who did what:
