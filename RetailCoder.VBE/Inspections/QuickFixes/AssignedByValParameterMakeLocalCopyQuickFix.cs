@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private bool _isQuickFixUnitTest;
 
         public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection)
-            : base(target.Context, selection, InspectionsUI.AssignedByValParameterQuickFix)
+            : base(target.Context, selection, InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix)
         {
             _target = target;
             _isQuickFixUnitTest = false;

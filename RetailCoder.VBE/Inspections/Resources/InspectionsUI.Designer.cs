@@ -135,9 +135,9 @@ namespace Rubberduck.Inspections.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Create and use a local copy of the parameter.
         /// </summary>
-        public static string AssignedByValParameterQuickFix {
+        public static string AssignedByValParameterMakeLocalCopyQuickFix {
             get {
-                return ResourceManager.GetString("AssignedByValParameterQuickFix", resourceCulture);
+                return ResourceManager.GetString("AssignedByValParameterMakeLocalCopyQuickFix", resourceCulture);
             }
         }
         
