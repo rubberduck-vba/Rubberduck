@@ -468,7 +468,10 @@ End Function
         }
         private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(Mock<IVBE> vbe)
         {
-            var parser = GetMockParseCoordinator(vbe);
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
             var inspection = new AssignedByValParameterInspection(parser.State);
             return inspection.GetInspectionResults();
         }
@@ -477,14 +480,6 @@ End Function
             var builder = new MockVbeBuilder();
             IVBComponent component;
             return builder.BuildFromSingleStandardModule(inputCode, out component);
-        }
-        private ParseCoordinator GetMockParseCoordinator(Mock<IVBE> vbe)
-        {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            return parser;
         }
     }
 }
