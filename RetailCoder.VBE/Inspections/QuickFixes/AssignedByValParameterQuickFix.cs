@@ -45,13 +45,13 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix()
         {
 
-            SetLocalCopyVariableName();
+            //SetLocalCopyVariableName();
 
             if (IsCancelled) { return; }
 
             ModifyBlockToUseLocalCopyVariable();
         }
-
+/*
         private void SetLocalCopyVariableName()
         {
             using (var view = new AssignedByValParameterQuickFixDialog(_originalProcCodeLines))
@@ -69,7 +69,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
             }
         }
-
+*/
         private void ModifyBlockToUseLocalCopyVariable()
         {
             if(!CheckLocalVariableNameIsValidForUpdate())

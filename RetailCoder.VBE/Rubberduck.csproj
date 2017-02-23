@@ -347,7 +347,9 @@
     <Compile Include="Inspections\MemberNotOnInterfaceInspection.cs" />
     <Compile Include="Inspections\QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
+    <Compile Include="Inspections\QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\AssignedByValParameterQuickFix.cs" />
+    <Compile Include="Inspections\QuickFixes\QuickFixHelper.cs" />
     <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
