@@ -594,7 +594,4 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="AggregateInspectionResultFormat" xml:space="preserve">
     <value>{0} ({1} Ergebnisse)</value>
   </data>
-  <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
-    <value>Create and use a local copy of the parameter</value>
-  </data>
 </root>

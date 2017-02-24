@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Inspections.Results
 {
@@ -25,9 +26,10 @@ namespace Rubberduck.Inspections.Results
         {
             get
             {
+                IAssignedByValParameterQuickFixDialogFactory factory = new AssignedByValParameterQuickFixDialogFactory();
                 return _quickFixes ?? (_quickFixes = new QuickFixBase[]
                 {
-                    new AssignedByValParameterMakeLocalCopyQuickFix(Target, QualifiedSelection),
+                    new AssignedByValParameterMakeLocalCopyQuickFix(Target, QualifiedSelection, factory),
                     new PassParameterByReferenceQuickFix(Target, QualifiedSelection),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
                 });

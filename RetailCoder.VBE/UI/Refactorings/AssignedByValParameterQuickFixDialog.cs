@@ -1,52 +1,40 @@
 ﻿using System;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections;
-using Rubberduck.VBEditor;
 using System.Linq;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class AssignedByValParameterQuickFixDialog : Form, IDialogView
+    public partial class AssignedByValParameterQuickFixDialog : Form, IAssignedByValParameterQuickFixDialog
     {
         private string[] _identifierNamesAlreadyDeclared;
+        private string _identifierName;
 
-        public AssignedByValParameterQuickFixDialog(Declaration target, QualifiedSelection selection)
+        public AssignedByValParameterQuickFixDialog(string identifierName, string declarationType)
         {
             InitializeComponent();
-            InitializeCaptions();
-            Target = target;
+            InitializeCaptions(identifierName, declarationType);
+           _identifierName = identifierName;
             _identifierNamesAlreadyDeclared = Enumerable.Empty<string>().ToArray();
         }
 
-        private void InitializeCaptions()
+        private void InitializeCaptions(string identifierName, string targetDeclarationType)
         {
             Text = RubberduckUI.AssignedByValParamQFixDialog_Caption;
             OkButton.Text = RubberduckUI.OK;
             CancelDialogButton.Text = RubberduckUI.CancelButtonText;
             TitleLabel.Text = RubberduckUI.AssignedByValParamQFixDialog_TitleText;
-            InstructionsLabel.Text = RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText;
             NameLabel.Text = RubberduckUI.NameLabelText;
+
+            var declarationType =
+            RubberduckUI.ResourceManager.GetString("DeclarationType_" + targetDeclarationType, Settings.Settings.Culture);
+            InstructionsLabel.Text = string.Format(RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText, declarationType,
+                identifierName);
         }
 
         private void NewNameBox_TextChanged(object sender, EventArgs e)
         {
             NewName = NewNameBox.Text;
-        }
-
-        private Declaration _target;
-        public Declaration Target
-        {
-            get { return _target; }
-            set
-            {
-                _target = value;
-                if (_target == null)
-                {
-                    return;
-                }
-                SetInstructionLableText();
-            }
         }
 
         public string NewName
@@ -63,14 +51,6 @@ namespace Rubberduck.UI.Refactorings
         {
             get { return _identifierNamesAlreadyDeclared; }
             set { _identifierNamesAlreadyDeclared = value; }
-        }
-
-        private void SetInstructionLableText()
-        {
-            var declarationType =
-                RubberduckUI.ResourceManager.GetString("DeclarationType_" + _target.DeclarationType, Settings.Settings.Culture);
-            InstructionsLabel.Text = string.Format(RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText, declarationType,
-                _target.IdentifierName);
         }
 
         private string GetVariableNameFeedback()
@@ -124,12 +104,14 @@ namespace Rubberduck.UI.Refactorings
 
         private bool IsByValIdentifier()
         {
-            return NewName.Equals(Target.IdentifierName, StringComparison.OrdinalIgnoreCase);
+            return NewName.Equals(_identifierName, StringComparison.OrdinalIgnoreCase);
         }
 
         private bool NewNameAlreadyUsed()
         {
-            return _identifierNamesAlreadyDeclared.Contains(NewName);
+            //Comparison needs to be case-insensitive, or VBE will often change an existing
+            //same-spelling local variable's casing to conform with the NewName
+            return _identifierNamesAlreadyDeclared.Any(n => n.Equals(NewName, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

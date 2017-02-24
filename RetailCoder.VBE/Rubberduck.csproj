@@ -470,6 +470,9 @@
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
+    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialogFactory.cs" />
+    <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
+    <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialogFactory.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
