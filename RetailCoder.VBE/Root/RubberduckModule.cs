@@ -82,6 +82,7 @@ namespace Rubberduck.Root
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyConfigurationConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
+            Rebind<IFolderBrowserFactory>().To<DialogFactory>().InSingletonScope();
 
             BindCommandsToMenuItems();
 
