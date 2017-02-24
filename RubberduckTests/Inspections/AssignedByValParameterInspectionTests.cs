@@ -140,6 +140,7 @@ End Sub";
             var quickFixResult = ApplyIgnoreOnceQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult); 
         }
+
         [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionType()
@@ -157,7 +158,6 @@ End Sub";
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
-
 
         private void AssertVbaFragmentYieldsExpectedInspectionResultCount(string inputCode, int expectedCount)
         {

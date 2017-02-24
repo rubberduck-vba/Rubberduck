@@ -161,7 +161,6 @@ End Sub
 ";
             quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
-
         }
         [TestMethod]
         [TestCategory("Inspections")]
@@ -197,6 +196,7 @@ End Sub
             var module = project.VBComponents[0].CodeModule;
             return module.Content();
         }
+
         private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(Mock<IVBE> vbe)
         {
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
@@ -206,6 +206,7 @@ End Sub
             var inspection = new AssignedByValParameterInspection(parser.State);
             return inspection.GetInspectionResults();
         }
+
         private Mock<IVBE> BuildMockVBEStandardModuleForVBAFragment(string inputCode)
         {
             var builder = new MockVbeBuilder();

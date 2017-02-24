@@ -94,15 +94,17 @@ namespace Rubberduck.Inspections.QuickFixes
                 module.ReplaceIdentifierReferenceName(identifierReference, _localCopyVariableName);
             }
         }
+
         private void InsertLocalVariableDeclarationAndAssignment()
         {
             var blocks = QuickFixHelper.GetBlockStmtContextsForContext(_target.Context.Parent.Parent);
             var firstBlockLineNumber =  blocks.FirstOrDefault().Start.Line;
 
             var module = Selection.QualifiedName.Component.CodeModule;
-            module.InsertLines(firstBlockLineNumber++, BuildLocalCopyDeclaration());
-            module.InsertLines(firstBlockLineNumber, BuildLocalCopyAssignment());
+            string[] lines = { BuildLocalCopyDeclaration(), BuildLocalCopyAssignment() };
+            module.InsertLines(firstBlockLineNumber, lines);
         }
+
         private string BuildLocalCopyDeclaration()
         {
             return Tokens.Dim + " " + _localCopyVariableName + " " + Tokens.As 
@@ -113,6 +115,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return (SymbolList.ValueTypes.Contains(_target.AsTypeName) ? string.Empty : Tokens.Set + " ") 
                 + _localCopyVariableName + " = " + _target.IdentifierName;
         }
+
         private string[] GetVariableNamesAccessibleToProcedureContext(RuleContext ruleContext)
         {
             var allIdentifiers = new HashSet<string>();
@@ -120,7 +123,6 @@ namespace Rubberduck.Inspections.QuickFixes
             var blocks = QuickFixHelper.GetBlockStmtContextsForContext(ruleContext);
 
             var blockStmtIdentifiers = GetIdentifierNames(blocks);
-
             allIdentifiers.UnionWith(blockStmtIdentifiers);
 
             var args = QuickFixHelper.GetArgContextsForContext(ruleContext);
@@ -132,6 +134,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             return allIdentifiers.ToArray();
         }
+
         private HashSet<string> GetIdentifierNames(IReadOnlyList<RuleContext> ruleContexts)
         {
             var identifiers = new HashSet<string>();
@@ -142,6 +145,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
             return identifiers;
         }
+
         private HashSet<string> GetIdentifierNames(RuleContext ruleContext)
         {
             //Recursively work through the tree to get all IdentifierContexts
@@ -169,6 +173,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
             return results;
         }
+
         private static List<IParseTree> GetChildren(RuleContext ruleCtx)
         {
             var result = new List<IParseTree>();

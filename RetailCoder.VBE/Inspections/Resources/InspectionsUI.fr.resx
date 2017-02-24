@@ -604,4 +604,7 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="AggregateInspectionResultFormat" xml:space="preserve">
     <value>{0} ({1} résultats)</value>
   </data>
+  <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
+    <value>Create and use a local copy of the parameter</value>
+  </data>
 </root>

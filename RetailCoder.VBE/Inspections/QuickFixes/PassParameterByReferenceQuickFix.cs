@@ -31,7 +31,6 @@ namespace Rubberduck.Inspections.QuickFixes
                     .Equals(_target.IdentifierName));
 
             module.ReplaceToken(argContext.BYVAL().Symbol,Tokens.ByRef);
-            
         }
     }
 }
