@@ -14,19 +14,27 @@ namespace Rubberduck.UI
 
     public class DialogFactory : IFolderBrowserFactory
     {
+        private static readonly bool OldSchool = Environment.OSVersion.Version.Major < 6;
+
         public IFolderBrowser CreateFolderBrowser(string description)
         {
-            return new FolderBrowser(description);
+            return !OldSchool
+                ? new ModernFolderBrowser(description) as IFolderBrowser
+                : new FolderBrowser(description);
         }
 
         public IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton)
         {
-            return new FolderBrowser(description, showNewFolderButton);
+            return !OldSchool
+                ? new ModernFolderBrowser(description, showNewFolderButton) as IFolderBrowser
+                : new FolderBrowser(description, showNewFolderButton);
         }
 
         public IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton, Environment.SpecialFolder rootFolder)
         {
-            return new FolderBrowser(description, showNewFolderButton, rootFolder);
+            return !OldSchool
+                ? new ModernFolderBrowser(description, showNewFolderButton, rootFolder) as IFolderBrowser
+                : new FolderBrowser(description, showNewFolderButton, rootFolder);
         }
     }
 }
