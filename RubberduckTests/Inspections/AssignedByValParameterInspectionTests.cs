@@ -11,6 +11,8 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Inspections
 {
@@ -107,7 +109,7 @@ End Sub";
     Let barByVal = ""test""
 End Sub";
 
-            var quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            var quickFixResult = ApplyPassParameterByReferenceQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
 
             //check when ByVal argument is one of several parameters
@@ -120,7 +122,7 @@ End Sub";
     Let barByVal = ""test""
 End Sub";
 
-            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
 
             inputCode =
@@ -151,7 +153,7 @@ bar = 42
 End Sub
 "
 ;
-            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
 
             inputCode =
@@ -171,7 +173,7 @@ barTwo = 42
 End Sub
 ";
             
-            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
 
             inputCode =
@@ -191,7 +193,7 @@ barTwo = 42
 End Sub
 ";
 
-            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
 
             inputCode =
@@ -209,7 +211,7 @@ barTwo = 42
 End Sub
 ";
 
-            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
 
             inputCode =
@@ -237,7 +239,7 @@ End Sub
                bar + foo / barbecue
 End Sub
 ";
-            quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
+            quickFixResult = ApplyPassParameterByReferenceQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
 
         }
@@ -258,7 +260,7 @@ Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
 
-            var quickFixResult = ApplyIgnoreOnceQuickFixToVBAFragment(inputCode);
+            var quickFixResult = ApplyIgnoreOnceQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult); 
         }
 
@@ -278,7 +280,7 @@ xArg1 = arg1
     Let xArg1 = ""test""
 End Sub";
 
-            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
@@ -303,7 +305,7 @@ Public Sub Foo(ByVal arg1 As String)
 End Sub"
 ;
 
-            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
 
             inputCode =
@@ -322,7 +324,7 @@ Public Sub Foo(ByVal arg1 As String)
 End Sub"
 ;
 
-            quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
+            quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
             inputCode =
 @"
@@ -341,7 +343,7 @@ Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub"
 ;
-            quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
+            quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
 
             inputCode =
@@ -372,7 +374,7 @@ End Sub
 "
 ;
 
-            quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
+            quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
@@ -419,7 +421,7 @@ Public Sub Bar(ByVal arg2 As String)
 End Sub"
 ;
 
-            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
@@ -471,7 +473,7 @@ Public Function bar() As Long
 End Function
 ";
 
-            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
@@ -531,7 +533,7 @@ xBar = 7
 End Sub
 ";
 
-            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
@@ -560,10 +562,39 @@ xMessWithThis = messWithThis
     MessingWithByValParameters = xMessWithThis
 End Function
 ";
-            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void NoResultForLeftHandSideMemberAssignment()
+        {
+            var class1 = @"
+Option Explicit
+Private mSomething As Long
+Public Property Get Something() As Long
+    Something = mSomething
+End Property
+Public Property Let Something(ByVal value As Long)
+    mSomething = value
+End Property
+";
+            var caller = @"
+Option Explicit
+Private Sub DoSomething(ByVal foo As Class1)
+    foo.Something = 42
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, caller)
+                .MockVbeBuilder()
+                .Build();
+            var results = GetInspectionResults(vbe);
+            Assert.AreEqual(0, results.Count());
+        }
 
         [TestMethod]
         [TestCategory("Inspections")]
@@ -583,7 +614,8 @@ End Function
             Assert.AreEqual(inspectionName, inspection.Name);
         }
 
-        private string ApplyPassParameterByReferenceQuickFixToVBAFragment(string inputCode)
+
+        private string ApplyPassParameterByReferenceQuickFixToCodeFragment(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
             var inspectionResults = GetInspectionResults(vbe);
@@ -593,7 +625,7 @@ End Function
             return GetModuleContent(vbe);
         }
 
-        private string ApplyLocalVariableQuickFixToVBAFragment(string inputCode)
+        private string ApplyLocalVariableQuickFixToCodeFragment(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
             var inspectionResults = GetInspectionResults(vbe);
@@ -605,7 +637,8 @@ End Function
 
             return GetModuleContent(vbe);
         }
-        private string ApplyIgnoreOnceQuickFixToVBAFragment(string inputCode)
+
+        private string ApplyIgnoreOnceQuickFixToCodeFragment(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
             var inspectionResults = GetInspectionResults(vbe);
@@ -614,28 +647,33 @@ End Function
 
             return GetModuleContent(vbe);
         }
+
         private string GetModuleContent(Mock<IVBE> vbe)
         {
             var project = vbe.Object.VBProjects[0];
             var module = project.VBComponents[0].CodeModule;
             return module.Content();
         }
+
         private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
             return GetInspectionResults(vbe);
         }
+
         private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(Mock<IVBE> vbe)
         {
             var parser = GetMockParseCoordinator(vbe);
             var inspection = new AssignedByValParameterInspection(parser.State);
             return inspection.GetInspectionResults();
         }
+
         private void AssertVbaFragmentYieldsExpectedInspectionResultCount(string inputCode, int expectedCount)
         {
             var inspectionResults = GetInspectionResults(inputCode);
             Assert.AreEqual(expectedCount, inspectionResults.Count());
         }
+
         private Mock<IVBE> BuildMockVBEStandardModuleForVBAFragment(string inputCode)
         {
             var builder = new MockVbeBuilder();

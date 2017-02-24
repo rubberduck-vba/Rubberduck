@@ -2536,5 +2536,37 @@ End Sub
             Assert.IsNotNull(annotation);
             Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
         }
+
+        [TestMethod]
+        public void MemberReferenceIsAssignmentTarget_NotTheParentObject()
+        {
+            var class1 = @"
+Option Explicit
+Private mSomething As Long
+Public Property Get Something() As Long
+    Something = mSomething
+End Property
+Public Property Let Something(ByVal value As Long)
+    mSomething = value
+End Property
+";
+            var caller = @"
+Option Explicit
+Private Sub DoSomething(ByVal foo As Class1)
+    foo.Something = 42
+End Sub
+";
+            var state = Resolve(class1, caller);
+
+            var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "foo" && item.DeclarationType == DeclarationType.Parameter);
+            var reference = declaration.References.Single();
+
+            Assert.IsFalse(reference.IsAssignment, "LHS member call on object is treating the object itself as an assignment target.");
+
+            var member = state.AllUserDeclarations.Single(item => item.IdentifierName == "Something" && item.DeclarationType == DeclarationType.PropertyLet);
+            var call = member.References.Single();
+
+            Assert.IsTrue(call.IsAssignment, "LHS member call on object is not flagging member reference as assignment target.");
+        }
     }
 }
