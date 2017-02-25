@@ -23,7 +23,6 @@
   </targets>
   <rules>
     <logger name="*" minlevel="Info" writeTo="file" />
-    <logger name="*" minlevel="Error"  writeTo="eventlog"/>
     <logger name="*" minlevel="Trace" writeTo="debuglog" />
   </rules>
 </nlog>
