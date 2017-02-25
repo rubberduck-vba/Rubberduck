@@ -147,7 +147,6 @@ namespace Rubberduck.UI
             if (m.Msg == (int) WM.DESTROY)
             {
                 _thisHandle.Free();
-                return;
             }
             base.DefWndProc(ref m);
         }

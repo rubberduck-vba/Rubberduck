@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rubberduck.UI
+﻿namespace Rubberduck.UI
 {
     public interface IFolderBrowserFactory
     {
@@ -9,32 +7,46 @@ namespace Rubberduck.UI
         IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton);
 
         IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton, 
-            Environment.SpecialFolder rootFolder);
+            string rootFolder);
     }
 
     public class DialogFactory : IFolderBrowserFactory
     {
-        private static readonly bool OldSchool = Environment.OSVersion.Version.Major < 6;
+        private readonly IEnvironmentProvider _environment;
+        private readonly bool _oldSchool;
+
+        public DialogFactory(IEnvironmentProvider environment)
+        {
+            _environment = environment;
+            try
+            {
+                _oldSchool = _environment.OSVersion.Version.Major < 6;
+            }
+            catch
+            {
+                // ignored - fall back to "safe" dialog version.
+            }
+        }
 
         public IFolderBrowser CreateFolderBrowser(string description)
         {
-            return !OldSchool
-                ? new ModernFolderBrowser(description) as IFolderBrowser
-                : new FolderBrowser(description);
+            return !_oldSchool
+                ? new ModernFolderBrowser(_environment, description) as IFolderBrowser
+                : new FolderBrowser(_environment, description);
         }
 
         public IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton)
         {
-            return !OldSchool
-                ? new ModernFolderBrowser(description, showNewFolderButton) as IFolderBrowser
-                : new FolderBrowser(description, showNewFolderButton);
+            return !_oldSchool
+                ? new ModernFolderBrowser(_environment, description, showNewFolderButton) as IFolderBrowser
+                : new FolderBrowser(_environment, description, showNewFolderButton);
         }
 
-        public IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton, Environment.SpecialFolder rootFolder)
+        public IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton, string rootFolder)
         {
-            return !OldSchool
-                ? new ModernFolderBrowser(description, showNewFolderButton, rootFolder) as IFolderBrowser
-                : new FolderBrowser(description, showNewFolderButton, rootFolder);
+            return !_oldSchool
+                ? new ModernFolderBrowser(_environment, description, showNewFolderButton, rootFolder) as IFolderBrowser
+                : new FolderBrowser(_environment, description, showNewFolderButton, rootFolder);
         }
     }
 }
