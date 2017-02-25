@@ -220,8 +220,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        // Courtesy of http://stackoverflow.com/a/12093994/4088852
-        private static readonly Regex ValidBranchNameRegex = new Regex(@"^(?!@$|build-|/|.*([/.]\.|//|@\{|\\))[^\000-\037\177 ~^:?*[]+/[^\000-\037\177 ~^:?*[]+(?<!\.lock|[/.])$");
+        // Courtesy of http://stackoverflow.com/a/12093994/4088852 - Assumes --allow-onelevel is set TODO: Verify provider honor that. 
+        private static readonly Regex ValidBranchNameRegex = new Regex(@"^(?!@$|build-|/|.*([/.]\.|//|@\{|\\))[^\u0000-\u0037\u0177 ~^:?*[]+/?[^\u0000-\u0037\u0177 ~^:?*[]+(?<!\.lock|[/.])$");
 
         public bool IsNotValidBranchName
         {
