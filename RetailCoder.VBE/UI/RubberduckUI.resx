@@ -708,7 +708,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>Renaming to '{0}' clashes with '{1}' in the same scope.
 Are you sure you want to proceed with this rename?</value>
-  </data> 
+  </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Please ensure that exactly 1 control is selected before renaming.</value>
   </data>
@@ -1272,7 +1272,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Parsing powered by ANTLR
 GitHub integration powered by LibGit2Sharp
-Fugue icons by Yusuke Kamiyamane</value>
+Syntax highlighting powered by AvalonEdit
+Fugue icons by Yusuke Kamiyamane
+IDE icons from SharpDevelop
+WPF localization support by Grant Frisken</value>
   </data>
   <data name="AboutWindow_GeneralThanks" xml:space="preserve">
     <value>All contributors to our GitHub repository

@@ -7,11 +7,6 @@ namespace Rubberduck.Parsing.Symbols
 {
     public static class Identifier
     {
-        public static string GetName(VBAParser.ArgContext context)
-        {
-            return GetName(context.unrestrictedIdentifier());
-        }
-
         public static string GetName(VBAParser.FunctionNameContext context)
         {
             return GetName(context.identifier());
