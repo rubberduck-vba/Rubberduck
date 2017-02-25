@@ -9,7 +9,7 @@ namespace Rubberduck.UI
         IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton);
 
         IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton, 
-            Environment.SpecialFolder rootFolder);
+            string rootFolder);
     }
 
     public class DialogFactory : IFolderBrowserFactory
@@ -30,7 +30,7 @@ namespace Rubberduck.UI
                 : new FolderBrowser(description, showNewFolderButton);
         }
 
-        public IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton, Environment.SpecialFolder rootFolder)
+        public IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton, string rootFolder)
         {
             return !OldSchool
                 ? new ModernFolderBrowser(description, showNewFolderButton, rootFolder) as IFolderBrowser

@@ -225,7 +225,7 @@ namespace Rubberduck.UI.SourceControl
 
         public bool IsNotValidBranchName
         {
-            get { return !ValidBranchNameRegex.IsMatch(NewBranchName); }
+            get { return string.IsNullOrEmpty(NewBranchName) || !ValidBranchNameRegex.IsMatch(NewBranchName); }
         }
 
         private bool _displayMergeBranchesGrid;

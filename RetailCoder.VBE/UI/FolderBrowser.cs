@@ -7,7 +7,7 @@ namespace Rubberduck.UI
     {
         string Description { get; set; }
         bool ShowNewFolderButton { get; set; }
-        Environment.SpecialFolder RootFolder { get; set; }
+        string RootFolder { get; set; }
         string SelectedPath { get; set; }
         DialogResult ShowDialog();
     }
@@ -16,18 +16,18 @@ namespace Rubberduck.UI
     {
         private readonly FolderBrowserDialog _dialog;
 
-        public FolderBrowser(string description, bool showNewFolderButton, Environment.SpecialFolder rootFolder)
+        public FolderBrowser(string description, bool showNewFolderButton, string rootFolder)
         {
             _dialog = new FolderBrowserDialog
             {
                 Description = description,
-                RootFolder = rootFolder,
+                SelectedPath = rootFolder,
                 ShowNewFolderButton = showNewFolderButton
             };
         }
 
         public FolderBrowser(string description, bool showNewFolderButton)
-            :this(description, showNewFolderButton, Environment.SpecialFolder.MyComputer)
+            : this(description, showNewFolderButton, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
         { }
 
         public FolderBrowser(string description)
@@ -46,10 +46,10 @@ namespace Rubberduck.UI
             set { _dialog.ShowNewFolderButton = value; }
         }
 
-        public Environment.SpecialFolder RootFolder
+        public string RootFolder
         {
-            get { return _dialog.RootFolder; }
-            set { _dialog.RootFolder = value; }
+            get { return _dialog.SelectedPath; }
+            set { _dialog.SelectedPath = value; }
         }
 
         public string SelectedPath

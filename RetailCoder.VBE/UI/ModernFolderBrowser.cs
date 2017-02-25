@@ -36,13 +36,13 @@ namespace Rubberduck.UI
         private readonly object _newDialog;
 
         // ReSharper disable once UnusedParameter.Local
-        public ModernFolderBrowser(string description, bool showNewFolderButton, Environment.SpecialFolder rootFolder)
+        public ModernFolderBrowser(string description, bool showNewFolderButton, string rootFolder)
         {
             _root = rootFolder;
             _dialog = new System.Windows.Forms.OpenFileDialog
             {
                 Title = description,
-                InitialDirectory = Environment.GetFolderPath(_root),
+                InitialDirectory = _root,
                 // ReSharper disable once LocalizableElement
                 Filter = "Folders|\n",
                 AddExtension = false,
@@ -57,7 +57,7 @@ namespace Rubberduck.UI
         }
 
         public ModernFolderBrowser(string description, bool showNewFolderButton)
-            : this(description, showNewFolderButton, Environment.SpecialFolder.MyDocuments)
+            : this(description, showNewFolderButton, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
         { }
 
         public ModernFolderBrowser(string description) : this(description, true) { }
@@ -75,14 +75,14 @@ namespace Rubberduck.UI
             set { }
         }
 
-        private Environment.SpecialFolder _root;
-        public Environment.SpecialFolder RootFolder
+        private string _root;
+        public string RootFolder
         {
             get { return _root; }
             set
             {
                 _root = value;
-                _dialog.InitialDirectory = Environment.GetFolderPath(_root);
+                _dialog.InitialDirectory = _root;
             }
         }
 

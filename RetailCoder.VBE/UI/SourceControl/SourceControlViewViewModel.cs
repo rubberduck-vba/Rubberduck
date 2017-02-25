@@ -623,7 +623,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void InitRepo()
         {
-            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser((RubberduckUI.SourceControl_CreateNewRepo)))
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_CreateNewRepo, false, GetDefaultRepoFolderOrDefault()))
             {
                 if (folderPicker.ShowDialog() != DialogResult.OK)
                 {
@@ -703,7 +703,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OpenRepo()
         {
-            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_OpenWorkingDirectory, false))
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_OpenWorkingDirectory, false, GetDefaultRepoFolderOrDefault()))
             {
                 if (folderPicker.ShowDialog() != DialogResult.OK)
                 {
@@ -937,9 +937,20 @@ namespace Rubberduck.UI.SourceControl
             return false;
         }
 
+        private string GetDefaultRepoFolderOrDefault()
+        {
+            var settings = _configService.Create();
+            var folder = settings.DefaultRepositoryLocation;
+            if (string.IsNullOrEmpty(folder))
+            {
+                folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            }
+            return folder;
+        }
+
         private void ShowFilePicker()
         {
-            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory"))
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory", true, GetDefaultRepoFolderOrDefault()))
             {
                 if (folderPicker.ShowDialog() == DialogResult.OK)
                 {
