@@ -33,10 +33,12 @@ namespace Rubberduck.UI
 
         private readonly System.Windows.Forms.OpenFileDialog _dialog;
         private readonly object _newDialog;
+        private readonly IEnvironmentProvider _environment;
 
         // ReSharper disable once UnusedParameter.Local - new folder button suppression isn't supported in this dialog.
-        public ModernFolderBrowser(string description, bool showNewFolderButton, string rootFolder)
+        public ModernFolderBrowser(IEnvironmentProvider environment, string description, bool showNewFolderButton, string rootFolder)
         {
+            _environment = environment;
             _root = rootFolder;
             _dialog = new System.Windows.Forms.OpenFileDialog
             {
@@ -55,11 +57,11 @@ namespace Rubberduck.UI
             IFileDialogSetOptions.Invoke(_newDialog, new object[] { options });
         }
 
-        public ModernFolderBrowser(string description, bool showNewFolderButton)
-            : this(description, showNewFolderButton, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
+        public ModernFolderBrowser(IEnvironmentProvider environment, string description, bool showNewFolderButton)
+            : this(environment, description, showNewFolderButton, environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
         { }
 
-        public ModernFolderBrowser(string description) : this(description, true) { }
+        public ModernFolderBrowser(IEnvironmentProvider environment, string description) : this(environment, description, true) { }
 
         public string Description
         {

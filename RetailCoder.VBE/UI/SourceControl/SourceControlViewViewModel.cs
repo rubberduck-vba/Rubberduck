@@ -38,6 +38,7 @@ namespace Rubberduck.UI.SourceControl
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly IConfigProvider<SourceControlSettings> _configService;
         private readonly IMessageBox _messageBox;
+        private readonly IEnvironmentProvider _environment;
         private readonly FileSystemWatcher _fileSystemWatcher;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static readonly IEnumerable<string> VbFileExtensions = new[] { "cls", "bas", "frm" };
@@ -51,7 +52,8 @@ namespace Rubberduck.UI.SourceControl
             IFolderBrowserFactory folderBrowserFactory,
             IConfigProvider<SourceControlSettings> configService,
             IEnumerable<IControlView> views,
-            IMessageBox messageBox)
+            IMessageBox messageBox,
+            IEnvironmentProvider environment)
         {
             _vbe = vbe;
             _state = state;
@@ -63,6 +65,7 @@ namespace Rubberduck.UI.SourceControl
             _configService = configService;
             _config = _configService.Create();
             _messageBox = messageBox;
+            _environment = environment;
 
             _initRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
             _openRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo(), _ => _vbe.VBProjects.Count != 0);
@@ -947,7 +950,14 @@ namespace Rubberduck.UI.SourceControl
             var folder = settings.DefaultRepositoryLocation;
             if (string.IsNullOrEmpty(folder))
             {
-                folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                try
+                {
+                    folder = _environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
+                catch
+                {
+                    // ignored - empty is fine if the environment call fails.
+                }
             }
             return folder;
         }

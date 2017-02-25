@@ -15,9 +15,11 @@ namespace Rubberduck.UI
     public class FolderBrowser : IFolderBrowser
     {
         private readonly FolderBrowserDialog _dialog;
+        private readonly IEnvironmentProvider _environment;
 
-        public FolderBrowser(string description, bool showNewFolderButton, string rootFolder)
+        public FolderBrowser(IEnvironmentProvider environment, string description, bool showNewFolderButton, string rootFolder)
         {
+            _environment = environment;
             _dialog = new FolderBrowserDialog
             {
                 Description = description,
@@ -26,12 +28,12 @@ namespace Rubberduck.UI
             };
         }
 
-        public FolderBrowser(string description, bool showNewFolderButton)
-            : this(description, showNewFolderButton, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
+        public FolderBrowser(IEnvironmentProvider environment, string description, bool showNewFolderButton)
+            : this(environment, description, showNewFolderButton, environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
         { }
 
-        public FolderBrowser(string description)
-            : this(description, true)
+        public FolderBrowser(IEnvironmentProvider environment, string description)
+            : this(environment, description, true)
         { }
 
         public string Description
