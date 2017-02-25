@@ -29,13 +29,12 @@ namespace Rubberduck.UI
         private static readonly ConstructorInfo VistaDialogEventsCtor = VistaDialogEvents.GetConstructors().SingleOrDefault();
         private static readonly MethodInfo IFileDialogAdvise = IFileDialog.GetMethod("Advise", DefaultBindingFlags);
         private static readonly MethodInfo IFileDialogUnadvise = IFileDialog.GetMethod("Unadvise", DefaultBindingFlags);
-
         // ReSharper restore InconsistentNaming
 
         private readonly System.Windows.Forms.OpenFileDialog _dialog;
         private readonly object _newDialog;
 
-        // ReSharper disable once UnusedParameter.Local
+        // ReSharper disable once UnusedParameter.Local - new folder button suppression isn't supported in this dialog.
         public ModernFolderBrowser(string description, bool showNewFolderButton, string rootFolder)
         {
             _root = rootFolder;
@@ -43,7 +42,7 @@ namespace Rubberduck.UI
             {
                 Title = description,
                 InitialDirectory = _root,
-                // ReSharper disable once LocalizableElement
+                // ReSharper disable once LocalizableElement - This is an API keyword.
                 Filter = "Folders|\n",
                 AddExtension = false,
                 CheckFileExists = false,
@@ -68,6 +67,7 @@ namespace Rubberduck.UI
             set { _dialog.Title = value; }
         }
 
+        //Does nothing - new folder button suppression isn't supported in this dialog.
         public bool ShowNewFolderButton
         {
             get { return true; }
