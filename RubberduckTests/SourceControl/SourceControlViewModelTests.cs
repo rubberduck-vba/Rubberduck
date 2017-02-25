@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Security;
 using System.Windows.Forms;
@@ -10,7 +11,6 @@ using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -60,7 +60,8 @@ namespace RubberduckTests.SourceControl
             _folderBrowser = new Mock<IFolderBrowser>();
             _folderBrowserFactory = new Mock<IFolderBrowserFactory>();
             _folderBrowserFactory.Setup(f => f.CreateFolderBrowser(It.IsAny<string>())).Returns(_folderBrowser.Object);
-            _folderBrowserFactory.Setup(f => f.CreateFolderBrowser(It.IsAny<string>(), false)).Returns(_folderBrowser.Object);
+            _folderBrowserFactory.Setup(f => f.CreateFolderBrowser(It.IsAny<string>(), It.IsAny<bool>())).Returns(_folderBrowser.Object);
+            _folderBrowserFactory.Setup(f => f.CreateFolderBrowser(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>())).Returns(_folderBrowser.Object);
 
 
             var masterRemote = new Mock<LibGit2Sharp.Branch>();
@@ -121,7 +122,7 @@ namespace RubberduckTests.SourceControl
             };
 
             _vm = new SourceControlViewViewModel(_vbe.Object, new RubberduckParserState(_vbe.Object), _providerFactory.Object, _folderBrowserFactory.Object,
-                _configService.Object, views, new Mock<IMessageBox>().Object);
+                _configService.Object, views, new Mock<IMessageBox>().Object, GetDummyEnvironment());
         }
 
         [TestCategory("SourceControl")]
@@ -1050,7 +1051,7 @@ namespace RubberduckTests.SourceControl
 
         private SourceControlSettings GetDummyConfig()
         {
-            return new SourceControlSettings("username", "username@email.com", string.Empty,
+            return new SourceControlSettings("username", "username@email.com", @"C:\path\to",
                     new List<Repository> { GetDummyRepo() }, "ps.exe");
         }
 
@@ -1062,6 +1063,13 @@ namespace RubberduckTests.SourceControl
                            @"C:\Users\Christopher\Documents\SourceControlTest",
                            @"https://github.com/ckuhn203/SourceControlTest.git"
                        );
+        }
+
+        private static IEnvironmentProvider GetDummyEnvironment()
+        {
+            var environment = new Mock<IEnvironmentProvider>();
+            environment.Setup(e => e.GetFolderPath(Environment.SpecialFolder.MyDocuments)).Returns(@"C:\Users\Christopher\Documents");
+            return environment.Object;
         }
     }
 }
