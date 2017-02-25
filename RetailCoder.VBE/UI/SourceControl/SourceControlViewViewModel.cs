@@ -440,7 +440,7 @@ namespace Rubberduck.UI.SourceControl
                 if (_cloneRemotePath != value)
                 {
                     _cloneRemotePath = value;
-                    var delimiter = LocalFileSystemOrNetworkPathRegex.IsMatch(_config.DefaultRepositoryLocation) ? '\\' : '/';
+                    var delimiter = LocalFileSystemOrNetworkPathRegex.IsMatch(_cloneRemotePath) ? '\\' : '/';
                     LocalDirectory = Path.Combine(_config.DefaultRepositoryLocation, _cloneRemotePath.Split(delimiter).Last().Replace(".git", string.Empty));
                     OnPropertyChanged();
                     OnPropertyChanged("IsNotValidCloneRemotePath");
