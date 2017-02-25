@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using NLog;
@@ -428,6 +429,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private static readonly Regex LocalFileSystemOrNetworkPathRegex = new Regex(@"^([A-Z]:|\\).*");
+
         private string _cloneRemotePath;
         public string CloneRemotePath
         {
@@ -437,7 +440,8 @@ namespace Rubberduck.UI.SourceControl
                 if (_cloneRemotePath != value)
                 {
                     _cloneRemotePath = value;
-                    LocalDirectory = Path.Combine(_config.DefaultRepositoryLocation, _cloneRemotePath.Split('/').Last().Replace(".git", string.Empty));
+                    var delimiter = LocalFileSystemOrNetworkPathRegex.IsMatch(_config.DefaultRepositoryLocation) ? '\\' : '/';
+                    LocalDirectory = Path.Combine(_config.DefaultRepositoryLocation, _cloneRemotePath.Split(delimiter).Last().Replace(".git", string.Empty));
                     OnPropertyChanged();
                     OnPropertyChanged("IsNotValidCloneRemotePath");
                 }
