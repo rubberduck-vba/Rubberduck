@@ -742,6 +742,14 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public void ClearAllReferences()
+        {
+            foreach (var declaration in AllDeclarations)
+            {
+                declaration.ClearReferences();
+            }
+        }
+
         public bool ClearStateCache(IVBComponent component, bool notifyStateChanged = false)
         {
             return component != null && ClearStateCache(new QualifiedModuleName(component), notifyStateChanged);
