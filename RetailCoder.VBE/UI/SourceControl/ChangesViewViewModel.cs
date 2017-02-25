@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NLog;
@@ -149,7 +150,9 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
-                Provider.Undo(Path.Combine(Provider.CurrentRepository.LocalLocation, fileStatusEntry.FilePath));
+                var file = Path.GetFileName(fileStatusEntry.FilePath);
+                Debug.Assert(!string.IsNullOrEmpty(file));
+                Provider.Undo(Path.Combine(Provider.CurrentRepository.LocalLocation, file));
                 RefreshView();
             }
             catch (SourceControlException ex)
