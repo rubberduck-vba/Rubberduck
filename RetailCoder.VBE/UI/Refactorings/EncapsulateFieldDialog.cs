@@ -171,7 +171,7 @@ namespace Rubberduck.UI.Refactorings
         {
             InvalidPropertyNameIcon.Visible = ValidateName(NewPropertyName, ParameterName) ||
                                               _state.AllUserDeclarations.Where(a => a.ParentScope == TargetDeclaration.ParentScope)
-                                                                        .Any(a => a.IdentifierName == NewPropertyName);
+                                                                        .Any(a => a.IdentifierName.Equals(NewPropertyName, StringComparison.InvariantCultureIgnoreCase));
 
             SetOkButtonEnabledState();
         }
@@ -188,8 +188,8 @@ namespace Rubberduck.UI.Refactorings
             var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
             return TargetDeclaration == null
-                               || changedName == TargetDeclaration.IdentifierName
-                               || changedName == otherName
+                               || changedName.Equals(TargetDeclaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
+                               || changedName.Equals(otherName, StringComparison.InvariantCultureIgnoreCase)
                                || !char.IsLetter(changedName.FirstOrDefault())
                                || tokenValues.Contains(ParameterName, StringComparer.InvariantCultureIgnoreCase)
                                || changedName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
