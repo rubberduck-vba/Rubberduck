@@ -215,7 +215,7 @@ namespace Rubberduck.Parsing.VBA
                 token.ThrowIfCancellationRequested();
 
             _projectDeclarations.Clear();
-            State.ClearBuiltInReferences();
+            State.ClearAllReferences();
 
             ParseComponents(toParse, token);
 
@@ -612,7 +612,7 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
 
-            var componentsRemoved = ClearStateCashForRemovedComponents(components);
+            var componentsRemoved = CleanUpRemovedComponents(components);
 
                 token.ThrowIfCancellationRequested();
 
@@ -642,10 +642,10 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
-        /// Clears state cach for removed components.
+        /// Clears state cache of removed components.
         /// Returns whether components have been removed.
         /// </summary>
-        private bool ClearStateCashForRemovedComponents(List<IVBComponent> components)
+        private bool CleanUpRemovedComponents(List<IVBComponent> components)
         {
             var removedModuledecalrations = RemovedModuleDeclarations(components);
             var componentRemoved = removedModuledecalrations.Any();
