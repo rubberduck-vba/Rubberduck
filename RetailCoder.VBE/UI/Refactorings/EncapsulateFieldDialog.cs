@@ -29,56 +29,18 @@ namespace Rubberduck.UI.Refactorings
 
         public Declaration TargetDeclaration { get; set; }
 
-        public bool CanImplementLetSetterType
-        {
-            get { return LetSetterTypeCheckBox.Enabled; }
-            set
-            {
-                if (!value)
-                {
-                    LetSetterTypeCheckBox.Checked = false;
-                }
-                LetSetterTypeCheckBox.Enabled = value;
-            }
-        }
+        public bool CanImplementLetSetterType { get; set; }
 
-        public bool CanImplementSetSetterType
-        {
-            get { return SetSetterTypeCheckBox.Enabled; }
-            set
-            {
-                if (!value)
-                {
-                    SetSetterTypeCheckBox.Checked = false;
-                }
-                SetSetterTypeCheckBox.Enabled = value;
-            }
-        }
+        public bool CanImplementSetSetterType { get; set; }
         
         public bool MustImplementLetSetterType
         {
-            get { return LetSetterTypeCheckBox.Checked; }
-            set
-            {
-                if (value)
-                {
-                    LetSetterTypeCheckBox.Checked = true;
-                }
-                LetSetterTypeCheckBox.Enabled = !value;
-            }
+            get { return CanImplementLetSetterType && !CanImplementSetSetterType; }
         }
 
         public bool MustImplementSetSetterType
         {
-            get { return SetSetterTypeCheckBox.Checked; }
-            set
-            {
-                if (value)
-                {
-                    SetSetterTypeCheckBox.Checked = true;
-                }
-                SetSetterTypeCheckBox.Enabled = !value;
-            }
+            get { return CanImplementSetSetterType && !CanImplementLetSetterType; }
         }
 
         public EncapsulateFieldDialog(RubberduckParserState state, IIndenter indenter)
@@ -90,10 +52,7 @@ namespace Rubberduck.UI.Refactorings
 
             PropertyNameTextBox.TextChanged += PropertyNameBox_TextChanged;
             ParameterNameTextBox.TextChanged += VariableNameBox_TextChanged;
-
-            LetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
-            SetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
-
+            
             Shown += EncapsulateFieldDialog_Shown;
         }
 
@@ -116,9 +75,34 @@ namespace Rubberduck.UI.Refactorings
 
         void EncapsulateFieldDialog_Shown(object sender, EventArgs e)
         {
+            if (MustImplementSetSetterType)
+            {
+                SetSetterTypeCheckBox.Checked = true;
+                DisableAssignmentSelection();
+            }
+            else
+            {
+                LetSetterTypeCheckBox.Checked = true;
+                if (MustImplementLetSetterType)
+                {
+                    DisableAssignmentSelection();
+                }
+                else
+                {
+                    LetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
+                    SetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
+                }
+            }
+
             ValidatePropertyName();
             ValidateVariableName();
             UpdatePreview();
+        }
+
+        private void DisableAssignmentSelection()
+        {
+            LetSetterTypeCheckBox.Enabled = false;
+            SetSetterTypeCheckBox.Enabled = false;            
         }
 
         private void PropertyNameBox_TextChanged(object sender, EventArgs e)
@@ -142,10 +126,7 @@ namespace Rubberduck.UI.Refactorings
         {
             if (TargetDeclaration == null) { return string.Empty; }
 
-            var getterText = string.Join(Environment.NewLine,
-                string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
-                string.Format("    {0}{1} = {2}", MustImplementSetSetterType || !CanImplementLetSetterType ? "Set " : string.Empty, NewPropertyName, TargetDeclaration.IdentifierName),
-                "End Property");
+            var getterText = GenerateGetter();
 
             var letterText = string.Join(Environment.NewLine,
                 string.Format(Environment.NewLine + Environment.NewLine + "Public Property Let {0}(ByVal {1} As {2})",
@@ -160,11 +141,30 @@ namespace Rubberduck.UI.Refactorings
                 "End Property");
 
             var propertyText = getterText +
-                    (MustImplementLetSetterType ? letterText : string.Empty) +
-                    (MustImplementSetSetterType ? setterText : string.Empty);
+                    (LetSetterTypeCheckBox.Checked ? letterText : string.Empty) +
+                    (SetSetterTypeCheckBox.Checked ? setterText : string.Empty);
 
             var propertyTextLines = propertyText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines));
+        }
+
+        private string GenerateGetter()
+        {
+            if (SetSetterTypeCheckBox.Checked && LetSetterTypeCheckBox.Checked)
+            {
+                return string.Join(Environment.NewLine,
+                    string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
+                    string.Format("    If VarType({0}) = vbObject Then", TargetDeclaration.IdentifierName),
+                    string.Format("        Set {0} = {1}", NewPropertyName, TargetDeclaration.IdentifierName),
+                                  "    Else",
+                    string.Format("        {0} = {1}", NewPropertyName, TargetDeclaration.IdentifierName),
+                                  "    End If",
+                                  "End Property");
+            }
+            return string.Join(Environment.NewLine,
+                string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
+                string.Format("    {0}{1} = {2}", SetSetterTypeCheckBox.Checked ? "Set " : string.Empty, NewPropertyName, TargetDeclaration.IdentifierName),
+                                "End Property");
         }
 
         private void ValidatePropertyName()

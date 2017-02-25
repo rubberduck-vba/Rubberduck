@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -21,22 +23,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _model = model;
         }
 
-        private static readonly string[] PrimitiveTypes =
-        {
-            Tokens.Boolean,
-            Tokens.Byte,
-            Tokens.Date,
-            Tokens.Decimal,
-            Tokens.Double,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.LongPtr,
-            Tokens.Integer,
-            Tokens.Single,
-            Tokens.String,
-            Tokens.StrPtr
-        };
-
         public EncapsulateFieldModel Show()
         {
             if (_model.TargetDeclaration == null) { return null; }
@@ -44,19 +30,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _view.TargetDeclaration = _model.TargetDeclaration;
             _view.NewPropertyName = _model.TargetDeclaration.IdentifierName;
 
+            var isVariant = _model.TargetDeclaration.AsTypeName.Equals(Tokens.Variant);
+            var isValueType = !isVariant && (SymbolList.ValueTypes.Contains(_model.TargetDeclaration.AsTypeName) ||
+                              _model.TargetDeclaration.DeclarationType == DeclarationType.Enumeration);
+
             if (_model.TargetDeclaration.References.Any(r => r.IsAssignment))
             {
-                if (PrimitiveTypes.Contains(_model.TargetDeclaration.AsTypeName))
-                {
-                    _view.MustImplementLetSetterType = true;
-                    _view.CanImplementSetSetterType = false;
-                }
-                else if (_model.TargetDeclaration.AsTypeName != Tokens.Variant)
-                {
-                    _view.MustImplementSetSetterType = true;
-                    _view.CanImplementLetSetterType = false;
-                }
-                else
+                if (isVariant)
                 {
                     RuleContext node = _model.TargetDeclaration.References.First(r => r.IsAssignment).Context;
                     while (!(node is VBAParser.LetStmtContext) && !(node is VBAParser.SetStmtContext))
@@ -66,25 +46,36 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                     if (node is VBAParser.LetStmtContext)
                     {
-                        _view.MustImplementLetSetterType = true;
-                        _view.CanImplementSetSetterType = false;
+                        _view.CanImplementLetSetterType = true;
                     }
                     else
                     {
-                        _view.MustImplementSetSetterType = true;
-                        _view.CanImplementLetSetterType = false;
-                    }
+                        _view.CanImplementSetSetterType = true;
+                    }                    
+                }
+                else if (isValueType)
+                {
+                    _view.CanImplementLetSetterType = true;
+                }
+                else
+                {
+                    _view.CanImplementSetSetterType = true;
                 }
             }
             else
             {
-                if (PrimitiveTypes.Contains(_model.TargetDeclaration.AsTypeName))
+                if (isValueType)
                 {
-                    _view.CanImplementSetSetterType = false;
+                    _view.CanImplementLetSetterType = true;
                 }
-                else if (_model.TargetDeclaration.AsTypeName != Tokens.Variant)
+                else if (!isVariant)
                 {
-                    _view.CanImplementLetSetterType = false;
+                    _view.CanImplementSetSetterType = true;
+                }
+                else
+                {
+                    _view.CanImplementLetSetterType = true;
+                    _view.CanImplementSetSetterType = true;
                 }
             }
 

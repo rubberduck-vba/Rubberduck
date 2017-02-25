@@ -11,8 +11,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool CanImplementLetSetterType { get; set; }
         bool CanImplementSetSetterType { get; set; }
 
-        bool MustImplementLetSetterType { get; set; }
-        bool MustImplementSetSetterType { get; set; }
+        bool MustImplementLetSetterType { get; }
+        bool MustImplementSetSetterType { get; }
 
         string ParameterName { get; set; }
     }
