@@ -98,15 +98,23 @@ namespace Rubberduck.Parsing.Symbols
                 cls.References.Where(reference => ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context))
                     .Select(reference => new { IdentifierReference = reference, Context = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context)}));
 
-            var interfaceMembers = implementsInstructions.Select(item => new
+            var interfaceModules = implementsInstructions.Select(item => item.IdentifierReference.Declaration).Distinct();
+
+            var interfaceMembers = interfaceModules.Select(item => new
                 {
-                    InterfaceModule = item.IdentifierReference.Declaration,
-                    InterfaceMembers = _declarations[item.IdentifierReference.Declaration.QualifiedName.QualifiedModuleName]
-                    .Where(member => member.DeclarationType.HasFlag(DeclarationType.Member))
+                    InterfaceModule = item,
+                    InterfaceMembers = _declarations[item.QualifiedName.QualifiedModuleName]
+                        .Where(member => member.DeclarationType.HasFlag(DeclarationType.Member))
                 });
 
             _interfaceMembers = new Lazy<ConcurrentDictionary<Declaration, Declaration[]>>(() =>
-               new ConcurrentDictionary<Declaration, Declaration[]>(interfaceMembers.ToDictionary(item => item.InterfaceModule, item => item.InterfaceMembers.ToArray())), true);
+                 new ConcurrentDictionary<Declaration, Declaration[]>(
+                         interfaceMembers.ToDictionary(
+                                                item => item.InterfaceModule,
+                                                item => item.InterfaceMembers.ToArray()
+                                            )
+                     )
+                , true);
 
             var implementingNames = new Lazy<IEnumerable<string>>(() => implementsInstructions.SelectMany(item =>
                     _declarations[item.IdentifierReference.Declaration.QualifiedName.QualifiedModuleName]
