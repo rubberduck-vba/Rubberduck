@@ -129,7 +129,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             Logger.Trace("Component {0} added", e.Component.Name);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Component.Name);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => Path.GetFileNameWithoutExtension(stat.FilePath) == e.Component.Name);
             if (fileStatus != null)
             {
                 Provider.AddFile(fileStatus.FilePath);
@@ -146,7 +146,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             Logger.Trace("Component {0] removed", e.Component.Name);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Component.Name);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => Path.GetFileNameWithoutExtension(stat.FilePath) == e.Component.Name);
             if (fileStatus != null)
             {
                 Provider.RemoveFile(fileStatus.FilePath, true);
@@ -163,16 +163,16 @@ namespace Rubberduck.UI.SourceControl
             }
 
             Logger.Trace("Component {0} renamed to {1}", e.OldName, e.Component.Name);
-            var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.OldName);
+            var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => Path.GetFileNameWithoutExtension(stat.FilePath) == e.OldName);
             if (fileStatus != null)
             {
                 var directory = Provider.CurrentRepository.LocalLocation;
-                directory += directory.EndsWith("\\") ? string.Empty : "\\";
+                directory += directory.EndsWith(@"\") ? string.Empty : @"\";
 
-                var fileExt = "." + fileStatus.FilePath.Split('.').Last();
+                var fileExt = "." + Path.GetExtension(fileStatus.FilePath);
 
                 _fileSystemWatcher.EnableRaisingEvents = false;
-                File.Move(directory + fileStatus.FilePath, directory + e.Component.Name + fileExt);
+                File.Move(Path.Combine(directory, fileStatus.FilePath), Path.Combine(directory, e.Component.Name + fileExt));
                 _fileSystemWatcher.EnableRaisingEvents = true;
 
                 Provider.RemoveFile(e.OldName + fileExt, false);
@@ -260,7 +260,7 @@ namespace Rubberduck.UI.SourceControl
         private void _fileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             // the file system filter doesn't support multiple filters
-            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            if (!VbFileExtensions.Contains(Path.GetExtension(e.Name)))
             {
                 return;
             }
@@ -282,7 +282,7 @@ namespace Rubberduck.UI.SourceControl
         private void _fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
             // the file system filter doesn't support multiple filters
-            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            if (!VbFileExtensions.Contains(Path.GetExtension(e.Name)))
             {
                 return;
             }
@@ -327,7 +327,7 @@ namespace Rubberduck.UI.SourceControl
         private void _fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
             // the file system filter doesn't support multiple filters
-            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            if (!VbFileExtensions.Contains(Path.GetExtension(e.Name)))
             {
                 return;
             }
@@ -438,9 +438,10 @@ namespace Rubberduck.UI.SourceControl
                 if (_cloneRemotePath != value)
                 {
                     _cloneRemotePath = value;
+                    //TODO
                     LocalDirectory =
                         _config.DefaultRepositoryLocation +
-                        (_config.DefaultRepositoryLocation.EndsWith("\\") ? string.Empty : "\\") +
+                        (_config.DefaultRepositoryLocation.EndsWith(@"\") ? string.Empty : @"\") +
                         _cloneRemotePath.Split('/').Last().Replace(".git", string.Empty);
 
                     OnPropertyChanged();
@@ -535,7 +536,7 @@ namespace Rubberduck.UI.SourceControl
             get { return _errorIcon; }
             set
             {
-                if (_errorIcon != value)
+                if (!Equals(_errorIcon, value))
                 {
                     _errorIcon = value;
                     OnPropertyChanged();
