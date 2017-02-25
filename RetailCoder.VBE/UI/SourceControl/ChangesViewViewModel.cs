@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using NLog;
 using Rubberduck.SourceControl;
@@ -148,12 +149,7 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
-                var localLocation = Provider.CurrentRepository.LocalLocation.EndsWith("\\")
-                    ? Provider.CurrentRepository.LocalLocation
-                    : Provider.CurrentRepository.LocalLocation + "\\";
-
-                Provider.Undo(localLocation + fileStatusEntry.FilePath);
-
+                Provider.Undo(Path.Combine(Provider.CurrentRepository.LocalLocation, fileStatusEntry.FilePath));
                 RefreshView();
             }
             catch (SourceControlException ex)

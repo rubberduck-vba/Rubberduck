@@ -168,8 +168,6 @@ namespace Rubberduck.UI.SourceControl
             if (fileStatus != null)
             {
                 var directory = Provider.CurrentRepository.LocalLocation;
-                directory += directory.EndsWith(@"\") ? string.Empty : @"\";
-
                 var fileExt = "." + Path.GetExtension(fileStatus.FilePath);
 
                 _fileSystemWatcher.EnableRaisingEvents = false;
@@ -439,11 +437,7 @@ namespace Rubberduck.UI.SourceControl
                 if (_cloneRemotePath != value)
                 {
                     _cloneRemotePath = value;
-                    LocalDirectory =
-                        _config.DefaultRepositoryLocation +
-                        (_config.DefaultRepositoryLocation.EndsWith(@"\") ? string.Empty : @"\") +
-                        _cloneRemotePath.Split('/').Last().Replace(".git", string.Empty);
-
+                    LocalDirectory = Path.Combine(_config.DefaultRepositoryLocation, _cloneRemotePath.Split('/').Last().Replace(".git", string.Empty));
                     OnPropertyChanged();
                     OnPropertyChanged("IsNotValidCloneRemotePath");
                 }
