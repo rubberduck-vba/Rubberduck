@@ -173,7 +173,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             var projectId = project.ProjectId;
 
             var handler = ProjectRenamed;
-            if (handler != null)
+            if (handler != null && projectId != null)
             {
                 handler(project, new ProjectRenamedEventArgs(projectId, project, oldName));
             }
@@ -201,7 +201,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     project.AssignProjectId();
                 }
                 var projectId = project.ProjectId;
-                handler.Invoke(project, new ProjectEventArgs(projectId, project));
+                if (projectId != null)
+                {
+                    handler.Invoke(project, new ProjectEventArgs(projectId, project));
+                }
             }
         }
 
