@@ -145,7 +145,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         private static ItemAddedDelegate _projectAdded;
         private static void OnProjectAdded(VB.VBProject vbProject)
         {
-            if (IsInDesignMode()) OnDispatch(ProjectAdded, vbProject, true);
+            if (IsInDesignMode() && vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
+            {
+                OnDispatch(ProjectAdded, vbProject, true);
+            }
         }
 
         public static event EventHandler<ProjectEventArgs> ProjectRemoved;
@@ -153,7 +156,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         private static ItemRemovedDelegate _projectRemoved;
         private static void OnProjectRemoved(VB.VBProject vbProject)
         {
-            if (IsInDesignMode()) OnDispatch(ProjectRemoved, vbProject);
+            if (IsInDesignMode() && vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
+            {
+                OnDispatch(ProjectRemoved, vbProject);
+            }
         }
 
         public static event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
@@ -161,7 +167,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         private static ItemRenamedDelegate _projectRenamed;
         private static void OnProjectRenamed(VB.VBProject vbProject, string oldName)
         {
-            if (!IsInDesignMode()) { return; }
+            if (!IsInDesignMode() || vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+            {
+                return;
+            }
 
             var project = new VBProject(vbProject);
             var projectId = project.ProjectId;
@@ -178,13 +187,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         private static ItemActivatedDelegate _projectActivated;
         private static void OnProjectActivated(VB.VBProject vbProject)
         {
-            if (IsInDesignMode()) OnDispatch(ProjectActivated, vbProject);
+            if (IsInDesignMode() && vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
+            {
+                OnDispatch(ProjectActivated, vbProject);
+            }
         }
 
         private static void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
         {
             var handler = dispatched;
-            if (handler != null)
+            if (handler != null && vbProject.Protection != VB.vbext_ProjectProtection.vbext_pp_locked)
             {
                 var project = new VBProject(vbProject);
                 if (assignId)
@@ -201,7 +213,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (_projects == null) return true;
             foreach (var project in _projects.Cast<VB.VBProject>())
             {
-                if (project.Mode != VB.vbext_VBAMode.vbext_vm_Design) return false;
+                if (project.Mode != VB.vbext_VBAMode.vbext_vm_Design)
+                {
+                    return false;
+                }
             }
             return true;
         }
