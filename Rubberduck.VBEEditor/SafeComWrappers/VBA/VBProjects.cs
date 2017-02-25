@@ -84,7 +84,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             if (!IsWrappingNullReference)
             {
-                DetatchEvents();
                 for (var i = 1; i <= Count; i++)
                 {
                     this[i].Release();
@@ -111,10 +110,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         #region Events
 
-        private static bool _eventsAttached;
         private static void AttachEvents()
         {
-            if (!_eventsAttached)
+            if (_projects != null)
             {
                 _projectAdded = OnProjectAdded;
                 _projectRemoved = OnProjectRemoved;
@@ -124,19 +122,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
                 ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
                 ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
-                _eventsAttached = true;
             }
         }
 
-        private static void DetatchEvents()
+        internal static void DetatchEvents()
         {
-            if (!_eventsAttached && _projects != null)
+            if (_projects != null)
             {
                 ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
                 ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
                 ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
                 ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
-                _eventsAttached = false;
+                _projects = null;
             }
         }
 
