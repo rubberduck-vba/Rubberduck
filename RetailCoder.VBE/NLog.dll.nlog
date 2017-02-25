@@ -16,12 +16,6 @@
       deleteOldFileOnStartup="true"
       keepFileOpen="false"
       encoding="UTF-8"/>
-    <target 
-      xsi:type="EventLog"
-      name="eventlog" 
-      source="Rubberduck-VBA"
-      layout="${message}${newline}Call site: ${callsite:className=true:methodName=true}${newline}Logger: ${logger}${newline}${exception:format=tostring}">
-    </target>
     <target
       xsi:type="Debugger"
       name="debuglog"
