@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NLog;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -219,45 +220,12 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        // Courtesy of http://stackoverflow.com/a/12093994/4088852
+        private static readonly Regex ValidBranchNameRegex = new Regex(@"^(?!@$|build-|/|.*([/.]\.|//|@\{|\\))[^\000-\037\177 ~^:?*[]+/[^\000-\037\177 ~^:?*[]+(?<!\.lock|[/.])$");
+
         public bool IsNotValidBranchName
         {
-            get { return !IsValidBranchName(NewBranchName); }
-        }
-
-        private bool IsValidBranchName(string name)
-        {
-            // Rules taken from https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
-            var isValidName = !string.IsNullOrEmpty(name) &&
-                              !LocalBranches.Contains(name) &&
-                              !name.Any(char.IsWhiteSpace) &&
-                              !name.Contains("..") &&
-                              !name.Contains("~") &&
-                              !name.Contains("^") &&
-                              !name.Contains(":") &&
-                              !name.Contains("?") &&
-                              !name.Contains("*") &&
-                              !name.Contains("[") &&
-                              !name.Contains("//") &&
-                              name.FirstOrDefault() != '/' &&
-                              name.LastOrDefault() != '/' &&
-                              name.LastOrDefault() != '.' &&
-                              name != "@" &&
-                              !name.Contains("@{") &&
-                              !name.Contains("\\");
-
-            if (!isValidName)
-            {
-                return false;
-            }
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var section in name.Split('/'))
-            {
-                isValidName = isValidName 
-                    && section.FirstOrDefault() != '.' 
-                    && !section.EndsWith(".lock");
-            }
-
-            return isValidName;
+            get { return !ValidBranchNameRegex.IsMatch(NewBranchName); }
         }
 
         private bool _displayMergeBranchesGrid;
