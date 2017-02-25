@@ -17,6 +17,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using resx = Rubberduck.UI.SourceControl.SourceControl;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -438,7 +439,6 @@ namespace Rubberduck.UI.SourceControl
                 if (_cloneRemotePath != value)
                 {
                     _cloneRemotePath = value;
-                    //TODO
                     LocalDirectory =
                         _config.DefaultRepositoryLocation +
                         (_config.DefaultRepositoryLocation.EndsWith(@"\") ? string.Empty : @"\") +
@@ -747,7 +747,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private bool _isCloning = false;
+        private bool _isCloning;
         private void CloneRepo(SecureCredentials credentials = null)
         {
             _isCloning = true;
@@ -770,7 +770,7 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 const string unauthorizedMessage = "Request failed with status code: 401";
-                if (ex.InnerException.Message != unauthorizedMessage)
+                if (ex.InnerException != null && ex.InnerException.Message != unauthorizedMessage)
                 {
                     _isCloning = false;
                 }
