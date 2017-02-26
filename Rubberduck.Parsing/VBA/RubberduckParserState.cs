@@ -1090,6 +1090,63 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public void AddModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule)
+        {
+            ModuleState referencedModuleState;
+            ModuleState referencingModuleState;
+            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState) || !_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+            {
+                return;
+            }
+            if (referencingModuleState.HasReferenceToModule.Contains(referencedModule))
+            {
+                return;
+            }
+            referencedModuleState.IsReferencedByModule.AddOrUpdate(referencingModule, 1, (key,value) => value);
+            referencingModuleState.HasReferenceToModule.Add(referencedModule);
+        }
+
+        public void ClearModuleToModuleReferencesFromModule(QualifiedModuleName referencingModule)
+        {
+            ModuleState referencingModuleState;
+            if (!_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+            {
+                return;
+            }
+
+            ModuleState referencedModuleState;
+            byte dummyOutValue;
+            foreach (var referencedModule in referencingModuleState.HasReferenceToModule)
+            { 
+                if (!_moduleStates.TryGetValue(referencedModule,out referencedModuleState))
+                {
+                    continue;
+                }
+                referencedModuleState.IsReferencedByModule.TryRemove(referencingModule,out dummyOutValue);
+            }
+            referencingModuleState.RefreshHasReferenceToModule();
+        }
+
+        public HashSet<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule)
+        { 
+            ModuleState referencingModuleState;
+            if (!_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+            {
+                return new HashSet<QualifiedModuleName>();
+            }
+            return new HashSet<QualifiedModuleName>(referencingModuleState.HasReferenceToModule);
+        }
+
+        public HashSet<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
+        {
+            ModuleState referencedModuleState;
+            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState))
+            {
+                return new HashSet<QualifiedModuleName>();
+            }
+            return new HashSet<QualifiedModuleName>(referencedModuleState.IsReferencedByModule.Keys);
+        }
+
         private bool _isDisposed;
 
         public void Dispose()
