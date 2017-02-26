@@ -14,6 +14,7 @@ namespace Rubberduck.UI.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
+        private PropertyGenerator _previewGenerator; 
 
         public string NewPropertyName
         {
@@ -32,7 +33,11 @@ namespace Rubberduck.UI.Refactorings
         public bool CanImplementLetSetterType { get; set; }
 
         public bool CanImplementSetSetterType { get; set; }
-        
+
+        public bool LetSetterSelected { get { return LetSetterTypeCheckBox.Checked; } }
+
+        public bool SetSetterSelected { get { return SetSetterTypeCheckBox.Checked; } }
+
         public bool MustImplementLetSetterType
         {
             get { return CanImplementLetSetterType && !CanImplementSetSetterType; }
@@ -47,17 +52,17 @@ namespace Rubberduck.UI.Refactorings
         {
             _state = state;
             _indenter = indenter;
+
             InitializeComponent();
             LocalizeDialog();
-
-            PropertyNameTextBox.TextChanged += PropertyNameBox_TextChanged;
-            ParameterNameTextBox.TextChanged += VariableNameBox_TextChanged;
             
             Shown += EncapsulateFieldDialog_Shown;
         }
 
         void EncapsulateFieldDialog_SetterTypeChanged(object sender, EventArgs e)
         {
+            _previewGenerator.GenerateSetter = SetSetterTypeCheckBox.Checked;
+            _previewGenerator.GenerateLetter = LetSetterTypeCheckBox.Checked;
             UpdatePreview();
         }
 
@@ -78,93 +83,57 @@ namespace Rubberduck.UI.Refactorings
             if (MustImplementSetSetterType)
             {
                 SetSetterTypeCheckBox.Checked = true;
-                DisableAssignmentSelection();
+                LetSetterTypeCheckBox.Enabled = false;
             }
             else
             {
                 LetSetterTypeCheckBox.Checked = true;
-                if (MustImplementLetSetterType)
-                {
-                    DisableAssignmentSelection();
-                }
-                else
-                {
-                    LetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
-                    SetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
-                }
+                SetSetterTypeCheckBox.Enabled = !MustImplementLetSetterType;
             }
 
             ValidatePropertyName();
             ValidateVariableName();
-            UpdatePreview();
-        }
 
-        private void DisableAssignmentSelection()
-        {
-            LetSetterTypeCheckBox.Enabled = false;
-            SetSetterTypeCheckBox.Enabled = false;            
+            _previewGenerator = new PropertyGenerator
+            {
+                PropertyName = NewPropertyName,
+                AsTypeName = TargetDeclaration.AsTypeName,
+                BackingField = TargetDeclaration.IdentifierName,
+                ParameterName = ParameterName,
+                GenerateSetter = SetSetterTypeCheckBox.Checked,
+                GenerateLetter = LetSetterTypeCheckBox.Checked
+            };
+
+            LetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
+            SetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
+            PropertyNameTextBox.TextChanged += PropertyNameBox_TextChanged;
+            ParameterNameTextBox.TextChanged += VariableNameBox_TextChanged;
+
+            UpdatePreview();
         }
 
         private void PropertyNameBox_TextChanged(object sender, EventArgs e)
         {
             ValidatePropertyName();
+            _previewGenerator.PropertyName = NewPropertyName;
             UpdatePreview();
         }
 
         private void VariableNameBox_TextChanged(object sender, EventArgs e)
         {
             ValidateVariableName();
+            _previewGenerator.ParameterName = ParameterName;
             UpdatePreview();
         }
 
         private void UpdatePreview()
         {
-            PreviewBox.Text = GetPropertyText();
-        }
-
-        private string GetPropertyText()
-        {
-            if (TargetDeclaration == null) { return string.Empty; }
-
-            var getterText = GenerateGetter();
-
-            var letterText = string.Join(Environment.NewLine,
-                string.Format(Environment.NewLine + Environment.NewLine + "Public Property Let {0}(ByVal {1} As {2})",
-                    NewPropertyName, ParameterName, TargetDeclaration.AsTypeName),
-                string.Format("    {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
-                "End Property");
-
-            var setterText = string.Join(Environment.NewLine,
-                string.Format(Environment.NewLine + Environment.NewLine + "Public Property Set {0}(ByVal {1} As {2})",
-                    NewPropertyName, ParameterName, TargetDeclaration.AsTypeName),
-                string.Format("    Set {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
-                "End Property");
-
-            var propertyText = getterText +
-                    (LetSetterTypeCheckBox.Checked ? letterText : string.Empty) +
-                    (SetSetterTypeCheckBox.Checked ? setterText : string.Empty);
-
-            var propertyTextLines = propertyText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines));
-        }
-
-        private string GenerateGetter()
-        {
-            if (SetSetterTypeCheckBox.Checked && LetSetterTypeCheckBox.Checked)
+            if (TargetDeclaration == null)
             {
-                return string.Join(Environment.NewLine,
-                    string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
-                    string.Format("    If VarType({0}) = vbObject Then", TargetDeclaration.IdentifierName),
-                    string.Format("        Set {0} = {1}", NewPropertyName, TargetDeclaration.IdentifierName),
-                                  "    Else",
-                    string.Format("        {0} = {1}", NewPropertyName, TargetDeclaration.IdentifierName),
-                                  "    End If",
-                                  "End Property");
+                PreviewBox.Text = string.Empty;
             }
-            return string.Join(Environment.NewLine,
-                string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
-                string.Format("    {0}{1} = {2}", SetSetterTypeCheckBox.Checked ? "Set " : string.Empty, NewPropertyName, TargetDeclaration.IdentifierName),
-                                "End Property");
+            var propertyTextLines = _previewGenerator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            PreviewBox.Text = string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, true));
         }
 
         private void ValidatePropertyName()
