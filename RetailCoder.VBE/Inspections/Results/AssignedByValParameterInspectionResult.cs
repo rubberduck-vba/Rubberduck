@@ -11,8 +11,13 @@ namespace Rubberduck.Inspections.Results
     public class AssignedByValParameterInspectionResult : InspectionResultBase
     {
         private IEnumerable<QuickFixBase> _quickFixes;
+        private IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
 
-        public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target) : base(inspection, target) { }
+        public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target, IAssignedByValParameterQuickFixDialogFactory dialogFactory) 
+            : base(inspection, target)
+        {
+            _dialogFactory = dialogFactory;
+        }
 
         public override string Description
         {
@@ -26,10 +31,9 @@ namespace Rubberduck.Inspections.Results
         {
             get
             {
-                IAssignedByValParameterQuickFixDialogFactory factory = new AssignedByValParameterQuickFixDialogFactory();
                 return _quickFixes ?? (_quickFixes = new QuickFixBase[]
                 {
-                    new AssignedByValParameterMakeLocalCopyQuickFix(Target, QualifiedSelection, factory),
+                    new AssignedByValParameterMakeLocalCopyQuickFix(Target, QualifiedSelection, _dialogFactory),
                     new PassParameterByReferenceQuickFix(Target, QualifiedSelection),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
                 });

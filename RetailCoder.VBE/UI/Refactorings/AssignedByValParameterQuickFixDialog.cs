@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Refactorings
         private string[] _identifierNamesAlreadyDeclared;
         private string _identifierName;
 
-        public AssignedByValParameterQuickFixDialog(string identifierName, string declarationType)
+        internal AssignedByValParameterQuickFixDialog(string identifierName, string declarationType)
         {
             InitializeComponent();
             InitializeCaptions(identifierName, declarationType);

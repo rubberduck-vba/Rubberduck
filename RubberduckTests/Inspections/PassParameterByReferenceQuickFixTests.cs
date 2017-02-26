@@ -166,7 +166,7 @@ End Sub
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new AssignedByValParameterInspection(null);
+            var inspection = new AssignedByValParameterInspection(null,null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -175,7 +175,7 @@ End Sub
         public void InspectionName()
         {
             const string inspectionName = "AssignedByValParameterInspection";
-            var inspection = new AssignedByValParameterInspection(null);
+            var inspection = new AssignedByValParameterInspection(null,null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -203,7 +203,7 @@ End Sub
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new AssignedByValParameterInspection(parser.State);
+            var inspection = new AssignedByValParameterInspection(parser.State,null);
             return inspection.GetInspectionResults();
         }
 

@@ -10,18 +10,14 @@ using Rubberduck.Inspections.Resources;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
-using System;
-using System.Windows.Forms;
+
 
 namespace RubberduckTests.Inspections
 {
 
     [TestClass]
-    public class AssignedByValParameterMakeLocalCopyQuickFixTests : IAssignedByValParameterQuickFixDialogFactory
+    public class AssignedByValParameterMakeLocalCopyQuickFixTests
     {
-        private IAssignedByValParameterQuickFixDialog _mockDialog;
 
         [TestMethod]
         [TestCategory("Inspections")]
@@ -442,7 +438,7 @@ End Function
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new AssignedByValParameterInspection(null);
+            var inspection = new AssignedByValParameterInspection(null,null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -451,7 +447,7 @@ End Function
         public void InspectionName()
         {
             const string inspectionName = "AssignedByValParameterInspection";
-            var inspection = new AssignedByValParameterInspection(null);
+            var inspection = new AssignedByValParameterInspection(null,null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -459,40 +455,11 @@ End Function
         private string ApplyLocalVariableQuickFixToVBAFragment(string inputCode, string userEnteredName = "")
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            var inspectionResults = GetInspectionResults(vbe);
+            var inspectionResults = GetInspectionResults(vbe, userEnteredName);
 
-            //If the test calls for a specific user entered variable name, then
-            //make the Mock dialog now so we can retain the input
-            if (userEnteredName.Length > 0)
-            {
-                var mockDialog = new MockAssignedByValParameterQuickFixDialog();
-                mockDialog.SetupUserEnteredName(userEnteredName);
-                _mockDialog = (IAssignedByValParameterQuickFixDialog)mockDialog;
-            }
-
-            var quickFixBase = inspectionResults.First().QuickFixes.Single(s => s is AssignedByValParameterMakeLocalCopyQuickFix);
-
-            //Create a new instance of the QuickFix referencing the test-version of the dialog factory
-            var testQuickFix = new AssignedByValParameterMakeLocalCopyQuickFix(inspectionResults.FirstOrDefault().Target, quickFixBase.Selection, this);
-            testQuickFix.Fix();
+            inspectionResults.First().QuickFixes.Single(s => s is AssignedByValParameterMakeLocalCopyQuickFix).Fix();
 
             return GetModuleContent(vbe);
-        }
-        private string GetModuleContent(Mock<IVBE> vbe)
-        {
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            return module.Content();
-        }
-
-        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(Mock<IVBE> vbe)
-        {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new AssignedByValParameterInspection(parser.State);
-            return inspection.GetInspectionResults();
         }
 
         private Mock<IVBE> BuildMockVBEStandardModuleForVBAFragment(string inputCode)
@@ -501,52 +468,21 @@ End Function
             IVBComponent component;
             return builder.BuildFromSingleStandardModule(inputCode, out component);
         }
-
-        //Test class provides the dialog factory implementation for tests
-        public IAssignedByValParameterQuickFixDialog Create(string identifier, string identifierType)
+        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(Mock<IVBE> vbe, string userEnteredName)
         {
-            if(_mockDialog == null)
-            {
-                _mockDialog = (IAssignedByValParameterQuickFixDialog)new MockAssignedByValParameterQuickFixDialog();
-            }
-            return _mockDialog;
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new AssignedByValParameterInspection(parser.State,new AssignedByValParameterQuickFixMockDialogFactory(userEnteredName));
+            return inspection.GetInspectionResults();
         }
 
-        //Provide an IAssignedByValParameterQuickFixDialog implementation for testing
-        public class MockAssignedByValParameterQuickFixDialog : IAssignedByValParameterQuickFixDialog
+        private string GetModuleContent(Mock<IVBE> vbe)
         {
-            private string _testLocalVariableName;
-            public MockAssignedByValParameterQuickFixDialog()
-            {
-                _testLocalVariableName = string.Empty;
-            }
-            public DialogResult ShowDialog() { return DialogResult.OK; }
-
-            public void Dispose()
-            {
-            }
-            public void SetupUserEnteredName(string response)
-            {
-                _testLocalVariableName = response;
-            }
-            public DialogResult DialogResult { set;  get; }
-            private string _newName;
-            public string NewName
-            {
-                get
-                {
-                    if (_testLocalVariableName.Length > 0)
-                    {
-                        return _testLocalVariableName;
-                    }
-                    else
-                    {
-                        return _newName;
-                    }
-                }
-                set {   _newName = value;  }
-            }
-            public string[] IdentifierNamesAlreadyDeclared { get; set; }
+            var project = vbe.Object.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
+            return module.Content();
         }
     }
 }

@@ -17,15 +17,15 @@ namespace Rubberduck.Inspections.QuickFixes
     public class AssignedByValParameterMakeLocalCopyQuickFix : QuickFixBase
     {
         private readonly Declaration _target;
+        private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
         private string _localCopyVariableName;
         private string[] _variableNamesAccessibleToProcedureContext;
-        private IAssignedByValParameterQuickFixDialogFactory _factory;
 
-        public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection, IAssignedByValParameterQuickFixDialogFactory factory)
+        public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(target.Context, selection, InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix)
         {
             _target = target;
-            _factory = factory;
+            _dialogFactory = dialogFactory;
             _localCopyVariableName = "x" + _target.IdentifierName.CapitalizeFirstLetter();
             _variableNamesAccessibleToProcedureContext = GetVariableNamesAccessibleToProcedureContext(_target.Context.Parent.Parent);
         }
@@ -49,7 +49,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void RequestLocalCopyVariableName()
         {
-            using( var view = _factory.Create(_target.IdentifierName, _target.DeclarationType.ToString()))
+            using( var view = _dialogFactory.Create(_target.IdentifierName, _target.DeclarationType.ToString()))
             {
                 view.NewName = _localCopyVariableName;
                 view.IdentifierNamesAlreadyDeclared = _variableNamesAccessibleToProcedureContext;
