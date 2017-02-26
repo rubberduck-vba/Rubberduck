@@ -6,6 +6,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -20,6 +21,8 @@ namespace Rubberduck.Parsing.VBA
         public List<IAnnotation> Annotations { get; private set; }
         public SyntaxErrorException ModuleException { get; private set; }
         public IDictionary<Tuple<string, DeclarationType>, Attributes> ModuleAttributes { get; private set; }
+        public HashSet<QualifiedModuleName> HasReferenceToModule { get; private set;}
+        public ConcurrentDictionary<QualifiedModuleName, byte> IsReferencedByModule { get; private set; }
 
         public bool IsNew { get; private set; }
 
@@ -43,6 +46,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+            HasReferenceToModule = new HashSet<QualifiedModuleName>();
+            IsReferencedByModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
 
             IsNew = true;
         }
@@ -58,6 +63,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+            HasReferenceToModule = new HashSet<QualifiedModuleName>();
+            IsReferencedByModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
 
             IsNew = true;
         }
@@ -73,6 +80,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = moduleException;
             ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+            HasReferenceToModule = new HashSet<QualifiedModuleName>();
+            IsReferencedByModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
 
             IsNew = true;
         }
@@ -88,6 +97,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = moduleAttributes;
+            HasReferenceToModule = new HashSet<QualifiedModuleName>();
+            IsReferencedByModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
 
             IsNew = true;
         }
@@ -140,6 +151,17 @@ namespace Rubberduck.Parsing.VBA
             ModuleAttributes = moduleAttributes;
             return this;
         }
+
+        public void RefreshHasReferenceToModule()
+        {
+            HasReferenceToModule = new HashSet<QualifiedModuleName>();
+        }
+
+        public void RefreshIsReferencedByModule()
+        {
+            IsReferencedByModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
+        }
+
 
         private bool _isDisposed;
         public void Dispose()
