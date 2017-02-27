@@ -116,7 +116,7 @@
             this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
             this.TitleLabel.Location = new System.Drawing.Point(15, 9);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
             this.TitleLabel.Size = new System.Drawing.Size(115, 19);
             this.TitleLabel.TabIndex = 2;
             this.TitleLabel.Text = "Extract Interface";
@@ -126,7 +126,7 @@
             this.InstructionsLabel.Location = new System.Drawing.Point(15, 24);
             this.InstructionsLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(3);
             this.InstructionsLabel.Size = new System.Drawing.Size(412, 28);
             this.InstructionsLabel.TabIndex = 3;
             this.InstructionsLabel.Text = "Please specify interface name and members.";
@@ -151,9 +151,9 @@
             this.MembersGroupBox.Controls.Add(this.DeselectAllButton);
             this.MembersGroupBox.Controls.Add(this.SelectAllButton);
             this.MembersGroupBox.Location = new System.Drawing.Point(12, 115);
-            this.MembersGroupBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MembersGroupBox.Margin = new System.Windows.Forms.Padding(2);
             this.MembersGroupBox.Name = "MembersGroupBox";
-            this.MembersGroupBox.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MembersGroupBox.Padding = new System.Windows.Forms.Padding(2);
             this.MembersGroupBox.Size = new System.Drawing.Size(436, 174);
             this.MembersGroupBox.TabIndex = 1;
             this.MembersGroupBox.TabStop = false;
@@ -169,7 +169,7 @@
             this.InterfaceMembersGridView.ColumnHeadersVisible = false;
             this.InterfaceMembersGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.InterfaceMembersGridView.Location = new System.Drawing.Point(5, 21);
-            this.InterfaceMembersGridView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.InterfaceMembersGridView.Margin = new System.Windows.Forms.Padding(2);
             this.InterfaceMembersGridView.MultiSelect = false;
             this.InterfaceMembersGridView.Name = "InterfaceMembersGridView";
             this.InterfaceMembersGridView.RowHeadersVisible = false;
@@ -183,7 +183,7 @@
             // DeselectAllButton
             // 
             this.DeselectAllButton.Location = new System.Drawing.Point(331, 52);
-            this.DeselectAllButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DeselectAllButton.Margin = new System.Windows.Forms.Padding(2);
             this.DeselectAllButton.Name = "DeselectAllButton";
             this.DeselectAllButton.Size = new System.Drawing.Size(100, 26);
             this.DeselectAllButton.TabIndex = 3;
@@ -193,7 +193,7 @@
             // SelectAllButton
             // 
             this.SelectAllButton.Location = new System.Drawing.Point(331, 21);
-            this.SelectAllButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SelectAllButton.Margin = new System.Windows.Forms.Padding(2);
             this.SelectAllButton.Name = "SelectAllButton";
             this.SelectAllButton.Size = new System.Drawing.Size(100, 26);
             this.SelectAllButton.TabIndex = 2;
@@ -215,7 +215,7 @@
             this.Controls.Add(this.flowLayoutPanel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ExtractInterfaceDialog";
