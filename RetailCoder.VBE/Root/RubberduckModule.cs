@@ -139,6 +139,9 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<ToDoExplorerCommand>()
                 .InSingletonScope();
 
+            Bind<IAssignedByValParameterQuickFixDialogFactory>().To<AssignedByValParameterQuickFixDialogFactory>()
+                .WhenInjectedInto<AssignedByValParameterInspection>();
+
             BindDockableToolwindows();
             BindCommandsToCodeExplorer();
             ConfigureRubberduckCommandBar();
@@ -149,6 +152,7 @@ namespace Rubberduck.Root
             ConfigureProjectExplorerContextMenu();
             
             BindWindowsHooks();
+
 
         }
 
@@ -429,10 +433,6 @@ namespace Rubberduck.Root
 
         private IEnumerable<IMenuItem> GetRubberduckMenuItems()
         {
-            //This bind needs to occur before the the new array is built by the function calls
-            Bind<IAssignedByValParameterQuickFixDialogFactory>().To<AssignedByValParameterQuickFixDialogFactory>()
-                .WhenInjectedInto<AssignedByValParameterInspection>();
-
             return new[]
             {
                 KernelInstance.Get<AboutCommandMenuItem>(),
