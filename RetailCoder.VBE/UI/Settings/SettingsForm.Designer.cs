@@ -38,9 +38,9 @@
             this.ElementHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ElementHost.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.ElementHost.Location = new System.Drawing.Point(0, 0);
-            this.ElementHost.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ElementHost.Margin = new System.Windows.Forms.Padding(2);
             this.ElementHost.Name = "ElementHost";
-            this.ElementHost.Size = new System.Drawing.Size(624, 473);
+            this.ElementHost.Size = new System.Drawing.Size(904, 582);
             this.ElementHost.TabIndex = 0;
             this.ElementHost.Child = this.SettingsControl;
             // 
@@ -48,10 +48,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(624, 473);
+            this.ClientSize = new System.Drawing.Size(904, 582);
             this.Controls.Add(this.ElementHost);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(920, 620);
