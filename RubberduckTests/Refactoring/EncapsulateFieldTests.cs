@@ -460,7 +460,11 @@ End Property
 Private fizz As Variant
 
 Public Property Get Name() As Variant
-    Set Name = fizz
+    If IsObject(fizz) Then
+        Set Name = fizz
+    Else
+        Name = fizz
+    End If
 End Property
 
 Public Property Let Name(ByVal value As Variant)
@@ -502,9 +506,10 @@ End Property
             //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
+            var actual = module.Content();
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]
@@ -676,9 +681,10 @@ End Property
             //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
+            var actual = module.Content();
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]
@@ -1178,6 +1184,11 @@ End Sub";
             Assert.AreEqual(true, presenter.Show().CanImplementLet);
         }
 
+        //NOTE: The tests below are commented out pending some sort of refactoring that enables them
+        //to actually *test* something.  Currently, all of the behavior the tests are looking for is
+        //being mocked.
+
+        /*
         [TestMethod]
         public void Presenter_Accept_ReturnsModelWithImplementLetChanged()
         {
@@ -1530,6 +1541,7 @@ End Sub";
             Assert.AreEqual(true, view.Object.MustImplementSetSetterType);
         }
 
+
         [TestMethod]
         public void Presenter_Accept_DefaultCreateGetOnly_PrimitiveType_NoReference()
         {
@@ -1616,7 +1628,7 @@ End Sub";
             Assert.AreEqual(false, model.ImplementLetSetterType);
             Assert.AreEqual(false, model.ImplementSetSetterType);
         }
-
+        */
         #region setup
         private static Mock<IRefactoringPresenterFactory<IEncapsulateFieldPresenter>> SetupFactory(EncapsulateFieldModel model)
         {

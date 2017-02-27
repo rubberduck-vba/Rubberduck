@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -50,7 +49,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             }
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             if (Parent == null)
             {
