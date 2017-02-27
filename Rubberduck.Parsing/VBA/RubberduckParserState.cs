@@ -1098,12 +1098,12 @@ namespace Rubberduck.Parsing.VBA
             {
                 return;
             }
-            if (referencingModuleState.HasReferenceToModule.Contains(referencedModule))
+            if (referencedModuleState.IsReferencedByModule.Contains(referencingModule))
             {
                 return;
             }
-            referencedModuleState.IsReferencedByModule.AddOrUpdate(referencingModule, 1, (key,value) => value);
-            referencingModuleState.HasReferenceToModule.Add(referencedModule);
+            referencedModuleState.IsReferencedByModule.Add(referencingModule);
+            referencingModuleState.HasReferenceToModule.AddOrUpdate(referencedModule, 1, (key, value) => value);
         }
 
         public void ClearModuleToModuleReferencesFromModule(QualifiedModuleName referencingModule)
@@ -1115,14 +1115,13 @@ namespace Rubberduck.Parsing.VBA
             }
 
             ModuleState referencedModuleState;
-            byte dummyOutValue;
-            foreach (var referencedModule in referencingModuleState.HasReferenceToModule)
-            { 
+            foreach (var referencedModule in referencingModuleState.HasReferenceToModule.Keys)
+            {
                 if (!_moduleStates.TryGetValue(referencedModule,out referencedModuleState))
                 {
                     continue;
                 }
-                referencedModuleState.IsReferencedByModule.TryRemove(referencingModule,out dummyOutValue);
+                referencedModuleState.IsReferencedByModule.Remove(referencingModule);
             }
             referencingModuleState.RefreshHasReferenceToModule();
         }
@@ -1134,7 +1133,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 return new HashSet<QualifiedModuleName>();
             }
-            return new HashSet<QualifiedModuleName>(referencingModuleState.HasReferenceToModule);
+            return new HashSet<QualifiedModuleName>(referencingModuleState.HasReferenceToModule.Keys);
         }
 
         public HashSet<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
@@ -1144,7 +1143,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 return new HashSet<QualifiedModuleName>();
             }
-            return new HashSet<QualifiedModuleName>(referencedModuleState.IsReferencedByModule.Keys);
+            return new HashSet<QualifiedModuleName>(referencedModuleState.IsReferencedByModule);
         }
 
         private bool _isDisposed;
