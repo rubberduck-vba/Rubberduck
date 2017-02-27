@@ -470,6 +470,7 @@
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
+    <Compile Include="UI\SelectionChangeService.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />

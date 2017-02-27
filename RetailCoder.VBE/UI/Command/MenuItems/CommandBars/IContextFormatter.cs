@@ -1,4 +1,3 @@
-using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -8,9 +7,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
     public interface IContextFormatter
     {
         /// <summary>
-        /// Determines the formatting of the contextual selection caption.
+        /// Determines the formatting of the contextual selection caption when a codepane is active.
         /// </summary>
         string Format(ICodePane activeCodePane, Declaration declaration);
+        /// <summary>
+        /// Determines the formatting of the contextual selection caption when a codepane is not active.
+        /// </summary>
+        string Format(Declaration declaration, bool multipleControls);
     }
 
     public class ContextFormatter : IContextFormatter
@@ -30,12 +33,17 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             var selection = qualifiedSelection.Value;
             var codePaneSelectionText = selection.Selection.ToString();
-            var contextSelectionText = Format(declaration);
+            var contextSelectionText = FormatDeclaration(declaration);
 
             return string.Format("{0} | {1}", codePaneSelectionText, contextSelectionText);
         }
 
-        private string Format(Declaration declaration)
+        public string Format(Declaration declaration, bool multipleControls)
+        {
+            return declaration == null ? string.Empty : FormatDeclaration(declaration, multipleControls);
+        }
+
+        private string FormatDeclaration(Declaration declaration, bool multipleControls = false)
         {
             var formattedDeclaration = string.Empty;
             var moduleName = declaration.QualifiedName.QualifiedModuleName;
@@ -44,11 +52,14 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 : declaration.AsTypeName;
             var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture);
 
-            typeName = "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) + ")";
+            typeName = multipleControls
+                ? RubberduckUI.ContextMultipleControlsSelection
+                : "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) + ")";
 
             if (declaration.DeclarationType.HasFlag(DeclarationType.Project) || declaration.DeclarationType == DeclarationType.BracketedExpression)
             {
-                formattedDeclaration = System.IO.Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath) + ";" + declaration.IdentifierName + " (" + declarationType + ")";
+                var filename = System.IO.Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath);
+                formattedDeclaration = string.Format("{0}{1}{2} ({3})", filename, string.IsNullOrEmpty(filename) ? string.Empty : ";", declaration.IdentifierName, declarationType);
             }
             else if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
             {

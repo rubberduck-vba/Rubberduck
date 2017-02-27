@@ -303,8 +303,9 @@ namespace Rubberduck.Parsing.VBA
         private void OnStateChanged(object requestor, ParserState state = ParserState.Pending)
         {
             var handler = StateChanged;
+            Logger.Debug("RubberduckParserState raised StateChanged ({0})", Status);
             if (handler != null)
-            {
+            {               
                 handler.Invoke(requestor, new ParserStateEventArgs(state));
             }
         }
