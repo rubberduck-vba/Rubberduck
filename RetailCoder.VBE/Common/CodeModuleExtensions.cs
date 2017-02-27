@@ -31,16 +31,8 @@ namespace Rubberduck.Common
         }
         private static string ReplaceStringAtIndex(string original, string toReplace, string replacement, int startIndex)
         {
-            var stopIndex = startIndex + toReplace.Length - 1;
-            var prefix = original.Substring(0, startIndex);
-            var suffix = (stopIndex >= original.Length) ? string.Empty : original.Substring(stopIndex + 1);
-
-            if(original.Substring(startIndex, stopIndex - startIndex + 1).IndexOf(toReplace) != 0)
-            {
-                return original;
-            }
-
-            return prefix + toReplace.Replace(toReplace, replacement) + suffix;
+            var modifiedContent = original.Remove(startIndex, toReplace.Length);
+            return modifiedContent.Insert(startIndex, replacement);
         }
     }
 }
