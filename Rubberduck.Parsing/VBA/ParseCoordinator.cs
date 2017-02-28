@@ -215,7 +215,9 @@ namespace Rubberduck.Parsing.VBA
                 token.ThrowIfCancellationRequested();
 
             _projectDeclarations.Clear();
-            State.ClearBuiltInReferences();
+            State.ClearAllReferences();
+
+            ClearModuleToModuleReferences(toParse);
 
             ParseComponents(toParse, token);
 
@@ -266,6 +268,14 @@ namespace Rubberduck.Parsing.VBA
                 {
                     State.EvaluateParserState();
                 }
+        }
+
+        private void ClearModuleToModuleReferences(List<IVBComponent> toClear)
+        {
+            foreach (var component in toClear)
+            {
+                State.ClearModuleToModuleReferencesFromModule(new QualifiedModuleName(component));       
+            }
         }
 
         private void ParseComponents(List<IVBComponent> components, CancellationToken token)
@@ -496,6 +506,10 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
 
+            AddModuleToModuleReferences(State.DeclarationFinder, token);
+
+                token.ThrowIfCancellationRequested();
+            
             AddUndeclaredVariablesToDeclarations();
 
             //This is here and not in the calling method because it has to happen before the ready state is reached.
@@ -552,6 +566,41 @@ namespace Rubberduck.Parsing.VBA
                     Logger.Error(exception, "Exception thrown resolving '{0}' (thread {1}).", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
                     State.SetModuleState(qualifiedName.Component, ParserState.ResolverError, token);
                 }
+            }
+        }
+
+        private void AddModuleToModuleReferences(DeclarationFinder finder, CancellationToken token)
+        {
+            var options = new ParallelOptions();
+            options.CancellationToken = token;
+            options.MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism;
+            try
+            {
+                Parallel.For(0, State.ParseTrees.Count, options,
+                    (index) => AddModuleToModuleReferences(finder, State.ParseTrees[index].Key)
+                );
+            }
+            catch (AggregateException exception)
+            {
+                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
+                {
+                    throw exception.InnerException; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                }
+                State.SetStatusAndFireStateChanged(this, ParserState.ResolverError);
+                throw;
+            }
+        }
+
+        private void AddModuleToModuleReferences(DeclarationFinder finder, QualifiedModuleName referencedModule)
+        {
+            var referencingModules = finder.Members(referencedModule)
+                                        .SelectMany(declaration => declaration.References)
+                                        .Select(reference => reference.QualifiedModuleName)
+                                        .Distinct()
+                                        .Where(referencingModule => !referencedModule.Equals(referencingModule));
+            foreach (var referencingModule in referencingModules)
+            {
+                State.AddModuleToModuleReference(referencedModule, referencingModule);
             }
         }
 
@@ -612,7 +661,7 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
 
-            var componentsRemoved = ClearStateCashForRemovedComponents(components);
+            var componentsRemoved = CleanUpRemovedComponents(components);
 
                 token.ThrowIfCancellationRequested();
 
@@ -642,15 +691,16 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
-        /// Clears state cach for removed components.
+        /// Clears state cache of removed components.
         /// Returns whether components have been removed.
         /// </summary>
-        private bool ClearStateCashForRemovedComponents(List<IVBComponent> components)
+        private bool CleanUpRemovedComponents(List<IVBComponent> components)
         {
             var removedModuledecalrations = RemovedModuleDeclarations(components);
             var componentRemoved = removedModuledecalrations.Any();
             foreach (var declaration in removedModuledecalrations)
             {
+                State.ClearModuleToModuleReferencesFromModule(declaration.QualifiedName.QualifiedModuleName);
                 State.ClearStateCache(declaration.QualifiedName.QualifiedModuleName);
             }
             return componentRemoved;

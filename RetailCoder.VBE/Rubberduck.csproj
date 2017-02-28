@@ -413,6 +413,7 @@
     <Compile Include="Inspections\VariableNameValidator.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
+    <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodParameterClassification.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodSelectionValidation.cs" />
@@ -467,6 +468,9 @@
     <Compile Include="UI\CodeExplorer\Commands\AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
+    <Compile Include="UI\EnvironmentProvider.cs" />
+    <Compile Include="UI\ModernFolderBrowser.cs" />
+    <Compile Include="UI\SelectionChangeService.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
