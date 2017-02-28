@@ -83,10 +83,10 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private bool VariableNameIsValid(string variableName)
         {
-            var validator = new VariableNameValidator(_localCopyVariableName);
+            var validator = new VariableNameValidator(variableName);
             return validator.IsValidName()
                 && !_variableNamesAccessibleToProcedureContext
-                    .Any(name => name.Equals(_localCopyVariableName, System.StringComparison.InvariantCultureIgnoreCase));
+                    .Any(name => name.Equals(variableName, System.StringComparison.InvariantCultureIgnoreCase));
         }
 
         private void ReplaceAssignedByValParameterReferences()
