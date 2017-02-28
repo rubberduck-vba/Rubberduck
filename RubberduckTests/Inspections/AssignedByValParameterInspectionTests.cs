@@ -118,7 +118,7 @@ End Sub
                 .AddComponent("Module1", ComponentType.StandardModule, caller)
                 .MockVbeBuilder()
                 .Build();
-            var results = GetInspectionResults(vbe);
+            var results = GetInspectionResults(vbe.Object);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -168,16 +168,16 @@ End Sub";
         private string ApplyIgnoreOnceQuickFixToCodeFragment(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            var inspectionResults = GetInspectionResults(vbe);
+            var inspectionResults = GetInspectionResults(vbe.Object);
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            return GetModuleContent(vbe);
+            return GetModuleContent(vbe.Object);
         }
 
-        private string GetModuleContent(Mock<IVBE> vbe)
+        private string GetModuleContent(IVBE vbe)
         {
-            var project = vbe.Object.VBProjects[0];
+            var project = vbe.VBProjects[0];
             var module = project.VBComponents[0].CodeModule;
             return module.Content();
         }
@@ -185,12 +185,12 @@ End Sub";
         private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            return GetInspectionResults(vbe);
+            return GetInspectionResults(vbe.Object);
         }
 
-        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(Mock<IVBE> vbe)
+        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(IVBE vbe)
         {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 

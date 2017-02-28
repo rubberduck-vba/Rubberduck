@@ -10,7 +10,7 @@ using Rubberduck.Inspections.Resources;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.UI.Refactorings;
-
+using System.Windows.Forms;
 
 namespace RubberduckTests.Inspections
 {
@@ -55,8 +55,10 @@ End Sub"
             string expectedCode =
 @"
 Public Sub Foo(ByVal arg1 As String)
+Dim xxArg1 As String
+xxArg1 = arg1
     xArg1 = 6
-    Let arg1 = ""test""
+    Let xxArg1 = ""test""
 End Sub"
 ;
 
@@ -75,8 +77,10 @@ End Sub"
             expectedCode =
 @"
 Public Sub Foo(ByVal arg1 As String)
+Dim xxArg1 As String
+xxArg1 = arg1
     Dim fooVar, xArg1 As Long
-    Let arg1 = ""test""
+    Let xxArg1 = ""test""
 End Sub"
 ;
 
@@ -96,9 +100,11 @@ End Sub"
             expectedCode =
 @"
 Public Sub Foo(ByVal arg1 As String)
+Dim xxArg1 As String
+xxArg1 = arg1
     Dim fooVar, _
         xArg1 As Long
-    Let arg1 = ""test""
+    Let xxArg1 = ""test""
 End Sub"
 ;
             quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
@@ -137,7 +143,7 @@ End Sub
             Assert.AreEqual(expectedCode, quickFixResult);
 
             //Punt if the user-defined or auto-generated name is already present as an parameter name
-            userEnteredName = "theSecondArg";
+            userEnteredName = "moduleScopeName";
 
             inputCode =
 @"
@@ -306,7 +312,6 @@ End Sub
 
             quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
-
         }
 
         [TestMethod]
@@ -368,6 +373,7 @@ End Sub
             var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
+
         [TestMethod]
         [TestCategory("Inspections")]
         public void AssignedByValParameter_ProperPlacementOfDeclaration()
@@ -433,7 +439,6 @@ End Function
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-
         [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionType()
@@ -455,11 +460,13 @@ End Function
         private string ApplyLocalVariableQuickFixToVBAFragment(string inputCode, string userEnteredName = "")
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            var inspectionResults = GetInspectionResults(vbe, userEnteredName);
 
+            var mockDialogFactory = BuildMockDialogFactory(userEnteredName);
+
+            var inspectionResults = GetInspectionResults(vbe.Object, mockDialogFactory.Object);
             inspectionResults.First().QuickFixes.Single(s => s is AssignedByValParameterMakeLocalCopyQuickFix).Fix();
 
-            return GetModuleContent(vbe);
+            return GetModuleContent(vbe.Object);
         }
 
         private Mock<IVBE> BuildMockVBEStandardModuleForVBAFragment(string inputCode)
@@ -468,19 +475,38 @@ End Function
             IVBComponent component;
             return builder.BuildFromSingleStandardModule(inputCode, out component);
         }
-        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(Mock<IVBE> vbe, string userEnteredName)
+
+        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(IVBE vbe, IAssignedByValParameterQuickFixDialogFactory mockDialogFactory)
         {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new AssignedByValParameterInspection(parser.State,new AssignedByValParameterQuickFixMockDialogFactory(userEnteredName));
+            var inspection = new AssignedByValParameterInspection(parser.State, mockDialogFactory);
             return inspection.GetInspectionResults();
         }
 
-        private string GetModuleContent(Mock<IVBE> vbe)
+        private Mock<IAssignedByValParameterQuickFixDialogFactory> BuildMockDialogFactory(string userEnteredName)
         {
-            var project = vbe.Object.VBProjects[0];
+            var mockDialog = new Mock<IAssignedByValParameterQuickFixDialog>();
+
+            mockDialog.SetupAllProperties();
+
+            if (userEnteredName.Length > 0)
+            {
+                mockDialog.SetupGet(m => m.NewName).Returns(() => userEnteredName);
+            }
+            mockDialog.SetupGet(m => m.DialogResult).Returns(() => DialogResult.OK);
+
+            var mockDialogFactory = new Mock<IAssignedByValParameterQuickFixDialogFactory>();
+            mockDialogFactory.Setup(f => f.Create(It.IsAny<string>(), It.IsAny<string>())).Returns(mockDialog.Object);
+
+            return mockDialogFactory;
+        }
+
+        private string GetModuleContent(IVBE vbe)
+        {
+            var project = vbe.VBProjects[0];
             var module = project.VBComponents[0].CodeModule;
             return module.Content();
         }

@@ -162,44 +162,27 @@ End Sub
             quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new AssignedByValParameterInspection(null,null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionName()
-        {
-            const string inspectionName = "AssignedByValParameterInspection";
-            var inspection = new AssignedByValParameterInspection(null,null);
-
-            Assert.AreEqual(inspectionName, inspection.Name);
-        }
 
         private string ApplyPassParameterByReferenceQuickFixToVBAFragment(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            var inspectionResults = GetInspectionResults(vbe);
+            var inspectionResults = GetAssignedByValParameterInspectionResults(vbe.Object);
 
             inspectionResults.First().QuickFixes.Single(s => s is PassParameterByReferenceQuickFix).Fix();
 
-            return GetModuleContent(vbe);
+            return GetModuleContent(vbe.Object);
         }
 
-        private string GetModuleContent(Mock<IVBE> vbe)
+        private string GetModuleContent(IVBE vbe)
         {
-            var project = vbe.Object.VBProjects[0];
+            var project = vbe.VBProjects[0];
             var module = project.VBComponents[0].CodeModule;
             return module.Content();
         }
 
-        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(Mock<IVBE> vbe)
+        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetAssignedByValParameterInspectionResults(IVBE vbe)
         {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 

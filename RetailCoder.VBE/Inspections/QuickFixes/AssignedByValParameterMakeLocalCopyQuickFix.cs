@@ -26,8 +26,8 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             _target = target;
             _dialogFactory = dialogFactory;
-            _localCopyVariableName = "x" + _target.IdentifierName.CapitalizeFirstLetter();
             _variableNamesAccessibleToProcedureContext = GetVariableNamesAccessibleToProcedureContext(_target.Context.Parent.Parent);
+            SetValidLocalCopyVariableNameSuggestion();
         }
 
         public override bool CanFixInModule { get { return false; } }
@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             RequestLocalCopyVariableName();
 
-            if (!ProposedLocalVariableNameIsValid() || IsCancelled)
+            if (!VariableNameIsValid(_localCopyVariableName) || IsCancelled)
             {
                 return;
             }
@@ -62,12 +62,31 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private bool ProposedLocalVariableNameIsValid()
+        private void SetValidLocalCopyVariableNameSuggestion()
+        {
+            _localCopyVariableName = "x" + _target.IdentifierName.CapitalizeFirstLetter();
+            if (VariableNameIsValid(_localCopyVariableName)) { return; }
+
+            //If the initial suggestion is not valid, keep pre-pending x's until it is
+            for ( int attempt = 2; attempt < 10; attempt++) 
+            {
+                _localCopyVariableName = "x" + _localCopyVariableName;
+                if (VariableNameIsValid(_localCopyVariableName))
+                {
+                    return;
+                }
+            }
+            //if "xxFoo" to "xxxxxxxxxxFoo" isn't unique, give up and go with the original suggestion.
+            //The QuickFix will leave the code as-is unless it receives a name that is free of conflicts
+            _localCopyVariableName = "x" + _target.IdentifierName.CapitalizeFirstLetter();
+        }
+
+        private bool VariableNameIsValid(string variableName)
         {
             var validator = new VariableNameValidator(_localCopyVariableName);
             return validator.IsValidName()
                 && !_variableNamesAccessibleToProcedureContext
-                    .Any(name => name.ToUpper().Equals(_localCopyVariableName.ToUpper()));
+                    .Any(name => name.Equals(_localCopyVariableName, System.StringComparison.InvariantCultureIgnoreCase));
         }
 
         private void ReplaceAssignedByValParameterReferences()
@@ -92,6 +111,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return Tokens.Dim + " " + _localCopyVariableName + " " + Tokens.As 
                 + " " + _target.AsTypeName;
         }
+
         private string BuildLocalCopyAssignment()
         {
             return (SymbolList.ValueTypes.Contains(_target.AsTypeName) ? string.Empty : Tokens.Set + " ") 
@@ -112,7 +132,7 @@ namespace Rubberduck.Inspections.QuickFixes
             var potentiallyUnreferencedParameters = GetIdentifierNames(args);
             allIdentifiers.UnionWith(potentiallyUnreferencedParameters);
 
-            //TODO: add module and global scope variableNames.
+            //TODO: add module and global scope variableNames to the list.
 
             return allIdentifiers.ToArray();
         }

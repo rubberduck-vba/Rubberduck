@@ -473,10 +473,8 @@
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
     <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialogFactory.cs" />
-    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixMockDialogFactory.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialogFactory.cs" />
-    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixMockDialog.cs" />
     <Compile Include="UI\SelectionChangeService.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
