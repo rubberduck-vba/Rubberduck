@@ -53,31 +53,28 @@
             this.panel1.Controls.Add(this.InstructionsLabel);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(773, 99);
+            this.panel1.Size = new System.Drawing.Size(515, 64);
             this.panel1.TabIndex = 14;
             // 
             // TitleLabel
             // 
             this.TitleLabel.AutoSize = true;
             this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TitleLabel.Location = new System.Drawing.Point(18, 14);
-            this.TitleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.TitleLabel.Location = new System.Drawing.Point(12, 9);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TitleLabel.Size = new System.Drawing.Size(273, 26);
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.TitleLabel.Size = new System.Drawing.Size(195, 17);
             this.TitleLabel.TabIndex = 4;
             this.TitleLabel.Text = "Specify Local Variable Name";
             // 
             // InstructionsLabel
             // 
             this.InstructionsLabel.AutoSize = true;
-            this.InstructionsLabel.Location = new System.Drawing.Point(14, 46);
-            this.InstructionsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InstructionsLabel.Location = new System.Drawing.Point(9, 30);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(6);
-            this.InstructionsLabel.Size = new System.Drawing.Size(255, 32);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.InstructionsLabel.Size = new System.Drawing.Size(174, 21);
             this.InstructionsLabel.TabIndex = 5;
             this.InstructionsLabel.Text = "Please specify new name for \'{0}\'.";
             // 
@@ -86,10 +83,9 @@
             this.panel2.BackColor = System.Drawing.SystemColors.ControlDark;
             this.panel2.Controls.Add(this.flowLayoutPanel2);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 243);
-            this.panel2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panel2.Location = new System.Drawing.Point(0, 158);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(773, 65);
+            this.panel2.Size = new System.Drawing.Size(515, 42);
             this.panel2.TabIndex = 16;
             // 
             // flowLayoutPanel2
@@ -100,20 +96,18 @@
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(0, -1);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(12, 12, 0, 12);
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(773, 66);
+            this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(8, 8, 0, 8);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(515, 43);
             this.flowLayoutPanel2.TabIndex = 2;
             // 
             // CancelDialogButton
             // 
             this.CancelDialogButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.CancelDialogButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelDialogButton.Location = new System.Drawing.Point(645, 17);
-            this.CancelDialogButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.CancelDialogButton.Location = new System.Drawing.Point(429, 11);
             this.CancelDialogButton.Name = "CancelDialogButton";
-            this.CancelDialogButton.Size = new System.Drawing.Size(112, 35);
+            this.CancelDialogButton.Size = new System.Drawing.Size(75, 23);
             this.CancelDialogButton.TabIndex = 2;
             this.CancelDialogButton.Text = "Cancel";
             this.CancelDialogButton.UseVisualStyleBackColor = false;
@@ -122,10 +116,9 @@
             // 
             this.OkButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OkButton.Location = new System.Drawing.Point(525, 17);
-            this.OkButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.OkButton.Location = new System.Drawing.Point(348, 11);
             this.OkButton.Name = "OkButton";
-            this.OkButton.Size = new System.Drawing.Size(112, 35);
+            this.OkButton.Size = new System.Drawing.Size(75, 23);
             this.OkButton.TabIndex = 1;
             this.OkButton.Text = "Ok";
             this.OkButton.UseVisualStyleBackColor = false;
@@ -133,8 +126,7 @@
             // InvalidNameValidationIcon
             // 
             this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
-            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(739, 108);
-            this.InvalidNameValidationIcon.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(493, 70);
             this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
             this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
             this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -143,10 +135,9 @@
             // 
             // NewNameBox
             // 
-            this.NewNameBox.Location = new System.Drawing.Point(86, 121);
-            this.NewNameBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.NewNameBox.Location = new System.Drawing.Point(57, 79);
             this.NewNameBox.Name = "NewNameBox";
-            this.NewNameBox.Size = new System.Drawing.Size(666, 26);
+            this.NewNameBox.Size = new System.Drawing.Size(445, 20);
             this.NewNameBox.TabIndex = 15;
             this.NewNameBox.WordWrap = false;
             this.NewNameBox.TextChanged += new System.EventHandler(this.NewNameBox_TextChanged);
@@ -154,26 +145,26 @@
             // NameLabel
             // 
             this.NameLabel.AutoSize = true;
-            this.NameLabel.Location = new System.Drawing.Point(14, 126);
-            this.NameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.NameLabel.Location = new System.Drawing.Point(9, 82);
             this.NameLabel.Name = "NameLabel";
-            this.NameLabel.Size = new System.Drawing.Size(55, 20);
+            this.NameLabel.Size = new System.Drawing.Size(38, 13);
             this.NameLabel.TabIndex = 17;
             this.NameLabel.Text = "Name:";
             // 
             // FeedbackLabel
             // 
-            this.FeedbackLabel.Location = new System.Drawing.Point(86, 160);
+            this.FeedbackLabel.Location = new System.Drawing.Point(57, 104);
+            this.FeedbackLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.FeedbackLabel.Name = "FeedbackLabel";
-            this.FeedbackLabel.Size = new System.Drawing.Size(666, 61);
+            this.FeedbackLabel.Size = new System.Drawing.Size(444, 40);
             this.FeedbackLabel.TabIndex = 19;
             this.FeedbackLabel.Text = "THis has text";
             // 
             // AssignedByValParameterQuickFixDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(773, 308);
+            this.ClientSize = new System.Drawing.Size(515, 200);
             this.Controls.Add(this.FeedbackLabel);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
@@ -182,6 +173,7 @@
             this.Controls.Add(this.NameLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AssignedByValParameterQuickFixDialog";

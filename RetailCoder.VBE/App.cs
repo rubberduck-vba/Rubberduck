@@ -3,23 +3,15 @@ using System.IO;
 using Infralution.Localization.Wpf;
 using NLog;
 using Rubberduck.Common;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.MSForms;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
 
@@ -27,9 +19,7 @@ namespace Rubberduck
 {
     public sealed class App : IDisposable
     {
-        private readonly IVBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly IParseCoordinator _parser;
         private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
@@ -44,7 +34,6 @@ namespace Rubberduck
 
         public App(IVBE vbe, 
             IMessageBox messageBox,
-            IParseCoordinator parser,
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
@@ -52,162 +41,19 @@ namespace Rubberduck
             IVersionCheck version,
             CommandBase checkVersionCommand)
         {
-            _vbe = vbe;
             _messageBox = messageBox;
-            _parser = parser;
             _configService = configService;
-            _autoSave = new AutoSave.AutoSave(_vbe, _configService);
+            _autoSave = new AutoSave.AutoSave(vbe, _configService);
             _appMenus = appMenus;
             _stateBar = stateBar;
             _hooks = hooks;
             _version = version;
             _checkVersionCommand = checkVersionCommand;
 
-            VBENativeServices.SelectionChanged += _vbe_SelectionChanged;
-            VBENativeServices.WindowFocusChange += _vbe_FocusChanged;
-
             _configService.SettingsChanged += _configService_SettingsChanged;
-            _parser.State.StateChanged += Parser_StateChanged;
-            _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
-
+            
             UiDispatcher.Initialize();
         }
-
-        //TODO - This should be able to move to the appropriate handling classes now.
-        #region Statusbar 
-
-        private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
-        {
-            var message = e.Message;
-            if (message == ParserState.LoadingReference.ToString())
-            {
-                // note: ugly hack to enable Rubberduck.Parsing assembly to do this
-                message = RubberduckUI.ParserState_LoadingReference;
-            }
-
-            _stateBar.SetStatusLabelCaption(message, _parser.State.ModuleExceptions.Count);
-        }
-
-        private void _vbe_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            RefreshSelection(e.CodePane);
-        }
-
-        private void _vbe_FocusChanged(object sender, WindowChangedEventArgs e)
-        {
-            if (e.EventType == FocusType.GotFocus)
-            {
-                switch (e.Window.Type)
-                {
-                    case WindowKind.Designer:
-                        //Designer or control on designer form selected.
-                        RefreshSelection(e.Window);
-                        break;
-                    case WindowKind.CodeWindow:
-                        //Caret changed in a code pane.
-                        RefreshSelection(e.CodePane);
-                        break;
-                }              
-            }
-            else if (e.EventType == FocusType.ChildFocus)
-            {
-                //Treeview selection changed in project window.
-                RefreshSelection();
-            }
-        }
-
-        private ParserState _lastStatus;
-        private Declaration _lastSelectedDeclaration;
-        private void RefreshSelection(ICodePane pane)
-        {
-            if (pane == null || pane.IsWrappingNullReference)
-            {
-                return;
-            }
-
-            var selectedDeclaration = _parser.State.FindSelectedDeclaration(pane);
-            var caption = _stateBar.GetContextSelectionCaption(_vbe.ActiveCodePane, selectedDeclaration);
-            UpdateStatusbarAndCommandState(caption, selectedDeclaration);
-        }
-
-        private void RefreshSelection(IWindow window)
-        {
-            if (window == null || window.IsWrappingNullReference || window.Type != WindowKind.Designer)
-            {
-                return;
-            }
-
-            var component = _vbe.SelectedVBComponent;
-            var caption = GetComponentControlsCaption(component);
-            //TODO: Need to find the selected declaration for the Form\Control.
-            UpdateStatusbarAndCommandState(caption, null);
-        }
-
-        private void RefreshSelection()
-        {
-            var caption = string.Empty;
-            var component = _vbe.SelectedVBComponent;
-            if (component == null || component.IsWrappingNullReference)
-            {
-                //The user might have selected the project node in Project Explorer
-                //If they've chosen a folder, we'll return the project anyway
-                caption = !_vbe.ActiveVBProject.IsWrappingNullReference
-                    ? _vbe.ActiveVBProject.Name
-                    : null;
-            }
-            else
-            {
-                caption = component.Type == ComponentType.UserForm && component.HasOpenDesigner
-                    ? GetComponentControlsCaption(component)
-                    : string.Format("{0}.{1} ({2})", component.ParentProject.Name, component.Name, component.Type);
-            }
-            //TODO: Need to find the selected declaration for the selected treeview item.
-            UpdateStatusbarAndCommandState(caption, null);
-        }
-
-        private void UpdateStatusbarAndCommandState(string caption, Declaration selectedDeclaration)
-        {
-            var refCount = selectedDeclaration == null ? 0 : selectedDeclaration.References.Count();
-            _stateBar.SetContextSelectionCaption(caption, refCount);
-
-            var currentStatus = _parser.State.Status;
-            if (ShouldEvaluateCanExecute(selectedDeclaration, currentStatus))
-            {
-                _appMenus.EvaluateCanExecute(_parser.State);
-                _stateBar.EvaluateCanExecute(_parser.State);
-            }
-
-            _lastStatus = currentStatus;
-            _lastSelectedDeclaration = selectedDeclaration;            
-        }
-
-        private string GetComponentControlsCaption(IVBComponent component)
-        {
-            switch (component.SelectedControls.Count)
-            {
-                case 0:
-                    //TODO get the real designer for VB6
-                    return String.Format("{0}.{1} ({2})", component.ParentProject.Name, component.Name, "MSForms.UserForm");
-                    break;
-                case 1:
-                    //TODO return the libraryName.className of the control
-                    IControl control = component.SelectedControls.First();
-                    return String.Format("{0}.{1}.{2} ({3})", component.ParentProject.Name, component.Name, control.Name, control.TypeName());
-                    break;
-                default:
-                    return String.Format("{0}.{1} ({2})", component.ParentProject.Name, component.Name, RubberduckUI.ContextMultipleControlsSelection);
-                    break;
-            }
-        }
-
-        private bool ShouldEvaluateCanExecute(Declaration selectedDeclaration, ParserState currentStatus)
-        {
-            return _lastStatus != currentStatus ||
-                   (selectedDeclaration != null && !selectedDeclaration.Equals(_lastSelectedDeclaration)) ||
-                   (selectedDeclaration == null && _lastSelectedDeclaration != null);
-        }
-
-        #endregion
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
@@ -254,8 +100,7 @@ namespace Rubberduck
             _stateBar.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
-            _stateBar.SetStatusLabelCaption(ParserState.Pending);
-            _stateBar.EvaluateCanExecute(_parser.State);
+
             UpdateLoggingLevel();
 
             if (_config.UserSettings.GeneralSettings.CheckVersion)
@@ -274,14 +119,6 @@ namespace Rubberduck
             {
                 // Won't matter anymore since we're shutting everything down anyway.
             }
-        }
-
-        private void Parser_StateChanged(object sender, EventArgs e)
-        {
-            Logger.Debug("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
-            _appMenus.EvaluateCanExecute(_parser.State);
-            _stateBar.EvaluateCanExecute(_parser.State);
-            _stateBar.SetStatusLabelCaption(_parser.State.Status, _parser.State.ModuleExceptions.Count);
         }
 
         private void LoadConfig()
@@ -353,15 +190,6 @@ namespace Rubberduck
             {
                 return;
             }
-
-            if (_parser != null && _parser.State != null)
-            {
-                _parser.State.StateChanged -= Parser_StateChanged;
-                _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
-            }
-
-            VBENativeServices.SelectionChanged += _vbe_SelectionChanged;
-            VBENativeServices.WindowFocusChange += _vbe_FocusChanged;
 
             if (_configService != null)
             {

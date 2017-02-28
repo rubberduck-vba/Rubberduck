@@ -303,8 +303,9 @@ namespace Rubberduck.Parsing.VBA
         private void OnStateChanged(object requestor, ParserState state = ParserState.Pending)
         {
             var handler = StateChanged;
+            Logger.Debug("RubberduckParserState raised StateChanged ({0})", Status);
             if (handler != null)
-            {
+            {               
                 handler.Invoke(requestor, new ParserStateEventArgs(state));
             }
         }
@@ -742,6 +743,14 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public void ClearAllReferences()
+        {
+            foreach (var declaration in AllDeclarations)
+            {
+                declaration.ClearReferences();
+            }
+        }
+
         public bool ClearStateCache(IVBComponent component, bool notifyStateChanged = false)
         {
             return component != null && ClearStateCache(new QualifiedModuleName(component), notifyStateChanged);
@@ -1080,6 +1089,62 @@ namespace Rubberduck.Parsing.VBA
 
                 Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
             }
+        }
+
+        public void AddModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule)
+        {
+            ModuleState referencedModuleState;
+            ModuleState referencingModuleState;
+            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState) || !_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+            {
+                return;
+            }
+            if (referencedModuleState.IsReferencedByModule.Contains(referencingModule))
+            {
+                return;
+            }
+            referencedModuleState.IsReferencedByModule.Add(referencingModule);
+            referencingModuleState.HasReferenceToModule.AddOrUpdate(referencedModule, 1, (key, value) => value);
+        }
+
+        public void ClearModuleToModuleReferencesFromModule(QualifiedModuleName referencingModule)
+        {
+            ModuleState referencingModuleState;
+            if (!_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+            {
+                return;
+            }
+
+            ModuleState referencedModuleState;
+            foreach (var referencedModule in referencingModuleState.HasReferenceToModule.Keys)
+            {
+                if (!_moduleStates.TryGetValue(referencedModule,out referencedModuleState))
+                {
+                    continue;
+                }
+                referencedModuleState.IsReferencedByModule.Remove(referencingModule);
+            }
+            referencingModuleState.RefreshHasReferenceToModule();
+        }
+
+        public HashSet<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule)
+        { 
+            ModuleState referencingModuleState;
+            if (!_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+            {
+                return new HashSet<QualifiedModuleName>();
+            }
+            return new HashSet<QualifiedModuleName>(referencingModuleState.HasReferenceToModule.Keys);
+        }
+
+        public HashSet<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
+        {
+            ModuleState referencedModuleState;
+            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState))
+            {
+                return new HashSet<QualifiedModuleName>();
+            }
+            return new HashSet<QualifiedModuleName>(referencedModuleState.IsReferencedByModule);
         }
 
         private bool _isDisposed;
