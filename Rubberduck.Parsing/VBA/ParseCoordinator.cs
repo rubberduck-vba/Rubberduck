@@ -241,7 +241,8 @@ namespace Rubberduck.Parsing.VBA
                     throw new OperationCanceledException(token);
                 }
 
-            ResolveAllReferences(token);
+            var toResolveReferences = State.ParseTrees.Select(kvp => kvp.Key).ToHashSet();
+            ResolveAllReferences(toResolveReferences, token);
 
                 if (token.IsCancellationRequested || State.Status >= ParserState.Error)
                 {
@@ -469,11 +470,11 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        private void ResolveAllReferences(CancellationToken token)
+        private void ResolveAllReferences(ICollection<QualifiedModuleName> toResolve, CancellationToken token)
         {
                 token.ThrowIfCancellationRequested();
     
-            var components = State.ParseTrees.Select(kvp => kvp.Key.Component).ToList();
+            var components = toResolve.Select(qmn => qmn.Component).ToList();
             
                 token.ThrowIfCancellationRequested();
             
@@ -485,13 +486,15 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
 
+            var parseTreesToResolve = State.ParseTrees.Where(kvp => toResolve.Contains(kvp.Key)).ToList();
+
             var options = new ParallelOptions();
             options.CancellationToken = token;
             options.MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism;
             try
             {
-                Parallel.For(0, State.ParseTrees.Count, options,
-                    (index) => ResolveReferences(State.DeclarationFinder, State.ParseTrees[index].Key, State.ParseTrees[index].Value, token)
+                Parallel.For(0, parseTreesToResolve.Count, options,
+                    (index) => ResolveReferences(State.DeclarationFinder, parseTreesToResolve[index].Key, parseTreesToResolve[index].Value, token)
                 );
             }
             catch (AggregateException exception)
@@ -510,10 +513,11 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
             
-            AddUndeclaredVariablesToDeclarations();
+            AddNewUndeclaredVariablesToDeclarations();
+            AddNewUnresolvedMemberDeclarations();
 
             //This is here and not in the calling method because it has to happen before the ready state is reached.
-            //RefreshDeclarationFinder(); //Commented out because it breaks the unresolved and undeclared collections.
+            RefreshDeclarationFinder();
 
                 token.ThrowIfCancellationRequested();
 
@@ -604,12 +608,21 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void AddUndeclaredVariablesToDeclarations()
+        private void AddNewUndeclaredVariablesToDeclarations()
         {
-            var undeclared = State.DeclarationFinder.Undeclared.ToList();
+            var undeclared = State.DeclarationFinder.FreshUndeclared.ToList();
             foreach (var declaration in undeclared)
             {
                 State.AddDeclaration(declaration);
+            }
+        }
+
+        private void AddNewUnresolvedMemberDeclarations()
+        {
+            var unresolved = State.DeclarationFinder.FreshUnresolvedMemberDeclarations().ToList();
+            foreach (var declaration in unresolved)
+            {
+                State.AddUnresolvedMemberDeclaration(declaration);
             }
         }
 

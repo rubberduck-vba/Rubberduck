@@ -30,7 +30,7 @@ namespace Rubberduck.Parsing.Symbols
         public static ConcurrentDictionary<TKey, ConcurrentBag<TValue>> ToConcurrentDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> source)
         {
             return new ConcurrentDictionary<TKey, ConcurrentBag<TValue>>(source.Select(x => new KeyValuePair<TKey, ConcurrentBag<TValue>>(x.Key, new ConcurrentBag<TValue>(x))));
-        }   
+        }
     }
 
     public class DeclarationFinder
@@ -42,8 +42,10 @@ namespace Rubberduck.Parsing.Symbols
         private readonly AnnotationService _annotationService;
         private readonly ConcurrentDictionary<string, ConcurrentBag<Declaration>> _declarationsByName;
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<Declaration>> _declarations;
-        private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _undeclared;
-        private readonly ConcurrentBag<UnboundMemberDeclaration> _unresolved;
+        private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
+        private readonly ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
+        private readonly Dictionary<QualifiedMemberName, List<Declaration>> _undeclared;
+        private readonly List<UnboundMemberDeclaration> _unresolved;
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IAnnotation>> _annotations;
         private readonly ConcurrentDictionary<Declaration, ConcurrentBag<Declaration>> _parametersByParent;
         private readonly ConcurrentDictionary<DeclarationType, ConcurrentBag<Declaration>> _userDeclarationsByType;
@@ -54,7 +56,7 @@ namespace Rubberduck.Parsing.Symbols
         
         private static readonly object ThreadLock = new object();
 
-        public DeclarationFinder(IReadOnlyList<Declaration> declarations, IEnumerable<IAnnotation> annotations, IHostApplication hostApp = null)
+        public DeclarationFinder(IReadOnlyList<Declaration> declarations, IEnumerable<IAnnotation> annotations, IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations, IHostApplication hostApp = null)
         {
             _hostApp = hostApp;
             _annotations = annotations.GroupBy(node => node.QualifiedSelection.QualifiedName).ToConcurrentDictionary();
@@ -90,8 +92,11 @@ namespace Rubberduck.Parsing.Symbols
                         .ToDictionary(item => item.WithEventsField, item => item.Handlers.ToArray())
                     ), true);
 
-            _undeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>(new Dictionary<QualifiedMemberName, ConcurrentBag<Declaration>>());
-            _unresolved = new ConcurrentBag<UnboundMemberDeclaration>(new List<UnboundMemberDeclaration>());
+            _newUndeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>(new Dictionary<QualifiedMemberName, ConcurrentBag<Declaration>>());
+            _undeclared = declarations.Where(declaration => declaration.IsUndeclared).GroupBy(item => item.QualifiedName).ToDictionary(group => group.Key, group => group.ToList());
+            _newUnresolved = new ConcurrentBag<UnboundMemberDeclaration>(new List<UnboundMemberDeclaration>());
+            _unresolved = unresolvedMemberDeclarations.ToList();
+            
             _annotationService = new AnnotationService(this);
 
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule).SelectMany(cls => 
@@ -134,9 +139,14 @@ namespace Rubberduck.Parsing.Symbols
                 implementableMembers.ToDictionary(item => item.Context, item => item.Members)), true);
         }
 
+        public IEnumerable<Declaration> FreshUndeclared
+        {
+            get { return _newUndeclared.AllValues(); }
+        }
+
         public IEnumerable<Declaration> Undeclared
         {
-            get { return _undeclared.AllValues(); }
+            get { return _undeclared.SelectMany(item => item.Value).ToList(); }
         }
 
         public IEnumerable<Declaration> Members(Declaration module)
@@ -209,12 +219,17 @@ namespace Rubberduck.Parsing.Symbols
             return result;
         }
 
-        public IEnumerable<UnboundMemberDeclaration> UnresolvedMemberDeclarations()
+        public IEnumerable<UnboundMemberDeclaration> FreshUnresolvedMemberDeclarations()
         {
             lock (ThreadLock)
             {
-                return _unresolved.ToArray();
+                return _newUnresolved.ToArray();
             }            
+        }
+
+        public IEnumerable<UnboundMemberDeclaration> UnresolvedMemberDeclarations()
+        {
+            return _unresolved.ToList();
         }
 
         public IEnumerable<Declaration> FindHandlersForWithEventsField(Declaration field)
@@ -510,13 +525,13 @@ namespace Rubberduck.Parsing.Symbols
                     Accessibility.Implicit, DeclarationType.Variable, context, context.GetSelection(), false, null,
                     false, annotations, null, true);
 
-            var hasUndeclared = _undeclared.ContainsKey(enclosingProcedure.QualifiedName);
+            var hasUndeclared = _newUndeclared.ContainsKey(enclosingProcedure.QualifiedName);
             if (hasUndeclared)
             {
                 ConcurrentBag<Declaration> undeclared;
-                while (!_undeclared.TryGetValue(enclosingProcedure.QualifiedName, out undeclared))
+                while (!_newUndeclared.TryGetValue(enclosingProcedure.QualifiedName, out undeclared))
                 {
-                    _undeclared.TryGetValue(enclosingProcedure.QualifiedName, out undeclared);
+                    _newUndeclared.TryGetValue(enclosingProcedure.QualifiedName, out undeclared);
                 }
                 var inScopeUndeclared = undeclared.FirstOrDefault(d => d.IdentifierName == identifierName);
                 if (inScopeUndeclared != null)
@@ -527,7 +542,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                _undeclared.TryAdd(enclosingProcedure.QualifiedName, new ConcurrentBag<Declaration> { undeclaredLocal });
+                _newUndeclared.TryAdd(enclosingProcedure.QualifiedName, new ConcurrentBag<Declaration> { undeclaredLocal });
             }
             return undeclaredLocal;
         }
@@ -550,7 +565,7 @@ namespace Rubberduck.Parsing.Symbols
                 (access is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)access.children[0] : withExpression.Context, 
                 annotations);
 
-            _unresolved.Add(declaration);
+            _newUnresolved.Add(declaration);
         }
 
         public Declaration OnBracketedExpression(string expression, ParserRuleContext context)
@@ -561,13 +576,13 @@ namespace Rubberduck.Parsing.Symbols
             var qualifiedName = hostApp.QualifiedName.QualifiedModuleName.QualifyMemberName(expression);
 
             ConcurrentBag<Declaration> undeclared;
-            if (_undeclared.TryGetValue(qualifiedName, out undeclared))
+            if (_newUndeclared.TryGetValue(qualifiedName, out undeclared))
             {
                 return undeclared.SingleOrDefault();
             }
 
             var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, context.GetSelection(), false, null);
-            _undeclared.TryAdd(qualifiedName, new ConcurrentBag<Declaration> { item });
+            _newUndeclared.TryAdd(qualifiedName, new ConcurrentBag<Declaration> { item });
             return item;
         }
 
