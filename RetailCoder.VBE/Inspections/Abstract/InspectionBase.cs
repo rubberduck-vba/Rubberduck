@@ -116,28 +116,27 @@ namespace Rubberduck.Inspections.Abstract
 
         protected bool IsIgnoringInspectionResultFor(Declaration declaration, string inspectionName)
         {
+            var isIgnoredAtModuleLevel =
+                Declaration.GetModuleParent(declaration).Annotations
+                    .Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreModule
+                                       && ((IgnoreModuleAnnotation) annotation).IsIgnored(inspectionName));
+
+
             if (declaration.DeclarationType == DeclarationType.Parameter)
             {
-                return declaration.ParentDeclaration.Annotations.Any(annotation =>
+                return isIgnoredAtModuleLevel || declaration.ParentDeclaration.Annotations.Any(annotation =>
                     annotation.AnnotationType == AnnotationType.Ignore
                     && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
             }
 
-            return declaration.Annotations.Any(annotation =>
+            return isIgnoredAtModuleLevel || declaration.Annotations.Any(annotation =>
                 annotation.AnnotationType == AnnotationType.Ignore
                 && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
         protected bool IsIgnoringInspectionResultFor(IdentifierReference reference, string inspectionName)
         {
-            if (reference == null)
-            {
-                return false;
-            }
-
-            return reference.Annotations.Any(annotation =>
-                annotation.AnnotationType == AnnotationType.Ignore
-                && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
+            return reference != null && reference.IsIgnoringInspectionResultFor(inspectionName);
         }
 
         public int CompareTo(IInspection other)
