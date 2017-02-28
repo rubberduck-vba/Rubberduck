@@ -214,10 +214,8 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
 
-            _projectDeclarations.Clear();
-            State.ClearAllReferences();
-
-            ClearModuleToModuleReferences(toParse);
+            var toResolveReferences = ModulesForWhichToResolveReferences(toParse);
+            PerformPreParseCleanup(toParse, toResolveReferences);
 
             ParseComponents(toParse, token);
 
@@ -241,7 +239,7 @@ namespace Rubberduck.Parsing.VBA
                     throw new OperationCanceledException(token);
                 }
 
-            var toResolveReferences = State.ParseTrees.Select(kvp => kvp.Key).ToHashSet();
+            toResolveReferences = State.ParseTrees.Select(kvp => kvp.Key).ToHashSet();
             ResolveAllReferences(toResolveReferences, token);
 
                 if (token.IsCancellationRequested || State.Status >= ParserState.Error)
@@ -269,6 +267,24 @@ namespace Rubberduck.Parsing.VBA
                 {
                     State.EvaluateParserState();
                 }
+        }
+
+        private ICollection<QualifiedModuleName> ModulesForWhichToResolveReferences(List<IVBComponent> toParse)
+        {
+            var toResolveReferences = new HashSet<QualifiedModuleName>();
+            foreach (var qmn in toParse.Select(component => new QualifiedModuleName(component)))
+            { 
+                toResolveReferences.UnionWith(State.ModulesReferencing(qmn));
+            }
+            return toResolveReferences;
+        }
+
+        private void PerformPreParseCleanup(List<IVBComponent> toParse, ICollection<QualifiedModuleName> toResolveReferences)
+        {
+            ClearModuleToModuleReferences(toParse);
+            State.RemoveAllReferencesBy(toResolveReferences);
+            State.ClearAllReferences(); //This has to stay here until the selective resolving actually works.
+            _projectDeclarations.Clear();
         }
 
         private void ClearModuleToModuleReferences(List<IVBComponent> toClear)
@@ -711,10 +727,12 @@ namespace Rubberduck.Parsing.VBA
         {
             var removedModuledecalrations = RemovedModuleDeclarations(components);
             var componentRemoved = removedModuledecalrations.Any();
-            foreach (var declaration in removedModuledecalrations)
+            var removedModules = removedModuledecalrations.Select(declaration => declaration.QualifiedName.QualifiedModuleName).ToHashSet();
+            State.RemoveAllReferencesBy(removedModules);
+            foreach (var qmn in removedModules)
             {
-                State.ClearModuleToModuleReferencesFromModule(declaration.QualifiedName.QualifiedModuleName);
-                State.ClearStateCache(declaration.QualifiedName.QualifiedModuleName);
+                State.ClearModuleToModuleReferencesFromModule(qmn);
+                State.ClearStateCache(qmn);
             }
             return componentRemoved;
         }
