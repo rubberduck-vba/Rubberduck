@@ -31,6 +31,7 @@ namespace Rubberduck.Parsing.VBA
         private const int _maxDegreeOfDeclarationResolverParallelism = -1;
         private const int _maxDegreeOfReferenceResolverParallelism = -1;
         private const int _maxDegreeOfModuleStateChangeParallelism = -1;
+        private const int _maxDegreeOfReferenceRemovalParallelism = -1;
         private const int _maxReferenceLoadingConcurrency = -1;
 
         private readonly IDictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
@@ -185,7 +186,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void CleanUpComponentAttributes(List<IVBComponent> components)
+        private void CleanUpComponentAttributes(ICollection<IVBComponent> components)
         {
             foreach (var key in _componentAttributes.Keys)
             {
@@ -214,8 +215,9 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
 
-            var toResolveReferences = ModulesForWhichToResolveReferences(toParse);
-            PerformPreParseCleanup(toParse, toResolveReferences);
+            var modulesToParse = toParse.Select(component => new QualifiedModuleName(component)).ToHashSet();
+            var toResolveReferences = ModulesForWhichToResolveReferences(modulesToParse);
+            PerformPreParseCleanup(modulesToParse, toResolveReferences, token);
 
             ParseComponents(toParse, token);
 
@@ -268,28 +270,48 @@ namespace Rubberduck.Parsing.VBA
                 }
         }
 
-        private ICollection<QualifiedModuleName> ModulesForWhichToResolveReferences(List<IVBComponent> toParse)
+        private ICollection<QualifiedModuleName> ModulesForWhichToResolveReferences(ICollection<QualifiedModuleName> modulesToParse)
         {
-            var toResolveReferences = toParse.Select(component => new QualifiedModuleName(component)).ToHashSet();
-            foreach (var qmn in toParse.Select(component => new QualifiedModuleName(component)))
+            var toResolveReferences = modulesToParse.ToHashSet();
+            foreach (var qmn in modulesToParse)
             { 
                 toResolveReferences.UnionWith(State.ModulesReferencing(qmn));
             }
             return toResolveReferences;
         }
 
-        private void PerformPreParseCleanup(List<IVBComponent> toParse, ICollection<QualifiedModuleName> toResolveReferences)
+        private void PerformPreParseCleanup(ICollection<QualifiedModuleName> modulesToParse, ICollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
         {
-            ClearModuleToModuleReferences(toParse);
-            State.RemoveAllReferencesBy(toResolveReferences);
+            ClearModuleToModuleReferences(modulesToParse);
+            RemoveAllReferencesBy(toResolveReferences, modulesToParse, State.DeclarationFinder, token); //All declarations on the modulesToParse get destroyed anyway. 
             _projectDeclarations.Clear();
         }
 
-        private void ClearModuleToModuleReferences(List<IVBComponent> toClear)
+        private void ClearModuleToModuleReferences(ICollection<QualifiedModuleName> toClear)
         {
-            foreach (var component in toClear)
+            foreach (var qmn in toClear)
             {
-                State.ClearModuleToModuleReferencesFromModule(new QualifiedModuleName(component));       
+                State.ClearModuleToModuleReferencesFromModule(qmn);       
+            }
+        }
+
+        //This doesn not live on the RubberduckParserState to keep concurrency haanlding out of it.
+        public void RemoveAllReferencesBy(ICollection<QualifiedModuleName> referencesFromToRemove, ICollection<QualifiedModuleName> modulesNotNeedingReferenceRemoval, DeclarationFinder finder, CancellationToken token)
+        {
+            var referencedModulesNeedingReferenceRemoval = State.ModulesReferencedBy(referencesFromToRemove).Where(qmn => !modulesNotNeedingReferenceRemoval.Contains(qmn));
+
+            var options = new ParallelOptions();
+            options.CancellationToken = token;
+            options.MaxDegreeOfParallelism = _maxDegreeOfReferenceRemovalParallelism;
+
+            Parallel.ForEach(referencedModulesNeedingReferenceRemoval, options, qmn => RemoveReferences(finder.Members(qmn), referencesFromToRemove));
+        }
+
+        private void RemoveReferences(IEnumerable<Declaration> declarations, ICollection<QualifiedModuleName> referencesFromToRemove)
+        {
+            foreach (var declaration in declarations)
+            {
+                declaration.RemoveReferencesFrom(referencesFromToRemove);
             }
         }
 
@@ -688,7 +710,7 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
 
-            var componentsRemoved = CleanUpRemovedComponents(components);
+            var componentsRemoved = CleanUpRemovedComponents(components, token);
 
                 token.ThrowIfCancellationRequested();
 
@@ -721,21 +743,24 @@ namespace Rubberduck.Parsing.VBA
         /// Clears state cache of removed components.
         /// Returns whether components have been removed.
         /// </summary>
-        private bool CleanUpRemovedComponents(List<IVBComponent> components)
+        private bool CleanUpRemovedComponents(ICollection<IVBComponent> components, CancellationToken token)
         {
             var removedModuledecalrations = RemovedModuleDeclarations(components);
             var componentRemoved = removedModuledecalrations.Any();
             var removedModules = removedModuledecalrations.Select(declaration => declaration.QualifiedName.QualifiedModuleName).ToHashSet();
-            State.RemoveAllReferencesBy(removedModules);
-            foreach (var qmn in removedModules)
+            if (removedModules.Any())
             {
-                State.ClearModuleToModuleReferencesFromModule(qmn);
-                State.ClearStateCache(qmn);
+                RemoveAllReferencesBy(removedModules, removedModules, State.DeclarationFinder, token);
+                foreach (var qmn in removedModules)
+                {
+                    State.ClearModuleToModuleReferencesFromModule(qmn);
+                    State.ClearStateCache(qmn);
+                }
             }
             return componentRemoved;
         }
 
-        private IEnumerable<Declaration> RemovedModuleDeclarations(List<IVBComponent> components)
+        private IEnumerable<Declaration> RemovedModuleDeclarations(ICollection<IVBComponent> components)
         {
             var moduleDeclarations = State.AllUserDeclarations.Where(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module));
             var componentKeys = components.Select(component => new { name = component.Name, projectId = component.Collection.Parent.HelpFile }).ToHashSet();

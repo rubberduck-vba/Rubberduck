@@ -795,14 +795,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void RemoveAllReferencesBy(ICollection<QualifiedModuleName> referencesFromToRemove)
-        {
-            foreach (var declaration in AllDeclarations)
-            {
-                declaration.RemoveReferencesFrom(referencesFromToRemove);
-            }
-        }
-
         public bool ClearStateCache(IVBComponent component, bool notifyStateChanged = false)
         {
             return component != null && ClearStateCache(new QualifiedModuleName(component), notifyStateChanged);
@@ -1187,6 +1179,16 @@ namespace Rubberduck.Parsing.VBA
                 return new HashSet<QualifiedModuleName>();
             }
             return new HashSet<QualifiedModuleName>(referencingModuleState.HasReferenceToModule.Keys);
+        }
+
+        public HashSet<QualifiedModuleName> ModulesReferencedBy(IEnumerable<QualifiedModuleName> referencingModules)
+        {
+            var referencedModules = new HashSet<QualifiedModuleName>();
+            foreach (var referencingModule in referencedModules)
+            {
+                referencedModules.UnionWith(ModulesReferencedBy(referencingModule));
+            }
+            return referencedModules;
         }
 
         public HashSet<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
