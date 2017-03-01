@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
 using System.Linq;
@@ -7,15 +8,13 @@ namespace Rubberduck.UI.Refactorings
 {
     public partial class AssignedByValParameterQuickFixDialog : Form, IAssignedByValParameterQuickFixDialog
     {
-        private string[] _identifierNamesAlreadyDeclared;
-        private string _identifierName;
+        private readonly IEnumerable<string> _forbiddenNames;
 
-        internal AssignedByValParameterQuickFixDialog(string identifierName, string declarationType)
+        internal AssignedByValParameterQuickFixDialog(string identifierName, string declarationType, IEnumerable<string> forbiddenNames)
         {
             InitializeComponent();
             InitializeCaptions(identifierName, declarationType);
-           _identifierName = identifierName;
-            _identifierNamesAlreadyDeclared = Enumerable.Empty<string>().ToArray();
+            _forbiddenNames = forbiddenNames;
         }
 
         private void InitializeCaptions(string identifierName, string targetDeclarationType)
@@ -47,41 +46,30 @@ namespace Rubberduck.UI.Refactorings
                 SetControlsProperties();
             }
         }
-        public string[] IdentifierNamesAlreadyDeclared
-        {
-            get { return _identifierNamesAlreadyDeclared; }
-            set { _identifierNamesAlreadyDeclared = value; }
-        }
 
         private string GetVariableNameFeedback()
         {
-            var validator = new VariableNameValidator(NewName);
-
-            if (UserInputIsBlank())
+            if (string.IsNullOrEmpty(NewName))
             {
                 return string.Empty;
             }
-            if (validator.StartsWithNumber)
-            {
-                return RubberduckUI.AssignedByValDialog_DoesNotStartWithLetter;
-            }
-            if (validator.ContainsSpecialCharacters)
-            {
-                return RubberduckUI.AssignedByValDialog_InvalidCharacters;
-            }
-            if (validator.IsReservedName)
-            {
-                return string.Format(RubberduckUI.AssignedByValDialog_ReservedKeywordFormat, NewName);
-            }
-            if (IsByValIdentifier())
-            {
-                return string.Format(RubberduckUI.AssignedByValDialog_IsByValIdentifierFormat, NewName);
-            }
-            if (NewNameAlreadyUsed())
+            if (_forbiddenNames.Any(name => name.Equals(NewName, StringComparison.OrdinalIgnoreCase)))
             {
                 return string.Format(RubberduckUI.AssignedByValDialog_NewNameAlreadyUsedFormat, NewName);
             }
-            if (!validator.IsMeaningfulName())
+            if (VariableNameValidator.StartsWithDigit(NewName))
+            {
+                return RubberduckUI.AssignedByValDialog_DoesNotStartWithLetter;
+            }
+            if (VariableNameValidator.HasSpecialCharacters(NewName))
+            {
+                return RubberduckUI.AssignedByValDialog_InvalidCharacters;
+            }
+            if (VariableNameValidator.IsReservedIdentifier(NewName))
+            {
+                return string.Format(RubberduckUI.AssignedByValDialog_ReservedKeywordFormat, NewName);
+            }
+            if (!VariableNameValidator.IsMeaningfulName(NewName))
             {
                 return string.Format(RubberduckUI.AssignedByValDialog_QuestionableEntryFormat, NewName);
             }
@@ -90,28 +78,10 @@ namespace Rubberduck.UI.Refactorings
 
         private void SetControlsProperties()
         {
-            var validator = new VariableNameValidator(NewName);
-            var userInputIsValid = validator.IsValidName() && !NewNameAlreadyUsed();
-            OkButton.Visible = userInputIsValid;
-            OkButton.Enabled = userInputIsValid;
-            InvalidNameValidationIcon.Visible = !userInputIsValid;
-        }
-
-        private bool UserInputIsBlank()
-        {
-            return NewName.Equals(string.Empty);
-        }
-
-        private bool IsByValIdentifier()
-        {
-            return NewName.Equals(_identifierName, StringComparison.OrdinalIgnoreCase);
-        }
-
-        private bool NewNameAlreadyUsed()
-        {
-            //Comparison needs to be case-insensitive, or VBE will often change an existing
-            //same-spelling local variable's casing to conform with the NewName
-            return _identifierNamesAlreadyDeclared.Any(n => n.Equals(NewName, StringComparison.OrdinalIgnoreCase));
+            var isValid = VariableNameValidator.IsValidName(NewName) && !_forbiddenNames.Any(name => name.Equals(NewName, StringComparison.OrdinalIgnoreCase));
+            OkButton.Visible = isValid;
+            OkButton.Enabled = isValid;
+            InvalidNameValidationIcon.Visible = !isValid;
         }
     }
 }

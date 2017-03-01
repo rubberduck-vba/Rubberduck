@@ -1,114 +1,80 @@
 ﻿using System.Globalization;
 using Rubberduck.Parsing.Grammar;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNameValidator
+    public static class VariableNameValidator
     {
-        public VariableNameValidator() { }
-        public VariableNameValidator(string identifier) { _identifier = identifier; }
+        private static readonly string Vowels = "aeiouyàâäéèêëïîöôùûü";
+        private static readonly int MinVariableNameLength = 3;
 
-        private const string AllVowels = "aeiouyàâäéèêëïîöôùûü";
-        private const int MinVariableNameLength = 3;
-
-        /****  Meaningful Name Characteristics  ************/
-        public bool HasVowels
+        private static bool HasVowel(string name)
         {
-            get
-            {
-                return _identifier.Any(character => AllVowels.Any(vowel =>
-                    string.Compare(vowel.ToString(CultureInfo.InvariantCulture),
-                        character.ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase) == 0));
-            }
+            return name.Any(character => Vowels.Any(vowel =>
+                string.Compare(vowel.ToString(CultureInfo.InvariantCulture),
+                    character.ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase) == 0));
         }
 
-        public bool HasConsonants
+        private static bool HasConsonant(string name)
         {
-            get
-            {
-                return !_identifier.All(character => AllVowels.Any(vowel =>
-                    string.Compare(vowel.ToString(CultureInfo.InvariantCulture),
-                        character.ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase) == 0));
-            }
+            return !name.All(character => Vowels.Any(vowel =>
+                string.Compare(vowel.ToString(CultureInfo.InvariantCulture),
+                    character.ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase) == 0));
         }
 
-        public bool IsSingleRepeatedLetter
+        private static bool IsRepeatedCharacter(string name)
         {
-            get
-            {
-                var firstLetter = _identifier.First().ToString(CultureInfo.InvariantCulture);
-                return _identifier.All(a => string.Compare(a.ToString(CultureInfo.InvariantCulture), firstLetter,
-                    StringComparison.OrdinalIgnoreCase) == 0);
-            }
+            var firstLetter = name.First().ToString(CultureInfo.InvariantCulture);
+            return name.All(a => string.Compare(a.ToString(CultureInfo.InvariantCulture), firstLetter,
+                StringComparison.OrdinalIgnoreCase) == 0);
         }
 
-        public bool IsTooShort { get { return _identifier.Length < MinVariableNameLength; } }
-        public bool EndsWithNumber { get { return char.IsDigit(_identifier.Last()); } }
-
-        /****  Invalid Name Characteristics  ************/
-        public bool StartsWithNumber { get { return FirstLetterIsDigit(); } }
-
-        public bool IsReservedName
+        private static bool IsUnderMinLength(string name)
         {
-            get
-            {
-                var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-                return tokenValues.Contains(_identifier, StringComparer.InvariantCultureIgnoreCase);
-            }
+            return name.Length < MinVariableNameLength;
         }
 
-        public bool ContainsSpecialCharacters { get { return UsesSpecialCharacters(); } }
-
-        private string _identifier;
-        public string Identifier
+        private static bool EndsWithDigit(string name)
         {
-            get { return _identifier; }
-            set { _identifier = value; }
-        } 
-
-        public bool IsValidName()
-        {
-            return !string.IsNullOrEmpty(_identifier) 
-                && !StartsWithNumber
-                && !IsReservedName
-                && !ContainsSpecialCharacters;
+            return char.IsDigit(name.Last());
         }
 
-        public bool IsMeaningfulName()
+        public static bool StartsWithDigit(string name)
         {
-            return HasVowels
-                && HasConsonants
-                && !IsSingleRepeatedLetter
-                && !IsTooShort
-                && !EndsWithNumber;
+            return !char.IsLetter(name.First());
         }
 
-        public bool IsFoundIn(string input)
+        private static readonly IEnumerable<string> ReservedNames =
+            typeof (Tokens).GetFields().Select(item => item.GetValue(null).ToString()).ToArray();
+
+        public static bool IsReservedIdentifier(string name)
         {
-            const string noAdjacentLettersNumbersOrUnderscores = "([^0-9a-zA-Z_])";
-
-            Regex rgxSurroundedBySpacesOrEndsTheString = new Regex("(\\s)" + _identifier.ToUpper() + "(\\s|\\z)");
-
-            Regex rgxNoAdjacentLettersNumbersOrUnderscores = new Regex(noAdjacentLettersNumbersOrUnderscores + _identifier.ToUpper() + noAdjacentLettersNumbersOrUnderscores);
-
-            Regex rgxStartsTheString = new Regex("^" + _identifier.ToUpper() + noAdjacentLettersNumbersOrUnderscores);
-
-            return rgxSurroundedBySpacesOrEndsTheString.IsMatch(input.ToUpper()) 
-                || rgxNoAdjacentLettersNumbersOrUnderscores.IsMatch(input.ToUpper()) 
-                || rgxStartsTheString.IsMatch(input.ToUpper());
+            return ReservedNames.Contains(name, StringComparer.InvariantCultureIgnoreCase);
         }
 
-        private bool FirstLetterIsDigit()
+        public static bool HasSpecialCharacters(string name)
         {
-            return !char.IsLetter(_identifier.FirstOrDefault());
+            return name.Any(c => !char.IsLetterOrDigit(c) && c != '_');
         }
 
-        private bool UsesSpecialCharacters()
+        public static bool IsValidName(string name)
         {
-            return _identifier.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+            return !string.IsNullOrEmpty(name)
+                   && !StartsWithDigit(name)
+                   && !IsReservedIdentifier(name)
+                   && !HasSpecialCharacters(name);
+        }
+
+        public static bool IsMeaningfulName(string name)
+        {
+            return HasVowel(name)
+                && HasConsonant(name)
+                && !IsRepeatedCharacter(name)
+                && !IsUnderMinLength(name)
+                && !EndsWithDigit(name);
         }
     }
 }

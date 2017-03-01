@@ -51,17 +51,11 @@ namespace Rubberduck.Inspections
                                     !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
                                     !handlers.Contains(declaration.ParentDeclaration)) &&
                                 !whitelistedNames.Contains(declaration.IdentifierName) &&
-                                IsBadIdentifier(declaration.IdentifierName))
+                                !VariableNameValidator.IsMeaningfulName(declaration.IdentifierName))
                             .Select(issue => new IdentifierNameInspectionResult(this, issue, State, _messageBox, _settings))
                             .ToList();
 
             return issues;
-        }
-
-        private static bool IsBadIdentifier(string identifier)
-        {
-            var validator = new VariableNameValidator(identifier);
-            return !validator.IsMeaningfulName();
         }
     }
 }
