@@ -36,6 +36,8 @@ using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using ReparseCommandMenuItem = Rubberduck.UI.Command.MenuItems.CommandBars.ReparseCommandMenuItem;
+using Rubberduck.UI.Refactorings;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.Root
 {
@@ -70,6 +72,7 @@ namespace Rubberduck.Root
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
             
             Bind<CommandBase>().To<VersionCheckCommand>().WhenInjectedExactlyInto<App>();
+
             BindCodeInspectionTypes();
 
             var assemblies = new[]
@@ -137,6 +140,9 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<ToDoExplorerCommand>()
                 .InSingletonScope();
 
+            Bind<IAssignedByValParameterQuickFixDialogFactory>().To<AssignedByValParameterQuickFixDialogFactory>()
+                .WhenInjectedInto<AssignedByValParameterInspection>();
+
             BindDockableToolwindows();
             BindCommandsToCodeExplorer();
             ConfigureRubberduckCommandBar();
@@ -147,6 +153,8 @@ namespace Rubberduck.Root
             ConfigureProjectExplorerContextMenu();
             
             BindWindowsHooks();
+
+
         }
 
         private void BindDockableToolwindows()
