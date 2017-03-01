@@ -44,7 +44,6 @@ namespace Rubberduck.Parsing.Symbols
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<Declaration>> _declarations;
         private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
         private readonly ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
-        private readonly Dictionary<QualifiedMemberName, List<Declaration>> _undeclared;
         private readonly List<UnboundMemberDeclaration> _unresolved;
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IAnnotation>> _annotations;
         private readonly ConcurrentDictionary<Declaration, ConcurrentBag<Declaration>> _parametersByParent;
@@ -93,7 +92,6 @@ namespace Rubberduck.Parsing.Symbols
                     ), true);
 
             _newUndeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>(new Dictionary<QualifiedMemberName, ConcurrentBag<Declaration>>());
-            _undeclared = declarations.Where(declaration => declaration.IsUndeclared).GroupBy(item => item.QualifiedName).ToDictionary(group => group.Key, group => group.ToList());
             _newUnresolved = new ConcurrentBag<UnboundMemberDeclaration>(new List<UnboundMemberDeclaration>());
             _unresolved = unresolvedMemberDeclarations.ToList();
             
@@ -142,11 +140,6 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<Declaration> FreshUndeclared
         {
             get { return _newUndeclared.AllValues(); }
-        }
-
-        public IEnumerable<Declaration> Undeclared
-        {
-            get { return _undeclared.SelectMany(item => item.Value).ToList(); }
         }
 
         public IEnumerable<Declaration> Members(Declaration module)

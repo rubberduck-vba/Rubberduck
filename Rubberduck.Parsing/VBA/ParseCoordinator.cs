@@ -239,7 +239,6 @@ namespace Rubberduck.Parsing.VBA
                     throw new OperationCanceledException(token);
                 }
 
-            toResolveReferences = State.ParseTrees.Select(kvp => kvp.Key).ToHashSet();
             ResolveAllReferences(toResolveReferences, token);
 
                 if (token.IsCancellationRequested || State.Status >= ParserState.Error)
@@ -271,7 +270,7 @@ namespace Rubberduck.Parsing.VBA
 
         private ICollection<QualifiedModuleName> ModulesForWhichToResolveReferences(List<IVBComponent> toParse)
         {
-            var toResolveReferences = new HashSet<QualifiedModuleName>();
+            var toResolveReferences = toParse.Select(component => new QualifiedModuleName(component)).ToHashSet();
             foreach (var qmn in toParse.Select(component => new QualifiedModuleName(component)))
             { 
                 toResolveReferences.UnionWith(State.ModulesReferencing(qmn));
@@ -283,7 +282,6 @@ namespace Rubberduck.Parsing.VBA
         {
             ClearModuleToModuleReferences(toParse);
             State.RemoveAllReferencesBy(toResolveReferences);
-            State.ClearAllReferences(); //This has to stay here until the selective resolving actually works.
             _projectDeclarations.Clear();
         }
 
