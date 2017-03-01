@@ -1,56 +1,39 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections;
+using System.Linq;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class AssignedByValParameterQuickFixDialog : Form, IDialogView
+    public partial class AssignedByValParameterQuickFixDialog : Form, IAssignedByValParameterQuickFixDialog
     {
-        private readonly string[] _procedureLines;
-        private bool _userInputIsValid;
+        private readonly IEnumerable<string> _forbiddenNames;
 
-        public AssignedByValParameterQuickFixDialog(string[] procedureLines)
+        internal AssignedByValParameterQuickFixDialog(string identifierName, string declarationType, IEnumerable<string> forbiddenNames)
         {
-            _procedureLines = procedureLines;
-            _userInputIsValid = false;
             InitializeComponent();
-            InitializeCaptions();
+            InitializeCaptions(identifierName, declarationType);
+            _forbiddenNames = forbiddenNames;
         }
 
-        private void InitializeCaptions()
+        private void InitializeCaptions(string identifierName, string targetDeclarationType)
         {
             Text = RubberduckUI.AssignedByValParamQFixDialog_Caption;
             OkButton.Text = RubberduckUI.OK;
             CancelDialogButton.Text = RubberduckUI.CancelButtonText;
             TitleLabel.Text = RubberduckUI.AssignedByValParamQFixDialog_TitleText;
-            InstructionsLabel.Text = RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText;
             NameLabel.Text = RubberduckUI.NameLabelText;
+
+            var declarationType =
+            RubberduckUI.ResourceManager.GetString("DeclarationType_" + targetDeclarationType, Settings.Settings.Culture);
+            InstructionsLabel.Text = string.Format(RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText, declarationType,
+                identifierName);
         }
 
         private void NewNameBox_TextChanged(object sender, EventArgs e)
         {
             NewName = NewNameBox.Text;
-        }
-
-        private Declaration _target;
-        public Declaration Target
-        {
-            get { return _target; }
-            set
-            {
-                _target = value;
-                if (_target == null)
-                {
-                   return;
-                }
-
-                var declarationType =
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + _target.DeclarationType, Settings.Settings.Culture);
-                InstructionsLabel.Text = string.Format(RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText, declarationType,
-                    _target.IdentifierName);
-            }
         }
 
         public string NewName
@@ -66,34 +49,27 @@ namespace Rubberduck.UI.Refactorings
 
         private string GetVariableNameFeedback()
         {
-            var validator = new VariableNameValidator(NewName);
-            _userInputIsValid = validator.IsValidName() && !NewNameAlreadyUsed();
-
-            if (UserInputIsBlank())
+            if (string.IsNullOrEmpty(NewName))
             {
                 return string.Empty;
             }
-            if (validator.StartsWithNumber)
-            {
-                return RubberduckUI.AssignedByValDialog_DoesNotStartWithLetter;
-            }
-            if (validator.ContainsSpecialCharacters)
-            {
-                return RubberduckUI.AssignedByValDialog_InvalidCharacters;
-            }
-            if (validator.IsReservedName)
-            {
-                return string.Format(RubberduckUI.AssignedByValDialog_ReservedKeywordFormat, NewName);
-            }
-            if (NewNameAlreadyUsed())
+            if (_forbiddenNames.Any(name => name.Equals(NewName, StringComparison.OrdinalIgnoreCase)))
             {
                 return string.Format(RubberduckUI.AssignedByValDialog_NewNameAlreadyUsedFormat, NewName);
             }
-            if (IsByValIdentifier())
+            if (VariableNameValidator.StartsWithDigit(NewName))
             {
-                return string.Format(RubberduckUI.AssignedByValDialog_IsByValIdentifierFormat, NewName);
+                return RubberduckUI.AssignedByValDialog_DoesNotStartWithLetter;
             }
-            if (!validator.IsMeaningfulName())
+            if (VariableNameValidator.HasSpecialCharacters(NewName))
+            {
+                return RubberduckUI.AssignedByValDialog_InvalidCharacters;
+            }
+            if (VariableNameValidator.IsReservedIdentifier(NewName))
+            {
+                return string.Format(RubberduckUI.AssignedByValDialog_ReservedKeywordFormat, NewName);
+            }
+            if (!VariableNameValidator.IsMeaningfulName(NewName))
             {
                 return string.Format(RubberduckUI.AssignedByValDialog_QuestionableEntryFormat, NewName);
             }
@@ -102,25 +78,10 @@ namespace Rubberduck.UI.Refactorings
 
         private void SetControlsProperties()
         {
-            OkButton.Visible = _userInputIsValid;
-            OkButton.Enabled = _userInputIsValid;
-            InvalidNameValidationIcon.Visible = !_userInputIsValid;
-        }
-
-        private bool UserInputIsBlank()
-        {
-            return NewName.Equals(string.Empty);
-        }
-
-        private bool IsByValIdentifier()
-        {
-            return NewName.Equals(Target.IdentifierName,StringComparison.OrdinalIgnoreCase);
-        }
-
-        private bool NewNameAlreadyUsed()
-        {
-            var validator = new VariableNameValidator(NewName);
-            return _procedureLines.Any(codeLine => validator.IsFoundIn(codeLine));
+            var isValid = VariableNameValidator.IsValidName(NewName) && !_forbiddenNames.Any(name => name.Equals(NewName, StringComparison.OrdinalIgnoreCase));
+            OkButton.Visible = isValid;
+            OkButton.Enabled = isValid;
+            InvalidNameValidationIcon.Visible = !isValid;
         }
     }
 }

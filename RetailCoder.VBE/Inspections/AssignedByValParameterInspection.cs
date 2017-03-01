@@ -3,18 +3,21 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Inspections
 {
     public sealed class AssignedByValParameterInspection : InspectionBase
     {
-        public AssignedByValParameterInspection(RubberduckParserState state)
+        private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
+        public AssignedByValParameterInspection(RubberduckParserState state, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(state)
         {
             Severity = DefaultSeverity;
+            _dialogFactory = dialogFactory;
+
         }
 
         public override string Meta { get { return InspectionsUI.AssignedByValParameterInspectionMeta; } }
@@ -31,7 +34,7 @@ namespace Rubberduck.Inspections
                 .ToList();
 
             return parameters
-                .Select(param => new AssignedByValParameterInspectionResult(this, param))
+                .Select(param => new AssignedByValParameterInspectionResult(this, param, _dialogFactory))
                 .ToList();
         }
     }

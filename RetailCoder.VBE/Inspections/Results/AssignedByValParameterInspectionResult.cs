@@ -4,14 +4,20 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Inspections.Results
 {
     public class AssignedByValParameterInspectionResult : InspectionResultBase
     {
         private IEnumerable<QuickFixBase> _quickFixes;
+        private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
 
-        public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target) : base(inspection, target) { }
+        public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target, IAssignedByValParameterQuickFixDialogFactory dialogFactory) 
+            : base(inspection, target)
+        {
+            _dialogFactory = dialogFactory;
+        }
 
         public override string Description
         {
@@ -27,7 +33,7 @@ namespace Rubberduck.Inspections.Results
             {
                 return _quickFixes ?? (_quickFixes = new QuickFixBase[]
                 {
-                    new AssignedByValParameterQuickFix(Target, QualifiedSelection),
+                    new AssignedByValParameterMakeLocalCopyQuickFix(Target, QualifiedSelection, _dialogFactory),
                     new PassParameterByReferenceQuickFix(Target, QualifiedSelection),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
                 });
