@@ -116,8 +116,10 @@ namespace Rubberduck.Inspections.Abstract
 
         protected bool IsIgnoringInspectionResultFor(Declaration declaration, string inspectionName)
         {
-            var isIgnoredAtModuleLevel =
-                Declaration.GetModuleParent(declaration).Annotations
+            var module = Declaration.GetModuleParent(declaration);
+            if (module == null) { return false; }
+
+            var isIgnoredAtModuleLevel = module.Annotations
                     .Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreModule
                                        && ((IgnoreModuleAnnotation) annotation).IsIgnored(inspectionName));
 
