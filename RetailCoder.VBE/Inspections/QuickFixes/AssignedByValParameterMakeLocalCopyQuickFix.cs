@@ -81,8 +81,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private bool VariableNameIsValid(string variableName)
         {
-            var validator = new VariableNameValidator(variableName);
-            return validator.IsValidName()
+            return VariableNameValidator.IsValidName(variableName)
                 && !_forbiddenNames.Any(name => name.Equals(variableName, System.StringComparison.InvariantCultureIgnoreCase));
         }
 
