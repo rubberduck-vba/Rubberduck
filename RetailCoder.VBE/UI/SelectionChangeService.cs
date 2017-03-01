@@ -81,8 +81,7 @@ namespace Rubberduck.UI
             }
             SelectionChanged.Invoke(null, eventArgs);
         }
-
-        
+       
         private void DispatchSelectedDeclaration(DeclarationChangedEventArgs eventArgs)
         {
             DispatchSelectionChanged(eventArgs);
@@ -111,7 +110,7 @@ namespace Rubberduck.UI
             {
                 var name = component.SelectedControls.First().Name;
                 var control =
-                    _parser.State.AllUserDeclarations.SingleOrDefault(decl =>
+                    _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.Control).SingleOrDefault(decl =>
                             decl.IdentifierName.Equals(name) &&
                             decl.ParentDeclaration.IdentifierName.Equals(component.Name) &&
                             decl.ProjectId.Equals(component.ParentProject.ProjectId));
@@ -120,7 +119,7 @@ namespace Rubberduck.UI
                 return;
             }
             var form =
-                _parser.State.AllUserDeclarations.SingleOrDefault(decl =>
+                _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.UserForm).SingleOrDefault(decl =>
                     decl.IdentifierName.Equals(component.Name) &&
                     decl.ProjectId.Equals(component.ParentProject.ProjectId));
 
@@ -144,7 +143,7 @@ namespace Rubberduck.UI
             }
             else if (component != null)
             {
-                //The user might have selected the project node in Project Explorer. If they've chosen a folder, we'll return the project anyway.
+                
                 var module =
                     _parser.State.AllUserDeclarations.SingleOrDefault(
                         decl => decl.DeclarationType.HasFlag(DeclarationType.Module) &&
