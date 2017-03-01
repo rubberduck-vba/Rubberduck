@@ -15,7 +15,8 @@ namespace Rubberduck.Inspections
         private const int MinVariableNameLength = 3;
 
         /****  Meaningful Name Characteristics  ************/
-        public bool HasVowels
+
+        private bool HasVowels
         {
             get
             {
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections
             }
         }
 
-        public bool HasConsonants
+        private bool HasConsonants
         {
             get
             {
@@ -35,7 +36,7 @@ namespace Rubberduck.Inspections
             }
         }
 
-        public bool IsSingleRepeatedLetter
+        private bool IsSingleRepeatedLetter
         {
             get
             {
@@ -45,8 +46,8 @@ namespace Rubberduck.Inspections
             }
         }
 
-        public bool IsTooShort { get { return _identifier.Length < MinVariableNameLength; } }
-        public bool EndsWithNumber { get { return char.IsDigit(_identifier.Last()); } }
+        private bool IsTooShort { get { return _identifier.Length < MinVariableNameLength; } }
+        private bool EndsWithNumber { get { return char.IsDigit(_identifier.Last()); } }
 
         /****  Invalid Name Characteristics  ************/
         public bool StartsWithNumber { get { return FirstLetterIsDigit(); } }

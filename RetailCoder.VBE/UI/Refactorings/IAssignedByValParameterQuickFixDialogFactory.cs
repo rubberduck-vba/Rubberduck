@@ -10,6 +10,6 @@ namespace Rubberduck.UI.Refactorings
 {
     public interface IAssignedByValParameterQuickFixDialogFactory
     {
-        IAssignedByValParameterQuickFixDialog Create(string identifier, string identifierType);
+        IAssignedByValParameterQuickFixDialog Create(string identifier, string identifierType, IEnumerable<string> forbiddenNames);
     }
 }
