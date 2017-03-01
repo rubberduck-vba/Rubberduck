@@ -325,6 +325,7 @@
     <Compile Include="Common\Hotkeys\Hotkey.cs" />
     <Compile Include="Common\IAttachable.cs" />
     <Compile Include="Common\Hotkeys\IHotkey.cs" />
+    <Compile Include="Common\CodeModuleExtensions.cs" />
     <Compile Include="Common\IOperatingSystem.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\LogLevelHelper.cs" />
@@ -347,7 +348,8 @@
     <Compile Include="Inspections\MemberNotOnInterfaceInspection.cs" />
     <Compile Include="Inspections\QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
-    <Compile Include="Inspections\QuickFixes\AssignedByValParameterQuickFix.cs" />
+    <Compile Include="Inspections\QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
+    <Compile Include="Inspections\QuickFixes\QuickFixHelper.cs" />
     <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -470,6 +472,9 @@
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
+    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialogFactory.cs" />
+    <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
+    <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialogFactory.cs" />
     <Compile Include="UI\SelectionChangeService.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
