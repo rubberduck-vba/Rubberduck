@@ -13,11 +13,13 @@ namespace Rubberduck.Inspections
     public sealed class AssignedByValParameterInspection : InspectionBase
     {
         private IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
+        private RubberduckParserState _parserState;
         public AssignedByValParameterInspection(RubberduckParserState state, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(state)
         {
             Severity = DefaultSeverity;
             _dialogFactory = dialogFactory;
+            _parserState = state;
 
         }
 
@@ -35,7 +37,7 @@ namespace Rubberduck.Inspections
                 .ToList();
 
             return parameters
-                .Select(param => new AssignedByValParameterInspectionResult(this, param, _dialogFactory))
+                .Select(param => new AssignedByValParameterInspectionResult(this, param, _parserState, _dialogFactory))
                 .ToList();
         }
     }

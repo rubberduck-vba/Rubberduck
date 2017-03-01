@@ -11,6 +11,7 @@ using Rubberduck.Common;
 using Antlr4.Runtime;
 using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -18,15 +19,17 @@ namespace Rubberduck.Inspections.QuickFixes
     {
         private readonly Declaration _target;
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
+        private readonly RubberduckParserState _parserState;
         private string _localCopyVariableName;
         private string[] _variableNamesAccessibleToProcedureContext;
 
-        public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
+        public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection, RubberduckParserState parserState, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(target.Context, selection, InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix)
         {
             _target = target;
             _dialogFactory = dialogFactory;
-            _variableNamesAccessibleToProcedureContext = GetVariableNamesAccessibleToProcedureContext(_target.Context.Parent.Parent);
+            _parserState = parserState;
+            _variableNamesAccessibleToProcedureContext = GetUserDefinedNamesAccessibleToProcedureContext(_target.Context.Parent.Parent);
             SetValidLocalCopyVariableNameSuggestion();
         }
 
@@ -100,7 +103,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void InsertLocalVariableDeclarationAndAssignment()
         {
-            var blocks = QuickFixHelper.GetBlockStmtContextsForContext(_target.Context.Parent.Parent);
+            var blocks = QuickFixHelper.GetBlockStmtContexts(_target.Context.Parent.Parent);
             string[] lines = { BuildLocalCopyDeclaration(), BuildLocalCopyAssignment() };
             var module = Selection.QualifiedName.Component.CodeModule;
             module.InsertLines(blocks.FirstOrDefault().Start.Line, lines);
@@ -118,41 +121,79 @@ namespace Rubberduck.Inspections.QuickFixes
                 + _localCopyVariableName + " = " + _target.IdentifierName;
         }
 
-        private string[] GetVariableNamesAccessibleToProcedureContext(RuleContext ruleContext)
+        private string[] GetUserDefinedNamesAccessibleToProcedureContext(RuleContext ruleContext)
         {
             var allIdentifiers = new HashSet<string>();
 
-            var blocks = QuickFixHelper.GetBlockStmtContextsForContext(ruleContext);
+            //Locally declared variable names
+            var blocks = QuickFixHelper.GetBlockStmtContexts(ruleContext);
 
-            var blockStmtIdentifiers = GetIdentifierNames(blocks);
+            var blockStmtIdentifierContexts = GetIdentifierContexts(blocks);
+            var blockStmtIdentifiers = GetVariableNamesFromRuleContexts(blockStmtIdentifierContexts.ToArray());
+
             allIdentifiers.UnionWith(blockStmtIdentifiers);
 
-            var args = QuickFixHelper.GetArgContextsForContext(ruleContext);
+            //The parameters of the procedure that are unreferenced in the procedure body
+            var args = QuickFixHelper.GetArgContexts(ruleContext);
 
-            var potentiallyUnreferencedParameters = GetIdentifierNames(args);
+            var potentiallyUnreferencedIdentifierContexts = GetIdentifierContexts(args);
+            var potentiallyUnreferencedParameters = GetVariableNamesFromRuleContexts(potentiallyUnreferencedIdentifierContexts.ToArray());
+
             allIdentifiers.UnionWith(potentiallyUnreferencedParameters);
 
-            //TODO: add module and global scope variableNames to the list.
+            //All declarations within the same module, but outside of all procedures (e.g., member variables, procedure names)
+            var sameModuleDeclarations = _parserState.AllUserDeclarations
+                    .Where(item => item.ComponentName == _target.ComponentName
+                    && !IsProceduralContext(item.ParentDeclaration.Context))
+                    .ToList();
+
+            allIdentifiers.UnionWith(sameModuleDeclarations.Select(d => d.IdentifierName));
+
+            //Public declarations anywhere within the project other than Public members and 
+            //procedures of Class  modules
+            var allPublicDeclarations = _parserState.AllUserDeclarations
+                .Where(item => (item.Accessibility == Accessibility.Public
+                || ((item.Accessibility == Accessibility.Implicit) 
+                && item.ParentScopeDeclaration is ProceduralModuleDeclaration))
+                && !(item.ParentScopeDeclaration is ClassModuleDeclaration))
+                .ToList();
+
+            allIdentifiers.UnionWith(allPublicDeclarations.Select(d => d.IdentifierName));
 
             return allIdentifiers.ToArray();
         }
 
-        private HashSet<string> GetIdentifierNames(IReadOnlyList<RuleContext> ruleContexts)
+        private HashSet<string> GetVariableNamesFromRuleContexts(RuleContext[] ruleContexts)
         {
-            var identifiers = new HashSet<string>();
+            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+            var results = new HashSet<string>();
+
+            foreach( var ruleContext in ruleContexts)
+            {
+                var name = Identifier.GetName((VBAParser.IdentifierContext)ruleContext);
+                if (!tokenValues.Contains(name))
+                {
+                    results.Add(name);
+                }
+            }
+            return results;
+        }
+
+        private HashSet<RuleContext> GetIdentifierContexts(IReadOnlyList<RuleContext> ruleContexts)
+        {
+            var identifiers = new HashSet<RuleContext>();
             foreach (RuleContext ruleContext in ruleContexts)
             {
-                var identifiersForThisContext = GetIdentifierNames(ruleContext);
+                var identifiersForThisContext = GetIdentifierContexts(ruleContext);
                 identifiers.UnionWith(identifiersForThisContext);
             }
             return identifiers;
         }
 
-        private HashSet<string> GetIdentifierNames(RuleContext ruleContext)
+        private HashSet<RuleContext> GetIdentifierContexts(RuleContext ruleContext)
         {
             //Recursively work through the tree to get all IdentifierContexts
-            var results = new HashSet<string>();
-            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+            var results = new HashSet<RuleContext>();
             var children = GetChildren(ruleContext);
 
             foreach (IParseTree child in children)
@@ -160,16 +201,13 @@ namespace Rubberduck.Inspections.QuickFixes
                 if (child is VBAParser.IdentifierContext)
                 {
                     var childName = Identifier.GetName((VBAParser.IdentifierContext)child);
-                    if (!tokenValues.Contains(childName))
-                    {
-                        results.Add(childName);
-                    }
+                    results.Add((RuleContext)child);
                 }
                 else
                 {
                     if (!(child is TerminalNodeImpl))
                     {
-                        results.UnionWith(GetIdentifierNames((RuleContext)child));
+                        results.UnionWith(GetIdentifierContexts((RuleContext)child));
                     }
                 }
             }
@@ -184,6 +222,30 @@ namespace Rubberduck.Inspections.QuickFixes
                 result.Add(ruleCtx.GetChild(index));
             }
             return result;
+        }
+        private bool IsProceduralContext(RuleContext context)
+        {
+            if (context is VBAParser.SubStmtContext)
+            {
+                return true;
+            }
+            else if (context is VBAParser.FunctionStmtContext)
+            {
+                return true;
+            }
+            else if (context is VBAParser.PropertyLetStmtContext)
+            {
+                return true;
+            }
+            else if (context is VBAParser.PropertyGetStmtContext)
+            {
+                return true;
+            }
+            else if (context is VBAParser.PropertySetStmtContext)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

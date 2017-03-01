@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix()
         {
             var module = Selection.QualifiedName.Component.CodeModule;
-            var argContext = QuickFixHelper.GetArgContextsForContext(Context.Parent.Parent)
+            var argContext = QuickFixHelper.GetArgContexts(Context.Parent.Parent)
                 .SingleOrDefault(parameter => Identifier.GetName(parameter.unrestrictedIdentifier())
                     .Equals(_target.IdentifierName));
 

@@ -8,7 +8,7 @@ namespace Rubberduck.Inspections.QuickFixes
     public static class QuickFixHelper
     {
         
-        public static IReadOnlyList<VBAParser.BlockStmtContext> GetBlockStmtContextsForContext(RuleContext context)
+        public static IReadOnlyList<VBAParser.BlockStmtContext> GetBlockStmtContexts(RuleContext context)
         {
             if (context is VBAParser.SubStmtContext)
             {
@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return Enumerable.Empty<VBAParser.BlockStmtContext>().ToArray();
         }
         
-        public static IReadOnlyList<VBAParser.ArgContext> GetArgContextsForContext(RuleContext context)
+        public static IReadOnlyList<VBAParser.ArgContext> GetArgContexts(RuleContext context)
         {
             if (context is VBAParser.SubStmtContext)
             {
