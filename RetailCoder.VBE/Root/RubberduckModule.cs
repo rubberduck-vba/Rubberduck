@@ -466,7 +466,9 @@ namespace Rubberduck.Root
             var items = new IMenuItem[]
             {
                 KernelInstance.Get<CodePaneRefactorRenameCommandMenuItem>(),
+#if DEBUG
                 KernelInstance.Get<RefactorExtractMethodCommandMenuItem>(),
+#endif
                 KernelInstance.Get<RefactorReorderParametersCommandMenuItem>(),
                 KernelInstance.Get<RefactorRemoveParametersCommandMenuItem>(),
                 KernelInstance.Get<RefactorIntroduceParameterCommandMenuItem>(),
