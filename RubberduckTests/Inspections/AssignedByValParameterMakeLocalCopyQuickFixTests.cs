@@ -238,7 +238,7 @@ End Sub
             KeyValuePair<string, string>[] standardModules = { };
             KeyValuePair<string, string>[] classModules = { firstClass };
 
-            //Not changes to the code module if any of these invalid names are chosen
+            //No changes to the code module if any of these invalid names are chosen
             string[] invalidNames = { "memberLong", "memberString", "FooFight", "Foo" };
             foreach (var invalidName in invalidNames)
             {

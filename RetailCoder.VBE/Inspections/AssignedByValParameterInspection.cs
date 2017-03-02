@@ -11,12 +11,8 @@ namespace Rubberduck.Inspections
 {
     public sealed class AssignedByValParameterInspection : InspectionBase
     {
-//<<<<<<< HEAD
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
         private RubberduckParserState _parserState;
-//=======
-        //private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
-//>>>>>>> rubberduck-vba/next
         public AssignedByValParameterInspection(RubberduckParserState state, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(state)
         {
