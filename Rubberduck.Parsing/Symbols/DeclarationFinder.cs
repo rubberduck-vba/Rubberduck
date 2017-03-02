@@ -702,6 +702,10 @@ namespace Rubberduck.Parsing.Symbols
             var handlerNames = declarations
                 .Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
                 .SelectMany(e => controls.Select(c => c.IdentifierName + "_" + e.IdentifierName));
+            if (!_userDeclarationsByType.ContainsKey(DeclarationType.Procedure))
+            {
+                return Enumerable.Empty<Declaration>();
+            }
             var handlers = _userDeclarationsByType[DeclarationType.Procedure]
                 .Where(procedure => handlerNames.Contains(procedure.IdentifierName));
             return handlers;
