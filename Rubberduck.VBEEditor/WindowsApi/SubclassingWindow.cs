@@ -43,7 +43,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         public void Dispose()
         {
             ReleaseHandle();
-            //GC.SuppressFinalize(this);
+            _thisHandle.Free();
         }
 
         private void AssignHandle()
@@ -86,14 +86,13 @@ namespace Rubberduck.VBEditor.WindowsApi
         {
             if (!_listening)
             {
-                throw new Exception("State corrupted. Received window message while not listening.");
+                Debug.WriteLine("State corrupted. Received window message while not listening.");
+                return DefSubclassProc(hWnd, msg, wParam, lParam);
             }
 
-            Debug.Assert(IsWindow(_hwnd));
             if ((uint)msg == (uint)WM.RUBBERDUCK_SINKING || (uint)msg == (uint)WM.DESTROY)
             {                
-                ReleaseHandle();
-                _thisHandle.Free();
+                ReleaseHandle();                
             }
             return DefSubclassProc(hWnd, msg, wParam, lParam);
         }
