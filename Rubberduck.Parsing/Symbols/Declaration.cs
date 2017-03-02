@@ -616,5 +616,12 @@ namespace Rubberduck.Parsing.Symbols
         {
             _references = new ConcurrentBag<IdentifierReference>();
         }
+
+        public void RemoveReferencesFrom(ICollection<QualifiedModuleName> modulesByWhichToRemoveReferences)
+        {
+            //This gets replaced with a new ConcurrentBag because one cannot remove specific items from a ConcurrentBag.
+            //Moreover, changing to a ConcurrentDictionary<IdentifierReference,byte> breaks all sorts of tests, for some obscure reason. 
+            var newReferences = new ConcurrentBag<IdentifierReference>(_references.Where(reference => !modulesByWhichToRemoveReferences.Contains(reference.QualifiedModuleName)));
+        }
     }
 }
