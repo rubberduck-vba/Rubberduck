@@ -64,7 +64,7 @@ namespace Rubberduck.Parsing.Symbols
             _parametersByParent = declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
                 .GroupBy(declaration => declaration.ParentDeclaration).ToConcurrentDictionary();
             _userDeclarationsByType = declarations.Where(declaration => !declaration.IsBuiltIn).GroupBy(declaration => declaration.DeclarationType).ToConcurrentDictionary();
-            _builtinEvents = new Lazy<ConcurrentBag<Declaration>>(() => FindBuiltInEventHandlers(declarations), true);
+            _eventHandlers = new Lazy<ConcurrentBag<Declaration>>(() => FindEventHandlers(declarations), true);
 
             _projects = _projects = new Lazy<ConcurrentBag<Declaration>>(() => new ConcurrentBag<Declaration>(declarations.Where(d => d.DeclarationType == DeclarationType.Project)), true);
             _classes = new Lazy<ConcurrentBag<Declaration>>(() => new ConcurrentBag<Declaration>(declarations.Where(d => d.DeclarationType == DeclarationType.ClassModule)), true);
@@ -165,12 +165,12 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private readonly Lazy<ConcurrentBag<Declaration>> _builtinEvents; 
-        public IEnumerable<Declaration> FindBuiltinEventHandlers()
+        private readonly Lazy<ConcurrentBag<Declaration>> _eventHandlers; 
+        public IEnumerable<Declaration> FindEventHandlers()
         {
             lock (ThreadLock)
             {
-                return _builtinEvents.Value;
+                return _eventHandlers.Value;
             }
         }
 
@@ -695,7 +695,23 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public ConcurrentBag<Declaration> FindBuiltInEventHandlers(IEnumerable<Declaration> declarations)
+        private IEnumerable<Declaration> FindFormControlHandlers(IReadOnlyList<Declaration> declarations)
+        {
+            var controls = declarations
+                .Where(declaration => declaration.DeclarationType == DeclarationType.Control);
+            var handlerNames = declarations
+                .Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
+                .SelectMany(e => controls.Select(c => c.IdentifierName + "_" + e.IdentifierName));
+            if (!_userDeclarationsByType.ContainsKey(DeclarationType.Procedure))
+            {
+                return Enumerable.Empty<Declaration>();
+            }
+            var handlers = _userDeclarationsByType[DeclarationType.Procedure]
+                .Where(procedure => handlerNames.Contains(procedure.IdentifierName));
+            return handlers;
+        }
+
+        private ConcurrentBag<Declaration> FindEventHandlers(IEnumerable<Declaration> declarations)
         {
             var declarationList = declarations.ToList();
 
@@ -725,7 +741,9 @@ namespace Rubberduck.Parsing.Symbols
                 (!item.IsBuiltIn &&
                  item.DeclarationType == DeclarationType.Procedure &&
                  handlerNames.Contains(item.IdentifierName))
-                );
+                )
+                .Concat(_handlersByWithEventsField.Value.SelectMany(kvp => kvp.Value))
+                .Concat(FindFormControlHandlers(declarationList));
 
             return new ConcurrentBag<Declaration>(handlers);
         }

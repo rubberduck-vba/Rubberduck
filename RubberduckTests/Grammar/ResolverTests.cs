@@ -903,6 +903,30 @@ End Sub
         }
 
         [TestMethod]
+        public void SubscriptWrite_IsNotAssignmentReferenceToObjectDeclaration()
+        {
+            var code = @"
+Public Sub DoSomething()
+    Dim foo As Object
+    Set foo = CreateObject(""Scripting.Dictionary"")
+    foo(""key"") = 42
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable
+                && item.IdentifierName == "foo");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && !item.IsAssignment));
+        }
+
+        [TestMethod]
         public void ArraySubscriptWrite_IsAssignmentReferenceToArrayDeclaration()
         {
             var code = @"

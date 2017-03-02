@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var interfaceMembers = UserDeclarations.FindInterfaceImplementationMembers();
-            var builtinEventHandlers = State.DeclarationFinder.FindBuiltinEventHandlers();
+            var builtinEventHandlers = State.DeclarationFinder.FindEventHandlers();
 
             var issues = State.DeclarationFinder
                 .UserDeclarations(DeclarationType.Parameter)
