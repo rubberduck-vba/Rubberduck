@@ -69,7 +69,7 @@ namespace Rubberduck.Parsing.VBA
 
         internal void RefreshFinder(IHostApplication host)
         {
-            DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, host);
+            DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, AllUnresolvedMemberDeclarations, host);
         }
 
         private readonly IVBE _vbe;
@@ -629,6 +629,28 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        /// <summary>
+        /// Gets a copy of the unresolved member declarations.
+        /// </summary>
+        public IReadOnlyList<UnboundMemberDeclaration> AllUnresolvedMemberDeclarations
+        {
+            get
+            {
+                var declarations = new List<UnboundMemberDeclaration>();
+                foreach (var state in _moduleStates.Values)
+                {
+                    if (state.UnresolvedMemberDeclarations == null)
+                    {
+                        continue;
+                    }
+
+                    declarations.AddRange(state.UnresolvedMemberDeclarations.Keys);
+                }
+
+                return declarations;
+            }
+        }
+
         private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
         public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees { get { return _builtInDeclarationTrees; } }
 
@@ -691,6 +713,28 @@ namespace Rubberduck.Parsing.VBA
             while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
             {
                 Logger.Warn("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+            }
+        }
+
+        /// <summary>
+        /// Adds the specified <see cref="UnboundMemberDeclaration"/> to the collection (replaces existing).
+        /// </summary>
+        public void AddUnresolvedMemberDeclaration(UnboundMemberDeclaration declaration)
+        {
+            var key = declaration.QualifiedName.QualifiedModuleName;
+            var declarations = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>())).UnresolvedMemberDeclarations;
+
+            if (declarations.ContainsKey(declaration))
+            {
+                byte _;
+                while (!declarations.TryRemove(declaration, out _))
+                {
+                    Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                }
+            }
+            while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
+            {
+                Logger.Warn("Could not add unresolved member declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
             }
         }
 
@@ -1135,6 +1179,16 @@ namespace Rubberduck.Parsing.VBA
                 return new HashSet<QualifiedModuleName>();
             }
             return new HashSet<QualifiedModuleName>(referencingModuleState.HasReferenceToModule.Keys);
+        }
+
+        public HashSet<QualifiedModuleName> ModulesReferencedBy(IEnumerable<QualifiedModuleName> referencingModules)
+        {
+            var referencedModules = new HashSet<QualifiedModuleName>();
+            foreach (var referencingModule in referencedModules)
+            {
+                referencedModules.UnionWith(ModulesReferencedBy(referencingModule));
+            }
+            return referencedModules;
         }
 
         public HashSet<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Events;
@@ -39,8 +40,11 @@ namespace Rubberduck.UI
                 return;
             }
 
-            var eventArgs = new DeclarationChangedEventArgs(e.CodePane, _parser.State.FindSelectedDeclaration(e.CodePane));
-            DispatchSelectedDeclaration(eventArgs);                       
+            new Task(() =>
+            {
+                var eventArgs = new DeclarationChangedEventArgs(e.CodePane, _parser.State.FindSelectedDeclaration(e.CodePane));
+                DispatchSelectedDeclaration(eventArgs);
+            }).Start();
         }
 
         private void OnVbeFocusChanged(object sender, WindowChangedEventArgs e)
@@ -55,13 +59,13 @@ namespace Rubberduck.UI
                         {
                             return;
                         }
-                        DispatchSelectedDesignerDeclaration(_vbe.SelectedVBComponent);                        
+                        new Task(() => DispatchSelectedDesignerDeclaration(_vbe.SelectedVBComponent)).Start();                  
                         break;
                     case WindowKind.CodeWindow:
                         //Caret changed in a code pane.
                         if (e.CodePane != null && !e.CodePane.IsWrappingNullReference)
                         {
-                            DispatchSelectedDeclaration(new DeclarationChangedEventArgs(e.CodePane, _parser.State.FindSelectedDeclaration(e.CodePane)));
+                            new Task(() => DispatchSelectedDeclaration(new DeclarationChangedEventArgs(e.CodePane, _parser.State.FindSelectedDeclaration(e.CodePane)))).Start(); 
                         }
                         break;
                 }
@@ -69,7 +73,7 @@ namespace Rubberduck.UI
             else if (e.EventType == FocusType.ChildFocus)
             {
                 //Treeview selection changed in project window.
-                DispatchSelectedProjectNodeDeclaration(_vbe.SelectedVBComponent);
+                new Task(() => DispatchSelectedProjectNodeDeclaration(_vbe.SelectedVBComponent)).Start();
             }
         }
 
