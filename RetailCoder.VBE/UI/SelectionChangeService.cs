@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Events;
@@ -39,8 +40,11 @@ namespace Rubberduck.UI
                 return;
             }
 
-            var eventArgs = new DeclarationChangedEventArgs(e.CodePane, _parser.State.FindSelectedDeclaration(e.CodePane));
-            DispatchSelectedDeclaration(eventArgs);                       
+            new Task(() =>
+            {
+                var eventArgs = new DeclarationChangedEventArgs(e.CodePane, _parser.State.FindSelectedDeclaration(e.CodePane));
+                DispatchSelectedDeclaration(eventArgs);
+            }).Start();
         }
 
         private void OnVbeFocusChanged(object sender, WindowChangedEventArgs e)
@@ -55,13 +59,13 @@ namespace Rubberduck.UI
                         {
                             return;
                         }
-                        DispatchSelectedDesignerDeclaration(_vbe.SelectedVBComponent);                        
+                        new Task(() => DispatchSelectedDesignerDeclaration(_vbe.SelectedVBComponent)).Start();                  
                         break;
                     case WindowKind.CodeWindow:
                         //Caret changed in a code pane.
                         if (e.CodePane != null && !e.CodePane.IsWrappingNullReference)
                         {
-                            DispatchSelectedDeclaration(new DeclarationChangedEventArgs(e.CodePane, _parser.State.FindSelectedDeclaration(e.CodePane)));
+                            new Task(() => DispatchSelectedDeclaration(new DeclarationChangedEventArgs(e.CodePane, _parser.State.FindSelectedDeclaration(e.CodePane)))).Start(); 
                         }
                         break;
                 }
@@ -69,7 +73,7 @@ namespace Rubberduck.UI
             else if (e.EventType == FocusType.ChildFocus)
             {
                 //Treeview selection changed in project window.
-                DispatchSelectedProjectNodeDeclaration(_vbe.SelectedVBComponent);
+                new Task(() => DispatchSelectedProjectNodeDeclaration(_vbe.SelectedVBComponent)).Start();
             }
         }
 
@@ -81,8 +85,7 @@ namespace Rubberduck.UI
             }
             SelectionChanged.Invoke(null, eventArgs);
         }
-
-        
+       
         private void DispatchSelectedDeclaration(DeclarationChangedEventArgs eventArgs)
         {
             DispatchSelectionChanged(eventArgs);
@@ -111,7 +114,7 @@ namespace Rubberduck.UI
             {
                 var name = component.SelectedControls.First().Name;
                 var control =
-                    _parser.State.AllUserDeclarations.SingleOrDefault(decl =>
+                    _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.Control).SingleOrDefault(decl =>
                             decl.IdentifierName.Equals(name) &&
                             decl.ParentDeclaration.IdentifierName.Equals(component.Name) &&
                             decl.ProjectId.Equals(component.ParentProject.ProjectId));
@@ -120,7 +123,7 @@ namespace Rubberduck.UI
                 return;
             }
             var form =
-                _parser.State.AllUserDeclarations.SingleOrDefault(decl =>
+                _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.UserForm).SingleOrDefault(decl =>
                     decl.IdentifierName.Equals(component.Name) &&
                     decl.ProjectId.Equals(component.ParentProject.ProjectId));
 
@@ -144,7 +147,7 @@ namespace Rubberduck.UI
             }
             else if (component != null)
             {
-                //The user might have selected the project node in Project Explorer. If they've chosen a folder, we'll return the project anyway.
+                
                 var module =
                     _parser.State.AllUserDeclarations.SingleOrDefault(
                         decl => decl.DeclarationType.HasFlag(DeclarationType.Module) &&

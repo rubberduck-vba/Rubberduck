@@ -13,6 +13,7 @@ namespace Rubberduck.Parsing.VBA
     public class ModuleState
     {
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
+        public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
         public ITokenStream TokenStream { get; private set; }
         public IParseTree ParseTree { get; private set; }
         public ParserState State { get; private set; }
@@ -29,7 +30,8 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState(ConcurrentDictionary<Declaration, byte> declarations)
         {
             Declarations = declarations;
-            TokenStream = null;
+            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
+            TokenStream = null;UnboundMemberDeclaration
             ParseTree = null;
 
             if (declarations.Any() && declarations.ElementAt(0).Key.QualifiedName.QualifiedModuleName.Component != null)
@@ -55,6 +57,7 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState(ParserState state)
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
+            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
             TokenStream = null;
             ParseTree = null;
             State = state;
@@ -72,6 +75,7 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState(SyntaxErrorException moduleException)
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
+            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
             TokenStream = null;
             ParseTree = null;
             State = ParserState.Error;
@@ -89,6 +93,7 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState(IDictionary<Tuple<string, DeclarationType>, Attributes> moduleAttributes)
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
+            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
             TokenStream = null;
             ParseTree = null;
             State = ParserState.None;

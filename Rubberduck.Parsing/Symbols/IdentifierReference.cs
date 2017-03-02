@@ -73,9 +73,14 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool IsIgnoringInspectionResultFor(string inspectionName)
         {
-            return Annotations.Any(annotation =>
-                annotation.AnnotationType == AnnotationType.Ignore
-                && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
+            var isIgnoredAtModuleLevel =
+                Declaration.GetModuleParent(_parentScopingDeclaration).Annotations
+                .Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreModule
+                    && ((IgnoreModuleAnnotation)annotation).IsIgnored(inspectionName));
+
+            return isIgnoredAtModuleLevel || Annotations.Any(annotation => 
+                       annotation.AnnotationType == AnnotationType.Ignore
+                       && ((IgnoreAnnotation) annotation).IsIgnored(inspectionName));
         }
 
         private readonly bool _hasExplicitLetStatement;

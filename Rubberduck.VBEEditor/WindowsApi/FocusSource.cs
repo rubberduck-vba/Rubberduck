@@ -1,6 +1,7 @@
 ﻿using System;
 using Rubberduck.Common.WinAPI;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
@@ -20,7 +21,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         protected virtual void DispatchFocusEvent(FocusType type)
         {
             var window = VBENativeServices.GetWindowInfoFromHwnd(Hwnd);
-            if (window == null)
+            if (!window.HasValue)
             {
                 return;
             }
