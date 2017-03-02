@@ -18,12 +18,8 @@ namespace Rubberduck.Inspections.QuickFixes
     {
         private readonly Declaration _target;
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
-//<<<<<<< HEAD
         private readonly RubberduckParserState _parserState;
-//        private string[] _variableNamesAccessibleToProcedureContext;
-//=======
         private readonly IEnumerable<string> _forbiddenNames;
-//>>>>>>> rubberduck-vba/next
         private string _localCopyVariableName;
 
         public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection, RubberduckParserState parserState, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
@@ -31,14 +27,9 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             _target = target;
             _dialogFactory = dialogFactory;
-//<<<<<<< HEAD
             _parserState = parserState;
-            //_variableNamesAccessibleToProcedureContext = GetUserDefinedNamesAccessibleToProcedureContext(_target.Context.Parent.Parent);
-            //SetValidLocalCopyVariableNameSuggestion();
-//=======
             _forbiddenNames = GetIdentifierNamesAccessibleToProcedureContext(target.Context.Parent.Parent);
            _localCopyVariableName = ComputeSuggestedName();
-//>>>>>>> rubberduck-vba/next
         }
 
         public override bool CanFixInModule { get { return false; } }
@@ -108,16 +99,12 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void InsertLocalVariableDeclarationAndAssignment()
         {
-//<<<<<<< HEAD
-            //var blocks = QuickFixHelper.GetBlockStmtContexts(_target.Context.Parent.Parent);
-//=======
             var block = QuickFixHelper.GetBlockStmtContexts(_target.Context.Parent.Parent).FirstOrDefault();
             if (block == null)
             {
                 return;
             }
 
-//>>>>>>> rubberduck-vba/next
             string[] lines = { BuildLocalCopyDeclaration(), BuildLocalCopyAssignment() };
             var module = Selection.QualifiedName.Component.CodeModule;
             module.InsertLines(block.Start.Line, lines);
@@ -134,11 +121,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 + _localCopyVariableName + " = " + _target.IdentifierName;
         }
 
-//<<<<<<< HEAD
-//        private string[] GetUserDefinedNamesAccessibleToProcedureContext(RuleContext ruleContext)
-//=======
         private IEnumerable<string> GetIdentifierNamesAccessibleToProcedureContext(RuleContext ruleContext)
-//>>>>>>> rubberduck-vba/next
         {
             var allIdentifiers = new HashSet<string>();
 
@@ -180,7 +163,6 @@ namespace Rubberduck.Inspections.QuickFixes
             return allIdentifiers.ToArray();
         }
 
-//<<<<<<< HEAD
         private HashSet<string> GetVariableNamesFromRuleContexts(RuleContext[] ruleContexts)
         {
             var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
@@ -203,33 +185,17 @@ namespace Rubberduck.Inspections.QuickFixes
             foreach (RuleContext ruleContext in ruleContexts)
             {
                 var identifiersForThisContext = GetIdentifierContexts(ruleContext);
-//=======
-//        private IEnumerable<string> GetIdentifierNames(IEnumerable<RuleContext> ruleContexts)
-//        {
-//            var identifiers = new HashSet<string>();
-//            foreach (var identifiersForThisContext in ruleContexts.Select(GetIdentifierNames))
-//            {
-//>>>>>>> rubberduck-vba/next
                 identifiers.UnionWith(identifiersForThisContext);
             }
             return identifiers;
         }
 
-//<<<<<<< HEAD
         private HashSet<RuleContext> GetIdentifierContexts(RuleContext ruleContext)
-//=======
-//        private static HashSet<string> GetIdentifierNames(RuleContext ruleContext)
-//>>>>>>> rubberduck-vba/next
         {
             // note: this looks like something that's already handled somewhere else...
 
             //Recursively work through the tree to get all IdentifierContexts
-//<<<<<<< HEAD
             var results = new HashSet<RuleContext>();
-//=======
- //           var results = new HashSet<string>();
-//            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item).ToArray();
-//>>>>>>> rubberduck-vba/next
             var children = GetChildren(ruleContext);
 
             foreach (var child in children)
@@ -237,16 +203,8 @@ namespace Rubberduck.Inspections.QuickFixes
                 var context = child as VBAParser.IdentifierContext;
                 if (context != null)
                 {
-//<<<<<<< HEAD
-                    var childName = Identifier.GetName((VBAParser.IdentifierContext)child);
+                    //var childName = Identifier.GetName((VBAParser.IdentifierContext)child);
                     results.Add((RuleContext)child);
-//=======
- //                   var childName = Identifier.GetName(context);
-//                    if (!tokenValues.Contains(childName))
-//                    {
-//                        results.Add(childName);
-//                    }
-//>>>>>>> rubberduck-vba/next
                 }
                 else
                 {
