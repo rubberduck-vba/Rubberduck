@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -47,6 +48,12 @@ namespace Rubberduck.Parsing.Symbols
             bool isAssignmentTarget,
             bool hasExplicitLetStatement)
         {
+            if (isAssignmentTarget && expression.Context.Parent is VBAParser.IndexExprContext)
+            {
+                // 'SomeDictionary' is not the assignment target in 'SomeDictionary("key") = 42'
+                isAssignmentTarget = false;
+            }
+
             var callSiteContext = expression.Context;
             var identifier = expression.Context.GetText();
             var callee = expression.ReferencedDeclaration;
