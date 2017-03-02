@@ -48,9 +48,10 @@ namespace Rubberduck.Parsing.Symbols
             bool isAssignmentTarget,
             bool hasExplicitLetStatement)
         {
-            if (isAssignmentTarget && expression.Context.Parent is VBAParser.IndexExprContext)
+            if (isAssignmentTarget && expression.Context.Parent is VBAParser.IndexExprContext && !expression.ReferencedDeclaration.IsArray)
             {
                 // 'SomeDictionary' is not the assignment target in 'SomeDictionary("key") = 42'
+                // ..but we want to treat array index assignment as assignment to the array itself.
                 isAssignmentTarget = false;
             }
 
