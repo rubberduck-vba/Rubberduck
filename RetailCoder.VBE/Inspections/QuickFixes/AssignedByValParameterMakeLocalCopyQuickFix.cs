@@ -116,33 +116,32 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private IEnumerable<string> GetIdentifierNamesAccessibleToProcedureContext()
         {
-            var allIdentifiers = new HashSet<string>();
-
-            var allParametersAndLocalVariables = _parserState.AllUserDeclarations
+            var allSameProcedureDeclarations = _parserState.AllUserDeclarations
                     .Where(item => item.ParentScope == _target.ParentScope)
                     .ToList();
 
-            allIdentifiers.UnionWith(allParametersAndLocalVariables.Select(d => d.IdentifierName));
-
             var sameModuleDeclarations = _parserState.AllUserDeclarations
                     .Where(item => item.ComponentName == _target.ComponentName
-                    && !IsProceduralContext(item.ParentDeclaration.Context))
+                    && !IsDeclaredInMethodOrProperty(item.ParentDeclaration.Context))
                     .ToList();
 
-            allIdentifiers.UnionWith(sameModuleDeclarations.Select(d => d.IdentifierName));
-
-            var allPublicDeclarations = _parserState.AllUserDeclarations
-                .Where(item => (item.Accessibility == Accessibility.Public
-                || ((item.Accessibility == Accessibility.Implicit) 
-                && item.ParentScopeDeclaration is ProceduralModuleDeclaration))
-                && !(item.ParentScopeDeclaration is ClassModuleDeclaration))
+            var allGloballyAccessibleDeclarations = _parserState.AllUserDeclarations
+                .Where(item => item.ProjectName == _target.ProjectName
+                && !(item.ParentScopeDeclaration is ClassModuleDeclaration)
+                && (item.Accessibility == Accessibility.Public 
+                    || ((item.Accessibility == Accessibility.Implicit) 
+                        && item.ParentScopeDeclaration is ProceduralModuleDeclaration)))
                 .ToList();
 
-            allIdentifiers.UnionWith(allPublicDeclarations.Select(d => d.IdentifierName));
+            var accessibleIdentifierNames = new HashSet<string>();
+            accessibleIdentifierNames.UnionWith(allSameProcedureDeclarations.Select(d => d.IdentifierName));
+            accessibleIdentifierNames.UnionWith(sameModuleDeclarations.Select(d => d.IdentifierName));
+            accessibleIdentifierNames.UnionWith(allGloballyAccessibleDeclarations.Select(d => d.IdentifierName));
 
-            return allIdentifiers.ToList();
+            return accessibleIdentifierNames.ToList();
         }
-        private bool IsProceduralContext(RuleContext context)
+
+        private bool IsDeclaredInMethodOrProperty(RuleContext context)
         {
             if (context is VBAParser.SubStmtContext)
             {
