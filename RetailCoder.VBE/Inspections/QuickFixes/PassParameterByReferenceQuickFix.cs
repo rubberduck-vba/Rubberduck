@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
@@ -26,11 +27,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix()
         {
             var module = Selection.QualifiedName.Component.CodeModule;
-            var argContext = QuickFixHelper.GetArgContexts(Context.Parent.Parent)
-                .SingleOrDefault(parameter => Identifier.GetName(parameter.unrestrictedIdentifier())
-                    .Equals(_target.IdentifierName));
-
-            module.ReplaceToken(argContext.BYVAL().Symbol,Tokens.ByRef);
+            module.ReplaceToken(((VBAParser.ArgContext)Context).BYVAL().Symbol, Tokens.ByRef);
         }
     }
 }

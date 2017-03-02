@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
     public sealed class AssignedByValParameterInspection : InspectionBase
     {
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
-        private RubberduckParserState _parserState;
+        private readonly RubberduckParserState _parserState;
         public AssignedByValParameterInspection(RubberduckParserState state, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(state)
         {

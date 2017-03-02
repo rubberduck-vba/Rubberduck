@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections.Results
     public class AssignedByValParameterInspectionResult : InspectionResultBase
     {
         private IEnumerable<QuickFixBase> _quickFixes;
-        private RubberduckParserState _parserState;
+        private readonly RubberduckParserState _parserState;
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
 
         public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, IAssignedByValParameterQuickFixDialogFactory dialogFactory) 

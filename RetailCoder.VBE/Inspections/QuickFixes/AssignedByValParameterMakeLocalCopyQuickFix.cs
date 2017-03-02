@@ -9,7 +9,6 @@ using Rubberduck.UI.Refactorings;
 using Rubberduck.Common;
 using Antlr4.Runtime;
 using System.Collections.Generic;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -28,7 +27,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _target = target;
             _dialogFactory = dialogFactory;
             _parserState = parserState;
-            _forbiddenNames = GetIdentifierNamesAccessibleToProcedureContext(target.Context.Parent.Parent);
+            _forbiddenNames = GetIdentifierNamesAccessibleToProcedureContext();
            _localCopyVariableName = ComputeSuggestedName();
         }
 
@@ -98,16 +97,10 @@ namespace Rubberduck.Inspections.QuickFixes
         }
 
         private void InsertLocalVariableDeclarationAndAssignment()
-        {
-            var block = QuickFixHelper.GetBlockStmtContexts(_target.Context.Parent.Parent).FirstOrDefault();
-            if (block == null)
-            {
-                return;
-            }
-
+        { 
             string[] lines = { BuildLocalCopyDeclaration(), BuildLocalCopyAssignment() };
             var module = Selection.QualifiedName.Component.CodeModule;
-            module.InsertLines(block.Start.Line, lines);
+            module.InsertLines(((VBAParser.ArgListContext)_target.Context.Parent).Stop.Line+1, lines);
         }
 
         private string BuildLocalCopyDeclaration()
@@ -121,27 +114,16 @@ namespace Rubberduck.Inspections.QuickFixes
                 + _localCopyVariableName + " = " + _target.IdentifierName;
         }
 
-        private IEnumerable<string> GetIdentifierNamesAccessibleToProcedureContext(RuleContext ruleContext)
+        private IEnumerable<string> GetIdentifierNamesAccessibleToProcedureContext()
         {
             var allIdentifiers = new HashSet<string>();
 
-            //Locally declared variable names
-            var blocks = QuickFixHelper.GetBlockStmtContexts(ruleContext);
+            var allParametersAndLocalVariables = _parserState.AllUserDeclarations
+                    .Where(item => item.ParentScope == _target.ParentScope)
+                    .ToList();
 
-            var blockStmtIdentifierContexts = GetIdentifierContexts(blocks);
-            var blockStmtIdentifiers = GetVariableNamesFromRuleContexts(blockStmtIdentifierContexts.ToArray());
+            allIdentifiers.UnionWith(allParametersAndLocalVariables.Select(d => d.IdentifierName));
 
-            allIdentifiers.UnionWith(blockStmtIdentifiers);
-
-            //The parameters of the procedure that are unreferenced in the procedure body
-            var args = QuickFixHelper.GetArgContexts(ruleContext);
-
-            var potentiallyUnreferencedIdentifierContexts = GetIdentifierContexts(args);
-            var potentiallyUnreferencedParameters = GetVariableNamesFromRuleContexts(potentiallyUnreferencedIdentifierContexts.ToArray());
-
-            allIdentifiers.UnionWith(potentiallyUnreferencedParameters);
-
-            //All declarations within the same module, but outside of all procedures (e.g., member variables, procedure names)
             var sameModuleDeclarations = _parserState.AllUserDeclarations
                     .Where(item => item.ComponentName == _target.ComponentName
                     && !IsProceduralContext(item.ParentDeclaration.Context))
@@ -149,8 +131,6 @@ namespace Rubberduck.Inspections.QuickFixes
 
             allIdentifiers.UnionWith(sameModuleDeclarations.Select(d => d.IdentifierName));
 
-            //Public declarations anywhere within the project other than Public members and 
-            //procedures of Class  modules
             var allPublicDeclarations = _parserState.AllUserDeclarations
                 .Where(item => (item.Accessibility == Accessibility.Public
                 || ((item.Accessibility == Accessibility.Implicit) 
@@ -160,71 +140,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             allIdentifiers.UnionWith(allPublicDeclarations.Select(d => d.IdentifierName));
 
-            return allIdentifiers.ToArray();
-        }
-
-        private HashSet<string> GetVariableNamesFromRuleContexts(RuleContext[] ruleContexts)
-        {
-            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-            var results = new HashSet<string>();
-
-            foreach( var ruleContext in ruleContexts)
-            {
-                var name = Identifier.GetName((VBAParser.IdentifierContext)ruleContext);
-                if (!tokenValues.Contains(name))
-                {
-                    results.Add(name);
-                }
-            }
-            return results;
-        }
-
-        private HashSet<RuleContext> GetIdentifierContexts(IReadOnlyList<RuleContext> ruleContexts)
-        {
-            var identifiers = new HashSet<RuleContext>();
-            foreach (RuleContext ruleContext in ruleContexts)
-            {
-                var identifiersForThisContext = GetIdentifierContexts(ruleContext);
-                identifiers.UnionWith(identifiersForThisContext);
-            }
-            return identifiers;
-        }
-
-        private HashSet<RuleContext> GetIdentifierContexts(RuleContext ruleContext)
-        {
-            // note: this looks like something that's already handled somewhere else...
-
-            //Recursively work through the tree to get all IdentifierContexts
-            var results = new HashSet<RuleContext>();
-            var children = GetChildren(ruleContext);
-
-            foreach (var child in children)
-            {
-                var context = child as VBAParser.IdentifierContext;
-                if (context != null)
-                {
-                    //var childName = Identifier.GetName((VBAParser.IdentifierContext)child);
-                    results.Add((RuleContext)child);
-                }
-                else
-                {
-                    if (!(child is TerminalNodeImpl))
-                    {
-                        results.UnionWith(GetIdentifierContexts((RuleContext)child));
-                    }
-                }
-            }
-            return results;
-        }
-
-        private static IEnumerable<IParseTree> GetChildren(IParseTree tree)
-        {
-            var result = new List<IParseTree>();
-            for (var index = 0; index < tree.ChildCount; index++)
-            {
-                result.Add(tree.GetChild(index));
-            }
-            return result;
+            return allIdentifiers.ToList();
         }
         private bool IsProceduralContext(RuleContext context)
         {
