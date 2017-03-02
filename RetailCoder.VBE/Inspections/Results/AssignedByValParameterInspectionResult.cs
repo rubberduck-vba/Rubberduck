@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.Results
     public class AssignedByValParameterInspectionResult : InspectionResultBase
     {
         private IEnumerable<QuickFixBase> _quickFixes;
-        private IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
+        private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
 
         public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target, IAssignedByValParameterQuickFixDialogFactory dialogFactory) 
             : base(inspection, target)
