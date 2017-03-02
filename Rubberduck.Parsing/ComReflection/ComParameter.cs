@@ -37,7 +37,6 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsOptional { get; private set; }
         public bool IsParamArray { get; set; }
 
-
         private Guid _enumGuid = Guid.Empty;
         public bool IsEnumMember
         {
@@ -79,6 +78,12 @@ namespace Rubberduck.Parsing.ComReflection
             }
             var member = enumType.Members.FirstOrDefault(m => m.Value == (int)DefaultValue);
             DefaultAsEnum = member != null ? member.Name : string.Empty;
+        }
+
+        //This overload should only be used for retrieving the TypeName from a random TYPEATTR. TODO: Should be a base class of ComParameter instead.
+        public ComParameter(TYPEATTR attributes, ITypeInfo info)
+        {
+            GetParameterType(attributes.tdescAlias, info);
         }
 
         private void GetParameterType(TYPEDESC desc, ITypeInfo info)
