@@ -10,6 +10,7 @@
         TestCleanup,
         IgnoreTest,
         Ignore,
+        IgnoreModule,
         Folder,
         NoIndent,
         Interface

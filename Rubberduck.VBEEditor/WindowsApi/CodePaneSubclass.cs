@@ -19,7 +19,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         protected override void DispatchFocusEvent(FocusType type)
         {
             var window = VBENativeServices.GetWindowInfoFromHwnd(Hwnd);
-            if (window == null)
+            if (!window.HasValue)
             {
                 return;
             }
