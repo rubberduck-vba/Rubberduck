@@ -290,7 +290,7 @@ Private Sub FooFight(ByRef arg1 As String)
     Let arg1 = ""test""
 End Sub
 ";
-            var secondClassBody = 
+            var secondClassBody =
 @"
 Private memberString As String
 Private memberLong As Long
@@ -320,6 +320,14 @@ End Property
 Private Sub FooFighters(ByRef arg1 As String)
     xArg1 = 6
     Let arg1 = ""test""
+End Sub
+
+Sub Bar()
+    Dim st As String
+    st = ""Test""
+    Dim v As Long
+    v = 5
+    result = KungFooFighting(st, v)
 End Sub
 ";
 
@@ -362,7 +370,7 @@ End Sub
 
             //This list of names results are invalid to use - and results in no change to the code module
             string[] inValidNames = { "CantTouchThis", "BigNumber", "DoSomething"
-                    , "myEggo", "SetFilename", firstClass.Key, secondClass.Key
+                    , "myEggo", "SetFilename","Foo", firstClass.Key, secondClass.Key
                     , firstModule.Key, secondModule.Key};
             foreach (var invalidName in inValidNames)
             {
@@ -371,7 +379,7 @@ End Sub
             }
 
             //This list of names results in modifying the code module
-            string[] validNames = { "myNewVariable", "Foo2" };
+            string[] validNames = { "myNewVariable", "Foo2", "Bar" };
             foreach (var validName in validNames)
             {
                 var quickFixResult = GetQuickFixResult(validName, firstClass, standardModules, classModules);
