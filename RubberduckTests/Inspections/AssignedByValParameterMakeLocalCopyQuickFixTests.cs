@@ -43,9 +43,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void AssignedByValParameter_LocalVariableAssignment_NameInUse()
         {
-            //Punt if the user-defined is already used in the method
-            //string userEnteredName = "userInput";
-
+            //Punt if the computed is already used in the method
             string inputCode =
 @"
 Public Sub Foo(ByVal arg1 As String)
@@ -143,8 +141,6 @@ End Sub
 
             quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode, userEnteredName);
             Assert.AreEqual(expectedCode, quickFixResult);
-
-
         }
 
         [TestMethod]
@@ -209,7 +205,6 @@ End Sub"
                 var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode, name);
                 Assert.AreEqual(expectedCode, quickFixResult);
             }
-
         }
 
         [TestMethod]
