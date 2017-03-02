@@ -11,6 +11,5 @@ namespace Rubberduck.UI.Refactorings
     {
         DialogResult DialogResult { get;}
         string NewName { get; set; }
-        string[] IdentifierNamesAlreadyDeclared { get; set; }
     }
 }
