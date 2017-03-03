@@ -207,7 +207,7 @@ End Function
         public void AssignedByValParameter_LocalVariableAssignment_RespectsAccessibleDeclarations_PublicClassElements()
         {
             string[] allowsNamesThatArePublicDeclarationsWithinAnotherClassModule = { "mySecondEggo", "Bar" };
-            RespectsDeclarationAccessibilityRules(allowsNamesThatArePublicDeclarationsWithinAnotherClassModule, "Different class Public Member", false, false);
+            RespectsDeclarationAccessibilityRules(allowsNamesThatArePublicDeclarationsWithinAnotherClassModule, "Different Class, Public Member", false, false);
         }
 
         private void RespectsDeclarationAccessibilityRules(string[] namesToTest, string scope, bool expectedEqualsInput, bool includeModuleNames)
