@@ -197,7 +197,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ExecuteCommonParseActivities(List<IVBComponent> toParse, CancellationToken token)
+        private void ExecuteCommonParseActivities(ICollection<IVBComponent> toParse, CancellationToken token)
         {
                 token.ThrowIfCancellationRequested();
             
@@ -256,7 +256,7 @@ namespace Rubberduck.Parsing.VBA
             State.RefreshFinder(_hostApp);
         }
 
-        private void SetModuleStates(List<IVBComponent> components, ParserState parserState, CancellationToken token)
+        private void SetModuleStates(ICollection<IVBComponent> components, ParserState parserState, CancellationToken token)
         {
             var options = new ParallelOptions();
             options.CancellationToken = token;
@@ -315,7 +315,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ParseComponents(List<IVBComponent> components, CancellationToken token)
+        private void ParseComponents(ICollection<IVBComponent> components, CancellationToken token)
         {
                 token.ThrowIfCancellationRequested();
             
@@ -410,7 +410,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        private void ResolveAllDeclarations(List<IVBComponent> components, CancellationToken token)
+        private void ResolveAllDeclarations(ICollection<IVBComponent> components, CancellationToken token)
         {
                 token.ThrowIfCancellationRequested();
             
@@ -719,7 +719,11 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
 
-            var toParse = components.Where(component => State.IsNewOrModified(component)).ToList();
+            var toParse = components.Where(component => State.IsNewOrModified(component)).ToHashSet();
+
+                token.ThrowIfCancellationRequested();
+
+            toParse.UnionWith(components.Where(component => State.GetModuleState(component) != ParserState.Ready));
 
                 token.ThrowIfCancellationRequested();
 
