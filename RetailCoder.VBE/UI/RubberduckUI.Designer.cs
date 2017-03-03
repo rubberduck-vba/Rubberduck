@@ -221,7 +221,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is already used in this scope..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is already accessible to this scope..
         /// </summary>
         public static string AssignedByValDialog_NewNameAlreadyUsedFormat {
             get {
