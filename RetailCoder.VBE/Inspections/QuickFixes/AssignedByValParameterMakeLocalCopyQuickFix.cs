@@ -130,7 +130,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 && !(item.ParentScopeDeclaration is ClassModuleDeclaration)
                 && (item.Accessibility == Accessibility.Public 
                     || ((item.Accessibility == Accessibility.Implicit) 
-                        && item.ParentScopeDeclaration is ProceduralModuleDeclaration)))
+                        && (item.ParentScopeDeclaration is ProceduralModuleDeclaration))))
                 .ToList();
 
             var accessibleIdentifierNames = new List<string>();

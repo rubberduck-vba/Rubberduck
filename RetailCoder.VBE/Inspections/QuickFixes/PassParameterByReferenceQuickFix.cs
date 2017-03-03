@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.QuickFixes
     public class PassParameterByReferenceQuickFix : QuickFixBase
     {
         private readonly ICodeModule _codeModule;
-        private VBAParser.ArgContext _argContext;
+        private readonly VBAParser.ArgContext _argContext;
 
         public PassParameterByReferenceQuickFix(Declaration target, QualifiedSelection selection)
             : base(target.Context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
