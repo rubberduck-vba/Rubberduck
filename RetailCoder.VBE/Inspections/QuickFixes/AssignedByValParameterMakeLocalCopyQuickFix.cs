@@ -133,12 +133,12 @@ namespace Rubberduck.Inspections.QuickFixes
                         && item.ParentScopeDeclaration is ProceduralModuleDeclaration)))
                 .ToList();
 
-            var accessibleIdentifierNames = new HashSet<string>();
-            accessibleIdentifierNames.UnionWith(allSameProcedureDeclarations.Select(d => d.IdentifierName));
-            accessibleIdentifierNames.UnionWith(sameModuleDeclarations.Select(d => d.IdentifierName));
-            accessibleIdentifierNames.UnionWith(allGloballyAccessibleDeclarations.Select(d => d.IdentifierName));
+            var accessibleIdentifierNames = new List<string>();
+            accessibleIdentifierNames.AddRange(allSameProcedureDeclarations.Select(d => d.IdentifierName));
+            accessibleIdentifierNames.AddRange(sameModuleDeclarations.Select(d => d.IdentifierName));
+            accessibleIdentifierNames.AddRange(allGloballyAccessibleDeclarations.Select(d => d.IdentifierName));
 
-            return accessibleIdentifierNames.ToList();
+            return accessibleIdentifierNames.Distinct();
         }
 
         private bool IsDeclaredInMethodOrProperty(RuleContext context)
