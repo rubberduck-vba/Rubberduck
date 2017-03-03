@@ -14,7 +14,6 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Inspections
 {
-    // todo: streamline test cases, currently testing too many things at once, all tests break if newname strategy changes
     [TestClass]
     public class AssignedByValParameterMakeLocalCopyQuickFixTests
     {
@@ -115,7 +114,7 @@ Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub
 
-'EvaluateNoChangeBelow
+'VerifyNoChangeBelowThisLine
 Public Sub Bar(ByVal arg2 As String)
     Dim arg1 As String
     Let arg1 = ""Test2""
@@ -128,8 +127,10 @@ Public Sub Bar(ByVal arg2 As String)
     Let arg1 = ""Test2""
 End Sub"
 ;
+            string[] splitToken = { "'VerifyNoChangeBelowThisLine" };
+            var expectedCode = inputCode.Split(splitToken, System.StringSplitOptions.None)[1];
+
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
-            string[] splitToken = { "'EvaluateNoChangeBelow" };
             var evaluatedFragment = quickFixResult.Split(splitToken, System.StringSplitOptions.None)[1];
             Assert.AreEqual(expectedFragment, evaluatedFragment);
         }
@@ -155,24 +156,17 @@ Public Property Get Foo() As Long
     Foo = mBar
 End Property
 
-'EvaluateNoChangeBelow
+'VerifyNoChangeBelowThisLine
 Public Function bar() As Long
     Dim localBar As Long
     localBar = 7
     bar = localBar
 End Function
 ";
-            var expectedCode =
-@"
-Public Function bar() As Long
-    Dim localBar As Long
-    localBar = 7
-    bar = localBar
-End Function
-";
+            string[] splitToken = { "'VerifyNoChangeBelowThisLine" };
+            var expectedCode = inputCode.Split(splitToken, System.StringSplitOptions.None)[1];
 
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
-            string[] splitToken = { "'EvaluateNoChangeBelow" };
             var evaluatedResult = quickFixResult.Split(splitToken, System.StringSplitOptions.None)[1];
             Assert.AreEqual(expectedCode, evaluatedResult);
 
