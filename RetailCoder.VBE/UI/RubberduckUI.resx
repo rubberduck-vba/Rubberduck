@@ -1950,7 +1950,7 @@ Would you like to import them to Rubberduck?</value>
     <comment>{0} = proposed variable name.</comment>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
-    <value>'{0}' is already used in this scope.</value>
+    <value>'{0}' is already accessible to this scope.</value>
     <comment>{0} = proposed variable name.</comment>
   </data>
   <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
