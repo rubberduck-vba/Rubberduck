@@ -79,5 +79,8 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <returns>   The parent window IntPtr handle. </returns>
         [DllImport("User32.dll")]
         internal static extern IntPtr GetParent(IntPtr hWnd);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        internal static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
     }
 }
