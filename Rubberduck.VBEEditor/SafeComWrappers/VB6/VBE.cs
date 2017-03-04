@@ -14,6 +14,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
+        public object HardReference
+        {
+            get { return Target; }
+        }
+
         public string Version
         {
             get { return IsWrappingNullReference ? string.Empty : Target.get_Version(); }
@@ -102,6 +107,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public IHostApplication HostApplication()
         {
             return null;
+        }
+
+        public IWindow ActiveMDIChild()
+        {
+            throw new NotImplementedException();
         }
 
         public bool IsInDesignMode

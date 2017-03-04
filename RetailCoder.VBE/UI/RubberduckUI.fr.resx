@@ -1302,7 +1302,10 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Analyse du code propulsée par ANTLR
 Intégration GitHub propulsée par LibGit2Sharp
-Icônes "Fugue" par Yusuke Kamiyamane</value>
+Présentation du code par AvalonEdit
+Icônes "Fugue" par Yusuke Kamiyamane
+Icônes IDE de SharpDevelop
+Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Clé invalide</value>

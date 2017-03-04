@@ -11,6 +11,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IVBComponents Collection { get; }
         IProperties Properties { get; }
         IControls Controls { get; }
+        IControls SelectedControls { get; }
         bool IsSaved { get; }
         bool HasDesigner { get; }
         bool HasOpenDesigner { get; }

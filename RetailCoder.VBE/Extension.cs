@@ -18,6 +18,7 @@ using Ninject.Extensions.Interception;
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck
@@ -53,8 +54,9 @@ namespace Rubberduck
             {
                 if (Application is Microsoft.Vbe.Interop.VBE)
                 {
-                    var vbe = (Microsoft.Vbe.Interop.VBE) Application;
+                    var vbe = (Microsoft.Vbe.Interop.VBE) Application;                  
                     _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
+                    VBENativeServices.HookEvents(_ide);
                     
                     var addin = (Microsoft.Vbe.Interop.AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
@@ -87,7 +89,7 @@ namespace Rubberduck
 
         Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
         {
-            var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
             var assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
             if (!File.Exists(assemblyPath))
             {
@@ -219,6 +221,8 @@ namespace Rubberduck
 
         private void ShutdownAddIn()
         {
+            VBENativeServices.UnhookEvents();
+
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.AssemblyResolve -= LoadFromSameFolder;
 

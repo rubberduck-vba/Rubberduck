@@ -342,7 +342,7 @@ namespace RubberduckTests.SourceControl
                 Provider = _provider.Object
             };
 
-            var localLocation = "C:\\users\\desktop\\git\\";
+            var localLocation = @"C:\users\desktop\git\";
 
             _provider.Setup(git => git.Status()).Returns(fileStatusEntries);
             _provider.SetupGet(git => git.CurrentRepository).Returns(new Repository{LocalLocation = localLocation});
@@ -351,7 +351,7 @@ namespace RubberduckTests.SourceControl
             vm.UndoChangesToolbarButtonCommand.Execute(fileStatusEntries[0]);
 
             //Assert
-            _provider.Verify(git => git.Undo(localLocation + fileStatusEntries[0].FilePath));
+            _provider.Verify(git => git.Undo(@"C:\users\desktop\git\module.bas"));
         }
 
         [TestCategory("SourceControl")]

@@ -169,6 +169,7 @@
         public static readonly string Step = "Step";
         public static readonly string Stop = "Stop";
         public static readonly string Str = "Str";
+        public static readonly string StrConv = "StrConv";
         public static readonly string String = "String";
         public static readonly string StrPtr = "StrPtr";
         public static readonly string Sub = "Sub";

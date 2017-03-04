@@ -20,15 +20,7 @@ namespace Rubberduck.VBEditor.Application
 
         public List<string> FormDeclarations(QualifiedModuleName qualifiedModuleName)
         {
-            //TODO: Determine if component is Form/Report
-            string filePath = Path.Combine(ExportPath, qualifiedModuleName.Name +  MSAccessComponentType.Form.FileExtension());
-            Application.SaveAsText(AcObjectType.acForm, qualifiedModuleName.Name, filePath);
-            var code = File.ReadAllText(filePath);
-            File.Delete(filePath);
-
-
-
-
+            //TODO: Drop in the optimized version that uses line indentations
             return new List<string>();
         }
 

@@ -6,9 +6,10 @@ using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using System.Collections.Generic;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Inspections
 {
@@ -93,19 +94,32 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void AssignedByValParameter_QuickFixWorks()
+        public void AssignedByValParameter_NoResultForLeftHandSideMemberAssignment()
         {
-            const string inputCode =
-@"Public Sub Foo(ByVal arg1 As String)
-    Let arg1 = ""test""
-End Sub";
-            const string expectedCode =
-@"Public Sub Foo(ByRef arg1 As String)
-    Let arg1 = ""test""
-End Sub";
-
-            var quickFixResult = ApplyPassParameterByReferenceQuickFixToVBAFragment(inputCode);
-            Assert.AreEqual(expectedCode, quickFixResult);
+            var class1 = @"
+Option Explicit
+Private mSomething As Long
+Public Property Get Something() As Long
+    Something = mSomething
+End Property
+Public Property Let Something(ByVal value As Long)
+    mSomething = value
+End Property
+";
+            var caller = @"
+Option Explicit
+Private Sub DoSomething(ByVal foo As Class1)
+    foo.Something = 42
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, caller)
+                .MockVbeBuilder()
+                .Build();
+            var results = GetInspectionResults(vbe.Object);
+            Assert.AreEqual(0, results.Count());
         }
 
         [TestMethod]
@@ -123,133 +137,15 @@ Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
 
-            var quickFixResult = ApplyIgnoreOnceQuickFixToVBAFragment(inputCode);
+            var quickFixResult = ApplyIgnoreOnceQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult); 
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void AssignedByValParameter_LocalVariableAssignment()
-        {
-            const string inputCode =
-@"Public Sub Foo(ByVal arg1 As String)
-    Let arg1 = ""test""
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo(ByVal arg1 As String)
-Dim localArg1 As String
-localArg1 = arg1
-    Let localArg1 = ""test""
-End Sub";
-
-            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
-            Assert.AreEqual(expectedCode, quickFixResult);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void AssignedByValParameter_LocalVariableAssignment_NameInUse()
-        {
-            //Punt if the user-defined or auto-generated name is already used in the method
-            const string inputCode =
-@"Public Sub Foo(ByVal arg1 As String)
-    Dim localArg1 as string
-    Let arg1 = ""test""
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo(ByVal arg1 As String)
-    Dim localArg1 as string
-    Let arg1 = ""test""
-End Sub";
-
-            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
-            Assert.AreEqual(expectedCode, quickFixResult);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherSub()
-        {
-            //Make sure the modified code stays within the specific method under repair
-            const string inputCode =
-@"
-Public Function Bar2(ByVal arg2 As String) As String
-    Dim arg1 As String
-    Let arg1 = ""Test1""
-    Bar2 = arg1
-End Function
-
-Public Sub Foo(ByVal arg1 As String)
-    Let arg1 = ""test""
-End Sub
-
-Public Sub Bar(ByVal arg2 As String)
-    Dim arg1 As String
-    Let arg1 = ""Test2""
-End Sub"
-;
-
-            const string expectedCode =
-@"
-Public Function Bar2(ByVal arg2 As String) As String
-    Dim arg1 As String
-    Let arg1 = ""Test1""
-    Bar2 = arg1
-End Function
-
-Public Sub Foo(ByVal arg1 As String)
-Dim localArg1 As String
-localArg1 = arg1
-    Let localArg1 = ""test""
-End Sub
-
-Public Sub Bar(ByVal arg2 As String)
-    Dim arg1 As String
-    Let arg1 = ""Test2""
-End Sub"
-;
-
-            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
-            Assert.AreEqual(expectedCode, quickFixResult);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void AssignedByValParameter_LocalVariableAssignment_FunctionReturn()
-        {
-            const string inputCode =
-@"Private Function MessingWithByValParameters(leaveAlone As Integer, ByVal messWithThis As String) As String
-    If leaveAlone > 10 Then
-        messWithThis = messWithThis & CStr(leaveAlone)
-        messWithThis = Replace(messWithThis, ""OK"", ""yes"")
-    End If
-    MessingWithByValParameters = messWithThis
-End Function
-";
-
-            const string expectedCode =
-@"Private Function MessingWithByValParameters(leaveAlone As Integer, ByVal messWithThis As String) As String
-Dim localMessWithThis As String
-localMessWithThis = messWithThis
-    If leaveAlone > 10 Then
-        localMessWithThis = localMessWithThis & CStr(leaveAlone)
-        localMessWithThis = Replace(localMessWithThis, ""OK"", ""yes"")
-    End If
-    MessingWithByValParameters = localMessWithThis
-End Function
-";
-            var quickFixResult = ApplyLocalVariableQuickFixToVBAFragment(inputCode);
-            Assert.AreEqual(expectedCode, quickFixResult);
-        }
-
-
-        [TestMethod]
-        [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new AssignedByValParameterInspection(null);
+            var inspection = new AssignedByValParameterInspection(null,null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -258,79 +154,56 @@ End Function
         public void InspectionName()
         {
             const string inspectionName = "AssignedByValParameterInspection";
-            var inspection = new AssignedByValParameterInspection(null);
+            var inspection = new AssignedByValParameterInspection(null,null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
 
-        private string ApplyPassParameterByReferenceQuickFixToVBAFragment(string inputCode)
-        {
-            var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            var inspectionResults = GetInspectionResults(vbe);
-
-            inspectionResults.First().QuickFixes.Single(s => s is PassParameterByReferenceQuickFix).Fix();
-
-            return GetModifiedContent(vbe);
-        }
-
-        private string ApplyLocalVariableQuickFixToVBAFragment(string inputCode)
-        {
-            var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            var inspectionResults = GetInspectionResults(vbe);
-
-            var quickFixBase = inspectionResults.First().QuickFixes.Single(s => s is AssignedByValParameterQuickFix);
-            AssignedByValParameterQuickFix assignByValParamQFix = (AssignedByValParameterQuickFix)quickFixBase;
-            assignByValParamQFix.TESTONLY_FixUsingAutoGeneratedName();
-            return GetModifiedContent(vbe);
-        }
-        private string ApplyIgnoreOnceQuickFixToVBAFragment(string inputCode)
-        {
-            var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            var inspectionResults = GetInspectionResults(vbe);
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            return GetModifiedContent(vbe);
-        }
-        private string GetModifiedContent(Mock<IVBE> vbe)
-        {
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            return module.Content();
-        }
-        private System.Collections.Generic.IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(string inputCode)
-        {
-            var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            return GetInspectionResults(vbe);
-        }
-        private System.Collections.Generic.IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(Mock<IVBE> vbe)
-        {
-            var parser = GetMockParseCoordinator(vbe);
-            var inspection = new AssignedByValParameterInspection(parser.State);
-            return inspection.GetInspectionResults();
-        }
         private void AssertVbaFragmentYieldsExpectedInspectionResultCount(string inputCode, int expectedCount)
         {
             var inspectionResults = GetInspectionResults(inputCode);
             Assert.AreEqual(expectedCount, inspectionResults.Count());
         }
+
+        private string ApplyIgnoreOnceQuickFixToCodeFragment(string inputCode)
+        {
+            var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
+            var inspectionResults = GetInspectionResults(vbe.Object);
+
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+
+            return GetModuleContent(vbe.Object);
+        }
+
+        private string GetModuleContent(IVBE vbe)
+        {
+            var project = vbe.VBProjects[0];
+            var module = project.VBComponents[0].CodeModule;
+            return module.Content();
+        }
+
+        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(string inputCode)
+        {
+            var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
+            return GetInspectionResults(vbe.Object);
+        }
+
+        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(IVBE vbe)
+        {
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new AssignedByValParameterInspection(parser.State,null);
+            return inspection.GetInspectionResults();
+        }
+
         private Mock<IVBE> BuildMockVBEStandardModuleForVBAFragment(string inputCode)
         {
             var builder = new MockVbeBuilder();
             IVBComponent component;
             return builder.BuildFromSingleStandardModule(inputCode, out component);
-            //TODO: removal of the two lines below have no effect on the outcome of any test...remove?
-            //var mockHost = new Mock<IHostApplication>();
-            //mockHost.SetupAllProperties();
 
-        }
-        private ParseCoordinator GetMockParseCoordinator(Mock<IVBE> vbe)
-        {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            return parser;
         }
     }
 }

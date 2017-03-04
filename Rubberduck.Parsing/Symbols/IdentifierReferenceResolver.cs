@@ -8,6 +8,7 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -173,7 +174,17 @@ namespace Rubberduck.Parsing.Symbols
                             expression.GetText()));
                 }
             }
-            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget, hasExplicitLetStatement);
+
+            var hasDefaultMember = false;
+            if (boundExpression.ReferencedDeclaration != null 
+                && boundExpression.ReferencedDeclaration.DeclarationType != DeclarationType.Project
+                && boundExpression.ReferencedDeclaration.AsTypeDeclaration != null)
+            {
+                var module = boundExpression.ReferencedDeclaration.AsTypeDeclaration;
+                var members = _declarationFinder.Members(module);
+                hasDefaultMember = members.Any(m => m.Attributes.Any(kvp => kvp.Key == m.IdentifierName + ".VB_UserMemId" && kvp.Value.FirstOrDefault() == "0"));
+            }
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, !hasDefaultMember && isAssignmentTarget, hasExplicitLetStatement);
         }
 
         private void ResolveType(ParserRuleContext expression)

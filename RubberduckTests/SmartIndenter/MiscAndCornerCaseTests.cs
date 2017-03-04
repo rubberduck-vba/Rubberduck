@@ -746,6 +746,31 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2696
+        [TestMethod]
+        // Broken in VB6 SmartIndenter.
+        [TestCategory("Indenter")]
+        public void BracketsInEndOfLineCommentsWork()
+        {
+            var code = new[]
+            {
+                "Public Sub Test()",
+                "Debug.Print \"foo\" \'update [foo].[bar] in the frob.",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub Test()",
+                "    Debug.Print \"foo\"                            'update [foo].[bar] in the frob.",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
         //https://github.com/rubberduck-vba/Rubberduck/issues/2604
         [TestMethod]
         [TestCategory("Indenter")]

@@ -111,6 +111,16 @@ namespace Rubberduck.Parsing.VBA
                         Cause = exception
                     });
             }
+            catch (Exception exception)
+            {
+                Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
+                var failedHandler = ParseFailure;
+                if (failedHandler != null)
+                    failedHandler.Invoke(this, new ParseFailureArgs
+                    {
+                        Cause = exception
+                    });
+            }
         }
 
         private static string[] GetSanitizedCode(ICodeModule module)

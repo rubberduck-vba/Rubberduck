@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
@@ -59,17 +58,13 @@ namespace Rubberduck.UI
             }
             catch (COMException exception)
             {
-                //var logEvent = new LogEventInfo(LogLevel.Error, Logger.Name, "Error Creating Control");
-                //logEvent.Exception = exception;
-                //logEvent.Properties.Add("EventID", 1);
-
                 Logger.Error(exception);
-                return null; //throw;
+                throw;
             }
             catch (NullReferenceException exception)
             {
                 Logger.Error(exception);
-                return null; //throw;
+                throw;
             }
 
             var userControlHost = (_DockableWindowHost)_userControlObject;
@@ -143,18 +138,6 @@ namespace Rubberduck.UI
             {
                 return;
             }
-
-            if (_userControlObject != null)
-            {
-                ((_DockableWindowHost)_userControlObject).Dispose();
-            }
-            _userControlObject = null;
-
-            if (_userControl != null)
-            {
-                _userControl.Dispose();
-            }
-
             _disposed = true;
         }
     }

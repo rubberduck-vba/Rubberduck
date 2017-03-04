@@ -75,6 +75,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
+        public IControls SelectedControls
+        {
+            get
+            {
+                var designer = IsWrappingNullReference
+                    ? null
+                    : Target.Designer as VB.Forms.UserForm;
+
+                return designer == null
+                    ? new Controls(null)
+                    : new Controls(designer.Selected);
+            }
+        }
+        
         public bool HasDesigner
         {
             get

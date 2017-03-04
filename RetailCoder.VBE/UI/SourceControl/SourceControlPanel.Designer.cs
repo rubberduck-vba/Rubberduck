@@ -20,7 +20,6 @@ namespace Rubberduck.UI.SourceControl
             {
                 components.Dispose();
             }
-            base.Dispose(disposing);
         }
 
         #region Component Designer generated code

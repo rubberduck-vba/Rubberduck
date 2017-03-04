@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
@@ -12,12 +13,26 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBComponents : SafeComWrapper<VB.VBComponents>, IVBComponents
     {
-        private readonly IVBComponentsEventsSink _sink;
+        private static readonly Guid VBComponentsEventsGuid = new Guid("0002E116-0000-0000-C000-000000000046");
+        private static object _lockObject = new object();
+        private static VB.VBComponents _components;
 
-        public VBComponents(VB.VBComponents target) 
-            : base(target)
+        private enum ComponentEventDispId
         {
-            _sink = new VBComponentsEventsSink();
+            ItemAdded = 1,
+            ItemRemoved = 2,
+            ItemRenamed = 3,
+            ItemSelected = 4,
+            ItemActivated = 5,
+            ItemReloaded = 6
+        }
+
+        public VBComponents(VB.VBComponents target) : base(target)
+        {
+            if (_components == null)
+            {
+                AttachEvents(target);
+            }
         }
 
         public int Count
@@ -85,7 +100,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
-            {
+            {                
                 for (var i = 1; i <= Count; i++)
                 {
                     this[i].Release();
@@ -179,27 +194,119 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public IVBComponentsEventsSink Events { get { return _sink; } }
+        #region Events
 
-        public IConnectionPoint ConnectionPoint
+        private static void AttachEvents(VB.VBComponents components)
         {
-            get
+            lock (_lockObject)
             {
-                try
+                if (_components == null)
                 {
-                    // ReSharper disable once SuspiciousTypeConversion.Global
-                    var connectionPointContainer = (IConnectionPointContainer)Target;
-                    var interfaceId = typeof(VB._dispVBComponentsEvents).GUID;
-                    IConnectionPoint result;
-                    connectionPointContainer.FindConnectionPoint(ref interfaceId, out result);
-                    return result;
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-
+                    _components = components;
+                    _componentAdded = OnComponentAdded;
+                    _componentRemoved = OnComponentRemoved;
+                    _componentRenamed = OnComponentRenamed;
+                    _componentSelected = OnComponentSelected;
+                    _componentActivated = OnComponentActivated;
+                    _componentReloaded = OnComponentReloaded;
+                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
+                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
+                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
+                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
+                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
+                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
+                }               
             }
         }
+
+        internal static void DetatchEvents()
+        {
+            lock (_lockObject)
+            {
+                if (_components != null)
+                {
+                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
+                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
+                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
+                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
+                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
+                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
+                    _components = null;
+                }
+            }
+        }
+
+        private delegate void ItemAddedDelegate(VB.VBComponent vbComponent);
+        private static ItemAddedDelegate _componentAdded;
+        public static event EventHandler<ComponentEventArgs> ComponentAdded;
+        private static void OnComponentAdded(VB.VBComponent vbComponent)
+        {
+            OnDispatch(ComponentAdded, vbComponent);
+        }
+
+        private delegate void ItemRemovedDelegate(VB.VBComponent vbComponent);
+        private static ItemRemovedDelegate _componentRemoved;
+        public static event EventHandler<ComponentEventArgs> ComponentRemoved;
+        private static void OnComponentRemoved(VB.VBComponent vbComponent)
+        {
+            OnDispatch(ComponentRemoved, vbComponent);
+        }
+
+        private delegate void ItemRenamedDelegate(VB.VBComponent vbComponent, string oldName);
+        private static ItemRenamedDelegate _componentRenamed;
+        public static event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
+        private static void OnComponentRenamed(VB.VBComponent vbComponent, string oldName)
+        {
+            var handler = ComponentRenamed;
+            if (handler != null)
+            {
+                var component = new VBComponent(vbComponent);
+                var project = component.Collection.Parent;
+                if (project.Protection != ProjectProtection.Locked)
+                {
+                    handler.Invoke(component, new ComponentRenamedEventArgs(project.ProjectId, project, new VBComponent(vbComponent), oldName));
+                }
+            }
+        }
+
+        private delegate void ItemSelectedDelegate(VB.VBComponent vbComponent);
+        private static ItemSelectedDelegate _componentSelected;
+        public static event EventHandler<ComponentEventArgs> ComponentSelected;
+        private static void OnComponentSelected(VB.VBComponent vbComponent)
+        {
+            OnDispatch(ComponentSelected, vbComponent);
+        }
+
+        private delegate void ItemActivatedDelegate(VB.VBComponent vbComponent);
+        private static ItemActivatedDelegate _componentActivated;
+        public static event EventHandler<ComponentEventArgs> ComponentActivated;
+        private static void OnComponentActivated(VB.VBComponent vbComponent)
+        {
+            OnDispatch(ComponentActivated, vbComponent);
+        }
+
+        private delegate void ItemReloadedDelegate(VB.VBComponent vbComponent);
+        private static ItemReloadedDelegate _componentReloaded;
+        public static event EventHandler<ComponentEventArgs> ComponentReloaded;
+        private static void OnComponentReloaded(VB.VBComponent vbComponent)
+        {
+            OnDispatch(ComponentReloaded, vbComponent);
+        }
+
+        private static void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent vbComponent)
+        {
+            var handler = dispatched;
+            if (handler != null)
+            {
+                var component = new VBComponent(vbComponent);
+                var project = component.Collection.Parent;
+                if (project.Protection != ProjectProtection.Locked)
+                {
+                    handler.Invoke(component, new ComponentEventArgs(project.ProjectId, project, component));
+                }
+            }
+        }
+
+        #endregion
     }
 }

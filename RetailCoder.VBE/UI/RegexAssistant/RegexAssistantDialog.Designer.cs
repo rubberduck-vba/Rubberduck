@@ -90,7 +90,7 @@
             this.flowLayoutPanel2.Controls.Add(this.CloseButton);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 398);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 399);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(8, 8, 0, 8);
             this.flowLayoutPanel2.Size = new System.Drawing.Size(464, 43);
@@ -102,7 +102,7 @@
             this.ElementHost.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.ElementHost.Location = new System.Drawing.Point(0, 64);
             this.ElementHost.Name = "ElementHost";
-            this.ElementHost.Size = new System.Drawing.Size(464, 334);
+            this.ElementHost.Size = new System.Drawing.Size(464, 335);
             this.ElementHost.TabIndex = 4;
             this.ElementHost.Child = this.RegexAssistant;
             // 
@@ -111,7 +111,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CloseButton;
-            this.ClientSize = new System.Drawing.Size(464, 441);
+            this.ClientSize = new System.Drawing.Size(464, 442);
             this.Controls.Add(this.ElementHost);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.panel1);

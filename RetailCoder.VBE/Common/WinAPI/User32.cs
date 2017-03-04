@@ -157,69 +157,11 @@ namespace Rubberduck.Common.WinAPI
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool KillTimer(IntPtr hWnd, IntPtr uIDEvent);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern int GetRawInputData(IntPtr hRawInput, DataCommand command, [Out] out InputData buffer, [In, Out] ref int size, int cbSizeHeader);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern int GetRawInputData(IntPtr hRawInput, DataCommand command, [Out] IntPtr pData, [In, Out] ref int size, int sizeHeader);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern uint GetRawInputDeviceInfo(IntPtr hDevice, RawInputDeviceInfo command, IntPtr pData, ref uint size);
-
-        [DllImport("user32.dll")]
-        private static extern uint GetRawInputDeviceInfo(IntPtr hDevice, uint command, ref DeviceInfo data, ref uint dataSize);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern uint GetRawInputDeviceList(IntPtr pRawInputDeviceList, ref uint numberDevices, uint size);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool RegisterRawInputDevices(RawInputDevice[] pRawInputDevice, uint numberDevices, uint size);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern IntPtr RegisterDeviceNotification(IntPtr hRecipient, IntPtr notificationFilter, DeviceNotification flags);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool UnregisterDeviceNotification(IntPtr handle);
-
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         internal static extern IntPtr SendMessage(IntPtr hWnd, WM msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
 
         public delegate int WindowEnumProc(IntPtr hwnd, IntPtr lparam);
         [DllImport("user32.dll")]
         public static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc func, IntPtr lParam);
-
-        /// <summary>
-        /// A helper function that returns <c>true</c> when the specified handle is that of the foreground window.
-        /// </summary>
-        /// <param name="mainWindowHandle">The handle for the VBE's MainWindow.</param>
-        /// <returns></returns>
-        public static bool IsVbeWindowActive(IntPtr mainWindowHandle)
-        {
-            uint vbeThread;
-            GetWindowThreadProcessId(mainWindowHandle, out vbeThread);
-
-            uint hThread;
-            GetWindowThreadProcessId(GetForegroundWindow(), out hThread);
-
-            return (IntPtr)hThread == (IntPtr)vbeThread;
-        }
-
-        public enum WindowType
-        {
-            Indeterminate,
-            VbaWindow,
-            DesignerWindow
-        }
-
-        public static WindowType ToWindowType(this IntPtr hwnd)
-        {
-            var name = new StringBuilder(128);
-            GetClassName(hwnd, name, name.Capacity);
-            WindowType id;
-            return Enum.TryParse(name.ToString(), out id) ? id : WindowType.Indeterminate;
-        }
     }
 }

@@ -709,6 +709,9 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Renaming to '{0}' clashes with '{1}' in the same scope.
 Are you sure you want to proceed with this rename?</value>
   </data>
+  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
+    <value>Please ensure that exactly 1 control is selected before renaming.</value>
+  </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Rename {0}</value>
   </data>
@@ -1269,7 +1272,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Parsing powered by ANTLR
 GitHub integration powered by LibGit2Sharp
-Fugue icons by Yusuke Kamiyamane</value>
+Syntax highlighting powered by AvalonEdit
+Fugue icons by Yusuke Kamiyamane
+IDE icons from SharpDevelop
+WPF localization support by Grant Frisken</value>
   </data>
   <data name="AboutWindow_GeneralThanks" xml:space="preserve">
     <value>All contributors to our GitHub repository
@@ -1897,6 +1903,10 @@ End Sub</value>
     <value>references</value>
     <comment>Used to display number of references in commandbar's context selection</comment>
   </data>
+  <data name="ContextMultipleControlsSelection" xml:space="preserve">
+    <value>multiple controls</value>
+    <comment>Used to display description of multiple control selection in commandbar's context selection</comment>
+  </data>
   <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Smart Indenter settings were found in your registry.
 Would you like to import them to Rubberduck?</value>
@@ -1928,5 +1938,30 @@ Would you like to import them to Rubberduck?</value>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Check if a newer version is available at startup</value>
+  </data>
+  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
+    <value>Variable names must begin with a letter.</value>
+  </data>
+  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
+    <value>Variable names cannot contain special characters other than underscores.</value>
+  </data>
+  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
+    <value>The local variable cannot be the same as the '{0}' parameter it replaces</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
+    <value>'{0}' is already accessible to this scope.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
+    <value>The identifier '{0}' will trigger a "Use meaningful name" inspection result. Consider choosing a different name.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' is a reserved keyword.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
+    <value>Variable '{0}' is assigned. Remove assignment instruction(s)?</value>
   </data>
 </root>

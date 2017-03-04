@@ -33,10 +33,11 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using ReparseCommandMenuItem = Rubberduck.UI.Command.MenuItems.CommandBars.ReparseCommandMenuItem;
+using Rubberduck.UI.Refactorings;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.Root
 {
@@ -62,15 +63,16 @@ namespace Rubberduck.Root
             // bind VBE and AddIn dependencies to host-provided instances.
             Bind<IVBE>().ToConstant(_vbe);
             Bind<IAddIn>().ToConstant(_addin);
-            Bind<Sinks>().ToSelf().InSingletonScope();
             Bind<App>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
+            Bind<ISelectionChangeService>().To<SelectionChangeService>().InSingletonScope();
             Bind<ISourceControlProvider>().To<GitProvider>();
             //Bind<GitProvider>().ToSelf().InSingletonScope();
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
-
+            
             Bind<CommandBase>().To<VersionCheckCommand>().WhenInjectedExactlyInto<App>();
+
             BindCodeInspectionTypes();
 
             var assemblies = new[]
@@ -84,10 +86,10 @@ namespace Rubberduck.Root
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyConfigurationConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
+            Rebind<IFolderBrowserFactory>().To<DialogFactory>().InSingletonScope();
 
             BindCommandsToMenuItems();
 
-            Rebind<ISinks>().To<Sinks>().InSingletonScope();
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
@@ -138,6 +140,9 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<ToDoExplorerCommand>()
                 .InSingletonScope();
 
+            Bind<IAssignedByValParameterQuickFixDialogFactory>().To<AssignedByValParameterQuickFixDialogFactory>()
+                .WhenInjectedInto<AssignedByValParameterInspection>();
+
             BindDockableToolwindows();
             BindCommandsToCodeExplorer();
             ConfigureRubberduckCommandBar();
@@ -148,6 +153,8 @@ namespace Rubberduck.Root
             ConfigureProjectExplorerContextMenu();
             
             BindWindowsHooks();
+
+
         }
 
         private void BindDockableToolwindows()
@@ -177,6 +184,7 @@ namespace Rubberduck.Root
                 // inspections & factories have their own binding rules
                 .Where(type => type.Namespace != null
                             && !type.Namespace.StartsWith("Rubberduck.VBEditor.SafeComWrappers")
+                            && !type.Name.Equals("SelectionChangeService")
                             && !type.Name.EndsWith("Factory") && !type.Name.EndsWith("ConfigProvider") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
                 .Configure(binding => binding.InCallScope())); // TransientScope wouldn't dispose disposables
@@ -458,7 +466,9 @@ namespace Rubberduck.Root
             var items = new IMenuItem[]
             {
                 KernelInstance.Get<CodePaneRefactorRenameCommandMenuItem>(),
+#if DEBUG
                 KernelInstance.Get<RefactorExtractMethodCommandMenuItem>(),
+#endif
                 KernelInstance.Get<RefactorReorderParametersCommandMenuItem>(),
                 KernelInstance.Get<RefactorRemoveParametersCommandMenuItem>(),
                 KernelInstance.Get<RefactorIntroduceParameterCommandMenuItem>(),

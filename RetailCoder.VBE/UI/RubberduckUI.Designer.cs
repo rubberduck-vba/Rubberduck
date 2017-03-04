@@ -63,7 +63,10 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to Parsing powered by ANTLR
         ///GitHub integration powered by LibGit2Sharp
-        ///Fugue icons by Yusuke Kamiyamane.
+        ///Syntax highlighting powered by AvalonEdit
+        ///Fugue icons by Yusuke Kamiyamane
+        ///IDE icons from SharpDevelop
+        ///WPF localization support by Grant Frisken.
         /// </summary>
         public static string AboutWindow_AttributionList {
             get {
@@ -187,6 +190,60 @@ namespace Rubberduck.UI {
         public static string AllReferences_NoneFound {
             get {
                 return ResourceManager.GetString("AllReferences_NoneFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable names must begin with a letter..
+        /// </summary>
+        public static string AssignedByValDialog_DoesNotStartWithLetter {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_DoesNotStartWithLetter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable names cannot contain special characters other than underscores..
+        /// </summary>
+        public static string AssignedByValDialog_InvalidCharacters {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_InvalidCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The local variable cannot be the same as the &apos;{0}&apos; parameter it replaces.
+        /// </summary>
+        public static string AssignedByValDialog_IsByValIdentifierFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_IsByValIdentifierFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is already accessible to this scope..
+        /// </summary>
+        public static string AssignedByValDialog_NewNameAlreadyUsedFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_NewNameAlreadyUsedFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The identifier &apos;{0}&apos; will trigger a &quot;Use meaningful name&quot; inspection result. Consider choosing a different name..
+        /// </summary>
+        public static string AssignedByValDialog_QuestionableEntryFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_QuestionableEntryFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a reserved keyword..
+        /// </summary>
+        public static string AssignedByValDialog_ReservedKeywordFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_ReservedKeywordFormat", resourceCulture);
             }
         }
         
@@ -859,6 +916,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is assigned. Remove assignment instruction(s)?.
+        /// </summary>
+        public static string ConfirmRemoveAssignmentWithUnusedDeclaration {
+            get {
+                return ResourceManager.GetString("ConfirmRemoveAssignmentWithUnusedDeclaration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Find all references....
         /// </summary>
         public static string ContextMenu_FindAllReferences {
@@ -882,6 +948,15 @@ namespace Rubberduck.UI {
         public static string ContextMenu_GoToImplementation {
             get {
                 return ResourceManager.GetString("ContextMenu_GoToImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to multiple controls.
+        /// </summary>
+        public static string ContextMultipleControlsSelection {
+            get {
+                return ResourceManager.GetString("ContextMultipleControlsSelection", resourceCulture);
             }
         }
         
@@ -2989,6 +3064,15 @@ namespace Rubberduck.UI {
         public static string Rename_DeclarationType {
             get {
                 return ResourceManager.GetString("Rename_DeclarationType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please ensure that exactly 1 control is selected before renaming..
+        /// </summary>
+        public static string RenameDialog_AmbiguousSelection {
+            get {
+                return ResourceManager.GetString("RenameDialog_AmbiguousSelection", resourceCulture);
             }
         }
         
