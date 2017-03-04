@@ -9,7 +9,7 @@ using Rubberduck.UI.Refactorings;
 using Rubberduck.Common;
 using Antlr4.Runtime;
 using System.Collections.Generic;
-using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -17,16 +17,18 @@ namespace Rubberduck.Inspections.QuickFixes
     {
         private readonly Declaration _target;
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
+        private readonly RubberduckParserState _parserState;
         private readonly IEnumerable<string> _forbiddenNames;
         private string _localCopyVariableName;
 
-        public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
+        public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection, RubberduckParserState parserState, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(target.Context, selection, InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix)
         {
             _target = target;
             _dialogFactory = dialogFactory;
-            _forbiddenNames = GetIdentifierNamesAccessibleToProcedureContext(target.Context.Parent.Parent);
-            _localCopyVariableName = ComputeSuggestedName();
+            _parserState = parserState;
+            _forbiddenNames = GetIdentifierNamesAccessibleToProcedureContext();
+           _localCopyVariableName = ComputeSuggestedName();
         }
 
         public override bool CanFixInModule { get { return false; } }
@@ -95,16 +97,10 @@ namespace Rubberduck.Inspections.QuickFixes
         }
 
         private void InsertLocalVariableDeclarationAndAssignment()
-        {
-            var block = QuickFixHelper.GetBlockStmtContextsForContext(_target.Context.Parent.Parent).FirstOrDefault();
-            if (block == null)
-            {
-                return;
-            }
-
+        { 
             string[] lines = { BuildLocalCopyDeclaration(), BuildLocalCopyAssignment() };
             var module = Selection.QualifiedName.Component.CodeModule;
-            module.InsertLines(block.Start.Line, lines);
+            module.InsertLines(((VBAParser.ArgListContext)_target.Context.Parent).Stop.Line + 1, lines);
         }
 
         private string BuildLocalCopyDeclaration()
@@ -118,74 +114,60 @@ namespace Rubberduck.Inspections.QuickFixes
                 + _localCopyVariableName + " = " + _target.IdentifierName;
         }
 
-        private IEnumerable<string> GetIdentifierNamesAccessibleToProcedureContext(RuleContext ruleContext)
+        private IEnumerable<string> GetIdentifierNamesAccessibleToProcedureContext()
         {
-            var allIdentifiers = new HashSet<string>();
-
-            var blocks = QuickFixHelper.GetBlockStmtContextsForContext(ruleContext);
-
-            var blockStmtIdentifiers = GetIdentifierNames(blocks);
-            allIdentifiers.UnionWith(blockStmtIdentifiers);
-
-            var args = QuickFixHelper.GetArgContextsForContext(ruleContext);
-
-            var potentiallyUnreferencedParameters = GetIdentifierNames(args);
-            allIdentifiers.UnionWith(potentiallyUnreferencedParameters);
-
-            //TODO: add module and global scope variableNames to the list.
-
-            return allIdentifiers.ToArray();
+            return _parserState.AllUserDeclarations
+                .Where(candidateDeclaration => 
+                (
+                        IsDeclarationInTheSameProcedure(candidateDeclaration, _target)
+                    ||  IsDeclarationInTheSameModule(candidateDeclaration, _target)
+                    ||  IsProjectGlobalDeclaration(candidateDeclaration, _target))
+                 ).Select(declaration => declaration.IdentifierName).Distinct();
         }
 
-        private IEnumerable<string> GetIdentifierNames(IEnumerable<RuleContext> ruleContexts)
+        private bool IsDeclarationInTheSameProcedure(Declaration candidateDeclaration, Declaration scopingDeclaration)
         {
-            var identifiers = new HashSet<string>();
-            foreach (var identifiersForThisContext in ruleContexts.Select(GetIdentifierNames))
-            {
-                identifiers.UnionWith(identifiersForThisContext);
-            }
-            return identifiers;
+            return candidateDeclaration.ParentScope == scopingDeclaration.ParentScope;
         }
 
-        private static HashSet<string> GetIdentifierNames(RuleContext ruleContext)
+        private bool IsDeclarationInTheSameModule(Declaration candidateDeclaration, Declaration scopingDeclaration)
         {
-            // note: this looks like something that's already handled somewhere else...
-
-            //Recursively work through the tree to get all IdentifierContexts
-            var results = new HashSet<string>();
-            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item).ToArray();
-            var children = GetChildren(ruleContext);
-
-            foreach (var child in children)
-            {
-                var context = child as VBAParser.IdentifierContext;
-                if (context != null)
-                {
-                    var childName = Identifier.GetName(context);
-                    if (!tokenValues.Contains(childName))
-                    {
-                        results.Add(childName);
-                    }
-                }
-                else
-                {
-                    if (!(child is TerminalNodeImpl))
-                    {
-                        results.UnionWith(GetIdentifierNames((RuleContext)child));
-                    }
-                }
-            }
-            return results;
+            return candidateDeclaration.ComponentName == scopingDeclaration.ComponentName
+                    && !IsDeclaredInMethodOrProperty(candidateDeclaration.ParentDeclaration.Context);
         }
 
-        private static IEnumerable<IParseTree> GetChildren(IParseTree tree)
+        private bool IsProjectGlobalDeclaration(Declaration candidateDeclaration, Declaration scopingDeclaration)
         {
-            var result = new List<IParseTree>();
-            for (var index = 0; index < tree.ChildCount; index++)
+            return candidateDeclaration.ProjectName == scopingDeclaration.ProjectName
+                && !(candidateDeclaration.ParentScopeDeclaration is ClassModuleDeclaration)
+                && (candidateDeclaration.Accessibility == Accessibility.Public
+                    || ((candidateDeclaration.Accessibility == Accessibility.Implicit)
+                        && (candidateDeclaration.ParentScopeDeclaration is ProceduralModuleDeclaration)));
+        }
+
+        private bool IsDeclaredInMethodOrProperty(RuleContext procedureContext)
+        {
+            if (procedureContext is VBAParser.SubStmtContext)
             {
-                result.Add(tree.GetChild(index));
+                return true;
             }
-            return result;
+            else if (procedureContext is VBAParser.FunctionStmtContext)
+            {
+                return true;
+            }
+            else if (procedureContext is VBAParser.PropertyLetStmtContext)
+            {
+                return true;
+            }
+            else if (procedureContext is VBAParser.PropertyGetStmtContext)
+            {
+                return true;
+            }
+            else if (procedureContext is VBAParser.PropertySetStmtContext)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
