@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections
             var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
             var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToArray();
 
-            var handlers = State.DeclarationFinder.FindBuiltinEventHandlers();
+            var handlers = State.DeclarationFinder.FindEventHandlers();
 
             var issues = UserDeclarations
                             .Where(declaration => !string.IsNullOrEmpty(declaration.IdentifierName) &&

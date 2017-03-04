@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections
             }
 
             var userDeclarations = UserDeclarations.ToList();
-            var builtinHandlers = State.DeclarationFinder.FindBuiltinEventHandlers().ToList();
+            var builtinHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
 
             var contextLookup = userDeclarations.Where(decl => decl.Context != null).ToDictionary(decl => decl.Context);
 

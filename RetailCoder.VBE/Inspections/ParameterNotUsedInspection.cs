@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
             var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers();
             var interfaceImplementationMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers();
 
-            var builtInHandlers = State.DeclarationFinder.FindBuiltinEventHandlers();
+            var handlers = State.DeclarationFinder.FindEventHandlers();
 
             var parameters = State.DeclarationFinder
                 .UserDeclarations(DeclarationType.Parameter)
@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections
                                     && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryFunction
                                     && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryProcedure
                                     && !interfaceMembers.Contains(parameter.ParentDeclaration)
-                                    && !builtInHandlers.Contains(parameter.ParentDeclaration))
+                                    && !handlers.Contains(parameter.ParentDeclaration))
                 .ToList();
 
             var issues = from issue in parameters
