@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
@@ -19,15 +20,45 @@ namespace Rubberduck.Common
         /// <param name="target"></param>
         public static void Remove(this ICodeModule module, Declaration target)
         {
+            if (!module.Equals(target.QualifiedName.QualifiedModuleName.Component.CodeModule))
+            {
+                throw new ArgumentException("Target is not declared in specified module.");
+            }
+
+            var sortedItems = target.References
+                .Where(reference => module.Equals(reference.QualifiedModuleName.Component.CodeModule))
+                .Select(reference => Tuple.Create((object) reference, reference.Selection))
+                .Concat(new[] {Tuple.Create((object) target, target.Selection)})
+                .OrderByDescending(t => t.Item2);
+
+            foreach (var tuple in sortedItems)
+            {
+                if (tuple.Item1 is Declaration)
+                {
+                    RemoveDeclarationOnly(module, target);
+                }
+                else
+                {
+                    var reference = (IdentifierReference) tuple.Item1;
+                    Remove(reference.QualifiedModuleName.Component.CodeModule, reference);
+                }
+            }
+        }
+
+        private static void RemoveDeclarationOnly(this ICodeModule module, Declaration target)
+        {
             var multipleDeclarations = target.DeclarationType == DeclarationType.Variable && target.HasMultipleDeclarationsInStatement();
             var context = GetStmtContext(target);
-            var declarationText = context.GetText().Replace(" _" + Environment.NewLine, string.Empty);
+            var declarationText = context.GetText().Replace(" _" + Environment.NewLine, Environment.NewLine);
             var selection = GetStmtContextSelection(target);
+            Debug.Assert(selection.StartColumn > 0);
 
             var oldLines = module.GetLines(selection);
+            var indent = oldLines.IndexOf(oldLines.FirstOrDefault(c => c != ' ')) + 1;
 
-            var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
-                .Remove(selection.StartColumn - 1, declarationText.Length);
+            var newLines = oldLines
+                .Replace(" _" + Environment.NewLine, Environment.NewLine)
+                .Remove(selection.StartColumn - 1, declarationText.Length - selection.StartColumn + indent);
 
             if (multipleDeclarations)
             {
@@ -127,11 +158,6 @@ namespace Rubberduck.Common
             #endregion
             var commaToRemove = numParams == indexRemoved ? indexRemoved - 1 : indexRemoved;
             return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
-        }
-
-        public static void Remove(this ICodeModule module, ConstantDeclaration target)
-        {
-
         }
 
         public static void Remove(this ICodeModule module, IdentifierReference target)
