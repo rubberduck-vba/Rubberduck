@@ -428,6 +428,16 @@ redimStmt : REDIM whiteSpace (PRESERVE whiteSpace)? redimDeclarationList;
 redimDeclarationList : redimVariableDeclaration (whiteSpace? COMMA whiteSpace? redimVariableDeclaration)*;
 redimVariableDeclaration : expression (whiteSpace asTypeClause)?;
 
+// 5.4.3.5 Mid/MidB/Mid$/MidB$ Statement
+// This needs to be explicitly defined to distinguish between Mid as a function and Mid as a keyword.
+midStatement : modeSpecifier 
+	LPAREN whiteSpace? 
+	lExpression whiteSpace? COMMA whiteSpace? lExpression whiteSpace? (COMMA whiteSpace? lExpression whiteSpace?)? 
+	RPAREN 
+	whiteSpace? ASSIGN whiteSpace? 
+	expression;
+modeSpecifier :	(MID | MIDB) DOLLAR? ;
+
 integerExpression : expression;
 
 callStmt :
@@ -524,7 +534,7 @@ subscript : (expression whiteSpace TO whiteSpace)? expression;
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
 identifier : typedIdentifier | untypedIdentifier;
 untypedIdentifier : identifierValue;
-typedIdentifier : identifierValue typeHint;
+typedIdentifier : untypedIdentifier typeHint;
 identifierValue : IDENTIFIER | keyword | foreignName | BF;
 foreignName : L_SQUARE_BRACKET foreignIdentifier* R_SQUARE_BRACKET;
 foreignIdentifier : ~(L_SQUARE_BRACKET | R_SQUARE_BRACKET) | foreignName;
@@ -702,8 +712,8 @@ keyword :
      | ME
      | MID
      | MIDB
-     | MIDBTYPESUFFIX
-     | MIDTYPESUFFIX
+//     | MIDBTYPESUFFIX
+//     | MIDTYPESUFFIX
      | MOD
      | NEW
      | NOT

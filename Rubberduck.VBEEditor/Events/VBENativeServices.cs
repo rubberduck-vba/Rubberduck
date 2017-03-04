@@ -70,15 +70,15 @@ namespace Rubberduck.VBEditor.Events
         {
             if (hwnd != IntPtr.Zero && 
                 idObject == (int)ObjId.Caret && 
-                (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate) && 
-                hwnd.ToWindowType() == WindowType.VbaWindow)
+                (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate) &&
+                hwnd.ToWindowType() == WindowType.CodePane)
             {
                 OnSelectionChanged(hwnd);             
             }
             else if (idObject == (int)ObjId.Window && (eventType == (uint)WinEvent.ObjectCreate || eventType == (uint)WinEvent.ObjectDestroy))
             {
                 var type = hwnd.ToWindowType();
-                if (type != WindowType.DesignerWindow && type != WindowType.VbaWindow)
+                if (type != WindowType.DesignerWindow && type != WindowType.CodePane)
                 {
                     return;                   
                 }
@@ -195,6 +195,7 @@ namespace Rubberduck.VBEditor.Events
         {
             Indeterminate,
             VbaWindow,
+            CodePane,
             DesignerWindow,
             Project
         }
@@ -202,7 +203,15 @@ namespace Rubberduck.VBEditor.Events
         public static WindowType ToWindowType(this IntPtr hwnd)
         {
             WindowType id;
-            return Enum.TryParse(hwnd.ToClassName(), true, out id) ? id : WindowType.Indeterminate;
+            var type = Enum.TryParse(hwnd.ToClassName(), true, out id) ? id : WindowType.Indeterminate;
+            if (type != WindowType.VbaWindow)
+            {
+                return type;
+            }
+            //A this point we only care about code panes - none of the other 4 types of VbaWindows (Immediate, Object Browser, Locals,
+            //and Watches) contain a tool bar at the top, so just see if the window has one as a child.
+            var toolbar = User32.FindWindowEx(hwnd, IntPtr.Zero, "ObtbarWndClass", string.Empty);
+            return toolbar == IntPtr.Zero ? WindowType.VbaWindow : WindowType.CodePane;
         }
 
         public static string ToClassName(this IntPtr hwnd)
