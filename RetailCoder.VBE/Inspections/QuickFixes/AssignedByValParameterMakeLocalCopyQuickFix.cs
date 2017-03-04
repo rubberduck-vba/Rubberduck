@@ -100,7 +100,7 @@ namespace Rubberduck.Inspections.QuickFixes
         { 
             string[] lines = { BuildLocalCopyDeclaration(), BuildLocalCopyAssignment() };
             var module = Selection.QualifiedName.Component.CodeModule;
-            module.InsertLines(((VBAParser.ArgListContext)_target.Context.Parent).Stop.Line+1, lines);
+            module.InsertLines(((VBAParser.ArgListContext)_target.Context.Parent).Stop.Line + 1, lines);
         }
 
         private string BuildLocalCopyDeclaration()
@@ -116,50 +116,54 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private IEnumerable<string> GetIdentifierNamesAccessibleToProcedureContext()
         {
-            var allSameProcedureDeclarations = _parserState.AllUserDeclarations
-                    .Where(item => item.ParentScope == _target.ParentScope)
-                    .ToList();
-
-            var sameModuleDeclarations = _parserState.AllUserDeclarations
-                    .Where(item => item.ComponentName == _target.ComponentName
-                    && !IsDeclaredInMethodOrProperty(item.ParentDeclaration.Context))
-                    .ToList();
-
-            var allGloballyAccessibleDeclarations = _parserState.AllUserDeclarations
-                .Where(item => item.ProjectName == _target.ProjectName
-                && !(item.ParentScopeDeclaration is ClassModuleDeclaration)
-                && (item.Accessibility == Accessibility.Public 
-                    || ((item.Accessibility == Accessibility.Implicit) 
-                        && (item.ParentScopeDeclaration is ProceduralModuleDeclaration))))
-                .ToList();
-
-            var accessibleIdentifierNames = new List<string>();
-            accessibleIdentifierNames.AddRange(allSameProcedureDeclarations.Select(d => d.IdentifierName));
-            accessibleIdentifierNames.AddRange(sameModuleDeclarations.Select(d => d.IdentifierName));
-            accessibleIdentifierNames.AddRange(allGloballyAccessibleDeclarations.Select(d => d.IdentifierName));
-
-            return accessibleIdentifierNames.Distinct();
+            return _parserState.AllUserDeclarations
+                .Where(candidateDeclaration => 
+                (
+                        IsDeclarationInTheSameProcedure(candidateDeclaration, _target)
+                    ||  IsDeclarationInTheSameModule(candidateDeclaration, _target)
+                    ||  IsProjectGlobalDeclaration(candidateDeclaration, _target))
+                 ).Select(declaration => declaration.IdentifierName).Distinct();
         }
 
-        private bool IsDeclaredInMethodOrProperty(RuleContext context)
+        private bool IsDeclarationInTheSameProcedure(Declaration candidateDeclaration, Declaration scopingDeclaration)
         {
-            if (context is VBAParser.SubStmtContext)
+            return candidateDeclaration.ParentScope == scopingDeclaration.ParentScope;
+        }
+
+        private bool IsDeclarationInTheSameModule(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        {
+            return candidateDeclaration.ComponentName == scopingDeclaration.ComponentName
+                    && !IsDeclaredInMethodOrProperty(candidateDeclaration.ParentDeclaration.Context);
+        }
+
+        private bool IsProjectGlobalDeclaration(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        {
+            return candidateDeclaration.ProjectName == scopingDeclaration.ProjectName
+                && !(candidateDeclaration.ParentScopeDeclaration is ClassModuleDeclaration)
+                && (candidateDeclaration.Accessibility == Accessibility.Public
+                    || ((candidateDeclaration.Accessibility == Accessibility.Implicit)
+                        && (candidateDeclaration.ParentScopeDeclaration is ProceduralModuleDeclaration)));
+        }
+
+        private bool IsDeclaredInMethodOrProperty(RuleContext procedureContext)
+        {
+            if (procedureContext is VBAParser.SubStmtContext)
             {
                 return true;
             }
-            else if (context is VBAParser.FunctionStmtContext)
+            else if (procedureContext is VBAParser.FunctionStmtContext)
             {
                 return true;
             }
-            else if (context is VBAParser.PropertyLetStmtContext)
+            else if (procedureContext is VBAParser.PropertyLetStmtContext)
             {
                 return true;
             }
-            else if (context is VBAParser.PropertyGetStmtContext)
+            else if (procedureContext is VBAParser.PropertyGetStmtContext)
             {
                 return true;
             }
-            else if (context is VBAParser.PropertySetStmtContext)
+            else if (procedureContext is VBAParser.PropertySetStmtContext)
             {
                 return true;
             }
