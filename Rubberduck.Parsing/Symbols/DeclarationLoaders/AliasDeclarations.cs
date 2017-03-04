@@ -32,6 +32,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             Grammar.Tokens.Hex,
             Grammar.Tokens.Oct,
             Grammar.Tokens.Str,
+            Grammar.Tokens.StrConv,
             Grammar.Tokens.CurDir,
             Grammar.Tokens.Command,
             Grammar.Tokens.Environ,
@@ -177,6 +178,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 HexFunction(),
                 OctFunction(),
                 StrFunction(),
+                StrConvFunction(),
                 CurDirFunction(),
                 CommandFunction(),
                 EnvironFunction(),
@@ -258,6 +260,24 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 new QualifiedMemberName(_conversionModule.QualifiedName.QualifiedModuleName, "Str"),
                 _conversionModule,
                 _conversionModule,
+                "Variant",
+                null,
+                string.Empty,
+                Accessibility.Global,
+                null,
+                new Selection(),
+                false,
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+        }
+
+        private FunctionDeclaration StrConvFunction()
+        {
+            return new FunctionDeclaration(
+                new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "StrConv"),
+                _stringsModule,
+                _stringsModule,
                 "Variant",
                 null,
                 string.Empty,
