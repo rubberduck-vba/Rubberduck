@@ -1,36 +1,40 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
+using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitByRefParameterInspection : IInspection
+    public sealed class ImplicitByRefParameterInspection : InspectionBase
     {
-        public ImplicitByRefParameterInspection()
+        public ImplicitByRefParameterInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Hint)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return RubberduckUI.ImplicitByRef_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.ImplicitByRefParameterInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ImplicitByRefParameterInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var interfaceMembers = parseResult.Declarations.FindInterfaceImplementationMembers();
-            var issues = (from item in parseResult.Declarations.Items
-                where item.DeclarationType == DeclarationType.Parameter
-                    && !item.IsBuiltIn
-                    && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
-                let arg = item.Context.Parent as VBAParser.ArgContext
-                where arg != null && arg.BYREF() == null && arg.BYVAL() == null
-                select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
-                .Select(issue => new ImplicitByRefParameterInspectionResult(string.Format(Name, issue.Context.ambiguousIdentifier().GetText()), Severity, issue));
+            var interfaceMembers = UserDeclarations.FindInterfaceImplementationMembers();
+            var builtinEventHandlers = State.DeclarationFinder.FindEventHandlers();
 
-            return issues;
+            var issues = State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Parameter)
+                .OfType<ParameterDeclaration>()
+                .Where(item => item.IsImplicitByRef && !item.IsParamArray
+                    && !IsIgnoringInspectionResultFor(item, AnnotationName)
+                    && !interfaceMembers.Contains(item.ParentDeclaration)
+                    && !builtinEventHandlers.Contains(item.ParentDeclaration))
+                .ToList();
+
+            return issues.Select(issue => new ImplicitByRefParameterInspectionResult(this, issue));
         }
     }
 }

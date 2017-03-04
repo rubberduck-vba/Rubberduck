@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI.FindSymbol
@@ -33,6 +26,18 @@ namespace Rubberduck.UI.FindSymbol
         public FindSymbolDialog()
         {
             InitializeComponent();
+
+            Text = string.Format("Rubberduck - {0}", RubberduckUI.FindSymbolDialog_Caption);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

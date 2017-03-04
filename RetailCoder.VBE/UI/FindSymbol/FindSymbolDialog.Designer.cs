@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.FindSymbol
+﻿using System.ComponentModel;
+using System.Windows.Forms.Integration;
+
+namespace Rubberduck.UI.FindSymbol
 {
     partial class FindSymbolDialog
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -62,7 +65,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private ElementHost elementHost1;
         private FindSymbolControl findSymbolControl1;
 
 

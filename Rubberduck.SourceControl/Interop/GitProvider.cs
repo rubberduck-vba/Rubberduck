@@ -3,7 +3,8 @@ using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
+using System.Security;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.SourceControl.Interop
 {
@@ -14,20 +15,20 @@ namespace Rubberduck.SourceControl.Interop
     [Description("VBA Editor integrated access to Git.")]
     class GitProvider : SourceControl.GitProvider, ISourceControlProvider
     {
-        public GitProvider(VBProject project) 
+        public GitProvider(IVBProject project) 
             : base(project)
         { }
 
-        public GitProvider(VBProject project, IRepository repository)
+        public GitProvider(IVBProject project, IRepository repository)
             : base(project, repository)
         { }
 
-        [Obsolete]
-        public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
+        [Obsolete("Use the ICredentials overload instead.")]
+        public GitProvider(IVBProject project, IRepository repository, string userName, string passWord)
             : base(project, repository, userName, passWord)
         { }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials credentials)
+        public GitProvider(IVBProject project, IRepository repository, ICredentials credentials)
             :base(project, repository, credentials.Username, credentials.Password)
         { }
 
@@ -65,6 +66,25 @@ namespace Rubberduck.SourceControl.Interop
 
             Stage(filePaths);
             base.Commit(message);
+        }
+        /// <summary>
+        /// For use by COM API only.
+        /// </summary>
+        /// <param name="remotePathOrUrl"></param>
+        /// <param name="workingDirectory"></param>
+        /// <param name="credentials"></param>
+        /// <returns></returns>
+        public IRepository Clone(string remotePathOrUrl, string workingDirectory, Credentials credentials)
+        {
+            var password = new SecureString();
+            foreach (var chr in credentials.Password)
+            {
+                password.AppendChar(chr);
+            }
+
+            credentials.Password = string.Empty;
+
+            return base.Clone(remotePathOrUrl, workingDirectory, new SecureCredentials(credentials.Username, password));
         }
     }
 }

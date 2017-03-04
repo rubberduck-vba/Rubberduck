@@ -15,7 +15,7 @@ namespace Rubberduck.SourceControl.Interop
         private readonly IEnumerable<IBranch> _branches;
         internal Branches(IEnumerable<IBranch> branches)
         {
-            this._branches = branches;
+            _branches = branches;
         }
 
         [DispId(-4)]

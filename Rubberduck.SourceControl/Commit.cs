@@ -2,9 +2,9 @@
 {
     public interface ICommit
     {
-        string Id { get; }
-        string Author { get; }
         string Message { get; }
+        string Author { get; }
+        string Id { get; }
     }
 
     public class Commit : ICommit
@@ -15,9 +15,9 @@
 
         public Commit(string id, string author, string message)
         {
-            this.Id = id;
-            this.Author = author;
-            this.Message = message;
+            Id = id;
+            Author = author;
+            Message = message.Trim();
         }
 
         public Commit(LibGit2Sharp.Commit commit)

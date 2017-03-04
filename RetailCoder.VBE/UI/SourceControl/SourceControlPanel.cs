@@ -1,29 +1,20 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI.SourceControl
 {
-    [SuppressMessage("ReSharper", "ArrangeThisQualifier")]
-    public partial class SourceControlPanel : UserControl, ISourceControlView
+    [ExcludeFromCodeCoverage]
+    public partial class SourceControlPanel : UserControl, IDockableUserControl
     {
-        public SourceControlPanel()
+        private SourceControlPanel()
         {
             InitializeComponent();
         }
 
-        public SourceControlPanel(IBranchesView branchesView, IChangesView changesView, IUnSyncedCommitsView commitsView, ISettingsView settingsView)
-            :this()
+        public SourceControlPanel(SourceControlViewViewModel viewModel) : this()
         {
-            ((Control)branchesView).Dock = DockStyle.Fill;
-            ((Control)changesView).Dock = DockStyle.Fill;
-            ((Control)commitsView).Dock = DockStyle.Fill;
-            ((Control)settingsView).Dock = DockStyle.Fill;
-
-            this.BranchesTab.Controls.Add((Control)branchesView);
-            this.ChangesTab.Controls.Add((Control)changesView);
-            this.UnsyncedCommitsTab.Controls.Add((Control)commitsView);
-            this.SettingsTab.Controls.Add((Control)settingsView);
+            _viewModel = viewModel;
+            SourceControlPanelControl.DataContext = viewModel;
         }
 
         public string ClassId
@@ -33,39 +24,13 @@ namespace Rubberduck.UI.SourceControl
 
         public string Caption
         {
-            get { return "Source Control"; }
+            get { return RubberduckUI.SourceControlPanel_Caption; }
         }
 
-        public string Status 
+        private readonly SourceControlViewViewModel _viewModel;
+        public SourceControlViewViewModel ViewModel
         {
-            get { return this.StatusMessage.Text; }
-            set { this.StatusMessage.Text = value; }
-        }
-
-        public event EventHandler<EventArgs> RefreshData;
-        private void RefreshButton_Click(object sender, EventArgs e)
-        {
-            RaiseGenericEvent(RefreshData, e);
-        } 
-
-        public event EventHandler<EventArgs> OpenWorkingDirectory;
-        private void OpenWorkingFolderButton_Click(object sender, EventArgs e)
-        {
-            RaiseGenericEvent(OpenWorkingDirectory, e);
-        }
-
-        public event EventHandler<EventArgs> InitializeNewRepository;
-        private void InitRepoButton_Click(object sender, EventArgs e)
-        {
-            RaiseGenericEvent(InitializeNewRepository, e);
-        }
-
-        private void RaiseGenericEvent(EventHandler<EventArgs> handler, EventArgs e)
-        {
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            get { return _viewModel; }
         }
     }
 }

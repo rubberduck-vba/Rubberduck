@@ -1,0 +1,233 @@
+Attribute VB_Name = "fnRegEx"
+Option Explicit
+
+Private Const ThisModule As String = ThisProject & "|fnRegEx"
+
+Public Function reCap(SubPattern As String) As Variant
+Attribute reCap.VB_Description = "Returns a capturing SearchPattern: (<subpattern>)"
+Attribute reCap.VB_ProcData.VB_Invoke_Func = " \n19"
+    Const ThisProcedure As String = ThisModule & "|reCap|Function"
+    reCap = ConChrLParan & SubPattern & ConChrRParan
+End Function
+Public Function reNoCap(SubPattern As String) As Variant
+Attribute reNoCap.VB_Description = "Returns a non-capturing SearchPattern: (?:<subpattern>)"
+Attribute reNoCap.VB_ProcData.VB_Invoke_Func = " \n19"
+    Const ThisProcedure As String = ThisModule & "|reNoCap|Function"
+    reNoCap = "(?:" & SubPattern & ConChrRParan
+End Function
+Public Function reNegChrSet(SubPattern As String) As Variant
+    Const ThisProcedure As String = ThisModule & "|reNegChrSet|Function"
+    reNegChrSet = "[^" & SubPattern & ConChrRSquareBracket
+End Function
+Public Function reNegLAhead(SubPattern As String) As Variant
+Attribute reNegLAhead.VB_Description = "Returns a negative LookAhead pattern: (?!<subpattern>)"
+Attribute reNegLAhead.VB_ProcData.VB_Invoke_Func = " \n19"
+    Const ThisProcedure As String = ThisModule & "|reNegLAhead|Function"
+    reNegLAhead = "(?!" & SubPattern & ConChrRParan
+End Function
+Public Function rePosChrSet(SubPattern As String) As Variant
+    Const ThisProcedure As String = ThisModule & "|rePosChrSet|Function"
+    rePosChrSet = "[" & SubPattern & ConChrRSquareBracket
+End Function
+Public Function rePosLAhead(SubPattern As String) As Variant
+Attribute rePosLAhead.VB_Description = "Returns a positive LookAhead pattern: (?=<subpattern>)"
+Attribute rePosLAhead.VB_ProcData.VB_Invoke_Func = " \n19"
+    Const ThisProcedure As String = ThisModule & "|rePosLAhead|Function"
+    rePosLAhead = "(?=" & SubPattern & ConChrRParan
+End Function
+
+Public Function x0o1x(Optional Lazy As Boolean = False) As String
+Attribute x0o1x.VB_Description = "Returns the '0 or 1 times' subpattern: ?"
+Attribute x0o1x.VB_ProcData.VB_Invoke_Func = " \n19"
+    Const ThisProcedure As String = ThisModule & "|x0o1x|Function"
+    x0o1x = ConChrQuestMark & GetLazy(Value:=Lazy)
+End Function
+Public Function x0omx(Optional Lazy As Boolean = False) As String
+Attribute x0omx.VB_Description = "Returns the '0 or more times' subpattern: *"
+Attribute x0omx.VB_ProcData.VB_Invoke_Func = " \n19"
+    Const ThisProcedure As String = ThisModule & "|x0omx|Function"
+    x0omx = ConChrAsterisk & GetLazy(Value:=Lazy)
+End Function
+Public Function x1omx(Optional Lazy As Boolean = False) As String
+Attribute x1omx.VB_Description = "Returns the '1 or more times' subpattern: +"
+Attribute x1omx.VB_ProcData.VB_Invoke_Func = " \n19"
+    Const ThisProcedure As String = ThisModule & "|x1omx|Function"
+    x1omx = ConChrPlus & GetLazy(Value:=Lazy)
+End Function
+Public Function xNx(N As Long) As String
+Attribute xNx.VB_Description = "Returns a 'N times' subpattern: {<n>}"
+Attribute xNx.VB_ProcData.VB_Invoke_Func = " \n19"
+    Const ThisProcedure As String = ThisModule & "|xNx|Function"
+    If N < 0 Then
+        xNx = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrNum _
+                      , Description:="n < 0" _
+                      )
+        Exit Function
+    End If
+    If N = Lo1 Then
+        xNx = EmptyString
+    Else
+        xNx = ConChrLCurlyBracket & VBA.CStr(N) & ConChrRCurlyBracket
+    End If
+End Function
+Public Function xNomx(N As Long, Optional Lazy As Boolean = False) As String
+Attribute xNomx.VB_Description = "Returns a 'N or more times' subpattern: {<n>,}"
+Attribute xNomx.VB_ProcData.VB_Invoke_Func = " \n19"
+    Const ThisProcedure As String = ThisModule & "|xNomx|Function"
+    If N < 0 Then
+        xNomx = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrNum _
+                        , Description:="n < 0" _
+                        )
+        Exit Function
+    End If
+    Select Case N
+        Case 0
+            xNomx = x0omx(Lazy:=Lazy)
+        Case 1
+            xNomx = x1omx(Lazy:=Lazy)
+        Case Else
+            xNomx = ConChrLCurlyBracket & VBA.CStr(N) & ConChrComma & ConChrRCurlyBracket & GetLazy(Value:=Lazy)
+    End Select
+End Function
+Public Function xNtMx(N As Long, M As Long, Optional Lazy As Boolean = False) As String
+Attribute xNtMx.VB_Description = "Returns a 'N to M times' subpattern: {<n>,<m>}"
+Attribute xNtMx.VB_ProcData.VB_Invoke_Func = " \n19"
+    Const ThisProcedure As String = ThisModule & "|xNtMx|Function"
+    If N < Lo0 Then
+        xNtMx = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrNum _
+                        , Description:="n < 0" _
+                        )
+        Exit Function
+    End If
+    If M < N Then
+        xNtMx = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrNum _
+                        , Description:="m < n" _
+                        )
+        Exit Function
+    End If
+    If N = M Then
+        If Lazy And N <> Lo0 Then
+            xNtMx = xNx(N:=N) & GetLazy(Value:=Lazy)
+        Else
+            xNtMx = xNx(N:=N)
+        End If
+    Else
+        If N = Lo0 And M = Lo1 Then
+            xNtMx = x0o1x(Lazy:=Lazy)
+        Else
+            xNtMx = ConChrLCurlyBracket & VBA.CStr(N) & ConChrComma & VBA.CStr(M) & ConChrRCurlyBracket & GetLazy(Value:=Lazy)
+        End If
+    End If
+End Function
+Private Function GetLazy(Value As Boolean) As String
+    Const ThisProcedure As String = ThisModule & "|GetLazy|Function"
+    If Value Then
+        GetLazy = ConChrQuestMark
+    End If
+End Function
+Public Function GetRunTimeError() As String
+    Const ThisProcedure As String = ThisModule & "|GetRunTimeError|Function"
+'    Const ThisProcedure As String = ThisModule & "|RunTimeError|Sub"
+    ' VBScript Run-time Errors
+    ' http://msdn.microsoft.com/library/default.asp?url=/library/en-us/script56/html/48394ca0-beec-4051-9354-b47849725218.asp
+    With VBA.Err
+        Select Case VBA.Err.Number
+            Case 5
+                GetRunTimeError = "Invalid procedure call or argument"
+            Case 6
+                GetRunTimeError = "Overflow"
+            Case 7
+                GetRunTimeError = "Out of Memory"
+            Case 9
+                GetRunTimeError = "Subscript out of range"
+            Case 10
+                GetRunTimeError = "This array is fixed or temporarily locked"
+            Case 11
+                GetRunTimeError = "Division by zero"
+            Case 13
+                GetRunTimeError = "Type mismatch"
+            Case 14
+                GetRunTimeError = "Out of string space"
+            Case 17
+                GetRunTimeError = "Can't perform requested operation"
+            Case 28
+                GetRunTimeError = "Out of stack space"
+            Case 35
+                GetRunTimeError = "Sub or function not defined"
+            Case 48
+                GetRunTimeError = "Error in loading DLL"
+            Case 51
+                GetRunTimeError = "Internal error"
+            Case 91
+                GetRunTimeError = "Object variable not set"
+            Case 92
+                GetRunTimeError = "For loop not initialized"
+            Case 94
+                GetRunTimeError = "Invalid use of Null"
+            Case 424
+                GetRunTimeError = "Object required"
+            Case 429
+                GetRunTimeError = "ActiveX component can't create object"
+            Case 430
+                GetRunTimeError = "Class doesn't support Automation"
+            Case 432
+                GetRunTimeError = "File name or class name not found during Automation operation"
+            Case 438
+                GetRunTimeError = "Object doesn't support this property or method"
+            Case 445
+                GetRunTimeError = "Object doesn't support this action"
+            Case 447
+                GetRunTimeError = "Object doesn't support current locale setting"
+            Case 448
+                GetRunTimeError = "Named argument not found"
+            Case 449
+                GetRunTimeError = "Argument not optional"
+            Case 450
+                GetRunTimeError = "Wrong number of arguments or invalid property assignment"
+            Case 451
+                GetRunTimeError = "Object not a collection"
+            Case 458
+                GetRunTimeError = "Variable uses an Automation type not supported in VBScript"
+            Case 462
+                GetRunTimeError = "The remote server machine does not exist or is unavailable"
+            Case 481
+                GetRunTimeError = "Invalid picture"
+            Case 500
+                GetRunTimeError = "Variable is undefined"
+            Case 502
+                GetRunTimeError = "Object not safe for scripting"
+            Case 503
+                GetRunTimeError = "Object not safe for initializing"
+            Case 504
+                GetRunTimeError = "Object not safe for creating"
+            Case 505
+                GetRunTimeError = "Invalid or unqualified reference"
+            Case 506
+                GetRunTimeError = "Class not defined"
+            Case 507
+                GetRunTimeError = "An exception occurred"
+            Case 5008
+                GetRunTimeError = "Illegal assignment"
+            Case 5017
+                GetRunTimeError = "Syntax error in regular expression"
+            Case 5018
+                GetRunTimeError = "Unexpected quantifier"
+            Case 5019
+                GetRunTimeError = "Expected ']' in regular expression"
+            Case 5020
+                GetRunTimeError = "Expected ')' in regular expression"
+            Case 5021
+                GetRunTimeError = "Invalid range in character set"
+            Case Else
+                On Error GoTo 0
+'                vbVBACmdMsg.UnexpectedSelectCaseValue Value:=Err.Number, Source:=ThisProcedure
+        End Select
+'        vbREMsg.PatternIsNotValid Value:=a.aao.VbsRegEx.Pattern _
+'                                , RunTimeError:=.Description _
+'                                , Source:=Source
+'        vbErr.Raise Number:=.Number _
+'                  , Name:=VbsSource _
+'                  , Source:=Source _
+'                  , description:=.description
+    End With
+End Function

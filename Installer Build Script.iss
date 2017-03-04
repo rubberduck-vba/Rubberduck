@@ -3,7 +3,7 @@
 #define AddinDLL "Rubberduck.dll"
 #define AppVersion GetFileVersion(SourcePath + "RetailCoder.VBE\bin\release\Rubberduck.dll")
 #define AppPublisher "Rubberduck"
-#define AppURL "http://rubberduck-vba.com"
+#define AppURL "http://rubberduckvba.com"
 #define License SourcePath + "\License.rtf"
 #define OutputDirectory SourcePath + "\Installers"
 #define AddinProgId "Rubberduck.Extension"
@@ -36,21 +36,12 @@ ArchitecturesInstallIn64BitMode=x64
 Name: "English"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-; We are taking everything from the Build directory and adding it to the installer.  This
-; might not be what we want to do.
-Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
+; Install the correct bitness binaries.
 Source: "{#BuildDir}\NativeBinaries\amd64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
-Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; Check: Is64BitOfficeInstalled; AfterInstall: RegisterAddin
-
-Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
 Source: "{#BuildDir}\NativeBinaries\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
-Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; Check: Is32BitOfficeInstalled; AfterInstall: RegisterAddin
 
-[UninstallDelete]
-; Removing all application files (except for configuration).
-Name: "{app}\*.dll"; Type: filesandordirs
-Name: "{app}\*.xml"; Type: filesandordirs  
-Name: "{app}\*.pdb"; Type: filesandordirs
+Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Excludes: "{#AddinDLL},\NativeBinaries"
+Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: RegisterAddin
 
 [Run]
 ; http://stackoverflow.com/questions/5618337/how-to-register-a-net-dll-using-inno-setup
@@ -60,6 +51,9 @@ Filename: "{dotnet4064}\RegAsm.exe"; Parameters: "/codebase {#AddinDLL}"; Workin
 [UninstallRun]
 Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/u {#AddinDLL}"; WorkingDir: "{app}"; StatusMsg: "Unregistering Controls..."; Flags: runascurrentuser runminimized; Check: Is32BitOfficeInstalled
 Filename: "{dotnet4064}\RegAsm.exe"; Parameters: "/u {#AddinDLL}"; WorkingDir: "{app}"; StatusMsg: "Unregistering Controls..."; Flags: runascurrentuser runminimized; Check: Is64BitOfficeInstalled
+
+[UninstallDelete]
+Type: filesandordirs; Name: "{localappdata}\{#AppName}"
 
 [CustomMessages]
 ; TODO add additional languages here.
@@ -104,7 +98,7 @@ end;
 function GetOfficeBitness(): Integer;
 var
   appBitness: Integer;
-  officeExeNames: array[0..4] of String;
+  officeExeNames: array[0..6] of String;
   i: Integer;
 begin
   officeExeNames[0] := 'excel.exe';
@@ -112,6 +106,8 @@ begin
   officeExeNames[2] := 'winword.exe';
   officeExeNames[3] := 'outlook.exe';
   officeExeNames[4] := 'powerpnt.exe';
+  officeExeNames[5] := 'mspub.exe';
+  officeExeNames[6] := 'winproj.exe';
 
   for i := 0 to 4 do begin
     appBitness := GetOfficeAppBitness(officeExeNames[i]);

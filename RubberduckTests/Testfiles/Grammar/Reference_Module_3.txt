@@ -1,0 +1,138 @@
+Attribute VB_Name = "fnEnumPri"
+Option Explicit
+'Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|fnEnumPri"
+
+Public Enum fnenDateTimeType
+    dttUndefined
+    dttTime
+    dttDate
+    dttDateTime
+End Enum
+
+Public Enum fnenLogOp
+    loBLT = 1
+    loBLE
+    loBNE
+    loBEQ
+    loBGT
+    loBGE
+    loSLe
+    loSRi
+    loPLi
+    loPRE
+End Enum
+
+Public Enum fnenSort
+    sDescending = -1
+    sNOptSort
+    sAscending
+End Enum
+
+Public Enum enZeros
+    zExclude
+    zZerosInclude
+End Enum
+
+Public Enum enStatFn
+    sfmin = 2
+    sfAvg = 4
+    sfMax = 8
+    sfwAvg = 16
+End Enum
+
+Public Enum enPivotFilterTypeCategory
+    pftcTopBottom
+    pftcCaption
+    pftcDate
+    pftcValue
+End Enum
+
+Public Enum enSeriesStackType
+    sstUndefined
+    sstNotStacked
+    sstStacked
+    sstStacked100
+End Enum
+'Public Function fnenLogOpName(Value As fnenLogOp) As String
+'    Const ThisProcedure As String = ThisModule & "|fnenLogOpName|Function"
+'    Select Case Value
+'        Case fnenLogOp.loBLT: fnenLogOpName = "loBLT"
+'        Case fnenLogOp.loBLE: fnenLogOpName = "loBLE"
+'        Case fnenLogOp.loBNE: fnenLogOpName = "loBNE"
+'        Case fnenLogOp.loBEQ: fnenLogOpName = "loBEQ"
+'        Case fnenLogOp.loBGT: fnenLogOpName = "loBGT"
+'        Case fnenLogOp.loBGE: fnenLogOpName = "loBGE"
+'        Case fnenLogOp.loSLe: fnenLogOpName = "loSLe"
+'        Case fnenLogOp.loSRi: fnenLogOpName = "loSRi"
+'        Case fnenLogOp.loPLi: fnenLogOpName = "loPLi"
+'        Case fnenLogOp.loPRE: fnenLogOpName = "loPRE"
+'        Case Else
+'            On Error GoTo 0
+'            vbVBACmdMsg.UnexpectedSelectCaseValue Value:=Value, Source:=ThisProcedure
+'    End Select
+'End Function
+
+'Public Function fnenSortName(Value As fnenSort) As String
+'    Const ThisProcedure As String = ThisModule & "|fnenSortName|Function"
+'    Select Case Value
+'        Case fnenSort.sDescending: fnenSortName = "sDescending"
+'        Case fnenSort.sNOptSort: fnenSortName = "sNOptSort"
+'        Case fnenSort.sAscending: fnenSortName = "sAscending"
+'        Case Else
+'            On Error GoTo 0
+'            vbVBACmdMsg.UnexpectedSelectCaseValue Value:=Value, Source:=ThisProcedure
+'    End Select
+'End Function
+
+'Public Function enZerosName(Value As enZeros) As String
+'    Const ThisProcedure As String = ThisModule & "|enZerosName|Function"
+'    Select Case Value
+'        Case enZeros.zExclude: enZerosName = "zExclude"
+'        Case enZeros.zZerosInclude: enZerosName = "zZerosInclude"
+'        Case Else
+'            On Error GoTo 0
+'            vbVBACmdMsg.UnexpectedSelectCaseValue Value:=Value, Source:=ThisProcedure
+'    End Select
+'End Function
+
+'Public Function enStatFnName(Value As enStatFn) As String
+'    Const ThisProcedure As String = ThisModule & "|enStatFnName|Function"
+'    Select Case Value
+'        Case enStatFn.sfmin: enStatFnName = "sfmin"
+'        Case enStatFn.sfAvg: enStatFnName = "sfAvg"
+'        Case enStatFn.sfMax: enStatFnName = "sfMax"
+'        Case enStatFn.sfwAvg: enStatFnName = "sfwAvg"
+'        Case Else
+'            On Error GoTo 0
+'            vbVBACmdMsg.UnexpectedSelectCaseValue Value:=Value, Source:=ThisProcedure
+'    End Select
+'End Function
+
+'Public Function enPivotFilterTypeCategoryName(Value As enPivotFilterTypeCategory) As String
+'    Const ThisProcedure As String = ThisModule & "|enPivotFilterTypeCategoryName|Function"
+'    Select Case Value
+'        Case enPivotFilterTypeCategory.pftcTopBottom: enPivotFilterTypeCategoryName = "pftcTopBottom"
+'        Case enPivotFilterTypeCategory.pftcCaption: enPivotFilterTypeCategoryName = "pftcCaption"
+'        Case enPivotFilterTypeCategory.pftcDate: enPivotFilterTypeCategoryName = "pftcDate"
+'        Case enPivotFilterTypeCategory.pftcValue: enPivotFilterTypeCategoryName = "pftcValue"
+'        Case Else
+'            On Error GoTo 0
+'            vbVBACmdMsg.UnexpectedSelectCaseValue Value:=Value, Source:=ThisProcedure
+'    End Select
+'End Function
+
+'Public Function enSeriesStackTypeName(Value As enSeriesStackType) As String
+'    Const ThisProcedure As String = ThisModule & "|enSeriesStackTypeName|Function"
+'    Select Case Value
+'        Case enSeriesStackType.sstUndefined: enSeriesStackTypeName = "sstUndefined"
+'        Case enSeriesStackType.sstNotStacked: enSeriesStackTypeName = "sstNotStacked"
+'        Case enSeriesStackType.sstStacked: enSeriesStackTypeName = "sstStacked"
+'        Case enSeriesStackType.sstStacked100: enSeriesStackTypeName = "sstStacked100"
+'        Case Else
+'            On Error GoTo 0
+'            vbVBACmdMsg.UnexpectedSelectCaseValue Value:=Value, Source:=ThisProcedure
+'    End Select
+'End Function
+

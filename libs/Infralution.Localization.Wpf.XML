@@ -1,0 +1,1012 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Infralution.Localization.Wpf</name>
+    </assembly>
+    <members>
+        <member name="T:Infralution.Localization.Wpf.ResourceEnumConverter">
+            <summary>
+            Defines a type converter for enum values that converts enum values to 
+            and from string representations using resources
+            </summary>
+            <remarks>
+            This class makes localization of display values for enums in a project easy.  Simply
+            derive a class from this class and pass the ResourceManagerin the constructor.  
+            
+            <code lang="C#" escaped="true" >
+            class LocalizedEnumConverter : ResourceEnumConverter
+            {
+               public LocalizedEnumConverter(Type type)
+                   : base(type, Properties.Resources.ResourceManager)
+               {
+               }
+            }    
+            </code>
+            
+            <code lang="Visual Basic" escaped="true" >
+            Public Class LocalizedEnumConverter
+            
+               Inherits ResourceEnumConverter
+               Public Sub New(ByVal sType as Type)
+                   MyBase.New(sType, My.Resources.ResourceManager)
+               End Sub
+            End Class    
+            </code>
+            
+            Then define the enum values in the resource editor.   The names of
+            the resources are simply the enum value prefixed by the enum type name with an
+            underscore separator eg MyEnum_MyValue.  You can then use the TypeConverter attribute
+            to make the LocalizedEnumConverter the default TypeConverter for the enums in your
+            project.
+            </remarks>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.GetLookupTable(System.Globalization.CultureInfo)">
+            <summary>
+            Get the lookup table for the given culture (creating if necessary)
+            </summary>
+            <param name="culture"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.GetResourceName(System.Object)">
+            <summary>
+            Return the name of the resource to use
+            </summary>
+            <param name="value">The value to get</param>
+            <returns>The name of the resource to use</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.GetValueText(System.Globalization.CultureInfo,System.Object)">
+            <summary>
+            Return the text to display for a simple value in the given culture
+            </summary>
+            <param name="culture">The culture to get the text for</param>
+            <param name="value">The enum value to get the text for</param>
+            <returns>The localized text</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.IsSingleBitValue(System.UInt64)">
+            <summary>
+            Return true if the given value is can be represented using a single bit
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.GetFlagValueText(System.Globalization.CultureInfo,System.Object)">
+            <summary>
+            Return the text to display for a flag value in the given culture
+            </summary>
+            <param name="culture">The culture to get the text for</param>
+            <param name="value">The flag enum value to get the text for</param>
+            <returns>The localized text</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.GetValue(System.Globalization.CultureInfo,System.String)">
+            <summary>
+            Return the Enum value for a simple (non-flagged enum)
+            </summary>
+            <param name="culture">The culture to convert using</param>
+            <param name="text">The text to convert</param>
+            <returns>The enum value</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.GetFlagValue(System.Globalization.CultureInfo,System.String)">
+            <summary>
+            Return the Enum value for a flagged enum
+            </summary>
+            <param name="culture">The culture to convert using</param>
+            <param name="text">The text to convert</param>
+            <returns>The enum value</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.#ctor(System.Type,System.Resources.ResourceManager)">
+            <summary>
+            Create a new instance of the converter using translations from the given resource manager
+            </summary>
+            <param name="type"></param>
+            <param name="resourceManager"></param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+            <summary>
+            Convert string values to enum values
+            </summary>
+            <param name="context"></param>
+            <param name="culture"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+            <summary>
+            Convert the enum value to a string
+            </summary>
+            <param name="context"></param>
+            <param name="culture"></param>
+            <param name="value"></param>
+            <param name="destinationType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.ConvertToString(System.Enum)">
+            <summary>
+            Convert the given enum value to string using the registered type converter
+            </summary>
+            <param name="value">The enum value to convert to string</param>
+            <returns>The localized string value for the enum</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.GetValues(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            Return a list of the enum values and their associated display text for the given enum type
+            </summary>
+            <param name="enumType">The enum type to get the values for</param>
+            <param name="culture">The culture to get the text for</param>
+            <returns>
+            A list of KeyValuePairs where the key is the enum value and the value is the text to display
+            </returns>
+            <remarks>
+            This method can be used to provide localized binding to enums in ASP.NET applications.   Unlike 
+            windows forms the standard ASP.NET controls do not use TypeConverters to convert from enum values
+            to the displayed text.   You can bind an ASP.NET control to the list returned by this method by setting
+            the DataValueField to "Key" and theDataTextField to "Value". 
+            </remarks>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.GetValues(System.Type)">
+            <summary>
+            Return a list of the enum values and their associated display text for the given enum type in the current UI Culture
+            </summary>
+            <param name="enumType">The enum type to get the values for</param>
+            <returns>
+            A list of KeyValuePairs where the key is the enum value and the value is the text to display
+            </returns>
+            <remarks>
+            This method can be used to provide localized binding to enums in ASP.NET applications.   Unlike 
+            windows forms the standard ASP.NET controls do not use TypeConverters to convert from enum values
+            to the displayed text.   You can bind an ASP.NET control to the list returned by this method by setting
+            the DataValueField to "Key" and theDataTextField to "Value". 
+            </remarks>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.System#Windows#Data#IValueConverter#Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Handle XAML Conversion from this type to other types
+            </summary>
+            <param name="value">The value to convert</param>
+            <param name="targetType">The target type</param>
+            <param name="parameter">not used</param>
+            <param name="culture">The culture to convert</param>
+            <returns>The converted value</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResourceEnumConverter.System#Windows#Data#IValueConverter#ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Handle XAML Conversion from other types back to this type
+            </summary>
+            <param name="value">The value to convert</param>
+            <param name="targetType">The target type</param>
+            <param name="parameter">not used</param>
+            <param name="culture">The culture to convert</param>
+            <returns>The converted value</returns>
+        </member>
+        <member name="T:Infralution.Localization.Wpf.UICultureExtension">
+            <summary>
+            Markup Extension used to dynamically set the Language property of an Markup element to the
+            the current <see cref="P:Infralution.Localization.Wpf.CultureManager.UICulture"/> property value.
+            </summary>
+            <remarks>
+            The culture used for displaying data bound items is based on the Language property.  This
+            extension allows you to dynamically change the language based on the current 
+            <see cref="P:Infralution.Localization.Wpf.CultureManager.UICulture"/>.
+            </remarks>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.UICultureExtension._markupManager">
+            <summary>
+            List of active extensions
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.UICultureExtension.#ctor">
+            <summary>
+            Creates an instance of the extension to set the language property for an
+            element to the current <see cref="P:Infralution.Localization.Wpf.CultureManager.UICulture"/> property value
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.UICultureExtension.GetValue">
+            <summary>
+            Return the <see cref="T:System.Windows.Markup.XmlLanguage"/> to use for the associated Markup element 
+            </summary>
+            <returns>
+            The <see cref="T:System.Windows.Markup.XmlLanguage"/> corresponding to the current 
+            <see cref="P:Infralution.Localization.Wpf.CultureManager.UICulture"/> property value
+            </returns>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.UICultureExtension.MarkupManager">
+            <summary>
+            Return the MarkupManager for this extension
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.UICultureExtension.UpdateAllTargets">
+            <summary>
+            Use the Markup Manager to update all targets
+            </summary>
+        </member>
+        <member name="T:Infralution.Localization.Wpf.MarkupExtensionManager">
+            <summary>
+            Defines a class for managing <see cref="T:Infralution.Localization.Wpf.ManagedMarkupExtension"/> objects
+            </summary>
+            <remarks>
+            This class provides a single point for updating all markup targets that use the given Markup 
+            Extension managed by this class.   
+            </remarks>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.MarkupExtensionManager._extensions">
+            <summary>
+            List of active extensions
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.MarkupExtensionManager._cleanupCount">
+            <summary>
+            The number of extensions added since the last cleanup
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.MarkupExtensionManager._cleanupInterval">
+            <summary>
+            The interval at which to cleanup and remove extensions
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.MarkupExtensionManager.#ctor(System.Int32)">
+            <summary>
+            Create a new instance of the manager
+            </summary>
+            <param name="cleanupInterval">
+            The interval at which to cleanup and remove extensions associated with garbage
+            collected targets.  This specifies the number of new Markup Extensions that are
+            created before a cleanup is triggered
+            </param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.MarkupExtensionManager.UpdateAllTargets">
+            <summary>
+            Force the update of all active targets that use the markup extension
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.MarkupExtensionManager.ActiveExtensions">
+            <summary>
+            Return a list of the currently active extensions
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.MarkupExtensionManager.CleanupInactiveExtensions">
+            <summary>
+            Cleanup references to extensions for targets which have been garbage collected.
+            </summary>
+            <remarks>
+            This method is called periodically as new <see cref="T:Infralution.Localization.Wpf.ManagedMarkupExtension"/> objects 
+            are registered to release <see cref="T:Infralution.Localization.Wpf.ManagedMarkupExtension"/> objects which are no longer 
+            required (because their target has been garbage collected).  This method does
+            not need to be called externally, however it can be useful to call it prior to calling
+            GC.Collect to verify that objects are being garbage collected correctly.
+            </remarks>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.MarkupExtensionManager.RegisterExtension(Infralution.Localization.Wpf.ManagedMarkupExtension)">
+            <summary>
+            Register a new extension and remove extensions which reference target objects
+            that have been garbage collected
+            </summary>
+            <param name="extension">The extension to register</param>
+        </member>
+        <member name="T:Infralution.Localization.Wpf.ManagedMarkupExtension">
+            <summary>
+            Defines a base class for markup extensions which are managed by a central 
+            <see cref="T:Infralution.Localization.Wpf.MarkupExtensionManager"/>.   This allows the associated markup targets to be
+            updated via the manager.
+            </summary>
+            <remarks>
+            The ManagedMarkupExtension holds a weak reference to the target object to allow it to update 
+            the target.  A weak reference is used to avoid a circular dependency which would prevent the
+            target being garbage collected.  
+            </remarks>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ManagedMarkupExtension._targetObjects">
+            <summary>
+            List of weak reference to the target DependencyObjects to allow them to 
+            be garbage collected
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ManagedMarkupExtension._targetProperty">
+            <summary>
+            The target property 
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ManagedMarkupExtension.#ctor(Infralution.Localization.Wpf.MarkupExtensionManager)">
+            <summary>
+            Create a new instance of the markup extension
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ManagedMarkupExtension.ProvideValue(System.IServiceProvider)">
+            <summary>
+            Return the value for this instance of the Markup Extension
+            </summary>
+            <param name="serviceProvider">The service provider</param>
+            <returns>The value of the element</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ManagedMarkupExtension.RegisterTarget(System.IServiceProvider)">
+            <summary>
+            Called by <see cref="M:Infralution.Localization.Wpf.ManagedMarkupExtension.ProvideValue(System.IServiceProvider)"/> to register the target and object
+            using the extension.   
+            </summary>
+            <param name="serviceProvider">The service provider</param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ManagedMarkupExtension.UpdateTarget(System.Object)">
+            <summary>
+            Called by <see cref="M:Infralution.Localization.Wpf.ManagedMarkupExtension.UpdateTargets"/> to update each target referenced by the extension
+            </summary>
+            <param name="target">The target to update</param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ManagedMarkupExtension.UpdateTargets">
+            <summary>
+            Update the associated targets
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ManagedMarkupExtension.IsTarget(System.Object)">
+            <summary>
+            Is the given object the target for the extension 
+            </summary>
+            <param name="target">The target to check</param>
+            <returns>True if the object is one of the targets for this extension</returns>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ManagedMarkupExtension.IsTargetAlive">
+            <summary>
+            Is an associated target still alive ie not garbage collected
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ManagedMarkupExtension.IsInDesignMode">
+            <summary>
+            Returns true if a target attached to this extension is in design mode
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ManagedMarkupExtension.TargetObjects">
+            <summary>
+            Return the target objects the extension is associated with
+            </summary>
+            <remarks>
+            For normal elements their will be a single target.   For templates
+            their may be zero or more targets
+            </remarks>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ManagedMarkupExtension.TargetProperty">
+            <summary>
+            Return the Target Property the extension is associated with
+            </summary>
+            <remarks>
+            Can either be a <see cref="T:System.Windows.DependencyProperty"/> or <see cref="T:System.Reflection.PropertyInfo"/>
+            </remarks>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ManagedMarkupExtension.TargetPropertyType">
+            <summary>
+            Return the type of the Target Property
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ManagedMarkupExtension.GetValue">
+            <summary>
+            Return the value associated with the key from the resource manager
+            </summary>
+            <returns>The value from the resources if possible otherwise the default value</returns>
+        </member>
+        <member name="T:Infralution.Localization.Wpf.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.Properties.Resources.ExitDesignerMenu">
+            <summary>
+              Looks up a localized string similar to Reload Designer (Exit XDesProc).
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.Properties.Resources.OtherCulturesMenu">
+            <summary>
+              Looks up a localized string similar to Other Cultures....
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.Properties.Resources.UICultureIcon">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.Properties.Resources.UICultureSelectText">
+            <summary>
+              Looks up a localized string similar to Select WPF Design Time Culture.
+            </summary>
+        </member>
+        <member name="T:Infralution.Localization.Wpf.GetResourceHandler">
+            <summary>
+            Defines the handling method for the <see cref="E:Infralution.Localization.Wpf.ResxExtension.GetResource"/> event
+            </summary>
+            <param name="resxName">The name of the resx file</param>
+            <param name="key">The resource key within the file</param>
+            <param name="culture">The culture to get the resource for</param>
+            <returns>The resource</returns>
+        </member>
+        <member name="T:Infralution.Localization.Wpf.ResxExtension">
+            <summary>
+            A markup extension to allow resources for WPF Windows and controls to be retrieved
+            from an embedded resource (resx) file associated with the window or control
+            </summary>
+            <remarks>
+            Supports design time switching of the Culture via a Tray Notification icon. Loading
+            of culture specific satellite assemblies at design time (within the XDesProc designer
+            process) is done by probing the sub-directories associated with the running Visual Studio 
+            hosting process (*.vshost) for the latest matching assembly.  If you have disabled the
+            hosting process or are using Expression Blend then you can set the sub-directories to
+            search at design time by creating a string Value in the registry:
+            
+            HKEY_CURRENT_USER\Software\ResxExtension\AssemblyPath
+            
+            and set the value to a semi-colon delimited list of directories to search  
+            </remarks>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._resxName">
+            <summary>
+            The explicitly set embedded Resx Name (if any)
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._defaultResxName">
+            <summary>
+            The default resx name (based on the attached property)
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._key">
+            <summary>
+            The key used to retrieve the resource
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._defaultValue">
+            <summary>
+            The default value for the property
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._bindingTargetNullKey">
+            <summary>
+            The key used to retrieve the BindingTargetNullValue
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._resourceManager">
+            <summary>
+            The resource manager to use for this extension.  Holding a strong reference to the
+            Resource Manager keeps it in the cache while ever there are ResxExtensions that
+            are using it.
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._binding">
+            <summary>
+            The binding (if any) used to store the binding properties for the extension  
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._children">
+            <summary>
+            The child ResxExtensions (if any) when using MultiBinding expressions
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._resourceManagers">
+            <summary>
+            Cached resource managers
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._markupManager">
+            <summary>
+            The manager for resx extensions
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension._assemblyProbingPaths">
+            <summary>
+            The directories to probe for satellite assemblies when running inside the Visual Studio
+            designer process (XDesProc)
+            </summary>
+        </member>
+        <member name="E:Infralution.Localization.Wpf.ResxExtension.GetResource">
+            <summary>
+            This event allows a designer or preview application (such as Globalizer.NET) to
+            intercept calls to get resources and provide the values instead dynamically
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.#ctor">
+            <summary>
+            Create a new instance of the markup extension
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.#ctor(System.String)">
+            <summary>
+            Create a new instance of the markup extension
+            </summary>
+            <param name="key">The key used to get the value from the resources</param>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.ResxName">
+            <summary>
+            The fully qualified name of the embedded resx (without .resources) to get
+            the resource from
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.Key">
+            <summary>
+            The name of the resource key
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.DefaultValue">
+            <summary>
+            The default value to use if the resource can't be found
+            </summary>
+            <remarks>
+            This particularly useful for properties which require non-null
+            values because it allows the page to be displayed even if
+            the resource can't be loaded
+            </remarks>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.Children">
+            <summary>
+            The child Resx elements (if any) 
+            </summary>
+            <remarks>
+            You can nest Resx elements in this case the parent Resx element
+            value is used as a format string to format the values from child Resx
+            elements similar to a <see cref="T:System.Windows.Data.MultiBinding"/> eg If a Resx has two 
+            child elements then you 
+            </remarks>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.Binding">
+            <summary>
+            Return the associated binding for the extension
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingElementName">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.ElementName"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingPath">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.Path"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingRelativeSource">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.RelativeSource"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingSource">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.Source"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingXPath">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.XPath"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingConverter">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.Converter"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingGroupName">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.BindingBase.BindingGroupName"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingConverterCulture">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.ConverterCulture"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingConverterParameter">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.ConverterParameter"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindsDirectlyToSource">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.BindsDirectlyToSource"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingMode">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.Mode"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingNotifyOnSourceUpdated">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.NotifyOnSourceUpdated"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingNotifyOnTargetUpdated">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.NotifyOnTargetUpdated"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingNotifyOnValidationError">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.NotifyOnValidationError"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingAsyncState">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.AsyncState"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingIsAsync">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.IsAsync"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingFallbackValue">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.BindingBase.FallbackValue"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingTargetNullValue">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.BindingBase.TargetNullValue"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingTargetNullKey">
+            <summary>
+            Supply a Resx key to set the BindingTargetNullValue
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingValidatesOnDataErrors">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.ValidatesOnDataErrors"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingValidatesOnExceptions">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.ValidatesOnExceptions"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingUpdateSourceTrigger">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.UpdateSourceTrigger"/>.
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.BindingValidationRules">
+            <summary>
+            Use the Resx value to format bound data.  See <see cref="P:System.Windows.Data.Binding.ValidationRules"/>.
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.ProvideValue(System.IServiceProvider)">
+            <summary>
+            Return the value for this instance of the Markup Extension
+            </summary>
+            <param name="serviceProvider">The service provider</param>
+            <returns>The value of the element</returns>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.MarkupManager">
+            <summary>
+            Return the MarkupManager for this extension
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.UpdateAllTargets">
+            <summary>
+            Use the Markup Manager to update all targets
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.UpdateTarget(System.String)">
+            <summary>
+            Update the ResxExtension target with the given key
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.ResxExtension.DefaultResxNameProperty">
+            <summary>
+            The ResxName attached property
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.GetDefaultResxName(System.Windows.DependencyObject)">
+            <summary>
+            Get the DefaultResxName attached property for the given target
+            </summary>
+            <param name="target">The Target object</param>
+            <returns>The name of the Resx</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.SetDefaultResxName(System.Windows.DependencyObject,System.String)">
+            <summary>
+            Set the DefaultResxName attached property for the given target
+            </summary>
+            <param name="target">The Target object</param>
+            <param name="value">The name of the Resx</param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.#cctor">
+            <summary>
+            Class constructor
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.GetProcessFilepath(System.Int32)">
+            <summary>
+            Return the file path associated with the main module of the given process ID
+            </summary>
+            <param name="processId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.OnAssemblyResolve(System.Object,System.ResolveEventArgs)">
+            <summary>
+            Resolve satellite assemblies when running inside the Visual Studio designer (XDesProc)
+            process
+            </summary>
+            <param name="sender"></param>
+            <param name="args"></param>
+            <returns>The assembly if found</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.GetCulture(System.String)">
+            <summary>
+            Convert a culture name to a CultureInfo - without exceptions if the name is bad
+            </summary>
+            <param name="name">The name of the culture</param>
+            <returns>The culture if the name was valid, or else null</returns>
+            <remarks>The CultureInfo constructor throws an exception</remarks>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.GetDesignTimeCultures">
+            <summary>
+            Return a list of the current design time cultures
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.CreateBinding">
+            <summary>
+            Create a binding for this Resx Extension
+            </summary>
+            <returns>A binding for this Resx Extension</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.CreateMultiBinding">
+            <summary>
+            Create new MultiBinding that binds to the child Resx Extensioins
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.IsBindingExpression">
+            <summary>
+            Have any of the binding properties been set
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.IsMultiBindingParent">
+            <summary>
+            Is this ResxExtension being used as a multi-binding parent
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.ResxExtension.IsMultiBindingChild">
+            <summary>
+            Is this ResxExtension being used inside another Resx Extension for multi-binding
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.GetLocalizedResource(System.String)">
+            <summary>
+            Return the localized resource given a resource Key
+            </summary>
+            <param name="resourceKey">The resourceKey</param>
+            <returns>The value for the current UICulture</returns>
+            <remarks>Calls GetResource event first then if not handled uses the resource manager</remarks>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.GetValue">
+            <summary>
+            Return the value for the markup extension
+            </summary>
+            <returns>The value from the resources if possible otherwise the default value</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.UpdateTarget(System.Object)">
+            <summary>
+            Update the given target when the culture changes
+            </summary>
+            <param name="target">The target to update</param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.HasEmbeddedResx(System.Reflection.Assembly,System.String)">
+            <summary>
+            Check if the assembly contains an embedded resx of the given name
+            </summary>
+            <param name="assembly">The assembly to check</param>
+            <param name="resxName">The name of the resource we are looking for</param>
+            <returns>True if the assembly contains the resource</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.FindResourceAssembly">
+            <summary>
+            Find the assembly that contains the type
+            </summary>
+            <returns>The assembly if loaded (otherwise null)</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.GetResourceManager(System.String)">
+            <summary>
+            Get the resource manager for this type
+            </summary>
+            <param name="resxName">The name of the embedded resx</param>
+            <returns>The resource manager</returns>
+            <remarks>Caches resource managers to improve performance</remarks>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.ConvertValue(System.Object)">
+            <summary>
+            Convert a resource object to the type required by the WPF element
+            </summary>
+            <param name="value">The resource value to convert</param>
+            <returns>The WPF element value</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.GetDefaultValue(System.String)">
+            <summary>
+            Return the default value for the property
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.ResxExtension.OnDefaultResxNamePropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Handle a change to the attached DefaultResxName property
+            </summary>
+            <param name="element">the dependency object (a WPF element)</param>
+            <param name="args">the dependency property changed event arguments</param>
+            <remarks>In design mode update the extension with the correct ResxName</remarks>
+        </member>
+        <member name="T:Infralution.Localization.Wpf.CultureManager">
+            <summary>
+            Provides the ability to change the UICulture for WPF Windows and controls
+            dynamically.  
+            </summary>
+            <remarks>
+            XAML elements that use the <see cref="T:Infralution.Localization.Wpf.ResxExtension"/> are automatically
+            updated when the <see cref="P:Infralution.Localization.Wpf.CultureManager.UICulture"/> property is changed.
+            </remarks>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.CultureManager._uiCulture">
+            <summary>
+            Current UICulture of the application
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.CultureManager._cultureSelectWindow">
+            <summary>
+            The active design time culture selection window (if any)
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.CultureManager._notifyIcon">
+            <summary>
+            The active task bar notify icon for design time culture selection (if any)
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.CultureManager._notifyIconHandle">
+            <summary>
+            The window handle for the notify icon
+            </summary>
+        </member>
+        <member name="F:Infralution.Localization.Wpf.CultureManager._synchronizeThreadCulture">
+            <summary>
+            Should the <see cref="P:System.Threading.Thread.CurrentCulture"/> be changed when the
+            <see cref="P:Infralution.Localization.Wpf.CultureManager.UICulture"/> changes.
+            </summary>
+        </member>
+        <member name="E:Infralution.Localization.Wpf.CultureManager.UICultureChanged">
+            <summary>
+            Raised when the <see cref="P:Infralution.Localization.Wpf.CultureManager.UICulture"/> is changed
+            </summary>
+            <remarks>
+            Since this event is static if the client object does not detach from the event a reference
+            will be maintained to the client object preventing it from being garbage collected - thus
+            causing a potential memory leak. 
+            </remarks>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.CultureManager.UICulture">
+            <summary>
+            Sets the UICulture for the WPF application and raises the <see cref="E:Infralution.Localization.Wpf.CultureManager.UICultureChanged"/>
+            event causing any XAML elements using the <see cref="T:Infralution.Localization.Wpf.ResxExtension"/> to automatically
+            update
+            </summary>
+        </member>
+        <member name="P:Infralution.Localization.Wpf.CultureManager.SynchronizeThreadCulture">
+            <summary>
+            If set to true then the <see cref="P:System.Threading.Thread.CurrentCulture"/> property is changed
+            to match the current <see cref="P:Infralution.Localization.Wpf.CultureManager.UICulture"/>
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.SetThreadCulture(System.Globalization.CultureInfo)">
+            <summary>
+            Set the thread culture to the given culture
+            </summary>
+            <param name="value">The culture to set</param>
+            <remarks>If the culture is neutral then creates a specific culture</remarks>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.ShowCultureNotifyIcon">
+            <summary>
+            Show the UICultureSelector to allow selection of the active UI culture
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.OnDesignerExit(System.Object,System.EventArgs)">
+            <summary>
+            Remove the culture notify icon when the designer process exits
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.DisplayCultureSelectWindow">
+            <summary>
+            Display the CultureSelectWindow to allow the user to select the UICulture
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.CultureMenuExists(System.Globalization.CultureInfo)">
+            <summary>
+            Is there already an entry for the culture in the context menu
+            </summary>
+            <param name="culture">The culture to check</param>
+            <returns>True if there is a menu</returns>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.AddCultureMenuItem(System.Globalization.CultureInfo)">
+            <summary>
+            Add a menu item to the NotifyIcon for the current UICulture
+            </summary>
+            <param name="culture"></param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.OnMenuStripOpening(System.Object,System.ComponentModel.CancelEventArgs)">
+            <summary>
+            Update the notify icon menu
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.OnCultureNotifyIconMouseClick(System.Object,System.Windows.Forms.MouseEventArgs)">
+            <summary>
+            Display the context menu for left clicks (right clicks are handled automatically)
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.OnCultureNotifyIconMouseDoubleClick(System.Object,System.Windows.Forms.MouseEventArgs)">
+            <summary>
+            Display the CultureSelectWindow when the user double clicks on the NotifyIcon
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.OnCultureSelectMenuClick(System.Object,System.EventArgs)">
+            <summary>
+            Display the CultureSelectWindow when the user selects the menu option
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.OnExitDesignerMenuClick(System.Object,System.EventArgs)">
+            <summary>
+            Exit the designer process
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.OnCultureMenuCheckChanged(System.Object,System.EventArgs)">
+            <summary>
+            Handle change of culture via the NotifyIcon menu
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureManager.OnCultureSelectWindowClosed(System.Object,System.EventArgs)">
+            <summary>
+            Handle close of the culture select window
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:Infralution.Localization.Wpf.CultureSelectWindow">
+            <summary>
+            Window that allows the user to select the culture to use at design time
+            </summary>
+            <summary>
+            CultureSelectWindow
+            </summary>
+        </member>
+        <member name="T:Infralution.Localization.Wpf.CultureSelectWindow.CultureInfoComparer">
+            <summary>
+            Handle sorting Culture Info
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureSelectWindow.#ctor">
+            <summary>
+            Create a new instance of the window
+            </summary>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureSelectWindow._cultureCombo_SelectionChanged(System.Object,System.Windows.Controls.SelectionChangedEventArgs)">
+            <summary>
+            Set the CultureManager.UICulture
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Infralution.Localization.Wpf.CultureSelectWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -37,7 +37,7 @@ namespace Rubberduck.UI.Refactorings
             this.InstructionsLabel = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelDialogButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
             this.InvalidNameValidationIcon = new System.Windows.Forms.PictureBox();
             this.NewNameBox = new System.Windows.Forms.TextBox();
@@ -65,7 +65,7 @@ namespace Rubberduck.UI.Refactorings
             this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TitleLabel.Location = new System.Drawing.Point(12, 9);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.TitleLabel.Size = new System.Drawing.Size(126, 19);
             this.TitleLabel.TabIndex = 4;
             this.TitleLabel.Text = "Rename identifier";
@@ -75,7 +75,7 @@ namespace Rubberduck.UI.Refactorings
             this.InstructionsLabel.AutoSize = true;
             this.InstructionsLabel.Location = new System.Drawing.Point(9, 30);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.InstructionsLabel.Size = new System.Drawing.Size(174, 21);
             this.InstructionsLabel.TabIndex = 5;
             this.InstructionsLabel.Text = "Please specify new name for \'{0}\'.";
@@ -93,7 +93,7 @@ namespace Rubberduck.UI.Refactorings
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.flowLayoutPanel2.Controls.Add(this.CancelButton);
+            this.flowLayoutPanel2.Controls.Add(this.CancelDialogButton);
             this.flowLayoutPanel2.Controls.Add(this.OkButton);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
@@ -103,16 +103,16 @@ namespace Rubberduck.UI.Refactorings
             this.flowLayoutPanel2.Size = new System.Drawing.Size(513, 43);
             this.flowLayoutPanel2.TabIndex = 2;
             // 
-            // CancelButton
+            // CancelDialogButton
             // 
-            this.CancelButton.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(427, 11);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 0;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = false;
+            this.CancelDialogButton.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.CancelDialogButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelDialogButton.Location = new System.Drawing.Point(427, 11);
+            this.CancelDialogButton.Name = "CancelDialogButton";
+            this.CancelDialogButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelDialogButton.TabIndex = 2;
+            this.CancelDialogButton.Text = "Cancel";
+            this.CancelDialogButton.UseVisualStyleBackColor = false;
             // 
             // OkButton
             // 
@@ -140,7 +140,7 @@ namespace Rubberduck.UI.Refactorings
             this.NewNameBox.Location = new System.Drawing.Point(57, 79);
             this.NewNameBox.Name = "NewNameBox";
             this.NewNameBox.Size = new System.Drawing.Size(445, 20);
-            this.NewNameBox.TabIndex = 12;
+            this.NewNameBox.TabIndex = 0;
             // 
             // NameLabel
             // 
@@ -156,7 +156,7 @@ namespace Rubberduck.UI.Refactorings
             this.AcceptButton = this.OkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.CancelButton;
+            this.CancelButton = this.CancelDialogButton;
             this.ClientSize = new System.Drawing.Size(513, 170);
             this.Controls.Add(this.InvalidNameValidationIcon);
             this.Controls.Add(this.NewNameBox);
@@ -168,9 +168,9 @@ namespace Rubberduck.UI.Refactorings
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "RenameDialog";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Rubberduck - Rename";
-            this.TopMost = true;
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -186,7 +186,7 @@ namespace Rubberduck.UI.Refactorings
         private Panel panel1;
         private Panel panel2;
         private FlowLayoutPanel flowLayoutPanel2;
-        private Button CancelButton;
+        private Button CancelDialogButton;
         private Button OkButton;
         private PictureBox InvalidNameValidationIcon;
         private TextBox NewNameBox;

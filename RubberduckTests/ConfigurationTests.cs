@@ -1,5 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Config;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Settings;
 
 namespace RubberduckTests
 {
@@ -9,33 +14,37 @@ namespace RubberduckTests
         [TestMethod]
         public void GetDefaultTodoMarkersTest()
         {
-            var configService = new ConfigurationLoader();
+            var settings = new ToDoListSettings();
 
-            ToDoMarker[] markers = configService.GetDefaultTodoMarkers();
-            Assert.AreEqual("NOTE:", markers[0].Text,"Note failed to load.");
-            Assert.AreEqual("TODO:", markers[1].Text,"Todo failed to load.");
-            Assert.AreEqual("BUG:", markers[2].Text,"Bug failed to load.");
+            ToDoMarker[] markers = settings.ToDoMarkers;
+            Assert.AreEqual("NOTE", markers[0].Text.Trim(),"Note failed to load.");
+            Assert.AreEqual("TODO", markers[1].Text.Trim(),"Todo failed to load.");
+            Assert.AreEqual("BUG" , markers[2].Text.Trim(),"Bug failed to load.");
         }
 
         [TestMethod]
-        public void ToDoMarkersTextIsNotNull()
+        public void DefaultCodeInspectionsIsAsSpecified()
         {
-            var configService = new ConfigurationLoader();
-            ToDoMarker[] markers = configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
+            var inspection = new Mock<IInspection>();
+            inspection.SetupGet(m => m.Description).Returns("TestInspection");
+            inspection.SetupGet(m => m.Name).Returns("TestInspection");
+            inspection.SetupGet(m => m.Severity).Returns(CodeInspectionSeverity.DoNotShow);
 
-            foreach (var marker in markers)
-            {
-                Assert.IsNotNull(marker.Text);
-            }
+            var expected = new[] { inspection.Object };
+            var actual = new CodeInspectionSettings(new HashSet<CodeInspectionSetting> {new CodeInspectionSetting(inspection.Object)}, new WhitelistedIdentifierSetting[] {}, true).CodeInspections;
+
+            Assert.AreEqual(expected.Length, actual.Count);
+            Assert.AreEqual(inspection.Object.Name, actual.First().Name);
+            Assert.AreEqual(inspection.Object.Severity, actual.First().Severity);
         }
 
         [TestMethod]
-        public void DefaultCodeInspectionsIsNotNull()
+        public void ToStringIsAsExpected()
         {
-            var configService = new ConfigurationLoader();
-            var config = configService.GetDefaultCodeInspections();
+            var expected = "FixMe:";
+            var marker = new ToDoMarker(expected);
 
-            Assert.IsNotNull(config);
+            Assert.AreEqual(expected, marker.ToString());
         }
     }
 }

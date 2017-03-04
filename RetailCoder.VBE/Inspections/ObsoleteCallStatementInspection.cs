@@ -1,43 +1,76 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteCallStatementInspection : IInspection
+    public sealed class ObsoleteCallStatementInspection : InspectionBase, IParseTreeInspection<VBAParser.CallStmtContext>
     {
-        public ObsoleteCallStatementInspection()
+        private IEnumerable<QualifiedContext> _parseTreeResults;
+
+        public ObsoleteCallStatementInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return RubberduckUI.ObsoleteCall; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.ObsoleteCallStatementInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ObsoleteCallStatementInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<QualifiedContext<VBAParser.CallStmtContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.CallStmtContext>>(); } }
+        public void SetResults(IEnumerable<QualifiedContext> results) { _parseTreeResults = results; } 
+
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            //note: this misses calls to procedures/functions without a Declaration object.
-            // alternative is to walk the tree and listen for "CallStmt".
+            if (ParseTreeResults == null)
+            {
+                return new InspectionResultBase[] { };
+            }
 
-            var calls = (from declaration in parseResult.Declarations.Items
-                from reference in declaration.References
-                where (reference.Declaration.DeclarationType == DeclarationType.Function
-                       || reference.Declaration.DeclarationType == DeclarationType.Procedure)
-                      && reference.HasExplicitCallStatement()
-                select reference).ToList();
+            var results = new List<ObsoleteCallStatementUsageInspectionResult>();
 
-            var issues = from reference in calls
-                let context = reference.Context.Parent.Parent as VBAParser.ExplicitCallStmtContext
-                where context != null
-                let qualifiedContext = new QualifiedContext<VBAParser.ExplicitCallStmtContext>
-                    (reference.QualifiedModuleName, (VBAParser.ExplicitCallStmtContext)reference.Context.Parent.Parent)
-                select new ObsoleteCallStatementUsageInspectionResult(Name, Severity, qualifiedContext);
+            foreach (var context in ParseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line)))
+            {
+                var module = context.ModuleName.Component.CodeModule;
+                {
+                    var lines = module.GetLines(context.Context.Start.Line, context.Context.Stop.Line - context.Context.Start.Line + 1);
 
-            return issues;
+                    var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
+
+                    int commentIndex;
+                    if (stringStrippedLines.HasComment(out commentIndex))
+                    {
+                        stringStrippedLines = stringStrippedLines.Remove(commentIndex);
+                    }
+
+                    if (!stringStrippedLines.Contains(":"))
+                    {
+                        results.Add(new ObsoleteCallStatementUsageInspectionResult(this,
+                                new QualifiedContext<VBAParser.CallStmtContext>(context.ModuleName, context.Context)));
+                    }
+                }
+            }
+
+            return results;
+        }
+
+        public class ObsoleteCallStatementListener : VBAParserBaseListener
+        {
+            private readonly IList<VBAParser.CallStmtContext> _contexts = new List<VBAParser.CallStmtContext>();
+            public IEnumerable<VBAParser.CallStmtContext> Contexts { get { return _contexts; } }
+
+            public override void ExitCallStmt(VBAParser.CallStmtContext context)
+            {
+                if (context.CALL() != null)
+                {
+                    _contexts.Add(context);
+                }
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Rubberduck.SourceControl.Interop
 
         [DispId(3)]
         [Description("Clones a remote repository to the local file system.")]
-        IRepository Clone(string remotePathOrUrl, string workingDirectory);
+        IRepository Clone(string remotePathOrUrl, string workingDirectory, Credentials credentials = null);
 
         [DispId(4)]
         [Description("Creates a new repository in/from the specified directory.")]
@@ -75,7 +75,7 @@ namespace Rubberduck.SourceControl.Interop
 
         [DispId(16)]
         [Description("Removes file from tracking.")]
-        void RemoveFile(string filePath);
+        void RemoveFile(string filePath, bool removeFromWorkingDirectory);
 
         [DispId(17)]
         [Description("Returns a collection of file status entries.\n Semantically the same as calling $git status.")]

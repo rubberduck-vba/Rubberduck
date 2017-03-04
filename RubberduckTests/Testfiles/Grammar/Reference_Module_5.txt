@@ -1,0 +1,44 @@
+Attribute VB_Name = "fnInfoErrMsgPri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|fnInfoErrMsgPri"
+
+Dim mvNumber As Long
+Dim mvDescription As String
+Public pvSource As String
+Public pvThisCellAddress As String
+
+Public Function SetErrMsg(XlCVError As Excel.XlCVError, Description As String) As Variant
+    Const ThisProcedure As String = ThisModule & "|SetErrMsg|Function"
+    mvNumber = XlCVError
+    mvDescription = Description
+    'pvThisCellAddress = Application.ThisCell.Address
+    SetErrMsg = VBA.CVErr(XlCVError)
+End Function
+
+Public Function DescriptionItemByNameDoesNotExist(Collection As Object _
+                                                , ItemName As String _
+                                                )
+    Const ThisProcedure As String = ThisModule & "|DescriptionItemByNameDoesNotExist|Function"
+    DescriptionItemByNameDoesNotExist = VBA.TypeName(VarName:=Collection) _
+                                      & "(""" & ItemName & """) does not exist"
+End Function
+
+Public Property Get Description() As String
+    Const ThisProcedure As String = ThisModule & "|Description|Property Get"
+    Description = mvDescription
+End Property
+Public Property Let Description(pvDescription As String)
+    Const ThisProcedure As String = ThisModule & "|Description|Property Let"
+    mvDescription = pvDescription
+End Property
+
+Public Property Get Number() As Long
+    Const ThisProcedure As String = ThisModule & "|Number|Property Get"
+    Number = mvNumber
+End Property
+Public Property Let Number(pvNumber As Long)
+    Const ThisProcedure As String = ThisModule & "|Number|Property Let"
+    mvNumber = pvNumber
+End Property

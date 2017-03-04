@@ -1,0 +1,252 @@
+﻿<TabItem x:Class="Rubberduck.UI.SourceControl.ChangesView"
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+         xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
+         xmlns:core="clr-namespace:System;assembly=mscorlib"
+         xmlns:converters="clr-namespace:Rubberduck.UI.SourceControl.Converters"
+         xmlns:converters1="clr-namespace:Rubberduck.UI.Settings.Converters"
+         mc:Ignorable="d"
+         Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Changes}"
+         d:DesignHeight="500" d:DesignWidth="300"
+         d:DataContext="{d:DesignInstance {x:Type sourceControl:ChangesViewViewModel}, IsDesignTimeCreatable=False}">
+    <TabItem.Resources>
+        <BitmapImage x:Key="CheckImage" UriSource="../../Resources/tick.png" />
+        <BitmapImage x:Key="UndoImage" UriSource="../../Resources/arrow-circle-left.png" />
+        <BitmapImage x:Key="AddImage" UriSource="../../Resources/plus-circle.png" />
+
+        <converters:CommitActionsToTextConverter x:Key="CommitActionToText" />
+        <converters:CommitActionTextToEnum x:Key="CommitActionValueToEnum" />
+        <converters:ChangeTypesToTextConverter x:Key="ChangeTypesToText" />
+        <converters1:SelectedItemToBooleanConverter x:Key="HasSelectedItems" />
+        
+        <ObjectDataProvider x:Key="CommitActions"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="sourceControl:CommitAction"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
+            <Setter Property="BorderThickness" Value="0,.5,0,0" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Setter Property="Height" Value="26" />
+            <Setter Property="TextBlock.FontWeight" Value="Normal" />
+            <Setter Property="Padding" Value="20,0,0,0" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderThickness" Value="1.5" />
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                </MultiTrigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type DataGrid}" x:Key="PrettyGrid">
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="CanUserReorderColumns" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="SelectionMode" Value="Single" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="HorizontalGridLinesBrush" Value="Transparent" />
+            <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource PrettifyRow}" />
+            <Setter Property="ColumnHeaderHeight" Value="22" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </TabItem.Resources>
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CurrentBranchLabel}"/>
+                    <TextBlock Text="{Binding CurrentBranch}"
+                               FontWeight="SemiBold"
+                               Margin="0,5,0,0" />
+                </StackPanel>
+
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CommitMessageLabel}" />
+                <TextBox Margin="5,0"
+                         Height="50"
+                         Text="{Binding CommitMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="WrapWithOverflow"
+                         ScrollViewer.CanContentScroll="True"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Margin="5,10"
+                              SelectedItem="{Binding CommitAction, Mode=TwoWay, Converter={StaticResource CommitActionValueToEnum}, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding Source={StaticResource CommitActions}, Converter={StaticResource CommitActionToText}}"
+                              VerticalContentAlignment="Center" />
+                    <Button Margin="5,10"
+                            Grid.Column="1"
+                            Command="{Binding CommitCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{StaticResource CheckImage}"
+                                   Margin="5,0" />
+                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CommitButtonLabel}"
+                                       Margin="0,0,5,0"
+                                       VerticalAlignment="Center"  />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncludedChanges}"
+                          Height="135"
+                          Margin="0,0,0,10"
+                          Padding="5">
+                    <DockPanel>
+                        <ToolBarTray DockPanel.Dock="Top"
+                                     IsLocked="True"
+                                     Background="Transparent">
+                            <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
+                                     Background="Transparent">
+                                <Button Command="{Binding UndoChangesToolbarButtonCommand}"
+                                        CommandParameter="{Binding ElementName=IncludedChangesGrid, Path=SelectedItem}"
+                                        IsEnabled="{Binding ElementName=IncludedChangesGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        Height="22">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{StaticResource UndoImage}" />
+                                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UndoChangesButton}"
+                                               Margin="2,0"
+                                               VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding ExcludeChangesToolbarButtonCommand}"
+                                        CommandParameter="{Binding ElementName=IncludedChangesGrid, Path=SelectedItem}"
+                                        IsEnabled="{Binding ElementName=IncludedChangesGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_ExcludeFileButton}"
+                                        Height="22" />
+                            </ToolBar>
+                        </ToolBarTray>
+                        <DataGrid ItemsSource="{Binding IncludedChanges}"
+                                  Style="{StaticResource PrettyGrid}"
+                                  Name="IncludedChangesGrid">
+                            <DataGrid.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}">
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </DataGrid.CellStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding FilePath}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FilePath}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding FileStatus, Converter={StaticResource ChangeTypesToText}}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </GroupBox>
+                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_ExcludedChanges}"
+                          Height="135"
+                          Margin="0,0,0,10"
+                          Padding="5">
+                    <DockPanel>
+                        <ToolBarTray DockPanel.Dock="Top"
+                                     IsLocked="True"
+                                     Background="Transparent">
+                            <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
+                                     Background="Transparent">
+                                <Button Command="{Binding UndoChangesToolbarButtonCommand}"
+                                        CommandParameter="{Binding ElementName=ExcludedChangesGrid, Path=SelectedItem}"
+                                        IsEnabled="{Binding ElementName=ExcludedChangesGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        Height="22">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{StaticResource UndoImage}" />
+                                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UndoChangesButton}"
+                                               Margin="2,0"
+                                               VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding IncludeChangesToolbarButtonCommand}"
+                                        CommandParameter="{Binding ElementName=ExcludedChangesGrid, Path=SelectedItem}"
+                                        IsEnabled="{Binding ElementName=ExcludedChangesGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncludeFileButton}"
+                                        Height="22" />
+                            </ToolBar>
+                        </ToolBarTray>
+                        <DataGrid ItemsSource="{Binding ExcludedChanges}"
+                                  Style="{StaticResource PrettyGrid}"
+                                  Name="ExcludedChangesGrid">
+                            <DataGrid.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}">
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </DataGrid.CellStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding FilePath}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FilePath}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding FileStatus, Converter={StaticResource ChangeTypesToText}}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </GroupBox>
+                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UntrackedFiles}"
+                          Height="135"
+                          Padding="5">
+                    <DockPanel>
+                        <ToolBarTray DockPanel.Dock="Top"
+                                     IsLocked="True"
+                                     Background="Transparent">
+                            <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
+                                     Background="Transparent">
+                                <Button Command="{Binding IncludeChangesToolbarButtonCommand}"
+                                        CommandParameter="{Binding ElementName=UntrackFilesGrid, Path=SelectedItem}"
+                                        IsEnabled="{Binding ElementName=UntrackFilesGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        Height="22">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{StaticResource AddImage}" />
+                                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncludeFileButton}"
+                                                   Margin="2,0"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </ToolBar>
+                        </ToolBarTray>
+                        <DataGrid ItemsSource="{Binding UntrackedFiles}"
+                                  Style="{StaticResource PrettyGrid}"
+                                  Name="UntrackFilesGrid">
+                            <DataGrid.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}">
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </DataGrid.CellStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding FilePath}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FilePath}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding FileStatus, Converter={StaticResource ChangeTypesToText}}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</TabItem>

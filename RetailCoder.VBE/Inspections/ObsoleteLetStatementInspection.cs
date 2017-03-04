@@ -1,31 +1,56 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteLetStatementInspection : IInspection
+    public sealed class ObsoleteLetStatementInspection : InspectionBase, IParseTreeInspection<VBAParser.LetStmtContext>
     {
-        public ObsoleteLetStatementInspection()
+        private IEnumerable<QualifiedContext> _results;
+
+        public ObsoleteLetStatementInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return RubberduckUI.ObsoleteLet; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.ObsoleteLetStatementInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ObsoleteLetStatementInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
+        public IEnumerable<QualifiedContext<VBAParser.LetStmtContext>> ParseTreeResults { get { return _results.OfType<QualifiedContext<VBAParser.LetStmtContext>>(); } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public void SetResults(IEnumerable<QualifiedContext> results)
         {
-            var issues = parseResult.Declarations.Items
-                .Where(item => !item.IsBuiltIn)
-                .SelectMany(item =>
-                item.References.Where(reference => reference.HasExplicitLetStatement))
-                .Select(issue => new ObsoleteLetStatementUsageInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(issue.QualifiedModuleName, issue.Context)));
+            _results = results;
+        }
 
-            return issues;
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        {
+            if (ParseTreeResults == null)
+            {
+                return new InspectionResultBase[] { };
+            }
+            return ParseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
+                .Select(context => new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
+        }
+
+        public class ObsoleteLetStatementListener : VBAParserBaseListener
+        {
+            private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
+            public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
+
+            public override void ExitLetStmt(VBAParser.LetStmtContext context)
+            {
+                if (context.LET() != null)
+                {
+                    _contexts.Add(context);
+                }
+            }
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Rubberduck.Common.WinAPI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.WindowsApi;
+using User32 = Rubberduck.Common.WinAPI.User32;
 
 namespace Rubberduck.UI
 {
@@ -22,13 +24,26 @@ namespace Rubberduck.UI
         private const string ProgId = "Rubberduck.UI.DockableWindowHost";
         public static string RegisteredProgId { get { return ProgId; } }
 
+        // ReSharper disable UnusedAutoPropertyAccessor.Local
         [StructLayout(LayoutKind.Sequential)]
         private struct Rect
-        {
-            public int Left { get; set; }
+        {            
+            public int Left { get; set; }           
             public int Top { get; set; }
             public int Right { get; set; }
             public int Bottom { get; set; }
+        }
+        // ReSharper restore UnusedAutoPropertyAccessor.Local
+
+        [StructLayout(LayoutKind.Explicit)]
+        private struct LParam
+        {
+            [FieldOffset(0)]
+            public uint Value;
+            [FieldOffset(0)]
+            public readonly ushort LowWord;
+            [FieldOffset(2)]
+            public readonly ushort HighWord;
         }
 
         [DllImport("User32.dll")]
@@ -38,25 +53,41 @@ namespace Rubberduck.UI
         static extern int GetClientRect(IntPtr hWnd, ref Rect lpRect);
 
         private IntPtr _parentHandle;
-        private SubClassingWindow _subClassingWindow;
+        private ParentWindow _subClassingWindow;
+        private GCHandle _thisHandle;
 
-        internal void AddUserControl(UserControl control)
+        internal void AddUserControl(UserControl control, IntPtr vbeHwnd)
         {
             _parentHandle = GetParent(Handle);
-            _subClassingWindow = new SubClassingWindow(_parentHandle);
+            _subClassingWindow = new ParentWindow(vbeHwnd, new IntPtr(GetHashCode()), _parentHandle);
             _subClassingWindow.CallBackEvent += OnCallBackEvent;
+
+            //DO NOT REMOVE THIS CALL. Dockable windows are instantiated by the VBE, not directly by RD.  On top of that,
+            //since we have to inherit from UserControl we don't have to keep handling window messages until the VBE gets
+            //around to destroying the control's host or it results in an access violation when the base class is disposed.
+            //We need to manually call base.Dispose() ONLY in response to a WM_DESTROY message.
+            _thisHandle = GCHandle.Alloc(this, GCHandleType.Normal);
 
             if (control != null)
             {
-            control.Dock = DockStyle.Fill;
-            Controls.Add(control);
+                control.Dock = DockStyle.Fill;
+                Controls.Add(control);
             }
             AdjustSize();
         }
 
         private void OnCallBackEvent(object sender, SubClassingWindowEventArgs e)
         {
-            AdjustSize();
+            if (!e.Closing)
+            {
+                var param = new LParam {Value = (uint) e.LParam};
+                Size = new Size(param.LowWord, param.HighWord);
+            }
+            else
+            {
+                _subClassingWindow.CallBackEvent -= OnCallBackEvent;
+                _subClassingWindow.Dispose();
+            }
         }
 
         private void AdjustSize()
@@ -110,39 +141,58 @@ namespace Rubberduck.UI
             return result;
         }
 
+        protected override void DefWndProc(ref Message m)
+        {
+            //See the comment in the ctor for why we have to listen for this.
+            if (m.Msg == (int) WM.DESTROY)
+            {
+                _thisHandle.Free();
+            }
+            base.DefWndProc(ref m);
+        }
+
         [ComVisible(false)]
-        public class SubClassingWindow : NativeWindow
+        public class ParentWindow : SubclassingWindow
         {
             public event SubClassingWindowEventHandler CallBackEvent;
             public delegate void SubClassingWindowEventHandler(object sender, SubClassingWindowEventArgs e);
 
+            private readonly IntPtr _vbeHwnd;
+
             private void OnCallBackEvent(SubClassingWindowEventArgs e)
             {
-                Debug.Assert(CallBackEvent != null, "CallBackEvent != null");
-                CallBackEvent(this, e);
+                if (CallBackEvent != null)
+                {
+                    CallBackEvent(this, e);
+                }
             }
             
-            public SubClassingWindow(IntPtr handle)
+            public ParentWindow(IntPtr vbeHwnd, IntPtr id, IntPtr handle) : base(id, handle)
             {
-                AssignHandle(handle);
+                _vbeHwnd = vbeHwnd;
             }
 
-            protected override void WndProc(ref Message msg)
+            private bool _closing;
+            public override int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
             {
-                const int wmSize = 0x5;
-
-                if (msg.Msg == wmSize)
+                switch ((uint)msg)
                 {
-                    var args = new SubClassingWindowEventArgs(msg);
-                    OnCallBackEvent(args);
+                    case (uint)WM.SIZE:
+                        var args = new SubClassingWindowEventArgs(lParam);
+                        if (!_closing) OnCallBackEvent(args);
+                        break;
+                    case (uint)WM.SETFOCUS:
+                        if (!_closing) User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Hwnd, Hwnd);
+                        break;
+                    case (uint)WM.KILLFOCUS:
+                        if (!_closing) User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Hwnd, IntPtr.Zero);
+                        break;
+                    case (uint)WM.RUBBERDUCK_SINKING:
+                        OnCallBackEvent(new SubClassingWindowEventArgs(lParam) { Closing = true });
+                        _closing = true;
+                        break;
                 }
-
-                base.WndProc(ref msg);
-            }
-
-            ~SubClassingWindow()
-            {
-                ReleaseHandle();
+                return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
             }
         }
     }

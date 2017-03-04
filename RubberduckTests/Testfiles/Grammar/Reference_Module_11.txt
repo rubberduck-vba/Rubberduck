@@ -1,0 +1,154 @@
+Attribute VB_Name = "vbFnPivotTablePri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|vbFnPivotTablePri"
+
+Public Function GetPivotTable(PivotTables As Excel.PivotTables _
+                            , NameValue As tyNameValue _
+                            ) As Excel.PivotTable
+    Const ThisProcedure As String = ThisModule & "|GetPivotTable|Function"
+    Dim lvIndex As Long
+
+    NameValue.Value = GetLongOrStringValue(NameValue:=NameValue)
+
+    If VBA.VarType(VarName:=NameValue.Value) = VBA.VbVarType.vbString Then
+        Set GetPivotTable = GetPivotTableOrNothing(PivotTables:=PivotTables, Index:=NameValue.Value)
+        If GetPivotTable Is Nothing Then
+            RaiseCollectionItemItemIsNothing NameValue:=NameValue _
+                                           , Collection:=PivotTables
+        End If
+    Else
+        lvIndex = GetCollectionItemIndex(NameValue:=NameValue _
+                                       , Collection:=PivotTables _
+                                       , Count:=PivotTables.Count _
+                                       )
+        Set GetPivotTable = GetPivotTableOrNothing(PivotTables:=PivotTables _
+                                                 , Index:=PivotTables.Count + Lo1 - lvIndex _
+                                                 )
+    End If
+End Function
+
+Public Function GetPivotTableByRange(PivotTableRange As Excel.Range) As Excel.PivotTable
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableByRange|Function"
+    Dim lcCell As Excel.Range
+
+    For Each lcCell In PivotTableRange
+        'Debug.Print lcCell.Address
+        Set GetPivotTableByRange = GetRangePivotTableOrNothing(Range:=lcCell)
+        If Not GetPivotTableByRange Is Nothing Then
+            Exit For
+        End If
+    Next
+    If GetPivotTableByRange Is Nothing Then
+        RaiseRangeContainsNoPivotTable PivotTableRange:=PivotTableRange
+    End If
+
+    Set lcCell = Nothing
+End Function
+
+Private Sub GetPivotTableColumnLabelRangeTest()
+    GetPivotTableColumnLabelRange(ActiveCell.PivotTable).Select
+End Sub
+Public Function GetPivotTableColumnLabelRange(PivotTable As Excel.PivotTable) As Excel.Range
+    With PivotTable
+        With GetIntersectOrNothing(.ColumnRange.EntireRow, .DataBodyRange.EntireColumn)
+            Set GetPivotTableColumnLabelRange = .Resize(RowSize:=.Rows.Count - Lo1).Offset(RowOffset:=Lo1)
+        End With
+    End With
+End Function
+
+Private Sub GetPivotTableRowLabelRangeTest()
+    GetPivotTableRowLabelRange(ActiveCell.PivotTable).Select
+End Sub
+Public Function GetPivotTableRowLabelRange(PivotTable As Excel.PivotTable) As Excel.Range
+    With PivotTable
+        Set GetPivotTableRowLabelRange = GetIntersectOrNothing(.RowRange.EntireColumn, .DataBodyRange.EntireRow)
+    End With
+End Function
+
+Public Function GetPivotTablePivotFields(PivotTable As Excel.PivotTable _
+                                       , PivotFieldOrientation As Excel.XlPivotFieldOrientation _
+                                       ) As Excel.PivotFields
+    Const ThisProcedure As String = ThisModule & "|GetPivotTablePivotFields|Function"
+
+    With PivotTable
+        Select Case PivotFieldOrientation
+            Case XlPivotFieldOrientation.xlColumnField
+                Set GetPivotTablePivotFields = .ColumnFields
+
+            Case XlPivotFieldOrientation.xlDataField
+                Set GetPivotTablePivotFields = .DataFields
+
+            Case XlPivotFieldOrientation.xlHidden
+                Set GetPivotTablePivotFields = .HiddenFields
+
+            Case XlPivotFieldOrientation.xlPageField
+                Set GetPivotTablePivotFields = .PageFields
+
+            Case XlPivotFieldOrientation.xlRowField
+                Set GetPivotTablePivotFields = .RowFields
+
+            Case Else
+                Set GetPivotTablePivotFields = .PivotFields
+
+        End Select
+    End With
+End Function
+
+Public Function GetPivotTables(Worksheet As Excel.Worksheet) As Excel.PivotTables
+    Const ThisProcedure As String = ThisModule & "|GetPivotTables|Function"
+
+    Set GetPivotTables = GetPivotTablesOrNothing(Worksheet:=Worksheet)
+    If GetPivotTables Is Nothing Then
+        RaiseWorksheetPivotTablesIsNothing Worksheet:=Worksheet
+    End If
+End Function
+
+Public Function PFPTR() As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|PFPTR|Function"
+    Set PFPTR = ActiveWorkbook.Worksheets("PF").PivotTables(1).TableRange1
+End Function
+Public Function PCFPTR() As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|PCFPTR|Function"
+    Set PCFPTR = ActiveWorkbook.Worksheets("PCF").PivotTables(1).TableRange1
+End Function
+Public Function PDFPTR() As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|PDFPTR|Function"
+    Set PDFPTR = ActiveWorkbook.Worksheets("PDF").PivotTables(1).TableRange1
+End Function
+Public Function PPFPTR() As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|PPFPTR|Function"
+    Set PPFPTR = ActiveWorkbook.Worksheets("PPF").PivotTables(1).TableRange1
+End Function
+Public Function PRFPTR() As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|PRFPTR|Function"
+    Set PRFPTR = ActiveWorkbook.Worksheets("PRF").PivotTables(1).TableRange1
+End Function
+Public Function PSPTR() As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|PSPTR|Function"
+    Set PSPTR = ActiveWorkbook.Worksheets("PS").PivotTables(1).TableRange1
+End Function
+Public Function PTPTR() As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|PTPTR|Function"
+    Set PTPTR = ActiveWorkbook.Worksheets("PT").PivotTables(1).TableRange1
+End Function
+Public Function PYPTR() As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|PYPTR|Function"
+    Set PYPTR = ActiveWorkbook.Worksheets("PY").PivotTables(1).TableRange1
+End Function
+
+Private Function WorksheetPTR(WorksheetName As String) As Excel.Worksheet
+    Const ThisProcedure As String = ThisModule & "|WorksheetPTR|Function"
+    Dim lcWorksheet As Excel.Worksheet
+    Dim lcPivotTable As Excel.PivotTable
+
+    Set lcWorksheet = ActiveWorkbook.Worksheets(Index:=WorksheetName)
+    With lcWorksheet
+        .Activate
+        Set lcPivotTable = .PivotTables(1)
+    End With
+    Set WorksheetPTR = lcPivotTable.TableRange1
+    Set lcPivotTable = Nothing
+    Set lcWorksheet = Nothing
+End Function

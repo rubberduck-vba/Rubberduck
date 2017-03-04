@@ -1,33 +1,34 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public class ConstantNotUsedInspection : IInspection
+    public sealed class ConstantNotUsedInspection : InspectionBase
     {
-        public ConstantNotUsedInspection()
+        public ConstantNotUsedInspection(RubberduckParserState state)
+            : base(state)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return RubberduckUI.ConstantNotUsed_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.ConstantNotUsedInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ConstantNotUsedInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var declarations = parseResult.Declarations.Items.Where(declaration =>
-                !declaration.IsBuiltIn &&
-                (declaration.DeclarationType == DeclarationType.Constant)
-                && !declaration.References.Any());
+            var results = State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Constant)
+                .Where(declaration => !declaration.References.Any()
+                    && !IsIgnoringInspectionResultFor(declaration, AnnotationName))
+                .ToList();
 
-            foreach (var issue in declarations)
-            {
-                yield return new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName);
-            }
+            return results.Select(issue => 
+                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName));
         }
     }
 }

@@ -2,99 +2,174 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
-    public class ExtractMethodModel
+    public static class IEnumerableExt
     {
-        public ExtractMethodModel(IActiveCodePaneEditor editor, Declarations declarations, QualifiedSelection selection)
+        /// <summary>
+        /// Yields an Enumeration of selector Type, 
+        /// by checking for gaps between elements 
+        /// using the supplied increment function to work out the next value
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="inputs"></param>
+        /// <param name="getIncr"></param>
+        /// <param name="selector"></param>
+        /// <param name="comparisonFunc"></param>
+        /// <returns></returns>
+        public static IEnumerable<U> GroupByMissing<T, U>(this IEnumerable<T> inputs, Func<T, T> getIncr, Func<T, T, U> selector, Func<T, T, int> comparisonFunc)
         {
-            _sourceMember = declarations.FindSelectedDeclaration(selection, Declarations.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
-            if (_sourceMember == null)
+
+            var initialized = false;
+            T first = default(T);
+            T last = default(T);
+            T next = default(T);
+            Tuple<T, T> tuple = null;
+
+            foreach (var input in inputs)
+            {
+                if (!initialized)
+                {
+                    first = input;
+                    last = input;
+                    initialized = true;
+                    continue;
+                }
+                if (comparisonFunc(last, input) < 0)
+                {
+                    throw new ArgumentException(string.Format("Values are not monotonically increasing. {0} should be less than {1}", last, input));
+                }
+                var inc = getIncr(last);
+                if (!input.Equals(inc))
+                {
+                    yield return selector(first, last);
+                    first = input;
+                }
+                last = input;
+            }
+            if (initialized)
+            {
+                yield return selector(first, last);
+            }
+        }
+    }
+
+    public class ExtractMethodModel : IExtractMethodModel
+    {
+        private List<Declaration> _extractDeclarations;
+        private IExtractMethodParameterClassification _paramClassify;
+        private IExtractedMethod _extractedMethod;
+
+        public ExtractMethodModel(IExtractedMethod extractedMethod, IExtractMethodParameterClassification paramClassify)
+        {
+            _extractedMethod = extractedMethod;
+            _paramClassify = paramClassify;
+        }
+
+        public void extract(IEnumerable<Declaration> declarations, QualifiedSelection selection, string selectedCode)
+        {
+            var items = declarations.ToList();
+            _selection = selection;
+            _selectedCode = selectedCode;
+            _rowsToRemove = new List<Selection>();
+
+            var sourceMember = items.FindSelectedDeclaration(
+                selection,
+                DeclarationExtensions.ProcedureTypes,
+                d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+
+            if (sourceMember == null)
             {
                 throw new InvalidOperationException("Invalid selection.");
             }
 
-            _extractedMethod = new ExtractedMethod();
+            var inScopeDeclarations = items.Where(item => item.ParentScope == sourceMember.Scope).ToList();
+            var selectionStartLine = selection.Selection.StartLine;
+            var selectionEndLine = selection.Selection.EndLine;
+            var methodInsertLine = sourceMember.Context.Stop.Line + 1;
 
-            _selection = selection;
-            _selectedCode = editor.GetLines(selection.Selection);
+            _positionForNewMethod = new Selection(methodInsertLine, 1, methodInsertLine, 1);
 
-            var inScopeDeclarations = declarations.Items.Where(item => item.ParentScope == _sourceMember.Scope).ToList();
+            foreach (var item in inScopeDeclarations)
+            {
+                _paramClassify.classifyDeclarations(selection, item);
+            }
+            _declarationsToMove = _paramClassify.DeclarationsToMove.ToList();
 
-            var inSelection = inScopeDeclarations.SelectMany(item => item.References)
-                .Where(item => selection.Selection.Contains(item.Selection))
-                .ToList();
+            _rowsToRemove = splitSelection(selection.Selection, _declarationsToMove).ToList();
 
-            var usedInSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
-                item.References.Any(reference => inSelection.Contains(reference))));
+            var methodCallPositionStartLine = selectionStartLine - _declarationsToMove.Count(d => d.Selection.StartLine < selectionStartLine);
+            _positionForMethodCall = new Selection(methodCallPositionStartLine, 1, methodCallPositionStartLine, 1);
+            _extractedMethod.ReturnValue = null;
+            _extractedMethod.Accessibility = Accessibility.Private;
+            _extractedMethod.SetReturnValue = false;
+            _extractedMethod.Parameters = _paramClassify.ExtractedParameters.ToList();
 
-            var usedBeforeSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
-                item.References.Any(reference => reference.Selection.StartLine < selection.Selection.StartLine)));
-
-            var usedAfterSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
-                item.References.Any(reference => reference.Selection.StartLine > selection.Selection.EndLine)));
-
-            // identifiers used inside selection and before selection (or if it's a parameter) are candidates for parameters:
-            var input = inScopeDeclarations.Where(item =>
-                usedInSelection.Contains(item) && (usedBeforeSelection.Contains(item) || item.DeclarationType == DeclarationType.Parameter)).ToList();
-
-            // identifiers used inside selection and after selection are candidates for return values:
-            var output = inScopeDeclarations.Where(item =>
-                usedInSelection.Contains(item) && usedAfterSelection.Contains(item))
-                .ToList();
-
-            // identifiers used only inside and/or after selection are candidates for locals:
-            _locals = inScopeDeclarations.Where(item => item.DeclarationType != DeclarationType.Parameter && (
-                item.References.All(reference => inSelection.Contains(reference))
-                || (usedAfterSelection.Contains(item) && (!usedBeforeSelection.Contains(item)))))
-                .ToList();
-
-            // locals that are only used in selection are candidates for being moved into the new method:
-            _declarationsToMove = _locals.Where(item => !usedAfterSelection.Contains(item)).ToList();
-
-            _output = output.Select(declaration =>
-                new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef, declaration.IdentifierName));
-
-            _input = input.Where(declaration => !output.Contains(declaration))
-                .Select(declaration =>
-                    new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByVal, declaration.IdentifierName));
         }
 
-        private readonly Declaration _sourceMember;
+        public IEnumerable<Selection> splitSelection(Selection selection, IEnumerable<Declaration> declarations)
+        {
+            var tupleList = new List<Tuple<int, int>>();
+            var declarationRows = declarations
+                .Where(decl =>
+                    selection.StartLine <= decl.Selection.StartLine &&
+                    decl.Selection.StartLine <= selection.EndLine)
+                .Select(decl => decl.Selection.StartLine)
+                .OrderBy(x => x)
+                .ToList();
+
+            var gappedSelectionRows = Enumerable.Range(selection.StartLine, selection.EndLine - selection.StartLine + 1).Except(declarationRows).ToList();
+            var returnList = gappedSelectionRows.GroupByMissing(x => (x + 1), (x, y) => new Selection(x, 1, y, 1), (x, y) => y - x);
+            return returnList;
+        }
+
+        private Declaration _sourceMember;
         public Declaration SourceMember { get { return _sourceMember; } }
 
-        private readonly QualifiedSelection _selection;
+        private QualifiedSelection _selection;
         public QualifiedSelection Selection { get { return _selection; } }
 
-        private readonly string _selectedCode;
+        private string _selectedCode;
         public string SelectedCode { get { return _selectedCode; } }
 
-        private readonly List<Declaration> _locals;
-        public IEnumerable<Declaration> Locals { get {return _locals;} }
+        private List<Declaration> _locals;
+        public IEnumerable<Declaration> Locals { get { return _locals; } }
 
-        private readonly IEnumerable<ExtractedParameter> _input;
+        private IEnumerable<ExtractedParameter> _input;
         public IEnumerable<ExtractedParameter> Inputs { get { return _input; } }
+        private IEnumerable<ExtractedParameter> _output;
+        public IEnumerable<ExtractedParameter> Outputs { get { return _output; } }
 
-        private readonly IEnumerable<ExtractedParameter> _output;
-        public IEnumerable<ExtractedParameter> Outputs { get {return _output; } }
-
-        private readonly List<Declaration> _declarationsToMove;
+        private List<Declaration> _declarationsToMove;
         public IEnumerable<Declaration> DeclarationsToMove { get { return _declarationsToMove; } }
 
-        private readonly ExtractedMethod _extractedMethod;
-        public ExtractedMethod Method { get { return _extractedMethod; } }
+        public IExtractedMethod Method { get { return _extractedMethod; } }
 
-        public class ExtractedMethod
+        private Selection _positionForMethodCall;
+        public Selection PositionForMethodCall { get { return _positionForMethodCall; } }
+
+        public string NewMethodCall { get { return _extractedMethod.NewMethodCall(); } }
+
+        private Selection _positionForNewMethod;
+        public Selection PositionForNewMethod { get { return _positionForNewMethod; } }
+        IList<Selection> _rowsToRemove;
+        public IEnumerable<Selection> RowsToRemove
         {
-            public string MethodName { get; set; }
-            public Accessibility Accessibility { get; set; }
-            public bool SetReturnValue { get; set; }
-            public ExtractedParameter ReturnValue { get; set; }
-            public IEnumerable<ExtractedParameter> Parameters { get; set; }
+            // we need to split selectionToRemove around any declarations that
+            // are within the selection.
+            get { return _declarationsToMove.Select(decl => decl.Selection).Union(_rowsToRemove)
+                .Select( x => new Selection(x.StartLine,1,x.EndLine,1)) ; }
+        }
+
+        public IEnumerable<Declaration> DeclarationsToExtract
+        {
+            get { return _extractDeclarations; }
         }
     }
 }

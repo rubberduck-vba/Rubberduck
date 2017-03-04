@@ -1,29 +1,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteGlobalInspection : IInspection
+    public sealed class ObsoleteGlobalInspection : InspectionBase
     {
-        public ObsoleteGlobalInspection()
+        public ObsoleteGlobalInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return RubberduckUI.ObsoleteGlobal; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.ObsoleteGlobalInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ObsoleteGlobalInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var issues = from item in parseResult.Declarations.Items
-                         where !item.IsBuiltIn && item.Accessibility == Accessibility.Global
-                         && item.Context != null
-                         select new ObsoleteGlobalInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
+            var issues = from item in UserDeclarations
+                         where item.Accessibility == Accessibility.Global && item.Context != null
+                         select new ObsoleteGlobalInspectionResult(this, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context), item);
 
             return issues;
         }

@@ -1,0 +1,29 @@
+Attribute VB_Name = "vbXlPivotAxisPri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|vbXlPivotAxisPri"
+
+Private Sub GetPivotAxisColumnDataRangeTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotAxisColumnDataRangeTest|Sub"
+Debug.Print GetPivotAxisColumnDataRange(ActiveCell.PivotTable).Address
+End Sub
+Public Function GetPivotAxisColumnDataRange(PivotTable As Excel.PivotTable) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotAxisColumnDataRange|Function"
+    Set GetPivotAxisColumnDataRange = GetPivotLinesRegularRange(PivotLines:=PivotTable.PivotColumnAxis.PivotLines)
+End Function
+
+Private Sub GetPivotAxisRowDataRangeTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotAxisRowDataRangeTest|Sub"
+Debug.Print GetPivotAxisRowDataRange(ActiveCell.PivotTable).Address
+End Sub
+Public Function GetPivotAxisRowDataRange(PivotTable As Excel.PivotTable) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotAxisRowDataRange|Function"
+    Dim lcPivotField As Excel.PivotField
+    For Each lcPivotField In PivotTable.RowFields
+        If lcPivotField.LayoutForm <> XlLayoutFormType.xlTabular Then
+            RaisePivotTableNotClassicLayout
+        End If
+    Next
+    Set GetPivotAxisRowDataRange = GetPivotLinesRegularRange(PivotLines:=PivotTable.PivotRowAxis.PivotLines)
+End Function

@@ -1,51 +1,74 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
+using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections
 {
-    public class ProcedureNotUsedInspection : IInspection 
+    public sealed class ProcedureNotUsedInspection : InspectionBase
     {
-        public ProcedureNotUsedInspection()
+        public ProcedureNotUsedInspection(RubberduckParserState state)
+            : base(state)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return RubberduckUI.ProcedureNotUsed_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.ProcedureNotUsedInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ProcedureNotUsedInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        private static readonly string[] DocumentEventHandlerPrefixes =
         {
-            var classes = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Class).ToList();
-            var modules = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Module).ToList();
+            "Chart_",
+            "Worksheet_",
+            "Workbook_",
+            "Document_",
+            "Application_",
+            "Session_"
+        };
 
-            var handlers = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Control)
-                .SelectMany(control => parseResult.Declarations.FindEventHandlers(control)).ToList();
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        {
+            var declarations = UserDeclarations.ToList();
 
-            var withEventFields = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
-            handlers.AddRange(withEventFields.SelectMany(field => parseResult.Declarations.FindEventProcedures(field)));
+            var classes = State.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule).ToList(); // declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule).ToList();
+            var modules = State.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).ToList(); // declarations.Where(item => item.DeclarationType == DeclarationType.ProceduralModule).ToList();
 
-            var forms = parseResult.Declarations.Items.Where(
-                item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Class
-                        && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
+            var handlers = State.DeclarationFinder.UserDeclarations(DeclarationType.Control)
+                .SelectMany(control => declarations.FindEventHandlers(control)).ToList();
+
+            var builtInHandlers = State.DeclarationFinder.FindEventHandlers();
+            handlers.AddRange(builtInHandlers);
+
+            var withEventFields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Where(item => item.IsWithEvents).ToList();
+            var withHanders = withEventFields
+                .SelectMany(field => State.DeclarationFinder.FindHandlersForWithEventsField(field))
+                .ToList();
+
+            handlers.AddRange(withHanders);
+
+            var forms = State.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule)
+                .Where(item => item.QualifiedName.QualifiedModuleName.ComponentType == ComponentType.UserForm)
                 .ToList();
 
             if (forms.Any())
             {
-                handlers.AddRange(forms.SelectMany(form => parseResult.Declarations.FindFormEventHandlers(form)));
+                handlers.AddRange(forms.SelectMany(form => State.FindFormEventHandlers(form)));
             }
 
-            var issues = parseResult.Declarations.Items
-                .Where(item => !item.IsBuiltIn && !IsIgnoredDeclaration(parseResult.Declarations, item, handlers, classes, modules))
-                .Select(issue => new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName));
+            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToList();
+            var implementingMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers().ToList();
 
-            issues = DocumentNames.DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Name.Contains("'" + item)));
+            var items = declarations
+                .Where(item => !IsIgnoredDeclaration(item, interfaceMembers, implementingMembers, handlers, classes, modules)).ToList();
+            var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
+
+            issues = DocumentEventHandlerPrefixes
+                .Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));
 
             return issues.ToList();
         }
@@ -53,18 +76,22 @@ namespace Rubberduck.Inspections
         private static readonly DeclarationType[] ProcedureTypes =
         {
             DeclarationType.Procedure,
-            DeclarationType.Function
+            DeclarationType.Function,
+            DeclarationType.LibraryProcedure,
+            DeclarationType.LibraryFunction,
+            DeclarationType.Event
         };
 
-        private bool IsIgnoredDeclaration(Declarations declarations, Declaration declaration, IEnumerable<Declaration> handlers, IEnumerable<Declaration> classes, IEnumerable<Declaration> modules)
+        private bool IsIgnoredDeclaration(Declaration declaration, IEnumerable<Declaration> interfaceMembers, IEnumerable<Declaration> interfaceImplementingMembers , IEnumerable<Declaration> handlers, IEnumerable<Declaration> classes, IEnumerable<Declaration> modules)
         {
             var enumerable = classes as IList<Declaration> ?? classes.ToList();
             var result = !ProcedureTypes.Contains(declaration.DeclarationType)
-                || declaration.References.Any()
+                || declaration.References.Any(r => !r.IsAssignment && !r.ParentScoping.Equals(declaration)) // recursive calls don't count
                 || handlers.Contains(declaration)
                 || IsPublicModuleMember(modules, declaration)
                 || IsClassLifeCycleHandler(enumerable, declaration)
-                || IsInterfaceMember(declarations, enumerable, declaration);
+                || interfaceMembers.Contains(declaration)
+                || interfaceImplementingMembers.Contains(declaration);
 
             return result;
         }
@@ -81,12 +108,13 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
-            var parent = modules.Where(item => item.Project == procedure.Project)
+            var parent = modules.Where(item => item.ProjectId == procedure.ProjectId)
                         .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
 
             return parent != null;
         }
 
+        // TODO: Put this into grammar?
         private static readonly string[] ClassLifeCycleHandlers =
         {
             "Class_Initialize",
@@ -100,53 +128,10 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
-            var parent = classes.Where(item => item.Project == procedure.Project)
+            var parent = classes.Where(item => item.ProjectId == procedure.ProjectId)
                         .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
 
             return parent != null;
-        }
-
-        /// <remarks>
-        /// Interface implementation members are private, they're not called from an object
-        /// variable reference of the type of the procedure's class, and whether they're called or not,
-        /// they have to be implemented anyway, so removing them would break the code.
-        /// Best just ignore them.
-        /// </remarks>
-        private bool IsInterfaceMember(Declarations declarations, IEnumerable<Declaration> classes, Declaration procedure)
-        {
-            // get the procedure's parent module
-            var enumerable = classes as IList<Declaration> ?? classes.ToList();
-            var parent = enumerable.Where(item => item.Project == procedure.Project)
-                        .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
-
-            if (parent == null)
-            {
-                return false;
-            }
-
-            var interfaces = enumerable.Where(item => item.References.Any(reference =>
-                    reference.Context.Parent is VBAParser.ImplementsStmtContext));
-
-            if (interfaces.Select(i => i.ComponentName).Contains(procedure.ComponentName))
-            {
-                return true;
-            }
-
-            var result = GetImplementedInterfaceMembers(declarations, enumerable, procedure.ComponentName)
-                .Contains(procedure.IdentifierName);
-
-            return result;
-        }
-
-        private IEnumerable<string> GetImplementedInterfaceMembers(Declarations declarations, IEnumerable<Declaration> classes, string componentName)
-        {
-            var interfaces = classes.Where(item => item.References.Any(reference =>
-                    reference.Context.Parent is VBAParser.ImplementsStmtContext
-                    && reference.QualifiedModuleName.Component.Name == componentName));
-
-            var members = interfaces.SelectMany(declarations.FindMembers)
-                .Select(member => member.ComponentName + "_" + member.IdentifierName);
-            return members;
         }
     }
 }

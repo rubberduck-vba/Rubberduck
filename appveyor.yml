@@ -1,0 +1,17 @@
+version: 2.0.{build}-{branch}
+build:
+  verbosity: normal
+
+configuration: Release
+
+init:
+  - git config --global core.autocrlf true
+
+notifications:
+- provider: Webhook
+  url: http://stats.zomis.net:8081/hooks/appveyor?roomId=14929
+  headers:
+    X-Duga-Event: duga42
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
-using Microsoft.Vbe.Interop;
-using System.Security;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.SourceControl
 {
-    public class GitProvider : SourceControlProviderBase
+    public class GitProvider : SourceControlProviderBase, IDisposable
     {
         private readonly LibGit2Sharp.Repository _repo;
         private readonly LibGit2Sharp.Credentials _credentials;
@@ -17,14 +17,14 @@ namespace Rubberduck.SourceControl
         private List<ICommit> _unsyncedLocalCommits;
         private List<ICommit> _unsyncedRemoteCommits;
 
-        public GitProvider(VBProject project)
+        public GitProvider(IVBProject project)
             : base(project)
         {
             _unsyncedLocalCommits = new List<ICommit>();
             _unsyncedRemoteCommits = new List<ICommit>();
         }
 
-        public GitProvider(VBProject project, IRepository repository)
+        public GitProvider(IVBProject project, IRepository repository)
             : base(project, repository) 
         {
             _unsyncedLocalCommits = new List<ICommit>();
@@ -36,11 +36,11 @@ namespace Rubberduck.SourceControl
             }
             catch (RepositoryNotFoundException ex)
             {
-                throw new SourceControlException("Repository not found.", ex);
+                throw new SourceControlException(SourceControlText.GitRepoNotFound, ex);
             }
         }
-        
-        public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
+
+        public GitProvider(IVBProject project, IRepository repository, string userName, string passWord)
             : this(project, repository)
         {
             _credentials = new UsernamePasswordCredentials()
@@ -52,11 +52,7 @@ namespace Rubberduck.SourceControl
             _credentialsHandler = (url, user, cred) => _credentials;
         }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials<string> credentials)
-            :this(project, repository, credentials.Username, credentials.Password)
-        { }
-
-        public GitProvider(VBProject project, IRepository repository, ICredentials<SecureString> credentials)
+        public GitProvider(IVBProject project, IRepository repository, ICredentials<SecureString> credentials)
             : this(project, repository)
         {
             _credentials = new SecureUsernamePasswordCredentials()
@@ -64,9 +60,11 @@ namespace Rubberduck.SourceControl
                 Username = credentials.Username,
                 Password = credentials.Password
             };
+
+            _credentialsHandler = (url, user, cred) => _credentials;
         }
 
-        ~GitProvider()
+        public void Dispose()
         {
             if (_repo != null)
             {
@@ -78,7 +76,7 @@ namespace Rubberduck.SourceControl
         {
             get
             {
-                return this.Branches.First(b => !b.IsRemote && b.IsCurrentHead);
+                return Branches.FirstOrDefault(b => !b.IsRemote && b.IsCurrentHead);
             }
         }
 
@@ -101,17 +99,33 @@ namespace Rubberduck.SourceControl
             get { return _unsyncedRemoteCommits; }
         }
 
-        public override IRepository Clone(string remotePathOrUrl, string workingDirectory)
+        public override IRepository Clone(string remotePathOrUrl, string workingDirectory, SecureCredentials credentials = null)
         {
             try
             {
                 var name = GetProjectNameFromDirectory(remotePathOrUrl);
-                LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory);
+
+                if (credentials == null)
+                {
+                    LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory);
+                }
+                else
+                {
+                    var credentialsHandler = new CredentialsHandler((url, usernameFromUrl, types) => new SecureUsernamePasswordCredentials
+                    {
+                        Username = credentials.Username,
+                        Password = credentials.Password
+                    });
+
+                    var options = new CloneOptions {CredentialsProvider = credentialsHandler};
+                    LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory, options);
+                }
+
                 return new Repository(name, workingDirectory, remotePathOrUrl);
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Failed to clone remote repository.", ex);
+                throw new SourceControlException(SourceControlText.GitRepoNotCloned, ex);
             }
         }
 
@@ -123,12 +137,36 @@ namespace Rubberduck.SourceControl
 
                 LibGit2Sharp.Repository.Init(directory, bare);
 
-                return new Repository(this.Project.Name, workingDir, directory);
+                return new Repository(Project.HelpFile, workingDir, directory);
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Unable to initialize repository.", ex);
+                throw new SourceControlException(SourceControlText.GitNotInit, ex);
             }
+        }
+
+        public override void AddOrigin(string path, string trackingBranchName)
+        {
+            try
+            {
+                if (_repo.Network.Remotes.Any(r => r.Name == "origin"))
+                {
+                    _repo.Network.Remotes.Remove("origin"); // todo prompt that remote is already taken
+                }
+
+                _repo.Network.Remotes.Add("origin", path);
+                _repo.Branches.Update(_repo.Branches[CurrentBranch.Name], c => c.Remote = "origin",
+                        c => c.UpstreamBranch = "refs/heads/" + trackingBranchName);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Failed to add remote location.", ex);
+            }
+        }
+
+        public override bool HasCredentials()
+        {
+            return _credentials != null;
         }
 
         /// <summary>
@@ -144,13 +182,23 @@ namespace Rubberduck.SourceControl
             //add a master branch to newly created repo
             using (var repo = new LibGit2Sharp.Repository(repository.LocalLocation))
             {
-                var status = repo.RetrieveStatus(new StatusOptions());
+                var status = repo.RetrieveStatus(new StatusOptions {DetectRenamesInWorkDir = true});
                 foreach (var stat in status.Untracked)
                 {
                     repo.Stage(stat.FilePath);
                 }
 
-                repo.Commit("Intial Commit");
+                try
+                {
+                    //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
+                    // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
+                    // so we pass a signature that won't throw along to the commit.
+                    repo.Commit("Initial Commit", GetSignature(repo));
+                }
+                catch(LibGit2SharpException ex)
+                {
+                    throw new SourceControlException(SourceControlText.GitNoInitialCommit, ex);
+                }
             }
 
             return repository;
@@ -170,14 +218,14 @@ namespace Rubberduck.SourceControl
                     };
                 }
 
-                var branch = _repo.Branches[this.CurrentBranch.Name];
+                var branch = _repo.Branches[CurrentBranch.Name];
                 _repo.Network.Push(branch, options);
 
                 RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Push Failed.", ex);
+                throw new SourceControlException(SourceControlText.GitPushFailed, ex);
             }
         }
 
@@ -195,13 +243,17 @@ namespace Rubberduck.SourceControl
             try
             {
                 var remote = _repo.Network.Remotes[remoteName];
-                _repo.Network.Fetch(remote);
+
+                if (remote != null)
+                {
+                    _repo.Network.Fetch(remote);
+                }
 
                 RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Fetch failed.", ex);
+                throw new SourceControlException(SourceControlText.GitFetchFailed, ex);
             }
         }
 
@@ -226,7 +278,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Pull Failed.", ex);
+                throw new SourceControlException(SourceControlText.GitPullFailed, ex);
             }
         }
 
@@ -234,11 +286,14 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.Commit(message);
+                //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
+                // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
+                // so we pass a signature that won't throw along to the commit.
+                _repo.Commit(message, GetSignature());
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Commit Failed.", ex);
+                throw new SourceControlException(SourceControlText.GitCommitFailed, ex);
             }
         }
 
@@ -250,7 +305,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw  new SourceControlException("Failed to stage file.", ex);
+                throw  new SourceControlException(SourceControlText.GitFileStageFailed, ex);
             }
         }
 
@@ -262,13 +317,13 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Failed to stage file.", ex);
+                throw new SourceControlException(SourceControlText.GitFileStageFailed, ex);
             }
         }
 
         public override void Merge(string sourceBranch, string destinationBranch)
         {
-            _repo.Checkout(_repo.Branches[destinationBranch]);
+            Checkout(destinationBranch);
 
             var oldHeadCommit = _repo.Head.Tip;
             var signature = GetSignature();
@@ -300,7 +355,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Checkout failed.", ex);
+                throw new SourceControlException(SourceControlText.GitCheckoutFailed, ex);
             }
         }
 
@@ -315,7 +370,72 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Branch creation failed.", ex);
+                throw new SourceControlException(SourceControlText.GitNewBranchFailed, ex);
+            }
+        }
+
+        public override void CreateBranch(string sourceBranch, string branch)
+        {
+            try
+            {
+                _repo.CreateBranch(branch, _repo.Branches[sourceBranch].Commits.Last());
+                _repo.Checkout(branch);
+
+                RequeryUnsyncedCommits();
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitNewBranchFailed, ex);
+            }
+        }
+
+        public override void Publish(string branch)
+        {
+            try
+            {
+                _repo.Branches.Update(_repo.Branches[branch], b => b.Remote = _repo.Network.Remotes["origin"].Name,
+                    b => b.UpstreamBranch = _repo.Branches[branch].CanonicalName);
+
+                PushOptions options = null;
+                if (_credentials != null)
+                {
+                    options = new PushOptions
+                    {
+                        CredentialsProvider = _credentialsHandler
+                    };
+                }
+
+                _repo.Network.Push(_repo.Branches[branch], options);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitPublishFailed, ex);
+            }
+        }
+
+        public override void Unpublish(string branch)
+        {
+            try
+            {
+                var remote = _repo.Branches[branch].Remote;
+
+                _repo.Branches.Update(_repo.Branches[branch], b => b.Remote = remote.Name,
+                    b => b.TrackedBranch = null, b => b.UpstreamBranch = null);
+
+                PushOptions options = null;
+                if (_credentials != null)
+                {
+                    options = new PushOptions
+                    {
+                        CredentialsProvider = _credentialsHandler
+                    };
+                }
+
+                _repo.Network.Push(remote, ":" + _repo.Branches[branch].UpstreamBranchCanonicalName, options);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitUnpublishFailed, ex);
             }
         }
 
@@ -327,14 +447,14 @@ namespace Rubberduck.SourceControl
 
                 if (results.Status == RevertStatus.Conflicts)
                 {
-                    throw new SourceControlException("Revert resulted in conflicts. Revert failed.");
+                    throw new SourceControlException(SourceControlText.GitRevertConflict);
                 }
 
                 base.Revert();
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Revert failed.", ex);
+                throw new SourceControlException(SourceControlText.GitRevertFailed, ex);
             }
         }
 
@@ -347,23 +467,26 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException(string.Format("Failed to stage file {0}", filePath), ex);
+                throw new SourceControlException(string.Format(SourceControlText.GitFileStageFailedMsg, filePath), ex);
             }
         }
 
         /// <summary>
-        /// Removes file from staging area, but leaves the file in the working directory.
+        /// Removes file from staging area.
         /// </summary>
         /// <param name="filePath"></param>
-        public override void RemoveFile(string filePath)
+        /// <param name="removeFromWorkingDirectory"></param>
+        public override void RemoveFile(string filePath, bool removeFromWorkingDirectory)
         {
             try
             {
-                _repo.Remove(filePath, false);
+                NotifyExternalFileChanges = false;
+                _repo.Remove(filePath, removeFromWorkingDirectory);
+                NotifyExternalFileChanges = true;
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException(string.Format("Failed to remove file {0} from staging area.", filePath), ex);
+                throw new SourceControlException(string.Format(SourceControlText.GitFileStageFailedMsg, filePath), ex);
             }
         }
 
@@ -372,40 +495,93 @@ namespace Rubberduck.SourceControl
             try
             {
                 base.Status();
-                return _repo.RetrieveStatus().Select(item => new FileStatusEntry(item));
+                return _repo.RetrieveStatus(new StatusOptions {IncludeUnaltered = true, DetectRenamesInWorkDir = true})
+                    .Select(item => new FileStatusEntry(item));
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Failed to retrieve repository status.", ex);
+                throw new SourceControlException(SourceControlText.GitRepoStatusFailed, ex);
+            }
+            catch (SEHException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitRepoStatusFailed + " (SEH Code " + ex.ErrorCode + ")", ex);
             }
         }
 
+        public override IEnumerable<IFileStatusEntry> LastKnownStatus()
+        {
+            try
+            {
+                return _repo.RetrieveStatus(new StatusOptions { IncludeUnaltered = true, DetectRenamesInWorkDir = true})
+                        .Select(item => new FileStatusEntry(item));
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitRepoStatusFailed, ex);
+            }
+        }
         public override void Undo(string filePath)
         {
             try
             {
-                _repo.CheckoutPaths(this.CurrentBranch.Name, new List<string> {filePath});
+                var tip = _repo.Branches.First(b => !b.IsRemote && b.IsCurrentRepositoryHead).Tip;
+                var options = new CheckoutOptions { CheckoutModifiers = CheckoutModifiers.Force };
+                _repo.CheckoutPaths(tip.Sha, new List<string> { filePath }, options);
+
                 base.Undo(filePath);
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Undo failed.", ex);
+                throw new SourceControlException(SourceControlText.GitUndoFailed, ex);
             }
         }
 
-        public override void DeleteBranch(string branch)
+        public override void DeleteBranch(string branchName)
         {
             try
             {
-                if (_repo.Branches.Any(b => b.FriendlyName == branch && !b.IsRemote))
+                var branch = _repo.Branches.FirstOrDefault(b => b.FriendlyName == branchName);
+                if (branch != null)
                 {
+                    if (branch.TrackedBranch != null && branch.TrackedBranch.Tip != null)   // check if the branch exists on the remote repo
+                    {
+                        PushOptions options = null;
+                        if (_credentials != null)
+                        {
+                            options = new PushOptions
+                            {
+                                CredentialsProvider = _credentialsHandler
+                            };
+                        }
+
+                        _repo.Network.Push(branch.Remote, ":" + _repo.Branches[branchName].UpstreamBranchCanonicalName, options);
+                    }
+
+                    // remote local repo
                     _repo.Branches.Remove(branch);
                 }
             }
             catch(LibGit2SharpException ex)
             {
-                throw new SourceControlException("Branch deletion failed.", ex);
+                throw new SourceControlException(SourceControlText.GitBranchDeleteFailed, ex);
             }
+        }
+
+        public override bool RepoHasRemoteOrigin()
+        {
+            try
+            {
+                return _repo.Network.Remotes.Any(a => a.Name == "origin");
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(SourceControlText.GitPublishFailed, ex);
+            }
+        }
+
+        private Signature GetSignature(LibGit2Sharp.IRepository repo)
+        {
+            return repo.Config.BuildSignature(DateTimeOffset.Now);
         }
 
         private Signature GetSignature()
@@ -415,7 +591,7 @@ namespace Rubberduck.SourceControl
 
         private void RequeryUnsyncedCommits()
         {
-            var currentBranch = _repo.Branches[this.CurrentBranch.Name];
+            var currentBranch = _repo.Branches[CurrentBranch.Name];
             var local = currentBranch.Commits;
 
             if (currentBranch.TrackedBranch == null)

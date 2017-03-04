@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      autoReload="true">
+  <targets>
+    <target 
+      xsi:type="File" 
+      name="file"
+      fileName="${specialfolder:folder=ApplicationData}/Rubberduck/Logs/RubberduckLog.txt"
+      layout="${longdate};${uppercase:${level}}-${gdc:item=RubberduckVersion};${logger};${message};${exception:format=tostring}"
+      archiveFileName="${specialfolder:folder=ApplicationData}/Rubberduck/Logs/archives/RubberduckLog.{#}.txt"
+      archiveAboveSize="5242880"
+      archiveNumbering="Sequence"
+      concurrentWrites="true"
+      archiveEvery="Day"
+      deleteOldFileOnStartup="true"
+      keepFileOpen="false"
+      encoding="UTF-8"/>
+    <target
+      xsi:type="Debugger"
+      name="debuglog"
+      layout="${longdate};${uppercase:${level}};${logger};${message};${exception:format=tostring}"/>
+  </targets>
+  <rules>
+    <logger name="*" minlevel="Info" writeTo="file" />
+    <logger name="*" minlevel="Trace" writeTo="debuglog" />
+  </rules>
+</nlog>

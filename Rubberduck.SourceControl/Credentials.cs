@@ -15,8 +15,8 @@ namespace Rubberduck.SourceControl
 
         protected CredentialsBase(string username, TPassword password)
         {
-            this.Username = username;
-            this.Password = password;
+            Username = username;
+            Password = password;
         } 
     }
 

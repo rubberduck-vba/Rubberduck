@@ -1,36 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.UI
 {
     public class GridViewSort<T>
     {
-        private bool _sortedAscending;
-        private string _columnName;
+        public bool SortedAscending { get; private set; }
+        public string ColumnName { get; private set; }
 
-        public GridViewSort(string ColumnName, bool SortedAscending)
+        public GridViewSort(string columnName, bool sortedAscending)
         {
-            _columnName = ColumnName;
-            _sortedAscending = SortedAscending;
+            ColumnName = columnName;
+            SortedAscending = sortedAscending;
         }
 
-        public IEnumerable<T> Sort(IEnumerable<T> Items, string ColumnName)
+        public IEnumerable<T> Sort(IEnumerable<T> items, string columnName)
         {
-            if (ColumnName == _columnName && _sortedAscending)
+            if (columnName == ColumnName && SortedAscending)
             {
-                _sortedAscending = false;
-                var test = Items.Select(x => x.GetType().GetProperty(ColumnName).GetValue(x));
-                return Items.OrderByDescending(x => x.GetType().GetProperty(ColumnName).GetValue(x));
+                SortedAscending = false;
+                return items.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x));
             }
             else
             {
-                _columnName = ColumnName;
-                _sortedAscending = true;
-                return Items.OrderBy(x => x.GetType().GetProperty(ColumnName).GetValue(x));
+                ColumnName = columnName;
+                SortedAscending = true;
+                return items.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x));
             }
+        }
+
+        public IEnumerable<T> Sort(IEnumerable<T> items, string columnName, bool sortAscending)
+        {
+            SortedAscending = sortAscending;
+            ColumnName = columnName;
+
+            return sortAscending
+                ? items.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x))
+                : items.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x));
         }
     }
 }

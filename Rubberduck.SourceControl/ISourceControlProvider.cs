@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.SourceControl
@@ -10,12 +11,17 @@ namespace Rubberduck.SourceControl
         IEnumerable<IBranch> Branches { get; }
         IList<ICommit> UnsyncedLocalCommits { get; }
         IList<ICommit> UnsyncedRemoteCommits { get; }
+        bool NotifyExternalFileChanges { get; set; }
+        bool HandleVbeSinkEvents { get; set; }
+
+        event EventHandler<EventArgs> BranchChanged;
 
         /// <summary>Clone a remote repository.</summary>
         /// <param name="remotePathOrUrl">Either a Url "https://github.com/retailcoder/Rubberduck.git" or a UNC path. "//server/share/path/to/repo.git"</param>
         /// <param name="workingDirectory">Directory the repository will be cloned to.</param>
+        /// <param name="credentials">Credentials required if repository is private.</param>
         /// <returns>Newly cloned repository.</returns>
-        IRepository Clone(string remotePathOrUrl, string workingDirectory);
+        IRepository Clone(string remotePathOrUrl, string workingDirectory, SecureCredentials credentials = null);
 
         /// <summary>
         /// Creates a new repository in/from the given directory.
@@ -24,6 +30,13 @@ namespace Rubberduck.SourceControl
         /// <param name="bare">Specifies whether or not the new repository will be intialized as a bare repo.</param>
         /// <returns>Newly created repository.</returns>
         IRepository Init(string directory, bool bare = false);
+
+        /// <summary>
+        /// Publishes to a remote repo.
+        /// </summary>
+        /// <param name="path">The remote path to the repo</param>
+        /// <param name="trackingBranchName">The branch name to publish to</param>
+        void AddOrigin(string path, string trackingBranchName);
 
         /// <summary>
         /// Creates a new repository and sets the CurrentRepository property from the VBProject passed to the ISourceControlProvider upon creation.
@@ -76,6 +89,13 @@ namespace Rubberduck.SourceControl
         void CreateBranch(string branch);
 
         /// <summary>
+        /// Creates and checks out a new branch.
+        /// </summary>
+        /// <param name="sourceBranch">Name of the branch to base the new branch on.</param>
+        /// <param name="branch">Name of the branch to be created.</param>
+        void CreateBranch(string sourceBranch, string branch);
+
+        /// <summary>
         /// Deletes the specified branch from the local repository.
         /// </summary>
         /// <param name="branch">Name of the branch to be deleted.</param>
@@ -102,7 +122,8 @@ namespace Rubberduck.SourceControl
         /// Removes file from tracking.
         /// </summary>
         /// <param name="filePath"></param>
-        void RemoveFile(string filePath);
+        /// <param name="removeFromWorkingDirectory"></param>
+        void RemoveFile(string filePath, bool removeFromWorkingDirectory);
 
         /// <summary>
         /// Returns a collection of file status entries.
@@ -121,5 +142,41 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <param name="filePaths"></param>
         void Stage(IEnumerable<string> filePaths);
+
+        /// <summary>
+        /// Publish a local branch.
+        /// </summary>
+        /// <param name="branch">The name of the branch to publish</param>
+        void Publish(string branch);
+
+        /// <summary>
+        /// Unpublish a remote branch.
+        /// </summary>
+        /// <param name="branch">The name of the branch to unpublish</param>
+        void Unpublish(string branch);
+
+        /// <summary>
+        /// Returns whether user has credentials to log into credentials.
+        /// </summary>
+        /// <returns>Returns true if repo can log into GitHub.</returns>
+        bool HasCredentials();
+
+        /// <summary>
+        /// Gets the last known status without refreshing
+        /// </summary>
+        /// <returns>Collection of statuses.</returns>
+        IEnumerable<IFileStatusEntry> LastKnownStatus();
+
+        /// <summary>
+        /// Reloads the component into the VBE
+        /// </summary>
+        /// <param name="fileName"></param>
+        void ReloadComponent(string fileName);
+
+        /// <summary>
+        /// Returns whether the repo has a remote named "origin"
+        /// </summary>
+        /// <returns></returns>
+        bool RepoHasRemoteOrigin();
     }
 }

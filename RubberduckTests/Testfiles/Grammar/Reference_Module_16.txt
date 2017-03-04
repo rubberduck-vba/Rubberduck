@@ -1,0 +1,178 @@
+Attribute VB_Name = "vbXlPivotLinePri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|vbXlPivotLinePri"
+
+Private Sub GetPivotLinesRegularPivotFieldsDictionaryTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotLinesRegularPivotFieldsDictionaryTest|Sub"
+    Dim lcDict As Scripting.Dictionary
+    Dim lcPivotAxis As Excel.PivotAxis
+    Dim lcPivotTable As Excel.PivotTable
+    Dim lcRange As Excel.Range
+
+    Set lcPivotTable = ActiveCell.PivotTable
+'    Set lcPivotAxis = lcPivotTable.PivotColumnAxis
+    Set lcPivotAxis = lcPivotTable.PivotRowAxis
+    Set lcRange = GetPivotLinesRegularPivotFieldsDictionary(PivotLines:=lcPivotAxis.PivotLines)
+Debug.Print lcRange.Address
+    lcRange.Select
+
+End Sub
+
+Public Function GetPivotLinesRegularPivotFieldsDictionary(PivotLines As Excel.PivotLines) As Scripting.Dictionary
+    Const ThisProcedure As String = ThisModule & "|GetPivotLinesRegularPivotFieldsDictionary|Function"
+    Dim lcDataRange As Excel.Range
+    Dim lcDictionary As Scripting.Dictionary
+    Dim lcPivotCell As Excel.PivotCell
+    Dim lcPivotLine As Excel.PivotLine
+
+    Set lcDictionary = New Scripting.Dictionary
+
+    For Each lcPivotLine In PivotLines
+        With lcPivotLine
+            If .LineType = XlPivotLineType.xlPivotLineRegular Then
+                ' fälschlicherweise sind auch Zeilen vom Typ Regular,
+                ' wenn beim letzten RowField noch eine benutzerdefinierte
+                ' Funktion ausgewählt ist.
+                ' Deshalb müssen noch die PivotLineCells abgegrast werden
+                ' Die enthalten nämlich bei benutzerdefinierten Funktionen
+                '
+                For Each lcPivotCell In .PivotLineCells
+                    With lcPivotCell
+                        ' es ist egal, welche Zelle genommen wird, da beim Typ Regular
+                        ' alle Zellen vom Typ Regular sind
+                        If .PivotCellType = XlPivotCellType.xlPivotCellDataField _
+                        Or .PivotCellType = XlPivotCellType.xlPivotCellPivotItem Then
+                            ' xlPivotCellDataField kommt nur bei PivotLines der PivotColumnAxis vor
+                            ' xlPivotCellPivotItem bei beiden PivotAxes
+                            If lcDataRange Is Nothing Then
+                                Set lcDataRange = .Range
+                                Exit For
+                            Else
+                                Set lcDataRange = Application.Union(Arg1:=lcDataRange, Arg2:=.Range)
+                                Exit For
+                            End If
+                        End If
+                    End With
+                Next
+            End If
+        End With
+    Next
+
+    Set GetPivotLinesRegularPivotFieldsDictionary = lcDataRange
+End Function
+
+Private Sub GetPivotLinesRegularRangeTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotLinesRegularRangeTest|Sub"
+    Dim lcPivotAxis As Excel.PivotAxis
+    Dim lcPivotTable As Excel.PivotTable
+    Dim lcRange As Excel.Range
+
+    Set lcPivotTable = ActiveCell.PivotTable
+'    Set lcPivotAxis = lcPivotTable.PivotColumnAxis
+    Set lcPivotAxis = lcPivotTable.PivotRowAxis
+    Set lcRange = GetPivotLinesRegularRange(PivotLines:=lcPivotAxis.PivotLines)
+Debug.Print lcRange.Address
+    lcRange.Select
+
+End Sub
+
+Public Function GetPivotLinesRegularRange(PivotLines As Excel.PivotLines) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotLinesRegularRange|Function"
+    Dim lcDataRange As Excel.Range
+    Dim lcPivotCell As Excel.PivotCell
+    Dim lcPivotLine As Excel.PivotLine
+
+    For Each lcPivotLine In PivotLines
+        With lcPivotLine
+            If .LineType = XlPivotLineType.xlPivotLineRegular Then
+                ' fälschlicherweise sind auch Zeilen vom Typ Regular,
+                ' wenn beim letzten RowField noch eine benutzerdefinierte
+                ' Funktion ausgewählt ist.
+                ' Deshalb müssen noch die PivotLineCells abgegrast werden
+                ' Die enthalten nämlich bei benutzerdefinierten Funktionen
+                '
+                For Each lcPivotCell In .PivotLineCells
+                    With lcPivotCell
+                        ' es ist egal, welche Zelle genommen wird, da beim Typ Regular
+                        ' alle Zellen vom Typ Regular sind
+                        If .PivotCellType = XlPivotCellType.xlPivotCellDataField _
+                        Or .PivotCellType = XlPivotCellType.xlPivotCellPivotItem Then
+                            ' xlPivotCellDataField kommt nur bei PivotLines der PivotColumnAxis vor
+                            ' xlPivotCellPivotItem bei beiden PivotAxes
+                            If lcDataRange Is Nothing Then
+                                Set lcDataRange = .Range
+                                Exit For
+                            Else
+                                Set lcDataRange = Application.Union(Arg1:=lcDataRange, Arg2:=.Range)
+                                Exit For
+                            End If
+                        End If
+                    End With
+                Next
+            End If
+        End With
+    Next
+
+    Set GetPivotLinesRegularRange = lcDataRange
+End Function
+
+Private Sub GetPivotColumnLineNameTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotColumnLineNameTest|Sub"
+Debug.Print GetPivotColumnLineName(ActiveCell.PivotCell.PivotColumnLine)
+End Sub
+Public Function GetPivotColumnLineName(PivotLine As Excel.PivotLine) As String
+    Const ThisProcedure As String = ThisModule & "|GetPivotColumnLineName|Function"
+    Dim lcPivotCell As Excel.PivotCell
+    Dim lvName As String
+
+    With PivotLine
+        For Each lcPivotCell In .PivotLineCells
+            With lcPivotCell
+                If .PivotCellType = xlPivotCellDataField Then
+                    lvName = lcPivotCell.DataField.Name
+
+                ElseIf .PivotCellType = xlPivotCellPivotField Then
+                    lvName = lcPivotCell.PivotItem.Name
+
+                ElseIf .PivotCellType = xlPivotCellPivotItem Then
+                    lvName = lcPivotCell.PivotItem.Name
+                End If
+            End With
+            If VBA.Len(GetPivotColumnLineName) = Lo0 Then
+                GetPivotColumnLineName = lvName
+            Else
+                GetPivotColumnLineName = GetPivotColumnLineName & " - " & lvName
+            End If
+        Next
+    End With
+End Function
+
+Private Sub GetPivotLineRangeTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotLineRangeTest|Sub"
+    Dim lcPivotLine As Excel.PivotLine
+    Dim lvIndex As Long
+
+    For Each lcPivotLine In ActiveCell.PivotTable.PivotRowAxis.PivotLines
+        lvIndex = lvIndex + Lo1
+Debug.Print lvIndex, GetPivotLineRange(lcPivotLine).Address
+    Next
+End Sub
+Private Function GetPivotLineRange(PivotLine As Excel.PivotLine) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotLineRange|Function"
+    Dim lcPivotLineCell As Excel.PivotCell
+    Dim lcRange As Excel.Range
+
+    For Each lcPivotLineCell In PivotLine.PivotLineCells
+        With lcPivotLineCell
+            'Debug.Print .Range.Address, PivotCellTypeName(.PivotCellType)
+            If lcRange Is Nothing Then
+                Set lcRange = .Range
+            Else
+                Set lcRange = Application.Union(Arg1:=lcRange, Arg2:=.Range)
+            End If
+        End With
+    Next
+    Set GetPivotLineRange = lcRange
+End Function

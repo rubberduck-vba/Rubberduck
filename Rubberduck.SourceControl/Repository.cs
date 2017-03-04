@@ -8,16 +8,16 @@ namespace Rubberduck.SourceControl
     [ClassInterface(ClassInterfaceType.None)]
     public class Repository : IRepository
     {
-        public string Name { get; set; }
+        public string Id { get; set; }
         public string LocalLocation { get; set; }
         public string RemoteLocation { get;  set; }
 
         //parameterless constructor for serialization
         public Repository() { }
 
-        public Repository(string name, string localDirectory, string remotePathOrUrl)
+        public Repository(string id, string localDirectory, string remotePathOrUrl)
         {
-            Name = name;
+            Id = id;
             LocalLocation = localDirectory;
             RemoteLocation = remotePathOrUrl;
         }

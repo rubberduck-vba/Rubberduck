@@ -1,0 +1,502 @@
+Attribute VB_Name = "fnErrorPri"
+Option Explicit
+Option Private Module
+
+' wenn ATGfn eine fehlerhafte Funktionsanwendung entdeckt,
+' muss muss ein Fehler geworfen werden, der ATGfn zugeordnet werden kann
+' gleichzeitig muss angegeben werden, welcher XlCVError gemeldet werden soll
+' VBA-Laufzeitfehler werden daran erkannt, dass noch kein ATGfn-Fehler gemeldet wurde
+
+' Alle extern erreichbaren Funktionen (UDFs) müssen eine CatchError-Behandlung haben
+' in der der gesetzte Fehler an die Funktion zurückgegeben wird und
+' anschließend der Fehler zurückgesetzt wird.
+
+Private Const ThisModule As String = ThisProject & "|fnErrorPri"
+
+Dim mvCVError As Excel.XlCVError
+Dim mvIsUsageError As Boolean
+Public mvDescription As String
+
+Public Sub RaisePivotTableHasNoPivotCharts()
+    Const ThisProcedure As String = ThisModule & "|RaisePivotTableHasNoPivotCharts|Sub"
+    SetXlErrRef Description:="PivotTable has no depending PivotCharts"
+End Sub
+Public Sub RaisePivotTableHasMoreThanOnePivotCharts()
+    Const ThisProcedure As String = ThisModule & "|RaisePivotTableHasMoreThanOnePivotCharts|Sub"
+    SetXlErrRef Description:="PivotTable more than 1 PivotCharts"
+End Sub
+Public Sub RaiseChartDoesNotExist(ChartNV As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaiseChartDoesNotExist|Sub"
+    With ChartNV
+        SetXlErrRef Description:=.Name & "(=" & .Value & ") does not exist"
+    End With
+End Sub
+Public Sub RaiseWorksheetDoesNotExist(WorksheetNV As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaiseWorksheetDoesNotExist|Sub"
+    With WorksheetNV
+        SetXlErrRef Description:=.Name & "(=" & .Value & ") does not exist"
+    End With
+End Sub
+Public Sub RaiseChartObjectDoesNotExist(WorksheetRangeNR As tyNameRange, ChartNV As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaiseChartObjectDoesNotExist|Sub"
+    With ChartNV
+        SetXlErrRef Description:=.Name & "(=" & .Value & ") does not exist in " _
+                                & WorksheetRangeNR.Name & "(=" & WorksheetRangeNR.Range.Worksheet.Name & ")"
+    End With
+End Sub
+Public Sub RaiseChartIsNoPivotChart(ChartNV As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaiseChartIsNoPivotChart|Sub"
+    With ChartNV
+        SetXlErrRef Description:=.Name & "(=" & .Value & ") is no PivotChart"
+    End With
+End Sub
+Public Sub RaiseChartIsNotBasedOnThisPivotTable(ChartNV As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaiseChartIsNotBasedOnThisPivotTable|Sub"
+    With ChartNV
+        SetXlErrRef Description:=.Name & "(=" & .Value & ") is not based on this PivotTable"
+    End With
+End Sub
+
+Public Sub RaiseCollectionItemItemIsNothing(NameValue As tyNameValue, Collection As Object)
+    Const ThisProcedure As String = ThisModule & "|RaiseCollectionItemItemIsNothing|Sub"
+    With NameValue
+        SetXlErrRef Description:=VBA.TypeName(Collection) & "(" & GetIndexOrName(NameValue.Value) & ") Is Nothing"
+    End With
+End Sub
+
+Public Sub RaiseFieldIndexMissingItemIndexAvailable(FieldItem As tyParentItem)
+    Const ThisProcedure As String = ThisModule & "|RaiseFieldIndexMissingItemIndexAvailable|Sub"
+    With FieldItem
+        SetXlErrRef Description:=.ParentNV.Name & "(" & "Index is missing but " _
+                               & .ItemNV.Name & "(" & GetIndexOrName(Value:=.ItemNV.Value) & ") is available"
+    End With
+End Sub
+Public Sub RaiseFieldIndexAvailableItemIndexMissing(FieldItem As tyParentItem)
+    Const ThisProcedure As String = ThisModule & "|RaiseFieldIndexAvailableItemIndexMissing|Sub"
+    With FieldItem
+        SetXlErrRef Description:=.ParentNV.Name & "(" & GetIndexOrName(Value:=.ParentNV.Value) & "Index is available but " _
+                               & .ItemNV.Name & " is missing"
+    End With
+End Sub
+
+Public Sub RaiseParamTypeInvalid(NameValue As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaiseParamTypeInvalid|Sub"
+    With NameValue
+        SetXlErrValue Description:=.Name & "(" & GetIndexOrName(.Value) & ")" _
+                                 & ".Type(=" & VBA.TypeName(VarName:=.Value) & ") is invalid"
+    End With
+End Sub
+
+Public Sub RaiseRangeStringInvalid(RangeString As String)
+    Const ThisProcedure As String = ThisModule & "|RaiseRangeStringInvalid|Sub"
+    SetXlErrRef Description:="RangeString(=""" & RangeString & """)" _
+                           & " is invalid"
+End Sub
+
+Public Sub RaiseParamMissing(Name As String)
+    Const ThisProcedure As String = ThisModule & "|RaiseParamMissing|Sub"
+    SetXlErrValue Description:=Name & " is missing"
+End Sub
+Private Sub RaiseParamObjTypeTest()
+    Const ThisProcedure As String = ThisModule & "|RaiseParamObjTypeTest|Sub"
+    RaiseParamObjType GetNR("a", ActiveCell), "Range"
+End Sub
+Public Sub RaiseParamObjType(NameRange As tyNameRange, ObjTypeName As String)
+    Const ThisProcedure As String = ThisModule & "|RaiseParamObjType|Sub"
+    With NameRange
+        SetXlErrValue Description:="Invalid ObjType(" & .Name & "(=" _
+                                 & VBA.TypeName(VarName:=.Value) & "). " _
+                                 & "Expected: ObjType(=" & ObjTypeName & ")"
+    End With
+End Sub
+Public Sub RaiseParamVarType1(NameValue As tyNameValue, VarType1 As VBA.VbVarType)
+    Const ThisProcedure As String = ThisModule & "|RaiseParamVarType1|Sub"
+    With NameValue
+        SetXlErrValue Description:="Invalid VarType(" & .Name & "(" _
+                                 & VarTypeName(Var:=.Value) & "). " _
+                                 & "Expected: VarType(=" & VarTypeName(Var:=VarType1) & ")"
+    End With
+End Sub
+Public Sub RaiseParamVarType2(NameValue As tyNameValue, VarType1 As VBA.VbVarType, VarType2 As VBA.VbVarType)
+    Const ThisProcedure As String = ThisModule & "|RaiseParamVarType2|Sub"
+    With NameValue
+        SetXlErrValue Description:="Invalid VarType(" & .Name & "(" _
+                                 & VarTypeName(Var:=.Value) & "). " _
+                                 & "Expected: VarType(=" & VarTypeName(Var:=VarType1) & ")" _
+                                 & " or VarType(=" & VarTypeName(Var:=VarType2) & ")"
+    End With
+End Sub
+
+Public Sub RaiseParamIsNotInteger(NameValue As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaiseParamIsNotInteger|Sub"
+    With NameValue
+        SetXlErrValue Description:=.Name & "(" & GetIndexOrName(.Value) & ")" & " is not integer"
+    End With
+End Sub
+Public Sub RaiseParamIndexGtCollectionCount(NameValue As tyNameValue, Collection As Object, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaiseParamIndexGtCollectionCount|Sub"
+    With NameValue
+        SetXlErrRef Description:=.Name & "(=" & .Value & ")" _
+                                & " > " _
+                                & VBA.TypeName(Collection) & ".Count(=" & Count & ")"
+    End With
+End Sub
+
+Public Sub RaiseParamIndexLtCollection1(NameValue As tyNameValue, Collection As Object, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaiseParamIndexLtCollection1|Sub"
+    With NameValue
+        SetXlErrRef Description:=.Name & "(=" & .Value & ") + " _
+                                & VBA.TypeName(Collection) & ".Count(=" & Count & ")" _
+                                & " < 1"
+    End With
+End Sub
+Public Sub RaiseParamIndexEqCollection0(NameValue As tyNameValue, Collection As Object, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaiseParamIndexEqCollection0|Sub"
+    With NameValue
+        SetXlErrRef Description:=.Name & "(=" & .Value & ") = 0"
+    End With
+End Sub
+
+Public Sub RaisePivotFieldDoesNotExist(NameValue As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldDoesNotExist|Sub"
+    With NameValue
+        SetXlErrRef Description:="PivotFields(" & .Name & "(" & GetValue(Value:=.Value) & ")) does not exist"
+    End With
+End Sub
+Public Sub RaisePivotFieldIsNotUsed(NameValue As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldDoesNotExist|Sub"
+    With NameValue
+        SetXlErrRef Description:="PivotFields(" & .Name & "(" & GetValue(Value:=.Value) & ")) is not being used"
+    End With
+End Sub
+Public Sub RaisePivotFieldItemRangeDoesNotIntersect(FieldItem As tyParentItem, DataRange As Excel.Range, PivotItemDataRange As Excel.Range)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldItemRangeDoesNotIntersect|Sub"
+    With FieldItem
+        SetXlErrRef Description:="Range(" _
+                               & .ParentNV.Name & "(" & GetIndexOrName(.ParentNV.Value) & "), " _
+                               & .ItemNV.Name & "(" & GetIndexOrName(.ItemNV.Value) & "))" _
+                               & ".Address(=" & PivotItemDataRange.Address & ") does not intersect " _
+                               & "DataRange.Address(=" & DataRange.Address & ")"
+    End With
+End Sub
+Public Sub RaisePivotFieldNoColumn(NameValue As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldNoColumn|Sub"
+    With NameValue
+        SetXlErrRef Description:="PivotFields(" _
+                               & .Name & "(" & GetIndexOrName(.Value) & "))" _
+                               & " is no ColumnField" & ")"
+    End With
+End Sub
+Public Sub RaisePivotFieldNoColumnNoRow(NameValue As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldNoColumnNoRow|Sub"
+    With NameValue
+        SetXlErrRef Description:="PivotFields(" _
+                               & .Name & "(" & GetIndexOrName(.Value) & "))" _
+                               & " is neither a ColumnField nor a RowField" & ")"
+    End With
+End Sub
+Public Sub RaisePivotFieldNoData(NameValue As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldNoData|Sub"
+    With NameValue
+        SetXlErrRef Description:="PivotFields(" _
+                               & .Name & "(" & GetIndexOrName(.Value) & "))" _
+                               & " is no DataField" & ")"
+    End With
+End Sub
+Public Sub RaisePivotFieldNoRow(NameValue As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldNoRow|Sub"
+    With NameValue
+        SetXlErrRef Description:="PivotFields(" _
+                               & .Name & "(" & GetIndexOrName(.Value) & "))" _
+                               & " is no RowField" & ")"
+    End With
+End Sub
+Public Sub RaisePivotFieldsCountEq0(FieldNV As tyNameValue, PivotFieldOrientation As XlPivotFieldOrientation, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldsCountEq0|Sub"
+    With FieldNV
+        SetXlErrRef Description:=.Name & "(" & GetIndexOrName(.Value) & ") but " _
+                               & "Pivot" & GetPivotFieldOrientationString(PivotFieldOrientation:=PivotFieldOrientation) & "Fields.Count(=" & VBA.CStr(Count) & ")"
+    End With
+End Sub
+Public Sub RaisePivotFieldsFieldValueStringIsNothing(FieldIndex As Variant, PivotFieldOrientation As XlPivotFieldOrientation)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldsFieldValueStringIsNothing|Sub"
+    SetXlErrRef Description:="Pivot" & GetPivotFieldOrientationString(PivotFieldOrientation:=PivotFieldOrientation) & "Fields(" _
+                           & GetIndexOrName(Value:=FieldIndex) _
+                           & ") Is Nothing"
+End Sub
+Public Sub RaisePivotFieldsFieldValueLongEq0(FieldNV As tyNameValue, PivotFieldOrientation As XlPivotFieldOrientation, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldsFieldValueLongEq0|Sub"
+    With FieldNV
+        SetXlErrRef Description:=.Name & "(" & GetIndexOrName(.Value) & ") = 0 " _
+                               & "Pivot" & GetPivotFieldOrientationString(PivotFieldOrientation:=PivotFieldOrientation) & "Fields.Count(=" & VBA.CStr(Count) & ")"
+    End With
+End Sub
+Public Sub RaisePivotFieldsFieldValueLongPosGtCount(FieldNV As tyNameValue, PivotFieldOrientation As XlPivotFieldOrientation, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldsFieldValueLongPosGtCount|Sub"
+    With FieldNV
+        SetXlErrRef Description:=.Name & "(" & GetIndexOrName(.Value) & ") > " _
+                               & "Pivot" & GetPivotFieldOrientationString(PivotFieldOrientation:=PivotFieldOrientation) & "Fields.Count(=" & VBA.CStr(Count) & ")"
+    End With
+End Sub
+Public Sub RaisePivotFieldsFieldValueLongNegGtCount(FieldNV As tyNameValue, PivotFieldOrientation As XlPivotFieldOrientation, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldsFieldValueLongNegGtCount|Sub"
+    With FieldNV
+        SetXlErrRef Description:="Abs(" & .Name & "(" & GetIndexOrName(.Value) & ")) > " _
+                               & "Pivot" & GetPivotFieldOrientationString(PivotFieldOrientation:=PivotFieldOrientation) & "Fields.Count(=" & VBA.CStr(Count) & ")"
+    End With
+End Sub
+
+Public Sub RaisePivotSlicerDoesNotContainAValidDateTimeFormat(Slicer As Excel.Slicer)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldsFieldValueLongNegGtCount|Sub"
+    SetXlErrValue Description:="Slicer(=" & Slicer.Name & ") does not contain a valid DateTime Format."
+End Sub
+
+Public Sub RaisePivotSlicerIsNotSetToShowItemsWithNoData(Slicer As Excel.Slicer)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldsFieldValueLongNegGtCount|Sub"
+    SetXlErrValue Description:="Slicer(=" & Slicer.Name & ") is not set to 'ShowItemsWithNoData'."
+End Sub
+
+Public Sub RaisePivotSlicerIsSetToShowAllItems(Slicer As Excel.Slicer)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldsFieldValueLongNegGtCount|Sub"
+    SetXlErrValue Description:="Slicer(=" & Slicer.Name & ") is set to 'ShowAllItems."
+End Sub
+
+Public Sub RaisePivotTableNotClassicLayout()
+    Const ThisProcedure As String = ThisModule & "|RaisePivotFieldNoColumn|Sub"
+    SetXlErrRef Description:="Not Classic PivotTable Layout"
+End Sub
+
+Public Sub RaiseLogicError(Source As String)
+    Const ThisProcedure As String = ThisModule & "|RaiseLogicError|Sub"
+    SetXlErrNull Description:="Logical Error in " & Source
+End Sub
+
+Public Sub RaiseRangeContainsNoPivotTable(PivotTableRange As Excel.Range)
+    Const ThisProcedure As String = ThisModule & "|RaiseRangeContainsNoPivotTable|Sub"
+    SetXlErrRef Description:="PivotTableRange.Address(" & PivotTableRange.Address & ") does not contain a PivotTable"
+End Sub
+
+Public Sub RaisePivotItemsCountEq0(FieldItem As tyParentItem, PivotFieldOrientation As XlPivotFieldOrientation, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotItemsCountEq0|Sub"
+    With FieldItem
+        SetXlErrRef Description:=.ParentNV.Name & "(" & GetIndexOrName(.ParentNV.Value) & ")" _
+                               & "." & .ItemNV.Name & "(" & GetIndexOrName(.ItemNV.Value) & ")" _
+                               & " but " _
+                               & "Pivot" & GetPivotFieldOrientationString(PivotFieldOrientation:=PivotFieldOrientation) & "Fields(" & GetIndexOrName(.ParentNV.Value) & ")" _
+                               & ".PivotItems(.Count(=" & VBA.CStr(Count) & ")"
+    End With
+End Sub
+Public Sub RaisePivotItemsItemValueStringIsNothing(FieldItem As tyParentItem, PivotFieldOrientation As XlPivotFieldOrientation)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotItemsItemValueStringIsNothing|Sub"
+    With FieldItem
+        SetXlErrRef Description:=.ParentNV.Name & "(" & GetIndexOrName(.ParentNV.Value) & ")" _
+                               & "." & .ItemNV.Name & "(" & GetIndexOrName(.ItemNV.Value) & ")" _
+                               & " but " _
+                               & "Pivot" & GetPivotFieldOrientationString(PivotFieldOrientation:=PivotFieldOrientation) & "Fields(" _
+                               & GetIndexOrName(Value:=.ParentNV.Value) _
+                               & ") Is Nothing"
+    End With
+End Sub
+Public Sub RaisePivotItemsItemValueLongEq0(FieldItem As tyParentItem, PivotFieldOrientation As XlPivotFieldOrientation, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotItemsItemValueLongEq0|Sub"
+    With FieldItem
+        SetXlErrRef Description:=.ParentNV.Name & "(" & GetIndexOrName(.ParentNV.Value) & ")" _
+                               & "." & .ItemNV.Name & "(" & GetIndexOrName(.ItemNV.Value) & ")" _
+                               & " but " _
+                               & "Pivot" & GetPivotFieldOrientationString(PivotFieldOrientation:=PivotFieldOrientation) & "Fields(" & GetIndexOrName(.ParentNV.Value) & ")" _
+                               & ".PivotItems(.Count(=" & VBA.CStr(Count) & ")"
+    End With
+End Sub
+Public Sub RaisePivotItemsItemValueLongPosGtCount(FieldItem As tyParentItem, PivotFieldOrientation As XlPivotFieldOrientation, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotItemsItemValueLongPosGtCount|Sub"
+    With FieldItem
+        SetXlErrRef Description:=.ParentNV.Name & "(" & GetIndexOrName(.ParentNV.Value) & ")" _
+                               & "." & .ItemNV.Name & "(" & GetIndexOrName(.ItemNV.Value) & ")" _
+                               & " but " _
+                               & "Pivot" & GetPivotFieldOrientationString(PivotFieldOrientation:=PivotFieldOrientation) & "Fields(" & GetIndexOrName(.ParentNV.Value) & ")" _
+                               & ".PivotItems(.Count(=" & VBA.CStr(Count) & ")"
+    End With
+End Sub
+Public Sub RaisePivotItemsItemValueLongNegGtCount(FieldItem As tyParentItem, PivotFieldOrientation As XlPivotFieldOrientation, Count As Long)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotItemsItemValueLongNegGtCount|Sub"
+    With FieldItem
+        SetXlErrRef Description:="Abs(" _
+                               & .ParentNV.Name & "(" & GetIndexOrName(.ParentNV.Value) & ")" _
+                               & "." & .ItemNV.Name & "(" & GetIndexOrName(.ItemNV.Value) & ")" _
+                               & ")" _
+                               & " > " _
+                               & "Abs(" & .ItemNV.Name & "(" & GetIndexOrName(.ItemNV.Value) & ")) > " _
+                               & "Pivot" & GetPivotFieldOrientationString(PivotFieldOrientation:=PivotFieldOrientation) & "Fields(" & GetIndexOrName(.ParentNV.Value) & ")" _
+                               & ".PivotItems(.Count(=" & VBA.CStr(Count) & ")"
+    End With
+End Sub
+
+Public Sub RaisePivotItemByValueNotFound(NameValue As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotItemByValueNotFound|Sub"
+    With NameValue
+        SetXlErrRef Description:="PivotItems(" & .Name & "(" & GetValue(Value:=.Value) & ")) not found"
+    End With
+End Sub
+Public Sub RaisePivotItemVisibleError(ParName As String)
+    Const ThisProcedure As String = ThisModule & "|RaisePivotItemVisibleError|Sub"
+    SetXlErrNA Description:="Excel-Error! Use Slicer for " & ParName
+End Sub
+
+Public Sub RaiseSlicerByValueNotFound(NameValue As tyNameValue)
+    Const ThisProcedure As String = ThisModule & "|RaiseSlicerByValueNotFound|Sub"
+    With NameValue
+        SetXlErrRef Description:="Slicers(" & .Name & "(" & GetValue(Value:=.Value) & ")) not found"
+    End With
+End Sub
+Public Sub RaiseSlicerWithOrientationNotFound(NameValue As tyNameValue, PivotFieldOrientation As XlPivotFieldOrientation)
+    Const ThisProcedure As String = ThisModule & "|RaiseSlicerWithOrientationNotFound|Sub"
+    Dim lvPivotFieldOrientation As String
+
+    Select Case PivotFieldOrientation
+        Case XlPivotFieldOrientation.xlColumnField
+            lvPivotFieldOrientation = "Column"
+        Case XlPivotFieldOrientation.xlDataField
+            lvPivotFieldOrientation = "Data"
+        Case XlPivotFieldOrientation.xlHidden
+            lvPivotFieldOrientation = "Hidden"
+        Case XlPivotFieldOrientation.xlPageField
+            lvPivotFieldOrientation = "Page"
+        Case XlPivotFieldOrientation.xlRowField
+            lvPivotFieldOrientation = "Row"
+    End Select
+    With NameValue
+        SetXlErrRef Description:="Slicers(" & GetValue(Value:=.Value) & "(" & GetValue(Value:=.Name) & ")) is no " & lvPivotFieldOrientation & "Slicer"
+    End With
+End Sub
+
+Public Sub RaiseWorksheetPivotTablesIsNothing(Worksheet As Excel.Worksheet)
+    Const ThisProcedure As String = ThisModule & "|RaiseWorksheetPivotTablesIsNothing|Sub"
+    SetXlErrRef Description:="Worksheets(""" & Worksheet.Name & """).PivotTables Is Nothing"
+End Sub
+Public Sub RaiseWorksheetRangeNotInThisWorkbook(WorksheetRange As Excel.Range)
+    Const ThisProcedure As String = ThisModule & "|RaiseWorksheetRangeNotInThisWorkbook|Sub"
+    SetXlErrRef Description:="WorksheetRange.Address(""" & WorksheetRange.Address(External:=True) & """) not in this workbook"
+End Sub
+
+Public Sub SetXlErrDiv0(Description As String)
+    Const ThisProcedure As String = ThisModule & "|SetXlErrDiv0|Sub"
+    SetUsageError CVError:=XlCVError.xlErrDiv0, Description:=Description
+End Sub
+Public Sub SetXlErrNA(Description As String)
+    Const ThisProcedure As String = ThisModule & "|SetXlErrNA|Sub"
+    SetUsageError CVError:=XlCVError.xlErrNA, Description:=Description
+End Sub
+Public Sub SetXlErrName(Description As String)
+    Const ThisProcedure As String = ThisModule & "|SetXlErrName|Sub"
+    SetUsageError CVError:=XlCVError.xlErrName, Description:=Description
+End Sub
+Public Sub SetXlErrNull(Description As String)
+    Const ThisProcedure As String = ThisModule & "|SetXlErrNull|Sub"
+    SetUsageError CVError:=XlCVError.xlErrNull, Description:=Description
+End Sub
+Public Sub SetXlErrNum(Description As String)
+    Const ThisProcedure As String = ThisModule & "|SetXlErrNum|Sub"
+    SetUsageError CVError:=XlCVError.xlErrNum, Description:=Description
+End Sub
+Public Sub SetXlErrRef(Description As String)
+    Const ThisProcedure As String = ThisModule & "|SetXlErrRef|Sub"
+    SetUsageError CVError:=XlCVError.xlErrRef, Description:=Description
+End Sub
+Public Sub SetXlErrValue(Description As String)
+    Const ThisProcedure As String = ThisModule & "|SetXlErrValue|Sub"
+    SetUsageError CVError:=XlCVError.xlErrValue, Description:=Description
+End Sub
+Private Sub SetUsageError(CVError As Excel.XlCVError, Description As String)
+    Const ThisProcedure As String = ThisModule & "|SetUsageError|Sub"
+    mvIsUsageError = True
+    mvCVError = CVError
+    mvDescription = Description
+    VBA.Err.Raise Number:=CVError, Description:=Description
+End Sub
+Public Sub ReraiseError()
+    Const ThisProcedure As String = ThisModule & "|ReraiseError|Sub"
+    ' muss in allen CatchError-Routinen aufgerufen werden,
+    ' die keine UDF ist
+    With VBA.Err
+        If Not mvIsUsageError Then
+            mvCVError = .Number
+            mvDescription = .Description
+        End If
+        .Raise Number:=.Number, Description:=mvDescription
+    End With
+End Sub
+Public Function GetAndClearError() As Variant
+    Const ThisProcedure As String = ThisModule & "|GetAndClearError|Function"
+    ' jede UDF muss in der CatchError-Routine den Wert dieser Funktion zurückgeben
+    ' z. B.: UDF = GetAndClearError
+    If mvIsUsageError Then
+        ' dann wurden Parameter falsch angegeben
+        GetAndClearError = VBA.CVErr(Expression:=mvCVError)
+        fnInfoErrMsgPri.Number = mvCVError
+        fnInfoErrMsgPri.Description = mvDescription
+    Else
+        ' hier ist ein interner Fehler aufgetreten
+        ' xlErrNull wird auch oben in RaiseLogicError genommen
+        GetAndClearError = VBA.CVErr(Expression:=XlCVError.xlErrNull)
+        With VBA.Err
+            fnInfoErrMsgPri.Number = .Number
+            fnInfoErrMsgPri.Description = .Description
+        End With
+    End If
+    mvCVError = Lo0
+    mvDescription = EmptyString
+    mvIsUsageError = False
+End Function
+Public Function ErrorTest(x) As Variant
+    Const ThisProcedure As String = ThisModule & "|ErrorTest|Function"
+    On Error GoTo CatchError
+    ErrorTest2 x
+    Exit Function
+CatchError:
+    ErrorTest = GetAndClearError
+End Function
+Private Sub ErrorTest2(x)
+    Const ThisProcedure As String = ThisModule & "|ErrorTest2|Sub"
+    On Error GoTo CatchError
+    ErrorTest3 x
+    Exit Sub
+CatchError:
+    ReraiseError
+End Sub
+Private Function ErrorTest3(x)
+    Const ThisProcedure As String = ThisModule & "|ErrorTest3|Function"
+    On Error GoTo CatchError
+    Select Case x
+        Case "u": SetUsageError CVError:=XlCVError.xlErrDiv0, Description:="Div"
+        Case "v":
+Debug.Print 1 / 0
+        Case Else
+    End Select
+    Exit Function
+CatchError:
+    ReraiseError
+End Function
+
+Private Sub ErrorTestTest()
+    Const ThisProcedure As String = ThisModule & "|ErrorTestTest|Sub"
+Debug.Print ErrorTest("u"), fnInfoErrMsgPri.Description
+Debug.Print ErrorTest("v"), fnInfoErrMsgPri.Description
+Debug.Print ErrorTest(""), fnInfoErrMsgPri.Description
+End Sub
+
+Private Function GetIndexOrName(Value As Variant) As String
+    Const ThisProcedure As String = ThisModule & "|GetIndexOrName|Function"
+    If VBA.VarType(VarName:=Value) = VBA.VbVarType.vbString Then
+        GetIndexOrName = ConChrEquals & ConChrQuote & Value & ConChrQuote
+    Else
+        GetIndexOrName = ConChrEquals & VBA.CStr(Value)
+    End If
+End Function
+Private Function GetValue(Value As Variant) As String
+    Const ThisProcedure As String = ThisModule & "|GetValue|Function"
+    If VBA.VarType(VarName:=Value) = VBA.VbVarType.vbString Then
+        GetValue = ConChrEquals & ConChrQuote & Value & ConChrQuote
+    Else
+        GetValue = ConChrEquals & VBA.CStr(Value)
+    End If
+End Function

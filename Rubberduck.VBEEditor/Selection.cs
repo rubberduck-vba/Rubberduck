@@ -1,6 +1,8 @@
-﻿namespace Rubberduck.VBEditor
+﻿using System;
+
+namespace Rubberduck.VBEditor
 {
-    public struct Selection
+    public struct Selection : IEquatable<Selection>, IComparable<Selection>
     {
         public Selection(int startLine, int startColumn, int endLine, int endColumn)
         {
@@ -10,7 +12,23 @@
             _endColumn = endColumn;
         }
 
-        public static Selection Home { get { return new Selection(1, 1, 1, 1); } }
+        /// <summary>
+        /// The first character of the first line.
+        /// </summary>
+        public static Selection Home
+        {
+            get { return new Selection(1, 1, 1, 1); }
+        }
+
+        public static Selection Empty
+        {
+            get { return new Selection(); }
+        }
+
+        public bool IsEmpty()
+        {
+            return Equals(Empty);
+        }
 
         public bool ContainsFirstCharacter(Selection selection)
         {
@@ -62,9 +80,77 @@
 
         public int LineCount { get { return _endLine - _startLine + 1; } }
 
+        public bool Equals(Selection other)
+        {
+            return other.StartLine == StartLine
+                   && other.EndLine == EndLine
+                   && other.StartColumn == StartColumn
+                   && other.EndColumn == EndColumn;
+        }
+
+        public int CompareTo(Selection other)
+        {
+            if (this > other)
+            {
+                return 1;
+            }
+            if (this < other)
+            {
+                return -1;
+            }
+
+            return 0;
+        }
+
         public override string ToString()
         {
-            return string.Format("Start: L{0}C{1} End: L{2}C{3}", _startLine, _startColumn, _endLine, _endColumn);
+            return (_startLine == _endLine && _startColumn == _endColumn)
+                ? string.Format(VBEEditorText.SelectionLocationPosition, _startLine, _startColumn)
+                : string.Format(VBEEditorText.SelectionLocationRange, _startLine, _startColumn, _endLine, _endColumn);
+        }
+
+        public static bool operator ==(Selection selection1, Selection selection2)
+        {
+            return selection1.Equals(selection2);
+        }
+
+        public static bool operator !=(Selection selection1, Selection selection2)
+        {
+            return !(selection1 == selection2);
+        }
+
+        public static bool operator >(Selection selection1, Selection selection2)
+        {
+            return selection1.StartLine > selection2.StartLine ||
+                   selection1.StartLine == selection2.StartLine &&
+                   selection1.StartColumn > selection2.StartColumn;
+        }
+
+        public static bool operator <(Selection selection1, Selection selection2)
+        {
+            return selection1.StartLine < selection2.StartLine ||
+                   selection1.StartLine == selection2.StartLine &&
+                   selection1.StartColumn < selection2.StartColumn;
+        }
+
+        public static bool operator >=(Selection selection1, Selection selection2)
+        {
+            return !(selection1 < selection2);
+        }
+
+        public static bool operator <=(Selection selection1, Selection selection2)
+        {
+            return !(selection1 > selection2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj != null && Equals((Selection)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Compute(StartLine, EndLine, StartColumn, EndColumn);
         }
     }
 }

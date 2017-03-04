@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 
@@ -30,14 +31,12 @@ namespace Rubberduck.UI.Refactorings
         private void Localize()
         {
             Text = RubberduckUI.ExtractMethod_Caption;
-            OkButton.Text = RubberduckUI.OkButtonText;
-            CancelButton.Text = RubberduckUI.CancelButtonText;
+            OkButton.Text = RubberduckUI.OK;
+            CancelDialogButton.Text = RubberduckUI.CancelButtonText;
 
             TitleLabel.Text = RubberduckUI.ExtractMethod_TitleText;
             InstructionsLabel.Text = RubberduckUI.ExtractMethod_InstructionsText;
             NameLabel.Text = RubberduckUI.NameLabelText;
-            ReturnLabel.Text = RubberduckUI.ExtractMethod_ReturnLabel;
-            SetReturnValueCheck.Text = RubberduckUI.ExtractMethod_SetBoxLabel;
             AccessibilityLabel.Text = RubberduckUI.ExtractMethod_AccessibilityLabel;
             ParametersLabel.Text = RubberduckUI.ExtractMethod_ParametersLabel;
             PreviewLabel.Text = RubberduckUI.ExtractMethod_PreviewLabel;
@@ -51,38 +50,38 @@ namespace Rubberduck.UI.Refactorings
             MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
             MethodParametersGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
-            var paramNameColumn = new DataGridViewTextBoxColumn();
-            paramNameColumn.Name = "Name";
-            paramNameColumn.DataPropertyName = "Name";
-            paramNameColumn.HeaderText = RubberduckUI.Name;
-            paramNameColumn.ReadOnly = true;
+            var paramNameColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "Name",
+                DataPropertyName = "Name",
+                HeaderText = RubberduckUI.Name,
+                ReadOnly = true
+            };
 
-            var paramTypeColumn = new DataGridViewTextBoxColumn();
-            paramTypeColumn.Name = "TypeName";
-            paramTypeColumn.DataPropertyName = "TypeName";
-            paramTypeColumn.HeaderText = RubberduckUI.Type;
-            paramTypeColumn.ReadOnly = true;
+            var paramTypeColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "TypeName",
+                DataPropertyName = "TypeName",
+                HeaderText = RubberduckUI.Type,
+                ReadOnly = true
+            };
 
-            var paramPassedByColumn = new DataGridViewComboBoxColumn();
-            paramPassedByColumn.Name = "Passed";
-            paramPassedByColumn.DataSource = Enum.GetValues(typeof (ExtractedParameter.PassedBy));
-            paramPassedByColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            paramPassedByColumn.HeaderText = RubberduckUI.Passed;
-            paramPassedByColumn.DataPropertyName = "Passed";
-            paramPassedByColumn.ReadOnly = true;
+            var paramPassedByColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "Passed",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                HeaderText = RubberduckUI.Passed,
+                DataPropertyName = "Passed",
+                ReadOnly = true
+            };
 
             MethodParametersGrid.Columns.AddRange(paramNameColumn, paramTypeColumn, paramPassedByColumn);
         }
 
         private void RegisterViewEvents()
         {
-            OkButton.Click += OkButtonOnClick;
-            CancelButton.Click += CancelButton_Click;
-
-            SetReturnValueCheck.CheckedChanged += SetReturnValueCheck_CheckedChanged;
             MethodNameBox.TextChanged += MethodNameBox_TextChanged;
             MethodAccessibilityCombo.SelectedIndexChanged += MethodAccessibilityCombo_SelectedIndexChanged;
-            MethodReturnValueCombo.SelectedIndexChanged += MethodReturnValueCombo_SelectedIndexChanged;
         }
 
         public event EventHandler RefreshPreview;
@@ -103,25 +102,7 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public bool CanSetReturnValue
-        {
-            get { return SetReturnValueCheck.Enabled; }
-            set
-            {
-                SetReturnValueCheck.Enabled = value;
-                SetReturnValueCheck.Checked = value;
-            }
-        }
 
-        private void SetReturnValueCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            SetReturnValue = SetReturnValueCheck.Checked;
-        }
-
-        private void MethodReturnValueCombo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ReturnValue = (ExtractedParameter) MethodReturnValueCombo.SelectedItem;
-        }
 
         private Accessibility _accessibility;
         public Accessibility Accessibility
@@ -141,7 +122,7 @@ namespace Rubberduck.UI.Refactorings
 
         private void MethodNameBox_TextChanged(object sender, EventArgs e)
         {
-            MethodName = MethodNameBox.Text;
+            ValidateName();
             OnRefreshPreview();
         }
 
@@ -154,30 +135,6 @@ namespace Rubberduck.UI.Refactorings
             }
 
             handler(this, args ?? EventArgs.Empty);
-        }
-
-        public event EventHandler CancelButtonClicked;
-        
-        public void OnCancelButtonClicked()
-        {
-            OnViewEvent(CancelButtonClicked);
-        }
-
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-            OnCancelButtonClicked();
-        }
-
-        public event EventHandler OkButtonClicked;
-
-        public void OnOkButtonClicked()
-        {
-            OnViewEvent(OkButtonClicked);
-        }
-
-        private void OkButtonOnClick(object sender, EventArgs e)
-        {
-            OnOkButtonClicked();
         }
 
         private string _preview;
@@ -211,28 +168,16 @@ namespace Rubberduck.UI.Refactorings
             {
                 _returnValues = new BindingList<ExtractedParameter>(value.ToList());
                 var items = _returnValues.ToArray();
-                MethodReturnValueCombo.Items.AddRange(items);
-                MethodReturnValueCombo.DisplayMember = "Name";
             }
         }
 
         private ExtractedParameter _returnValue;
-        public ExtractedParameter ReturnValue
-        {
-            get { return _returnValue; }
-            set
-            {
-                _returnValue = value;
-                MethodReturnValueCombo.Text = value.Name;
-                Parameters = Inputs.Where(input => input.Name != _returnValue.Name)
-                                   .Union(Outputs.Where(output => output.Name != _returnValue.Name));
-                OnRefreshPreview();
-            }
-        }
 
         public IEnumerable<ExtractedParameter> Inputs { get; set; }
         public IEnumerable<ExtractedParameter> Outputs { get; set; }
         public IEnumerable<ExtractedParameter> Locals { get; set; }
+
+        public string OldMethodName { get; set; }
 
         public string MethodName
         {
@@ -244,5 +189,18 @@ namespace Rubberduck.UI.Refactorings
                 OnRefreshPreview();
             }
         }
+
+        private void ValidateName()
+        {
+            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+
+            OkButton.Enabled = MethodName != OldMethodName
+                               && char.IsLetter(MethodName.FirstOrDefault())
+                               && !tokenValues.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
+                               && !MethodName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+
+            InvalidNameValidationIcon.Visible = !OkButton.Enabled;
+        }
+
     }
 }

@@ -1,0 +1,150 @@
+Attribute VB_Name = "fnTypePri"
+Option Explicit
+'Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|fnTypePri"
+
+Public Type tyArrayIndexValues
+    Count As Long
+    Values As Variant
+End Type
+Public Type tyAllArrayIndexValues
+    BooleanArray As tyArrayIndexValues
+    DateArray As tyArrayIndexValues
+    DoubleArray As tyArrayIndexValues
+    EmptyArray As tyArrayIndexValues
+    ErrorArray As tyArrayIndexValues
+    StringArray As tyArrayIndexValues
+End Type
+
+Public Type tyAllDictionaries
+    BooleanDictionary As Scripting.Dictionary
+    DateDictionary As Scripting.Dictionary
+    DoubleDictionary As Scripting.Dictionary
+    EmptyDictionary As Scripting.Dictionary
+    ErrorDictionary As Scripting.Dictionary
+    StringDictionary As Scripting.Dictionary
+End Type
+
+Public Type tyNameValue
+    Name As String
+    Value As Variant
+End Type
+
+Public Type tyNamesVector
+    Count As Long
+    Names() As String
+End Type
+
+Public Type tyNameRange
+    Name As String
+    Range As Excel.Range
+    Value As Variant
+End Type
+
+Public Type tyStatFns
+    Min As Boolean
+    Avg As Boolean
+    wAvg As Boolean
+    Max As Boolean
+    DecimalPlacesNV As tyNameValue
+    ExcludeZerosNV As tyNameValue
+    NoDataHeaderNV As tyNameValue
+    NoFieldHeaderNV As tyNameValue
+End Type
+
+Public Type tyParentItem
+    ParentNV As tyNameValue
+    ItemNV As tyNameValue
+End Type
+
+Public Type tyParentItemList
+    Count As Long
+    PIs() As tyParentItem
+End Type
+
+Public Type tyPivotFieldPivotItem
+    PivotField As Excel.PivotField
+    PivotItem As Excel.PivotItem
+End Type
+
+Public Type tyPivotFieldPivotItemVector
+    Count As Long
+    Items() As tyPivotFieldPivotItem
+    LabelRange As Excel.Range
+End Type
+
+Public Type tyPivotFieldPivotItemVectorAxes
+    DataRange As Excel.Range
+    RowAxis As tyPivotFieldPivotItemVector
+    ColumnAxis As tyPivotFieldPivotItemVector
+End Type
+
+Public Type tyPivotFieldsVector
+    Count As Long
+    Items() As Excel.PivotField
+    ' PivotFields ist neu, falls es mal keine Felder gibt
+    ' ist ein Anker da, um auf die PivotTable zugreifen zu können
+    PivotFields As Excel.PivotFields
+                                     
+End Type
+
+Public Type tyPivotItemArea
+    Area As Excel.Range
+    PivotItem As Excel.PivotItem
+End Type
+
+Public Type tyPivotItemAreasVector
+    Count As Long
+    Items() As tyPivotItemArea
+End Type
+
+Public Type tyPivotItemsVector
+    Count As Long
+    Items() As Excel.PivotItem
+    PivotFieldDataType As Excel.XlPivotFieldDataType
+End Type
+
+Public Type tyPivotFilterParams
+    NoHeaderNV As tyNameValue
+    NoDataFieldNV As tyNameValue
+    NoTopBottomNV As tyNameValue
+    NoCaptionNV As tyNameValue
+    NoDateNV As tyNameValue
+    NoValueNV As tyNameValue
+End Type
+
+Public Type tySeriesByStackType
+    Name As String
+    SeriesStackType As enSeriesStackType
+    SeriesDictionary As Scripting.Dictionary
+End Type
+
+Public Type tyDateTimeItems
+    DateText As String
+    Spaces As String
+    TimeText As String
+End Type
+
+'Public Type tyDateTimeItems
+'    DateDate As Date
+'    DateText As String
+'    DateTimeText As String
+'    Spaces As String
+'    TimeDate As Date
+'    TimeText As String
+'End Type
+
+Public Type tyDateTimeRange
+    Key As String
+    FromDateTimeItems As tyDateTimeItems
+    ToDateTimeItems As tyDateTimeItems
+End Type
+
+Public Type tyTimeItems
+    Hour As String
+    Minute As String
+    Second As String
+    AMPM As String
+End Type
+

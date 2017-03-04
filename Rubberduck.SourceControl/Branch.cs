@@ -17,6 +17,10 @@ namespace Rubberduck.SourceControl
         [DispId(2)]
         bool IsRemote { get; }
 
+        [ComVisible(false)]
+        [DispId(2)]
+        string TrackingName { get; }
+
         [DispId(3)]
         bool IsCurrentHead { get; }
     }
@@ -31,17 +35,24 @@ namespace Rubberduck.SourceControl
         public string CanonicalName { get; private set; }
         public bool IsRemote { get; private set; }
         public bool IsCurrentHead { get; private set; }
+        public string TrackingName { get; private set; }
 
         public Branch(LibGit2Sharp.Branch branch)
-            : this(branch.FriendlyName, branch.CanonicalName, branch.IsRemote, branch.IsCurrentRepositoryHead)
-        { }
-
-        public Branch(string name, string canonicalName, bool isRemote, bool isCurrentHead)
+            : this(branch.FriendlyName, branch.CanonicalName, branch.IsRemote, branch.IsCurrentRepositoryHead, branch.TrackedBranch)
         {
-            this.Name = name;
-            this.CanonicalName = canonicalName;
-            this.IsRemote = isRemote;
-            this.IsCurrentHead = isCurrentHead;
+        }
+
+        public Branch(string friendlyName, string canonicalName, bool isRemote, bool isCurrentRepositoryHead, LibGit2Sharp.Branch trackedBranch)
+        {
+            Name = friendlyName;
+            CanonicalName = canonicalName;
+            IsRemote = isRemote;
+            IsCurrentHead = isCurrentRepositoryHead;
+
+            if (trackedBranch != null && trackedBranch.Tip != null)   // make sure the online repo exists
+            {
+                TrackingName = trackedBranch.FriendlyName;
+            }
         }
     }
 }
