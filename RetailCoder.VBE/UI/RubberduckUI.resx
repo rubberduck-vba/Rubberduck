@@ -1961,4 +1961,7 @@ Would you like to import them to Rubberduck?</value>
     <value>'{0}' is a reserved keyword.</value>
     <comment>{0} = proposed variable name.</comment>
   </data>
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
+    <value>Variable '{0}' is assigned. Remove assignment instruction(s)?</value>
+  </data>
 </root>
