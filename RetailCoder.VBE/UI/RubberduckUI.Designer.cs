@@ -916,6 +916,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is assigned. Remove assignment instruction(s)?.
+        /// </summary>
+        public static string ConfirmRemoveAssignmentWithUnusedDeclaration {
+            get {
+                return ResourceManager.GetString("ConfirmRemoveAssignmentWithUnusedDeclaration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Find all references....
         /// </summary>
         public static string ContextMenu_FindAllReferences {

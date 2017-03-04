@@ -6,15 +6,19 @@ using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ProcedureNotUsedInspection : InspectionBase
     {
-        public ProcedureNotUsedInspection(RubberduckParserState state)
+        private readonly IMessageBox _messageBox;
+
+        public ProcedureNotUsedInspection(RubberduckParserState state, IMessageBox messageBox)
             : base(state)
         {
+            _messageBox = messageBox;
         }
 
         public override string Meta { get { return InspectionsUI.ProcedureNotUsedInspectionMeta; } }
