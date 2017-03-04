@@ -524,7 +524,7 @@ subscript : (expression whiteSpace TO whiteSpace)? expression;
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
 identifier : typedIdentifier | untypedIdentifier;
 untypedIdentifier : identifierValue;
-typedIdentifier : identifierValue typeHint;
+typedIdentifier : untypedIdentifier typeHint;
 identifierValue : IDENTIFIER | keyword | foreignName | BF;
 foreignName : L_SQUARE_BRACKET foreignIdentifier* R_SQUARE_BRACKET;
 foreignIdentifier : ~(L_SQUARE_BRACKET | R_SQUARE_BRACKET) | foreignName;

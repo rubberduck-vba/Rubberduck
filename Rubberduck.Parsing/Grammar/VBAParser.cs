@@ -6742,7 +6742,7 @@ public partial class VBAParser : Parser {
 			State = 1250;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << BF) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (CLASS - 66)) | (1L << (CLOSE - 66)) | (1L << (DATABASE - 66)) | (1L << (DATE - 66)) | (1L << (DOUBLE - 66)) | (1L << (END - 66)) | (1L << (EQV - 66)) | (1L << (ERROR - 66)) | (1L << (FALSE - 66)) | (1L << (GET - 66)) | (1L << (IMP - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LIB - 130)) | (1L << (LIKE - 130)) | (1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (ME - 130)) | (1L << (MID - 130)) | (1L << (MOD - 130)) | (1L << (NAME - 130)) | (1L << (NEW - 130)) | (1L << (NOT - 130)) | (1L << (NOTHING - 130)) | (1L << (NULL - 130)) | (1L << (OBJECT - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OPTIONAL - 130)) | (1L << (OR - 130)) | (1L << (OUTPUT - 130)) | (1L << (PARAMARRAY - 130)) | (1L << (PRESERVE - 130)) | (1L << (PRINT - 130)) | (1L << (PTRSAFE - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STEP - 130)) | (1L << (STRING - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (TYPEOF - 195)) | (1L << (UNLOCK - 195)) | (1L << (UNTIL - 195)) | (1L << (VARIANT - 195)) | (1L << (VERSION - 195)) | (1L << (WIDTH - 195)) | (1L << (WITHEVENTS - 195)) | (1L << (WRITE - 195)) | (1L << (XOR - 195)) | (1L << (L_SQUARE_BRACKET - 195)) | (1L << (IDENTIFIER - 195)) | (1L << (LOAD - 195)) | (1L << (RESUME_NEXT - 195)))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << BF) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (CLASS - 66)) | (1L << (CLOSE - 66)) | (1L << (DATABASE - 66)) | (1L << (DATE - 66)) | (1L << (DOUBLE - 66)) | (1L << (END - 66)) | (1L << (EQV - 66)) | (1L << (ERROR - 66)) | (1L << (FALSE - 66)) | (1L << (GET - 66)) | (1L << (IMP - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LIB - 130)) | (1L << (LIKE - 130)) | (1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (ME - 130)) | (1L << (MOD - 130)) | (1L << (NAME - 130)) | (1L << (NEW - 130)) | (1L << (NOT - 130)) | (1L << (NOTHING - 130)) | (1L << (NULL - 130)) | (1L << (OBJECT - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OPTIONAL - 130)) | (1L << (OR - 130)) | (1L << (OUTPUT - 130)) | (1L << (PARAMARRAY - 130)) | (1L << (PRESERVE - 130)) | (1L << (PRINT - 130)) | (1L << (PTRSAFE - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STEP - 130)) | (1L << (STRING - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (TYPEOF - 195)) | (1L << (UNLOCK - 195)) | (1L << (UNTIL - 195)) | (1L << (VARIANT - 195)) | (1L << (VERSION - 195)) | (1L << (WIDTH - 195)) | (1L << (WITHEVENTS - 195)) | (1L << (WRITE - 195)) | (1L << (XOR - 195)) | (1L << (L_SQUARE_BRACKET - 195)) | (1L << (IDENTIFIER - 195)) | (1L << (LOAD - 195)) | (1L << (RESUME_NEXT - 195)))) != 0)) {
 				{
 				{
 				State = 1247; enumerationStmt_Constant();
@@ -9834,9 +9834,6 @@ public partial class VBAParser : Parser {
 			case LENB:
 			case LONGLONG:
 			case LONGPTR:
-			case MIDB:
-			case MIDBTYPESUFFIX:
-			case MIDTYPESUFFIX:
 			case PSET:
 			case SGN:
 			case UBOUND:
@@ -9880,7 +9877,6 @@ public partial class VBAParser : Parser {
 			case LOCK_WRITE:
 			case LOCK_READ_WRITE:
 			case ME:
-			case MID:
 			case MOD:
 			case NAME:
 			case NEW:
@@ -10045,9 +10041,6 @@ public partial class VBAParser : Parser {
 				case LENB:
 				case LONGLONG:
 				case LONGPTR:
-				case MIDB:
-				case MIDBTYPESUFFIX:
-				case MIDTYPESUFFIX:
 				case PSET:
 				case SGN:
 				case UBOUND:
@@ -10091,7 +10084,6 @@ public partial class VBAParser : Parser {
 				case LOCK_WRITE:
 				case LOCK_READ_WRITE:
 				case ME:
-				case MID:
 				case MOD:
 				case NAME:
 				case NEW:
@@ -12282,7 +12274,7 @@ public partial class VBAParser : Parser {
 				}
 				State = 2019;
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << BF) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << HASH) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (CLASS - 66)) | (1L << (CLOSE - 66)) | (1L << (DATABASE - 66)) | (1L << (DATE - 66)) | (1L << (DOUBLE - 66)) | (1L << (EMPTY - 66)) | (1L << (END - 66)) | (1L << (EQV - 66)) | (1L << (ERROR - 66)) | (1L << (FALSE - 66)) | (1L << (GET - 66)) | (1L << (IMP - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LIB - 130)) | (1L << (LIKE - 130)) | (1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (ME - 130)) | (1L << (MID - 130)) | (1L << (MOD - 130)) | (1L << (NAME - 130)) | (1L << (NEW - 130)) | (1L << (NOT - 130)) | (1L << (NOTHING - 130)) | (1L << (NULL - 130)) | (1L << (OBJECT - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OPTIONAL - 130)) | (1L << (OR - 130)) | (1L << (OUTPUT - 130)) | (1L << (PARAMARRAY - 130)) | (1L << (PRESERVE - 130)) | (1L << (PRINT - 130)) | (1L << (PTRSAFE - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STEP - 130)) | (1L << (STRING - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (TYPEOF - 195)) | (1L << (UNLOCK - 195)) | (1L << (UNTIL - 195)) | (1L << (VARIANT - 195)) | (1L << (VERSION - 195)) | (1L << (WIDTH - 195)) | (1L << (WITHEVENTS - 195)) | (1L << (WRITE - 195)) | (1L << (XOR - 195)) | (1L << (LPAREN - 195)) | (1L << (MINUS - 195)) | (1L << (L_SQUARE_BRACKET - 195)) | (1L << (STRINGLITERAL - 195)) | (1L << (OCTLITERAL - 195)) | (1L << (HEXLITERAL - 195)) | (1L << (FLOATLITERAL - 195)) | (1L << (INTEGERLITERAL - 195)) | (1L << (DATELITERAL - 195)) | (1L << (WS - 195)) | (1L << (IDENTIFIER - 195)) | (1L << (LINE_CONTINUATION - 195)) | (1L << (LOAD - 195)) | (1L << (RESUME_NEXT - 195)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << BF) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << HASH) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (CLASS - 66)) | (1L << (CLOSE - 66)) | (1L << (DATABASE - 66)) | (1L << (DATE - 66)) | (1L << (DOUBLE - 66)) | (1L << (EMPTY - 66)) | (1L << (END - 66)) | (1L << (EQV - 66)) | (1L << (ERROR - 66)) | (1L << (FALSE - 66)) | (1L << (GET - 66)) | (1L << (IMP - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LIB - 130)) | (1L << (LIKE - 130)) | (1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (ME - 130)) | (1L << (MOD - 130)) | (1L << (NAME - 130)) | (1L << (NEW - 130)) | (1L << (NOT - 130)) | (1L << (NOTHING - 130)) | (1L << (NULL - 130)) | (1L << (OBJECT - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OPTIONAL - 130)) | (1L << (OR - 130)) | (1L << (OUTPUT - 130)) | (1L << (PARAMARRAY - 130)) | (1L << (PRESERVE - 130)) | (1L << (PRINT - 130)) | (1L << (PTRSAFE - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STEP - 130)) | (1L << (STRING - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (TYPEOF - 195)) | (1L << (UNLOCK - 195)) | (1L << (UNTIL - 195)) | (1L << (VARIANT - 195)) | (1L << (VERSION - 195)) | (1L << (WIDTH - 195)) | (1L << (WITHEVENTS - 195)) | (1L << (WRITE - 195)) | (1L << (XOR - 195)) | (1L << (LPAREN - 195)) | (1L << (MINUS - 195)) | (1L << (L_SQUARE_BRACKET - 195)) | (1L << (STRINGLITERAL - 195)) | (1L << (OCTLITERAL - 195)) | (1L << (HEXLITERAL - 195)) | (1L << (FLOATLITERAL - 195)) | (1L << (INTEGERLITERAL - 195)) | (1L << (DATELITERAL - 195)) | (1L << (WS - 195)) | (1L << (IDENTIFIER - 195)) | (1L << (LINE_CONTINUATION - 195)) | (1L << (LOAD - 195)) | (1L << (RESUME_NEXT - 195)))) != 0)) {
 					{
 					State = 2015; subscripts();
 					State = 2017;
@@ -12665,7 +12657,7 @@ public partial class VBAParser : Parser {
 			{
 			State = 2091;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << BF) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << HASH) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (CLASS - 66)) | (1L << (CLOSE - 66)) | (1L << (DATABASE - 66)) | (1L << (DATE - 66)) | (1L << (DOUBLE - 66)) | (1L << (EMPTY - 66)) | (1L << (END - 66)) | (1L << (EQV - 66)) | (1L << (ERROR - 66)) | (1L << (FALSE - 66)) | (1L << (GET - 66)) | (1L << (IMP - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LIB - 130)) | (1L << (LIKE - 130)) | (1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (ME - 130)) | (1L << (MID - 130)) | (1L << (MOD - 130)) | (1L << (NAME - 130)) | (1L << (NEW - 130)) | (1L << (NOT - 130)) | (1L << (NOTHING - 130)) | (1L << (NULL - 130)) | (1L << (OBJECT - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OPTIONAL - 130)) | (1L << (OR - 130)) | (1L << (OUTPUT - 130)) | (1L << (PARAMARRAY - 130)) | (1L << (PRESERVE - 130)) | (1L << (PRINT - 130)) | (1L << (PTRSAFE - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STEP - 130)) | (1L << (STRING - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (TYPEOF - 195)) | (1L << (UNLOCK - 195)) | (1L << (UNTIL - 195)) | (1L << (VARIANT - 195)) | (1L << (VERSION - 195)) | (1L << (WIDTH - 195)) | (1L << (WITHEVENTS - 195)) | (1L << (WRITE - 195)) | (1L << (XOR - 195)) | (1L << (LPAREN - 195)) | (1L << (MINUS - 195)) | (1L << (L_SQUARE_BRACKET - 195)) | (1L << (STRINGLITERAL - 195)) | (1L << (OCTLITERAL - 195)) | (1L << (HEXLITERAL - 195)) | (1L << (FLOATLITERAL - 195)) | (1L << (INTEGERLITERAL - 195)) | (1L << (DATELITERAL - 195)) | (1L << (WS - 195)) | (1L << (IDENTIFIER - 195)) | (1L << (LINE_CONTINUATION - 195)) | (1L << (LOAD - 195)) | (1L << (RESUME_NEXT - 195)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << BF) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << HASH) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (CLASS - 66)) | (1L << (CLOSE - 66)) | (1L << (DATABASE - 66)) | (1L << (DATE - 66)) | (1L << (DOUBLE - 66)) | (1L << (EMPTY - 66)) | (1L << (END - 66)) | (1L << (EQV - 66)) | (1L << (ERROR - 66)) | (1L << (FALSE - 66)) | (1L << (GET - 66)) | (1L << (IMP - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LIB - 130)) | (1L << (LIKE - 130)) | (1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (ME - 130)) | (1L << (MOD - 130)) | (1L << (NAME - 130)) | (1L << (NEW - 130)) | (1L << (NOT - 130)) | (1L << (NOTHING - 130)) | (1L << (NULL - 130)) | (1L << (OBJECT - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OPTIONAL - 130)) | (1L << (OR - 130)) | (1L << (OUTPUT - 130)) | (1L << (PARAMARRAY - 130)) | (1L << (PRESERVE - 130)) | (1L << (PRINT - 130)) | (1L << (PTRSAFE - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STEP - 130)) | (1L << (STRING - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (TYPEOF - 195)) | (1L << (UNLOCK - 195)) | (1L << (UNTIL - 195)) | (1L << (VARIANT - 195)) | (1L << (VERSION - 195)) | (1L << (WIDTH - 195)) | (1L << (WITHEVENTS - 195)) | (1L << (WRITE - 195)) | (1L << (XOR - 195)) | (1L << (LPAREN - 195)) | (1L << (MINUS - 195)) | (1L << (L_SQUARE_BRACKET - 195)) | (1L << (STRINGLITERAL - 195)) | (1L << (OCTLITERAL - 195)) | (1L << (HEXLITERAL - 195)) | (1L << (FLOATLITERAL - 195)) | (1L << (INTEGERLITERAL - 195)) | (1L << (DATELITERAL - 195)) | (1L << (WS - 195)) | (1L << (IDENTIFIER - 195)) | (1L << (LINE_CONTINUATION - 195)) | (1L << (LOAD - 195)) | (1L << (RESUME_NEXT - 195)))) != 0)) {
 				{
 				State = 2083; expression(0);
 				State = 2085;
@@ -12805,7 +12797,7 @@ public partial class VBAParser : Parser {
 			{
 			State = 2122;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << BF) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << HASH) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (CLASS - 66)) | (1L << (CLOSE - 66)) | (1L << (DATABASE - 66)) | (1L << (DATE - 66)) | (1L << (DOUBLE - 66)) | (1L << (EMPTY - 66)) | (1L << (END - 66)) | (1L << (EQV - 66)) | (1L << (ERROR - 66)) | (1L << (FALSE - 66)) | (1L << (GET - 66)) | (1L << (IMP - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LIB - 130)) | (1L << (LIKE - 130)) | (1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (ME - 130)) | (1L << (MID - 130)) | (1L << (MOD - 130)) | (1L << (NAME - 130)) | (1L << (NEW - 130)) | (1L << (NOT - 130)) | (1L << (NOTHING - 130)) | (1L << (NULL - 130)) | (1L << (OBJECT - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OPTIONAL - 130)) | (1L << (OR - 130)) | (1L << (OUTPUT - 130)) | (1L << (PARAMARRAY - 130)) | (1L << (PRESERVE - 130)) | (1L << (PRINT - 130)) | (1L << (PTRSAFE - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STEP - 130)) | (1L << (STRING - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (TYPEOF - 195)) | (1L << (UNLOCK - 195)) | (1L << (UNTIL - 195)) | (1L << (VARIANT - 195)) | (1L << (VERSION - 195)) | (1L << (WIDTH - 195)) | (1L << (WITHEVENTS - 195)) | (1L << (WRITE - 195)) | (1L << (XOR - 195)) | (1L << (LPAREN - 195)) | (1L << (MINUS - 195)) | (1L << (L_SQUARE_BRACKET - 195)) | (1L << (STRINGLITERAL - 195)) | (1L << (OCTLITERAL - 195)) | (1L << (HEXLITERAL - 195)) | (1L << (FLOATLITERAL - 195)) | (1L << (INTEGERLITERAL - 195)) | (1L << (DATELITERAL - 195)) | (1L << (WS - 195)) | (1L << (IDENTIFIER - 195)) | (1L << (LINE_CONTINUATION - 195)) | (1L << (LOAD - 195)) | (1L << (RESUME_NEXT - 195)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << BF) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << HASH) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (CLASS - 66)) | (1L << (CLOSE - 66)) | (1L << (DATABASE - 66)) | (1L << (DATE - 66)) | (1L << (DOUBLE - 66)) | (1L << (EMPTY - 66)) | (1L << (END - 66)) | (1L << (EQV - 66)) | (1L << (ERROR - 66)) | (1L << (FALSE - 66)) | (1L << (GET - 66)) | (1L << (IMP - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LIB - 130)) | (1L << (LIKE - 130)) | (1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (ME - 130)) | (1L << (MOD - 130)) | (1L << (NAME - 130)) | (1L << (NEW - 130)) | (1L << (NOT - 130)) | (1L << (NOTHING - 130)) | (1L << (NULL - 130)) | (1L << (OBJECT - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OPTIONAL - 130)) | (1L << (OR - 130)) | (1L << (OUTPUT - 130)) | (1L << (PARAMARRAY - 130)) | (1L << (PRESERVE - 130)) | (1L << (PRINT - 130)) | (1L << (PTRSAFE - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STEP - 130)) | (1L << (STRING - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (TYPEOF - 195)) | (1L << (UNLOCK - 195)) | (1L << (UNTIL - 195)) | (1L << (VARIANT - 195)) | (1L << (VERSION - 195)) | (1L << (WIDTH - 195)) | (1L << (WITHEVENTS - 195)) | (1L << (WRITE - 195)) | (1L << (XOR - 195)) | (1L << (LPAREN - 195)) | (1L << (MINUS - 195)) | (1L << (L_SQUARE_BRACKET - 195)) | (1L << (STRINGLITERAL - 195)) | (1L << (OCTLITERAL - 195)) | (1L << (HEXLITERAL - 195)) | (1L << (FLOATLITERAL - 195)) | (1L << (INTEGERLITERAL - 195)) | (1L << (DATELITERAL - 195)) | (1L << (WS - 195)) | (1L << (IDENTIFIER - 195)) | (1L << (LINE_CONTINUATION - 195)) | (1L << (LOAD - 195)) | (1L << (RESUME_NEXT - 195)))) != 0)) {
 				{
 				State = 2114; expression(0);
 				State = 2116;
@@ -13231,9 +13223,6 @@ public partial class VBAParser : Parser {
 			case LENB:
 			case LONGLONG:
 			case LONGPTR:
-			case MIDB:
-			case MIDBTYPESUFFIX:
-			case MIDTYPESUFFIX:
 			case PSET:
 			case SGN:
 			case UBOUND:
@@ -13273,7 +13262,6 @@ public partial class VBAParser : Parser {
 			case LOCK_WRITE:
 			case LOCK_READ_WRITE:
 			case ME:
-			case MID:
 			case MOD:
 			case NAME:
 			case NEW:
@@ -13519,8 +13507,8 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class TypedIdentifierContext : ParserRuleContext {
-		public IdentifierValueContext identifierValue() {
-			return GetRuleContext<IdentifierValueContext>(0);
+		public UntypedIdentifierContext untypedIdentifier() {
+			return GetRuleContext<UntypedIdentifierContext>(0);
 		}
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
@@ -13552,7 +13540,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2190; identifierValue();
+			State = 2190; untypedIdentifier();
 			State = 2191; typeHint();
 			}
 		}
@@ -13638,9 +13626,6 @@ public partial class VBAParser : Parser {
 			case LENB:
 			case LONGLONG:
 			case LONGPTR:
-			case MIDB:
-			case MIDBTYPESUFFIX:
-			case MIDTYPESUFFIX:
 			case PSET:
 			case SGN:
 			case UBOUND:
@@ -13680,7 +13665,6 @@ public partial class VBAParser : Parser {
 			case LOCK_WRITE:
 			case LOCK_READ_WRITE:
 			case ME:
-			case MID:
 			case MOD:
 			case NAME:
 			case NEW:
@@ -14682,9 +14666,6 @@ public partial class VBAParser : Parser {
 			case LENB:
 			case LONGLONG:
 			case LONGPTR:
-			case MIDB:
-			case MIDBTYPESUFFIX:
-			case MIDTYPESUFFIX:
 			case PSET:
 			case SGN:
 			case UBOUND:
@@ -14724,7 +14705,6 @@ public partial class VBAParser : Parser {
 			case LOCK_WRITE:
 			case LOCK_READ_WRITE:
 			case ME:
-			case MID:
 			case MOD:
 			case NAME:
 			case NEW:
@@ -14856,9 +14836,6 @@ public partial class VBAParser : Parser {
 			case LENB:
 			case LONGLONG:
 			case LONGPTR:
-			case MIDB:
-			case MIDBTYPESUFFIX:
-			case MIDTYPESUFFIX:
 			case OPTION:
 			case PSET:
 			case SGN:
@@ -14942,7 +14919,6 @@ public partial class VBAParser : Parser {
 			case LOCK_READ_WRITE:
 			case LSET:
 			case ME:
-			case MID:
 			case MOD:
 			case NAME:
 			case NEXT:
@@ -18069,7 +18045,6 @@ public partial class VBAParser : Parser {
 		public ITerminalNode RESET() { return GetToken(VBAParser.RESET, 0); }
 		public ITerminalNode XOR() { return GetToken(VBAParser.XOR, 0); }
 		public ITerminalNode LOAD() { return GetToken(VBAParser.LOAD, 0); }
-		public ITerminalNode MIDTYPESUFFIX() { return GetToken(VBAParser.MIDTYPESUFFIX, 0); }
 		public ITerminalNode BYREF() { return GetToken(VBAParser.BYREF, 0); }
 		public ITerminalNode DEBUG() { return GetToken(VBAParser.DEBUG, 0); }
 		public ITerminalNode CLNGPTR() { return GetToken(VBAParser.CLNGPTR, 0); }
@@ -18087,7 +18062,6 @@ public partial class VBAParser : Parser {
 		public ITerminalNode IN() { return GetToken(VBAParser.IN, 0); }
 		public ITerminalNode BINARY() { return GetToken(VBAParser.BINARY, 0); }
 		public ITerminalNode TEXT() { return GetToken(VBAParser.TEXT, 0); }
-		public ITerminalNode MIDBTYPESUFFIX() { return GetToken(VBAParser.MIDBTYPESUFFIX, 0); }
 		public ITerminalNode SGN() { return GetToken(VBAParser.SGN, 0); }
 		public ITerminalNode CBYTE() { return GetToken(VBAParser.CBYTE, 0); }
 		public ITerminalNode PUT() { return GetToken(VBAParser.PUT, 0); }
@@ -18111,7 +18085,6 @@ public partial class VBAParser : Parser {
 		public ITerminalNode ACCESS() { return GetToken(VBAParser.ACCESS, 0); }
 		public ITerminalNode TRUE() { return GetToken(VBAParser.TRUE, 0); }
 		public ITerminalNode VARIANT() { return GetToken(VBAParser.VARIANT, 0); }
-		public ITerminalNode MIDB() { return GetToken(VBAParser.MIDB, 0); }
 		public ITerminalNode BOOLEAN() { return GetToken(VBAParser.BOOLEAN, 0); }
 		public ITerminalNode LONG() { return GetToken(VBAParser.LONG, 0); }
 		public ITerminalNode REM() { return GetToken(VBAParser.REM, 0); }
@@ -18172,7 +18145,6 @@ public partial class VBAParser : Parser {
 		public ITerminalNode DOEVENTS() { return GetToken(VBAParser.DOEVENTS, 0); }
 		public ITerminalNode CLOSE() { return GetToken(VBAParser.CLOSE, 0); }
 		public ITerminalNode AND() { return GetToken(VBAParser.AND, 0); }
-		public ITerminalNode MID() { return GetToken(VBAParser.MID, 0); }
 		public ITerminalNode LOCK_READ_WRITE() { return GetToken(VBAParser.LOCK_READ_WRITE, 0); }
 		public IReadOnlyList<ITerminalNode> WRITE() { return GetTokens(VBAParser.WRITE); }
 		public IReadOnlyList<ITerminalNode> LEN() { return GetTokens(VBAParser.LEN); }
@@ -18217,7 +18189,7 @@ public partial class VBAParser : Parser {
 			{
 			State = 2632;
 			_la = _input.La(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (CLASS - 66)) | (1L << (CLOSE - 66)) | (1L << (DATABASE - 66)) | (1L << (DATE - 66)) | (1L << (DOUBLE - 66)) | (1L << (END - 66)) | (1L << (EQV - 66)) | (1L << (ERROR - 66)) | (1L << (FALSE - 66)) | (1L << (GET - 66)) | (1L << (IMP - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LIB - 130)) | (1L << (LIKE - 130)) | (1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (ME - 130)) | (1L << (MID - 130)) | (1L << (MOD - 130)) | (1L << (NAME - 130)) | (1L << (NEW - 130)) | (1L << (NOT - 130)) | (1L << (NOTHING - 130)) | (1L << (NULL - 130)) | (1L << (OBJECT - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OPTIONAL - 130)) | (1L << (OR - 130)) | (1L << (OUTPUT - 130)) | (1L << (PARAMARRAY - 130)) | (1L << (PRESERVE - 130)) | (1L << (PRINT - 130)) | (1L << (PTRSAFE - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STEP - 130)) | (1L << (STRING - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (TYPEOF - 195)) | (1L << (UNLOCK - 195)) | (1L << (UNTIL - 195)) | (1L << (VARIANT - 195)) | (1L << (VERSION - 195)) | (1L << (WIDTH - 195)) | (1L << (WITHEVENTS - 195)) | (1L << (WRITE - 195)) | (1L << (XOR - 195)) | (1L << (LOAD - 195)) | (1L << (RESUME_NEXT - 195)))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (CLASS - 66)) | (1L << (CLOSE - 66)) | (1L << (DATABASE - 66)) | (1L << (DATE - 66)) | (1L << (DOUBLE - 66)) | (1L << (END - 66)) | (1L << (EQV - 66)) | (1L << (ERROR - 66)) | (1L << (FALSE - 66)) | (1L << (GET - 66)) | (1L << (IMP - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (LIB - 130)) | (1L << (LIKE - 130)) | (1L << (LINE_INPUT - 130)) | (1L << (LOCK_READ - 130)) | (1L << (LOCK_WRITE - 130)) | (1L << (LOCK_READ_WRITE - 130)) | (1L << (ME - 130)) | (1L << (MOD - 130)) | (1L << (NAME - 130)) | (1L << (NEW - 130)) | (1L << (NOT - 130)) | (1L << (NOTHING - 130)) | (1L << (NULL - 130)) | (1L << (OBJECT - 130)) | (1L << (ON_ERROR - 130)) | (1L << (OPEN - 130)) | (1L << (OPTIONAL - 130)) | (1L << (OR - 130)) | (1L << (OUTPUT - 130)) | (1L << (PARAMARRAY - 130)) | (1L << (PRESERVE - 130)) | (1L << (PRINT - 130)) | (1L << (PTRSAFE - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (READ - 130)) | (1L << (READ_WRITE - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (SEEK - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STEP - 130)) | (1L << (STRING - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)))) != 0) || ((((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & ((1L << (TYPEOF - 195)) | (1L << (UNLOCK - 195)) | (1L << (UNTIL - 195)) | (1L << (VARIANT - 195)) | (1L << (VERSION - 195)) | (1L << (WIDTH - 195)) | (1L << (WITHEVENTS - 195)) | (1L << (WRITE - 195)) | (1L << (XOR - 195)) | (1L << (LOAD - 195)) | (1L << (RESUME_NEXT - 195)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			}
 			Consume();
@@ -19797,149 +19769,149 @@ public partial class VBAParser : Parser {
 		"\xE0\xE1\xE\x2\x4\x4\x15\x15!\">>\x41\x41HHYY\x7F\x7F\x81\x81\xB8\xB8"+
 		"\xBD\xBD\xC8\xC8\a\x2~~\x85\x85\xD4\xD7\xD9\xD9\xDC\xDC\x3\x2\xE3\xE6"+
 		"\x5\x2..\x30\x34\xDE\xDE\x6\x2rrvv\xA3\xA3\xA8\xA8\x4\x2\xD2\xD2\xDB\xDB"+
-		"\x4\x2\xDA\xDA\xDD\xDD\x4\x2qq\xC3\xC3\x4\x2]]\x93\x93\'\x2\x3\x6\b\xE"+
-		"\x10\x19\x1B%\'\')*\x35:<\x41\x44\x45GHYY\x66\x66hhjjqquuzz|\x81\x84\x89"+
-		"\x8B\x8E\x90\x94\x96\x96\x98\x99\x9E\xA2\xA7\xA7\xA9\xAA\xAC\xAD\xAF\xB0"+
-		"\xB4\xB4\xB7\xB9\xBB\xBB\xBD\xBD\xBF\xC3\xC5\xC9\xCC\xCC\xCE\xD0\xF0\xF1"+
-		" \x2\x1A\x1A&&\x42\x43\x46\x46IX[\\\x62\x62\x65\x65ggiikprtvy{{\x82\x83"+
-		"\x8A\x8A\x8F\x8F\x95\x95\xA3\xA3\xA8\xA8\xAB\xAB\xAE\xAE\xB1\xB3\xB5\xB6"+
-		"\xBA\xBA\xBC\xBC\xBE\xBE\xC4\xC4\xCA\xCB\xCD\xCD\x3\x2\xE8\xE8\x4\x2\xEB"+
-		"\xEB\xEE\xEE\xC0E\x2\x1B8\x3\x2\x2\x2\x4\x1BB\x3\x2\x2\x2\x6\x1CC\x3\x2"+
-		"\x2\x2\b\x1D7\x3\x2\x2\x2\n\x1EA\x3\x2\x2\x2\f\x204\x3\x2\x2\x2\xE\x207"+
-		"\x3\x2\x2\x2\x10\x21F\x3\x2\x2\x2\x12\x221\x3\x2\x2\x2\x14\x228\x3\x2"+
-		"\x2\x2\x16\x235\x3\x2\x2\x2\x18\x238\x3\x2\x2\x2\x1A\x248\x3\x2\x2\x2"+
-		"\x1C\x257\x3\x2\x2\x2\x1E\x25E\x3\x2\x2\x2 \x286\x3\x2\x2\x2\"\x296\x3"+
-		"\x2\x2\x2$\x298\x3\x2\x2\x2&\x2B3\x3\x2\x2\x2(\x2B5\x3\x2\x2\x2*\x2B9"+
-		"\x3\x2\x2\x2,\x2BB\x3\x2\x2\x2.\x2BF\x3\x2\x2\x2\x30\x2C1\x3\x2\x2\x2"+
-		"\x32\x2C3\x3\x2\x2\x2\x34\x2CD\x3\x2\x2\x2\x36\x2D1\x3\x2\x2\x2\x38\x2D3"+
-		"\x3\x2\x2\x2:\x2D6\x3\x2\x2\x2<\x2D8\x3\x2\x2\x2>\x2DE\x3\x2\x2\x2@\x2E0"+
-		"\x3\x2\x2\x2\x42\x2EE\x3\x2\x2\x2\x44\x2FA\x3\x2\x2\x2\x46\x2FC\x3\x2"+
-		"\x2\x2H\x313\x3\x2\x2\x2J\x315\x3\x2\x2\x2L\x317\x3\x2\x2\x2N\x319\x3"+
-		"\x2\x2\x2P\x326\x3\x2\x2\x2R\x332\x3\x2\x2\x2T\x334\x3\x2\x2\x2V\x340"+
-		"\x3\x2\x2\x2X\x342\x3\x2\x2\x2Z\x348\x3\x2\x2\x2\\\x352\x3\x2\x2\x2^\x354"+
-		"\x3\x2\x2\x2`\x356\x3\x2\x2\x2\x62\x363\x3\x2\x2\x2\x64\x375\x3\x2\x2"+
-		"\x2\x66\x37A\x3\x2\x2\x2h\x37C\x3\x2\x2\x2j\x37E\x3\x2\x2\x2l\x380\x3"+
-		"\x2\x2\x2n\x38E\x3\x2\x2\x2p\x390\x3\x2\x2\x2r\x397\x3\x2\x2\x2t\x3A1"+
-		"\x3\x2\x2\x2v\x3A3\x3\x2\x2\x2x\x3B0\x3\x2\x2\x2z\x3BC\x3\x2\x2\x2|\x3CA"+
-		"\x3\x2\x2\x2~\x3CC\x3\x2\x2\x2\x80\x3E2\x3\x2\x2\x2\x82\x3E4\x3\x2\x2"+
-		"\x2\x84\x3E6\x3\x2\x2\x2\x86\x3FC\x3\x2\x2\x2\x88\x401\x3\x2\x2\x2\x8A"+
-		"\x413\x3\x2\x2\x2\x8C\x425\x3\x2\x2\x2\x8E\x446\x3\x2\x2\x2\x90\x461\x3"+
-		"\x2\x2\x2\x92\x482\x3\x2\x2\x2\x94\x488\x3\x2\x2\x2\x96\x498\x3\x2\x2"+
-		"\x2\x98\x49D\x3\x2\x2\x2\x9A\x49F\x3\x2\x2\x2\x9C\x4A1\x3\x2\x2\x2\x9E"+
-		"\x4AB\x3\x2\x2\x2\xA0\x4AE\x3\x2\x2\x2\xA2\x4B1\x3\x2\x2\x2\xA4\x4BB\x3"+
-		"\x2\x2\x2\xA6\x4BD\x3\x2\x2\x2\xA8\x4D6\x3\x2\x2\x2\xAA\x4DB\x3\x2\x2"+
-		"\x2\xAC\x4E9\x3\x2\x2\x2\xAE\x4F6\x3\x2\x2\x2\xB0\x4F8\x3\x2\x2\x2\xB2"+
-		"\x508\x3\x2\x2\x2\xB4\x50F\x3\x2\x2\x2\xB6\x519\x3\x2\x2\x2\xB8\x51B\x3"+
-		"\x2\x2\x2\xBA\x52C\x3\x2\x2\x2\xBC\x545\x3\x2\x2\x2\xBE\x560\x3\x2\x2"+
-		"\x2\xC0\x562\x3\x2\x2\x2\xC2\x566\x3\x2\x2\x2\xC4\x56A\x3\x2\x2\x2\xC6"+
-		"\x58E\x3\x2\x2\x2\xC8\x590\x3\x2\x2\x2\xCA\x596\x3\x2\x2\x2\xCC\x598\x3"+
-		"\x2\x2\x2\xCE\x5AA\x3\x2\x2\x2\xD0\x5B9\x3\x2\x2\x2\xD2\x5E6\x3\x2\x2"+
-		"\x2\xD4\x5E8\x3\x2\x2\x2\xD6\x5EA\x3\x2\x2\x2\xD8\x5EC\x3\x2\x2\x2\xDA"+
-		"\x5F2\x3\x2\x2\x2\xDC\x5FE\x3\x2\x2\x2\xDE\x60A\x3\x2\x2\x2\xE0\x616\x3"+
-		"\x2\x2\x2\xE2\x62A\x3\x2\x2\x2\xE4\x641\x3\x2\x2\x2\xE6\x65C\x3\x2\x2"+
-		"\x2\xE8\x672\x3\x2\x2\x2\xEA\x685\x3\x2\x2\x2\xEC\x698\x3\x2\x2\x2\xEE"+
-		"\x6A6\x3\x2\x2\x2\xF0\x6A8\x3\x2\x2\x2\xF2\x6B0\x3\x2\x2\x2\xF4\x6BE\x3"+
-		"\x2\x2\x2\xF6\x6C4\x3\x2\x2\x2\xF8\x6D0\x3\x2\x2\x2\xFA\x6D2\x3\x2\x2"+
-		"\x2\xFC\x6DA\x3\x2\x2\x2\xFE\x6DC\x3\x2\x2\x2\x100\x6E8\x3\x2\x2\x2\x102"+
-		"\x6EA\x3\x2\x2\x2\x104\x6F2\x3\x2\x2\x2\x106\x707\x3\x2\x2\x2\x108\x709"+
-		"\x3\x2\x2\x2\x10A\x71C\x3\x2\x2\x2\x10C\x737\x3\x2\x2\x2\x10E\x739\x3"+
-		"\x2\x2\x2\x110\x73B\x3\x2\x2\x2\x112\x73D\x3\x2\x2\x2\x114\x74C\x3\x2"+
-		"\x2\x2\x116\x761\x3\x2\x2\x2\x118\x765\x3\x2\x2\x2\x11A\x769\x3\x2\x2"+
-		"\x2\x11C\x76D\x3\x2\x2\x2\x11E\x775\x3\x2\x2\x2\x120\x780\x3\x2\x2\x2"+
-		"\x122\x782\x3\x2\x2\x2\x124\x788\x3\x2\x2\x2\x126\x78F\x3\x2\x2\x2\x128"+
-		"\x793\x3\x2\x2\x2\x12A\x79F\x3\x2\x2\x2\x12C\x7B1\x3\x2\x2\x2\x12E\x7B5"+
-		"\x3\x2\x2\x2\x130\x7BB\x3\x2\x2\x2\x132\x7BD\x3\x2\x2\x2\x134\x7C2\x3"+
-		"\x2\x2\x2\x136\x7CB\x3\x2\x2\x2\x138\x7D9\x3\x2\x2\x2\x13A\x7F2\x3\x2"+
-		"\x2\x2\x13C\x7F9\x3\x2\x2\x2\x13E\x800\x3\x2\x2\x2\x140\x82D\x3\x2\x2"+
-		"\x2\x142\x84C\x3\x2\x2\x2\x144\x85A\x3\x2\x2\x2\x146\x86C\x3\x2\x2\x2"+
-		"\x148\x86E\x3\x2\x2\x2\x14A\x881\x3\x2\x2\x2\x14C\x888\x3\x2\x2\x2\x14E"+
-		"\x88C\x3\x2\x2\x2\x150\x88E\x3\x2\x2\x2\x152\x890\x3\x2\x2\x2\x154\x897"+
-		"\x3\x2\x2\x2\x156\x899\x3\x2\x2\x2\x158\x8A4\x3\x2\x2\x2\x15A\x8A6\x3"+
-		"\x2\x2\x2\x15C\x8B5\x3\x2\x2\x2\x15E\x8B7\x3\x2\x2\x2\x160\x8D0\x3\x2"+
-		"\x2\x2\x162\x8D2\x3\x2\x2\x2\x164\x8DC\x3\x2\x2\x2\x166\x8DE\x3\x2\x2"+
-		"\x2\x168\x8E4\x3\x2\x2\x2\x16A\x8EB\x3\x2\x2\x2\x16C\x8EF\x3\x2\x2\x2"+
-		"\x16E\x8FB\x3\x2\x2\x2\x170\x8FD\x3\x2\x2\x2\x172\x924\x3\x2\x2\x2\x174"+
-		"\x99E\x3\x2\x2\x2\x176\x9A3\x3\x2\x2\x2\x178\x9A5\x3\x2\x2\x2\x17A\x9A7"+
-		"\x3\x2\x2\x2\x17C\x9A9\x3\x2\x2\x2\x17E\x9B8\x3\x2\x2\x2\x180\x9F2\x3"+
-		"\x2\x2\x2\x182\x9F4\x3\x2\x2\x2\x184\xA0A\x3\x2\x2\x2\x186\xA16\x3\x2"+
-		"\x2\x2\x188\xA18\x3\x2\x2\x2\x18A\xA1A\x3\x2\x2\x2\x18C\xA1C\x3\x2\x2"+
-		"\x2\x18E\xA2A\x3\x2\x2\x2\x190\xA40\x3\x2\x2\x2\x192\xA42\x3\x2\x2\x2"+
-		"\x194\xA44\x3\x2\x2\x2\x196\xA46\x3\x2\x2\x2\x198\xA4A\x3\x2\x2\x2\x19A"+
-		"\xA4C\x3\x2\x2\x2\x19C\xA4E\x3\x2\x2\x2\x19E\xA5B\x3\x2\x2\x2\x1A0\xA67"+
-		"\x3\x2\x2\x2\x1A2\xA6D\x3\x2\x2\x2\x1A4\xA6F\x3\x2\x2\x2\x1A6\xA75\x3"+
-		"\x2\x2\x2\x1A8\xA7C\x3\x2\x2\x2\x1AA\xA7F\x3\x2\x2\x2\x1AC\xA90\x3\x2"+
-		"\x2\x2\x1AE\xA94\x3\x2\x2\x2\x1B0\xAD2\x3\x2\x2\x2\x1B2\xAD4\x3\x2\x2"+
-		"\x2\x1B4\xAD6\x3\x2\x2\x2\x1B6\xADE\x3\x2\x2\x2\x1B8\x1B9\x5\x4\x3\x2"+
-		"\x1B9\x1BA\a\x2\x2\x3\x1BA\x3\x3\x2\x2\x2\x1BB\x1BC\x5\x1A0\xD1\x2\x1BC"+
-		"\x1BE\x5\f\a\x2\x1BD\x1BF\x5\x6\x4\x2\x1BE\x1BD\x3\x2\x2\x2\x1BE\x1BF"+
-		"\x3\x2\x2\x2\x1BF\x1C0\x3\x2\x2\x2\x1C0\x1C2\x5\f\a\x2\x1C1\x1C3\x5\b"+
-		"\x5\x2\x1C2\x1C1\x3\x2\x2\x2\x1C2\x1C3\x3\x2\x2\x2\x1C3\x1C4\x3\x2\x2"+
-		"\x2\x1C4\x1C5\x5\f\a\x2\x1C5\x1C6\x5\x14\v\x2\x1C6\x1C7\x5\f\a\x2\x1C7"+
-		"\x1C8\x5\x1A\xE\x2\x1C8\x1CA\x5\f\a\x2\x1C9\x1CB\x5\x1B6\xDC\x2\x1CA\x1C9"+
-		"\x3\x2\x2\x2\x1CA\x1CB\x3\x2\x2\x2\x1CB\x5\x3\x2\x2\x2\x1CC\x1CD\a\xC9"+
-		"\x2\x2\x1CD\x1CE\x5\x1B6\xDC\x2\x1CE\x1D0\x5\x16A\xB6\x2\x1CF\x1D1\x5"+
-		"\x1B6\xDC\x2\x1D0\x1CF\x3\x2\x2\x2\x1D0\x1D1\x3\x2\x2\x2\x1D1\x1D3\x3"+
-		"\x2\x2\x2\x1D2\x1D4\a\x44\x2\x2\x1D3\x1D2\x3\x2\x2\x2\x1D3\x1D4\x3\x2"+
-		"\x2\x2\x1D4\x1D5\x3\x2\x2\x2\x1D5\x1D6\x5\x1A0\xD1\x2\x1D6\a\x3\x2\x2"+
-		"\x2\x1D7\x1DF\a<\x2\x2\x1D8\x1D9\x5\x1B6\xDC\x2\x1D9\x1DA\a\xEC\x2\x2"+
-		"\x1DA\x1DB\x5\x1B6\xDC\x2\x1DB\x1DD\x5\x14C\xA7\x2\x1DC\x1DE\x5\x1B6\xDC"+
-		"\x2\x1DD\x1DC\x3\x2\x2\x2\x1DD\x1DE\x3\x2\x2\x2\x1DE\x1E0\x3\x2\x2\x2"+
-		"\x1DF\x1D8\x3\x2\x2\x2\x1DF\x1E0\x3\x2\x2\x2\x1E0\x1E1\x3\x2\x2\x2\x1E1"+
-		"\x1E3\x5\x1A0\xD1\x2\x1E2\x1E4\x5\n\x6\x2\x1E3\x1E2\x3\x2\x2\x2\x1E4\x1E5"+
-		"\x3\x2\x2\x2\x1E5\x1E3\x3\x2\x2\x2\x1E5\x1E6\x3\x2\x2\x2\x1E6\x1E7\x3"+
-		"\x2\x2\x2\x1E7\x1E8\a\x66\x2\x2\x1E8\x1E9\x5\x1A0\xD1\x2\x1E9\t\x3\x2"+
-		"\x2\x2\x1EA\x1EE\x5\x14C\xA7\x2\x1EB\x1ED\x5\x1B6\xDC\x2\x1EC\x1EB\x3"+
-		"\x2\x2\x2\x1ED\x1F0\x3\x2\x2\x2\x1EE\x1EC\x3\x2\x2\x2\x1EE\x1EF\x3\x2"+
-		"\x2\x2\x1EF\x1F1\x3\x2\x2\x2\x1F0\x1EE\x3\x2\x2\x2\x1F1\x1F5\a\xD4\x2"+
-		"\x2\x1F2\x1F4\x5\x1B6\xDC\x2\x1F3\x1F2\x3\x2\x2\x2\x1F4\x1F7\x3\x2\x2"+
-		"\x2\x1F5\x1F3\x3\x2\x2\x2\x1F5\x1F6\x3\x2\x2\x2\x1F6\x1F8\x3\x2\x2\x2"+
-		"\x1F7\x1F5\x3\x2\x2\x2\x1F8\x1FB\x5\x172\xBA\x2\x1F9\x1FA\a,\x2\x2\x1FA"+
-		"\x1FC\x5\x16A\xB6\x2\x1FB\x1F9\x3\x2\x2\x2\x1FB\x1FC\x3\x2\x2\x2\x1FC"+
-		"\x1FD\x3\x2\x2\x2\x1FD\x1FE\x5\x1A0\xD1\x2\x1FE\v\x3\x2\x2\x2\x1FF\x200"+
-		"\x5\xE\b\x2\x200\x201\x5\x1A0\xD1\x2\x201\x203\x3\x2\x2\x2\x202\x1FF\x3"+
-		"\x2\x2\x2\x203\x206\x3\x2\x2\x2\x204\x202\x3\x2\x2\x2\x204\x205\x3\x2"+
-		"\x2\x2\x205\r\x3\x2\x2\x2\x206\x204\x3\x2\x2\x2\x207\x208\a\x39\x2\x2"+
-		"\x208\x209\x5\x1B6\xDC\x2\x209\x20B\x5\x10\t\x2\x20A\x20C\x5\x1B6\xDC"+
-		"\x2\x20B\x20A\x3\x2\x2\x2\x20B\x20C\x3\x2\x2\x2\x20C\x20D\x3\x2\x2\x2"+
-		"\x20D\x20F\a\xD4\x2\x2\x20E\x210\x5\x1B6\xDC\x2\x20F\x20E\x3\x2\x2\x2"+
-		"\x20F\x210\x3\x2\x2\x2\x210\x211\x3\x2\x2\x2\x211\x21C\x5\x12\n\x2\x212"+
-		"\x214\x5\x1B6\xDC\x2\x213\x212\x3\x2\x2\x2\x213\x214\x3\x2\x2\x2\x214"+
-		"\x215\x3\x2\x2\x2\x215\x217\a+\x2\x2\x216\x218\x5\x1B6\xDC\x2\x217\x216"+
-		"\x3\x2\x2\x2\x217\x218\x3\x2\x2\x2\x218\x219\x3\x2\x2\x2\x219\x21B\x5"+
-		"\x12\n\x2\x21A\x213\x3\x2\x2\x2\x21B\x21E\x3\x2\x2\x2\x21C\x21A\x3\x2"+
-		"\x2\x2\x21C\x21D\x3\x2\x2\x2\x21D\xF\x3\x2\x2\x2\x21E\x21C\x3\x2\x2\x2"+
-		"\x21F\x220\x5\x17E\xC0\x2\x220\x11\x3\x2\x2\x2\x221\x222\x5\x172\xBA\x2"+
-		"\x222\x13\x3\x2\x2\x2\x223\x224\x5\x18\r\x2\x224\x225\x5\x1A0\xD1\x2\x225"+
-		"\x227\x3\x2\x2\x2\x226\x223\x3\x2\x2\x2\x227\x22A\x3\x2\x2\x2\x228\x226"+
-		"\x3\x2\x2\x2\x228\x229\x3\x2\x2\x2\x229\x15\x3\x2\x2\x2\x22A\x228\x3\x2"+
-		"\x2\x2\x22B\x22C\a\x9A\x2\x2\x22C\x22D\x5\x1B6\xDC\x2\x22D\x22E\x5\x16A"+
-		"\xB6\x2\x22E\x236\x3\x2\x2\x2\x22F\x230\a\x9C\x2\x2\x230\x231\x5\x1B6"+
-		"\xDC\x2\x231\x232\t\x2\x2\x2\x232\x236\x3\x2\x2\x2\x233\x236\a\x9B\x2"+
-		"\x2\x234\x236\a\x9D\x2\x2\x235\x22B\x3\x2\x2\x2\x235\x22F\x3\x2\x2\x2"+
-		"\x235\x233\x3\x2\x2\x2\x235\x234\x3\x2\x2\x2\x236\x17\x3\x2\x2\x2\x237"+
-		"\x239\x5\x1B6\xDC\x2\x238\x237\x3\x2\x2\x2\x238\x239\x3\x2\x2\x2\x239"+
-		"\x245\x3\x2\x2\x2\x23A\x246\x5\xE\b\x2\x23B\x246\x5\x8CG\x2\x23C\x246"+
-		"\x5\x94K\x2\x23D\x246\x5\xAAV\x2\x23E\x246\x5\xB4[\x2\x23F\x246\x5\x88"+
-		"\x45\x2\x240\x246\x5\xD8m\x2\x241\x246\x5\x134\x9B\x2\x242\x246\x5\x16"+
-		"\f\x2\x243\x246\x5\x118\x8D\x2\x244\x246\x5\x11A\x8E\x2\x245\x23A\x3\x2"+
-		"\x2\x2\x245\x23B\x3\x2\x2\x2\x245\x23C\x3\x2\x2\x2\x245\x23D\x3\x2\x2"+
-		"\x2\x245\x23E\x3\x2\x2\x2\x245\x23F\x3\x2\x2\x2\x245\x240\x3\x2\x2\x2"+
-		"\x245\x241\x3\x2\x2\x2\x245\x242\x3\x2\x2\x2\x245\x243\x3\x2\x2\x2\x245"+
-		"\x244\x3\x2\x2\x2\x246\x19\x3\x2\x2\x2\x247\x249\x5\x1B6\xDC\x2\x248\x247"+
-		"\x3\x2\x2\x2\x248\x249\x3\x2\x2\x2\x249\x24F\x3\x2\x2\x2\x24A\x24B\x5"+
-		"\x1C\xF\x2\x24B\x24C\x5\x1A0\xD1\x2\x24C\x24E\x3\x2\x2\x2\x24D\x24A\x3"+
-		"\x2\x2\x2\x24E\x251\x3\x2\x2\x2\x24F\x24D\x3\x2\x2\x2\x24F\x250\x3\x2"+
-		"\x2\x2\x250\x1B\x3\x2\x2\x2\x251\x24F\x3\x2\x2\x2\x252\x258\x5\xBC_\x2"+
-		"\x253\x258\x5\xE4s\x2\x254\x258\x5\xE6t\x2\x255\x258\x5\xE8u\x2\x256\x258"+
-		"\x5\x114\x8B\x2\x257\x252\x3\x2\x2\x2\x257\x253\x3\x2\x2\x2\x257\x254"+
-		"\x3\x2\x2\x2\x257\x255\x3\x2\x2\x2\x257\x256\x3\x2\x2\x2\x258\x1D\x3\x2"+
-		"\x2\x2\x259\x25A\x5 \x11\x2\x25A\x25B\x5\x1A0\xD1\x2\x25B\x25D\x3\x2\x2"+
-		"\x2\x25C\x259\x3\x2\x2\x2\x25D\x260\x3\x2\x2\x2\x25E\x25C\x3\x2\x2\x2"+
-		"\x25E\x25F\x3\x2\x2\x2\x25F\x1F\x3\x2\x2\x2\x260\x25E\x3\x2\x2\x2\x261"+
-		"\x287\x5\x164\xB3\x2\x262\x287\x5\"\x12\x2\x263\x287\x5\xE\b\x2\x264\x287"+
-		"\x5\x88\x45\x2\x265\x287\x5\xA8U\x2\x266\x287\x5\xAEX\x2\x267\x287\x5"+
-		"\xB0Y\x2\x268\x287\x5\xB2Z\x2\x269\x287\x5\xB6\\\x2\x26A\x287\x5\xB8]"+
-		"\x2\x26B\x287\x5\xBA^\x2\x26C\x287\x5\xC0\x61\x2\x26D\x287\x5\xC2\x62"+
+		"\x4\x2\xDA\xDA\xDD\xDD\x4\x2qq\xC3\xC3\x4\x2]]\x93\x93(\x2\x3\x6\b\xE"+
+		"\x10\x19\x1B\"\'\')*\x35:<\x41\x44\x45GHYY\x66\x66hhjjqquuzz|\x81\x84"+
+		"\x89\x8B\x8B\x8D\x8E\x90\x94\x96\x96\x98\x99\x9E\xA2\xA7\xA7\xA9\xAA\xAC"+
+		"\xAD\xAF\xB0\xB4\xB4\xB7\xB9\xBB\xBB\xBD\xBD\xBF\xC3\xC5\xC9\xCC\xCC\xCE"+
+		"\xD0\xF0\xF1 \x2\x1A\x1A&&\x42\x43\x46\x46IX[\\\x62\x62\x65\x65ggiikp"+
+		"rtvy{{\x82\x83\x8A\x8A\x8F\x8F\x95\x95\xA3\xA3\xA8\xA8\xAB\xAB\xAE\xAE"+
+		"\xB1\xB3\xB5\xB6\xBA\xBA\xBC\xBC\xBE\xBE\xC4\xC4\xCA\xCB\xCD\xCD\x3\x2"+
+		"\xE8\xE8\x4\x2\xEB\xEB\xEE\xEE\xC0E\x2\x1B8\x3\x2\x2\x2\x4\x1BB\x3\x2"+
+		"\x2\x2\x6\x1CC\x3\x2\x2\x2\b\x1D7\x3\x2\x2\x2\n\x1EA\x3\x2\x2\x2\f\x204"+
+		"\x3\x2\x2\x2\xE\x207\x3\x2\x2\x2\x10\x21F\x3\x2\x2\x2\x12\x221\x3\x2\x2"+
+		"\x2\x14\x228\x3\x2\x2\x2\x16\x235\x3\x2\x2\x2\x18\x238\x3\x2\x2\x2\x1A"+
+		"\x248\x3\x2\x2\x2\x1C\x257\x3\x2\x2\x2\x1E\x25E\x3\x2\x2\x2 \x286\x3\x2"+
+		"\x2\x2\"\x296\x3\x2\x2\x2$\x298\x3\x2\x2\x2&\x2B3\x3\x2\x2\x2(\x2B5\x3"+
+		"\x2\x2\x2*\x2B9\x3\x2\x2\x2,\x2BB\x3\x2\x2\x2.\x2BF\x3\x2\x2\x2\x30\x2C1"+
+		"\x3\x2\x2\x2\x32\x2C3\x3\x2\x2\x2\x34\x2CD\x3\x2\x2\x2\x36\x2D1\x3\x2"+
+		"\x2\x2\x38\x2D3\x3\x2\x2\x2:\x2D6\x3\x2\x2\x2<\x2D8\x3\x2\x2\x2>\x2DE"+
+		"\x3\x2\x2\x2@\x2E0\x3\x2\x2\x2\x42\x2EE\x3\x2\x2\x2\x44\x2FA\x3\x2\x2"+
+		"\x2\x46\x2FC\x3\x2\x2\x2H\x313\x3\x2\x2\x2J\x315\x3\x2\x2\x2L\x317\x3"+
+		"\x2\x2\x2N\x319\x3\x2\x2\x2P\x326\x3\x2\x2\x2R\x332\x3\x2\x2\x2T\x334"+
+		"\x3\x2\x2\x2V\x340\x3\x2\x2\x2X\x342\x3\x2\x2\x2Z\x348\x3\x2\x2\x2\\\x352"+
+		"\x3\x2\x2\x2^\x354\x3\x2\x2\x2`\x356\x3\x2\x2\x2\x62\x363\x3\x2\x2\x2"+
+		"\x64\x375\x3\x2\x2\x2\x66\x37A\x3\x2\x2\x2h\x37C\x3\x2\x2\x2j\x37E\x3"+
+		"\x2\x2\x2l\x380\x3\x2\x2\x2n\x38E\x3\x2\x2\x2p\x390\x3\x2\x2\x2r\x397"+
+		"\x3\x2\x2\x2t\x3A1\x3\x2\x2\x2v\x3A3\x3\x2\x2\x2x\x3B0\x3\x2\x2\x2z\x3BC"+
+		"\x3\x2\x2\x2|\x3CA\x3\x2\x2\x2~\x3CC\x3\x2\x2\x2\x80\x3E2\x3\x2\x2\x2"+
+		"\x82\x3E4\x3\x2\x2\x2\x84\x3E6\x3\x2\x2\x2\x86\x3FC\x3\x2\x2\x2\x88\x401"+
+		"\x3\x2\x2\x2\x8A\x413\x3\x2\x2\x2\x8C\x425\x3\x2\x2\x2\x8E\x446\x3\x2"+
+		"\x2\x2\x90\x461\x3\x2\x2\x2\x92\x482\x3\x2\x2\x2\x94\x488\x3\x2\x2\x2"+
+		"\x96\x498\x3\x2\x2\x2\x98\x49D\x3\x2\x2\x2\x9A\x49F\x3\x2\x2\x2\x9C\x4A1"+
+		"\x3\x2\x2\x2\x9E\x4AB\x3\x2\x2\x2\xA0\x4AE\x3\x2\x2\x2\xA2\x4B1\x3\x2"+
+		"\x2\x2\xA4\x4BB\x3\x2\x2\x2\xA6\x4BD\x3\x2\x2\x2\xA8\x4D6\x3\x2\x2\x2"+
+		"\xAA\x4DB\x3\x2\x2\x2\xAC\x4E9\x3\x2\x2\x2\xAE\x4F6\x3\x2\x2\x2\xB0\x4F8"+
+		"\x3\x2\x2\x2\xB2\x508\x3\x2\x2\x2\xB4\x50F\x3\x2\x2\x2\xB6\x519\x3\x2"+
+		"\x2\x2\xB8\x51B\x3\x2\x2\x2\xBA\x52C\x3\x2\x2\x2\xBC\x545\x3\x2\x2\x2"+
+		"\xBE\x560\x3\x2\x2\x2\xC0\x562\x3\x2\x2\x2\xC2\x566\x3\x2\x2\x2\xC4\x56A"+
+		"\x3\x2\x2\x2\xC6\x58E\x3\x2\x2\x2\xC8\x590\x3\x2\x2\x2\xCA\x596\x3\x2"+
+		"\x2\x2\xCC\x598\x3\x2\x2\x2\xCE\x5AA\x3\x2\x2\x2\xD0\x5B9\x3\x2\x2\x2"+
+		"\xD2\x5E6\x3\x2\x2\x2\xD4\x5E8\x3\x2\x2\x2\xD6\x5EA\x3\x2\x2\x2\xD8\x5EC"+
+		"\x3\x2\x2\x2\xDA\x5F2\x3\x2\x2\x2\xDC\x5FE\x3\x2\x2\x2\xDE\x60A\x3\x2"+
+		"\x2\x2\xE0\x616\x3\x2\x2\x2\xE2\x62A\x3\x2\x2\x2\xE4\x641\x3\x2\x2\x2"+
+		"\xE6\x65C\x3\x2\x2\x2\xE8\x672\x3\x2\x2\x2\xEA\x685\x3\x2\x2\x2\xEC\x698"+
+		"\x3\x2\x2\x2\xEE\x6A6\x3\x2\x2\x2\xF0\x6A8\x3\x2\x2\x2\xF2\x6B0\x3\x2"+
+		"\x2\x2\xF4\x6BE\x3\x2\x2\x2\xF6\x6C4\x3\x2\x2\x2\xF8\x6D0\x3\x2\x2\x2"+
+		"\xFA\x6D2\x3\x2\x2\x2\xFC\x6DA\x3\x2\x2\x2\xFE\x6DC\x3\x2\x2\x2\x100\x6E8"+
+		"\x3\x2\x2\x2\x102\x6EA\x3\x2\x2\x2\x104\x6F2\x3\x2\x2\x2\x106\x707\x3"+
+		"\x2\x2\x2\x108\x709\x3\x2\x2\x2\x10A\x71C\x3\x2\x2\x2\x10C\x737\x3\x2"+
+		"\x2\x2\x10E\x739\x3\x2\x2\x2\x110\x73B\x3\x2\x2\x2\x112\x73D\x3\x2\x2"+
+		"\x2\x114\x74C\x3\x2\x2\x2\x116\x761\x3\x2\x2\x2\x118\x765\x3\x2\x2\x2"+
+		"\x11A\x769\x3\x2\x2\x2\x11C\x76D\x3\x2\x2\x2\x11E\x775\x3\x2\x2\x2\x120"+
+		"\x780\x3\x2\x2\x2\x122\x782\x3\x2\x2\x2\x124\x788\x3\x2\x2\x2\x126\x78F"+
+		"\x3\x2\x2\x2\x128\x793\x3\x2\x2\x2\x12A\x79F\x3\x2\x2\x2\x12C\x7B1\x3"+
+		"\x2\x2\x2\x12E\x7B5\x3\x2\x2\x2\x130\x7BB\x3\x2\x2\x2\x132\x7BD\x3\x2"+
+		"\x2\x2\x134\x7C2\x3\x2\x2\x2\x136\x7CB\x3\x2\x2\x2\x138\x7D9\x3\x2\x2"+
+		"\x2\x13A\x7F2\x3\x2\x2\x2\x13C\x7F9\x3\x2\x2\x2\x13E\x800\x3\x2\x2\x2"+
+		"\x140\x82D\x3\x2\x2\x2\x142\x84C\x3\x2\x2\x2\x144\x85A\x3\x2\x2\x2\x146"+
+		"\x86C\x3\x2\x2\x2\x148\x86E\x3\x2\x2\x2\x14A\x881\x3\x2\x2\x2\x14C\x888"+
+		"\x3\x2\x2\x2\x14E\x88C\x3\x2\x2\x2\x150\x88E\x3\x2\x2\x2\x152\x890\x3"+
+		"\x2\x2\x2\x154\x897\x3\x2\x2\x2\x156\x899\x3\x2\x2\x2\x158\x8A4\x3\x2"+
+		"\x2\x2\x15A\x8A6\x3\x2\x2\x2\x15C\x8B5\x3\x2\x2\x2\x15E\x8B7\x3\x2\x2"+
+		"\x2\x160\x8D0\x3\x2\x2\x2\x162\x8D2\x3\x2\x2\x2\x164\x8DC\x3\x2\x2\x2"+
+		"\x166\x8DE\x3\x2\x2\x2\x168\x8E4\x3\x2\x2\x2\x16A\x8EB\x3\x2\x2\x2\x16C"+
+		"\x8EF\x3\x2\x2\x2\x16E\x8FB\x3\x2\x2\x2\x170\x8FD\x3\x2\x2\x2\x172\x924"+
+		"\x3\x2\x2\x2\x174\x99E\x3\x2\x2\x2\x176\x9A3\x3\x2\x2\x2\x178\x9A5\x3"+
+		"\x2\x2\x2\x17A\x9A7\x3\x2\x2\x2\x17C\x9A9\x3\x2\x2\x2\x17E\x9B8\x3\x2"+
+		"\x2\x2\x180\x9F2\x3\x2\x2\x2\x182\x9F4\x3\x2\x2\x2\x184\xA0A\x3\x2\x2"+
+		"\x2\x186\xA16\x3\x2\x2\x2\x188\xA18\x3\x2\x2\x2\x18A\xA1A\x3\x2\x2\x2"+
+		"\x18C\xA1C\x3\x2\x2\x2\x18E\xA2A\x3\x2\x2\x2\x190\xA40\x3\x2\x2\x2\x192"+
+		"\xA42\x3\x2\x2\x2\x194\xA44\x3\x2\x2\x2\x196\xA46\x3\x2\x2\x2\x198\xA4A"+
+		"\x3\x2\x2\x2\x19A\xA4C\x3\x2\x2\x2\x19C\xA4E\x3\x2\x2\x2\x19E\xA5B\x3"+
+		"\x2\x2\x2\x1A0\xA67\x3\x2\x2\x2\x1A2\xA6D\x3\x2\x2\x2\x1A4\xA6F\x3\x2"+
+		"\x2\x2\x1A6\xA75\x3\x2\x2\x2\x1A8\xA7C\x3\x2\x2\x2\x1AA\xA7F\x3\x2\x2"+
+		"\x2\x1AC\xA90\x3\x2\x2\x2\x1AE\xA94\x3\x2\x2\x2\x1B0\xAD2\x3\x2\x2\x2"+
+		"\x1B2\xAD4\x3\x2\x2\x2\x1B4\xAD6\x3\x2\x2\x2\x1B6\xADE\x3\x2\x2\x2\x1B8"+
+		"\x1B9\x5\x4\x3\x2\x1B9\x1BA\a\x2\x2\x3\x1BA\x3\x3\x2\x2\x2\x1BB\x1BC\x5"+
+		"\x1A0\xD1\x2\x1BC\x1BE\x5\f\a\x2\x1BD\x1BF\x5\x6\x4\x2\x1BE\x1BD\x3\x2"+
+		"\x2\x2\x1BE\x1BF\x3\x2\x2\x2\x1BF\x1C0\x3\x2\x2\x2\x1C0\x1C2\x5\f\a\x2"+
+		"\x1C1\x1C3\x5\b\x5\x2\x1C2\x1C1\x3\x2\x2\x2\x1C2\x1C3\x3\x2\x2\x2\x1C3"+
+		"\x1C4\x3\x2\x2\x2\x1C4\x1C5\x5\f\a\x2\x1C5\x1C6\x5\x14\v\x2\x1C6\x1C7"+
+		"\x5\f\a\x2\x1C7\x1C8\x5\x1A\xE\x2\x1C8\x1CA\x5\f\a\x2\x1C9\x1CB\x5\x1B6"+
+		"\xDC\x2\x1CA\x1C9\x3\x2\x2\x2\x1CA\x1CB\x3\x2\x2\x2\x1CB\x5\x3\x2\x2\x2"+
+		"\x1CC\x1CD\a\xC9\x2\x2\x1CD\x1CE\x5\x1B6\xDC\x2\x1CE\x1D0\x5\x16A\xB6"+
+		"\x2\x1CF\x1D1\x5\x1B6\xDC\x2\x1D0\x1CF\x3\x2\x2\x2\x1D0\x1D1\x3\x2\x2"+
+		"\x2\x1D1\x1D3\x3\x2\x2\x2\x1D2\x1D4\a\x44\x2\x2\x1D3\x1D2\x3\x2\x2\x2"+
+		"\x1D3\x1D4\x3\x2\x2\x2\x1D4\x1D5\x3\x2\x2\x2\x1D5\x1D6\x5\x1A0\xD1\x2"+
+		"\x1D6\a\x3\x2\x2\x2\x1D7\x1DF\a<\x2\x2\x1D8\x1D9\x5\x1B6\xDC\x2\x1D9\x1DA"+
+		"\a\xEC\x2\x2\x1DA\x1DB\x5\x1B6\xDC\x2\x1DB\x1DD\x5\x14C\xA7\x2\x1DC\x1DE"+
+		"\x5\x1B6\xDC\x2\x1DD\x1DC\x3\x2\x2\x2\x1DD\x1DE\x3\x2\x2\x2\x1DE\x1E0"+
+		"\x3\x2\x2\x2\x1DF\x1D8\x3\x2\x2\x2\x1DF\x1E0\x3\x2\x2\x2\x1E0\x1E1\x3"+
+		"\x2\x2\x2\x1E1\x1E3\x5\x1A0\xD1\x2\x1E2\x1E4\x5\n\x6\x2\x1E3\x1E2\x3\x2"+
+		"\x2\x2\x1E4\x1E5\x3\x2\x2\x2\x1E5\x1E3\x3\x2\x2\x2\x1E5\x1E6\x3\x2\x2"+
+		"\x2\x1E6\x1E7\x3\x2\x2\x2\x1E7\x1E8\a\x66\x2\x2\x1E8\x1E9\x5\x1A0\xD1"+
+		"\x2\x1E9\t\x3\x2\x2\x2\x1EA\x1EE\x5\x14C\xA7\x2\x1EB\x1ED\x5\x1B6\xDC"+
+		"\x2\x1EC\x1EB\x3\x2\x2\x2\x1ED\x1F0\x3\x2\x2\x2\x1EE\x1EC\x3\x2\x2\x2"+
+		"\x1EE\x1EF\x3\x2\x2\x2\x1EF\x1F1\x3\x2\x2\x2\x1F0\x1EE\x3\x2\x2\x2\x1F1"+
+		"\x1F5\a\xD4\x2\x2\x1F2\x1F4\x5\x1B6\xDC\x2\x1F3\x1F2\x3\x2\x2\x2\x1F4"+
+		"\x1F7\x3\x2\x2\x2\x1F5\x1F3\x3\x2\x2\x2\x1F5\x1F6\x3\x2\x2\x2\x1F6\x1F8"+
+		"\x3\x2\x2\x2\x1F7\x1F5\x3\x2\x2\x2\x1F8\x1FB\x5\x172\xBA\x2\x1F9\x1FA"+
+		"\a,\x2\x2\x1FA\x1FC\x5\x16A\xB6\x2\x1FB\x1F9\x3\x2\x2\x2\x1FB\x1FC\x3"+
+		"\x2\x2\x2\x1FC\x1FD\x3\x2\x2\x2\x1FD\x1FE\x5\x1A0\xD1\x2\x1FE\v\x3\x2"+
+		"\x2\x2\x1FF\x200\x5\xE\b\x2\x200\x201\x5\x1A0\xD1\x2\x201\x203\x3\x2\x2"+
+		"\x2\x202\x1FF\x3\x2\x2\x2\x203\x206\x3\x2\x2\x2\x204\x202\x3\x2\x2\x2"+
+		"\x204\x205\x3\x2\x2\x2\x205\r\x3\x2\x2\x2\x206\x204\x3\x2\x2\x2\x207\x208"+
+		"\a\x39\x2\x2\x208\x209\x5\x1B6\xDC\x2\x209\x20B\x5\x10\t\x2\x20A\x20C"+
+		"\x5\x1B6\xDC\x2\x20B\x20A\x3\x2\x2\x2\x20B\x20C\x3\x2\x2\x2\x20C\x20D"+
+		"\x3\x2\x2\x2\x20D\x20F\a\xD4\x2\x2\x20E\x210\x5\x1B6\xDC\x2\x20F\x20E"+
+		"\x3\x2\x2\x2\x20F\x210\x3\x2\x2\x2\x210\x211\x3\x2\x2\x2\x211\x21C\x5"+
+		"\x12\n\x2\x212\x214\x5\x1B6\xDC\x2\x213\x212\x3\x2\x2\x2\x213\x214\x3"+
+		"\x2\x2\x2\x214\x215\x3\x2\x2\x2\x215\x217\a+\x2\x2\x216\x218\x5\x1B6\xDC"+
+		"\x2\x217\x216\x3\x2\x2\x2\x217\x218\x3\x2\x2\x2\x218\x219\x3\x2\x2\x2"+
+		"\x219\x21B\x5\x12\n\x2\x21A\x213\x3\x2\x2\x2\x21B\x21E\x3\x2\x2\x2\x21C"+
+		"\x21A\x3\x2\x2\x2\x21C\x21D\x3\x2\x2\x2\x21D\xF\x3\x2\x2\x2\x21E\x21C"+
+		"\x3\x2\x2\x2\x21F\x220\x5\x17E\xC0\x2\x220\x11\x3\x2\x2\x2\x221\x222\x5"+
+		"\x172\xBA\x2\x222\x13\x3\x2\x2\x2\x223\x224\x5\x18\r\x2\x224\x225\x5\x1A0"+
+		"\xD1\x2\x225\x227\x3\x2\x2\x2\x226\x223\x3\x2\x2\x2\x227\x22A\x3\x2\x2"+
+		"\x2\x228\x226\x3\x2\x2\x2\x228\x229\x3\x2\x2\x2\x229\x15\x3\x2\x2\x2\x22A"+
+		"\x228\x3\x2\x2\x2\x22B\x22C\a\x9A\x2\x2\x22C\x22D\x5\x1B6\xDC\x2\x22D"+
+		"\x22E\x5\x16A\xB6\x2\x22E\x236\x3\x2\x2\x2\x22F\x230\a\x9C\x2\x2\x230"+
+		"\x231\x5\x1B6\xDC\x2\x231\x232\t\x2\x2\x2\x232\x236\x3\x2\x2\x2\x233\x236"+
+		"\a\x9B\x2\x2\x234\x236\a\x9D\x2\x2\x235\x22B\x3\x2\x2\x2\x235\x22F\x3"+
+		"\x2\x2\x2\x235\x233\x3\x2\x2\x2\x235\x234\x3\x2\x2\x2\x236\x17\x3\x2\x2"+
+		"\x2\x237\x239\x5\x1B6\xDC\x2\x238\x237\x3\x2\x2\x2\x238\x239\x3\x2\x2"+
+		"\x2\x239\x245\x3\x2\x2\x2\x23A\x246\x5\xE\b\x2\x23B\x246\x5\x8CG\x2\x23C"+
+		"\x246\x5\x94K\x2\x23D\x246\x5\xAAV\x2\x23E\x246\x5\xB4[\x2\x23F\x246\x5"+
+		"\x88\x45\x2\x240\x246\x5\xD8m\x2\x241\x246\x5\x134\x9B\x2\x242\x246\x5"+
+		"\x16\f\x2\x243\x246\x5\x118\x8D\x2\x244\x246\x5\x11A\x8E\x2\x245\x23A"+
+		"\x3\x2\x2\x2\x245\x23B\x3\x2\x2\x2\x245\x23C\x3\x2\x2\x2\x245\x23D\x3"+
+		"\x2\x2\x2\x245\x23E\x3\x2\x2\x2\x245\x23F\x3\x2\x2\x2\x245\x240\x3\x2"+
+		"\x2\x2\x245\x241\x3\x2\x2\x2\x245\x242\x3\x2\x2\x2\x245\x243\x3\x2\x2"+
+		"\x2\x245\x244\x3\x2\x2\x2\x246\x19\x3\x2\x2\x2\x247\x249\x5\x1B6\xDC\x2"+
+		"\x248\x247\x3\x2\x2\x2\x248\x249\x3\x2\x2\x2\x249\x24F\x3\x2\x2\x2\x24A"+
+		"\x24B\x5\x1C\xF\x2\x24B\x24C\x5\x1A0\xD1\x2\x24C\x24E\x3\x2\x2\x2\x24D"+
+		"\x24A\x3\x2\x2\x2\x24E\x251\x3\x2\x2\x2\x24F\x24D\x3\x2\x2\x2\x24F\x250"+
+		"\x3\x2\x2\x2\x250\x1B\x3\x2\x2\x2\x251\x24F\x3\x2\x2\x2\x252\x258\x5\xBC"+
+		"_\x2\x253\x258\x5\xE4s\x2\x254\x258\x5\xE6t\x2\x255\x258\x5\xE8u\x2\x256"+
+		"\x258\x5\x114\x8B\x2\x257\x252\x3\x2\x2\x2\x257\x253\x3\x2\x2\x2\x257"+
+		"\x254\x3\x2\x2\x2\x257\x255\x3\x2\x2\x2\x257\x256\x3\x2\x2\x2\x258\x1D"+
+		"\x3\x2\x2\x2\x259\x25A\x5 \x11\x2\x25A\x25B\x5\x1A0\xD1\x2\x25B\x25D\x3"+
+		"\x2\x2\x2\x25C\x259\x3\x2\x2\x2\x25D\x260\x3\x2\x2\x2\x25E\x25C\x3\x2"+
+		"\x2\x2\x25E\x25F\x3\x2\x2\x2\x25F\x1F\x3\x2\x2\x2\x260\x25E\x3\x2\x2\x2"+
+		"\x261\x287\x5\x164\xB3\x2\x262\x287\x5\"\x12\x2\x263\x287\x5\xE\b\x2\x264"+
+		"\x287\x5\x88\x45\x2\x265\x287\x5\xA8U\x2\x266\x287\x5\xAEX\x2\x267\x287"+
+		"\x5\xB0Y\x2\x268\x287\x5\xB2Z\x2\x269\x287\x5\xB6\\\x2\x26A\x287\x5\xB8"+
+		"]\x2\x26B\x287\x5\xBA^\x2\x26C\x287\x5\xC0\x61\x2\x26D\x287\x5\xC2\x62"+
 		"\x2\x26E\x287\x5\xC4\x63\x2\x26F\x287\x5\xCA\x66\x2\x270\x287\x5\xD8m"+
 		"\x2\x271\x287\x5\xDAn\x2\x272\x287\x5\xDCo\x2\x273\x287\x5\xDEp\x2\x274"+
 		"\x287\x5\xE0q\x2\x275\x287\x5\xE2r\x2\x276\x287\x5\xEAv\x2\x277\x287\x5"+
@@ -20546,7 +20518,7 @@ public partial class VBAParser : Parser {
 		"\x3\x2\x2\x2\x888\x886\x3\x2\x2\x2\x888\x887\x3\x2\x2\x2\x889\x14D\x3"+
 		"\x2\x2\x2\x88A\x88D\x5\x152\xAA\x2\x88B\x88D\x5\x150\xA9\x2\x88C\x88A"+
 		"\x3\x2\x2\x2\x88C\x88B\x3\x2\x2\x2\x88D\x14F\x3\x2\x2\x2\x88E\x88F\x5"+
-		"\x154\xAB\x2\x88F\x151\x3\x2\x2\x2\x890\x891\x5\x154\xAB\x2\x891\x892"+
+		"\x154\xAB\x2\x88F\x151\x3\x2\x2\x2\x890\x891\x5\x150\xA9\x2\x891\x892"+
 		"\x5\x16E\xB8\x2\x892\x153\x3\x2\x2\x2\x893\x898\a\xED\x2\x2\x894\x898"+
 		"\x5\x198\xCD\x2\x895\x898\x5\x156\xAC\x2\x896\x898\a\a\x2\x2\x897\x893"+
 		"\x3\x2\x2\x2\x897\x894\x3\x2\x2\x2\x897\x895\x3\x2\x2\x2\x897\x896\x3"+
