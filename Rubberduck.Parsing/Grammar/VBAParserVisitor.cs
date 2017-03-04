@@ -289,6 +289,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitEndOfStatement([NotNull] VBAParser.EndOfStatementContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.midStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMidStatement([NotNull] VBAParser.MidStatementContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by the <c>optionCompareStmt</c>
 	/// labeled alternative in <see cref="VBAParser.moduleOption"/>.
 	/// </summary>
@@ -1662,6 +1669,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCharPosition([NotNull] VBAParser.CharPositionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.modeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitModeSpecifier([NotNull] VBAParser.ModeSpecifierContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.moduleConfigElement"/>.
