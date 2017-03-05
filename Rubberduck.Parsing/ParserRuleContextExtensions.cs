@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
@@ -35,6 +37,29 @@ namespace Rubberduck.Parsing
                                  context.Start.Column + 1,
                                  endContext.Start.Line == 0 ? 1 : endContext.Start.Line,
                                  endContext.Start.Column + 1);
+        }
+
+        public static IEnumerable<TContext> FindChildren<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
+        {
+            var walker = new ParseTreeWalker();
+            var listener = new ChildNodeListener<TContext>();
+            walker.Walk(listener, context);
+            return listener.Matches;
+        }
+
+        private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
+        {
+            private readonly HashSet<TContext> _matches = new HashSet<TContext>();
+            public IEnumerable<TContext> Matches { get { return _matches; } }
+
+            public override void EnterEveryRule(ParserRuleContext context)
+            {
+                var match = context as TContext;
+                if (match != null)
+                {
+                    _matches.Add(match);
+                }
+            }
         }
     }
 }

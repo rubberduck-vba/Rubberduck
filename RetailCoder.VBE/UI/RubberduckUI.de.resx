@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -371,7 +371,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Konnte das Rubberduck Add-In nicht laden</value>
   </data>
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
-    <value>Version</value>
+    <value>Version {0}</value>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG</value>
@@ -672,9 +672,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>{0} Umbenennen</value>
   </data>
-  <data name="Language_SV" xml:space="preserve">
-    <value>Schwedisch</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
@@ -871,9 +868,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>&amp;Navigieren</value>
-  </data>
-  <data name="Language_JA" xml:space="preserve">
-    <value>Japanisch</value>
   </data>
   <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
     <value>Aktuelle Datei</value>
@@ -1861,5 +1855,78 @@ End Sub</value>
   </data>
   <data name="SettingsCaption_ImportSettings" xml:space="preserve">
     <value>Import</value>
+  </data>
+  <data name="SmartIndenter_LegacySettingPrompt">
+    <value>Einstellungen für Smart Indenter wurden in der Registry gefunden.
+Möchten sie die Einstellungen in Rubberduck importieren?</value>
+  </data>
+  <data name="GeneralSettings_CheckVersion">
+    <value>Beim Start prüfen, ob eine neuere Version verfügbar ist.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText">
+    <value>Variablenname der Lokalen Kopie festlegen</value>
+  </data>
+  <data name="IndenterSettings_CodeSampleHeader">
+    <value>Eingerücktes Codebeispiel</value>
+  </data>
+  <data name="DialogCaption_LoadWindowSettings">
+    <value>Fenstereinstellungen laden</value>
+  </data>
+  <data name="SettingsInstructions_WindowSettings">
+    <value>Die Einstellungen für Fenstersichtbarkeit anpassen.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText">
+    <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacing">
+    <value>Vertikalen Abstand aufrecht erhalten</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacingLabel">
+    <value>Vertikalen Abstand</value>
+  </data>
+  <data name="DialogCaption_SaveWindowSettings">
+    <value>Fenstereinstellungen speichern</value>
+  </data>
+  <data name="DeclarationType_BracketedExpression">
+    <value>Laufzeitausdruck</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_Caption">
+    <value>ByVal zugewiesener Parameter QuickFix - Lokale Kopie erstellen</value>
+  </data>
+  <data name="WindowSettings_StartupVisibilityHeader">
+    <value>Fenstersichtbarkeit beim Start</value>
+  </data>
+  <data name="VersionCheck_NewVersionAvailable">
+    <value>Rubberduck Version {0} ist jetzt verfügbar! Wollen sie jetzt die Release Notes prüfen?</value>
+  </data>
+  <data name="SettingsCaption_WindowSettings">
+    <value>Fenstereinstellungen</value>
+  </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_ReservedKeywordFormat">
+    <value />
+  </data>
+  <data name="RenameDialog_AmbiguousSelection">
+    <value />
+  </data>
+  <data name="ContextMultipleControlsSelection">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_InvalidCharacters">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_IsByValIdentifierFormat">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_QuestionableEntryFormat">
+    <value />
+  </data>
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_DoesNotStartWithLetter">
+    <value />
   </data>
 </root>

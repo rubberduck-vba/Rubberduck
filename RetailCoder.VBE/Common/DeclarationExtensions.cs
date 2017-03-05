@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing;
@@ -11,7 +12,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 // ReSharper disable LocalizableElement
@@ -24,7 +24,7 @@ namespace Rubberduck.Common
 
         public static string ToLocalizedString(this DeclarationType type)
         {
-            return RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, UI.Settings.Settings.Culture);
+            return RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, CultureInfo.CurrentUICulture);
         }
 
         public static BitmapImage BitmapImage(this Declaration declaration)
