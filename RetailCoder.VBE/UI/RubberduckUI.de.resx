@@ -371,7 +371,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Konnte das Rubberduck Add-In nicht laden</value>
   </data>
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
-    <value>Version</value>
+    <value>Version {0}</value>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG</value>
@@ -1861,5 +1861,51 @@ End Sub</value>
   </data>
   <data name="SettingsCaption_ImportSettings" xml:space="preserve">
     <value>Import</value>
+  </data>
+  <data name="SmartIndenter_LegacySettingPrompt">
+    <value>Einstellungen für Smart Indenter wurden in der Registry gefunden.
+Möchten sie die Einstellungen in Rubberduck importieren?</value>
+  </data>
+  <data name="GeneralSettings_CheckVersion">
+    <value>Beim Start prüfen, ob eine neuere Version verfügbar ist.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText">
+    <value>Variablenname der Lokalen Kopie festlegen</value>
+  </data>
+  <data name="IndenterSettings_CodeSampleHeader">
+    <value>Eingerücktes Codebeispiel</value>
+  </data>
+  <data name="DialogCaption_LoadWindowSettings">
+    <value>Fenstereinstellungen laden</value>
+  </data>
+  <data name="SettingsInstructions_WindowSettings">
+    <value>Die Einstellungen für Fenstersichtbarkeit anpassen.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText">
+    <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacing">
+    <value>Vertikalen Abstand aufrecht erhalten</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacingLabel">
+    <value>Vertikalen Abstand</value>
+  </data>
+  <data name="DialogCaption_SaveWindowSettings">
+    <value>Fenstereinstellungen speichern</value>
+  </data>
+  <data name="DeclarationType_BracketedExpression">
+    <value>Laufzeitausdruck</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_Caption">
+    <value>ByVal zugewiesener Parameter QuickFix - Lokale Kopie erstellen</value>
+  </data>
+  <data name="WindowSettings_StartupVisibilityHeader">
+    <value>Fenstersichtbarkeit beim Start</value>
+  </data>
+  <data name="VersionCheck_NewVersionAvailable">
+    <value>Rubberduck Version {0} ist jetzt verfügbar! Wollen sie jetzt die Release Notes prüfen?</value>
+  </data>
+  <data name="SettingsCaption_WindowSettings">
+    <value>Fenstereinstellungen</value>
   </data>
 </root>

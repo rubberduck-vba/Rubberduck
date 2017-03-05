@@ -594,4 +594,55 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="AggregateInspectionResultFormat" xml:space="preserve">
     <value>{0} ({1} Ergebnisse)</value>
   </data>
+  <data name="ApplicationWorksheetFunctionQuickFix">
+    <value>Application.WorksheetFunction explizit verwenden.</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionInspectionName">
+    <value>Laufzeitgebundener Aufruf an WorksheetFunction</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionInspectionResultFormat">
+    <value>Laufzeitgebundene Nutzung des Application.{0} Members.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspectionName">
+    <value>Implizite Zuweisung an Standard-Member</value>
+  </data>
+  <data name="HostSpecificExpressionInspectionName">
+    <value>Host-Spezifischer geklammerter ausdruck wird nur zur Laufzeit ausgewertet</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspectionResultFormat">
+    <value>Zuweisung zu '{0}' weist implizit den Standard-Member von Klasse  '{1}' zu</value>
+  </data>
+  <data name="HungarianNotationInspectionName">
+    <value>Variable verwendet "Hungarian notation".</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspectionMeta">
+    <value>Es wird ein Memberzugriff verwendet, der vom Interface des Objektes nicht deklariert wird. Dies ist höchstwahrscheinlich ein Fehler. Falls der Memberzugriff das erweiterbare Interface des Objektes verwendet, erwägen Sie ein nicht-erweiterbares Äquivalent zu verwenden um Prüfungen zur Kompilierzeit zu ermöglichen und das Auftreten von Laufzeitfehler 418 zu verhindern.</value>
+  </data>
+  <data name="HungarianNotationInspectionMeta">
+    <value>"Hungarian notation" macht code weniger lesbar und ist redundant, sobald stark typisierte Variablen und aussagekräftige Namen verwendet werden.</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionInspectionMeta">
+    <value>Das Excel Application-Objekt implementiert das WorksheetFunction interface direkt. Alle Aufrufe an WorksheetFunction-Member werden als laufzeitgebunden behandelt und Fehler im aufgerufenen Member werden in ein Variant des Typs VbVarType.Error gekapselt. Dadurch können Fehler nicht mit Fehleranweisungen behandelt werden und gegenüber skriptzeitgebundenen Aufrufen sinkt die Performanz. Ziehen Sie in Erwägung Application.WorksheetFunction explizit aufzurufen. Bedenken Sie: Falls dieser Aufruf in der Vergangenheit Fehler erzeugt hat, wurden diese ignoriert. Es sollte eine Fehlerbehandlung vorhanden sein, bevor Sie die schnelle Korrektur anwenden.</value>
+  </data>
+  <data name="AssignedByValParameterQuickFix">
+    <value>Eine lokale Kopie des Parameters erstellen und verwenden</value>
+  </data>
+  <data name="WhiteListIdentifierQuickFix">
+    <value>Zur Whitelist hinzufügen</value>
+  </data>
+  <data name="HostSpecificExpressionInspectionResultFormat">
+    <value>Ausdruck '{0}' kann zur Kompilierzeit nicht validiert werden.</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspectionName">
+    <value>Member existiert auf dem Interface nicht</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspectionResultFormat">
+    <value>Member '{0}' ist auf dem Interface für '{1}' nicht deklariert.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspectionMeta">
+    <value>Solche Zuweisungen sehen aus als wiesen sie eine Objektvariable an einen Werttyp zu, aber tatsächlich wird der Standardmember des Objekts implizit zugewiesen. Um die Lesbarkeit zu verbessern, erwägen Sie explizit auf den Standardmember zuzugreifen.</value>
+  </data>
+  <data name="HostSpecificExpressionInspectionMeta">
+    <value>Geklammerte Ausdrücke werden von der Hostanwendung zur Laufzeit ausgewertet, was bedeutet, dass VBA den Ausdruck nicht zur Kompilierzeit validieren kann. Erwägen sie, das hostspezifische Objektmodell zu verwenden.</value>
+  </data>
 </root>
