@@ -1,4 +1,5 @@
-﻿using System.Windows.Threading;
+﻿using System.Globalization;
+using System.Windows.Threading;
 using Antlr4.Runtime;
 using Rubberduck.VBEditor;
 
@@ -12,8 +13,8 @@ namespace Rubberduck.Inspections.Abstract
 
         public QuickFixBase(ParserRuleContext context, QualifiedSelection selection, string description)
         {
-            Dispatcher.CurrentDispatcher.Thread.CurrentCulture = UI.Settings.Settings.Culture;
-            Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = UI.Settings.Settings.Culture;
+            Dispatcher.CurrentDispatcher.Thread.CurrentCulture = CultureInfo.CurrentUICulture;
+            Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = CultureInfo.CurrentUICulture;
 
             _context = context;
             _selection = selection;

@@ -84,7 +84,7 @@ namespace Rubberduck.Settings
         {
             get
             {
-                return InspectionsUI.ResourceManager.GetString(Name + "Name", UI.Settings.Settings.Culture);
+                return InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture);
             }
         } // not serialized because culture-dependent
 
@@ -102,25 +102,25 @@ namespace Rubberduck.Settings
         {
             get
             {
-                return InspectionsUI.ResourceManager.GetString(Name + "Meta", UI.Settings.Settings.Culture);
+                return InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
             }
         }
 
         [XmlIgnore]
         public string TypeLabel
         {
-            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, UI.Settings.Settings.Culture); }
+            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, CultureInfo.CurrentUICulture); }
         }
 
         [XmlIgnore]
         public string SeverityLabel
         {
-            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, UI.Settings.Settings.Culture); }
+            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, CultureInfo.CurrentUICulture); }
             set
             {
                 foreach (var severity in Enum.GetValues(typeof (CodeInspectionSeverity)))
                 {
-                    if (value == RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, UI.Settings.Settings.Culture))
+                    if (value == RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, CultureInfo.CurrentUICulture))
                     {
                         Severity = (CodeInspectionSeverity)severity;
                         return;

@@ -9,6 +9,7 @@ using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -130,6 +131,8 @@ namespace Rubberduck
             try
             {
                 CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.GeneralSettings.Language.Code);
+                RubberduckUI.Culture = CultureInfo.CurrentUICulture;
+                InspectionsUI.Culture = CultureInfo.CurrentUICulture;
                 _appMenus.Localize();
                 _stateBar.Localize();
             }

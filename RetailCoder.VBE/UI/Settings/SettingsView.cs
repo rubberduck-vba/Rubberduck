@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.UI.Settings
+﻿using System.Globalization;
+
+namespace Rubberduck.UI.Settings
 {
     public class SettingsView
     {
@@ -7,7 +9,7 @@
         {
             get
             {
-                return RubberduckUI.ResourceManager.GetString("SettingsInstructions_" + View, UI.Settings.Settings.Culture);
+                return RubberduckUI.ResourceManager.GetString("SettingsInstructions_" + View, CultureInfo.CurrentUICulture);
             }
         }
         public ISettingsView Control { get; set; }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Windows.Forms;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
@@ -20,7 +21,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IMessageBox _messageBox;
 
         public RenameDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
-            : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, UI.Settings.Settings.Culture)))
+            : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, CultureInfo.CurrentUICulture)))
         {
             _target = target;
             _state = state;
