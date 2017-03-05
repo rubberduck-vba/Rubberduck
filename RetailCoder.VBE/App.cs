@@ -11,7 +11,6 @@ using System.Globalization;
 using System.Windows.Forms;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
@@ -24,7 +23,6 @@ namespace Rubberduck
         private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
-        private readonly RubberduckCommandBar _stateBar;
         private readonly IRubberduckHooks _hooks;
         private readonly IVersionCheck _version;
         private readonly CommandBase _checkVersionCommand;
@@ -37,7 +35,6 @@ namespace Rubberduck
             IMessageBox messageBox,
             IGeneralConfigService configService,
             IAppMenu appMenus,
-            RubberduckCommandBar stateBar,
             IRubberduckHooks hooks,
             IVersionCheck version,
             CommandBase checkVersionCommand)
@@ -46,7 +43,6 @@ namespace Rubberduck
             _configService = configService;
             _autoSave = new AutoSave.AutoSave(vbe, _configService);
             _appMenus = appMenus;
-            _stateBar = stateBar;
             _hooks = hooks;
             _version = version;
             _checkVersionCommand = checkVersionCommand;
@@ -62,7 +58,6 @@ namespace Rubberduck
             _hooks.HookHotkeys();
             // also updates the ShortcutKey text
             _appMenus.Localize();
-            _stateBar.Localize();
             UpdateLoggingLevel();
 
             if (e.LanguageChanged)
@@ -98,7 +93,6 @@ namespace Rubberduck
             LoadConfig();
             CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
-            _stateBar.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
 
@@ -134,7 +128,6 @@ namespace Rubberduck
                 RubberduckUI.Culture = CultureInfo.CurrentUICulture;
                 InspectionsUI.Culture = CultureInfo.CurrentUICulture;
                 _appMenus.Localize();
-                _stateBar.Localize();
             }
             catch (CultureNotFoundException exception)
             {
