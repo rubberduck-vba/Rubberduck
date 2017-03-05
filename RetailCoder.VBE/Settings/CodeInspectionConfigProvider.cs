@@ -71,7 +71,7 @@ namespace Rubberduck.Settings
                 new CodeInspectionSetting("ObsoleteCommentSyntaxInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
                 new CodeInspectionSetting("OptionExplicitInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error),
                 new CodeInspectionSetting("VariableTypeNotDeclaredInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
-                new CodeInspectionSetting("MalformedAnnotationInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error)
+                new CodeInspectionSetting("MissingAnnotationArgumentInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error)
             };
         }
     }
