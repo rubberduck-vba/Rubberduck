@@ -11,7 +11,7 @@ namespace Rubberduck.UI.SourceControl.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var modes = (IEnumerable<CommitAction>)value;
-            return modes.Select(s => RubberduckUI.ResourceManager.GetString("SourceControl_" + s, UI.Settings.Settings.Culture)).ToArray();
+            return modes.Select(s => RubberduckUI.ResourceManager.GetString("SourceControl_" + s, CultureInfo.CurrentUICulture)).ToArray();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

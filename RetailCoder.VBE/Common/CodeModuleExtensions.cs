@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -162,8 +163,72 @@ namespace Rubberduck.Common
 
         public static void Remove(this ICodeModule module, IdentifierReference target)
         {
-            var parent = target.Context.Parent as ParserRuleContext;
+            var parent = (ParserRuleContext)target.Context.Parent;
+            if (target.IsAssignment)
+            {
+                // target is LHS of assignment; need to know if there's a procedure call in RHS
+                var letStmt = parent as VBAParser.LetStmtContext;
+                var setStmt = parent as VBAParser.SetStmtContext;
+
+                string argList;
+                if (HasProcedureCall(letStmt, out argList) || HasProcedureCall(setStmt, out argList))
+                {
+                    // need to remove LHS only; RHS expression may have side-effects
+                    var original = parent.GetText();
+                    var replacement = ReplaceStringAtIndex(original, target.IdentifierName + " = ", string.Empty, 0);
+                    if (argList != null)
+                    {
+                        var atIndex = replacement.IndexOf(argList, StringComparison.OrdinalIgnoreCase);
+                        var plainArgs = " " + argList.Substring(1, argList.Length - 2);
+                        replacement = ReplaceStringAtIndex(replacement, argList, plainArgs, atIndex);
+                    }
+                    module.ReplaceLine(parent.Start.Line, replacement);
+                    return;
+                }
+            }
+
             module.Remove(parent.GetSelection(), parent);
+        }
+
+        private static bool HasProcedureCall(VBAParser.LetStmtContext context, out string argList)
+        {
+            if (context == null)
+            {
+                argList = null;
+                return false;
+            }
+            return HasProcedureCall(context.expression(), out argList);
+        }
+
+        private static bool HasProcedureCall(VBAParser.SetStmtContext context, out string argList)
+        {
+            if (context == null)
+            {
+                argList = null;
+                return false;
+            }
+            return HasProcedureCall(context.expression(), out argList);
+        }
+
+        private static bool HasProcedureCall(VBAParser.ExpressionContext context, out string argList)
+        {
+            // bug: what if complex expression has multiple arg lists?
+            argList = GetArgListString(context.FindChildren<VBAParser.ArgListContext>().FirstOrDefault())
+                      ?? GetArgListString(context.FindChildren<VBAParser.ArgumentListContext>().FirstOrDefault());
+
+            return !(context is VBAParser.LiteralExprContext 
+                  || context is VBAParser.NewExprContext
+                  || context is VBAParser.BuiltInTypeExprContext);
+        }
+
+        private static string GetArgListString(VBAParser.ArgListContext context)
+        {
+            return context == null ? null : context.GetText();
+        }
+
+        private static string GetArgListString(VBAParser.ArgumentListContext context)
+        {
+            return context == null ? null : "(" + context.GetText() + ")";
         }
 
         public static void Remove(this ICodeModule module, IEnumerable<IdentifierReference> targets)

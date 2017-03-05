@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -603,5 +603,47 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   </data>
   <data name="AggregateInspectionResultFormat" xml:space="preserve">
     <value>{0} ({1} résultats)</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionQuickFix">
+    <value>Utiliser Application.WorksheetFunction explicitement.</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionInspectionName">
+    <value>Appel de fonction WorksheetFunction à liaison tardive.</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionInspectionResultFormat">
+    <value>Utilisation du membre à liaison tardive Application.{0}.</value>
+  </data>
+  <data name="HostSpecificExpressionInspectionName">
+    <value>Les expressions spécifiques à l'application hôte, encadrées de crochets, sont seulement évaluées lors de l'exécution.</value>
+  </data>
+  <data name="HungarianNotationInspectionName">
+    <value>L'identifiant utilise la notation hongroise.</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspectionMeta">
+    <value>Un membre est accédé mais ne semble pas exister dans l'interface de l'objet. Ceci causera probablement une erreur d'exécution #438.</value>
+  </data>
+  <data name="HungarianNotationInspectionMeta">
+    <value>La notation hongroise rend le code plus difficile à lire, et est redondante lorsque les variables ont un type explicite et que des identifiants éloquents sont utilisés.</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionInspectionMeta">
+    <value>L'objet Excel Application n'implémente pas l'interface WorksheetFunction directement; les appels de fonctions WorksheetFunction effectués sur Application, renvoie une valeur VbVarType.Error; ces erreurs ne peuvent être capturées avec la gestion d'erreurs de VBA et encourent une pénalité de performance par rapport à un appel équivalent de WorksheetFunction. Note: assurez-vous de gérer les erreurs d'exécution en appliquant ce correctif.</value>
+  </data>
+  <data name="WhiteListIdentifierQuickFix">
+    <value>Ajouter à la liste blanche</value>
+  </data>
+  <data name="HostSpecificExpressionInspectionResultFormat">
+    <value>L'espression '{0}' ne peut être validée lors de la compilation.</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspectionName">
+    <value>Membre inexistant ou introuvable</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspectionResultFormat">
+    <value>Le membre '{0}' n'est pas exposé par l'interface du type '{1}'.</value>
+  </data>
+  <data name="AssignedByValParameterMakeLocalCopyQuickFix">
+    <value>Créer et utiliser une copie locale du paramètre</value>
+  </data>
+  <data name="HostSpecificExpressionInspectionMeta">
+    <value>L'expression est évaluée par l'application hôte au moment de l'exécution, ce qui implique que VBA ne peut valider l'expression lors de la compilation. Considérez utiliser plutôt le modèle d'objet de l'application hôte.</value>
   </data>
 </root>

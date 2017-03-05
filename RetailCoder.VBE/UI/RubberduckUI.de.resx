@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -672,9 +672,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>{0} Umbenennen</value>
   </data>
-  <data name="Language_SV" xml:space="preserve">
-    <value>Schwedisch</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
@@ -871,9 +868,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>&amp;Navigieren</value>
-  </data>
-  <data name="Language_JA" xml:space="preserve">
-    <value>Japanisch</value>
   </data>
   <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
     <value>Aktuelle Datei</value>
@@ -1907,5 +1901,32 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
   <data name="SettingsCaption_WindowSettings">
     <value>Fenstereinstellungen</value>
+  </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_ReservedKeywordFormat">
+    <value />
+  </data>
+  <data name="RenameDialog_AmbiguousSelection">
+    <value />
+  </data>
+  <data name="ContextMultipleControlsSelection">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_InvalidCharacters">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_IsByValIdentifierFormat">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_QuestionableEntryFormat">
+    <value />
+  </data>
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_DoesNotStartWithLetter">
+    <value />
   </data>
 </root>

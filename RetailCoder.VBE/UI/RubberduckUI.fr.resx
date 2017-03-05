@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -683,9 +683,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Renommer {0}</value>
   </data>
-  <data name="Language_SV" xml:space="preserve">
-    <value>Suédois</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Explorateur</value>
   </data>
@@ -875,9 +872,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>Na&amp;viguer</value>
-  </data>
-  <data name="Language_JA" xml:space="preserve">
-    <value>Japonais</value>
   </data>
   <data name="SourceControl_DeleteButton" xml:space="preserve">
     <value>Supprimer branche</value>
@@ -1874,5 +1868,71 @@ End Sub</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
     <value>La version {0} de Rubberduck est maintenant disponible! Souhaitez-vous consulter les notes de mise à jour maintenant?</value>
+  </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat">
+    <value>'{0}' est déjà accessible à cette procédure.</value>
+  </data>
+  <data name="SmartIndenter_LegacySettingPrompt">
+    <value>Des paramètres utilisés par Smart Indenter existent dans votre registre. Voulez-vous les importer dans Rubberduck?</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText">
+    <value>Nommer la variable locale</value>
+  </data>
+  <data name="IndenterSettings_CodeSampleHeader">
+    <value>Échantillon de code indenté</value>
+  </data>
+  <data name="AssignedByValDialog_ReservedKeywordFormat">
+    <value>'{0}' est un mot-clé réservé.</value>
+  </data>
+  <data name="DialogCaption_LoadWindowSettings">
+    <value>Charger les paramètres des fenêtres</value>
+  </data>
+  <data name="RenameDialog_AmbiguousSelection">
+    <value>Veuillez sélectionner 1 seul contrôle à renommer.</value>
+  </data>
+  <data name="ContextMultipleControlsSelection">
+    <value>contrôles multiples</value>
+  </data>
+  <data name="SettingsInstructions_WindowSettings">
+    <value>Configurer la visibilité des fenêtres</value>
+  </data>
+  <data name="AssignedByValDialog_InvalidCharacters">
+    <value>Un nom de variable ne peut pas contenir de caractères spéciaux autre que la barre de soulignement ("underscore").</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText">
+    <value>Veuillez spécifier le nom à utiliser pour la copie locale du paramètre '{0}'.</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacing">
+    <value>Maintenir l'espacement vertical</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacingLabel">
+    <value>Espacement vertical</value>
+  </data>
+  <data name="AssignedByValDialog_IsByValIdentifierFormat">
+    <value>Le nom de la variable doit être différent de celui du paramètre '{0}'.</value>
+  </data>
+  <data name="AssignedByValDialog_QuestionableEntryFormat">
+    <value />
+  </data>
+  <data name="DialogCaption_SaveWindowSettings">
+    <value>Enregistrer les paramètres des fenêtres</value>
+  </data>
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration">
+    <value>La varaible '{0}' est assignée. Supprimer l'/les assignation(s)?</value>
+  </data>
+  <data name="DeclarationType_BracketedExpression">
+    <value>expression résolue à l'exécution</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_Caption">
+    <value>Introduire une variable locale</value>
+  </data>
+  <data name="WindowSettings_StartupVisibilityHeader">
+    <value>Visibilité au démarrage</value>
+  </data>
+  <data name="AssignedByValDialog_DoesNotStartWithLetter">
+    <value>Le nom d'une variable doit débuter par une lettre.</value>
+  </data>
+  <data name="SettingsCaption_WindowSettings">
+    <value>Paramètres des fenêtres</value>
   </data>
 </root>
