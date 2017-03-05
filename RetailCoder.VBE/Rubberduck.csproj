@@ -341,6 +341,7 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
+    <Compile Include="Inspections\AccessibilityEvaluator.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspection.cs" />
     <Compile Include="Inspections\HungarianNotationInspection.cs" />
