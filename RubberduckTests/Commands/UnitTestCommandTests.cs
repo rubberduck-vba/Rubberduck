@@ -320,7 +320,8 @@ Private Assert As Object
             addTestModuleCommand.Execute(null);
 
             // mock suite auto-assigns "TestModule1" to the first component when we create the mock
-            var module = parser.State.DeclarationFinder.FindStdModule("TestModule2");
+            var project = parser.State.DeclarationFinder.FindProject("TestProject1");
+            var module = parser.State.DeclarationFinder.FindStdModule("TestModule2", project);
             Assert.IsTrue(module.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
         }
 
