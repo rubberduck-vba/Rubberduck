@@ -37,10 +37,10 @@ namespace Rubberduck.Parsing
                     // obtain the ITypeInfo interface from the object
                     dispatch.GetTypeInfo(0, 0, out typeInfo);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Cannot get the ITypeInfo interface for the specified COM object
-                    return String.Empty;
+                    return string.Empty;
                 }
 
                 string typeName = "";
@@ -53,17 +53,17 @@ namespace Rubberduck.Parsing
                     typeInfo.GetDocumentation(-1, out typeName, out documentation,
                         out helpContext, out helpFile);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // Cannot extract ITypeInfo information
-                    return String.Empty;
+                    return string.Empty;
                 }
                 return typeName;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Unexpected error
-                return String.Empty;
+                return string.Empty;
             }
             finally
             {

@@ -1,6 +1,4 @@
 ﻿using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
-using Microsoft.Vbe.Interop.Forms;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
@@ -9,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -30,16 +31,16 @@ namespace Rubberduck.Parsing.Symbols
         public DeclarationSymbolsListener(
             RubberduckParserState state,
             QualifiedModuleName qualifiedName,
-            vbext_ComponentType type,
+            ComponentType type,
             IEnumerable<IAnnotation> annotations,
             IDictionary<Tuple<string, DeclarationType>, Attributes> attributes,
-            Declaration projectDeclaration)
+            Declaration projectDeclaration, string asTypeName = null)
         {
             _qualifiedName = qualifiedName;
             _annotations = annotations;
             _attributes = attributes;
 
-            var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
+            var declarationType = type == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
 
@@ -51,55 +52,63 @@ namespace Rubberduck.Parsing.Symbols
             if (declarationType == DeclarationType.ProceduralModule)
             {
                 _moduleDeclaration = new ProceduralModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.Component.Name,
+                    _qualifiedName.ComponentName,
                     false,
                     FindAnnotations(),
                     moduleAttributes);
             }
             else
             {
-                bool hasDefaultInstanceVariable = type != vbext_ComponentType.vbext_ct_ClassModule && type != vbext_ComponentType.vbext_ct_StdModule;
+                bool hasDefaultInstanceVariable = type != ComponentType.ClassModule && type != ComponentType.StandardModule;
 
                 Declaration superType = null;
-                if (type == vbext_ComponentType.vbext_ct_Document)
+                if (type == ComponentType.Document)
                 {
-                    foreach (var coclass in state.CoClasses)
+                    if (!string.IsNullOrEmpty(asTypeName))
                     {
-                        try
+                        superType = state.CoClasses.FirstOrDefault(cls => cls.Value.IdentifierName == asTypeName).Value;
+                    }
+                    else
+                    {
+                        foreach (var coclass in state.CoClasses)
                         {
-                            if (coclass.Key.Count != _qualifiedName.Component.Properties.Count)
+                            try
                             {
-                                continue;
-                            }
-
-                            var allNamesMatch = true;
-                            for (var i = 0; i < coclass.Key.Count; i++)
-                            {
-                                if (coclass.Key[i] != _qualifiedName.Component.Properties.Item(i + 1).Name)
+                                if (_qualifiedName.Component == null ||
+                                    coclass.Key.Count != _qualifiedName.Component.Properties.Count)
                                 {
-                                    allNamesMatch = false;
+                                    continue;
+                                }
+
+                                var allNamesMatch = true;
+                                for (var i = 0; i < coclass.Key.Count; i++)
+                                {
+                                    if (coclass.Key[i] != _qualifiedName.Component.Properties[i + 1].Name)
+                                    {
+                                        allNamesMatch = false;
+                                        break;
+                                    }
+                                }
+
+                                if (allNamesMatch)
+                                {
+                                    superType = coclass.Value;
                                     break;
                                 }
                             }
-                            
-                            if (allNamesMatch)
+                            catch (COMException)
                             {
-                                superType = coclass.Value;
-                                break;
                             }
-                        }
-                        catch (COMException)
-                        {
                         }
                     }
                 }
 
                 _moduleDeclaration = new ClassModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.Component.Name,
+                    _qualifiedName.ComponentName,
                     false,
                     FindAnnotations(),
                     moduleAttributes,
@@ -113,7 +122,7 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
             AddDeclaration(_moduleDeclaration);
             var component = _moduleDeclaration.QualifiedName.QualifiedModuleName.Component;
-            if (component.Type == vbext_ComponentType.vbext_ct_MSForm || component.Designer != null)
+            if (component.Type == ComponentType.UserForm || component.HasDesigner)
             {
                 DeclareControlsAsMembers(component);
             }
@@ -162,29 +171,19 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// These declarations are meant to be used to identify control event procedures.
         /// </remarks>
-        private void DeclareControlsAsMembers(VBComponent form)
+        private void DeclareControlsAsMembers(IVBComponent form)
         {
-            var designer = form.Designer;
-            if (designer == null)
+            if (form.Controls == null) { return; }
+
+            foreach (var control in form.Controls)
             {
-                return;
-            }
-            if (!(designer is UserForm))
-            {
-                return;
-            }
-            // "using dynamic typing here, because not only MSForms could have a Controls collection (e.g. MS-Access forms are 'document' modules)."
-            // Note: Dynamic doesn't seem to support explicit interfaces that's why we cast it anyway, MS Access forms apparently have to be treated specially anyway.
-            var userForm = (UserForm)designer;
-            // Not all objects in the Controls collection are Control, some are Images.
-            foreach (dynamic control in userForm.Controls)
-            {
+                var typeName = control.TypeName();
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(
                     _qualifiedName.QualifyMemberName(control.Name),
                     _parentDeclaration,
                     _currentScopeDeclaration,
-                    "Control",
+                    string.IsNullOrEmpty(typeName) ? "Control" : typeName,
                     null,
                     true,
                     true,
@@ -218,7 +217,7 @@ namespace Rubberduck.Parsing.Symbols
                 var argContext = (VBAParser.ArgContext)context;
                 var isOptional = argContext.OPTIONAL() != null;
 
-                var isByRef = argContext.BYREF() != null;
+                var isByRef = argContext.BYREF() != null || argContext.BYVAL() == null;
                 var isParamArray = argContext.PARAMARRAY() != null;
                 result = new ParameterDeclaration(
                     new QualifiedMemberName(_qualifiedName, identifierName),
@@ -481,7 +480,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
             var typeHint = Identifier.GetTypeHintValue(identifier);
-            var isArray = asTypeClause != null && asTypeClause.type().LPAREN() != null;
+            var isArray = asTypeName.EndsWith("()");
             var declaration = CreateDeclaration(
                 name,
                 asTypeName,

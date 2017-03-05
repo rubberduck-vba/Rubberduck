@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Input;
-using Castle.Core.Internal;
+using System.Globalization;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -18,13 +18,24 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public abstract string Key { get; }
 
-        public Func<string> Caption
+        public virtual Func<string> Caption
         {
             get
             {
-                return () => Key.IsNullOrEmpty() 
-                    ? string.Empty 
-                    : RubberduckUI.ResourceManager.GetString(Key, UI.Settings.Settings.Culture);
+                return () => string.IsNullOrEmpty(Key)
+                    ? string.Empty
+                    : RubberduckUI.ResourceManager.GetString(Key, CultureInfo.CurrentUICulture);
+            }
+        }
+
+        public virtual string ToolTipKey { get; set; }
+        public virtual Func<string> ToolTipText
+        {
+            get
+            {
+                return () => string.IsNullOrEmpty(ToolTipKey)
+                    ? string.Empty
+                    : RubberduckUI.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture);
             }
         }
 
@@ -36,9 +47,12 @@ namespace Rubberduck.UI.Command.MenuItems
         /// <remarks>Returns <c>true</c> if not overridden.</remarks>
         public virtual bool EvaluateCanExecute(RubberduckParserState state)
         {
-            return _command.CanExecute(state);
+            return state != null && _command.CanExecute(state);
         }
 
+        public virtual ButtonStyle ButtonStyle { get { return ButtonStyle.IconAndCaption; } }
+        public virtual bool HiddenWhenDisabled { get { return false; } }
+        public virtual bool IsVisible { get { return true; } }
         public virtual bool BeginGroup { get { return false; } }
         public virtual int DisplayOrder { get { return default(int); } }
         public virtual Image Image { get { return null; } }

@@ -6,18 +6,19 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
-using Microsoft.Vbe.Interop;
 using NLog;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using resx = Rubberduck.UI.SourceControl.SourceControl;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -31,14 +32,13 @@ namespace Rubberduck.UI.SourceControl
 
     public sealed class SourceControlViewViewModel : ViewModelBase, IDisposable
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly ISinks _sinks;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly IConfigProvider<SourceControlSettings> _configService;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IMessageBox _messageBox;
+        private readonly IEnvironmentProvider _environment;
         private readonly FileSystemWatcher _fileSystemWatcher;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static readonly IEnumerable<string> VbFileExtensions = new[] { "cls", "bas", "frm" };
@@ -46,19 +46,17 @@ namespace Rubberduck.UI.SourceControl
         private SourceControlSettings _config;
 
         public SourceControlViewViewModel(
-            VBE vbe,
+            IVBE vbe,
             RubberduckParserState state,
-            ISinks sinks,
             ISourceControlProviderFactory providerFactory,
             IFolderBrowserFactory folderBrowserFactory,
             IConfigProvider<SourceControlSettings> configService,
             IEnumerable<IControlView> views,
-            ICodePaneWrapperFactory wrapperFactory,
-            IMessageBox messageBox)
+            IMessageBox messageBox,
+            IEnvironmentProvider environment)
         {
             _vbe = vbe;
             _state = state;
-            _sinks = sinks;
             _providerFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
 
@@ -66,8 +64,8 @@ namespace Rubberduck.UI.SourceControl
 
             _configService = configService;
             _config = _configService.Create();
-            _wrapperFactory = wrapperFactory;
             _messageBox = messageBox;
+            _environment = environment;
 
             _initRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
             _openRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo(), _ => _vbe.VBProjects.Count != 0);
@@ -87,10 +85,8 @@ namespace Rubberduck.UI.SourceControl
 
             _openCommandPromptCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenCommandPrompt());
 
-            _sinks.ComponentAdded += ComponentAdded;
-            _sinks.ComponentRemoved += ComponentRemoved;
-            _sinks.ComponentRenamed += ComponentRenamed;
-            _sinks.ProjectRemoved += ProjectRemoved;
+            
+            AddComponentEventHandlers();
 
             TabItems = new ObservableCollection<IControlView>(views);
             SetTab(SourceControlTab.Changes);
@@ -108,9 +104,29 @@ namespace Rubberduck.UI.SourceControl
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
-        private void ComponentAdded(object sender, IComponentEventArgs e)
+        #region Event Handling
+
+        private bool _listening = true;
+
+        private void AddComponentEventHandlers()
         {
-            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
+            VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved += ProjectRemoved;
+            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded += ComponentAdded;
+            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved += ComponentRemoved;
+            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed += ComponentRenamed;
+        }
+
+        private void RemoveComponentEventHandlers()
+        {
+            VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved -= ProjectRemoved;
+            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded -= ComponentAdded;
+            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved -= ComponentRemoved;
+            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed -= ComponentRenamed;
+        }
+
+        private void ComponentAdded(object sender, ComponentEventArgs e)
+        {
+            if (!_listening || Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
             if (e.ProjectId != Provider.CurrentRepository.Id)
             {
@@ -118,16 +134,16 @@ namespace Rubberduck.UI.SourceControl
             }
 
             Logger.Trace("Component {0} added", e.Component.Name);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Component.Name);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => Path.GetFileNameWithoutExtension(stat.FilePath) == e.Component.Name);
             if (fileStatus != null)
             {
                 Provider.AddFile(fileStatus.FilePath);
             }
         }
 
-        private void ComponentRemoved(object sender, IComponentEventArgs e)
+        private void ComponentRemoved(object sender, ComponentEventArgs e)
         {
-            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
+            if (!_listening || Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
             if (e.ProjectId != Provider.CurrentRepository.Id)
             {
@@ -135,16 +151,16 @@ namespace Rubberduck.UI.SourceControl
             }
 
             Logger.Trace("Component {0] removed", e.Component.Name);
-            var fileStatus = Provider.Status().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.Component.Name);
+            var fileStatus = Provider.Status().SingleOrDefault(stat => Path.GetFileNameWithoutExtension(stat.FilePath) == e.Component.Name);
             if (fileStatus != null)
             {
                 Provider.RemoveFile(fileStatus.FilePath, true);
             }
         }
 
-        private void ComponentRenamed(object sender, IComponentRenamedEventArgs e)
+        private void ComponentRenamed(object sender, ComponentRenamedEventArgs e)
         {
-            if (Provider == null || !Provider.HandleVbeSinkEvents) { return; }
+            if (!_listening || Provider == null || !Provider.HandleVbeSinkEvents) { return; }
 
             if (e.ProjectId != Provider.CurrentRepository.Id)
             {
@@ -152,16 +168,14 @@ namespace Rubberduck.UI.SourceControl
             }
 
             Logger.Trace("Component {0} renamed to {1}", e.OldName, e.Component.Name);
-            var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => stat.FilePath.Split('.')[0] == e.OldName);
+            var fileStatus = Provider.LastKnownStatus().SingleOrDefault(stat => Path.GetFileNameWithoutExtension(stat.FilePath) == e.OldName);
             if (fileStatus != null)
             {
                 var directory = Provider.CurrentRepository.LocalLocation;
-                directory += directory.EndsWith("\\") ? string.Empty : "\\";
-
-                var fileExt = "." + fileStatus.FilePath.Split('.').Last();
+                var fileExt = "." + Path.GetExtension(fileStatus.FilePath);
 
                 _fileSystemWatcher.EnableRaisingEvents = false;
-                File.Move(directory + fileStatus.FilePath, directory + e.Component.Name + fileExt);
+                File.Move(Path.Combine(directory, fileStatus.FilePath), Path.Combine(directory, e.Component.Name + fileExt));
                 _fileSystemWatcher.EnableRaisingEvents = true;
 
                 Provider.RemoveFile(e.OldName + fileExt, false);
@@ -169,7 +183,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void ProjectRemoved(object sender, IProjectEventArgs e)
+        private void ProjectRemoved(object sender, ProjectEventArgs e)
         {
             if (Provider == null || !Provider.HandleVbeSinkEvents)
             {
@@ -185,6 +199,8 @@ namespace Rubberduck.UI.SourceControl
             Provider.Status();  // exports files
             ResetView();
         }
+
+        #endregion
 
         private void ResetView()
         {
@@ -247,7 +263,7 @@ namespace Rubberduck.UI.SourceControl
         private void _fileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             // the file system filter doesn't support multiple filters
-            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            if (!VbFileExtensions.Contains(Path.GetExtension(e.Name)))
             {
                 return;
             }
@@ -269,7 +285,7 @@ namespace Rubberduck.UI.SourceControl
         private void _fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
             // the file system filter doesn't support multiple filters
-            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            if (!VbFileExtensions.Contains(Path.GetExtension(e.Name)))
             {
                 return;
             }
@@ -314,7 +330,7 @@ namespace Rubberduck.UI.SourceControl
         private void _fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
             // the file system filter doesn't support multiple filters
-            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            if (!VbFileExtensions.Contains(Path.GetExtension(e.Name)))
             {
                 return;
             }
@@ -416,6 +432,8 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private static readonly Regex LocalFileSystemOrNetworkPathRegex = new Regex(@"^([A-Z]:|\\).*");
+
         private string _cloneRemotePath;
         public string CloneRemotePath
         {
@@ -425,11 +443,8 @@ namespace Rubberduck.UI.SourceControl
                 if (_cloneRemotePath != value)
                 {
                     _cloneRemotePath = value;
-                    LocalDirectory =
-                        _config.DefaultRepositoryLocation +
-                        (_config.DefaultRepositoryLocation.EndsWith("\\") ? string.Empty : "\\") +
-                        _cloneRemotePath.Split('/').Last().Replace(".git", string.Empty);
-
+                    var delimiter = LocalFileSystemOrNetworkPathRegex.IsMatch(_cloneRemotePath) ? '\\' : '/';
+                    LocalDirectory = Path.Combine(_config.DefaultRepositoryLocation, _cloneRemotePath.Split(delimiter).Last().Replace(".git", string.Empty));
                     OnPropertyChanged();
                     OnPropertyChanged("IsNotValidCloneRemotePath");
                 }
@@ -522,7 +537,7 @@ namespace Rubberduck.UI.SourceControl
             get { return _errorIcon; }
             set
             {
-                if (_errorIcon != value)
+                if (!Equals(_errorIcon, value))
                 {
                     _errorIcon = value;
                     OnPropertyChanged();
@@ -605,8 +620,7 @@ namespace Rubberduck.UI.SourceControl
         {
             if (!_isCloning)
             {
-                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, Provider.CurrentRepository, credentials,
-                    _wrapperFactory);
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, Provider.CurrentRepository, credentials);
             }
             else
             {
@@ -616,7 +630,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void InitRepo()
         {
-            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser((RubberduckUI.SourceControl_CreateNewRepo)))
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_CreateNewRepo, false, GetDefaultRepoFolderOrDefault()))
             {
                 if (folderPicker.ShowDialog() != DialogResult.OK)
                 {
@@ -629,7 +643,7 @@ namespace Rubberduck.UI.SourceControl
                 {
                     _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
                     var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
-                    Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
+                    Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo);
 
                     AddOrUpdateLocalPathConfig((Repository) repo);
                 }
@@ -696,7 +710,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OpenRepo()
         {
-            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_OpenWorkingDirectory, false))
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_OpenWorkingDirectory, false, GetDefaultRepoFolderOrDefault()))
             {
                 if (folderPicker.ShowDialog() != DialogResult.OK)
                 {
@@ -707,14 +721,14 @@ namespace Rubberduck.UI.SourceControl
                 var project = _vbe.ActiveVBProject;
                 var repo = new Repository(project.HelpFile, folderPicker.SelectedPath, string.Empty);
 
-                _sinks.ComponentSinksEnabled = false;
+                _listening = false;
                 try
                 {
-                    Provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
+                    Provider = _providerFactory.CreateProvider(project, repo);
                 }
                 catch (SourceControlException ex)
                 {
-                    _sinks.ComponentSinksEnabled = true;
+                    _listening = true;
                     ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                     return;
                 }
@@ -726,7 +740,7 @@ namespace Rubberduck.UI.SourceControl
                     throw;
                 }
 
-                _sinks.ComponentSinksEnabled = true;
+                _listening = true;
 
                 AddOrUpdateLocalPathConfig(repo);
 
@@ -734,11 +748,11 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private bool _isCloning = false;
+        private bool _isCloning;
         private void CloneRepo(SecureCredentials credentials = null)
         {
             _isCloning = true;
-            _sinks.ComponentSinksEnabled = false;
+            _listening = false;
 
             Logger.Trace("Cloning repo");
             try
@@ -752,12 +766,12 @@ namespace Rubberduck.UI.SourceControl
                     RemoteLocation = repo.RemoteLocation
                 });
 
-                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo);
             }
             catch (SourceControlException ex)
             {
                 const string unauthorizedMessage = "Request failed with status code: 401";
-                if (ex.InnerException.Message != unauthorizedMessage)
+                if (ex.InnerException != null && ex.InnerException.Message != unauthorizedMessage)
                 {
                     _isCloning = false;
                 }
@@ -774,7 +788,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             _isCloning = false;
-            _sinks.ComponentSinksEnabled = true;
+            _listening = true;
             CloseCloneRepoGrid();
             
             Status = RubberduckUI.Online;
@@ -862,9 +876,9 @@ namespace Rubberduck.UI.SourceControl
             Logger.Trace("Opening repo assigned to project");
             try
             {
-                _sinks.ComponentSinksEnabled = false;
+                _listening = false;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile), _wrapperFactory);
+                    _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
                 Status = RubberduckUI.Online;
             }
             catch (SourceControlException ex)
@@ -883,7 +897,7 @@ namespace Rubberduck.UI.SourceControl
                 throw;
             }
 
-            _sinks.ComponentSinksEnabled = true;
+            _listening = true;
         }
 
         private void Refresh()
@@ -916,7 +930,7 @@ namespace Rubberduck.UI.SourceControl
                 return false;
             }
 
-            var project = _vbe.ActiveVBProject ?? (_vbe.VBProjects.Count == 1 ? _vbe.VBProjects.Item(1) : null);
+            var project = _vbe.ActiveVBProject ?? (_vbe.VBProjects.Count == 1 ? _vbe.VBProjects[1] : null);
 
             if (project != null)
             {
@@ -930,9 +944,27 @@ namespace Rubberduck.UI.SourceControl
             return false;
         }
 
+        private string GetDefaultRepoFolderOrDefault()
+        {
+            var settings = _configService.Create();
+            var folder = settings.DefaultRepositoryLocation;
+            if (string.IsNullOrEmpty(folder))
+            {
+                try
+                {
+                    folder = _environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
+                catch
+                {
+                    // ignored - empty is fine if the environment call fails.
+                }
+            }
+            return folder;
+        }
+
         private void ShowFilePicker()
         {
-            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory"))
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory", true, GetDefaultRepoFolderOrDefault()))
             {
                 if (folderPicker.ShowDialog() == DialogResult.OK)
                 {
@@ -1073,12 +1105,7 @@ namespace Rubberduck.UI.SourceControl
                 _fileSystemWatcher.Dispose();
             }
 
-            if (_sinks != null)
-            {
-                _sinks.ComponentAdded -= ComponentAdded;
-                _sinks.ComponentRemoved -= ComponentRemoved;
-                _sinks.ComponentRenamed -= ComponentRenamed;
-            }
+            RemoveComponentEventHandlers();
         }
     }
 }

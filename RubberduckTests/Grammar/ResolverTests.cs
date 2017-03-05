@@ -1,26 +1,29 @@
 using System;
 using System.Linq;
 using System.Threading;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Grammar
 {
     [TestClass]
     public class ResolverTests
     {
-        private RubberduckParserState Resolve(string code, vbext_ComponentType moduleType = vbext_ComponentType.vbext_ct_StdModule)
+        private RubberduckParserState Resolve(string code, bool loadStdLib = false, ComponentType moduleType = ComponentType.StandardModule)
         {
             var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleModule(code, moduleType, out component, new Rubberduck.VBEditor.Selection());
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            IVBComponent component;
+            var vbe = builder
+                .BuildFromSingleModule(code, moduleType, out component, Selection.Empty, loadStdLib);
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -38,17 +41,17 @@ namespace RubberduckTests.Grammar
         private RubberduckParserState Resolve(params string[] classes)
         {
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            var projectBuilder = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             for (var i = 0; i < classes.Length; i++)
             {
-                projectBuilder.AddComponent("Class" + (i + 1), vbext_ComponentType.vbext_ct_ClassModule, classes[i]);
+                projectBuilder.AddComponent("Class" + (i + 1), ComponentType.ClassModule, classes[i]);
             }
 
             var project = projectBuilder.Build();
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -63,10 +66,10 @@ namespace RubberduckTests.Grammar
             return parser.State;
         }
 
-        private RubberduckParserState Resolve(params Tuple<string, vbext_ComponentType>[] components)
+        private RubberduckParserState Resolve(params Tuple<string, ComponentType>[] components)
         {
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
+            var projectBuilder = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected);
             for (var i = 0; i < components.Length; i++)
             {
                 projectBuilder.AddComponent("Component" + (i + 1), components[i].Item2, components[i].Item1);
@@ -76,7 +79,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -214,7 +217,7 @@ Public Sub DoSomething()
 End Sub
 ";
             // act
-            var state = Resolve(code);
+            var state = Resolve(code, true);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -329,13 +332,13 @@ End Type
 Public Sub DoSomething()
     Dim a As {0}.{1}.{0}
 End Sub
-", MockVbeBuilder.TEST_PROJECT_NAME, MockVbeBuilder.TEST_MODULE_NAME);
+", MockVbeBuilder.TestProjectName, MockVbeBuilder.TestModuleName);
             // act
             var state = Resolve(code);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Project && item.IdentifierName == MockVbeBuilder.TEST_PROJECT_NAME);
+                item.DeclarationType == DeclarationType.Project && item.IdentifierName == MockVbeBuilder.TestProjectName);
 
             var reference = declaration.References.SingleOrDefault();
             Assert.IsNotNull(reference);
@@ -354,13 +357,13 @@ End Type
 Public Sub DoSomething()
     Dim a As {1}.{0}
 End Sub
-", MockVbeBuilder.TEST_PROJECT_NAME, MockVbeBuilder.TEST_MODULE_NAME);
+", MockVbeBuilder.TestProjectName, MockVbeBuilder.TestModuleName);
             // act
             var state = Resolve(code);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == MockVbeBuilder.TEST_PROJECT_NAME);
+                item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == MockVbeBuilder.TestProjectName);
 
             var reference = declaration.References.SingleOrDefault();
             Assert.IsNotNull(reference);
@@ -380,14 +383,14 @@ End Sub
 Option Explicit
 Public foo As Integer
 ";
-            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
-            var class2 = Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_ClassModule);
+            var class1 = Tuple.Create(code_class1, ComponentType.ClassModule);
+            var class2 = Tuple.Create(code_class2, ComponentType.ClassModule);
 
             // act
             var state = Resolve(class1, class2);
 
             // assert
-            var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+            var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo" && !item.IsUndeclared);
 
             var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
             Assert.IsNull(reference);
@@ -408,8 +411,8 @@ Public foo As Integer
 ";
             // act
             var state = Resolve(
-                Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule),
-                Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_StdModule));
+                Tuple.Create(code_class1, ComponentType.ClassModule),
+                Tuple.Create(code_class2, ComponentType.StandardModule));
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -433,8 +436,8 @@ End Sub
 Option Explicit
 Public foo As Integer
 ";
-            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
-            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
+            var class1 = Tuple.Create(code_class1, ComponentType.ClassModule);
+            var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
 
             // act
             var state = Resolve(class1, module1);
@@ -459,7 +462,7 @@ End Type
 Private this As TFoo
 ";
             // act
-            var state = Resolve(code, vbext_ComponentType.vbext_ct_ClassModule);
+            var state = Resolve(code, false, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -567,7 +570,7 @@ Public Property Get Bar() As Integer
 End Property
 ";
             // act
-            var state = Resolve(code, vbext_ComponentType.vbext_ct_ClassModule);
+            var state = Resolve(code, false, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -593,7 +596,7 @@ Public Property Get Bar() As Integer
 End Property
 ";
             // act
-            var state = Resolve(code, vbext_ComponentType.vbext_ct_ClassModule);
+            var state = Resolve(code, false, ComponentType.ClassModule);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -900,6 +903,30 @@ End Sub
         }
 
         [TestMethod]
+        public void SubscriptWrite_IsNotAssignmentReferenceToObjectDeclaration()
+        {
+            var code = @"
+Public Sub DoSomething()
+    Dim foo As Object
+    Set foo = CreateObject(""Scripting.Dictionary"")
+    foo(""key"") = 42
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable
+                && item.IdentifierName == "foo");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && !item.IsAssignment));
+        }
+
+        [TestMethod]
         public void ArraySubscriptWrite_IsAssignmentReferenceToArrayDeclaration()
         {
             var code = @"
@@ -1111,6 +1138,30 @@ End Sub
         }
 
         [TestMethod]
+        public void FunctionWithSameNameAsEnumReturnAssignment_DoesntResolveToEnum()
+        {
+            var code = @"
+
+Option Explicit
+Public Enum Foos
+    Foo1
+End Enum
+
+Public Function Foos() As Foos
+    Foos = Foo1
+End Function
+";
+
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Enumeration
+                && item.IdentifierName == "Foos");
+
+            Assert.IsTrue(declaration.References.All(item => item.Selection.StartLine != 9));
+        }
+
+        [TestMethod]
         public void UserDefinedTypeParameterAsTypeName_ResolvesToUserDefinedTypeDeclaration()
         {
             var code = @"
@@ -1171,7 +1222,7 @@ End Sub
             var state = Resolve(code);
 
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable);
+                item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
             var usage = declaration.References.Single();
             var annotation = (IgnoreAnnotation)usage.Annotations.First();
@@ -1196,7 +1247,7 @@ End Sub
             var state = Resolve(code);
 
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable);
+                item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
             var usage = declaration.References.Single();
 
@@ -1241,7 +1292,7 @@ End Sub
             var state = Resolve(code);
 
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable);
+                item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
             var usage = declaration.References.Single();
 
@@ -1660,8 +1711,8 @@ Sub DoSomething()
     Component1.Something.Bar = 42
 End Sub";
 
-            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
-            var module2 = Tuple.Create(code_module2, vbext_ComponentType.vbext_ct_StdModule);
+            var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
+            var module2 = Tuple.Create(code_module2, ComponentType.StandardModule);
             var state = Resolve(module1, module2);
 
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -1693,8 +1744,8 @@ Sub DoSomething()
 End Sub
 ";
 
-            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
-            var module2 = Tuple.Create(code_module2, vbext_ComponentType.vbext_ct_StdModule);
+            var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
+            var module2 = Tuple.Create(code_module2, ComponentType.StandardModule);
             var state = Resolve(module1, module2);
 
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -2121,8 +2172,6 @@ End Sub
             Assert.AreEqual(1, declaration.References.Count());
         }
 
-        // Ignored because handling forms/hierarchies is an open issue.
-        [Ignore]
         [TestMethod]
         public void GivenControlDeclaration_ResolvesUsageInCodeBehind()
         {
@@ -2132,13 +2181,13 @@ Public Sub DoSomething()
 End Sub
 ";
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
             project.AddComponent(form);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -2161,6 +2210,7 @@ End Sub
         }
 
         [TestMethod]
+        [Ignore] // todo: figure out why test is randomly failing
         public void GivenLocalDeclarationAsQualifiedClassName_ResolvesFirstPartToProject()
         {
             var code_class1 = @"
@@ -2188,6 +2238,7 @@ End Property
             var usages = declaration.References.Where(item =>
                 item.ParentNonScoping.IdentifierName == "DoSomething");
 
+            Assert.AreEqual(state.Status, ParserState.Ready);
             Assert.AreEqual(1, usages.Count());
         }
 
@@ -2398,6 +2449,149 @@ End Sub
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
             Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2478
+        [TestMethod]
+        public void VariableNamedBfResolvesAsAVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim bf As Integer
+    Debug.Print bf
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "bf");
+
+            Assert.IsNotNull(declaration);
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2478
+        [TestMethod]
+        public void ProcedureNamedBfResolvesAsAProcedure()
+        {
+            // arrange
+            var code = @"
+Public Sub Bf()
+    Debug.Print ""I'm cool with that""
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
+                item.DeclarationType == DeclarationType.Procedure && item.IdentifierName == "Bf");
+
+            Assert.IsNotNull(declaration);
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2478
+        [TestMethod]
+        public void TypeNamedBfResolvesAsAType()
+        {
+            // arrange
+            var code = @"
+Private Type Bf
+    b As Long
+    f As Long
+End Type
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
+                item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == "Bf");
+
+            Assert.IsNotNull(declaration);
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2523
+        [TestMethod]
+        public void AnnotationFollowedByCommentAnnotatesDeclaration()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    '@Ignore VariableNotAssigned: that's actually a Rubberduck bug, see #2522
+    ReDim orgs(0 To items.Count - 1, 0 To 1)
+End Sub
+";
+            var results = new[] { "VariableNotAssigned" };
+
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
+
+            var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
+            Assert.IsNotNull(annotation);
+            Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/2523
+        [TestMethod]
+        public void AnnotationListFollowedByCommentAnnotatesDeclaration()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    '@Ignore VariableNotAssigned, UndeclaredVariable, VariableNotUsed: Ignore ALL the inspections!
+    ReDim orgs(0 To items.Count - 1, 0 To 1)
+End Sub
+";
+
+            var results = new[] { "VariableNotAssigned", "UndeclaredVariable", "VariableNotUsed" };
+
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
+
+            var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
+            Assert.IsNotNull(annotation);
+            Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
+        }
+
+        [TestMethod]
+        public void MemberReferenceIsAssignmentTarget_NotTheParentObject()
+        {
+            var class1 = @"
+Option Explicit
+Private mSomething As Long
+Public Property Get Something() As Long
+    Something = mSomething
+End Property
+Public Property Let Something(ByVal value As Long)
+    mSomething = value
+End Property
+";
+            var caller = @"
+Option Explicit
+Private Sub DoSomething(ByVal foo As Class1)
+    foo.Something = 42
+End Sub
+";
+            var state = Resolve(class1, caller);
+
+            var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "foo" && item.DeclarationType == DeclarationType.Parameter);
+            var reference = declaration.References.Single();
+
+            Assert.IsFalse(reference.IsAssignment, "LHS member call on object is treating the object itself as an assignment target.");
+
+            var member = state.AllUserDeclarations.Single(item => item.IdentifierName == "Something" && item.DeclarationType == DeclarationType.PropertyLet);
+            var call = member.References.Single();
+
+            Assert.IsTrue(call.IsAssignment, "LHS member call on object is not flagging member reference as assignment target.");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NLog;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -82,7 +83,7 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return Provider == null
-                  ? new string[] { }
+                  ? Enumerable.Empty<string>()
                   : Provider.Branches.Select(b => b.Name);
             }
         }
@@ -92,7 +93,7 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return Provider == null
-                    ? new string[] { }
+                    ? Enumerable.Empty<string>()
                     : Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name);
             }
         }
@@ -102,7 +103,7 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return Provider == null
-                    ? new string[] { }
+                    ? Enumerable.Empty<string>()
                     : Provider.Branches.Where(b => !b.IsRemote && !string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name);
             }
         }
@@ -112,7 +113,7 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return Provider == null
-                    ? new string[] { }
+                    ? Enumerable.Empty<string>()
                     : Provider.Branches.Where(b => !b.IsRemote && string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name);
             }
         }
@@ -219,43 +220,12 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        // Courtesy of http://stackoverflow.com/a/12093994/4088852 - Assumes --allow-onelevel is set TODO: Verify provider honor that. 
+        private static readonly Regex ValidBranchNameRegex = new Regex(@"^(?!@$|build-|/|.*([/.]\.|//|@\{|\\))[^\u0000-\u0037\u0177 ~^:?*[]+/?[^\u0000-\u0037\u0177 ~^:?*[]+(?<!\.lock|[/.])$");
+
         public bool IsNotValidBranchName
         {
-            get { return !IsValidBranchName(NewBranchName); }
-        }
-
-        private bool IsValidBranchName(string name)
-        {
-            // Rules taken from https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
-            var isValidName = !string.IsNullOrEmpty(name) &&
-                              !LocalBranches.Contains(name) &&
-                              !name.Any(char.IsWhiteSpace) &&
-                              !name.Contains("..") &&
-                              !name.Contains("~") &&
-                              !name.Contains("^") &&
-                              !name.Contains(":") &&
-                              !name.Contains("?") &&
-                              !name.Contains("*") &&
-                              !name.Contains("[") &&
-                              !name.Contains("//") &&
-                              name.FirstOrDefault() != '/' &&
-                              name.LastOrDefault() != '/' &&
-                              name.LastOrDefault() != '.' &&
-                              name != "@" &&
-                              !name.Contains("@{") &&
-                              !name.Contains("\\");
-
-            if (!isValidName)
-            {
-                return false;
-            }
-            foreach (var section in name.Split('/'))
-            {
-                isValidName = section.FirstOrDefault() != '.' &&
-                              !section.EndsWith(".lock");
-            }
-
-            return isValidName;
+            get { return string.IsNullOrEmpty(NewBranchName) || !ValidBranchNameRegex.IsMatch(NewBranchName); }
         }
 
         private bool _displayMergeBranchesGrid;

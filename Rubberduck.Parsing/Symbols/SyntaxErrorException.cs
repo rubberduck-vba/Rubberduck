@@ -13,6 +13,9 @@ namespace Rubberduck.Parsing.Symbols
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public SyntaxErrorException(SyntaxErrorInfo info)
+            : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position) { }
+
         public SyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position)
             : base(message, innerException)
         {

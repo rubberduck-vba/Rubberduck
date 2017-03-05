@@ -1,17 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Grammar;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Inspections
 {
     public sealed class AssignedByValParameterInspection : InspectionBase
     {
-        public AssignedByValParameterInspection(RubberduckParserState state)
+        private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
+        private readonly RubberduckParserState _parserState;
+        public AssignedByValParameterInspection(RubberduckParserState state, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(state)
         {
             Severity = DefaultSeverity;
+            _dialogFactory = dialogFactory;
+            _parserState = state;
+
         }
 
         public override string Meta { get { return InspectionsUI.AssignedByValParameterInspectionMeta; } }
@@ -20,15 +28,16 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var assignedByValParameters = UserDeclarations.Where(declaration => 
-                    declaration.DeclarationType == DeclarationType.Parameter
-                    && ((VBAParser.ArgContext)declaration.Context).BYVAL() != null
-                    && declaration.References.Any(reference => reference.IsAssignment));
+            var parameters = State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                .OfType<ParameterDeclaration>()
+                .Where(item => !item.IsByRef 
+                    && !IsIgnoringInspectionResultFor(item, AnnotationName)
+                    && item.References.Any(reference => reference.IsAssignment))
+                .ToList();
 
-            var issues = assignedByValParameters
-                .Select(param => new AssignedByValParameterInspectionResult(this, param));
-
-            return issues;
+            return parameters
+                .Select(param => new AssignedByValParameterInspectionResult(this, param, _parserState, _dialogFactory))
+                .ToList();
         }
     }
 }

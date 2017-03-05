@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Ninject.Extensions.Interception;
 
 namespace Rubberduck.Root
@@ -28,6 +29,7 @@ namespace Rubberduck.Root
 
         protected virtual void OnError(IInvocation invocation, Exception exception)
         {
+            Debug.Write(exception);
             throw new InterceptedException(exception);
         }
     }

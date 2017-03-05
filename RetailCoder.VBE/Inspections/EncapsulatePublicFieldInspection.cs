@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -23,13 +26,23 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var issues = UserDeclarations
-                            .Where(declaration => declaration.DeclarationType == DeclarationType.Variable
-                                                && declaration.Accessibility == Accessibility.Public)
-                            .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue, State, _indenter))
-                            .ToList();
+            // we're creating a public field for every control on a form, needs to be ignored.
+            var msForms = State.DeclarationFinder.FindProject("MSForms");
+            Declaration control = null;
+            if (msForms != null)
+            {
+                control = State.DeclarationFinder.FindClassModule("Control", msForms, true);
+            }
 
-            return issues;
+            var fields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                .Where(item => !IsIgnoringInspectionResultFor(item, AnnotationName)
+                               && item.Accessibility == Accessibility.Public
+                               && (control == null || !Equals(item.AsTypeDeclaration, control)))
+                .ToList();
+
+            return fields
+                .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue, State, _indenter))
+                .ToList();
         }
     }
 }

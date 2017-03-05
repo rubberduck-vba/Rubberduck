@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
@@ -18,7 +19,7 @@ namespace Rubberduck.UnitTesting
         private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
         private readonly IHostApplication _hostApp;
 
-        public TestMethod(Declaration declaration, VBE vbe)
+        public TestMethod(Declaration declaration, IVBE vbe)
         {
             _declaration = declaration;
             _hostApp = vbe.HostApplication();
@@ -43,7 +44,7 @@ namespace Rubberduck.UnitTesting
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                _hostApp.Run(Declaration.QualifiedName);
+                _hostApp.Run(Declaration);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 
                 result = EvaluateResults();
@@ -88,23 +89,7 @@ namespace Rubberduck.UnitTesting
 
         public NavigateCodeEventArgs GetNavigationArgs()
         {
-            try
-            {
-                var moduleName = Declaration.QualifiedName.QualifiedModuleName;
-                var methodName = Declaration.IdentifierName;
-                var module = moduleName.Component.CodeModule;
-
-                var startLine = module.ProcStartLine[methodName, vbext_ProcKind.vbext_pk_Proc];
-                var endLine = startLine + module.ProcCountLines[methodName, vbext_ProcKind.vbext_pk_Proc];
-                var endLineColumns = module.Lines[endLine, 1].Length;
-
-                var selection = new Selection(startLine, 1, endLine, endLineColumns == 0 ? 1 : endLineColumns);
-                return new NavigateCodeEventArgs(new QualifiedSelection(moduleName, selection));
-            }
-            catch (COMException)
-            {
-                return null;
-            }
+            return new NavigateCodeEventArgs(new QualifiedSelection(Declaration.QualifiedName.QualifiedModuleName, Declaration.Context.GetSelection()));
         }
 
         public object[] ToArray()

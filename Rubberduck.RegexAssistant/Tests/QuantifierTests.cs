@@ -1,11 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.RegexAssistant;
 
-namespace RegexAssistantTests
+namespace Rubberduck.RegexAssistant.Tests
 {
     [TestClass]
     public class QuantifierTests
     {
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void AsteriskQuantifier()
         {
@@ -15,6 +15,7 @@ namespace RegexAssistantTests
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void QuestionMarkQuantifier()
         {
@@ -24,6 +25,7 @@ namespace RegexAssistantTests
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void PlusQuantifier()
         {
@@ -33,6 +35,7 @@ namespace RegexAssistantTests
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ExactQuantifier()
         {
@@ -42,6 +45,7 @@ namespace RegexAssistantTests
             Assert.AreEqual(QuantifierKind.Expression, cut.Kind);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void FullRangeQuantifier()
         {
@@ -51,6 +55,7 @@ namespace RegexAssistantTests
             Assert.AreEqual(QuantifierKind.Expression, cut.Kind);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void OpenRangeQuantifier()
         {

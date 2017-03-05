@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using NLog;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceRefactoring : IRefactoring
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory<IExtractInterfacePresenter> _factory;
         private ExtractInterfaceModel _model;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ExtractInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<IExtractInterfacePresenter> factory)
+        public ExtractInterfaceRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<IExtractInterfacePresenter> factory)
         {
             _vbe = vbe;
             _state = state;
@@ -43,50 +43,80 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return;
             }
 
-            QualifiedSelection? oldSelection = null;
-            if (_vbe.ActiveCodePane != null)
+            var pane = _vbe.ActiveCodePane;
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+                QualifiedSelection? oldSelection;
+                if (!pane.IsWrappingNullReference)
+                {
+                    var module = pane.CodeModule;
+                    {
+                        oldSelection = module.GetQualifiedSelection();
+                    }
+                }
+                else
+                {
+                    return;
+                }
+
+                AddInterface();
+
+                if (oldSelection.HasValue)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
             }
-
-            AddInterface();
-
-            if (oldSelection.HasValue)
-            {
-                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
-                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
-            }
-
-            _state.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
         {
-            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
+            var pane = _vbe.ActiveCodePane;
+            {
+                if (pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+                pane.Selection = target.Selection;
+            }
             Refactor();
         }
 
         public void Refactor(Declaration target)
         {
-            _vbe.ActiveCodePane.CodeModule.SetSelection(target.QualifiedSelection);
+            var pane = _vbe.ActiveCodePane;
+            {
+                if (pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+                pane.Selection = target.QualifiedSelection.Selection;
+            }
             Refactor();
         }
 
         private void AddInterface()
         {
-            var interfaceComponent = _model.TargetDeclaration.Project.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
-            interfaceComponent.Name = _model.InterfaceName;
+            var components = _model.TargetDeclaration.Project.VBComponents;
+            var interfaceComponent = components.Add(ComponentType.ClassModule);
+            var interfaceModule = interfaceComponent.CodeModule;
+            {
+                interfaceComponent.Name = _model.InterfaceName;
 
-            interfaceComponent.CodeModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
-            interfaceComponent.CodeModule.InsertLines(3, GetInterfaceModuleBody());
+                var optionPresent = interfaceModule.CountOfLines > 1;
+                if (!optionPresent)
+                {
+                    interfaceModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
+                }
+                interfaceModule.InsertLines(3, GetInterfaceModuleBody());
 
-            var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;
+                var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;
+                {
+                    _insertionLine = module.CountOfDeclarationLines + 1;
+                    module.InsertLines(_insertionLine, Tokens.Implements + ' ' + _model.InterfaceName + Environment.NewLine);
 
-            _insertionLine = module.CountOfDeclarationLines + 1;
-            module.InsertLines(_insertionLine, Tokens.Implements + ' ' + _model.InterfaceName + Environment.NewLine);
-
-            _state.StateChanged += _state_StateChanged;
-            _state.OnParseRequested(this);
+                    _state.StateChanged += _state_StateChanged;
+                    _state.OnParseRequested(this);
+                }
+            }
         }
 
         private int _insertionLine;
@@ -99,7 +129,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             _state.StateChanged -= _state_StateChanged;
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
-            _vbe.ActiveCodePane.CodeModule.SetSelection(qualifiedSelection);
+            var pane = _vbe.ActiveCodePane;
+            {
+                pane.Selection = qualifiedSelection.Selection;
+            }
 
             var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _state, _messageBox);
             implementInterfaceRefactoring.Refactor(qualifiedSelection);

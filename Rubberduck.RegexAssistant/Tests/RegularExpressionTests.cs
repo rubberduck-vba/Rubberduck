@@ -7,6 +7,7 @@ namespace Rubberduck.RegexAssistant.Tests
     [TestClass]
     public class RegularExpressionTests
     {
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseSingleLiteralGroupAsAtomWorks()
         {
@@ -14,10 +15,10 @@ namespace Rubberduck.RegexAssistant.Tests
             string pattern = "(g){2,4}";
             RegularExpression.TryParseAsAtom(ref pattern, out expression);
             Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
-            Assert.AreEqual(new Quantifier("{2,4}"), expression.Quantifier);
-            Assert.AreEqual(new Group("(g)"), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new Group("(g)", new Quantifier("{2,4}")), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseCharacterClassAsAtomWorks()
         {
@@ -25,10 +26,10 @@ namespace Rubberduck.RegexAssistant.Tests
             string pattern = "[abcd]*";
             RegularExpression.TryParseAsAtom(ref pattern, out expression);
             Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
-            Assert.AreEqual(new Quantifier("*"), expression.Quantifier);
-            Assert.AreEqual(new CharacterClass("[abcd]"), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new CharacterClass("[abcd]", new Quantifier("*")), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseLiteralAsAtomWorks()
         {
@@ -36,10 +37,10 @@ namespace Rubberduck.RegexAssistant.Tests
             string pattern = "a";
             RegularExpression.TryParseAsAtom(ref pattern, out expression);
             Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
-            Assert.AreEqual(new Quantifier(""), expression.Quantifier);
-            Assert.AreEqual(new Literal("a"), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new Literal("a", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseUnicodeEscapeAsAtomWorks()
         {
@@ -47,10 +48,10 @@ namespace Rubberduck.RegexAssistant.Tests
             string pattern = "\\u1234+";
             RegularExpression.TryParseAsAtom(ref pattern, out expression);
             Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
-            Assert.AreEqual(new Quantifier("+"), expression.Quantifier);
-            Assert.AreEqual(new Literal("\\u1234"), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new Literal("\\u1234", new Quantifier("+")), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseHexEscapeSequenceAsAtomWorks()
         {
@@ -58,10 +59,10 @@ namespace Rubberduck.RegexAssistant.Tests
             string pattern = "\\x12?";
             RegularExpression.TryParseAsAtom(ref pattern, out expression);
             Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
-            Assert.AreEqual(new Quantifier("?"), expression.Quantifier);
-            Assert.AreEqual(new Literal("\\x12"), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new Literal("\\x12", new Quantifier("?")), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseOctalEscapeSequenceAsAtomWorks()
         {
@@ -69,10 +70,10 @@ namespace Rubberduck.RegexAssistant.Tests
             string pattern = "\\712{2}";
             RegularExpression.TryParseAsAtom(ref pattern, out expression);
             Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
-            Assert.AreEqual(new Quantifier("{2}"), expression.Quantifier);
-            Assert.AreEqual(new Literal("\\712"), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new Literal("\\712", new Quantifier("{2}")), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseEscapedLiteralAsAtomWorks()
         {
@@ -80,10 +81,10 @@ namespace Rubberduck.RegexAssistant.Tests
             string pattern = "\\)";
             RegularExpression.TryParseAsAtom(ref pattern, out expression);
             Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
-            Assert.AreEqual(new Quantifier(""), expression.Quantifier);
-            Assert.AreEqual(new Literal("\\)"), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new Literal("\\)", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseUnescapedSpecialCharAsAtomFails()
         {
@@ -96,12 +97,13 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseSimpleLiteralConcatenationAsConcatenatedExpression()
         {
             List<IRegularExpression> expected = new List<IRegularExpression>();
-            expected.Add(new SingleAtomExpression(new Literal("a"), new Quantifier("")));
-            expected.Add(new SingleAtomExpression(new Literal("b"), new Quantifier("")));
+            expected.Add(new SingleAtomExpression(new Literal("a", Quantifier.None)));
+            expected.Add(new SingleAtomExpression(new Literal("b", Quantifier.None)));
 
             IRegularExpression expression = RegularExpression.Parse("ab");
             Assert.IsInstanceOfType(expression, typeof(ConcatenatedExpression));
@@ -113,13 +115,14 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseSimplisticGroupConcatenationAsConcatenatedExpression()
         {
             List<IRegularExpression> expected = new List<IRegularExpression>();
-            expected.Add(new SingleAtomExpression(new Literal("a"), new Quantifier("")));
-            expected.Add(new SingleAtomExpression(new Group("(abc)"), new Quantifier("{1,4}")));
-            expected.Add(new SingleAtomExpression(new Literal("b"), new Quantifier("")));
+            expected.Add(new SingleAtomExpression(new Literal("a", Quantifier.None)));
+            expected.Add(new SingleAtomExpression(new Group("(abc)", new Quantifier("{1,4}"))));
+            expected.Add(new SingleAtomExpression(new Literal("b", Quantifier.None)));
 
             IRegularExpression expression = RegularExpression.Parse("a(abc){1,4}b");
             Assert.IsInstanceOfType(expression, typeof(ConcatenatedExpression));
@@ -131,13 +134,14 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseSimplisticCharacterClassConcatenationAsConcatenatedExpression()
         {
             List<IRegularExpression> expected = new List<IRegularExpression>();
-            expected.Add(new SingleAtomExpression(new Literal("a"), new Quantifier("")));
-            expected.Add(new SingleAtomExpression(new CharacterClass("[abc]"), new Quantifier("*")));
-            expected.Add(new SingleAtomExpression(new Literal("b"), new Quantifier("")));
+            expected.Add(new SingleAtomExpression(new Literal("a", Quantifier.None)));
+            expected.Add(new SingleAtomExpression(new CharacterClass("[abc]", new Quantifier("*"))));
+            expected.Add(new SingleAtomExpression(new Literal("b", Quantifier.None)));
 
             IRegularExpression expression = RegularExpression.Parse("a[abc]*b");
             Assert.IsInstanceOfType(expression, typeof(ConcatenatedExpression));
@@ -149,12 +153,13 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseSimplisticAlternativesExpression()
         {
             List<IRegularExpression> expected = new List<IRegularExpression>();
-            expected.Add(new SingleAtomExpression(new Literal("a"), new Quantifier("")));
-            expected.Add(new SingleAtomExpression(new Literal("b"), new Quantifier("")));
+            expected.Add(new SingleAtomExpression(new Literal("a", Quantifier.None)));
+            expected.Add(new SingleAtomExpression(new Literal("b", Quantifier.None)));
 
             IRegularExpression expression = RegularExpression.Parse("a|b");
             Assert.IsInstanceOfType(expression, typeof(AlternativesExpression));
@@ -166,20 +171,22 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void CharacterClassIsNotAnAlternativesExpression()
         {
             IRegularExpression expression = RegularExpression.Parse("[a|b]");
             Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
-            Assert.AreEqual(new CharacterClass("[a|b]"), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new CharacterClass("[a|b]", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void GroupIsNotAnAlternativesExpression()
         {
             IRegularExpression expression = RegularExpression.Parse("(a|b)");
             Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
-            Assert.AreEqual(new Group("(a|b)"), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new Group("(a|b)", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
     }
 }

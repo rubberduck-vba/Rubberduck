@@ -157,4 +157,7 @@
   <data name="GitPullFailed">
     <value>L'opération 'pull' a échoué.</value>
   </data>
+  <data name="NoProjectOpen">
+    <value>Un projet doit être actif pour que Rubberduck puisse initialiser un repository.</value>
+  </data>
 </root>

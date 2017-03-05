@@ -33,7 +33,7 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        public void IsComment()
+        public void IsComment_StartLineWithSingleQuoteMarker()
         {
             var instruction = "'Debug.Print mwahaha this is just a comment.";
 
@@ -45,10 +45,36 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        public void HasComment()
+        public void HasComment_EndOfLineSingleQuoteMarkerWithStringLiteral()
         {
             var comment = "'but this is one.";
             var instruction = "Debug.Print \"'this isn't a comment\" " + comment;
+
+            int index;
+            var result = instruction.HasComment(out index);
+
+            Assert.IsTrue(result);
+            Assert.AreEqual(comment, instruction.Substring(index));
+        }
+
+        [TestMethod]
+        public void HasComment_RemMarkerWithWhitespace()
+        {
+            var comment = "Rem this is a comment.";
+            var instruction = "Debug.Print \"'this isn't a comment\" : " + comment;
+
+            int index;
+            var result = instruction.HasComment(out index);
+
+            Assert.IsTrue(result);
+            Assert.AreEqual(comment, instruction.Substring(index));
+        }
+
+        [TestMethod]
+        public void HasComment_RemMarkerWithQuestionMark()
+        {
+            var comment = "Rem?this is a comment.";
+            var instruction = comment;
 
             int index;
             var result = instruction.HasComment(out index);

@@ -1,24 +1,27 @@
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
     public class FormDesignerRefactorRenameCommand : RefactorCommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
 
-        public FormDesignerRefactorRenameCommand(VBE vbe, RubberduckParserState state) 
+        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox) 
             : base (vbe)
         {
             _vbe = vbe;
             _state = state;
+            _messageBox = messageBox;
         }
 
         protected override bool CanExecuteImpl(object parameter)
@@ -30,8 +33,8 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox());
-                var refactoring = new RenameRefactoring(Vbe, factory, new MessageBox(), _state);
+                var factory = new RenamePresenterFactory(Vbe, view, _state, _messageBox);
+                var refactoring = new RenameRefactoring(Vbe, factory, _messageBox, _state);
 
                 var target = GetTarget();
 
@@ -44,22 +47,30 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget()
         {
-            if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.Designer != null)
+            var project = _vbe.ActiveVBProject;
+            var component = _vbe.SelectedVBComponent;
             {
-                var designer = (dynamic)Vbe.SelectedVBComponent.Designer;
-
-                foreach (var control in designer.Controls)
+                if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.HasDesigner)
                 {
-                    if (!control.InSelection)
-                    {
-                        continue;
-                    }
+                    var designer = ((dynamic)component.Target).Designer;
 
-                    return _state.AllUserDeclarations
-                        .FirstOrDefault(item => item.DeclarationType == DeclarationType.Control
-                            && Vbe.ActiveVBProject.HelpFile == item.ProjectId
-                            && item.ComponentName == Vbe.SelectedVBComponent.Name
-                            && item.IdentifierName == control.Name);
+                    if (designer.selected.count == 1)
+                    {
+                        var control = designer.selected.item(0);
+                        var result = _state.AllUserDeclarations
+                            .FirstOrDefault(item => item.DeclarationType == DeclarationType.Control
+                                                    && project.HelpFile == item.ProjectId
+                                                    && item.ComponentName == component.Name
+                                                    && item.IdentifierName == control.Name);
+
+                        Marshal.ReleaseComObject(control);
+                        Marshal.ReleaseComObject(designer);
+                        return result;
+                    } else {
+                        var message = string.Format(RubberduckUI.RenameDialog_AmbiguousSelection);
+                        _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
+                            MessageBoxIcon.Exclamation);
+                    }
                 }
             }
 

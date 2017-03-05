@@ -7,60 +7,59 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
-
-public static class IEnumerableExt
-{
-    /// <summary>
-    /// Yields an Enumeration of selector Type, 
-    /// by checking for gaps between elements 
-    /// using the supplied increment function to work out the next value
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="U"></typeparam>
-    /// <param name="inputs"></param>
-    /// <param name="getIncr"></param>
-    /// <param name="selector"></param>
-    /// <param name="comparisonFunc"></param>
-    /// <returns></returns>
-    public static IEnumerable<U> GroupByMissing<T, U>(this IEnumerable<T> inputs, Func<T, T> getIncr, Func<T, T, U> selector, Func<T, T, int> comparisonFunc)
-    {
-
-        var initialized = false;
-        T first = default(T);
-        T last = default(T);
-        T next = default(T);
-        Tuple<T, T> tuple = null;
-
-        foreach (var input in inputs)
-        {
-            if (!initialized)
-            {
-                first = input;
-                last = input;
-                initialized = true;
-                continue;
-            }
-            if (comparisonFunc(last, input) < 0)
-            {
-                throw new ArgumentException(string.Format("Values are not monotonically increasing. {0} should be less than {1}", last, input));
-            }
-            var inc = getIncr(last);
-            if (!input.Equals(inc))
-            {
-                yield return selector(first, last);
-                first = input;
-            }
-            last = input;
-        }
-        if (initialized)
-        {
-            yield return selector(first, last);
-        }
-    }
-}
-
 namespace Rubberduck.Refactorings.ExtractMethod
 {
+    public static class IEnumerableExt
+    {
+        /// <summary>
+        /// Yields an Enumeration of selector Type, 
+        /// by checking for gaps between elements 
+        /// using the supplied increment function to work out the next value
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="inputs"></param>
+        /// <param name="getIncr"></param>
+        /// <param name="selector"></param>
+        /// <param name="comparisonFunc"></param>
+        /// <returns></returns>
+        public static IEnumerable<U> GroupByMissing<T, U>(this IEnumerable<T> inputs, Func<T, T> getIncr, Func<T, T, U> selector, Func<T, T, int> comparisonFunc)
+        {
+
+            var initialized = false;
+            T first = default(T);
+            T last = default(T);
+            T next = default(T);
+            Tuple<T, T> tuple = null;
+
+            foreach (var input in inputs)
+            {
+                if (!initialized)
+                {
+                    first = input;
+                    last = input;
+                    initialized = true;
+                    continue;
+                }
+                if (comparisonFunc(last, input) < 0)
+                {
+                    throw new ArgumentException(string.Format("Values are not monotonically increasing. {0} should be less than {1}", last, input));
+                }
+                var inc = getIncr(last);
+                if (!input.Equals(inc))
+                {
+                    yield return selector(first, last);
+                    first = input;
+                }
+                last = input;
+            }
+            if (initialized)
+            {
+                yield return selector(first, last);
+            }
+        }
+    }
+
     public class ExtractMethodModel : IExtractMethodModel
     {
         private List<Declaration> _extractDeclarations;
@@ -165,7 +164,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             // we need to split selectionToRemove around any declarations that
             // are within the selection.
             get { return _declarationsToMove.Select(decl => decl.Selection).Union(_rowsToRemove)
-                                      .Select( x => new Selection(x.StartLine,1,x.EndLine,1)) ; }
+                .Select( x => new Selection(x.StartLine,1,x.EndLine,1)) ; }
         }
 
         public IEnumerable<Declaration> DeclarationsToExtract

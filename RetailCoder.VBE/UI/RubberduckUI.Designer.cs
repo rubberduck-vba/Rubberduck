@@ -63,7 +63,10 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to Parsing powered by ANTLR
         ///GitHub integration powered by LibGit2Sharp
-        ///Fugue icons by Yusuke Kamiyamane.
+        ///Syntax highlighting powered by AvalonEdit
+        ///Fugue icons by Yusuke Kamiyamane
+        ///IDE icons from SharpDevelop
+        ///WPF localization support by Grant Frisken.
         /// </summary>
         public static string AboutWindow_AttributionList {
             get {
@@ -117,7 +120,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to © Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan.
+        ///   Looks up a localized string similar to © Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan.
         /// </summary>
         public static string AboutWindow_Copyright {
             get {
@@ -187,6 +190,87 @@ namespace Rubberduck.UI {
         public static string AllReferences_NoneFound {
             get {
                 return ResourceManager.GetString("AllReferences_NoneFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable names must begin with a letter..
+        /// </summary>
+        public static string AssignedByValDialog_DoesNotStartWithLetter {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_DoesNotStartWithLetter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable names cannot contain special characters other than underscores..
+        /// </summary>
+        public static string AssignedByValDialog_InvalidCharacters {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_InvalidCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The local variable cannot be the same as the &apos;{0}&apos; parameter it replaces.
+        /// </summary>
+        public static string AssignedByValDialog_IsByValIdentifierFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_IsByValIdentifierFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is already accessible to this scope..
+        /// </summary>
+        public static string AssignedByValDialog_NewNameAlreadyUsedFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_NewNameAlreadyUsedFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The identifier &apos;{0}&apos; will trigger a &quot;Use meaningful name&quot; inspection result. Consider choosing a different name..
+        /// </summary>
+        public static string AssignedByValDialog_QuestionableEntryFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_QuestionableEntryFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a reserved keyword..
+        /// </summary>
+        public static string AssignedByValDialog_ReservedKeywordFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_ReservedKeywordFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assigned ByVal parameter QuickFix - Make Local Copy.
+        /// </summary>
+        public static string AssignedByValParamQFixDialog_Caption {
+            get {
+                return ResourceManager.GetString("AssignedByValParamQFixDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a name to use for the local copy of ByVal {0} &apos;{1}&apos;.
+        /// </summary>
+        public static string AssignedByValParamQFixDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("AssignedByValParamQFixDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify Local Copy Variable Name.
+        /// </summary>
+        public static string AssignedByValParamQFixDialog_TitleText {
+            get {
+                return ResourceManager.GetString("AssignedByValParamQFixDialog_TitleText", resourceCulture);
             }
         }
         
@@ -380,7 +464,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open project properties.
+        ///   Looks up a localized string similar to Project properties.
         /// </summary>
         public static string CodeExplorer_OpenProjectProperties {
             get {
@@ -706,6 +790,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Miscellaneous.
+        /// </summary>
+        public static string CodeInspectionSettings_Misc {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_Misc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run inspections automatically on successful parse.
+        /// </summary>
+        public static string CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection.
         /// </summary>
         public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {
@@ -814,6 +916,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is assigned. Remove assignment instruction(s)?.
+        /// </summary>
+        public static string ConfirmRemoveAssignmentWithUnusedDeclaration {
+            get {
+                return ResourceManager.GetString("ConfirmRemoveAssignmentWithUnusedDeclaration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Find all references....
         /// </summary>
         public static string ContextMenu_FindAllReferences {
@@ -837,6 +948,33 @@ namespace Rubberduck.UI {
         public static string ContextMenu_GoToImplementation {
             get {
                 return ResourceManager.GetString("ContextMenu_GoToImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to multiple controls.
+        /// </summary>
+        public static string ContextMultipleControlsSelection {
+            get {
+                return ResourceManager.GetString("ContextMultipleControlsSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to references.
+        /// </summary>
+        public static string ContextReferences {
+            get {
+                return ResourceManager.GetString("ContextReferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to runtime expression.
+        /// </summary>
+        public static string DeclarationType_BracketedExpression {
+            get {
+                return ResourceManager.GetString("DeclarationType_BracketedExpression", resourceCulture);
             }
         }
         
@@ -1026,6 +1164,123 @@ namespace Rubberduck.UI {
         public static string DeselectAll_Button {
             get {
                 return ResourceManager.GetString("DeselectAll_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load General Settings.
+        /// </summary>
+        public static string DialogCaption_LoadGeneralSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadGeneralSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Indenter Settings.
+        /// </summary>
+        public static string DialogCaption_LoadIndenterSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadIndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Inspection Settings.
+        /// </summary>
+        public static string DialogCaption_LoadInspectionSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadInspectionSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Todo List Settings.
+        /// </summary>
+        public static string DialogCaption_LoadToDoSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadToDoSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Unit Test Settings.
+        /// </summary>
+        public static string DialogCaption_LoadUnitTestSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadUnitTestSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Window Settings.
+        /// </summary>
+        public static string DialogCaption_LoadWindowSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_LoadWindowSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save General Settings.
+        /// </summary>
+        public static string DialogCaption_SaveGeneralSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveGeneralSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Indenter Settings.
+        /// </summary>
+        public static string DialogCaption_SaveIndenterSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveIndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Inspection Settings.
+        /// </summary>
+        public static string DialogCaption_SaveInspectionSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveInspectionSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Todo List Settings.
+        /// </summary>
+        public static string DialogCaption_SaveToDoSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveToDoSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Unit Test Settings.
+        /// </summary>
+        public static string DialogCaption_SaveUnitTestSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveUnitTestSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Window Settings.
+        /// </summary>
+        public static string DialogCaption_SaveWindowSettings {
+            get {
+                return ResourceManager.GetString("DialogCaption_SaveWindowSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML file (.xml)|*.xml|Rubberduck config file|*.config.
+        /// </summary>
+        public static string DialogMask_XmlFilesOnly {
+            get {
+                return ResourceManager.GetString("DialogMask_XmlFilesOnly", resourceCulture);
             }
         }
         
@@ -1318,6 +1573,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check if a newer version is available at startup.
+        /// </summary>
+        public static string GeneralSettings_CheckVersion {
+            get {
+                return ResourceManager.GetString("GeneralSettings_CheckVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Debug.
         /// </summary>
         public static string GeneralSettings_DebugLogLevel {
@@ -1476,6 +1740,15 @@ namespace Rubberduck.UI {
         public static string GeneralSettings_ShowLogFolder {
             get {
                 return ResourceManager.GetString("GeneralSettings_ShowLogFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show splash screen at startup.
+        /// </summary>
+        public static string GeneralSettings_ShowSplash {
+            get {
+                return ResourceManager.GetString("GeneralSettings_ShowSplash", resourceCulture);
             }
         }
         
@@ -1759,6 +2032,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Indented Code Sample.
+        /// </summary>
+        public static string IndenterSettings_CodeSampleHeader {
+            get {
+                return ResourceManager.GetString("IndenterSettings_CodeSampleHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable Options.
         /// </summary>
         public static string IndenterSettings_EnableOptionsLabel {
@@ -1840,6 +2122,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Indent comments in Enum and Type blocks like in procedures.
+        /// </summary>
+        public static string IndenterSettings_IndentEnumTypeAsProcedure {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentEnumTypeAsProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indent first comment block.
         /// </summary>
         public static string IndenterSettings_IndentFirstCommentBlock {
@@ -1876,11 +2167,60 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Public Enum ExampleEnum
+        ///&apos; Enum comment.
+        ///Foo
+        ///Bar &apos; Member comment.
+        ///End Enum
+        ///
+        ///&apos; Example Procedure
+        ///Sub ExampleProc()
+        ///
+        ///&apos; SMART INDENTER
+        ///&apos; Original VB6 code graciously offered to Rubberduck by Stephen Bullen &amp; Rob Bovey
+        ///&apos; © 2016 by Rubberduck VBA.
+        ///
+        ///Dim count As Integer
+        ///Static name As String
+        ///
+        ///If YouLikeRubberduck Then
+        ///&apos; Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
+        ///&apos; Follow us on Twitter @rubberduckvba
+        ///&apos; Visit http://rubberduckvba.com for news and updates
+        ///
+        ///Select Case X
+        ///Case  [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string IndenterSettings_PreviewCode {
+            get {
+                return ResourceManager.GetString("IndenterSettings_PreviewCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Special Options.
         /// </summary>
         public static string IndenterSettings_SpecialOptionsLabel {
             get {
                 return ResourceManager.GetString("IndenterSettings_SpecialOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maintain vertical spacing.
+        /// </summary>
+        public static string IndenterSettings_VerticalSpacing {
+            get {
+                return ResourceManager.GetString("IndenterSettings_VerticalSpacing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical Spacing.
+        /// </summary>
+        public static string IndenterSettings_VerticalSpacingLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_VerticalSpacingLabel", resourceCulture);
             }
         }
         
@@ -2187,6 +2527,15 @@ namespace Rubberduck.UI {
         public static string Parser_ParserError {
             get {
                 return ResourceManager.GetString("Parser_ParserError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} module(s) failed to parse; click for details..
+        /// </summary>
+        public static string ParserErrorToolTipText {
+            get {
+                return ResourceManager.GetString("ParserErrorToolTipText", resourceCulture);
             }
         }
         
@@ -2719,6 +3068,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please ensure that exactly 1 control is selected before renaming..
+        /// </summary>
+        public static string RenameDialog_AmbiguousSelection {
+            get {
+                return ResourceManager.GetString("RenameDialog_AmbiguousSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Rename.
         /// </summary>
         public static string RenameDialog_Caption {
@@ -2855,6 +3213,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}. Click to refresh..
+        /// </summary>
+        public static string ReparseToolTipText {
+            get {
+                return ResourceManager.GetString("ReparseToolTipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resolving....
         /// </summary>
         public static string ResolutionProgress {
@@ -2891,7 +3258,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Build {0} ({1}).
+        ///   Looks up a localized string similar to Version {0}.
         /// </summary>
         public static string Rubberduck_AboutBuild {
             get {
@@ -2909,7 +3276,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file located at &quot;C:\Users\{username}\AppData\Roaming\Rubberduck\Logs\RubberduckLog.txt&quot; to a GitHub issue at &quot;https://github.com/rubberduck-vba/Rubberduck/issues/new&quot;..
+        ///   Looks up a localized string similar to Rubberduck encountered an error. Please save your work and restart the host program; if logging is enabled, you can upload your log file located at &apos;%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt&apos; to a GitHub issue at &apos;https://github.com/rubberduck-vba/Rubberduck/issues/new&apos; and report the bug..
         /// </summary>
         public static string RubberduckFatalError {
             get {
@@ -3004,6 +3371,24 @@ namespace Rubberduck.UI {
         public static string RubberduckMenu_UnitTests {
             get {
                 return ResourceManager.GetString("RubberduckMenu_UnitTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toolwindows were not correctly destroyed and/or could not be recreated; the VBE may not be in a stable state. Rubberduck will load normally next time the VBE is initialized..
+        /// </summary>
+        public static string RubberduckReloadFailure_Message {
+            get {
+                return ResourceManager.GetString("RubberduckReloadFailure_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck will not reload.
+        /// </summary>
+        public static string RubberduckReloadFailure_Title {
+            get {
+                return ResourceManager.GetString("RubberduckReloadFailure_Title", resourceCulture);
             }
         }
         
@@ -3134,11 +3519,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string SettingsCaption_ExportSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_ExportSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General Settings.
         /// </summary>
         public static string SettingsCaption_GeneralSettings {
             get {
                 return ResourceManager.GetString("SettingsCaption_GeneralSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string SettingsCaption_ImportSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_ImportSettings", resourceCulture);
             }
         }
         
@@ -3175,6 +3578,15 @@ namespace Rubberduck.UI {
         public static string SettingsCaption_UnitTestSettings {
             get {
                 return ResourceManager.GetString("SettingsCaption_UnitTestSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Window Settings.
+        /// </summary>
+        public static string SettingsCaption_WindowSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_WindowSettings", resourceCulture);
             }
         }
         
@@ -3224,6 +3636,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configure the settings for window visibility..
+        /// </summary>
+        public static string SettingsInstructions_WindowSettings {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_WindowSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Severity.
         /// </summary>
         public static string Severity {
@@ -3242,6 +3663,16 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Smart Indenter settings were found in your registry.
+        ///Would you like to import them to Rubberduck?.
+        /// </summary>
+        public static string SmartIndenter_LegacySettingPrompt {
+            get {
+                return ResourceManager.GetString("SmartIndenter_LegacySettingPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In&amp;dent.
         /// </summary>
         public static string SmartIndenterMenu {
@@ -3251,7 +3682,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By code order.
+        ///   Looks up a localized string similar to As in module.
         /// </summary>
         public static string SortStyle_ByCodeOrder {
             get {
@@ -3341,7 +3772,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clones remote repository from provided URI. Requires an empty project to be open in the VBE..
+        ///   Looks up a localized string similar to Clones remote repository from provided URI. Have an (empty) project active in the editor..
         /// </summary>
         public static string SourceControl_CloneRepositoryDescription {
             get {
@@ -3359,7 +3790,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command Prompt Exe location.
+        ///   Looks up a localized string similar to Command prompt executable location.
         /// </summary>
         public static string SourceControl_CommandPromptExeLabel {
             get {
@@ -3602,7 +4033,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A source file was modified out of the editor; should Rubberduck reload it?.
+        ///   Looks up a localized string similar to A source file was modified out of the editor; reload it?.
         /// </summary>
         public static string SourceControl_ExternalModifications {
             get {
@@ -3836,7 +4267,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a new repository from the open project..
+        ///   Looks up a localized string similar to Creates a new repository from the active project..
         /// </summary>
         public static string SourceControl_InitializeRepositoryDescription {
             get {
@@ -3953,7 +4384,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No active VBProject.
+        ///   Looks up a localized string similar to No active project.
         /// </summary>
         public static string SourceControl_NoActiveProject {
             get {
@@ -4007,7 +4438,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open repository from disk. Requires an empty project to be open in the VBE..
+        ///   Looks up a localized string similar to Open repository from disk. The active project will host the source code..
         /// </summary>
         public static string SourceControl_OpenRepositoryDescription {
             get {
@@ -4088,7 +4519,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publishes an existing repository to a remote location. Requires the open project to be connected to a repository..
+        ///   Looks up a localized string similar to Publishes an existing repository to a remote location. The active project must be connected to a repository..
         /// </summary>
         public static string SourceControl_PublishRepositoryDescription {
             get {
@@ -4223,7 +4654,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please set your log level to Fatal or lower and create an issue on our GitHub page with the contents of your log file in C:\Users\{username}\AppData\Roaming\Rubberduck\Logs..
+        ///   Looks up a localized string similar to If logging is enabled, you may create an issue on our GitHub page with the contents of your log file in &apos;%AppData%\Roaming\Rubberduck\Logs&apos; for support..
         /// </summary>
         public static string SourceControl_UnknownErrorMessage {
             get {
@@ -4655,7 +5086,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To-Do Explorer.
+        ///   Looks up a localized string similar to TODO Explorer.
         /// </summary>
         public static string TodoSettings_Caption {
             get {
@@ -4907,11 +5338,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck version {0} is now available! Would you like to review the release notes now?.
+        /// </summary>
+        public static string VersionCheck_NewVersionAvailable {
+            get {
+                return ResourceManager.GetString("VersionCheck_NewVersionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Window visibility at startup.
+        /// </summary>
+        public static string WindowSettings_StartupVisibilityHeader {
+            get {
+                return ResourceManager.GetString("WindowSettings_StartupVisibilityHeader", resourceCulture);
             }
         }
     }

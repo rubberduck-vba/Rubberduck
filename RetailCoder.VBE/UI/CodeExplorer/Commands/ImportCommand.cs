@@ -1,20 +1,20 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
     public class ImportCommand : CommandBase, IDisposable
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IOpenFileDialog _openFileDialog;
 
-        public ImportCommand(VBE vbe, IOpenFileDialog openFileDialog) : base(LogManager.GetCurrentClassLogger())
+        public ImportCommand(IVBE vbe, IOpenFileDialog openFileDialog) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _openFileDialog = openFileDialog;
@@ -40,7 +40,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 if (_vbe.VBProjects.Count == 1)
                 {
-                    project = _vbe.VBProjects.Item(1);
+                    project = _vbe.VBProjects[1];
                 }
                 else if (_vbe.ActiveVBProject != null)
                 {
@@ -48,26 +48,28 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
             }
 
-            if (_openFileDialog.ShowDialog() == DialogResult.OK)
+            if (project == null || _openFileDialog.ShowDialog() != DialogResult.OK)
             {
-                var fileExts = _openFileDialog.FileNames.Select(s => s.Split('.').Last());
-                if (fileExts.Any(fileExt => !new[] {"bas", "cls", "frm"}.Contains(fileExt)))
-                {
-                    return;
-                }
+                return;
+            }
 
-                foreach (var filename in _openFileDialog.FileNames)
-                {
-                    project.VBComponents.Import(filename);
-                }
+            var fileExts = _openFileDialog.FileNames.Select(s => s.Split('.').Last());
+            if (fileExts.Any(fileExt => !new[] {"bas", "cls", "frm"}.Contains(fileExt)))
+            {
+                return;
+            }
+
+            foreach (var filename in _openFileDialog.FileNames)
+            {
+                project.VBComponents.Import(filename);
             }
         }
 
-        private VBProject GetNodeProject(CodeExplorerItemViewModel parameter)
+        private IVBProject GetNodeProject(CodeExplorerItemViewModel parameter)
         {
             if (parameter is ICodeExplorerDeclarationViewModel)
             {
-                return parameter.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Project;
+                return parameter.GetSelectedDeclaration().Project;
             }
 
             var node = parameter.Parent;
@@ -76,7 +78,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 node = node.Parent;
             }
 
-            return ((ICodeExplorerDeclarationViewModel)node).Declaration.QualifiedName.QualifiedModuleName.Project;
+            return ((ICodeExplorerDeclarationViewModel)node).Declaration.Project;
         }
 
         public void Dispose()

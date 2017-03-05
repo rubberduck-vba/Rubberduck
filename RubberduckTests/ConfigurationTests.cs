@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Settings;
 
 namespace RubberduckTests
@@ -30,7 +31,7 @@ namespace RubberduckTests
             inspection.SetupGet(m => m.Severity).Returns(CodeInspectionSeverity.DoNotShow);
 
             var expected = new[] { inspection.Object };
-            var actual = new CodeInspectionSettings(new HashSet<CodeInspectionSetting> {new CodeInspectionSetting(inspection.Object)}, new WhitelistedIdentifierSetting[] {}).CodeInspections;
+            var actual = new CodeInspectionSettings(new HashSet<CodeInspectionSetting> {new CodeInspectionSetting(inspection.Object)}, new WhitelistedIdentifierSetting[] {}, true).CodeInspections;
 
             Assert.AreEqual(expected.Length, actual.Count);
             Assert.AreEqual(inspection.Object.Name, actual.First().Name);

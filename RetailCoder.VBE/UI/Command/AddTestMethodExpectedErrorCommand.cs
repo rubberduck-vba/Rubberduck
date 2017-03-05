@@ -1,11 +1,11 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -15,10 +15,10 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AddTestMethodExpectedErrorCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public AddTestMethodExpectedErrorCommand(VBE vbe, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
+        public AddTestMethodExpectedErrorCommand(IVBE vbe, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
@@ -50,50 +50,61 @@ namespace Rubberduck.UI.Command
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            if (_state.Status != ParserState.Ready || _vbe.ActiveCodePane == null) { return false; }
-
-            var testModules = _state.AllUserDeclarations.Where(d =>
-                        d.DeclarationType == DeclarationType.ProceduralModule &&
-                        d.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
-
-            try
+            var pane = _vbe.ActiveCodePane;
             {
-                // the code modules consistently match correctly, but the components don't
-                return testModules.Any(a =>
-                            a.QualifiedName.QualifiedModuleName.Component.CodeModule ==
-                            _vbe.SelectedVBComponent.CodeModule);
-            }
-            catch (COMException)
-            {
-                return false;
+                if (_state.Status != ParserState.Ready || pane.IsWrappingNullReference)
+                {
+                    return false;
+                }
+
+                var testModules = _state.AllUserDeclarations.Where(d =>
+                            d.DeclarationType == DeclarationType.ProceduralModule &&
+                            d.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
+
+                try
+                {
+                    // the code modules consistently match correctly, but the components don't
+                    var component = _vbe.SelectedVBComponent;
+                    var selectedModule = component.CodeModule;
+                    {
+                        var result = testModules.Any( a => a.QualifiedName.QualifiedModuleName.Component.CodeModule.Equals(selectedModule));
+                        return result;
+                    }
+                }
+                catch (COMException)
+                {
+                    return false;
+                }
             }
         }
 
         protected override void ExecuteImpl(object parameter)
         {
-            if (_vbe.ActiveCodePane == null) { return; }
-
-            try
+            var pane = _vbe.ActiveCodePane;
+            if (pane.IsWrappingNullReference)
             {
-                var declaration = _state.GetTestModules().FirstOrDefault(f =>
-                            f.QualifiedName.QualifiedModuleName.Component.CodeModule == _vbe.ActiveCodePane.CodeModule);
-
-                if (declaration != null)
-                {
-                    var module = _vbe.ActiveCodePane.CodeModule;
-                    var name = GetNextTestMethodName(module.Parent);
-                    var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
-                    module.InsertLines(module.CountOfLines, body);
-                }
+                return;
             }
-            catch (COMException)
+
+            var activeModule = pane.CodeModule;
+            var declaration = _state.GetTestModules().FirstOrDefault(f =>
             {
+                var thisModule = f.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                return thisModule.Equals(activeModule);
+            });
+
+            if (declaration != null)
+            {
+                var module = pane.CodeModule;
+                var name = GetNextTestMethodName(module.Parent);
+                var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
+                module.InsertLines(module.CountOfLines, body);
             }
 
             _state.OnParseRequested(this, _vbe.SelectedVBComponent);
         }
 
-        private string GetNextTestMethodName(VBComponent component)
+        private string GetNextTestMethodName(IVBComponent component)
         {
             var names = component.GetTests(_vbe, _state).Select(test => test.Declaration.IdentifierName);
             var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;

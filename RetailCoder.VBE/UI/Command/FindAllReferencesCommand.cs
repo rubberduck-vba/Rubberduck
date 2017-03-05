@@ -2,12 +2,12 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -22,10 +22,10 @@ namespace Rubberduck.UI.Command
         private readonly RubberduckParserState _state;
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
 
         public FindAllReferencesCommand(INavigateCommand navigateCommand, IMessageBox messageBox,
-            RubberduckParserState state, VBE vbe, ISearchResultsWindowViewModel viewModel,
+            RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel,
             SearchResultPresenterInstanceManager presenterService)
              : base(LogManager.GetCurrentClassLogger())
         {
@@ -140,11 +140,11 @@ namespace Rubberduck.UI.Command
 
         private SearchResultsViewModel CreateViewModel(Declaration declaration)
         {
-            var results = declaration.References.Select(reference =>
+            var results = declaration.References.Distinct().Select(reference =>
                 new SearchResultItem(
                     reference.ParentNonScoping,
                     new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection), 
-                    reference.QualifiedModuleName.Component.CodeModule.Lines[reference.Selection.StartLine, 1].Trim()));
+                    reference.QualifiedModuleName.Component.CodeModule.GetLines(reference.Selection.StartLine, 1).Trim()));
             
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), declaration, results);
@@ -167,7 +167,7 @@ namespace Rubberduck.UI.Command
         {
             if (_state != null)
             {
-                _state.StateChanged += _state_StateChanged;
+                _state.StateChanged -= _state_StateChanged;
             }
         }
     }

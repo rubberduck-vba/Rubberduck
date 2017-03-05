@@ -6,12 +6,14 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
     public class ModuleState
     {
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
+        public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
         public ITokenStream TokenStream { get; private set; }
         public IParseTree ParseTree { get; private set; }
         public ParserState State { get; private set; }
@@ -20,13 +22,16 @@ namespace Rubberduck.Parsing.VBA
         public List<IAnnotation> Annotations { get; private set; }
         public SyntaxErrorException ModuleException { get; private set; }
         public IDictionary<Tuple<string, DeclarationType>, Attributes> ModuleAttributes { get; private set; }
+        public ConcurrentDictionary<QualifiedModuleName, byte> HasReferenceToModule { get; private set; }
+        public HashSet<QualifiedModuleName> IsReferencedByModule { get; private set; }
 
         public bool IsNew { get; private set; }
 
         public ModuleState(ConcurrentDictionary<Declaration, byte> declarations)
         {
             Declarations = declarations;
-            TokenStream = null;
+            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
+            TokenStream = null;UnboundMemberDeclaration
             ParseTree = null;
 
             if (declarations.Any() && declarations.ElementAt(0).Key.QualifiedName.QualifiedModuleName.Component != null)
@@ -43,6 +48,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
+            IsReferencedByModule = new HashSet<QualifiedModuleName>();
 
             IsNew = true;
         }
@@ -50,6 +57,7 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState(ParserState state)
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
+            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
             TokenStream = null;
             ParseTree = null;
             State = state;
@@ -58,6 +66,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
+            IsReferencedByModule = new HashSet<QualifiedModuleName>();
 
             IsNew = true;
         }
@@ -65,6 +75,7 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState(SyntaxErrorException moduleException)
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
+            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
             TokenStream = null;
             ParseTree = null;
             State = ParserState.Error;
@@ -73,6 +84,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = moduleException;
             ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
+            IsReferencedByModule = new HashSet<QualifiedModuleName>();
 
             IsNew = true;
         }
@@ -80,6 +93,7 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState(IDictionary<Tuple<string, DeclarationType>, Attributes> moduleAttributes)
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
+            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
             TokenStream = null;
             ParseTree = null;
             State = ParserState.None;
@@ -88,6 +102,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = moduleAttributes;
+            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
+            IsReferencedByModule = new HashSet<QualifiedModuleName>();
 
             IsNew = true;
         }
@@ -140,6 +156,17 @@ namespace Rubberduck.Parsing.VBA
             ModuleAttributes = moduleAttributes;
             return this;
         }
+
+        public void RefreshHasReferenceToModule()
+        {
+            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
+        }
+
+        public void RefreshIsReferencedByModule()
+        {
+            IsReferencedByModule = new HashSet<QualifiedModuleName>();
+        }
+
 
         private bool _isDisposed;
         public void Dispose()

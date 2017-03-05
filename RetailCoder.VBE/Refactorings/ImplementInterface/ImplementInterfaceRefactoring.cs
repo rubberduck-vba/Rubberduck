@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ImplementInterface
 {
-    using VBEditor.Extensions;
-
     public class ImplementInterfaceRefactoring : IRefactoring
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
@@ -25,7 +23,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
-        public ImplementInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public ImplementInterfaceRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
             _vbe = vbe;
             _state = state;
@@ -53,12 +51,19 @@ namespace Rubberduck.Refactorings.ImplementInterface
             Refactor(qualifiedSelection.Value);
         }
 
+        private static readonly IReadOnlyList<DeclarationType> ImplementingModuleTypes = new[]
+        {
+            DeclarationType.ClassModule,
+            DeclarationType.UserForm, 
+            DeclarationType.Document, 
+        };
+
         public void Refactor(QualifiedSelection selection)
         {
             _targetInterface = _declarations.FindInterface(selection);
 
             _targetClass = _declarations.SingleOrDefault(d =>
-                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
+                        !d.IsBuiltIn && ImplementingModuleTypes.Contains(d.DeclarationType) &&
                         d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
             if (_targetClass == null || _targetInterface == null)
@@ -71,15 +76,16 @@ namespace Rubberduck.Refactorings.ImplementInterface
             QualifiedSelection? oldSelection = null;
             if (_vbe.ActiveCodePane != null)
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
             }
 
             ImplementMissingMembers();
 
             if (oldSelection.HasValue)
             {
-                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
-                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+                var module = oldSelection.Value.QualifiedName.Component.CodeModule;
+                var pane = module.CodePane;
+                pane.Selection = oldSelection.Value.Selection;
             }
 
             _state.OnParseRequested(this);
@@ -87,7 +93,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         public void Refactor(Declaration target)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         private void ImplementMissingMembers()
@@ -102,10 +108,10 @@ namespace Rubberduck.Refactorings.ImplementInterface
         private void AddItems(List<Declaration> members)
         {
             var module = _targetClass.QualifiedSelection.QualifiedName.Component.CodeModule;
-
-            var missingMembersText = members.Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
-
-            module.InsertLines(module.CountOfDeclarationLines + 1, missingMembersText);
+            {
+                var missingMembersText = members.Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
+                module.InsertLines(module.CountOfDeclarationLines + 1, missingMembersText);
+            }
         }
 
         private string GetInterfaceMember(Declaration member)

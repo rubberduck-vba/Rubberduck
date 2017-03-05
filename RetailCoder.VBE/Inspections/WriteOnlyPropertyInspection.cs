@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -13,7 +16,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.WriteOnlyPropertyInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.WriteOnlyPropertyInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.WriteOnlyPropertyInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
@@ -33,31 +36,6 @@ namespace Rubberduck.Inspections
 
             return setters.Select(setter =>
                 new WriteOnlyPropertyInspectionResult(this, setter));
-        }
-    }
-
-    public class WriteOnlyPropertyInspectionResult : InspectionResultBase
-    {
-        public WriteOnlyPropertyInspectionResult(IInspection inspection, Declaration target) 
-            : base(inspection, target)
-        {
-        }
-
-        public override string Description
-        {
-            get { return string.Format(InspectionsUI.WriteOnlyPropertyInspectionResultFormat, Target.IdentifierName); }
-        }
-
-        public override IEnumerable<CodeInspectionQuickFix> QuickFixes
-        {
-            get
-            {
-                return new CodeInspectionQuickFix[]
-                {
-                    new WriteOnlyPropertyQuickFix(Context, Target),
-                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
-                };
-            }
         }
     }
 }

@@ -42,6 +42,11 @@ namespace Rubberduck.UI.Settings
                     Control = new IndenterSettings(new IndenterSettingsViewModel(config)),
                     View = SettingsViews.IndenterSettings
                 },
+                new SettingsView
+                {
+                    Control = new WindowSettings(new WindowSettingsViewModel(config)),
+                    View = SettingsViews.WindowSettings
+                },
                 activeView);
 
             ViewModel.OnWindowClosed += ViewModel_OnWindowClosed;

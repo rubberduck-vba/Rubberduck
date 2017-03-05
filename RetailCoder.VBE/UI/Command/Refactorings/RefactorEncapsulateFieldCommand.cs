@@ -1,11 +1,11 @@
-﻿using Microsoft.Vbe.Interop;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.Settings;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly Indenter _indenter;
 
-        public RefactorEncapsulateFieldCommand(VBE vbe, RubberduckParserState state, Indenter indenter)
+        public RefactorEncapsulateFieldCommand(IVBE vbe, RubberduckParserState state, Indenter indenter)
             : base(vbe)
         {
             _state = state;

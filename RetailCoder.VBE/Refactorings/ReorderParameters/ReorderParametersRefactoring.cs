@@ -1,27 +1,26 @@
 ﻿using Antlr4.Runtime.Misc;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersRefactoring : IRefactoring
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersRefactoring(VBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox)
+        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox)
         {
             _vbe = vbe;
             _factory = factory;
@@ -42,19 +41,22 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return;
             }
 
-            QualifiedSelection? oldSelection = null;
-            if (_vbe.ActiveCodePane != null)
+            var pane = _vbe.ActiveCodePane;
+            if (!pane.IsWrappingNullReference)
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
-            }
+                QualifiedSelection? oldSelection;
+                var module = pane.CodeModule;
+                {
+                    oldSelection = module.GetQualifiedSelection();
+                }
 
-            AdjustReferences(_model.TargetDeclaration.References);
-            AdjustSignatures();
+                AdjustReferences(_model.TargetDeclaration.References);
+                AdjustSignatures();
 
-            if (oldSelection.HasValue)
-            {
-                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
-                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+                if (oldSelection.HasValue)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
             }
 
             _model.State.OnParseRequested(this);
@@ -62,8 +64,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
-            Refactor();
+            var pane = _vbe.ActiveCodePane;
+            {
+                pane.Selection = target.Selection;
+                Refactor();
+            }
         }
 
         public void Refactor(Declaration target)
@@ -73,8 +78,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            _vbe.ActiveCodePane.CodeModule.SetSelection(target.QualifiedSelection);
-            Refactor();
+            var pane = _vbe.ActiveCodePane;
+            {
+                pane.Selection = target.QualifiedSelection.Selection;
+                Refactor();
+            }
         }
 
         private bool IsValidParamOrder()
@@ -127,7 +135,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
         }
 
-        private void RewriteCall(VBAParser.ArgumentListContext paramList, CodeModule module)
+        private void RewriteCall(VBAParser.ArgumentListContext paramList, ICodeModule module)
         {
             var argValues = new List<string>();
             if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
@@ -153,7 +161,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            var newContent = module.Lines[paramList.Start.Line, lineCount];
+            var newContent = module.GetLines(paramList.Start.Line, lineCount);
             newContent = newContent.Remove(paramList.Start.Column, paramList.GetText().Length);
 
             var reorderedArgValues = new List<string>();
@@ -233,21 +241,23 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             var proc = (dynamic)declaration.Context.Parent;
             var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            VBAParser.ArgListContext paramList;
-
-            if (declaration.DeclarationType == DeclarationType.PropertySet || declaration.DeclarationType == DeclarationType.PropertyLet)
             {
-                paramList = (VBAParser.ArgListContext)proc.children[0].argList();
-            }
-            else
-            {
-                paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
-            }
+                VBAParser.ArgListContext paramList;
 
-            RewriteSignature(declaration, paramList, module);
+                if (declaration.DeclarationType == DeclarationType.PropertySet || declaration.DeclarationType == DeclarationType.PropertyLet)
+                {
+                    paramList = (VBAParser.ArgListContext)proc.children[0].argList();
+                }
+                else
+                {
+                    paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
+                }
+
+                RewriteSignature(declaration, paramList, module);
+            }
         }
 
-        private void RewriteSignature(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
+        private void RewriteSignature(Declaration target, VBAParser.ArgListContext paramList, ICodeModule module)
         {
             var parameters = paramList.arg().Select((s, i) => new {Index = i, Text = s.GetText()}).ToList();
 

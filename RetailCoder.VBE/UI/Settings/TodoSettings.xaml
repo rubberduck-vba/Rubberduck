@@ -6,6 +6,7 @@
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:TodoSettingsViewModel}, IsDesignTimeCreatable=False}">
@@ -244,13 +245,15 @@
         </Style>
     </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
         <StackPanel Margin="5,5,5,0">
-            <Label DockPanel.Dock="Top"
-                   Background="DarkGray"
-                   Foreground="White"
-                   FontWeight="SemiBold"
-                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_TodoSettings}"
-                   Margin="0,0,0,3">
+            <Label Background="DarkGray"
+                       HorizontalContentAlignment="Stretch"
+                       Margin="0,0,0,3">
                 <Label.Style>
                     <Style>
                         <Style.Resources>
@@ -260,6 +263,30 @@
                         </Style.Resources>
                     </Style>
                 </Label.Style>
+                <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                        <Label Foreground="White"
+                                   FontWeight="SemiBold" 
+                                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_TodoSettings}">
+                        </Label>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition MaxWidth="75"/>
+                                <ColumnDefinition MaxWidth="75"/>
+                            </Grid.ColumnDefinitions>
+                            <controls:LinkButton Grid.Column="1" Margin="2"
+                                                 Command="{Binding ImportButtonCommand}"
+                                                 Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ImportSettings}"/>
+                            <controls:LinkButton Grid.Column="2" Margin="2"
+                                                 Command="{Binding ExportButtonCommand}"
+                                                 Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}"/>
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"/>
+                </DockPanel>
             </Label>
             <ToolBarTray IsLocked="True"
                          Background="Transparent">
@@ -289,39 +316,43 @@
                     </Button>
                 </ToolBar>
             </ToolBarTray>
-            <DataGrid Name="TodoMarkerGrid"
-                      ItemsSource="{Binding TodoSettings}"
-                      AutoGenerateColumns="False"
-                      CanUserReorderColumns="False"
-                      IsReadOnly="False"
-                      SelectionMode="Single"
-                      CanUserAddRows="False"
-                      HorizontalGridLinesBrush="Transparent"
-                      VerticalGridLinesBrush="Transparent"
-                      HeadersVisibility="Column"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ItemContainerStyle="{StaticResource PrettifyRow}"
-                      ColumnHeaderHeight="22"
-                      BorderThickness="0"
-                      CellEditEnding="TodoMarkerGrid_CellEditEnding">
-                <DataGrid.InputBindings>
-                    <KeyBinding Key="Delete"
+        </StackPanel>
+        <DataGrid Name="TodoMarkerGrid"
+                Grid.Row="1"
+                Margin="5,0,5,5"
+                ItemsSource="{Binding TodoSettings}"
+                AutoGenerateColumns="False"
+                CanUserReorderColumns="False"
+                IsReadOnly="False"
+                SelectionMode="Single"
+                CanUserAddRows="False"
+                HorizontalGridLinesBrush="Transparent"
+                VerticalGridLinesBrush="Transparent"
+                HeadersVisibility="Column"
+                ScrollViewer.CanContentScroll="True" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ItemContainerStyle="{StaticResource PrettifyRow}"
+                ColumnHeaderHeight="22"
+                BorderThickness="0"
+                CellEditEnding="TodoMarkerGrid_CellEditEnding">
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete"
                                 Command="{Binding DeleteTodoCommand}"
                                 CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem}" />
-                </DataGrid.InputBindings>
-                <DataGrid.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-                </DataGrid.CellStyle>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoSettings_TextLabel}"
+            </DataGrid.InputBindings>
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoSettings_TextLabel}"
                                         Width="*"
                                         Binding="{Binding Text}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Preprocessing
+﻿using System.Threading;
+
+namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class VBAPreprocessor : IVBAPreprocessor
     {
@@ -11,15 +13,12 @@
             _parser = new VBAPrecompilationParser();
         }
 
-        public string Execute(string moduleName, string unprocessedCode)
+        public string Execute(string moduleName, string unprocessedCode, CancellationToken token)
         {
-            return Preprocess(moduleName, unprocessedCode);
-        }
-
-        private string Preprocess(string moduleName, string unprocessedCode)
-        {
-            SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
+            token.ThrowIfCancellationRequested();
+            var symbolTable = new SymbolTable<string, IValue>();
             var tree = _parser.Parse(moduleName, unprocessedCode);
+            token.ThrowIfCancellationRequested();
             var stream = tree.Start.InputStream;
             var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), stream);
             var expr = evaluator.Visit(tree);

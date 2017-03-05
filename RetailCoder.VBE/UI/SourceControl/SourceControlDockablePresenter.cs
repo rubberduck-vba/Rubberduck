@@ -1,5 +1,7 @@
-﻿using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+﻿using System.Diagnostics;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -8,14 +10,16 @@ namespace Rubberduck.UI.SourceControl
     /// </summary>
     public class SourceControlDockablePresenter : DockableToolwindowPresenter
     {
-        public SourceControlDockablePresenter(VBE vbe, AddIn addin, SourceControlPanel window)
-            : base(vbe, addin, window)
+        public SourceControlDockablePresenter(IVBE vbe, IAddIn addin, SourceControlPanel window, IConfigProvider<WindowSettings> settings)
+            : base(vbe, addin, window, settings)
         {
         }
 
-        public UserControl Window()
+        public SourceControlPanel Window()
         {
-            return UserControl;
+            var control = UserControl as SourceControlPanel;
+            Debug.Assert(control != null);
+            return control;
         }
     }
 }

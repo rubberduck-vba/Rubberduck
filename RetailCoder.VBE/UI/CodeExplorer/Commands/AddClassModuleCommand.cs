@@ -1,18 +1,19 @@
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
     public class AddClassModuleCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
 
-        public AddClassModuleCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public AddClassModuleCommand(IVBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }
@@ -33,11 +34,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             if (parameter != null)
             {
-                GetDeclaration(parameter).Project.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
+                var components = GetDeclaration(parameter).Project.VBComponents;
+                {
+                    components.Add(ComponentType.ClassModule);
+                }
             }
             else
             {
-                _vbe.VBProjects.Item(1).VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
+                var project = _vbe.ActiveVBProject;
+                var components = project.VBComponents;
+                {
+                    components.Add(ComponentType.ClassModule);
+                }
             }
         }
 

@@ -1,11 +1,10 @@
-using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -13,13 +12,13 @@ namespace Rubberduck.UI.Command.Refactorings
     public class CodePaneRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
+        private readonly IMessageBox _messageBox;
 
-        public CodePaneRefactorRenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public CodePaneRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox) 
             : base (vbe)
         {
             _state = state;
-            _wrapperWrapperFactory = wrapperWrapperFactory;
+            _messageBox = messageBox;
         }
 
         public override RubberduckHotkey Hotkey
@@ -52,15 +51,15 @@ namespace Rubberduck.UI.Command.Refactorings
                 target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
             }
 
-            if (target == null)
+            if (target == null || target.IsBuiltIn)
             {
                 return;
             }
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox());
-                var refactoring = new RenameRefactoring(Vbe, factory, new MessageBox(), _state);
+                var factory = new RenamePresenterFactory(Vbe, view, _state, _messageBox);
+                var refactoring = new RenameRefactoring(Vbe, factory, _messageBox, _state);
 
                 refactoring.Refactor(target);
             }

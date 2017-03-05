@@ -1,76 +1,50 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ImplicitActiveWorkbookReferenceInspection : InspectionBase
     {
-        private readonly IHostApplication _hostApp;
-
-        public ImplicitActiveWorkbookReferenceInspection(VBE vbe, RubberduckParserState state)
+        public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
             : base(state)
         {
-            _hostApp = vbe.HostApplication();
         }
 
         public override string Meta { get { return InspectionsUI.ImplicitActiveWorkbookReferenceInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ImplicitActiveWorkbookReferenceInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.ImplicitActiveWorkbookReferenceInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly string[] Targets =
         {
-            "Worksheets", "Sheets", "Names",
-        };
-
-        private static readonly string[] ParentScopes =
-        {
-            "EXCEL.EXE;Excel._Global",
-            "EXCEL.EXE;Excel._Application"
+            "Worksheets", "Sheets", "Names", "_Default"
         };
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            if (_hostApp == null || _hostApp.ApplicationName != "Excel")
+            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => item.IsBuiltIn && item.IdentifierName == "Excel");
+            if (excel == null) { return Enumerable.Empty<InspectionResultBase>(); }
+
+            var modules = new[]
             {
-                return new InspectionResultBase[] { };
-                // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
-            }
-
-            var issues = BuiltInDeclarations.Where(item => ParentScopes.Contains(item.ParentScope)
-                                            && Targets.Contains(item.IdentifierName)
-                                            && item.References.Any())
-                .SelectMany(declaration => declaration.References);
-
-            return issues.Select(issue =>
-                new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
-        }
-    }
-
-    public class ImplicitActiveWorkbookReferenceInspectionResult : InspectionResultBase
-    {
-        private readonly IdentifierReference _reference;
-        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
-
-        public ImplicitActiveWorkbookReferenceInspectionResult(IInspection inspection, IdentifierReference reference)
-            : base(inspection, reference.QualifiedModuleName, reference.Context)
-        {
-            _reference = reference;
-            _quickFixes = new CodeInspectionQuickFix[]
-            {
-                new IgnoreOnceQuickFix(reference.Context, QualifiedSelection, Inspection.AnnotationName),
+                State.DeclarationFinder.FindClassModule("_Global", excel, true),
+                State.DeclarationFinder.FindClassModule("_Application", excel, true),
+                State.DeclarationFinder.FindClassModule("Global", excel, true),
+                State.DeclarationFinder.FindClassModule("Application", excel, true),
+                State.DeclarationFinder.FindClassModule("Sheets", excel, true),
             };
-        }
 
-        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
-
-        public override string Description
-        {
-            get { return string.Format(Inspection.Description, _reference.Declaration.IdentifierName); }
+            var members = Targets
+                .SelectMany(target => modules.SelectMany(module =>
+                    State.DeclarationFinder.FindMemberMatches(module, target)))
+                .Where(item => item.References.Any())
+                .SelectMany(item => item.References.Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName)))
+                .ToList();
+                
+            return members.Select(issue => new ImplicitActiveWorkbookReferenceInspectionResult(this, issue));
         }
     }
 }

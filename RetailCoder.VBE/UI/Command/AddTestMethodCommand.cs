@@ -1,11 +1,11 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -15,10 +15,10 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AddTestMethodCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public AddTestMethodCommand(VBE vbe, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
+        public AddTestMethodCommand(IVBE vbe, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
@@ -55,8 +55,10 @@ namespace Rubberduck.UI.Command
             {
                 // the code modules consistently match correctly, but the components don't
                 return testModules.Any(a =>
-                            a.QualifiedName.QualifiedModuleName.Component.CodeModule ==
-                            _vbe.SelectedVBComponent.CodeModule);
+                {
+                    var module = a.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                    return module.Equals(_vbe.ActiveCodePane.CodeModule);
+                });
             }
             catch (COMException)
             {
@@ -66,29 +68,24 @@ namespace Rubberduck.UI.Command
 
         protected override void ExecuteImpl(object parameter)
         {
-            if (_vbe.ActiveCodePane == null) { return; }
+            var pane = _vbe.ActiveCodePane;
+            if (pane.IsWrappingNullReference) { return; }
 
-            try
-            {
-                var declaration = _state.GetTestModules().FirstOrDefault(f =>
-                            f.QualifiedName.QualifiedModuleName.Component.CodeModule == _vbe.ActiveCodePane.CodeModule);
+            var module = pane.CodeModule;
+            var declaration = _state.GetTestModules()
+                .FirstOrDefault(f => f.QualifiedName.QualifiedModuleName.Component.CodeModule.Equals(module));
 
-                if (declaration != null)
-                {
-                    var module = _vbe.ActiveCodePane.CodeModule;
-                    var name = GetNextTestMethodName(module.Parent);
-                    var body = TestMethodTemplate.Replace(NamePlaceholder, name);
-                    module.InsertLines(module.CountOfLines, body);
-                }
-            }
-            catch (COMException)
+            if (declaration != null)
             {
+                var name = GetNextTestMethodName(module.Parent);
+                var body = TestMethodTemplate.Replace(NamePlaceholder, name);
+                module.InsertLines(module.CountOfLines, body);
             }
 
             _state.OnParseRequested(this, _vbe.SelectedVBComponent);
         }
 
-        private string GetNextTestMethodName(VBComponent component)
+        private string GetNextTestMethodName(IVBComponent component)
         {
             var names = component.GetTests(_vbe, _state).Select(test => test.Declaration.IdentifierName);
             var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;

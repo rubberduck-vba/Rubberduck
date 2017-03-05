@@ -1,102 +1,55 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Infralution.Localization.Wpf;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VersionCheck;
+using Application = System.Windows.Forms.Application;
 
 namespace Rubberduck
 {
     public sealed class App : IDisposable
     {
-        private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly IRubberduckParser _parser;
-        private AutoSave.AutoSave _autoSave;
-        private IGeneralConfigService _configService;
+        private readonly AutoSave.AutoSave _autoSave;
+        private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
-        private RubberduckCommandBar _stateBar;
-        private IRubberduckHooks _hooks;
-        private readonly UI.Settings.Settings _settings;
+        private readonly IRubberduckHooks _hooks;
+        private readonly IVersionCheck _version;
+        private readonly CommandBase _checkVersionCommand;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
         private Configuration _config;
 
-        public App(VBE vbe, IMessageBox messageBox,
-            UI.Settings.Settings settings,
-            IRubberduckParser parser,
+        public App(IVBE vbe, 
+            IMessageBox messageBox,
             IGeneralConfigService configService,
             IAppMenu appMenus,
-            RubberduckCommandBar stateBar,
-            IRubberduckHooks hooks)
+            IRubberduckHooks hooks,
+            IVersionCheck version,
+            CommandBase checkVersionCommand)
         {
-            _vbe = vbe;
             _messageBox = messageBox;
-            _settings = settings;
-            _parser = parser;
             _configService = configService;
-            _autoSave = new AutoSave.AutoSave(_vbe, _configService);
+            _autoSave = new AutoSave.AutoSave(vbe, _configService);
             _appMenus = appMenus;
-            _stateBar = stateBar;
             _hooks = hooks;
+            _version = version;
+            _checkVersionCommand = checkVersionCommand;
 
-            _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
-            _parser.State.StateChanged += Parser_StateChanged;
-            _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
-            _stateBar.Refresh += _stateBar_Refresh;
+            
             UiDispatcher.Initialize();
-        }
-
-        private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
-        {
-            var message = e.Message;
-            if (message == ParserState.LoadingReference.ToString())
-            {
-                // note: ugly hack to enable Rubberduck.Parsing assembly to do this
-                message = RubberduckUI.ParserState_LoadingReference;
-            }
-
-            _stateBar.SetStatusText(message);
-        }
-
-        private void _hooks_MessageReceived(object sender, HookEventArgs e)
-        {
-            RefreshSelection();
-        }
-
-        private ParserState _lastStatus;
-        private Declaration _lastSelectedDeclaration;
-
-        private void RefreshSelection()
-        {
-            var selectedDeclaration = _parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane);
-            _stateBar.SetSelectionText(selectedDeclaration);
-
-            var currentStatus = _parser.State.Status;
-            if (ShouldEvaluateCanExecute(selectedDeclaration, currentStatus))
-            {
-                _appMenus.EvaluateCanExecute(_parser.State);
-            }
-
-            _lastStatus = currentStatus;
-            _lastSelectedDeclaration = selectedDeclaration;
-        }
-
-        private bool ShouldEvaluateCanExecute(Declaration selectedDeclaration, ParserState currentStatus)
-        {
-            return _lastStatus != currentStatus ||
-                   (selectedDeclaration != null && !selectedDeclaration.Equals(_lastSelectedDeclaration)) ||
-                   (selectedDeclaration == null && _lastSelectedDeclaration != null);
         }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
@@ -113,7 +66,7 @@ namespace Rubberduck
             }
         }
 
-        private void EnsureDirectoriesExist()
+        private static void EnsureLogFolderPathExists()
         {
             try
             {
@@ -135,16 +88,19 @@ namespace Rubberduck
 
         public void Startup()
         {
-            EnsureDirectoriesExist();
+            EnsureLogFolderPathExists();
+            LogRubberduckSart();
             LoadConfig();
+            CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
+
             UpdateLoggingLevel();
 
-            if (_vbe.VBProjects.Count != 0)
+            if (_config.UserSettings.GeneralSettings.CheckVersion)
             {
-                _parser.State.OnParseRequested(this);
+                _checkVersionCommand.Execute(null);
             }
         }
 
@@ -160,28 +116,17 @@ namespace Rubberduck
             }
         }
 
-        private void _stateBar_Refresh(object sender, EventArgs e)
-        {
-            // handles "refresh" button click on "Rubberduck" command bar
-            _parser.State.OnParseRequested(sender);
-        }
-
-        private void Parser_StateChanged(object sender, EventArgs e)
-        {
-            Logger.Debug("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
-            _appMenus.EvaluateCanExecute(_parser.State);
-        }
-
         private void LoadConfig()
         {
             _config = _configService.LoadConfiguration();
-
             _autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
 
             var currentCulture = RubberduckUI.Culture;
             try
             {
                 CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.GeneralSettings.Language.Code);
+                RubberduckUI.Culture = CultureInfo.CurrentUICulture;
+                InspectionsUI.Culture = CultureInfo.CurrentUICulture;
                 _appMenus.Localize();
             }
             catch (CultureNotFoundException exception)
@@ -193,6 +138,47 @@ namespace Rubberduck
             }
         }
 
+        private void CheckForLegacyIndenterSettings()
+        {
+            try
+            {
+                Logger.Trace("Checking for legacy Smart Indenter settings.");
+                if (_config.UserSettings.GeneralSettings.SmartIndenterPrompted ||
+                    !_config.UserSettings.IndenterSettings.LegacySettingsExist())
+                {
+                    return;
+                }
+                var response =
+                    _messageBox.Show(RubberduckUI.SmartIndenter_LegacySettingPrompt, "Rubberduck", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (response == DialogResult.Yes)
+                {
+                    Logger.Trace("Attempting to load legacy Smart Indenter settings.");
+                    _config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
+                }
+                _config.UserSettings.GeneralSettings.SmartIndenterPrompted = true;
+                _configService.SaveConfiguration(_config);
+            }
+            catch 
+            {
+                //Meh.
+            }
+        }
+
+        private void LogRubberduckSart()
+        {
+            var version = _version.CurrentVersion;
+            GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
+            var headers = new List<string>
+            {
+                string.Format("Rubberduck version {0} loading:", version),
+                string.Format("\tOperating System: {0} {1}", Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86"),
+                string.Format("\tHost Product: {0} {1}", Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86"),
+                string.Format("\tHost Version: {0}", Application.ProductVersion),
+                string.Format("\tHost Executable: {0}", Path.GetFileName(Application.ExecutablePath)),
+            };
+            Logger.Log(LogLevel.Info, string.Join(Environment.NewLine, headers));
+        }
+
         private bool _disposed;
         public void Dispose()
         {
@@ -201,44 +187,14 @@ namespace Rubberduck
                 return;
             }
 
-            if (_parser != null && _parser.State != null)
-            {
-                _parser.State.StateChanged -= Parser_StateChanged;
-                _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
-                _parser.State.Dispose();
-                _parser.Dispose();
-                // I won't set this to null because other components may try to release things
-            }
-
-            if (_hooks != null)
-            {
-                _hooks.MessageReceived -= _hooks_MessageReceived;
-                _hooks.Dispose();
-                _hooks = null;
-            }
-
-            if (_settings != null)
-            {
-                _settings.Dispose();
-            }
-
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
-                _configService = null;
-            }
-
-            if (_stateBar != null)
-            {
-                _stateBar.Refresh -= _stateBar_Refresh;
-                _stateBar.Dispose();
-                _stateBar = null;
             }
 
             if (_autoSave != null)
             {
                 _autoSave.Dispose();
-                _autoSave = null;
             }
 
             UiDispatcher.Shutdown();

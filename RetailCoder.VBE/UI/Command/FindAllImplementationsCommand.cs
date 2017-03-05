@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
@@ -11,6 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -25,10 +25,10 @@ namespace Rubberduck.UI.Command
         private readonly RubberduckParserState _state;
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
 
         public FindAllImplementationsCommand(INavigateCommand navigateCommand, IMessageBox messageBox,
-            RubberduckParserState state, VBE vbe, ISearchResultsWindowViewModel viewModel,
+            RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel,
             SearchResultPresenterInstanceManager presenterService)
              : base(LogManager.GetCurrentClassLogger())
         {
@@ -147,7 +147,7 @@ namespace Rubberduck.UI.Command
                 new SearchResultItem(
                     declaration.ParentScopeDeclaration,
                     new NavigateCodeEventArgs(declaration.QualifiedName.QualifiedModuleName, declaration.Selection),
-                    declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.Lines[declaration.Selection.StartLine, 1].Trim()));
+                    declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.GetLines(declaration.Selection.StartLine, 1).Trim()));
 
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllImplementationsTabFormat, target.IdentifierName), target, results);
@@ -232,7 +232,7 @@ namespace Rubberduck.UI.Command
         {
             if (_state != null)
             {
-                _state.StateChanged += _state_StateChanged;
+                _state.StateChanged -= _state_StateChanged;
             }
         }
     }

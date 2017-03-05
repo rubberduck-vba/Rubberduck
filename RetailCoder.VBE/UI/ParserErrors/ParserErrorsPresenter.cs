@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.IdentifierReferences;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.ParserErrors
 {
@@ -15,11 +16,13 @@ namespace Rubberduck.UI.ParserErrors
 
     public class ParserErrorsPresenter : DockableToolwindowPresenter, IParserErrorsPresenter
     {
-        public ParserErrorsPresenter(VBE vbe, AddIn addin) 
-            : base(vbe, addin, new SimpleListControl(RubberduckUI.ParseErrors_Caption))
+        public ParserErrorsPresenter(IVBE vbe, IAddIn addin) 
+            : base(vbe, addin, new SimpleListControl(RubberduckUI.ParseErrors_Caption), null)
         {
             _source = new BindingList<ParseErrorListItem>();
-            Control.Navigate += Control_Navigate;
+            var control = UserControl as SimpleListControl;
+            Debug.Assert(control != null);
+            control.Navigate += Control_Navigate;
         }
 
         void Control_Navigate(object sender, ListItemActionEventArgs e)
@@ -28,27 +31,27 @@ namespace Rubberduck.UI.ParserErrors
             selection.Navigate();
         }
 
-        private SimpleListControl Control { get { return (SimpleListControl) UserControl; } }
-
         private readonly IBindingList _source;
 
         public void AddError(ParseErrorEventArgs error)
         {
             _source.Add(new ParseErrorListItem(error));
-            var control = Control;
+            var control = UserControl as SimpleListControl;
+            Debug.Assert(control != null);
+
             if (control.InvokeRequired)
             {
                 control.Invoke((MethodInvoker) delegate
                 {
-                    Control.ResultBox.DataSource = _source;
-                    Control.ResultBox.DisplayMember = "Value";
+                    control.ResultBox.DataSource = _source;
+                    control.ResultBox.DisplayMember = "Value";
                     control.Refresh();
                 });
             }
             else
             {
-                Control.ResultBox.DataSource = _source;
-                Control.ResultBox.DisplayMember = "Value";
+                control.ResultBox.DataSource = _source;
+                control.ResultBox.DisplayMember = "Value";
                 control.Refresh();
             }
         }

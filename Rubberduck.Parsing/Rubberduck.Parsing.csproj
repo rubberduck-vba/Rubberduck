@@ -42,18 +42,11 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.net45">
+    <Reference Include="Antlr4.Runtime.net45, Version=4.3.0.0, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
-    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -61,6 +54,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annotations\AnnotationBase.cs" />
@@ -71,6 +66,7 @@
     <Compile Include="Annotations\IAnnotation.cs" />
     <Compile Include="Annotations\IAnnotationFactory.cs" />
     <Compile Include="Annotations\IgnoreAnnotation.cs" />
+    <Compile Include="Annotations\IgnoreModuleAnnotation.cs" />
     <Compile Include="Annotations\InterfaceAnnotation.cs" />
     <Compile Include="Annotations\InvalidAnnotationArgumentException.cs" />
     <Compile Include="Annotations\ModuleCleanupAnnotation.cs" />
@@ -116,6 +112,17 @@
     <Compile Include="Binding\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="ComReflection\ComAlias.cs" />
+    <Compile Include="ComReflection\ComBase.cs" />
+    <Compile Include="ComReflection\ComCoClass.cs" />
+    <Compile Include="ComReflection\ComDocumentation.cs" />
+    <Compile Include="ComReflection\ComEnumeration.cs" />
+    <Compile Include="ComReflection\ComEnumerationMember.cs" />
+    <Compile Include="ComReflection\ComInterface.cs" />
+    <Compile Include="ComReflection\ComStruct.cs" />
+    <Compile Include="ComReflection\ComType.cs" />
+    <Compile Include="ComReflection\ComVariant.cs" />
+    <Compile Include="Emitter.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
@@ -124,7 +131,6 @@
     <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
     <Compile Include="Grammar\VBAParserListener.cs" />
     <Compile Include="Grammar\VBAParserVisitor.cs" />
-    <Compile Include="ISinks.cs" />
     <Compile Include="Preprocessing\IVBAPreprocessor.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParser.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseListener.cs" />
@@ -137,13 +143,19 @@
     <Compile Include="Preprocessing\VBADateListener.cs" />
     <Compile Include="Preprocessing\VBADateParser.cs" />
     <Compile Include="Preprocessing\VBADateVisitor.cs" />
-    <Compile Include="Symbols\ComInformation.cs" />
+    <Compile Include="ComReflection\ComField.cs" />
+    <Compile Include="ComReflection\ComMember.cs" />
+    <Compile Include="ComReflection\ComModule.cs" />
+    <Compile Include="ComReflection\ComProject.cs" />
+    <Compile Include="SymbolList.cs" />
+    <Compile Include="Symbols\AliasDeclaration.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\SpecialFormDeclarations.cs" />
     <Compile Include="Symbols\CommentNode.cs" />
-    <Compile Include="Symbols\ComParameter.cs" />
-    <Compile Include="Symbols\DebugDeclarations.cs" />
-    <Compile Include="Symbols\AliasDeclarations.cs" />
-    <Compile Include="Symbols\FormEventDeclarations.cs" />
-    <Compile Include="Symbols\ICustomDelarationLoader.cs" />
+    <Compile Include="ComReflection\ComParameter.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\DebugDeclarations.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\AliasDeclarations.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\FormEventDeclarations.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\ICustomDeclarationLoader.cs" />
     <Compile Include="Symbols\Identifier.cs" />
     <Compile Include="Binding\IBindingContext.cs" />
     <Compile Include="Binding\IBoundExpression.cs" />
@@ -152,7 +164,7 @@
     <Compile Include="Binding\SimpleNameTypeBinding.cs" />
     <Compile Include="ComHelper.cs" />
     <Compile Include="IParseResultProvider.cs" />
-    <Compile Include="IRubberduckParser.cs" />
+    <Compile Include="IParseCoordinator.cs" />
     <Compile Include="ParsingText.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -251,8 +263,13 @@
     <Compile Include="Symbols\PropertySetDeclaration.cs" />
     <Compile Include="Symbols\PropertyGetDeclaration.cs" />
     <Compile Include="Symbols\FunctionDeclaration.cs" />
+    <Compile Include="Symbols\DeclarationLoaders\RubberduckApiDeclarations.cs" />
+    <Compile Include="ComReflection\SerializableDeclaration.cs" />
+    <Compile Include="Symbols\SquareBracketedNameComparer.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
     <Compile Include="Symbols\ProjectReferencePass.cs" />
+    <Compile Include="Symbols\SyntaxErrorInfo.cs" />
+    <Compile Include="Symbols\SyntaxErrorNotificationListener.cs" />
     <Compile Include="Symbols\TypeHierarchyPass.cs" />
     <Compile Include="Symbols\TypeAnnotationPass.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
@@ -261,7 +278,7 @@
     <Compile Include="Symbols\ProceduralModuleDeclaration.cs" />
     <Compile Include="Symbols\ProjectDeclaration.cs" />
     <Compile Include="Symbols\ProjectReference.cs" />
-    <Compile Include="Symbols\ReferencedDeclarationsCollector.cs" />
+    <Compile Include="ComReflection\ReferencedDeclarationsCollector.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -273,6 +290,10 @@
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\ConstantDeclaration.cs" />
+    <Compile Include="ComReflection\XmlPersistableDeclarations.cs" />
+    <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
+    <Compile Include="Syntax\SyntaxTree.cs" />
+    <Compile Include="Syntax\TextSpan.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\CombinedParseTreeListener.cs" />
@@ -281,19 +302,16 @@
     <Compile Include="VBA\IAttributeParser.cs" />
     <Compile Include="VBA\IModuleExporter.cs" />
     <Compile Include="VBA\ModuleState.cs" />
-    <Compile Include="VBA\Nodes\INode.cs" />
-    <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\ParseErrorEventArgs.cs" />
     <Compile Include="VBA\ParserState.cs" />
     <Compile Include="VBA\ReferencePriorityMap.cs" />
-    <Compile Include="VBA\RubberduckParser.cs" />
+    <Compile Include="VBA\ParseCoordinator.cs" />
     <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\VBALikePatternParser.cs" />
     <Compile Include="VBA\VBADateLiteralParser.cs" />
     <Compile Include="VBA\VBAExpressionParser.cs" />
     <Compile Include="VBA\VBAModuleParser.cs" />
-    <Compile Include="VBA\WalkerCancelledException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Grammar\VBAParser.g4">
@@ -314,6 +332,10 @@
     <None Include="Preprocessing\VBALike.g4" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
+      <Project>{E85E1253-86D6-45EE-968B-F37348D44132}</Project>
+      <Name>Rubberduck.SettingsProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Refactorings.ExtractMethod
@@ -59,21 +57,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _view.OnRefreshPreview();
         }
 
-        private static readonly IEnumerable<string> ValueTypes = new[]
-        {
-            Tokens.Boolean,
-            Tokens.Byte,
-            Tokens.Currency,
-            Tokens.Date,
-            Tokens.Decimal,
-            Tokens.Double,
-            Tokens.Integer,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.Single,
-            Tokens.String
-        };
-
         private void GeneratePreview(IExtractMethodModel extractMethodModel,IExtractMethodProc extractMethodProc )
         {
             extractMethodModel.Method.MethodName = _view.MethodName;
@@ -85,7 +68,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
              */
             var extractedMethod = extractMethodProc.createProc(extractMethodModel);
             var code = extractedMethod.Split(new[]{Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
-            code = _indenter.Indent(code, "Preview", false).ToArray();
+            code = _indenter.Indent(code).ToArray();
             _view.Preview = string.Join(Environment.NewLine, code);
         }
     }

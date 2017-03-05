@@ -2,11 +2,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
-using Rubberduck.Parsing.Symbols;
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using Rubberduck.Parsing;
 
 namespace RubberduckTests.Preprocessing
 {
@@ -376,7 +374,7 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(string.Empty, result.Item1.Get("b").AsString);
             Assert.AreEqual("True", result.Item1.Get("c").AsString);
             Assert.AreEqual("False", result.Item1.Get("d").AsString);
-            Assert.AreEqual(345.23.ToString(), result.Item1.Get("e").AsString);
+            Assert.AreEqual(345.23.ToString(CultureInfo.InvariantCulture), result.Item1.Get("e").AsString);
             Assert.AreEqual(new DateTime(1899, 12, 30, 2, 1, 0).ToLongTimeString(), result.Item1.Get("f").AsString);
             Assert.AreEqual(new DateTime(2016, 1, 31).ToShortDateString(), result.Item1.Get("g").AsString);
         }
@@ -1269,7 +1267,8 @@ End Sub
             var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener());
+            parser.ErrorHandler = new BailErrorStrategy();
+            //parser.AddErrorListener(new ExceptionErrorListener());
             var tree = parser.compilationUnit();
             var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream);
             var expr = evaluator.Visit(tree);

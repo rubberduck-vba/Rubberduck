@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Inspections;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
@@ -15,14 +15,14 @@ namespace Rubberduck.Settings
 
         public CodeInspectionSettings Create()
         {
-            var prototype = new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] { });
-            return _persister.Load(prototype) ?? prototype;            
+            var prototype = new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] { }, true);
+            return _persister.Load(prototype) ?? prototype;
         }
 
         public CodeInspectionSettings CreateDefaults()
         {
             //This no longer sucks.
-            return new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] {});
+            return new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] {}, true);
         }
 
         public void Save(CodeInspectionSettings settings)
@@ -71,7 +71,7 @@ namespace Rubberduck.Settings
                 new CodeInspectionSetting("ObsoleteCommentSyntaxInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion,  CodeInspectionSeverity.Suggestion),
                 new CodeInspectionSetting("OptionExplicitInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error),
                 new CodeInspectionSetting("VariableTypeNotDeclaredInspection", string.Empty, CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning,  CodeInspectionSeverity.Warning),
-                new CodeInspectionSetting("MalformedAnnotationInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error)
+                new CodeInspectionSetting("MissingAnnotationArgumentInspection", string.Empty, CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error,  CodeInspectionSeverity.Error)
             };
         }
     }

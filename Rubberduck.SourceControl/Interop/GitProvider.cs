@@ -4,8 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
-using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.SourceControl.Interop
 {
@@ -16,21 +15,21 @@ namespace Rubberduck.SourceControl.Interop
     [Description("VBA Editor integrated access to Git.")]
     class GitProvider : SourceControl.GitProvider, ISourceControlProvider
     {
-        public GitProvider(VBProject project) 
+        public GitProvider(IVBProject project) 
             : base(project)
         { }
 
-        public GitProvider(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory)
-            : base(project, repository, wrapperFactory)
+        public GitProvider(IVBProject project, IRepository repository)
+            : base(project, repository)
         { }
 
-        [Obsolete]
-        public GitProvider(VBProject project, IRepository repository, string userName, string passWord, ICodePaneWrapperFactory wrapperFactory)
-            : base(project, repository, userName, passWord, wrapperFactory)
+        [Obsolete("Use the ICredentials overload instead.")]
+        public GitProvider(IVBProject project, IRepository repository, string userName, string passWord)
+            : base(project, repository, userName, passWord)
         { }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials credentials, ICodePaneWrapperFactory wrapperFactory)
-            :base(project, repository, credentials.Username, credentials.Password, wrapperFactory)
+        public GitProvider(IVBProject project, IRepository repository, ICredentials credentials)
+            :base(project, repository, credentials.Username, credentials.Password)
         { }
 
         public new string CurrentBranch

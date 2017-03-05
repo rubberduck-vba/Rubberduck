@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using NLog;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI
 {
@@ -12,66 +14,76 @@ namespace Rubberduck.UI
         void Hide();
     }
 
-    public abstract class DockableToolwindowPresenter : IPresenter, IDisposable
+    public interface IDockablePresenter : IPresenter
     {
-        private readonly AddIn _addin;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly Window _window;
-        protected readonly UserControl UserControl;
+        UserControl UserControl { get; }
+    }
 
-        protected DockableToolwindowPresenter(VBE vbe, AddIn addin, IDockableUserControl view)
+    public abstract class DockableToolwindowPresenter : IDockablePresenter, IDisposable
+    {
+        private readonly IAddIn _addin;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly IWindow _window;
+        private readonly UserControl _userControl;
+        private readonly WindowSettings _settings;  //Storing this really doesn't matter - it's only checked on startup and never persisted.
+
+        protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view, IConfigProvider<WindowSettings> settingsProvider)
         {
             _vbe = vbe;
             _addin = addin;
             Logger.Trace(string.Format("Initializing Dockable Panel ({0})", GetType().Name));
-            UserControl = view as UserControl;
+            _userControl = view as UserControl;
+            if (settingsProvider != null)
+            {
+                _settings = settingsProvider.Create();
+            }
             _window = CreateToolWindow(view);
         }
 
-        private readonly VBE _vbe;
-        protected VBE VBE { get { return _vbe; } }
+        public UserControl UserControl { get { return _userControl; } }
 
-        private Window CreateToolWindow(IDockableUserControl control)
+        private readonly IVBE _vbe;
+        protected IVBE VBE { get { return _vbe; } }
+
+        private object _userControlObject;
+
+        private IWindow CreateToolWindow(IDockableUserControl control)
         {
-            object userControlObject = null;
-            Window toolWindow;
+            IWindow toolWindow;
             try
             {
-                toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId,
-                    control.Caption, control.ClassId, ref userControlObject);
+                var info = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId);
+                _userControlObject = info.UserControl;
+                toolWindow = info.ToolWindow;
             }
             catch (COMException exception)
             {
-                var logEvent = new LogEventInfo(LogLevel.Error, Logger.Name, "Error Creating Control");
-                logEvent.Exception = exception;
-                logEvent.Properties.Add("EventID", 1);
-
-                Logger.Error(logEvent);
-                return null; //throw;
+                Logger.Error(exception);
+                throw;
             }
             catch (NullReferenceException exception)
             {
                 Logger.Error(exception);
-                return null; //throw;
+                throw;
             }
 
-            var userControlHost = (_DockableWindowHost)userControlObject;
-            toolWindow.Visible = true; //window resizing doesn't work without this
+            var userControlHost = (_DockableWindowHost)_userControlObject;
+            toolWindow.IsVisible = true; //window resizing doesn't work without this
 
             EnsureMinimumWindowSize(toolWindow);
 
-            toolWindow.Visible = false; //hide it again
+            toolWindow.IsVisible = _settings != null && _settings.IsWindowVisible(this);
 
             userControlHost.AddUserControl(control as UserControl, new IntPtr(_vbe.MainWindow.HWnd));
             return toolWindow;
         }
 
-        private void EnsureMinimumWindowSize(Window window)
+        private void EnsureMinimumWindowSize(IWindow window)
         {
             const int defaultWidth = 350;
             const int defaultHeight = 200;
 
-            if (!window.Visible || window.LinkedWindows != null)
+            if (!window.IsVisible || window.LinkedWindows != null)
             {
                 return;
             }
@@ -89,37 +101,44 @@ namespace Rubberduck.UI
 
         public virtual void Show()
         {
-            _window.Visible = true;
+            _window.IsVisible = true;
         }
 
         public void Hide()
         {
-            _window.Visible = false;
+            _window.IsVisible = false;
         }
 
         private bool _disposed;
         public void Dispose()
         {
-            Dispose(_disposed);
-            _disposed = true;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~DockableToolwindowPresenter()
+        {
+            Dispose(false);
         }
 
         public bool IsDisposed { get { return _disposed; } }
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposing) { return; }
-            
-            if (UserControl != null)
+            if (_disposed)
             {
-                UserControl.Dispose();
-                GC.SuppressFinalize(UserControl);
+                return;
             }
-
-            if (_window != null)
+            if (disposing && _window != null)
             {
+                // cleanup unmanaged resource wrappers
                 _window.Close();
-                Marshal.FinalReleaseComObject(_window);
+                _window.Release(true);
             }
+            if (!disposing)
+            {
+                return;
+            }
+            _disposed = true;
         }
     }
 }

@@ -2,24 +2,12 @@ using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
-using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.UI.CodeExplorer.Commands;
 
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
-    public class ReparseCommandMenuItem : CommandMenuItemBase
-    {
-        public ReparseCommandMenuItem(CommandBase command) : base(command)
-        {
-        }
-
-        public override string Key
-        {
-            get { return "HotkeyDescription_ParseAll"; }
-        }
-    }
-
-    [ComVisible(false)]
+    [CodeExplorerCommand]
     public class ReparseCommand : CommandBase
     {
         private readonly RubberduckParserState _state;

@@ -1,22 +1,22 @@
 using System;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
     public class RenameCommand : CommandBase, IDisposable
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IRenameDialog _view;
         private readonly IMessageBox _msgBox;
 
-        public RenameCommand(VBE vbe, RubberduckParserState state, IRenameDialog view, IMessageBox msgBox) : base(LogManager.GetCurrentClassLogger())
+        public RenameCommand(IVBE vbe, RubberduckParserState state, IRenameDialog view, IMessageBox msgBox) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;

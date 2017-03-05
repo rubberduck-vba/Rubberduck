@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.SourceControl;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
     public class UndoCommand : CommandBase
     {
-        private readonly SourceControlDockablePresenter _presenter;
+        private readonly IDockablePresenter _presenter;
         private readonly IMessageBox _messageBox;
 
-        public UndoCommand(SourceControlDockablePresenter presenter, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
+        public UndoCommand(IDockablePresenter presenter, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
             _messageBox = messageBox;
@@ -29,13 +30,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            var panel = _presenter.Window() as SourceControlPanel;
-            if (panel == null)
-            {
-                return false;
-            }
+            var panel = _presenter.UserControl as SourceControlPanel;
+            Debug.Assert(panel != null);
 
-            var panelViewModel = panel.ViewModel as SourceControlViewViewModel;
+            var panelViewModel = panel.ViewModel;
             if (panelViewModel == null)
             {
                 return false;
@@ -50,13 +48,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void ExecuteImpl(object parameter)
         {
-            var panel = _presenter.Window() as SourceControlPanel;
-            if (panel == null)
-            {
-                return;
-            }
+            var panel = _presenter.UserControl as SourceControlPanel;
+            Debug.Assert(panel != null);
 
-            var panelViewModel = panel.ViewModel as SourceControlViewViewModel;
+            var panelViewModel = panel.ViewModel;
             if (panelViewModel == null)
             {
                 return;
@@ -69,7 +64,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            var fileName = GetFileName((CodeExplorerComponentViewModel) parameter);
+            var fileName = GetFileName((ICodeExplorerDeclarationViewModel)parameter);
             var result = _messageBox.Show(string.Format(RubberduckUI.SourceControl_UndoPrompt, fileName),
                 RubberduckUI.SourceControl_UndoTitle, System.Windows.Forms.MessageBoxButtons.OKCancel,
                 System.Windows.Forms.MessageBoxIcon.Warning, System.Windows.Forms.MessageBoxDefaultButton.Button2);
@@ -83,16 +78,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _presenter.Show();
         }
 
-        private string GetFileName(CodeExplorerComponentViewModel node)
+        private string GetFileName(ICodeExplorerDeclarationViewModel node)
         {
             var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
 
-            var fileExtensions = new Dictionary<vbext_ComponentType, string>
+            var fileExtensions = new Dictionary<ComponentType, string>
             {
-                { vbext_ComponentType.vbext_ct_StdModule, ".bas" },
-                { vbext_ComponentType.vbext_ct_ClassModule, ".cls" },
-                { vbext_ComponentType.vbext_ct_Document, ".cls" },
-                { vbext_ComponentType.vbext_ct_MSForm, ".frm" }
+                { ComponentType.StandardModule, ".bas" },
+                { ComponentType.ClassModule, ".cls" },
+                { ComponentType.Document, ".cls" },
+                { ComponentType.UserForm, ".frm" }
             };
 
             string ext;

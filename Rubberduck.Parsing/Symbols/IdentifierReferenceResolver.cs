@@ -3,11 +3,12 @@ using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -151,20 +152,39 @@ namespace Rubberduck.Parsing.Symbols
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false)
         {
+            var withExpression = GetInnerMostWithExpression();
             var boundExpression = _bindingService.ResolveDefault(
                 _moduleDeclaration,
                 _currentParent,
                 expression,
-                GetInnerMostWithExpression(),
+                withExpression,
                 statementContext);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                Logger.Warn(
-                   string.Format(
-                       "Default Context: Failed to resolve {0}. Binding as much as we can.",
-                       expression.GetText()));
+                var lexpr = expression as VBAParser.LExprContext ?? expression.GetChild<VBAParser.LExprContext>(0);
+                if (lexpr != null)
+                {
+                    _declarationFinder.AddUnboundContext(_currentParent, lexpr, withExpression);
+                }
+                else
+                {
+                    Logger.Warn(
+                        string.Format(
+                            "Default Context: Failed to resolve {0}. Binding as much as we can.",
+                            expression.GetText()));
+                }
             }
-            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget, hasExplicitLetStatement);
+
+            var hasDefaultMember = false;
+            if (boundExpression.ReferencedDeclaration != null 
+                && boundExpression.ReferencedDeclaration.DeclarationType != DeclarationType.Project
+                && boundExpression.ReferencedDeclaration.AsTypeDeclaration != null)
+            {
+                var module = boundExpression.ReferencedDeclaration.AsTypeDeclaration;
+                var members = _declarationFinder.Members(module);
+                hasDefaultMember = members.Any(m => m.Attributes.Any(kvp => kvp.Key == m.IdentifierName + ".VB_UserMemId" && kvp.Value.FirstOrDefault() == "0"));
+            }
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, !hasDefaultMember && isAssignmentTarget, hasExplicitLetStatement);
         }
 
         private void ResolveType(ParserRuleContext expression)
@@ -364,6 +384,14 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public void Resolve(VBAParser.EraseStmtContext context)
+        {
+            foreach (var expr in context.expression())
+            {
+                ResolveDefault(expr);
+            }
+        }
+
+        public void Resolve(VBAParser.NameStmtContext context)
         {
             foreach (var expr in context.expression())
             {
@@ -576,11 +604,11 @@ namespace Rubberduck.Parsing.Symbols
                 lExpr,
                 GetInnerMostWithExpression(),
                 StatementResolutionContext.Undefined);
-            _boundExpressionVisitor.AddIdentifierReferences(
-                firstExpression,
-                _qualifiedModuleName,
-                _currentScope,
-                _currentParent);
+            //_boundExpressionVisitor.AddIdentifierReferences(
+            //    firstExpression,
+            //    _qualifiedModuleName,
+            //    _currentScope,
+            //    _currentParent);
             if (firstExpression.Classification != ExpressionClassification.ResolutionFailed)
             {
                 // each iteration counts as an assignment
@@ -635,11 +663,11 @@ namespace Rubberduck.Parsing.Symbols
                     _currentScope,
                     _currentParent,
                     true);
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    firstExpression,
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent);
+                //_boundExpressionVisitor.AddIdentifierReferences(
+                //    firstExpression,
+                //    _qualifiedModuleName,
+                //    _currentScope,
+                //    _currentParent);
             }
             for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
             {

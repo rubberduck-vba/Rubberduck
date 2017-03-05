@@ -5,11 +5,12 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System;
 
 namespace Rubberduck.Parsing.Symbols
 {
     [DebuggerDisplay("({IdentifierName}) IsAss:{IsAssignment} | {Selection} ")]
-    public class IdentifierReference
+    public class IdentifierReference : IEquatable<IdentifierReference>
     {
         public IdentifierReference(
             QualifiedModuleName qualifiedName, 
@@ -70,11 +71,16 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IEnumerable<IAnnotation> _annotations;
         public IEnumerable<IAnnotation> Annotations { get { return _annotations; } }
 
-        public bool IsInspectionDisabled(string inspectionName)
+        public bool IsIgnoringInspectionResultFor(string inspectionName)
         {
-            return Annotations.Any(annotation =>
-                annotation.AnnotationType == AnnotationType.Ignore
-                && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
+            var isIgnoredAtModuleLevel =
+                Declaration.GetModuleParent(_parentScopingDeclaration).Annotations
+                .Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreModule
+                    && ((IgnoreModuleAnnotation)annotation).IsIgnored(inspectionName));
+
+            return isIgnoredAtModuleLevel || Annotations.Any(annotation => 
+                       annotation.AnnotationType == AnnotationType.Ignore
+                       && ((IgnoreAnnotation) annotation).IsIgnored(inspectionName));
         }
 
         private readonly bool _hasExplicitLetStatement;
@@ -123,6 +129,24 @@ namespace Rubberduck.Parsing.Symbols
         {
             return QualifiedModuleName == selection.QualifiedName &&
                    Selection.ContainsFirstCharacter(selection.Selection);
+        }
+
+        public bool Equals(IdentifierReference other)
+        {
+            return other != null
+                && other.QualifiedModuleName.Equals(QualifiedModuleName)
+                && other.Selection.Equals(Selection)
+                && other.Declaration.Equals(Declaration);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as IdentifierReference);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Compute(QualifiedModuleName, Selection, Declaration);
         }
     }
 }

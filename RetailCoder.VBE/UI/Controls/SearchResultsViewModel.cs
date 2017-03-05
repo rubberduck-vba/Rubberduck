@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
-using System.Windows.Input;
 using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;

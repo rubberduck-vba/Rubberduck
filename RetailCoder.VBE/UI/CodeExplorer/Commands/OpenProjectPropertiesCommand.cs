@@ -1,17 +1,17 @@
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
     public class OpenProjectPropertiesCommand : CommandBase
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
 
-        public OpenProjectPropertiesCommand(VBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public OpenProjectPropertiesCommand(IVBE vbe) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
         }
@@ -20,7 +20,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             try
             {
-                return parameter != null || _vbe.VBProjects.Count == 1;
+                var projects = _vbe.VBProjects;
+                {
+                    return parameter != null || projects.Count == 1;
+                }
             }
             catch (COMException)
             {
@@ -32,28 +35,35 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             const int openProjectPropertiesId = 2578;
 
-            if (_vbe.VBProjects.Count == 1)
+            var projects = _vbe.VBProjects;
             {
-                _vbe.CommandBars.FindControl(Id: openProjectPropertiesId).Execute();
-                return;
-            }
+                var commandBars = _vbe.CommandBars;
+                var command = commandBars.FindControl(openProjectPropertiesId);
 
-            var node = parameter as CodeExplorerItemViewModel;
-            while (!(node is ICodeExplorerDeclarationViewModel))
-            {
-                node = node.Parent; // the project node is an ICodeExplorerDeclarationViewModel--no worries here
-            }
+                if (projects.Count == 1)
+                {
+                    command.Execute();
+                    return;
+                }
 
-            try
-            {
-                _vbe.ActiveVBProject = node.GetSelectedDeclaration().Project;
-            }
-            catch (COMException)
-            {
-                return; // the project was probably removed from the VBE, but not from the CE
-            }
+                var node = parameter as CodeExplorerItemViewModel;
+                while (!(node is ICodeExplorerDeclarationViewModel))
+                {
+                    // ReSharper disable once PossibleNullReferenceException
+                    node = node.Parent; // the project node is an ICodeExplorerDeclarationViewModel--no worries here
+                }
 
-            _vbe.CommandBars.FindControl(Id: openProjectPropertiesId).Execute();
+                try
+                {
+                    _vbe.ActiveVBProject = node.GetSelectedDeclaration().Project;
+                }
+                catch (COMException)
+                {
+                    return; // the project was probably removed from the VBE, but not from the CE
+                }
+
+                command.Execute();
+            }
         }
     }
 }

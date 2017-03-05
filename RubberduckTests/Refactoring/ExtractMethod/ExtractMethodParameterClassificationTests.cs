@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
@@ -49,17 +45,16 @@ End Sub
                 var qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
                 var emRule = new Mock<IExtractMethodRule>();
-                var theByte = new Byte();
                 emRule.Setup(emr => emr.setValidFlag(It.IsAny<IdentifierReference>(), It.IsAny<Selection>())).Returns(2);
                 var emRules = new List<IExtractMethodRule>() { emRule.Object, emRule.Object };
-                var SUT = new ExtractMethodParameterClassification(emRules);
+                var sut = new ExtractMethodParameterClassification(emRules);
 
                 //Act
-                SUT.classifyDeclarations(qSelection, declaration);
+                sut.classifyDeclarations(qSelection, declaration);
 
                 //Assert
-                // 2 rules on 1 referencdes = 2 validation checks
-                var expectedToVerify = 2;
+                // 2 rules on 2 references = 4 validation checks
+                var expectedToVerify = 4;
                 emRule.Verify(emr => emr.setValidFlag(It.IsAny<IdentifierReference>(), selection),
                     Times.Exactly(expectedToVerify));
 

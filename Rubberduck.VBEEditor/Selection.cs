@@ -2,7 +2,7 @@
 
 namespace Rubberduck.VBEditor
 {
-    public struct Selection : IEquatable<Selection>
+    public struct Selection : IEquatable<Selection>, IComparable<Selection>
     {
         public Selection(int startLine, int startColumn, int endLine, int endColumn)
         {
@@ -15,7 +15,20 @@ namespace Rubberduck.VBEditor
         /// <summary>
         /// The first character of the first line.
         /// </summary>
-        public static Selection Home { get { return new Selection(1, 1, 1, 1); } }
+        public static Selection Home
+        {
+            get { return new Selection(1, 1, 1, 1); }
+        }
+
+        public static Selection Empty
+        {
+            get { return new Selection(); }
+        }
+
+        public bool IsEmpty()
+        {
+            return Equals(Empty);
+        }
 
         public bool ContainsFirstCharacter(Selection selection)
         {
@@ -75,11 +88,25 @@ namespace Rubberduck.VBEditor
                    && other.EndColumn == EndColumn;
         }
 
+        public int CompareTo(Selection other)
+        {
+            if (this > other)
+            {
+                return 1;
+            }
+            if (this < other)
+            {
+                return -1;
+            }
+
+            return 0;
+        }
+
         public override string ToString()
         {
             return (_startLine == _endLine && _startColumn == _endColumn)
-                ? string.Format(Rubberduck.VBEditor.VBEEditorText.SelectionLocationPosition, _startLine, _startColumn)
-                : string.Format(Rubberduck.VBEditor.VBEEditorText.SelectionLocationRange, _startLine, _startColumn, _endLine, _endColumn);
+                ? string.Format(VBEEditorText.SelectionLocationPosition, _startLine, _startColumn)
+                : string.Format(VBEEditorText.SelectionLocationRange, _startLine, _startColumn, _endLine, _endColumn);
         }
 
         public static bool operator ==(Selection selection1, Selection selection2)
@@ -118,20 +145,12 @@ namespace Rubberduck.VBEditor
 
         public override bool Equals(object obj)
         {
-            return Equals((Selection) obj);
+            return obj != null && Equals((Selection)obj);
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hash = 17;
-                hash = hash*23 + StartLine;
-                hash = hash*23 + EndLine;
-                hash = hash*23 + StartColumn;
-                hash = hash*23 + EndColumn;
-                return hash;
-            }
+            return HashCode.Compute(StartLine, EndLine, StartColumn, EndColumn);
         }
     }
 }

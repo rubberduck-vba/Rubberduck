@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -10,19 +10,19 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
     public class MoveCloserToUsageRefactoring : IRefactoring
     {
         private readonly List<Declaration> _declarations;
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
         private Declaration _target;
 
-        public MoveCloserToUsageRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public MoveCloserToUsageRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
             _declarations = state.AllUserDeclarations.ToList();
             _vbe = vbe;
@@ -32,7 +32,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         public void Refactor()
         {
-            var qualifiedSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+            var qualifiedSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
             if (qualifiedSelection != null)
             {
                 Refactor(_declarations.FindVariable(qualifiedSelection.Value));
@@ -102,22 +102,25 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             QualifiedSelection? oldSelection = null;
-            if (_vbe.ActiveCodePane != null)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+                if (!module.IsWrappingNullReference)
+                {
+                    oldSelection = module.GetQualifiedSelection();
+                }
+
+                // it doesn't make sense to do it backwards, but we need to work from the bottom up so our selections are accurate
+                InsertDeclaration();
+
+                if (oldSelection.HasValue)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
+
+                _state.StateChanged += _state_StateChanged;
+                _state.OnParseRequested(this);
             }
-
-            // it doesn't make sense to do it backwards, but we need to work from the bottom up so our selections are accurate
-            InsertDeclaration();
-
-            if (oldSelection.HasValue)
-            {
-                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
-                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
-            }
-
-            _state.StateChanged += _state_StateChanged;
-            _state.OnParseRequested(this);
         }
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
@@ -125,87 +128,100 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             if (e.State != ParserState.Ready) { return; }
 
             QualifiedSelection? oldSelection = null;
-            if (_vbe.ActiveCodePane != null)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
-            }
+                if (!module.IsWrappingNullReference)
+                {
+                    oldSelection = module.GetQualifiedSelection();
+                }
 
-            var newTarget = _state.AllUserDeclarations.FirstOrDefault(
+                var newTarget = _state.AllUserDeclarations.FirstOrDefault(
                     item => item.ComponentName == _target.ComponentName &&
-                                 item.IdentifierName == _target.IdentifierName &&
-                                 item.ParentScope == _target.ParentScope &&
-                                 item.ProjectId == _target.ProjectId &&
-                                 Equals(item.Selection, _target.Selection));
+                            item.IdentifierName == _target.IdentifierName &&
+                            item.ParentScope == _target.ParentScope &&
+                            item.ProjectId == _target.ProjectId &&
+                            Equals(item.Selection, _target.Selection));
 
-            if (newTarget != null)
-            {
-                UpdateCallsToOtherModule(newTarget.References.ToList());
-                RemoveField(newTarget);
+                if (newTarget != null)
+                {
+                    UpdateCallsToOtherModule(newTarget.References.ToList());
+                    RemoveField(newTarget);
+                }
+
+                if (oldSelection.HasValue)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
+
+                _state.StateChanged -= _state_StateChanged;
+                _state.OnParseRequested(this);
             }
-
-            if (oldSelection.HasValue)
-            {
-                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
-                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
-            }
-
-            _state.StateChanged -= _state_StateChanged;
-            _state.OnParseRequested(this);
         }
 
         private void InsertDeclaration()
         {
             var module = _target.References.First().QualifiedModuleName.Component.CodeModule;
-
-            var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
-            var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(firstReference);
-
-            var oldLines = module.Lines[beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount];
-            var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString());
-
-            var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
-
-            var lastIndexOfColon = newLinesWithoutStringLiterals.LastIndexOf(':');
-            while (lastIndexOfColon != -1)
             {
-                var numberOfCharsToRemove = lastIndexOfColon == newLines.Length - 1 || newLines[lastIndexOfColon + 1] != ' '
-                    ? 1
-                    : 2;
+                var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
+                var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(firstReference);
 
-                newLinesWithoutStringLiterals = newLinesWithoutStringLiterals
-                        .Remove(lastIndexOfColon, numberOfCharsToRemove)
-                        .Insert(lastIndexOfColon, Environment.NewLine);
+                var oldLines = module.GetLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
+                var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString());
 
-                newLines = newLines
-                        .Remove(lastIndexOfColon, numberOfCharsToRemove)
-                        .Insert(lastIndexOfColon, Environment.NewLine);
+                var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
 
-                lastIndexOfColon = newLinesWithoutStringLiterals.LastIndexOf(':');
+                var lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
+                // ReSharper disable once StringLastIndexOfIsCultureSpecific.1
+                while (lastIndexOfColon != -1)
+                {
+                    var numberOfCharsToRemove = lastIndexOfColon == newLines.Length - 1 || newLines[lastIndexOfColon + 1] != ' '
+                        ? 1
+                        : 2;
+
+                    newLinesWithoutStringLiterals = newLinesWithoutStringLiterals
+                            .Remove(lastIndexOfColon, numberOfCharsToRemove)
+                            .Insert(lastIndexOfColon, Environment.NewLine);
+
+                    newLines = newLines
+                            .Remove(lastIndexOfColon, numberOfCharsToRemove)
+                            .Insert(lastIndexOfColon, Environment.NewLine);
+
+                    lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
+                }
+
+                module.DeleteLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
+                module.InsertLines(beginningOfInstructionSelection.StartLine, newLines);
             }
+        }
 
-            module.DeleteLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
-            module.InsertLines(beginningOfInstructionSelection.StartLine, newLines);
+        private static readonly Regex StatementSeparatorRegex = new Regex(":[^=]", RegexOptions.RightToLeft);
+        private static int GetIndexOfLastStatementSeparator(string input)
+        {
+            var matches = StatementSeparatorRegex.Matches(input);
+            return matches.Count == 0 ? -1 : matches[0].Index;
         }
 
         private Selection GetBeginningOfInstructionSelection(IdentifierReference reference)
         {
             var referenceSelection = reference.Selection;
             var module = reference.QualifiedModuleName.Component.CodeModule;
-
-            var currentLine = referenceSelection.StartLine;
-
-            var codeLine = module.Lines[currentLine, 1].StripStringLiterals();
-            while (codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') == -1)
             {
-                codeLine = module.Lines[--currentLine, 1].StripStringLiterals();
-                if (!codeLine.EndsWith(" _"))
-                {
-                    return new Selection(currentLine + 1, 1, currentLine + 1, 1);
-                }
-            }
+                var currentLine = referenceSelection.StartLine;
 
-            var index = codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') + 1;
-            return new Selection(currentLine, index, currentLine, index);
+                var codeLine = module.GetLines(currentLine, 1).StripStringLiterals();
+                while (GetIndexOfLastStatementSeparator(codeLine.Remove(referenceSelection.StartColumn)) == -1)
+                {
+                    codeLine = module.GetLines(--currentLine, 1).StripStringLiterals();
+                    if (!codeLine.EndsWith(" _"))
+                    {
+                        return new Selection(currentLine + 1, 1, currentLine + 1, 1);
+                    }
+                }
+
+                var index = GetIndexOfLastStatementSeparator(codeLine.Remove(referenceSelection.StartColumn)) + 1;
+                return new Selection(currentLine, index, currentLine, index);
+            }
         }
 
         private string GetDeclarationString()
@@ -233,30 +249,30 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-
-            var oldLines = module.Lines[selection.StartLine, selection.LineCount];
-
-            var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
-                .Remove(selection.StartColumn, declarationText.Length);
-
-            if (multipleDeclarations)
             {
-                selection = target.GetVariableStmtContextSelection();
-                newLines = RemoveExtraComma(module.Lines[selection.StartLine, selection.LineCount].Replace(oldLines, newLines),
-                    target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
-            }
+                var oldLines = module.GetLines(selection.StartLine, selection.LineCount);
+                var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
+                                       .Remove(selection.StartColumn, declarationText.Length);
 
-            var adjustedLines =
-                newLines.Split(new[] {Environment.NewLine}, StringSplitOptions.None)
-                    .Select(s => s.EndsWith(" _") ? s.Remove(s.Length - 2) : s)
-                    .Where(s => s.Trim() != string.Empty)
-                    .ToList();
+                if (multipleDeclarations)
+                {
+                    selection = target.GetVariableStmtContextSelection();
+                    newLines = RemoveExtraComma(module.GetLines(selection.StartLine, selection.LineCount).Replace(oldLines, newLines),
+                        target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
+                }
 
-            module.DeleteLines(selection.StartLine, selection.LineCount);
+                var adjustedLines =
+                    newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                        .Select(s => s.EndsWith(" _") ? s.Remove(s.Length - 2) : s)
+                        .Where(s => s.Trim() != string.Empty)
+                        .ToList();
 
-            if (adjustedLines.Any())
-            {
-                module.InsertLines(selection.StartLine, string.Join(string.Empty, adjustedLines));
+                module.DeleteLines(selection.StartLine, selection.LineCount);
+
+                if (adjustedLines.Any())
+                {
+                    module.InsertLines(selection.StartLine, string.Join(string.Empty, adjustedLines));
+                }
             }
         }
 
@@ -299,48 +315,44 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         private void UpdateCallsToOtherModule(List<IdentifierReference> references)
         {
-            if (!references.Any())
-            {
-                return;
-            }
-
-            var module = references[0].QualifiedModuleName.Component.CodeModule;
-
             foreach (var reference in references.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
             {
-                var parent = reference.Context.Parent;
-                while (!(parent is VBAParser.MemberAccessExprContext) && parent.Parent != null)
+                var module = reference.QualifiedModuleName.Component.CodeModule;
                 {
-                    parent = parent.Parent;
+                    var parent = reference.Context.Parent;
+                    while (!(parent is VBAParser.MemberAccessExprContext) && parent.Parent != null)
+                    {
+                        parent = parent.Parent;
+                    }
+
+                    if (!(parent is VBAParser.MemberAccessExprContext))
+                    {
+                        continue;
+                    }
+
+                    var parentSelection = ((VBAParser.MemberAccessExprContext)parent).GetSelection();
+
+                    var oldText = module.GetLines(parentSelection.StartLine, parentSelection.LineCount);
+                    string newText;
+
+                    if (parentSelection.LineCount == 1)
+                    {
+                        newText = oldText.Remove(parentSelection.StartColumn - 1,
+                            parentSelection.EndColumn - parentSelection.StartColumn);
+                    }
+                    else
+                    {
+                        var lines = oldText.Split(new[] { " _" + Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+                        newText = lines.First().Remove(parentSelection.StartColumn - 1);
+                        newText += lines.Last().Remove(0, parentSelection.EndColumn - 1);
+                    }
+
+                    newText = newText.Insert(parentSelection.StartColumn - 1, reference.IdentifierName);
+
+                    module.DeleteLines(parentSelection.StartLine, parentSelection.LineCount);
+                    module.InsertLines(parentSelection.StartLine, newText);
                 }
-
-                if (!(parent is VBAParser.MemberAccessExprContext))
-                {
-                    continue;
-                }
-
-                var parentSelection = ((VBAParser.MemberAccessExprContext)parent).GetSelection();
-
-                var oldText = module.Lines[parentSelection.StartLine, parentSelection.LineCount];
-                string newText;
-
-                if (parentSelection.LineCount == 1)
-                {
-                    newText = oldText.Remove(parentSelection.StartColumn - 1,
-                        parentSelection.EndColumn - parentSelection.StartColumn);
-                }
-                else
-                {
-                    var lines = oldText.Split(new[] { " _" + Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-
-                    newText = lines.First().Remove(parentSelection.StartColumn - 1);
-                    newText += lines.Last().Remove(0, parentSelection.EndColumn - 1);
-                }
-
-                newText = newText.Insert(parentSelection.StartColumn - 1, reference.IdentifierName);
-
-                module.DeleteLines(parentSelection.StartLine, parentSelection.LineCount);
-                module.InsertLines(parentSelection.StartLine, newText);
             }
         }
     }

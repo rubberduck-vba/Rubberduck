@@ -27,7 +27,6 @@ OutputDir={#OutputDirectory}
 OutputBaseFilename=Rubberduck.Setup.{#AppVersion}
 Compression=lzma
 SolidCompression=yes
-SignTool=RubberduckSignTool /d $qRubberduck Installer$q $f
 
 ArchitecturesAllowed=x86 x64
 ArchitecturesInstallIn64BitMode=x64
@@ -52,6 +51,9 @@ Filename: "{dotnet4064}\RegAsm.exe"; Parameters: "/codebase {#AddinDLL}"; Workin
 [UninstallRun]
 Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/u {#AddinDLL}"; WorkingDir: "{app}"; StatusMsg: "Unregistering Controls..."; Flags: runascurrentuser runminimized; Check: Is32BitOfficeInstalled
 Filename: "{dotnet4064}\RegAsm.exe"; Parameters: "/u {#AddinDLL}"; WorkingDir: "{app}"; StatusMsg: "Unregistering Controls..."; Flags: runascurrentuser runminimized; Check: Is64BitOfficeInstalled
+
+[UninstallDelete]
+Type: filesandordirs; Name: "{localappdata}\{#AppName}"
 
 [CustomMessages]
 ; TODO add additional languages here.

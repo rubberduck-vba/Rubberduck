@@ -11,18 +11,18 @@
 // Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\VBALike.g4 by ANTLR 4.3
 
 // Unreachable code detected
+
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace Rubberduck.Parsing.Like {
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using IToken = Antlr4.Runtime.IToken;
-
-/// <summary>
+namespace Rubberduck.Parsing.Preprocessing {
+    /// <summary>
 /// This interface defines a complete generic visitor for a parse tree produced
 /// by <see cref="VBALikeParser"/>.
 /// </summary>

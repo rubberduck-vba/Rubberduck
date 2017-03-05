@@ -428,6 +428,16 @@ redimStmt : REDIM whiteSpace (PRESERVE whiteSpace)? redimDeclarationList;
 redimDeclarationList : redimVariableDeclaration (whiteSpace? COMMA whiteSpace? redimVariableDeclaration)*;
 redimVariableDeclaration : expression (whiteSpace asTypeClause)?;
 
+// 5.4.3.5 Mid/MidB/Mid$/MidB$ Statement
+// This needs to be explicitly defined to distinguish between Mid as a function and Mid as a keyword.
+midStatement : modeSpecifier 
+	LPAREN whiteSpace? 
+	lExpression whiteSpace? COMMA whiteSpace? lExpression whiteSpace? (COMMA whiteSpace? lExpression whiteSpace?)? 
+	RPAREN 
+	whiteSpace? ASSIGN whiteSpace? 
+	expression;
+modeSpecifier :	(MID | MIDB) DOLLAR? ;
+
 integerExpression : expression;
 
 callStmt :
@@ -459,9 +469,9 @@ caseClause :
 ;
 caseElseClause : CASE whiteSpace? ELSE endOfStatement block;
 rangeClause :
-    expression
-    | selectStartValue whiteSpace TO whiteSpace selectEndValue   
-    | (IS whiteSpace?)? comparisonOperator whiteSpace? expression
+    (IS whiteSpace?)? comparisonOperator whiteSpace? expression
+	| selectStartValue whiteSpace TO whiteSpace selectEndValue 
+    | expression
 ;
 selectStartValue : expression;
 selectEndValue : expression;
@@ -522,10 +532,10 @@ subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 subscript : (expression whiteSpace TO whiteSpace)? expression;
 
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
-identifier : untypedIdentifier | typedIdentifier;
+identifier : typedIdentifier | untypedIdentifier;
 untypedIdentifier : identifierValue;
-typedIdentifier : identifierValue typeHint;
-identifierValue : IDENTIFIER | keyword | foreignName;
+typedIdentifier : untypedIdentifier typeHint;
+identifierValue : IDENTIFIER | keyword | foreignName | BF;
 foreignName : L_SQUARE_BRACKET foreignIdentifier* R_SQUARE_BRACKET;
 foreignIdentifier : ~(L_SQUARE_BRACKET | R_SQUARE_BRACKET) | foreignName;
 
@@ -562,28 +572,28 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
 // 5.6 Expressions
 expression :
-    // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
-    literalExpression                                                                               # literalExpr
-    | lExpression                                                                                   # lExpr
-    | builtInType                                                                                   # builtInTypeExpr
-    | LPAREN whiteSpace? expression whiteSpace? RPAREN                                              # parenthesizedExpr
-    | TYPEOF whiteSpace expression                                                                  # typeofexpr        // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
-    | NEW whiteSpace expression                                                                     # newExpr
-    | expression whiteSpace? POW whiteSpace? expression                                             # powOp
-    | MINUS whiteSpace? expression                                                                  # unaryMinusOp
-    | expression whiteSpace? (MULT | DIV) whiteSpace? expression                                    # multOp
-    | expression whiteSpace? INTDIV whiteSpace? expression                                          # intDivOp
-    | expression whiteSpace? MOD whiteSpace? expression                                             # modOp
-    | expression whiteSpace? (PLUS | MINUS) whiteSpace? expression                                  # addOp
-    | expression whiteSpace? AMPERSAND whiteSpace? expression                                       # concatOp
-    | expression whiteSpace? (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) whiteSpace? expression    # relationalOp
-    | NOT whiteSpace? expression                                                                    # logicalNotOp
-    | expression whiteSpace? AND whiteSpace? expression                                             # logicalAndOp
-    | expression whiteSpace? OR whiteSpace? expression                                              # logicalOrOp
-    | expression whiteSpace? XOR whiteSpace? expression                                             # logicalXorOp
-    | expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
-    | expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
-    | HASH expression                                                                               # markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
+    // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.	
+	whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN                                    # parenthesizedExpr
+	|literalExpression                                                                              # literalExpr
+	| lExpression                                                                                   # lExpr
+	| builtInType                                                                                   # builtInTypeExpr
+	| TYPEOF whiteSpace expression                                                                  # typeofexpr        // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
+	| NEW whiteSpace expression                                                                     # newExpr
+	| expression whiteSpace? POW whiteSpace? expression                                             # powOp
+	| MINUS whiteSpace? expression                                                                  # unaryMinusOp
+	| expression whiteSpace? (MULT | DIV) whiteSpace? expression                                    # multOp
+	| expression whiteSpace? INTDIV whiteSpace? expression                                          # intDivOp
+	| expression whiteSpace? MOD whiteSpace? expression                                             # modOp
+	| expression whiteSpace? (PLUS | MINUS) whiteSpace? expression                                  # addOp
+	| expression whiteSpace? AMPERSAND whiteSpace? expression                                       # concatOp
+	| expression whiteSpace? (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) whiteSpace? expression    # relationalOp
+	| NOT whiteSpace? expression                                                                    # logicalNotOp
+	| expression whiteSpace? AND whiteSpace? expression                                             # logicalAndOp
+	| expression whiteSpace? OR whiteSpace? expression                                              # logicalOrOp
+	| expression whiteSpace? XOR whiteSpace? expression                                             # logicalXorOp
+	| expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
+	| expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
+	| HASH expression                                                                               # markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
 ;
 
 // 5.6.5 Literal Expressions
@@ -600,7 +610,7 @@ objectLiteralIdentifier : NOTHING;
 variantLiteralIdentifier : EMPTY | NULL;
 
 lExpression :
-    lExpression whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                     # indexExpr
+    lExpression LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                                 # indexExpr
     | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? unrestrictedIdentifier                  # memberAccessExpr
     | lExpression mandatoryLineContinuation? EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
     | ME                                                                                                            # instanceExpr
@@ -637,6 +647,7 @@ argumentExpression :
     // Special case for redim statements. The resolver doesn't have to deal with this because it is "picked apart" in the redim statement.
     | lowerBoundArgumentExpression whiteSpace TO whiteSpace upperBoundArgumentExpression
 ;
+
 lowerBoundArgumentExpression : expression;
 upperBoundArgumentExpression : expression;
 
@@ -701,8 +712,8 @@ keyword :
      | ME
      | MID
      | MIDB
-     | MIDBTYPESUFFIX
-     | MIDTYPESUFFIX
+//     | MIDBTYPESUFFIX
+//     | MIDTYPESUFFIX
      | MOD
      | NEW
      | NOT
@@ -842,14 +853,14 @@ endOfStatement :
 
 // Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
 commentOrAnnotation :
-    annotationList
-    | comment
+    annotationList 
     | remComment
+    | comment
 ;
 remComment : REM whiteSpace? commentBody;
 comment : SINGLEQUOTE commentBody;
 commentBody : (LINE_CONTINUATION | ~NEWLINE)*;
-annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+;
+annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+ (whiteSpace? COLON commentBody)?;
 annotation : annotationName annotationArgList?;
 annotationName : unrestrictedIdentifier;
 annotationArgList : 

@@ -1,6 +1,8 @@
-﻿namespace Rubberduck.VBEditor
+﻿using System;
+
+namespace Rubberduck.VBEditor
 {
-    public struct QualifiedSelection
+    public struct QualifiedSelection : IComparable<QualifiedSelection>
     {
         public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection)
         {
@@ -14,6 +16,16 @@
         private readonly Selection _selection;
         public Selection Selection { get { return _selection; } }
 
+        public int CompareTo(QualifiedSelection other)
+        {
+            if (other.QualifiedName != QualifiedName)
+            {
+                return string.Compare(QualifiedName.ToString(), other.QualifiedName.ToString(), StringComparison.Ordinal);
+            }
+
+            return Selection.CompareTo(other.Selection);
+        }
+
         public override string ToString()
         {
             return string.Concat(QualifiedName, " ", Selection);
@@ -21,13 +33,7 @@
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hash = 17;
-                hash = hash * 23 + _qualifiedName.GetHashCode();
-                hash = hash * 23 + _selection.GetHashCode();
-                return hash;
-            }
+            return HashCode.Compute(_qualifiedName.GetHashCode(), _selection.GetHashCode());
         }
 
         public static bool operator ==(QualifiedSelection selection1, QualifiedSelection selection2)
@@ -42,6 +48,8 @@
 
         public override bool Equals(object obj)
         {
+            if (obj == null) { return false; }
+
             var other = (QualifiedSelection)obj;
             return other.QualifiedName.Equals(_qualifiedName)
                    && other.Selection.Equals(_selection);

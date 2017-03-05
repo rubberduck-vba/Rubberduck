@@ -22,7 +22,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 var declaration = ((CodeExplorerItemViewModel) parameter).GetSelectedDeclaration();
                 return declaration != null && declaration.DeclarationType == DeclarationType.ClassModule &&
-                       declaration.QualifiedName.QualifiedModuleName.Component.Designer != null;
+                       declaration.QualifiedName.QualifiedModuleName.Component.HasDesigner;
             }
             catch (COMException)
             {
@@ -33,9 +33,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void ExecuteImpl(object parameter)
         {
-            ((ICodeExplorerDeclarationViewModel) parameter).Declaration
-                .QualifiedName.QualifiedModuleName.Component.DesignerWindow()
-                .Visible = true;
+            var designer = ((ICodeExplorerDeclarationViewModel) parameter).Declaration.QualifiedName.QualifiedModuleName.Component.DesignerWindow();
+            {
+                if (!designer.IsWrappingNullReference)
+                {
+                    designer.IsVisible = true;
+                }
+            }
         }
     }
 }

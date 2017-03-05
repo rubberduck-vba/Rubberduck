@@ -9,69 +9,75 @@ namespace Rubberduck.SmartIndenter
 {
     internal class AbsoluteCodeLine
     {
-        private const string StringPlaceholder = "\a";
-        private static readonly Regex StringLiteralRegex = new Regex("\"(?:[^\"]+|\"\")*\"");
-        private static readonly Regex StringReplaceRegex = new Regex(StringPlaceholder);
-        private static readonly Regex LineNumberRegex = new Regex(@"^(?<number>\d+)\s+(?<code>.*)", RegexOptions.ExplicitCapture);
-        private static readonly Regex EndOfLineCommentRegex = new Regex(@"^(?!(Rem\s)|('))(?<code>.*)(\s(?<comment>'.*))$", RegexOptions.ExplicitCapture);
-        private static readonly Regex ProcedureStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Sub|Function|Property\s(Let|Get|Set))");
+        private const string StupidLineEnding = ": _";
+        private static readonly Regex LineNumberRegex = new Regex(@"^(?<number>(-?\d+)|(&H[0-9A-F]{1,8}))\s+(?<code>.*)", RegexOptions.ExplicitCapture);
+        private static readonly Regex EndOfLineCommentRegex = new Regex(@"^(?!(Rem\s)|('))(?<code>[^']*)(\s(?<comment>'.*))$", RegexOptions.ExplicitCapture);      
+        private static readonly Regex ProcedureStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Sub|Function|Property\s(Let|Get|Set))\s");
         private static readonly Regex ProcedureStartIgnoreRegex = new Regex(@"^[LR]?Set\s|^Let\s|^(Public|Private)\sDeclare\s(Function|Sub)");
         private static readonly Regex ProcedureEndRegex = new Regex(@"^End\s(Sub|Function|Property)");
         private static readonly Regex TypeEnumStartRegex = new Regex(@"^(Public\s|Private\s)?(Enum\s|Type\s)");
         private static readonly Regex TypeEnumEndRegex = new Regex(@"^End\s(Enum|Type)");
-        private static readonly Regex InProcedureInRegex = new Regex(@"^(Else)?If\s.*\sThen$|^(Else)?If\s.*\sThen\s.*\sElse$|^Else$|^Case\s|^With|^For\s|^Do$|^Do\s|^While$|^While\s|^Select Case");
-        private static readonly Regex InProcedureOutRegex = new Regex(@"^(Else)?If\s.*\sThen\s.*(?<!\sElse)$|^Else$|ElseIf\s.*\sThen$|^Case\s|^End With|^Next\s|^Next$|^Loop$|^Loop\s|^Wend$|^End If$|^End Select");
-        private static readonly Regex DeclarationRegex = new Regex(@"^(Dim|Const|Static|Public|Private)\s.*\sAs\s");
+        private static readonly Regex InProcedureInRegex = new Regex(@"^(Else)?If\s.*\sThen$|^Else$|^Case\s|^With|^For\s|^Do$|^Do\s|^While$|^While\s|^Select Case");
+        private static readonly Regex InProcedureOutRegex = new Regex(@"^Else(If)?|^Case\s|^End With|^Next\s|^Next$|^Loop$|^Loop\s|^Wend$|^End If$|^End Select");
+        private static readonly Regex DeclarationRegex = new Regex(@"^(Dim|Const|Static|Public|Private)\s(.*(\sAs\s)?|_)");
         private static readonly Regex PrecompilerInRegex = new Regex(@"^#(Else)?If\s.+Then$|^#Else$");
         private static readonly Regex PrecompilerOutRegex = new Regex(@"^#ElseIf\s.+Then|^#Else$|#End\sIf$");
-        private static readonly Regex SingleLineIfRegex = new Regex(@"^If\s.*\sThen\s.*(?<!\sElse)$");
-        private static readonly Regex SingleLineElseIfRegex = new Regex(@"^ElseIf\s.*\sThen\s.*(?<!\sElse)$");
+        private static readonly Regex SingleLineElseIfRegex = new Regex(@"^ElseIf\s.*\sThen\s.*");
 
         private readonly IIndenterSettings _settings;
-        private uint _lineNumber;
+        private int _lineNumber;
         private bool _numbered;
         private string _code;
+        private readonly bool _stupidLineEnding;
         private readonly string[] _segments;
-        private List<string> _strings;
+        private readonly StringLiteralAndBracketEscaper _escaper;
 
-        public AbsoluteCodeLine(string code, IIndenterSettings settings)
+        public AbsoluteCodeLine(string code, IIndenterSettings settings) : this(code, settings, null) { }
+
+        public AbsoluteCodeLine(string code, IIndenterSettings settings, AbsoluteCodeLine previous)
         {
             _settings = settings;
-            _code = code;
+            Previous = previous;
+
+            if (code.EndsWith(StupidLineEnding))
+            {
+                _code = code.Substring(0, code.Length - StupidLineEnding.Length);
+                _stupidLineEnding = true;
+            }
+            else
+            {
+                _code = code;
+            }
+            
             Original = code;
 
-            ExtractStringLiterals();
+            _escaper = new StringLiteralAndBracketEscaper(_code);
+            _code = _escaper.EscapedString;
+
             ExtractLineNumber();
             ExtractEndOfLineComment();
 
             _segments = _code.Split(new[] { ": " }, StringSplitOptions.None);
         }
 
-        private void ExtractStringLiterals()
-        {
-            _strings = new List<string>();
-            var matches = StringLiteralRegex.Matches(_code);
-            if (matches.Count == 0) return;
-            foreach (var match in matches)
-            {
-                _strings.Add(match.ToString());
-            }
-            _code = StringLiteralRegex.Replace(_code, StringPlaceholder);
-        }
-
         private void ExtractLineNumber()
         {
-            var match = LineNumberRegex.Match(_code);
-            if (match.Success)
+            if (Previous == null || !Previous.HasContinuation)
             {
-                _numbered = true;
-                _lineNumber = Convert.ToUInt32(match.Groups["number"].Value);
-                _code = match.Groups["code"].Value.Trim();
+                var match = LineNumberRegex.Match(_code);
+                if (match.Success)
+                {
+                    _code = match.Groups["code"].Value;
+                    _numbered = true;
+                    var number = match.Groups["number"].Value;
+                    if (!int.TryParse(number, out _lineNumber))
+                    {
+                        int.TryParse(number.Replace("&H", string.Empty), NumberStyles.HexNumber, 
+                                     CultureInfo.InvariantCulture, out _lineNumber);
+                    }                  
+                }
             }
-            else
-            {
-                _code = _code.Trim();
-            }
+            _code = _code.Trim();
         }
 
         private void ExtractEndOfLineComment()
@@ -86,8 +92,30 @@ namespace Rubberduck.SmartIndenter
             EndOfLineComment = match.Groups["comment"].Value.Trim();
         }
 
+        public AbsoluteCodeLine Previous { get; private set; }
+
         public string Original { get; private set; }
-        
+
+        public string Escaped
+        {
+            get
+            {
+                // ReSharper disable LoopCanBeConvertedToQuery
+                var output = Original;
+                foreach (var item in _escaper.EscapedStrings)
+
+                {
+                    output = output.Replace(item, new string(StringLiteralAndBracketEscaper.StringPlaceholder, item.Length));
+                }
+                foreach (var item in _escaper.EscapedBrackets)
+                {
+                    output = output.Replace(item, new string(StringLiteralAndBracketEscaper.BracketPlaceholder, item.Length));
+                }
+                // ReSharper restore LoopCanBeConvertedToQuery
+                return output;
+            }
+        }
+
         public string EndOfLineComment { get; private set; }
 
         public IEnumerable<string> Segments
@@ -111,17 +139,31 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsDeclaration
         {
-            get { return !IsEmpty && DeclarationRegex.IsMatch(_code); }
+            get { return !IsEmpty && (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) && DeclarationRegex.IsMatch(_code); }
+        }
+
+        public bool IsDeclarationContinuation { get; set; }
+
+        public bool HasDeclarationContinuation
+        {
+            get
+            {
+                return (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) &&
+                       !ContainsOnlyComment &&
+                       string.IsNullOrEmpty(EndOfLineComment) &&
+                       HasContinuation &&
+                       ((IsDeclarationContinuation && Segments.Count() == 1) || DeclarationRegex.IsMatch(Segments.Last()));
+            }
         }
 
         public bool HasContinuation
         {
-            get { return _code.EndsWith(" _") || EndOfLineComment.EndsWith(" _"); }
+            get { return _code.Equals("_") || _code.EndsWith(" _") || EndOfLineComment.EndsWith(" _"); }
         }
 
         public bool IsPrecompilerDirective
         {
-            get { return Original.TrimStart().StartsWith("#"); }
+            get { return _code.TrimStart().StartsWith("#"); }
         }
 
         public bool IsBareDebugStatement
@@ -181,7 +223,6 @@ namespace Rubberduck.SmartIndenter
                 var outs = _segments.Count(s => InProcedureOutRegex.IsMatch(s.Trim())) + (IsProcedureEnd && _settings.IndentEntireProcedureBody ? 1 : 0) + adjust;
 
                 outs -= MultipleCaseAdjustment();
-                outs -= _segments.Count(s => SingleLineIfRegex.IsMatch(s));
 
                 if (_settings.IndentCompilerDirectives && PrecompilerOutRegex.IsMatch(_segments[0].Trim()))
                 {
@@ -207,53 +248,67 @@ namespace Rubberduck.SmartIndenter
             if ((IsPrecompilerDirective && _settings.ForceCompilerDirectivesInColumn1) ||
                 (IsBareDebugStatement && _settings.ForceDebugStatementsInColumn1) ||
                 (atProcStart && !_settings.IndentFirstCommentBlock && ContainsOnlyComment) ||
-                (atProcStart && !_settings.IndentFirstDeclarationBlock && IsDeclaration))
+                (atProcStart && !_settings.IndentFirstDeclarationBlock && (IsDeclaration || IsDeclarationContinuation)))
             {
                 indents = 0;
             }
 
             var number = _numbered ? _lineNumber.ToString(CultureInfo.InvariantCulture) : string.Empty;
             var gap = Math.Max((absolute ? indents : _settings.IndentSpaces * indents) - number.Length, number.Length > 0 ? 1 : 0);
-            AlignDims(gap);
-
-            var code = string.Join(": ", _segments);
-            if (_strings.Any())
+            if (_settings.AlignDims && (IsDeclaration || IsDeclarationContinuation))
             {
-                code = _strings.Aggregate(code, (current, literal) => StringReplaceRegex.Replace(current, literal, 1));
+                AlignDims(gap);
             }
 
+            var code = string.Join(": ", _segments);
             code = string.Join(string.Empty, number, new string(' ', gap), code);
             if (string.IsNullOrEmpty(EndOfLineComment))
             {
-                return code;
+                return _escaper.UnescapeIndented(code + (_stupidLineEnding ? StupidLineEnding : string.Empty));
             }
 
             var position = Original.LastIndexOf(EndOfLineComment, StringComparison.Ordinal);
             switch (_settings.EndOfLineCommentStyle)
             {
                 case EndOfLineCommentStyle.Absolute:
-                    return string.Format("{0}{1}{2}", code, new string(' ', Math.Max(position - code.Length, 1)), EndOfLineComment);
+                    return _escaper.UnescapeIndented(string.Format("{0}{1}{2}{3}", code, new string(' ', Math.Max(position - code.Length, 1)),
+                                                     EndOfLineComment, _stupidLineEnding ? StupidLineEnding : string.Empty));
                 case EndOfLineCommentStyle.SameGap:
                     var uncommented = Original.Substring(0, position - 1);
-                    return string.Format("{0}{1}{2}", code, new string(' ', uncommented.Length - uncommented.TrimEnd().Length + 1), EndOfLineComment);
+                    return _escaper.UnescapeIndented(string.Format("{0}{1}{2}{3}", code, new string(' ', uncommented.Length - uncommented.TrimEnd().Length + 1), 
+                                                     EndOfLineComment, _stupidLineEnding ? StupidLineEnding : string.Empty));
                 case EndOfLineCommentStyle.StandardGap:
-                    return string.Format("{0}{1}{2}", code, new string(' ', _settings.IndentSpaces * 2), EndOfLineComment);
+                    return _escaper.UnescapeIndented(string.Format("{0}{1}{2}{3}", code, new string(' ', _settings.IndentSpaces * 2), EndOfLineComment,
+                                                     _stupidLineEnding ? StupidLineEnding : string.Empty));
                 case EndOfLineCommentStyle.AlignInColumn:
                     var align = _settings.EndOfLineCommentColumnSpaceAlignment - code.Length;
-                    return string.Format("{0}{1}{2}", code, new string(' ', Math.Max(align - 1, 1)), EndOfLineComment);
+                    return _escaper.UnescapeIndented(string.Format("{0}{1}{2}{3}", code, new string(' ', Math.Max(align - 1, 1)), EndOfLineComment,
+                                                     _stupidLineEnding ? StupidLineEnding : string.Empty));
                 default:
                     throw new InvalidEnumArgumentException();
             }
         }
 
+        public override string ToString()
+        {
+            return Original;
+        }
+
         private void AlignDims(int postition)
         {
-            if (!DeclarationRegex.IsMatch(_segments[0]) || IsProcedureStart) return;
+            if (_segments[0].Trim().StartsWith("As "))
+            {
+                _segments[0] = string.Format("{0}{1}", new String(' ', _settings.AlignDimColumn - postition - 1), _segments[0].Trim());
+                return;
+            }
             var alignTokens = _segments[0].Split(new[] { " As " }, StringSplitOptions.None);
+            if (alignTokens.Length <= 1)
+            {
+                return;
+            }
             var gap = Math.Max(_settings.AlignDimColumn - postition - alignTokens[0].Length - 2, 0);
-            _segments[0] = string.Format("{0}{1} As {2}", alignTokens[0].Trim(),
-                                                          (!_settings.AlignDims) ? string.Empty : new string(' ', gap),
-                                                          string.Join(" As ", alignTokens.Skip(1)));
+            _segments[0] = string.Format("{0}{1} As {2}", alignTokens[0].Trim(), new string(' ', gap),
+                                         string.Join(" As ", alignTokens.Skip(1)));
         }
     }
 }

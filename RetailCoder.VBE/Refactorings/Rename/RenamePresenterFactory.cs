@@ -1,18 +1,18 @@
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.Rename
 {
     public class RenamePresenterFactory : IRefactoringPresenterFactory<RenamePresenter>
     {
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly IRenameDialog _view;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public RenamePresenterFactory(VBE vbe, IRenameDialog view, RubberduckParserState state, IMessageBox messageBox)
+        public RenamePresenterFactory(IVBE vbe, IRenameDialog view, RubberduckParserState state, IMessageBox messageBox)
         {
             _vbe = vbe;
             _view = view;
@@ -23,11 +23,9 @@ namespace Rubberduck.Refactorings.Rename
         public RenamePresenter Create()
         {
             var codePane = _vbe.ActiveCodePane;
-            var selection = codePane.GetSelection();
-            
-            var qualifiedSelection = codePane == null || selection == null 
-                ? new QualifiedSelection() 
-                : new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection.Value);
+            var qualifiedSelection = codePane.IsWrappingNullReference
+                ? new QualifiedSelection()
+                : new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
 
             return new RenamePresenter(_view, new RenameModel(_vbe, _state, qualifiedSelection, _messageBox));
         }

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\hosch\Documents\Visual Studio 2015\Projects\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Dev\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -436,6 +436,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitEndOfStatement([NotNull] VBAParser.EndOfStatementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.midStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMidStatement([NotNull] VBAParser.MidStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.midStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMidStatement([NotNull] VBAParser.MidStatementContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>optionCompareStmt</c>
@@ -2610,6 +2621,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCharPosition([NotNull] VBAParser.CharPositionContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.modeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterModeSpecifier([NotNull] VBAParser.ModeSpecifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.modeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitModeSpecifier([NotNull] VBAParser.ModeSpecifierContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.moduleConfigElement"/>.

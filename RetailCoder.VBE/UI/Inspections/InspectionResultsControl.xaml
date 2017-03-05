@@ -9,6 +9,7 @@
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             xmlns:abstract="clr-namespace:Rubberduck.Inspections.Abstract"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
@@ -528,6 +529,9 @@
 
                 <Button Command="{Binding CopyResultsCommand}">
                     <Image Height="16" Source="../../Resources/document-copy.png" />
+                    <Button.ToolTip>
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_CopyToolTip}" />
+                    </Button.ToolTip>
                 </Button>
                 <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
                     <Image Height="16" Source="{StaticResource SettingsImage}" />
@@ -543,13 +547,13 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="Descending">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="inspections:ICodeInspectionResult">
+                        <DataTemplate DataType="abstract:IInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
             </DataGrid.Columns>
         </controls:GroupingGrid>
 
@@ -561,13 +565,13 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="inspections:ICodeInspectionResult">
+                        <DataTemplate DataType="abstract:IInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
             </DataGrid.Columns>
         </controls:GroupingGrid>
 
@@ -586,7 +590,7 @@
                     </Grid.ColumnDefinitions>
                     <Image Style="{StaticResource IconStyle}" VerticalAlignment="Top" Grid.Column="0"
                            Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
-                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedItem.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
+                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedItem.Inspection.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                 </Grid>
 
                 <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Meta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
@@ -596,15 +600,15 @@
                     <controls:LinkButton Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInModuleCommand}"
-                            Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=QuickFix_ThisModule}" />
+                            Content="{Resx ResxName=Rubberduck.Inspections.Resources.InspectionsUI, Key=QuickFix_ThisModule}" />
                     <controls:LinkButton Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInProjectCommand}"
-                            Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=QuickFix_ThisProject}" />
+                            Content="{Resx ResxName=Rubberduck.Inspections.Resources.InspectionsUI, Key=QuickFix_ThisProject}" />
                     <controls:LinkButton Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"
-                            Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=DisableThisInspection}" />
+                            Content="{Resx ResxName=Rubberduck.Inspections.Resources.InspectionsUI, Key=DisableThisInspection}" />
                 </WrapPanel>
             </StackPanel>
         </Border>

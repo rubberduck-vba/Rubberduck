@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -28,7 +29,8 @@ namespace Rubberduck.Parsing.Binding
             _module = module;
             _parent = parent;
             _context = context;
-            _name = name;
+            // hack; SimpleNameContext.Identifier() excludes the square brackets
+            _name = context.Start.Text == "[" && context.Stop.Text == "]" ? "[" + name + "]" : name;
             _propertySearchType = StatementContext.GetSearchDeclarationType(statementContext);
         }
         
@@ -67,6 +69,19 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
+
+            if (_context.Start.Text == "[" && _context.Stop.Text == "]")
+            {
+                var bracketedExpression = _declarationFinder.OnBracketedExpression(_context.GetText(), _context);
+                return new SimpleNameExpression(bracketedExpression, ExpressionClassification.Unbound, _context);
+            }
+            //TODO - this is a complete and total hack to prevent `Mid` and `Mid$` from creating undeclared variables
+            //pending an actual fix to the grammar.  See #2618
+            else if (!_name.Equals("Mid") && !_name.Equals("Mid$"))
+            {
+                var undeclaredLocal = _declarationFinder.OnUndeclaredVariable(_parent, _name, _context);
+                return new SimpleNameExpression(undeclaredLocal, ExpressionClassification.Variable, _context);
+            }
             return new ResolutionFailedExpression();
         }
 
@@ -80,7 +95,9 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable);
+            var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable)
+                ?? _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable)
+                ;
             if (IsValidMatch(localVariable, _name))
             {
                 return new SimpleNameExpression(localVariable, ExpressionClassification.Variable, _context);
@@ -95,6 +112,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(constant, ExpressionClassification.Value, _context);
             }
+
             return null;
         }
 
@@ -196,12 +214,12 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(accessibleConstant, ExpressionClassification.Variable, _context);
             }
-            var accessibleType = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.Enumeration);
+            var accessibleType = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.EnumerationMember);
             if (IsValidMatch(accessibleType, _name))
             {
                 return new SimpleNameExpression(accessibleType, ExpressionClassification.Type, _context);
             }
-            var accessibleMember = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.EnumerationMember);
+            var accessibleMember = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, DeclarationType.Enumeration);
             if (IsValidMatch(accessibleMember, _name))
             {
                 return new SimpleNameExpression(accessibleMember, ExpressionClassification.Value, _context);
@@ -324,6 +342,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(globalClassModuleSubroutine, ExpressionClassification.Subroutine, _context);
             }
+
             return null;
         }
 
@@ -346,25 +365,34 @@ namespace Rubberduck.Parsing.Binding
             {
                 return true;
             }
-            var functionSubroutinePropertyGet = match.DeclarationType == DeclarationType.Function
-                || match.DeclarationType == DeclarationType.Procedure
-                || match.DeclarationType == DeclarationType.PropertyGet;
-            if (!functionSubroutinePropertyGet)
+            if (!IsFunctionSubroutinePropertyGet(match))
             {
                 return true;
             }
-            if (((IDeclarationWithParameter)match).Parameters.Count() > 0)
+            if (((IDeclarationWithParameter)match).Parameters.Any())
             {
                 return true;
             }
-            if (match.AsTypeName != null
-                && match.AsTypeName.ToUpperInvariant() != "VARIANT"
-                && match.AsTypeName.ToUpperInvariant() != "OBJECT"
-                && match.AsTypeIsBaseType)
+            if (IsTypeDeclarationOfSpecificBaseType(match))
             {
                 return false;
             }
             return true;
         }
+
+            private static bool IsFunctionSubroutinePropertyGet(Declaration match)
+            {
+                return match.DeclarationType == DeclarationType.Function
+                        || match.DeclarationType == DeclarationType.Procedure
+                        || match.DeclarationType == DeclarationType.PropertyGet;
+            }
+
+            private static bool IsTypeDeclarationOfSpecificBaseType(Declaration match)
+            {
+                return match.AsTypeName != null
+                        && match.AsTypeName.ToUpperInvariant() != "VARIANT"
+                        && match.AsTypeName.ToUpperInvariant() != "OBJECT"
+                        && match.AsTypeIsBaseType;
+            }
     }
 }

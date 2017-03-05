@@ -8,21 +8,25 @@ using System.Xml.Serialization;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class XmlPersistanceService<T> : IFilePersistanceService<T> where T : new()
+    public class XmlPersistanceService<T> : IFilePersistanceService<T> where T : class, IEquatable<T>, new()
     {
         private readonly string _rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck");
         private readonly UTF8Encoding _outputEncoding = new UTF8Encoding(false);
         private const string DefaultConfigFile = "rubberduck.config";
         private const string RootElement = "Configuration";
 
+        // ReSharper disable once StaticFieldInGenericType
         private static readonly XmlSerializerNamespaces EmptyNamespace =
-            new XmlSerializerNamespaces(new[] { new XmlQualifiedName(string.Empty, string.Empty) });
+            new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
         
+        // ReSharper disable once StaticFieldInGenericType
         private static readonly XmlWriterSettings OutputXmlSettings = new XmlWriterSettings
         {
             Encoding = new UTF8Encoding(false),
             Indent = true,
         };
+
+        private T _cached;
 
         private string _filePath;
         public string FilePath
@@ -33,18 +37,23 @@ namespace Rubberduck.SettingsProvider
 
         public T Load(T toDeserialize)
         {
+            if (_cached != null)
+            {
+                return _cached;
+            }
+
             var type = typeof(T);
 
             if (!File.Exists(FilePath))
             {
-                return (T)Convert.ChangeType(null, type);
+                return FailedLoadReturnValue();
             }
             var doc = GetConfigurationDoc(FilePath);
             
             var node = doc.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(type.Name));
             if (node == null)
             {
-                return (T)Convert.ChangeType(null, type);
+                return FailedLoadReturnValue();
             }
 
             using (var reader = node.CreateReader())
@@ -52,14 +61,19 @@ namespace Rubberduck.SettingsProvider
                 var deserializer = new XmlSerializer(type);
                 try
                 {
-                    var output = deserializer.Deserialize(reader);
-                    return (T)Convert.ChangeType(output, type);
+                    _cached = (T)Convert.ChangeType(deserializer.Deserialize(reader), type);
+                    return _cached;
                 }
                 catch
                 {
-                    return (T)Convert.ChangeType(null, type);
+                    return FailedLoadReturnValue();
                 }
             }  
+        }
+
+        private static T FailedLoadReturnValue()
+        {
+            return (T)Convert.ChangeType(null, typeof(T));
         }
 
         public void Save(T toSerialize)
@@ -94,6 +108,7 @@ namespace Rubberduck.SettingsProvider
             using (var xml = XmlWriter.Create(FilePath, OutputXmlSettings))
             {
                 doc.WriteTo(xml);
+                _cached = toSerialize;
             }
         }
 

@@ -1,26 +1,25 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
     class ComponentParseTask
     {
-        private readonly VBComponent _component;
+        private readonly IVBComponent _component;
         private readonly QualifiedModuleName _qualifiedName;
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
@@ -31,8 +30,12 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParseFailureArgs> ParseFailure;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ComponentParseTask(VBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
+        private readonly Guid _taskId;
+
+        public ComponentParseTask(IVBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
         {
+            _taskId = Guid.NewGuid();
+
             _attributeParser = attributeParser;
             _preprocessor = preprocessor;
             _component = vbComponent;
@@ -45,12 +48,12 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
-                var code = RewriteAndPreprocess();
+                Logger.Trace("Starting ParseTaskID {0} on thread {1}.", _taskId, Thread.CurrentThread.ManagedThreadId);
+
+                var code = RewriteAndPreprocess(token);
                 token.ThrowIfCancellationRequested();
 
-                var attributes = _attributeParser.Parse(_component);
-
-                token.ThrowIfCancellationRequested();
+                var attributes = _attributeParser.Parse(_component, token);
 
                 // temporal coupling... comments must be acquired before we walk the parse tree for declarations
                 // otherwise none of the annotations get associated to their respective Declaration
@@ -61,51 +64,132 @@ namespace Rubberduck.Parsing.VBA
                 ITokenStream stream;
                 var tree = ParseInternal(_component.Name, code, new IParseTreeListener[]{ commentListener, annotationListener }, out stream);
                 stopwatch.Stop();
+                token.ThrowIfCancellationRequested();
 
                 var comments = QualifyAndUnionComments(_qualifiedName, commentListener.Comments, commentListener.RemComments);
                 token.ThrowIfCancellationRequested();
 
-                ParseCompleted.Invoke(this, new ParseCompletionArgs
-                {
-                    ParseTree = tree,
-                    Tokens = stream,
-                    Attributes = attributes,
-                    Comments = comments,
-                    Annotations = annotationListener.Annotations
-                });
+                var completedHandler = ParseCompleted;
+                if (completedHandler != null && !token.IsCancellationRequested)
+                    completedHandler.Invoke(this, new ParseCompletionArgs
+                    {
+                        ParseTree = tree,
+                        Tokens = stream,
+                        Attributes = attributes,
+                        Comments = comments,
+                        Annotations = annotationListener.Annotations
+                    });
             }
             catch (COMException exception)
             {
-                Logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
-                ParseFailure.Invoke(this, new ParseFailureArgs
-                {
-                    Cause = exception
-                });
+                Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
+                var failedHandler = ParseFailure;
+                if (failedHandler != null)
+                    failedHandler.Invoke(this, new ParseFailureArgs
+                    {
+                        Cause = exception
+                    });
             }
             catch (SyntaxErrorException exception)
             {
-                Logger.Error(exception, "Exception thrown in thread {0}.", Thread.CurrentThread.ManagedThreadId);
-                ParseFailure.Invoke(this, new ParseFailureArgs
-                {
-                    Cause = exception
-                });
+                //System.Diagnostics.Debug.Assert(false, "A RecognitionException should be notified of, not thrown as a SyntaxErrorException. This lets the parser recover from parse errors.");
+                Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
+                var failedHandler = ParseFailure;
+                if (failedHandler != null)
+                    failedHandler.Invoke(this, new ParseFailureArgs
+                    {
+                        Cause = exception
+                    });
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException exception)
             {
-                // no results to be used, so no results "returned"
+                //We return this, so that the calling code knows that the operation actually has been cancelled.
+                var failedHandler = ParseFailure;
+                if (failedHandler != null)
+                    failedHandler.Invoke(this, new ParseFailureArgs
+                    {
+                        Cause = exception
+                    });
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
+                var failedHandler = ParseFailure;
+                if (failedHandler != null)
+                    failedHandler.Invoke(this, new ParseFailureArgs
+                    {
+                        Cause = exception
+                    });
             }
         }
 
-        private string RewriteAndPreprocess()
+        private static string[] GetSanitizedCode(ICodeModule module)
         {
-            var code = _rewriter == null ? string.Join(Environment.NewLine, _component.CodeModule.GetSanitizedCode()) : _rewriter.GetText();
-            var processed = _preprocessor.Execute(_component.Name, code);
+            var lines = module.CountOfLines;
+            if (lines == 0)
+            {
+                return new string[] { };
+            }
+
+            var code = module.GetLines(1, lines).Replace("\r", string.Empty).Split('\n');
+
+            StripLineNumbers(code);
+            return code;
+        }
+
+        private static void StripLineNumbers(string[] lines)
+        {
+            var continuing = false;
+            for (var line = 0; line < lines.Length; line++)
+            {
+                var code = lines[line];
+                int? lineNumber;
+                if (!continuing && HasNumberedLine(code, out lineNumber))
+                {
+                    var lineNumberLength = lineNumber.ToString().Length;
+                    if (lines[line].Length > lineNumberLength)
+                    {
+                        // replace line number with as many spaces as characters taken, to avoid shifting the tokens
+                        lines[line] = new string(' ', lineNumberLength) + code.Substring(lineNumber.ToString().Length + 1);
+                    }
+                }
+
+                continuing = code.EndsWith(" _");
+            }
+        }
+
+        private static bool HasNumberedLine(string codeLine, out int? lineNumber)
+        {
+            lineNumber = null;
+
+            if (string.IsNullOrWhiteSpace(codeLine.Trim()))
+            {
+                return false;
+            }
+
+            int line;
+            var firstToken = codeLine.TrimStart().Split(' ')[0];
+            if (int.TryParse(firstToken, out line))
+            {
+                lineNumber = line;
+                return true;
+            }
+
+            return false;
+        }
+
+        private string RewriteAndPreprocess(CancellationToken token)
+        {
+            var code = _rewriter == null ? string.Join(Environment.NewLine, GetSanitizedCode(_component.CodeModule)) : _rewriter.GetText();
+            var processed = _preprocessor.Execute(_component.Name, code, token);
             return processed;
         }
 
         private IParseTree ParseInternal(string moduleName, string code, IParseTreeListener[] listeners, out ITokenStream outStream)
         {
-            return _parser.Parse(moduleName, code, listeners, out outStream);
+            //var errorNotifier = new SyntaxErrorNotificationListener();
+            //errorNotifier.OnSyntaxError += ParserSyntaxError;
+            return _parser.Parse(moduleName, code, listeners, new ExceptionErrorListener(), out outStream);
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

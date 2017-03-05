@@ -9,8 +9,9 @@
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             xmlns:resources="clr-namespace:Rubberduck.Inspections.Resources"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:InspectionSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <converters:CodeInspectionSeverityEnumToTextConverter x:Key="CodeInspectionSeverityEnumToText" />
@@ -35,7 +36,7 @@
                             MethodName="GetValues"
                             ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type Type="inspections:CodeInspectionSeverity"/>
+                <x:Type Type="resources:CodeInspectionSeverity"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
@@ -259,21 +260,43 @@
     <Grid>
         <ScrollViewer>
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <Label Background="DarkGray"
-                       Foreground="White"
-                       FontWeight="SemiBold"
-                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}"
+                                    <Label Background="DarkGray"
+                       HorizontalContentAlignment="Stretch"
                        Margin="0,0,0,3">
-                    <Label.Style>
-                        <Style>
-                            <Style.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius" Value="5"/>
-                                </Style>
-                            </Style.Resources>
-                        </Style>
-                    </Label.Style>
-                </Label>
+                        <Label.Style>
+                            <Style>
+                                <Style.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="5"/>
+                                    </Style>
+                                </Style.Resources>
+                            </Style>
+                        </Label.Style>
+                        <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                                <Label Foreground="White"
+                                   FontWeight="SemiBold" 
+                                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}">
+                                </Label>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition MaxWidth="75"/>
+                                        <ColumnDefinition MaxWidth="75"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:LinkButton Grid.Column="1" Margin="2"
+                                                         Command="{Binding ImportButtonCommand}"
+                                                         Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ImportSettings}"/>
+                                    <controls:LinkButton Grid.Column="2" Margin="2"
+                                                         Command="{Binding ExportButtonCommand}"
+                                                         Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}"/>
+                            </Grid>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"/>
+                        </DockPanel>
+                    </Label>  
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
                     <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}"
                                            AutoGenerateColumns="False"
@@ -399,6 +422,25 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
+                <Label Background="DarkGray"
+                       Foreground="White"
+                       FontWeight="SemiBold"
+                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_Misc}"
+                       Margin="0,5,0,3">
+                    <Label.Style>
+                        <Style>
+                            <Style.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <StackPanel>
+                    <CheckBox IsChecked="{Binding RunInspectionsOnSuccessfulParse}" 
+                              Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse}" />
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

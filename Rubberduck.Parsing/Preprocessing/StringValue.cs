@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Rubberduck.Parsing.Preprocessing
@@ -28,22 +29,18 @@ namespace Rubberduck.Parsing.Preprocessing
                 {
                     return false;
                 }
-                var str = _value;
-                if (string.CompareOrdinal(str.ToLower(), "true") == 0
-                    || string.CompareOrdinal(str, "#TRUE#") == 0)
+                var value = _value;
+                if (string.CompareOrdinal(value.ToLower(), "true") == 0 || string.CompareOrdinal(value, "#TRUE#") == 0)
                 {
                     return true;
                 }
-                else if (string.CompareOrdinal(str.ToLower(), "false") == 0
-                    || string.CompareOrdinal(str, "#FALSE#") == 0)
+                
+                if (string.CompareOrdinal(value.ToLower(), "false") == 0 || string.CompareOrdinal(value, "#FALSE#") == 0)
                 {
                     return false;
                 }
-                else
-                {
-                    decimal number = AsDecimal;
-                    return new DecimalValue(number).AsBool;
-                }
+                
+                return new DecimalValue(AsDecimal).ToString() != "0"; // any non-zero value evaluates to TRUE in VBA
             }
         }
 
@@ -51,6 +48,11 @@ namespace Rubberduck.Parsing.Preprocessing
         {
             get
             {
+                byte value;
+                if (byte.TryParse(_value, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
+                {
+                    return value;
+                }
                 return byte.Parse(_value, NumberStyles.Float);
             }
         }
@@ -59,10 +61,10 @@ namespace Rubberduck.Parsing.Preprocessing
         {
             get
             {
-                DateTime date;
-                if (DateTime.TryParse(_value, out date))
+                DateTime value;
+                if (DateTime.TryParse(_value, out value))
                 {
-                    return date;
+                    return value;
                 }
                 decimal number = AsDecimal;
                 return new DecimalValue(number).AsDate;
@@ -73,7 +75,13 @@ namespace Rubberduck.Parsing.Preprocessing
         {
             get
             {
-                return decimal.Parse(_value, NumberStyles.Float);
+                decimal value;
+                if (decimal.TryParse(_value, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
+                {
+                    return value;
+                }
+                Debug.Assert(false); // this line was never hit in any unit test covering it.
+                return 0;
             }
         }
 
@@ -87,7 +95,7 @@ namespace Rubberduck.Parsing.Preprocessing
 
         public override string ToString()
         {
-            return _value.ToString();
+            return _value;
         }
     }
 }

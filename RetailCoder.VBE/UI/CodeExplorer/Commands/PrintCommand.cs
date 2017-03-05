@@ -43,7 +43,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck",
                 component.Name + ".txt");
 
-            var text = component.CodeModule.Lines[1, component.CodeModule.CountOfLines].Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
+            var text = component.CodeModule.GetLines(1, component.CodeModule.CountOfLines)
+                .Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
 
             var printDoc = new PrintDocument { DocumentName = path };
             using (var pd = new PrintDialog

@@ -7,6 +7,7 @@
              xmlns:settingsConfig="clr-namespace:Rubberduck.Settings"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              xmlns:core="clr-namespace:System;assembly=mscorlib"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:UnitTestSettingsViewModel}, IsDesignTimeCreatable=False}">
@@ -33,12 +34,9 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Margin="5,5,5,0">
-            <Label DockPanel.Dock="Top"
-                   Background="DarkGray"
-                   Foreground="White"
-                   FontWeight="SemiBold"
-                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_UnitTestSettings}"
-                   Margin="0,0,0,3">
+            <Label Background="DarkGray"
+                       HorizontalContentAlignment="Stretch"
+                       Margin="0,0,0,3">
                 <Label.Style>
                     <Style>
                         <Style.Resources>
@@ -48,8 +46,31 @@
                         </Style.Resources>
                     </Style>
                 </Label.Style>
+                <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                        <Label Foreground="White"
+                                   FontWeight="SemiBold" 
+                                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_UnitTestSettings}">
+                        </Label>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition MaxWidth="75"/>
+                                <ColumnDefinition MaxWidth="75"/>
+                            </Grid.ColumnDefinitions>
+                            <controls:LinkButton Grid.Column="1" Margin="2"
+                                                 Command="{Binding ImportButtonCommand}"
+                                                 Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ImportSettings}"/>
+                            <controls:LinkButton Grid.Column="2" Margin="2"
+                                                 Command="{Binding ExportButtonCommand}"
+                                                 Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}"/>
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"/>
+                </DockPanel>
             </Label>
-
             <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_BindingMode}"
                    FontWeight="SemiBold" />
             <ComboBox Margin="5,0,0,5"

@@ -2,14 +2,12 @@
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 
 namespace Rubberduck.Navigation.Folders
 {
     public class FolderHelper
     {
         private readonly RubberduckParserState _state;
-        private readonly ConfigurationLoader _configLoader;
 
         private static readonly DeclarationType[] ComponentTypes =
         {
@@ -19,10 +17,9 @@ namespace Rubberduck.Navigation.Folders
             DeclarationType.UserForm, 
         };
 
-        public FolderHelper(RubberduckParserState state, ConfigurationLoader configLoader)
+        public FolderHelper(RubberduckParserState state)
         {
             _state = state;
-            _configLoader = configLoader;
         }
 
         public CodeExplorerCustomFolderViewModel GetFolderTree(Declaration declaration = null)
@@ -65,8 +62,7 @@ namespace Rubberduck.Navigation.Folders
 
         private char GetDelimiter()
         {
-            var settings = _configLoader.LoadConfiguration();
-            return settings.UserSettings.GeneralSettings.Delimiter;
+            return '.';
         }
     }
 }

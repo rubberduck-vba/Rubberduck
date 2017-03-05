@@ -16,7 +16,7 @@ namespace Rubberduck.UI.Command
 
         protected override void ExecuteImpl(object parameter)
         {
-            _presenter.Show();
+            //_presenter.Show();
         }
     }
 }

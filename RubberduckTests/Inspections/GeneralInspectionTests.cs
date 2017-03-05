@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.UI;
 
 namespace RubberduckTests.Inspections
@@ -58,7 +60,9 @@ namespace RubberduckTests.Inspections
                 typeof(ConstantNotUsedInspection).Name,
                 typeof(ParameterNotUsedInspection).Name,
                 typeof(ProcedureNotUsedInspection).Name,
-                typeof(VariableNotUsedInspection).Name
+                typeof(VariableNotUsedInspection).Name,
+                typeof(UseMeaningfulNameInspection).Name,
+                typeof(HungarianNotationInspection).Name
             };
 
             var inspections = typeof(InspectionBase).Assembly.GetTypes()

@@ -2,24 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.IntroduceField
 {
     public class IntroduceFieldRefactoring : IRefactoring
     {
         private readonly IList<Declaration> _declarations;
-        private readonly VBE _vbe;
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceFieldRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public IntroduceFieldRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
             _declarations =
                 state.AllDeclarations.Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
@@ -83,7 +82,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             QualifiedSelection? oldSelection = null;
             if (_vbe.ActiveCodePane != null)
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
+                oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
             }
 
             RemoveVariable(target);
@@ -91,8 +90,11 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             if (oldSelection.HasValue)
             {
-                oldSelection.Value.QualifiedName.Component.CodeModule.SetSelection(oldSelection.Value.Selection);
-                oldSelection.Value.QualifiedName.Component.CodeModule.CodePane.ForceFocus();
+                var module = oldSelection.Value.QualifiedName.Component.CodeModule;
+                var pane = module.CodePane;
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
             }
 
             _state.OnParseRequested(this);
@@ -101,7 +103,9 @@ namespace Rubberduck.Refactorings.IntroduceField
         private void AddField(Declaration target)
         {
             var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            module.InsertLines(module.CountOfDeclarationLines + 1, GetFieldDefinition(target));
+            {
+                module.InsertLines(module.CountOfDeclarationLines + 1, GetFieldDefinition(target));
+            }
         }
 
         private void RemoveVariable(Declaration target)
@@ -123,41 +127,44 @@ namespace Rubberduck.Refactorings.IntroduceField
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            var oldLines = _vbe.ActiveCodePane.CodeModule.GetLines(selection);
-
-            var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
-                .Remove(selection.StartColumn, declarationText.Length);
-
-            if (multipleDeclarations)
+            var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             {
-                selection = target.GetVariableStmtContextSelection();
-                newLines = RemoveExtraComma(_vbe.ActiveCodePane.CodeModule.GetLines(selection).Replace(oldLines, newLines),
-                    target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
-            }
+                var oldLines = module.GetLines(selection);
+                var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
+                                       .Remove(selection.StartColumn, declarationText.Length);
 
-            var newLinesWithoutExcessSpaces = newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            for (var i = 0; i < newLinesWithoutExcessSpaces.Length; i++)
-            {
-                newLinesWithoutExcessSpaces[i] = newLinesWithoutExcessSpaces[i].RemoveExtraSpacesLeavingIndentation();
-            }
-
-            for (var i = newLinesWithoutExcessSpaces.Length - 1; i >= 0; i--)
-            {
-                if (newLinesWithoutExcessSpaces[i].Trim() == string.Empty)
+                if (multipleDeclarations)
                 {
-                    continue;
+                    selection = target.GetVariableStmtContextSelection();
+                    newLines = RemoveExtraComma(_vbe.ActiveCodePane.CodeModule.GetLines(selection).Replace(oldLines, newLines),
+                        target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
                 }
 
-                if (newLinesWithoutExcessSpaces[i].EndsWith(" _"))
+                var newLinesWithoutExcessSpaces = newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                for (var i = 0; i < newLinesWithoutExcessSpaces.Length; i++)
                 {
-                    newLinesWithoutExcessSpaces[i] =
-                        newLinesWithoutExcessSpaces[i].Remove(newLinesWithoutExcessSpaces[i].Length - 2);
+                    newLinesWithoutExcessSpaces[i] = newLinesWithoutExcessSpaces[i].RemoveExtraSpacesLeavingIndentation();
                 }
-                break;
-            }
 
-            _vbe.ActiveCodePane.CodeModule.DeleteLines(selection);
-            _vbe.ActiveCodePane.CodeModule.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
+                for (var i = newLinesWithoutExcessSpaces.Length - 1; i >= 0; i--)
+                {
+                    if (newLinesWithoutExcessSpaces[i].Trim() == string.Empty)
+                    {
+                        continue;
+                    }
+
+                    if (newLinesWithoutExcessSpaces[i].EndsWith(" _"))
+                    {
+                        newLinesWithoutExcessSpaces[i] =
+                            newLinesWithoutExcessSpaces[i].Remove(newLinesWithoutExcessSpaces[i].Length - 2);
+                    }
+                    break;
+                }
+
+                module.DeleteLines(selection);
+                module.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
+            }
         }
 
         private string RemoveExtraComma(string str, int numParams, int indexRemoved)

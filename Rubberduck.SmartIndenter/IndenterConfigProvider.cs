@@ -1,5 +1,4 @@
-﻿using Rubberduck.Settings;
-using Rubberduck.SettingsProvider;
+﻿using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.SmartIndenter
 {
