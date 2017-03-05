@@ -6,8 +6,8 @@ using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -36,7 +36,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ConstantNotUsedInspection(parser.State);
+            var inspection = new ConstantNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -63,7 +63,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ConstantNotUsedInspection(parser.State);
+            var inspection = new ConstantNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
@@ -95,7 +95,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ConstantNotUsedInspection(parser.State);
+            var inspection = new ConstantNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -125,7 +125,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ConstantNotUsedInspection(parser.State);
+            var inspection = new ConstantNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -153,7 +153,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ConstantNotUsedInspection(parser.State);
+            var inspection = new ConstantNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -181,7 +181,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ConstantNotUsedInspection(parser.State);
+            var inspection = new ConstantNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -209,7 +209,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ConstantNotUsedInspection(parser.State);
+            var inspection = new ConstantNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsTrue(inspectionResults.Any());
@@ -236,7 +236,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ConstantNotUsedInspection(parser.State);
+            var inspection = new ConstantNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -268,7 +268,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ConstantNotUsedInspection(parser.State);
+            var inspection = new ConstantNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
@@ -304,7 +304,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ConstantNotUsedInspection(parser.State);
+            var inspection = new ConstantNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
@@ -316,7 +316,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new ConstantNotUsedInspection(null);
+            var inspection = new ConstantNotUsedInspection(null, new Mock<IMessageBox>().Object);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -325,7 +325,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "ConstantNotUsedInspection";
-            var inspection = new ConstantNotUsedInspection(null);
+            var inspection = new ConstantNotUsedInspection(null, new Mock<IMessageBox>().Object);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
