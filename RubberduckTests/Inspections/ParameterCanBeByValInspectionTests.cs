@@ -20,13 +20,19 @@ namespace RubberduckTests.Inspections
             [TestCategory("Inspections")]
             public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
             {
+                const string modelCode = @"
+Option Explicit
+Public Foo As Long
+Public Bar As String
+";
+
                 const string interfaceCode = @"
 Option Explicit
 
-Public Property Get Model() As Object
+Public Property Get Model() As MyModel
 End Property
 
-Public Property Set Model(ByVal value As Object)
+Public Property Set Model(ByVal value As MyModel)
 End Property
 
 Public Property Get IsCancelled() As Boolean
@@ -41,24 +47,23 @@ Option Explicit
 Private Type TView
     Model As MyModel
     IsCancelled As Boolean
-    Validator As New NumKeyValidator
 End Type
 Private this As TView
 Implements IView
 
-Private Property Get IDailySalesView_IsCancelled() As Boolean
-    IDailySalesView_IsCancelled = this.IsCancelled
+Private Property Get IView_IsCancelled() As Boolean
+    IView_IsCancelled = this.IsCancelled
 End Property
 
-Private Property Set IDailySalesView_Model(ByVal value As Object)
+Private Property Set IView_Model(ByVal value As MyModel)
     Set this.Model = value
 End Property
 
-Private Property Get IDailySalesView_Model() As Object
-    Set IDailySalesView_Model = this.Model
+Private Property Get IView_Model() As MyModel
+    Set IView_Model = this.Model
 End Property
 
-Private Sub IDailySalesView_Show()
+Private Sub IView_Show()
     Me.Show vbModal
 End Sub
 ";
@@ -67,6 +72,7 @@ End Sub
                 var builder = new MockVbeBuilder();
                 var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                     .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
+                    .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
                     .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
                     .MockVbeBuilder().Build();
 
