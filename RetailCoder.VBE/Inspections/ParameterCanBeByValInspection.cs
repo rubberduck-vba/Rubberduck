@@ -23,53 +23,61 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var declarations = UserDeclarations.ToList();
+            var declarations = UserDeclarations.ToArray();
             var issues = new List<ParameterCanBeByValInspectionResult>();
 
-            var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToList();
-            var interfaceScopes = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope);
+            var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToArray();
+            var interfaceScopes = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope).ToArray();
 
             issues.AddRange(GetResults(declarations, interfaceDeclarationMembers));
 
-            var eventMembers = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event).ToList();
-            var formEventHandlerScopes = State.FindFormEventHandlers().Select(handler => handler.Scope);
-            var eventHandlerScopes = State.DeclarationFinder.FindEventHandlers().Concat(declarations.FindUserEventHandlers()).Select(e => e.Scope);
+            var eventMembers = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event).ToArray();
+            var formEventHandlerScopes = State.FindFormEventHandlers().Select(handler => handler.Scope).ToArray();
+            var eventHandlerScopes = State.DeclarationFinder.FindEventHandlers().Concat(declarations.FindUserEventHandlers()).Select(e => e.Scope).ToArray();
             var eventScopes = eventMembers.Select(s => s.Scope)
                 .Concat(formEventHandlerScopes)
-                .Concat(eventHandlerScopes);
+                .Concat(eventHandlerScopes)
+                .ToArray();
 
             issues.AddRange(GetResults(declarations, eventMembers));
 
             var declareScopes = declarations.Where(item =>
                     item.DeclarationType == DeclarationType.LibraryFunction
                     || item.DeclarationType == DeclarationType.LibraryProcedure)
-                .Select(e => e.Scope);
+                .Select(e => e.Scope)
+                .ToArray();
             
-            issues.AddRange(declarations.Where(declaration =>
-                !declaration.IsArray
-                && (declaration.AsTypeDeclaration == null || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
-                && !declareScopes.Contains(declaration.ParentScope)
-                && !eventScopes.Contains(declaration.ParentScope)
-                && !interfaceScopes.Contains(declaration.ParentScope)
-                && declaration.DeclarationType == DeclarationType.Parameter
-                && ((VBAParser.ArgContext)declaration.Context).BYVAL() == null
-                && !IsUsedAsByRefParam(declarations, declaration)
-                && !declaration.References.Any(reference => reference.IsAssignment))
+            issues.AddRange(declarations.OfType<ParameterDeclaration>()
+                .Where(declaration => IsIssue(declaration, declarations, declareScopes, eventScopes, interfaceScopes))
                 .Select(issue => new ParameterCanBeByValInspectionResult(this, State, issue, issue.Context, issue.QualifiedName)));
 
             return issues;
         }
 
-        private IEnumerable<ParameterCanBeByValInspectionResult> GetResults(List<Declaration> declarations, List<Declaration> declarationMembers)
+        private bool IsIssue(ParameterDeclaration declaration, Declaration[] userDeclarations, string[] declareScopes, string[] eventScopes, string[] interfaceScopes)
+        {
+            var isIssue = 
+                !declaration.IsArray
+                && !declaration.IsParamArray
+                && (declaration.IsByRef || declaration.IsImplicitByRef)
+                && (declaration.AsTypeDeclaration == null || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
+                && !declareScopes.Contains(declaration.ParentScope)
+                && !eventScopes.Contains(declaration.ParentScope)
+                && !interfaceScopes.Contains(declaration.ParentScope)
+                && !IsUsedAsByRefParam(userDeclarations, declaration)
+                && (!declaration.References.Any() || !declaration.References.Any(reference => reference.IsAssignment));
+            return isIssue;
+        }
+
+        private IEnumerable<ParameterCanBeByValInspectionResult> GetResults(Declaration[] declarations, Declaration[] declarationMembers)
         {
             foreach (var declaration in declarationMembers)
             {
-                var declarationParameters =
-                    declarations.Where(d => d.DeclarationType == DeclarationType.Parameter &&
-                                                      Equals(d.ParentDeclaration, declaration))
-                                .OrderBy(o => o.Selection.StartLine)
-                                .ThenBy(t => t.Selection.StartColumn)
-                                .ToList();
+                var declarationParameters = declarations.OfType<ParameterDeclaration>()
+                    .Where(d => Equals(d.ParentDeclaration, declaration))
+                    .OrderBy(o => o.Selection.StartLine)
+                    .ThenBy(t => t.Selection.StartColumn)
+                    .ToList();
 
                 if (!declarationParameters.Any()) { continue; }
                 var parametersAreByRef = declarationParameters.Select(s => true).ToList();
@@ -80,12 +88,11 @@ namespace Rubberduck.Inspections
 
                 foreach (var member in members)
                 {
-                    var parameters =
-                        declarations.Where(d => d.DeclarationType == DeclarationType.Parameter &&
-                                                          Equals(d.ParentDeclaration, member))
-                                    .OrderBy(o => o.Selection.StartLine)
-                                    .ThenBy(t => t.Selection.StartColumn)
-                                    .ToList();
+                    var parameters = declarations.OfType<ParameterDeclaration>()
+                        .Where(d => Equals(d.ParentDeclaration, member))
+                        .OrderBy(o => o.Selection.StartLine)
+                        .ThenBy(t => t.Selection.StartColumn)
+                        .ToList();
 
                     for (var i = 0; i < parameters.Count; i++)
                     {
