@@ -18,23 +18,64 @@ namespace RubberduckTests.Inspections
     {
             [TestMethod]
             [TestCategory("Inspections")]
-            public void ParameterCanBeByVal_NoResultForByValClassInProperty()
+            public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
             {
-                const string class1Code = @"
-    Option Explicit
-    Public Sub DoSomething()
-    End sub
-    ";
+                const string modelCode = @"
+Option Explicit
+Public Property Get Foo() As Integer
+    Foo = 42
+End Property
+";
 
-                const string inputCode =
-    @"Public Property Set Foo(ByVal value As Class1)
-    End Property";
+                const string interfaceCode = @"
+Option Explicit
+
+Public Property Get Model() As ModelClass
+End Property
+
+Public Property Set Model(ByVal value As ModelClass)
+End Property
+
+Public Property Get IsCancelled() As Boolean
+End Property
+
+Public Sub Show()
+End Sub
+";
+
+                const string implementationCode = @"
+Option Explicit
+Private Type TView
+    Model As MyModel
+    IsCancelled As Boolean
+    Validator As New NumKeyValidator
+End Type
+Private this As TView
+Implements IView
+
+Private Property Get IDailySalesView_IsCancelled() As Boolean
+    IDailySalesView_IsCancelled = this.IsCancelled
+End Property
+
+Private Property Set IDailySalesView_Model(ByVal value As DailySalesModel)
+    Set this.Model = value
+End Property
+
+Private Property Get IDailySalesView_Model() As DailySalesModel
+    Set IDailySalesView_Model = this.Model
+End Property
+
+Private Sub IDailySalesView_Show()
+    Me.Show vbModal
+End Sub
+";
 
                 //Arrange
                 var builder = new MockVbeBuilder();
                 var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                    .AddComponent("Class1", ComponentType.ClassModule, class1Code)
-                    .AddComponent("Module1", ComponentType.StandardModule, inputCode)
+                    .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
+                    .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
+                    .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
                     .MockVbeBuilder().Build();
 
                 var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
