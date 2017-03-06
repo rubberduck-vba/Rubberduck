@@ -20,20 +20,13 @@ namespace RubberduckTests.Inspections
             [TestCategory("Inspections")]
             public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
             {
-                const string modelCode = @"
-Option Explicit
-Public Property Get Foo() As Integer
-    Foo = 42
-End Property
-";
-
                 const string interfaceCode = @"
 Option Explicit
 
-Public Property Get Model() As ModelClass
+Public Property Get Model() As Object
 End Property
 
-Public Property Set Model(ByVal value As ModelClass)
+Public Property Set Model(ByVal value As Object)
 End Property
 
 Public Property Get IsCancelled() As Boolean
@@ -57,11 +50,11 @@ Private Property Get IDailySalesView_IsCancelled() As Boolean
     IDailySalesView_IsCancelled = this.IsCancelled
 End Property
 
-Private Property Set IDailySalesView_Model(ByVal value As DailySalesModel)
+Private Property Set IDailySalesView_Model(ByVal value As Object)
     Set this.Model = value
 End Property
 
-Private Property Get IDailySalesView_Model() As DailySalesModel
+Private Property Get IDailySalesView_Model() As Object
     Set IDailySalesView_Model = this.Model
 End Property
 
@@ -74,7 +67,6 @@ End Sub
                 var builder = new MockVbeBuilder();
                 var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                     .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
-                    .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
                     .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
                     .MockVbeBuilder().Build();
 
