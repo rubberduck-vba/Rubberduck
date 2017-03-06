@@ -750,21 +750,16 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> GetDeclarationsAccessibleToScope(Declaration target, IEnumerable<Declaration> declarations)
         {
+            if (target == null) { return Enumerable.Empty<Declaration>(); }
 
-            object obj = new object();
-            lock (obj)
-            {
-                if (target == null) { return Enumerable.Empty<Declaration>(); }
-
-                return declarations
-                    .Where(candidateDeclaration =>
-                    (
-                           IsDeclarationInTheSameProcedure(candidateDeclaration, target)
-                        || IsDeclarationChildOfTheScope(candidateDeclaration, target)
-                        || IsModuleLevelDeclarationOfTheScope(candidateDeclaration, target)
-                        || IsProjectGlobalDeclaration(candidateDeclaration, target)
-                     )).Distinct();
-            }
+            return declarations
+                .Where(candidateDeclaration =>
+                (
+                        IsDeclarationInTheSameProcedure(candidateDeclaration, target)
+                    || IsDeclarationChildOfTheScope(candidateDeclaration, target)
+                    || IsModuleLevelDeclarationOfTheScope(candidateDeclaration, target)
+                    || IsProjectGlobalDeclaration(candidateDeclaration, target)
+                    )).Distinct();
         }
 
         private bool IsDeclarationInTheSameProcedure(Declaration candidateDeclaration, Declaration scopingDeclaration)
