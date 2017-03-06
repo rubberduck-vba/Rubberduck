@@ -1069,7 +1069,15 @@ namespace Rubberduck.Parsing.VBA
                                          item.DeclarationType == DeclarationType.ProceduralModule) &&
                                         item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName))
                                     {
-                                        match = match != null ? null : item;
+                                        var procName = activeCodePane.CodeModule.GetProcOfLine(selection.Value.Selection.StartLine);
+                                        if (!string.IsNullOrEmpty(procName))
+                                        {
+                                            match = DeclarationFinder.Members(item).SingleOrDefault(m => m.IdentifierName == procName);
+                                        }
+                                        else
+                                        {
+                                            match = match != null ? null : item;
+                                        }
                                     }
                                 }
                             }
