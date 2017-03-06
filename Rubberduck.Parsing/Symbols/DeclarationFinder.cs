@@ -747,5 +747,64 @@ namespace Rubberduck.Parsing.Symbols
 
             return new ConcurrentBag<Declaration>(handlers);
         }
+
+        public IEnumerable<Declaration> GetDeclarationsAccessibleToScope(Declaration target, IEnumerable<Declaration> declarations)
+        {
+
+            object obj = new object();
+            lock (obj)
+            {
+                if (target == null) { return Enumerable.Empty<Declaration>(); }
+
+                return declarations
+                    .Where(candidateDeclaration =>
+                    (
+                           IsDeclarationInTheSameProcedure(candidateDeclaration, target)
+                        || IsDeclarationChildOfTheScope(candidateDeclaration, target)
+                        || IsModuleLevelDeclarationOfTheScope(candidateDeclaration, target)
+                        || IsProjectGlobalDeclaration(candidateDeclaration, target)
+                     )).Distinct();
+            }
+        }
+
+        private bool IsDeclarationInTheSameProcedure(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        {
+            return candidateDeclaration.ParentScope == scopingDeclaration.ParentScope;
+        }
+
+        private bool IsDeclarationChildOfTheScope(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        {
+            return scopingDeclaration == candidateDeclaration.ParentDeclaration;
+        }
+
+        private bool IsModuleLevelDeclarationOfTheScope(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        {
+            if (candidateDeclaration.ParentDeclaration == null)
+            {
+                return false;
+            }
+            return candidateDeclaration.ComponentName == scopingDeclaration.ComponentName
+                    && !IsDeclaredWithinMethodOrProperty(candidateDeclaration.ParentDeclaration.Context);
+        }
+
+        private bool IsProjectGlobalDeclaration(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        {
+            return candidateDeclaration.ProjectName == scopingDeclaration.ProjectName
+                && !(candidateDeclaration.ParentScopeDeclaration is ClassModuleDeclaration)
+                && (candidateDeclaration.Accessibility == Accessibility.Public
+                    || ((candidateDeclaration.Accessibility == Accessibility.Implicit)
+                        && (candidateDeclaration.ParentScopeDeclaration is ProceduralModuleDeclaration)));
+        }
+
+        private bool IsDeclaredWithinMethodOrProperty(RuleContext procedureContextCandidate)
+        {
+            if (procedureContextCandidate == null) { return false; }
+
+            return (procedureContextCandidate is VBAParser.SubStmtContext)
+                || (procedureContextCandidate is VBAParser.FunctionStmtContext)
+                || (procedureContextCandidate is VBAParser.PropertyLetStmtContext)
+                || (procedureContextCandidate is VBAParser.PropertyGetStmtContext)
+                || (procedureContextCandidate is VBAParser.PropertySetStmtContext);
+        }
     }
 }

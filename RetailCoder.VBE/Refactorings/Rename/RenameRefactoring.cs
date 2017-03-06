@@ -14,8 +14,7 @@ using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Collections.Generic;
-using Rubberduck.Inspections;
+using System;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -102,8 +101,8 @@ namespace Rubberduck.Refactorings.Rename
 
         private void Rename()
         {
-            var declaration = AccessibilityEvaluator.GetDeclarationsAccessibleToScope(_model.Target, _model.Declarations)
-                .Where(d => d.IdentifierName == _model.NewName).FirstOrDefault();
+            var declaration = _state.DeclarationFinder.GetDeclarationsAccessibleToScope(_model.Target, _model.Declarations)
+                .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             if (declaration != null)
             {
                 var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
