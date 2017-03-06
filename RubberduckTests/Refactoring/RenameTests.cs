@@ -69,22 +69,8 @@ namespace RubberduckTests.Refactoring
             //To see if he wants to continue with the Renaming process.
             //To pass this test, FindDeclarationForIdentifier() should find zero collisions and therefore
             //skips the logic that presents the message box to the user. 
-            bool msgboxShowWasInvoked = true; // == failing condition
-            try
-            {
-                //Throws an exception if Show() was NOT called => this is the successful behavior
-                msgbox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()));
-                msgboxShowWasInvoked = true;  //this line executed if the MessageBox is presented to the user
-            }
-            catch (MockException)
-            {
-                msgboxShowWasInvoked = false;
-            }
-            catch
-            {
-                throw;
-            }
-            Assert.IsFalse(msgboxShowWasInvoked, "RenameRefactoring found a conflicting declaration where none exists.");
+            string failMsg = "RenameRefactoring found a conflicting declaration where none exists.";
+            msgbox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()), Times.Never, failMsg);
         }
 
 
