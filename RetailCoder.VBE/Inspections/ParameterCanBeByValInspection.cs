@@ -60,7 +60,7 @@ namespace Rubberduck.Inspections
                 !declaration.IsArray
                 && !declaration.IsParamArray
                 && (declaration.IsByRef || declaration.IsImplicitByRef)
-                && (declaration.AsTypeDeclaration == null || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
+                && (declaration.AsTypeDeclaration == null || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.ClassModule && declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType && declaration.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration)
                 && !declareScopes.Contains(declaration.ParentScope)
                 && !eventScopes.Contains(declaration.ParentScope)
                 && !interfaceScopes.Contains(declaration.ParentScope)
