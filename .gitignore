@@ -126,6 +126,7 @@ ClientBin/
 *.[Pp]ublish.xml
 *.pfx
 *.publishsettings
+*.playlist
 
 # Monodevelop detritus
 *.userprefs
