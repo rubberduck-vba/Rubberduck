@@ -14,6 +14,7 @@ using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -92,68 +93,6 @@ namespace Rubberduck.Refactorings.Rename
                 pane.Selection = oldSelection;
             }
         }
-
-        private Declaration FindDeclarationForIdentifier()
-        {
-            var values = _model.Declarations.Where(item => 
-                _model.NewName == item.IdentifierName 
-                && ((item.Scope.Contains(_model.Target.Scope)
-                || (item.ParentScope == null && string.IsNullOrEmpty(_model.Target.ParentScope)) 
-                || (item.ParentScope != null && _model.Target.ParentScope.Contains(item.ParentScope))))
-                ).ToList();
-
-            if (values.Any())
-            {
-                return values.FirstOrDefault();
-            }
-
-            foreach (var reference in _model.Target.References)
-            {
-                var targetReference = reference;
-                var potentialDeclarations = _model.Declarations.Where(item => !item.IsBuiltIn
-                                                         && item.ProjectId == targetReference.Declaration.ProjectId
-                                                         && ((item.Context != null
-                                                         && item.Context.Start.Line <= targetReference.Selection.StartLine
-                                                         && item.Context.Stop.Line >= targetReference.Selection.EndLine)
-                                                         || (item.Selection.StartLine <= targetReference.Selection.StartLine
-                                                         && item.Selection.EndLine >= targetReference.Selection.EndLine))
-                                                         && item.QualifiedName.QualifiedModuleName.ComponentName == targetReference.QualifiedModuleName.ComponentName);
-
-                var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
-
-                Declaration target = null;
-                foreach (var item in potentialDeclarations)
-                {
-                    var startLine = item.Context == null ? item.Selection.StartLine : item.Context.Start.Line;
-                    var endLine = item.Context == null ? item.Selection.EndLine : item.Context.Stop.Column;
-                    var startColumn = item.Context == null ? item.Selection.StartColumn : item.Context.Start.Column;
-                    var endColumn = item.Context == null ? item.Selection.EndColumn : item.Context.Stop.Column;
-
-                    var selection = new Selection(startLine, startColumn, endLine, endColumn);
-
-                    if (currentSelection.Contains(selection))
-                    {
-                        currentSelection = selection;
-                        target = item;
-                    }
-                }
-
-                if (target == null) { continue; }
-
-                values = _model.Declarations.Where(item => (item.Scope.Contains(target.Scope)
-                                              || (item.ParentScope == null && string.IsNullOrEmpty(target.ParentScope))
-                                              || (item.ParentScope != null && target.ParentScope.Contains(item.ParentScope)))
-                                              && _model.NewName == item.IdentifierName).ToList();
-
-                if (values.Any())
-                {
-                    return values.FirstOrDefault();
-                }
-            }
-
-            return null;
-        }
-
         private static readonly DeclarationType[] ModuleDeclarationTypes =
         {
             DeclarationType.ClassModule,
@@ -162,7 +101,8 @@ namespace Rubberduck.Refactorings.Rename
 
         private void Rename()
         {
-            var declaration = FindDeclarationForIdentifier();
+            var declaration = _state.DeclarationFinder.GetDeclarationsAccessibleToScope(_model.Target, _model.Declarations)
+                .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             if (declaration != null)
             {
                 var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
