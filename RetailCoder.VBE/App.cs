@@ -89,16 +89,15 @@ namespace Rubberduck
                 Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
             }
             // The parser swallows the error if deletions fail - clean up any temp files on startup
-            try
-            {
-                foreach (var file in new DirectoryInfo(ApplicationConstants.RUBBERDUCK_TEMP_PATH).GetFiles())
+            foreach (var file in new DirectoryInfo(ApplicationConstants.RUBBERDUCK_TEMP_PATH).GetFiles())
+            {            try
                 {
-                    file.Delete();
+                        file.Delete();
                 }
-            }
-            catch
-            {
-                // Yeah, don't care here either.
+                catch
+                {
+                    // Yeah, don't care here either.
+                }
             }
         }
 
