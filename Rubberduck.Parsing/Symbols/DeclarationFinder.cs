@@ -136,8 +136,8 @@ namespace Rubberduck.Parsing.Symbols
                 });
 
             _membersByImplementsContext = new Lazy<ConcurrentDictionary<VBAParser.ImplementsStmtContext, Declaration[]>>(() =>
-            new ConcurrentDictionary<VBAParser.ImplementsStmtContext, Declaration[]>(
-                implementableMembers.ToDictionary(item => item.Context, item => item.Members)), true);
+                new ConcurrentDictionary<VBAParser.ImplementsStmtContext, Declaration[]>(
+                    implementableMembers.ToDictionary(item => item.Context, item => item.Members)), true);
 
             _nonBaseAsType = new Lazy<List<Declaration>>(() =>
                             _declarations.AllValues().Where(d =>
